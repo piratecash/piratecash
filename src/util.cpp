@@ -612,7 +612,11 @@ void FileCommit(FILE *fileout)
     HANDLE hFile = (HANDLE)_get_osfhandle(_fileno(fileout));
     FlushFileBuffers(hFile);
 #else
+    #if defined(__linux__) || defined(__NetBSD__)
+    fdatasync(fileno(fileout));
+    #else
     fsync(fileno(fileout));
+    #endif
 #endif
 }
 
