@@ -487,7 +487,7 @@ const boost::filesystem::path &GetDataDir(bool fNetSpecific)
     if (fNetSpecific)
         path /= Params().DataDir();
 
-    fs::create_directory(path);
+    fs::create_directories(path);
 
     return path;
 }
