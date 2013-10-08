@@ -120,7 +120,6 @@ extern bool fPrintToConsole;
 extern bool fPrintToDebugLog;
 extern bool fDaemon;
 extern bool fServer;
-extern bool fCommandLine;
 extern std::string strMiscWarning;
 extern bool fLogTimestamps;
 extern bool fLogIPs;

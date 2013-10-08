@@ -109,7 +109,6 @@ bool fPrintToConsole = false;
 bool fPrintToDebugLog = true;
 bool fDaemon = false;
 bool fServer = false;
-bool fCommandLine = false;
 string strMiscWarning;
 bool fLogTimestamps = false;
 bool fLogIPs = false;
