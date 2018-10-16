@@ -35,7 +35,8 @@ Copyright (c) 2018	PirateCash Developers
 | ------------- |:------------------|
 | Bitcointalk   | [https://bitcointalk.org/index.php?topic=5050988](https://bitcointalk.org/index.php?topic=5050988)       |
 | Website       | [https://piratecash.net](http://piratecash.net) |
-| Explorer      | [https://block.piratecash.net:3001](http://block.piratecash.net:3001)
+| Explorer      | [https://block.piratecash.net:3001](http://block.piratecash.net:3001)|
+| Telegram	| [https://t.me/joinchat/FtUaLREioKVyF6EPNVtnIQ](https://t.me/joinchat/FtUaLREioKVyF6EPNVtnIQ)|
 
 
 License
