@@ -34,7 +34,7 @@ Copyright (c) 2018	PirateCash Developers
 | Specification | Value             |
 | ------------- |:------------------|
 | Bitcointalk   | [https://bitcointalk.org/index.php?topic=5050988](https://bitcointalk.org/index.php?topic=5050988)       |
-| Website       | [https://piratecash.net](http//piratecash.net) |
+| Website       | [https://piratecash.net](http://piratecash.net) |
 | Explorer      | [https://block.piratecash.net:3001](http://block.piratecash.net:3001)
 
 
