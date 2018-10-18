@@ -14,19 +14,36 @@ Copyright (c) 2018	PirateCash Developers
 
 ## The code will be upload at 3 November 2018
 
+Live Launch PirateCash Network:
+
+https://www.youtube.com/watch?v=WiFbBjkTNtg
+
 
 ## Specifications
 
 
-| Specification                 | Value             |
-| ----------------------------- |:------------------|
-| Block Spacing                 | 60 seconds        |
-| Maturity                      | 120 Confirmations |
-| Difficulty Retargeting        | Every Block       |
-| Staking Minimum Age           | 8 hours           |
-| Reward                        | 10 PIRATE         |
-| Max Supply                    | 99 Million PIRATE |
-| Required Coins for masternode | 1 000 PIRATE      |
+| Specification                 | Value               |
+| ----------------------------- |:--------------------|
+| Block Spacing                 | 60 seconds          |
+| Maturity                      | 120 Confirmations   |
+| Difficulty Retargeting        | Every Block         |
+| Staking Minimum Age           | 8 hours             |
+| Max Supply                    | ~105 Million PIRATE |
+| Required Coins for masternode | 1 000 PIRATE        |
+
+
+## PoS Rewards Breakdown
+
+| Block                 | Reward              | Masternodes | Stakers   |
+|---------------------- |:------------------- |:----------- |:--------- |
+| 1                     | 50    PIRATE + fees | 60%         | 40%       |
+| 1048576 (0x100000)    | 25    PIRATE + fees | 60%         | 40%       |
+| 2097152 (0x200000)    | 12.5  PIRATE + fees | 60%         | 40%       |
+| 1048576 (0x300000)    | 6.25  PIRATE + fees | 60%         | 40%       |
+| 1048576 (0x400000)    | 3.125 PIRATE + fees | 60%         | 40%       |
+| ...                   | ...                 | 60%         | 40%       |
+| 2162688 (0x2100000)   | ~0    PIRATE + fees | 60%         | 40%       |
+
 
 
 ## Channels
