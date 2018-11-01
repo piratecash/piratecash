@@ -24,25 +24,25 @@ https://www.youtube.com/watch?v=WiFbBjkTNtg
 
 | Specification                 | Value               |
 | ----------------------------- |:--------------------|
-| Block Spacing                 | 60 seconds          |
+| Block Spacing                 | 120 seconds         |
 | Maturity                      | 120 Confirmations   |
 | Difficulty Retargeting        | Every Block         |
 | Staking Minimum Age           | 8 hours             |
 | Max Supply                    | ~105 Million PIRATE |
-| Required Coins for masternode | 1 000 PIRATE        |
+| Required Coins for masternode | 10 000 PIRATE       |
 
 
 ## PoS Rewards Breakdown
 
-| Block                  | Reward              | Masternodes | Stakers   |
-|----------------------- |:------------------- |:----------- |:--------- |
-| 1                      | 50    PIRATE + fees | 60%         | 40%       |
-| 1048576 (0x100000)     | 25    PIRATE + fees | 60%         | 40%       |
-| 2097152 (0x200000)     | 12.5  PIRATE + fees | 60%         | 40%       |
-| 3145728 (0x300000)     | 6.25  PIRATE + fees | 60%         | 40%       |
-| 4194304 (0x400000)     | 3.125 PIRATE + fees | 60%         | 40%       |
-| ...                    | ...                 | 60%         | 40%       |
-| 34603008 (0x2100000)   | ~0    PIRATE + fees | 60%         | 40%       |
+| Block                 | Reward              | Masternodes | Stakers   |
+|---------------------- |:------------------- |:----------- |:--------- |
+| 1                     | 50    PIRATE + fees | 60%         | 40%       |
+| 1048576 (0x100000)    | 25    PIRATE + fees | 60%         | 40%       |
+| 2097152 (0x200000)    | 12.5  PIRATE + fees | 60%         | 40%       |
+| 1048576 (0x300000)    | 6.25  PIRATE + fees | 60%         | 40%       |
+| 1048576 (0x400000)    | 3.125 PIRATE + fees | 60%         | 40%       |
+| ...                   | ...                 | 60%         | 40%       |
+| 2162688 (0x2100000)   | ~0    PIRATE + fees | 60%         | 40%       |
 
 
 
