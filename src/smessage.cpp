@@ -1949,7 +1949,7 @@ static bool ScanBlock(CBlock& block, CTxDB& txdb, SecMsgDB& addrpkdb,
     BOOST_FOREACH(CTransaction& tx, block.vtx)
     {
     std::string sReason;
-        // - harvest public keys from coinstake txns
+        // - PirateCash public keys from coinstake txns
         if (tx.IsCoinStake())
         {
             const CTxOut& txout = tx.vout[1];

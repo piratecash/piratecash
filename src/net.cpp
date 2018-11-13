@@ -1156,7 +1156,7 @@ void ThreadMapPort()
 			}
 		}
 
-		string strDesc = "Harvest " + FormatFullVersion();
+		string strDesc = "PirateCash " + FormatFullVersion();
 
 		try {
 			while (!ShutdownRequested()) {
