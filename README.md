@@ -12,8 +12,6 @@ Copyright (c) 2014-2016 PivX Developers
 Copyright (c) 2018	PirateCash Developers
 
 
-## The code will be upload at 3 November 2018
-
 Live Launch PirateCash Network:
 
 https://www.youtube.com/watch?v=WiFbBjkTNtg
@@ -54,7 +52,7 @@ https://www.youtube.com/watch?v=WiFbBjkTNtg
 | Website       | [https://piratecash.net](http://piratecash.net) |
 | Explorer      | [https://block.piratecash.net:3001](http://block.piratecash.net:3001)|
 | Telegram	| [https://t.me/joinchat/FtUaLREioKVyF6EPNVtnIQ](https://t.me/joinchat/FtUaLREioKVyF6EPNVtnIQ)|
-
+| Discord       | [https://discord.gg/cbTdqxx](https://discord.gg/cbTdqxx)|
 
 License
 -------
