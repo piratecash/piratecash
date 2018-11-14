@@ -97,7 +97,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 {
     resize(900, 520);
     setWindowTitle(tr("PirateCash") + " - " + tr("Wallet"));
-    qApp->setStyleSheet("QStatusBar::item { border: 0px solid black }; ");
+
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
     setWindowIcon(QIcon(":icons/bitcoin"));
@@ -1214,7 +1214,7 @@ void BitcoinGUI::lockWallet()
 {
     if(!walletModel)
         return;
-
+    fWalletUnlockStakingOnly = false;
     walletModel->setWalletLocked(true);
 }
 

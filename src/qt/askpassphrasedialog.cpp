@@ -42,6 +42,7 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget *parent) :
             ui->stakingCheckBox->show();
             // fallthru
         case Unlock: // Ask passphrase
+            ui->stakingCheckBox->setChecked(false);
             ui->warningLabel->setText(tr("This operation needs your wallet passphrase to unlock the wallet."));
             ui->passLabel2->hide();
             ui->passEdit2->hide();
@@ -146,6 +147,17 @@ void AskPassphraseDialog::accept()
         }
         } break;
     case UnlockStaking:
+        if(!model->setWalletLocked(false, oldpass))
+        {
+            QMessageBox::critical(this, tr("Wallet unlock failed"),
+                                  tr("The passphrase entered for the wallet decryption was incorrect."));
+        }
+        else
+        {
+            fWalletUnlockStakingOnly = true;
+            QDialog::accept(); // Success
+        }
+        break;
     case Unlock:
         if(!model->setWalletLocked(false, oldpass))
         {
