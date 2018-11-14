@@ -1,4 +1,4 @@
-IDI_ICON1 ICON DISCARDABLE "icons/Deviant.ico"
+IDI_ICON1 ICON DISCARDABLE "icons/piratecash.ico"
 
 #include <windows.h>             // needed for VERSIONINFO
 #include "../../clientversion.h" // holds the needed client version information
@@ -19,7 +19,7 @@ BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
             VALUE "CompanyName",        "Piratecash"
-            VALUE "FileDescription",    "Piratecash-Qt (OSS GUI client for Deviant)"
+            VALUE "FileDescription",    "Piratecash-Qt (OSS GUI client for PIRATE)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
             VALUE "InternalName",       "Piratecash-qt"
             VALUE "LegalCopyright",     "2009-2014 The Bitcoin developers, 2012-2014 The NovaCoin & PPCoin developers, 2014-2015 The Transfer developers, 2018 The Piratecash developers"
