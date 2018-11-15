@@ -454,7 +454,11 @@ static QWidget* makeToolBarSpacer()
 {
     QWidget* spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+#ifdef Q_OS_MAC
     spacer->setStyleSheet("QWidget { background: none; }");
+#else
+    spacer->setStyleSheet("QWidget { background-color: #dedede; }");
+#endif
     return spacer;
 }
 
@@ -466,8 +470,11 @@ void BitcoinGUI::createToolBars()
     toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     toolbar->setContextMenuPolicy(Qt::PreventContextMenu);
     toolbar->setObjectName("tabs");
+#ifdef Q_OS_MAC
     toolbar->setStyleSheet("QToolButton { color: #000000; font-weight:bold;} QToolButton:hover { background-color: #F0D511 } QToolButton:checked { background-color: #FFC300 } QToolButton:pressed { background-color: #FFC300 } #tabs { color: #E5DDA7; background-color: qradialgradient(cx: -0.8, cy: 0, fx: -0.8, fy: 0, radius: 0.6, stop: 0 #404040, stop: 1 #101010);  }");
-
+#else
+    toolbar->setStyleSheet("QToolButton { color: #000000; font-weight:bold; background-color: #dedede;} QToolButton:hover { background-color: #F0D511 } QToolButton:checked { background-color: #FFC300 } QToolButton:pressed { background-color: #FFC300 } #tabs { color: #E5DDA7; background-color: qradialgradient(cx: -0.8, cy: 0, fx: -0.8, fy: 0, radius: 0.6, stop: 0 #404040, stop: 1 #101010);  }");
+#endif
         
 
     QLabel* header = new QLabel();
@@ -476,7 +483,11 @@ void BitcoinGUI::createToolBars()
     header->setPixmap(QPixmap(":/images/header"));
     header->setScaledContents(false);
     header->setObjectName("header");
+#ifdef Q_OS_MAC
     header->setStyleSheet("#header { border: none; }");
+#else
+    header->setStyleSheet("#header { border: none; background-color: #dedede; }");
+#endif
     toolbar->addWidget(header);
 
     //QMenu *toolbarMenu = new QMenu();
