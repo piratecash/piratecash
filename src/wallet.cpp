@@ -582,6 +582,33 @@ int64_t CWallet::IncOrderPosNext(CWalletDB *pwalletdb)
     return nRet;
 }
 
+void CWallet::WalletUpdateSpent(const CTransaction &tx)
+{
+    // Anytime a signature is successfully verified, it's proof the outpoint is spent.
+    // Update the wallet spent flag if it doesn't know due to wallet.dat being
+    // restored from backup or the user making copies of wallet.dat.
+    {
+        LOCK(cs_wallet);
+        BOOST_FOREACH(const CTxIn& txin, tx.vin)
+        {
+            map<uint256, CWalletTx>::iterator mi = mapWallet.find(txin.prevout.hash);
+            if (mi != mapWallet.end())
+            {
+                CWalletTx& wtx = (*mi).second;
+                if (txin.prevout.n >= wtx.vout.size())
+                    printf("WalletUpdateSpent: bad wtx %s\n", wtx.GetHash().ToString().c_str());
+                else if (!wtx.IsSpent(txin.prevout.n) && IsMine(wtx.vout[txin.prevout.n]))
+                {
+                    printf("WalletUpdateSpent found spent coin %s PIRATE %s\n", FormatMoney(wtx.GetCredit(ISMINE_ALL)).c_str(), wtx.GetHash().ToString().c_str());
+                    wtx.MarkSpent(txin.prevout.n);
+                    wtx.WriteToDisk();
+                    NotifyTransactionChanged(this, txin.prevout.hash, CT_UPDATED);
+                }
+            }
+        }
+    }
+}
+
 void CWallet::MarkDirty()
 {
     {
@@ -695,6 +722,8 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
 
         // Break debit/credit balance caches:
         wtx.MarkDirty();
+        // since AddToWallet is called directly for self-originating transactions, check for consumption of own coins
+        WalletUpdateSpent(wtx);
 
         // Notify UI of new or updated transaction
         NotifyTransactionChanged(this, hash, fInsertedNew ? CT_NEW : CT_UPDATED);
@@ -739,6 +768,8 @@ bool CWallet::AddToWalletIfInvolvingMe(const CTransaction& tx, const CBlock* pbl
 
             return AddToWallet(wtx);
         }
+        else
+            WalletUpdateSpent(tx);
     }
     return false;
 }
