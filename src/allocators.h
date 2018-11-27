@@ -35,11 +35,6 @@ public:
         page_mask = ~(page_size - 1);
     }
 
-    ~LockedPageManagerBase()
-    {
-        assert(this->GetLockedPageCount() == 0);
-    }
-
     // For all pages in affected range, increase lock count
     void LockRange(void *p, size_t size)
     {
