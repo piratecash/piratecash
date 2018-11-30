@@ -303,7 +303,7 @@ strUsage += "\n" + _("Masternode options:") + "\n";
         "  -nosmsg                                  " + _("Disable secure messaging.") + "\n" +
         "  -debugsmsg                               " + _("Log extra debug messages.") + "\n" +
         "  -smsgscanchain                           " + _("Scan the block chain for public key addresses on startup.") + "\n" +
-    strUsage += "  -stakethreshold=<n> " + _("This will set the output size of your stakes to never be below this number (default: 100)") + "\n";
+    strUsage += "  -stakethreshold=<n> " + _("This will set the output size of your stakes to never be below this number (default: 250)") + "\n";
 
     return strUsage;
 }
