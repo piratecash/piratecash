@@ -41,7 +41,7 @@ void CDBEnv::EnvShutdown()
     if (ret != 0)
         LogPrintf("EnvShutdown exception: %s (%d)\n", DbEnv::strerror(ret), ret);
     if (!fMockDb)
-        DbEnv(0).remove(strPath.c_str(), 0);
+        DbEnv(0).remove(path.string().c_str(), 0);
 }
 
 CDBEnv::CDBEnv() : dbenv(DB_CXX_NO_EXCEPTIONS)
@@ -60,19 +60,17 @@ void CDBEnv::Close()
     EnvShutdown();
 }
 
-bool CDBEnv::Open(boost::filesystem::path pathEnv_)
+bool CDBEnv::Open(boost::filesystem::path pathIn)
 {
     if (fDbEnvInit)
         return true;
 
     boost::this_thread::interruption_point();
 
-    pathEnv = pathEnv_;
-    filesystem::path pathDataDir = pathEnv;
-    strPath = pathDataDir.string();
-    filesystem::path pathLogDir = pathDataDir / "database";
+    path = pathIn;
+    filesystem::path pathLogDir = path / "database";
     filesystem::create_directory(pathLogDir);
-    filesystem::path pathErrorFile = pathDataDir / "db.log";
+    filesystem::path pathErrorFile = path / "db.log";
     LogPrintf("dbenv.open LogDir=%s ErrorFile=%s\n", pathLogDir.string(), pathErrorFile.string());
 
     unsigned int nEnvFlags = 0;
@@ -96,7 +94,7 @@ bool CDBEnv::Open(boost::filesystem::path pathEnv_)
 #ifdef DB_LOG_AUTO_REMOVE
     dbenv.log_set_config(DB_LOG_AUTO_REMOVE, 1);
 #endif
-    int ret = dbenv.open(strPath.c_str(),
+    int ret = dbenv.open(path.string().c_str(),
                      DB_CREATE     |
                      DB_INIT_LOCK  |
                      DB_INIT_LOG   |
@@ -472,6 +470,8 @@ void CDBEnv::Flush(bool fShutdown)
             {
                 dbenv.log_archive(&listp, DB_ARCH_REMOVE);
                 Close();
+                if (!fMockDb)
+                    boost::filesystem::remove_all(path / "database");
             }
         }
     }
