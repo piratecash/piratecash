@@ -34,4 +34,9 @@ static const int MAX_URI_LENGTH = 255;
 /* Number of frames in spinner animation */
 #define SPINNER_FRAMES 36
 
+/* Colors for minting tab for each coin age group */
+#define COLOR_MINT_YOUNG QColor(128, 64, 64)
+#define COLOR_MINT_MATURE QColor(64, 128, 64)
+#define COLOR_MINT_OLD QColor(26, 77, 26)
+
 #endif // GUICONSTANTS_H

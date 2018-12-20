@@ -20,6 +20,7 @@ class AddressTableModel;
 class OptionsModel;
 class TransactionTableModel;
 class WalletModelTransaction;
+class MintingTableModel;
 
 class CWallet;
 class CKeyID;
@@ -124,6 +125,7 @@ public:
 
     OptionsModel *getOptionsModel();
     AddressTableModel *getAddressTableModel();
+    MintingTableModel *getMintingTableModel();
     TransactionTableModel *getTransactionTableModel();
 
     CAmount getBalance(const CCoinControl *coinControl=NULL) const;
@@ -208,6 +210,7 @@ private:
     OptionsModel *optionsModel;
 
     AddressTableModel *addressTableModel;
+    MintingTableModel *mintingTableModel;
     TransactionTableModel *transactionTableModel;
 
     // Cache some values to be able to detect changes
