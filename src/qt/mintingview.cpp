@@ -143,9 +143,9 @@ void MintingView::setModel(WalletModel *model)
         mintingView->horizontalHeader()->resizeSection(
                 MintingTableModel::Age, 60);
         mintingView->horizontalHeader()->resizeSection(
-                MintingTableModel::Balance, 80);
+                MintingTableModel::Balance, 160);
         mintingView->horizontalHeader()->resizeSection(
-                MintingTableModel::CoinDay,60);
+                MintingTableModel::CoinDay,80);
         mintingView->horizontalHeader()->resizeSection(
                 MintingTableModel::MintProbability, 105);
 #if QT_VERSION < 0x050000

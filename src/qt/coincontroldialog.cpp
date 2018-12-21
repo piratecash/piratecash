@@ -121,12 +121,12 @@ CoinControlDialog::CoinControlDialog(QWidget *parent) :
     // see https://github.com/bitcoin/bitcoin/issues/5716
     // ui->treeWidget->headerItem()->setText(COLUMN_CHECKBOX, QString());
 
-    ui->treeWidget->setColumnWidth(COLUMN_CHECKBOX, 84);
-    ui->treeWidget->setColumnWidth(COLUMN_AMOUNT, 100);
+    ui->treeWidget->setColumnWidth(COLUMN_CHECKBOX, 95);
+    ui->treeWidget->setColumnWidth(COLUMN_AMOUNT, 120);
     ui->treeWidget->setColumnWidth(COLUMN_LABEL, 170);
-    ui->treeWidget->setColumnWidth(COLUMN_ADDRESS, 190);
+    ui->treeWidget->setColumnWidth(COLUMN_ADDRESS, 250);
     ui->treeWidget->setColumnWidth(COLUMN_DARKSEND_ROUNDS, 120);
-    ui->treeWidget->setColumnWidth(COLUMN_DATE, 60);
+    ui->treeWidget->setColumnWidth(COLUMN_DATE, 100);
     ui->treeWidget->setColumnWidth(COLUMN_CONFIRMATIONS, 100);
     ui->treeWidget->setColumnWidth(COLUMN_PRIORITY, 100);
     ui->treeWidget->setColumnHidden(COLUMN_TXHASH, true);         // store transacton hash in this column, but dont show it
@@ -660,10 +660,10 @@ void CoinControlDialog::updateLabels(WalletModel *model, QDialog* dialog)
     l8->setText(BitcoinUnits::formatWithUnit(nDisplayUnit, nChange));        // Change
 
     // turn labels "red"
-    l5->setStyleSheet((nBytes >= 10000) ? "color:red;" : "");               // Bytes >= 10000
-    l6->setStyleSheet((dPriority <= 576000) ? "color:red;" : "");         // Priority < "medium"
-    l7->setStyleSheet((fLowOutput) ? "color:red;" : "");                    // Low Output = "yes"
-    l8->setStyleSheet((nChange > 0 && nChange < CENT) ? "color:red;" : ""); // Change < 0.01BTC
+    l5->setStyleSheet((nBytes >= 10000) ? "border: 0; color:red;" : "border: 0;");               // Bytes >= 10000
+    l6->setStyleSheet((dPriority <= 576000) ? "border: 0; color:red;" : "border: 0;");         // Priority < "medium"
+    l7->setStyleSheet((fLowOutput) ? "border: 0; color:red;" : "border: 0;");                    // Low Output = "yes"
+    l8->setStyleSheet((nChange > 0 && nChange < CENT) ? "border: 0; color:red;" : "border: 0;"); // Change < 0.01BTC
 
     // tool tips
     l5->setToolTip(tr("This label turns red, if the transaction size is bigger than 10000 bytes.\n\n This means a fee of at least %1 per kb is required.\n\n Can vary +/- 1 Byte per input.").arg(BitcoinUnits::formatWithUnit(nDisplayUnit, CENT)));
