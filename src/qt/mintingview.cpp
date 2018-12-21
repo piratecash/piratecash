@@ -61,6 +61,7 @@ MintingView::MintingView(QWidget *parent) :
     QLabel *mintingLabel = new QLabel(tr("Display minting probability within : "));
     mintingCombo = new QComboBox();
     mintingCombo->addItem(tr("10 min"), Minting10min);
+    mintingCombo->addItem(tr("8 hours"), Minting8Hours);
     mintingCombo->addItem(tr("24 hours"), Minting1day);
     mintingCombo->addItem(tr("7 days"), Minting7days);
     mintingCombo->addItem(tr("30 days"), Minting30days);
@@ -149,10 +150,10 @@ void MintingView::setModel(WalletModel *model)
                 MintingTableModel::MintProbability, 105);
 #if QT_VERSION < 0x050000
         mintingView->horizontalHeader()->setResizeMode(
-                MintingTableModel::MintReward, QHeaderView::Stretch);
+                MintingTableModel::MintTime, QHeaderView::Stretch);
 #else
         mintingView->horizontalHeader()->setSectionResizeMode(
-                MintingTableModel::MintReward, QHeaderView::Stretch);
+                MintingTableModel::MintTime, QHeaderView::Stretch);
 #endif
         mintingView->horizontalHeader()->resizeSection(
             MintingTableModel::Address, 245);
@@ -168,6 +169,9 @@ void MintingView::chooseMintingInterval(int idx)
     {
         case Minting10min:
             interval = 10;
+            break;
+        case Minting8Hours:
+            interval = 60*8;
             break;
         case Minting1day:
             interval = 60*24;
@@ -209,7 +213,7 @@ void MintingView::exportClicked()
     writer.addColumn(tr("CoinDay"), MintingTableModel::CoinDay,0);
     writer.addColumn(tr("Balance"), MintingTableModel::Balance,0);
     writer.addColumn(tr("MintingProbability"), MintingTableModel::MintProbability,0);
-    writer.addColumn(tr("MintingReward"), MintingTableModel::MintReward,0);
+    writer.addColumn(tr("MintingTime"), MintingTableModel::MintTime,0);
 
     if(!writer.write())
     {

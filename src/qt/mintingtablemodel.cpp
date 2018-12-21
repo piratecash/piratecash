@@ -11,6 +11,7 @@
 #include "bitcoinunits.h"
 #include "util.h"
 #include "kernel.h"
+#include "rpcserver.h"
 
 #include "wallet.h"
 
@@ -226,7 +227,7 @@ MintingTableModel::MintingTableModel(CWallet *wallet, WalletModel *parent):
         mintingInterval(10),
         priv(new MintingTablePriv(wallet, this))
 {
-    columns << tr("Transaction") <<  tr("Address") << tr("Balance") << tr("Age") << tr("CoinDay") << tr("MintProbability") << tr("MintReward");
+    columns << tr("Transaction") <<  tr("Address") << tr("Balance") << tr("Age") << tr("CoinDay") << tr("MintProbability") << tr("MintTime");
     priv->refreshWallet();
 
     QTimer *timer = new QTimer(this);
@@ -313,8 +314,8 @@ QVariant MintingTableModel::data(const QModelIndex &index, int role) const
             return formatTxCoinDay(rec);
         case MintProbability:
             return formatDayToMint(rec);
-        case MintReward:
-            return formatTxPoSReward(rec);
+        case MintTime:
+            return formatTxPoSTime(rec);
         }
         break;
       case Qt::TextAlignmentRole:
@@ -358,13 +359,13 @@ QVariant MintingTableModel::data(const QModelIndex &index, int role) const
             return static_cast<qlonglong>(rec->nValue);
         case MintProbability:
             return getDayToMint(rec);
-        case MintReward:
-            return formatTxPoSReward(rec);
+        case MintTime:
+            return formatTxPoSTime(rec);
         }
         break;
       case Qt::BackgroundColorRole:
-        int minAge = nStakeMinAge / 60 / 60 / 24;
-        int maxAge = nStakeMaxAge / 60 / 60 / 24;
+        int minAge = nStakeMinAge / 60 / 60;
+        int maxAge = nStakeMaxAge / 60 / 60;
         if(rec->getAge() < minAge)
         {
             return COLOR_MINT_YOUNG;
@@ -403,13 +404,31 @@ QString MintingTableModel::lookupAddress(const std::string &address, bool toolti
     return description;
 }
 
-QString MintingTableModel::formatTxPoSReward(KernelRecord *wtx) const
+QString MintingTableModel::formatTxPoSTime(KernelRecord *wtx) const
 {
-    QString posReward;
-    int nBits = GetLastBlockIndex(pindexBest, true)->nBits;
-    posReward += QString(QObject::tr("from  %1 to %2")).arg(BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), wtx->getPoSReward(nBits, 0)), 
-        BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), wtx->getPoSReward(nBits, mintingInterval))); 
-    return posReward;
+    uint64_t nWeight = wtx->nValue;
+    uint64_t nNetworkWeight = GetPoSKernelPS();
+    unsigned nEstimateTime = 0;
+    nEstimateTime = TARGET_SPACING * nNetworkWeight / nWeight;
+
+    QString text;
+    if (nEstimateTime < 60)
+    {
+        text = tr("%n second(s)", "", nEstimateTime);
+    }
+    else if (nEstimateTime < 60*60)
+    {
+        text = tr("%n minute(s)", "", nEstimateTime/60);
+    }
+    else if (nEstimateTime < 24*60*60)
+    {
+        text = tr("%n hour(s)", "", nEstimateTime/(60*60));
+    }
+    else
+    {
+        text = tr("%n day(s)", "", nEstimateTime/(60*60*24));
+    }
+    return text;
 }
 
 double MintingTableModel::getDayToMint(KernelRecord *wtx) const
@@ -474,15 +493,15 @@ QVariant MintingTableModel::headerData(int section, Qt::Orientation orientation,
             case TxHash:
                 return tr("Original transaction id.");
             case Age:
-                return tr("Age of the transaction in days.");
+                return tr("Age of the transaction in hours.");
             case Balance:
                 return tr("Balance of the output.");
             case CoinDay:
                 return tr("Coin age in the output.");
             case MintProbability:
                 return tr("Chance to mint a block within given time interval.");
-            case MintReward:
-                return tr("The size of the potential rewards if the block is found at the beginning and the end given time interval.");
+            case MintTime:
+                return tr("Expected time to reward.");
             }
         }
     }

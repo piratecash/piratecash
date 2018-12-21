@@ -25,7 +25,7 @@ public:
         Age = 3,
         CoinDay = 4,
         MintProbability = 5,
-        MintReward = 6
+        MintTime = 6
     };
 
     void setMintingProxyModel(MintingFilterProxy *mintingProxy);
@@ -54,7 +54,7 @@ private:
     QString formatTxAge(const KernelRecord *wtx) const;
     QString formatTxBalance(const KernelRecord *wtx) const;
     QString formatTxCoinDay(const KernelRecord *wtx) const;
-    QString formatTxPoSReward(KernelRecord *wtx) const;
+    QString formatTxPoSTime(KernelRecord *wtx) const;
 private slots:
     void update();
 
