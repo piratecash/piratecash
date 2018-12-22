@@ -443,7 +443,14 @@ double MintingTableModel::getDayToMint(KernelRecord *wtx) const
 
 QString MintingTableModel::formatDayToMint(KernelRecord *wtx) const
 {
-    double prob = getDayToMint(wtx);
+    uint64_t nWeight = wtx->nValue;
+    uint64_t nNetworkWeight = GetPoSKernelPS();
+    unsigned nEstimateTime = 0;
+    nEstimateTime = TARGET_SPACING * nNetworkWeight / nWeight;
+
+    double prob = mintingInterval * 60.0 * 100.0 / nEstimateTime;
+    if (prob > 100 ) prob = 100.0;
+
     return QString::number(prob, 'f', 3) + "%";
 }
 

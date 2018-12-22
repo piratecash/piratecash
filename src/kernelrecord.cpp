@@ -32,8 +32,8 @@ vector<KernelRecord> KernelRecord::decomposeOutput(const CWallet *wallet, const 
     int64_t nTime = wtx.GetTxTime();
     uint256 hash = wtx.GetHash();
     std::map<std::string, std::string> mapValue = wtx.mapValue;
-    int64_t nDayWeight = (min((GetAdjustedTime() - nTime), (int64_t)(nStakeMaxAge+nStakeMinAge)) - nStakeMinAge); // DayWeight * 86400, чтобы был
-                                                                                                              // правильный расчёт CoinAge
+    int64_t nDayWeight = (min((GetAdjustedTime() - nTime), (int64_t)nStakeMaxAge) - nStakeMinAge) / 86400;
+
     if (showTransaction(wtx))
     {
         for (unsigned int nOut = 0; nOut < wtx.vout.size(); nOut++)
@@ -43,7 +43,7 @@ vector<KernelRecord> KernelRecord::decomposeOutput(const CWallet *wallet, const 
                 CTxDestination address;
                 std::string addrStr;
 
-                uint64_t coinAge = max( (txOut.nValue * nDayWeight) / (COIN * nOneDay), (int64_t)0);
+                uint64_t coinAge = max(txOut.nValue * nDayWeight / COIN, (int64_t)0);
 
                 if (ExtractDestination(txOut.scriptPubKey, address))
                 {
@@ -84,27 +84,14 @@ uint64_t KernelRecord::getCoinDay() const
     return coinAge;
 }
 
-int64_t KernelRecord::getPoSReward(int nBits, int minutes)
-{
-    int64_t PoSReward;
-    int64_t nWeight = GetAdjustedTime() - nTime + minutes * 60;
-    if( nWeight <  nStakeMinAge)
-        return 0;
-    uint64_t coinAge = (nValue * nWeight ) / (COIN * nOneDay);
-    PoSReward = 50*COIN; //GetProofOfStakeReward(coinAge, nBits, GetAdjustedTime() + minutes * 60);
-    return PoSReward;
-}
 
 double KernelRecord::getProbToMintStake(double difficulty, int timeOffset) const
 {
-    //double maxTarget = pow(static_cast<double>(2), 224);
-    //double target = maxTarget / difficulty;
-    //int dayWeight = (min((GetAdjustedTime() - nTime) + timeOffset, (int64_t)(nStakeMinAge+nStakeMaxAge)) - nStakeMinAge) / 86400;
-    //uint64_t coinAge = max(nValue * dayWeight / COIN, (int64_t)0);
-    //return target * coinAge / pow(static_cast<double>(2), 256);
-    int64_t Weight = (min((GetAdjustedTime() - nTime) + timeOffset, (int64_t)(nStakeMinAge+nStakeMaxAge)) - nStakeMinAge);
-    uint64_t coinAge = max(nValue * Weight / (COIN * nOneDay), (int64_t)0);
-    return coinAge / (pow(static_cast<double>(2),32) * difficulty);
+    double maxTarget = pow(static_cast<double>(2), 224);
+    double target = maxTarget / difficulty;
+    int dayWeight = (min((GetAdjustedTime() - nTime) + timeOffset, (int64_t)nStakeMaxAge) - nStakeMinAge) / 86400;
+    uint64_t coinAge = max(nValue * dayWeight / COIN, (int64_t)0);
+    return target * coinAge / pow(static_cast<double>(2), 256);
 }
 
 double KernelRecord::getProbToMintWithinNMinutes(double difficulty, int minutes)

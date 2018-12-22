@@ -156,7 +156,7 @@ void MintingView::setModel(WalletModel *model)
                 MintingTableModel::MintTime, QHeaderView::Stretch);
 #endif
         mintingView->horizontalHeader()->resizeSection(
-            MintingTableModel::Address, 245);
+            MintingTableModel::Address, 300);
         mintingView->horizontalHeader()->resizeSection(
             MintingTableModel::TxHash, 75);
     }
