@@ -55,6 +55,10 @@ vector<KernelRecord> KernelRecord::decomposeOutput(const CWallet *wallet, const 
                     // Sent to IP, or other non-address transaction like OP_EVAL
                     addrStr = mapValue["to"];
                 }
+                if (txOut.nValue == 10000 * COIN){
+                    //Make sure that this input is reserved for masternode
+                    continue;
+                }
 
                 parts.push_back(KernelRecord(hash, nTime, addrStr, txOut.nValue, wtx.IsSpent(nOut), coinAge));
             }
