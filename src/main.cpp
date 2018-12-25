@@ -3210,52 +3210,6 @@ bool LoadExternalBlockFile(FILE* fileIn)
     return nLoaded > 0;
 }
 
-struct CImportingNow
-{
-    CImportingNow() {
-        assert(fImporting == false);
-        fImporting = true;
-    }
-
-    ~CImportingNow() {
-        assert(fImporting == true);
-        fImporting = false;
-    }
-};
-
-void ThreadImport(std::vector<boost::filesystem::path> vImportFiles)
-{
-    RenameThread("piratecash-loadblk");
-
-    CImportingNow imp;
-
-    // -loadblock=
-    BOOST_FOREACH(boost::filesystem::path &path, vImportFiles) {
-        FILE *file = fopen(path.string().c_str(), "rb");
-        if (file)
-            LoadExternalBlockFile(file);
-    }
-
-    // hardcoded $DATADIR/bootstrap.dat
-    filesystem::path pathBootstrap = GetDataDir() / "bootstrap.dat";
-    if (filesystem::exists(pathBootstrap)) {
-        FILE *file = fopen(pathBootstrap.string().c_str(), "rb");
-        if (file) {
-            filesystem::path pathBootstrapOld = GetDataDir() / "bootstrap.dat.old";
-            LoadExternalBlockFile(file);
-            RenameOver(pathBootstrap, pathBootstrapOld);
-        }
-    }
-}
-
-
-
-
-
-
-
-
-
 
 //////////////////////////////////////////////////////////////////////////////
 //
