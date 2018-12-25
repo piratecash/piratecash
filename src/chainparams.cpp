@@ -139,8 +139,8 @@ public:
         pchMessageStart[3] = 0x70;
         bnProofOfWorkLimit = CBigNum(~uint256(0) >> 16);
         vAlertPubKey = ParseHex("0469fc77d961509210782f794edfc71d3dd9419d69976bbf01fdea6db81bff8f5c05144ba0420840ab0a8ba8a23ba96811239db4a333c093b0692982c6c564078b");
-        nDefaultPort = 18888;
-        nRPCPort = 11888;
+        nDefaultPort = 28888;
+        nRPCPort = 21888;
         strDataDir = "testnet";
 
         // Modify the testnet genesis block so the timestamp is valid for a later start.
@@ -158,10 +158,11 @@ public:
         base58Prefixes[STEALTH_ADDRESS] = std::vector<unsigned char>(1,40);
         base58Prefixes[EXT_PUBLIC_KEY] = list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
         base58Prefixes[EXT_SECRET_KEY] = list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
+        vSeeds.push_back(CDNSSeedData("0", "m1.piratecash.net"));
 
         convertSeeds(vFixedSeeds, pnTestnetSeed, ARRAYLEN(pnTestnetSeed), nDefaultPort);
 
-        nLastPOWBlock = 0x7fffffff;
+        nLastPOWBlock = 100000;
     }
     virtual Network NetworkID() const { return CChainParams::TESTNET; }
 };
