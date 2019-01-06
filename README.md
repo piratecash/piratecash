@@ -5,16 +5,15 @@ PirateCash [PIRATE] Source Code
 https://www.piratecash.net
 
 
-Copyright (c) 2009-2015 Bitcoin Core Developers
+Copyright © 2009-2019	Bitcoin Core Developers
 
-Copyright (c) 2014-2016 PivX Developers
+Copyright © 2014-2019	The Dash Core developers
 
-Copyright (c) 2018	PirateCash Developers
+Copyright © 2014-2019	PivX Developers
 
+Copyright © 2012-2019	The NovaCoin developers
 
-Live Launch PirateCash Network:
-
-https://www.youtube.com/watch?v=WiFbBjkTNtg
+Copyright © 2018-2019	PirateCash Developers
 
 
 ## Specifications
