@@ -60,7 +60,7 @@ border: 1px solid #c4c1bd;</string>
           <string notr="true">border: 0;</string>
          </property>
          <property name="text">
-          <string>&lt;b&gt;Piratecash&lt;/b&gt; version</string>
+          <string>&lt;b&gt;PirateСash&lt;/b&gt; version</string>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
