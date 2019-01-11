@@ -2516,12 +2516,6 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
                     CTxIn vin;
                     CScript payeerewardaddress = CScript();
 
-                    if (nReward > 5000000000)
-                    {
-                        LogPrintf("CheckBlock() : Ololosha\n");
-                    }
-
-
                     bool hasPayment = true;
                     int payeerewardpercent = 0;
                     int64_t expectedreward;
