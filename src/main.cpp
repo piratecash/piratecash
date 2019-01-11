@@ -2488,39 +2488,119 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
             LOCK2(cs_main, mempool.cs);
 
             CBlockIndex *pindex = pindexBest;
-            if(IsProofOfStake() && pindex != NULL){
-                if(pindex->GetBlockHash() == hashPrevBlock){
+            if(IsProofOfStake() && pindex != NULL) {
+                if(pindex->GetBlockHash() == hashPrevBlock) {
                     // If we don't already have its previous block, skip masternode payment step
-                    CAmount masternodePaymentAmount;
-                    for (int i = vtx[1].vout.size(); i--> 0; ) {
-                        masternodePaymentAmount = vtx[1].vout[i].nValue;
-                        break;
+
+                    //calculate PoS reward
+                    MapPrevTx mapInputs;
+                    CTxDB txdb("r");
+                    map<uint256, CTxIndex> unused;
+                    bool fInvalid;
+                    CTransaction tempTx;
+                    for (unsigned int i = 0; i < vtx[1].vin.size(); i++) {
+                        tempTx.vin.push_back(vtx[1].vin[i]);
                     }
+                    tempTx.FetchInputs(txdb, unused, false, false, mapInputs, fInvalid);
+
+                    int64_t nReward = vtx[1].GetValueOut()-vtx[1].GetValueIn(mapInputs);
+                    CAmount masternodePaymentAmount = GetMasternodePayment(pindexBest->nHeight+1, nReward);
+
+                    //Test masternode payments
                     bool foundPaymentAmount = false;
                     bool foundPayee = false;
                     bool foundPaymentAndPayee = false;
 
                     CScript payee;
+                    string targetNode;
                     CTxIn vin;
-                    if(!masternodePayments.GetBlockPayee(pindexBest->nHeight+1, payee, vin) || payee == CScript()){
-                        foundPayee = true; //doesn't require a specific payee
-                        foundPaymentAmount = true;
-                        foundPaymentAndPayee = true;
-                        if(fDebug) { LogPrintf("CheckBlock() : Using non-specific masternode payments %d\n", pindexBest->nHeight+1); }
+                    CScript payeerewardaddress = CScript();
+
+                    if (nReward > 5000000000)
+                    {
+                        LogPrintf("CheckBlock() : Ololosha\n");
+                    }
+
+
+                    bool hasPayment = true;
+                    int payeerewardpercent = 0;
+                    int64_t expectedreward;
+
+                    if(!masternodePayments.GetBlockPayee(pindexBest->nHeight+1, payee, vin)){
+                        CMasternode* winningNode = mnodeman.GetCurrentMasterNode(1);
+                        if (winningNode) {
+                            payee = GetScriptForDestination(winningNode->pubkey.GetID());
+                            payeerewardaddress = winningNode->rewardAddress;
+                            payeerewardpercent = winningNode->rewardPercentage;
+
+                            // If reward percent is 0 then send all to masternode address
+                            if (hasPayment && payeerewardpercent == 0) {
+                                CTxDestination address1;
+                                ExtractDestination(payee, address1);
+                                CpiratecashcoinAddress address2(address1);
+                                targetNode = address2.ToString().c_str();
+                                expectedreward = masternodePaymentAmount;
+                            }
+
+                            // If reward percent is 100 then send all to reward address
+                            if (hasPayment && payeerewardpercent == 100) {
+                                CTxDestination address1;
+                                ExtractDestination(payeerewardaddress, address1);
+                                CpiratecashcoinAddress address2(address1);
+                                targetNode = address2.ToString().c_str();
+                                expectedreward = masternodePaymentAmount;
+                            }
+
+                            // If reward percent more than 0 and lower than 100 then split reward
+                            if (hasPayment && payeerewardpercent > 0 && payeerewardpercent < 100) {
+                                CTxDestination address1;
+                                ExtractDestination(payee, address1);
+                                CpiratecashcoinAddress address2(address1);
+
+                                CTxDestination address3;
+                                ExtractDestination(payeerewardaddress, address3);
+                                CpiratecashcoinAddress address4(address3);
+                                targetNode = address2.ToString().c_str();
+                                expectedreward = (masternodePaymentAmount / 100) * (100 - payeerewardpercent);
+                            }
+                             LogPrintf("CheckBlock() : Expected Masternode reward size is %s actual size is %s Reward percent is %s nHeight %d.\n", masternodePaymentAmount, expectedreward, payeerewardpercent, pindexBest->nHeight+1);
+
+                             LogPrintf("CheckBlock() : Detected Masternode payment to %s\n", targetNode);
+                        }
+                        else {
+                            LogPrintf("CheckBlock() : Cant calculate Winner, so passing.");
+                            foundPaymentAmount = true;
+                            foundPayee = true;
+                            foundPaymentAndPayee = true;
+                        }
                     }
 
                     for (unsigned int i = 0; i < vtx[1].vout.size(); i++) {
-                        if(vtx[1].vout[i].nValue == masternodePaymentAmount )
+                        CTxDestination address1;
+                        ExtractDestination(vtx[1].vout[i].scriptPubKey, address1);
+                        CpiratecashcoinAddress address2(address1);
+                        if(fDebug) {LogPrintf("CheckBlock() : Payment to %s [%d], size is  %s\n",address2.ToString().c_str(),i,vtx[1].vout[i].nValue);}
+                        if(vtx[1].vout[i].nValue == expectedreward )
                             foundPaymentAmount = true;
-                        if(vtx[1].vout[i].scriptPubKey == payee )
+                        if(address2.ToString().c_str() == targetNode )
                             foundPayee = true;
-                        if(vtx[1].vout[i].nValue == masternodePaymentAmount && vtx[1].vout[i].scriptPubKey == payee)
+                        if(vtx[1].vout[i].nValue == expectedreward && address2.ToString().c_str() == targetNode)
                             foundPaymentAndPayee = true;
                     }
 
                     CTxDestination address1;
                     ExtractDestination(payee, address1);
                     CpiratecashcoinAddress address2(address1);
+
+                    // Accept old blocks
+                    if (pindexBest->nHeight + 1 < 120000 and !foundPaymentAndPayee){
+                        if(!masternodePayments.GetBlockPayee(pindexBest->nHeight+1, payee, vin) || payee == CScript()){
+                            foundPaymentAmount = true;
+                            foundPayee = true;
+                            foundPaymentAndPayee = true;
+                            if(fDebug) { LogPrintf("CheckBlock() : Using non-specific masternode payments %d\n", pindexBest->nHeight+1); }
+                        }
+                    }
 
                     if(!foundPaymentAndPayee) {
                         if(fDebug) { LogPrintf("CheckBlock() : Couldn't find masternode payment(%d|%d) or payee(%d|%s) nHeight %d. \n", foundPaymentAmount, masternodePaymentAmount, foundPayee, address2.ToString().c_str(), pindexBest->nHeight+1); }
@@ -2594,11 +2674,14 @@ bool CBlock::AcceptBlock()
         return error("AcceptBlock() : block already in mapBlockIndex");
 
     // Get prev block index
+    CBlockIndex* pindexPrev = NULL;
+    int nHeight = 0;
+
     map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(hashPrevBlock);
     if (mi == mapBlockIndex.end())
         return DoS(10, error("AcceptBlock() : prev block not found"));
-    CBlockIndex* pindexPrev = (*mi).second;
-    int nHeight = pindexPrev->nHeight+1;
+    pindexPrev = (*mi).second;
+    nHeight = pindexPrev->nHeight+1;
 
     uint256 hashProof;
     if (IsProofOfWork() && nHeight > Params().LastPOWBlock()){
