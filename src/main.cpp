@@ -34,7 +34,7 @@ using namespace boost;
 //
 // Global state
 //
-
+int64_t WalletStart = GetTime();
 CCriticalSection cs_setpwalletRegistered;
 set<CWallet*> setpwalletRegistered;
 
@@ -1439,6 +1439,19 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits)
     return true;
 }
 
+bool IsWalletGracePeriod()
+{
+        if (IsInitialBlockDownload()) {
+                WalletStart = GetTime();
+                LogPrintf("Updated start time is : %d \n", WalletStart);
+        }
+        if (GetTime() < WalletStart + 3600) {
+                return true;
+        }
+
+        return false;
+}
+
 bool IsInitialBlockDownload()
 {
     LOCK(cs_main);
@@ -2586,6 +2599,14 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
                     ExtractDestination(payee, address1);
                     CpiratecashcoinAddress address2(address1);
 
+                    // Accept blocks in GracePeriod is payment payee is different
+                    bool fIsWalletGracePeriod = IsWalletGracePeriod();
+                    if (!foundPaymentAndPayee and fIsWalletGracePeriod) {
+                        foundPaymentAmount = true;
+                        foundPayee = true;
+                        foundPaymentAndPayee = true;
+                        if(fDebug) { LogPrintf("CheckBlock() : Wallet is in GracePeriod, block %d\n", pindexBest->nHeight+1); }
+                    }
                     // Accept old blocks
                     if (pindexBest->nHeight + 1 < 120000 and !foundPaymentAndPayee){
                         if(!masternodePayments.GetBlockPayee(pindexBest->nHeight+1, payee, vin) || payee == CScript()){
