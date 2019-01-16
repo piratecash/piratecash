@@ -163,7 +163,7 @@ public:
 
         convertSeeds(vFixedSeeds, pnTestnetSeed, ARRAYLEN(pnTestnetSeed), nDefaultPort);
 
-        nLastPOWBlock = 100000;
+        nLastPOWBlock = 3000;
     }
     virtual Network NetworkID() const { return CChainParams::TESTNET; }
 };
