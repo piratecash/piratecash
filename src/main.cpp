@@ -2608,7 +2608,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
                         if(fDebug) { LogPrintf("CheckBlock() : Wallet is in GracePeriod, block %d\n", pindexBest->nHeight+1); }
                     }
                     // Accept old blocks
-                    if (pindexBest->nHeight + 1 < 120000 and !foundPaymentAndPayee){
+                    if (pindexBest->nHeight + 1 < 120000 and !foundPaymentAndPayee and !TestNet()){
                         if(!masternodePayments.GetBlockPayee(pindexBest->nHeight+1, payee, vin) || payee == CScript()){
                             foundPaymentAmount = true;
                             foundPayee = true;
