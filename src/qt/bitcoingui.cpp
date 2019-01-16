@@ -546,12 +546,20 @@ void BitcoinGUI::createToolBars()
 void BitcoinGUI::setClientModel(ClientModel *clientModel)
 {
     if(!fOnlyTor)
-    netLabel->setText("PIRATE-NET");
+        if (TestNet()) {
+            netLabel->setText("TEST-NET");
+        } else {
+            netLabel->setText("PIRATE-NET");
+        }
     else
     {
     if(!IsLimited(NET_TOR))
     {
-    netLabel->setText("TOR");
+        if (TestNet()) {
+            netLabel->setText("TEST-TOR");
+        } else {
+            netLabel->setText("TOR");
+        }
     }
     }
 
