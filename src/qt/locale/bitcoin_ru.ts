@@ -3,22 +3,22 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../forms/aboutdialog.ui" line="+14"/>
-        <source>About Piratecash</source>
-        <translation>О Piratecash</translation>
+        <source>About PirateCash</source>
+        <translation>О PirateCash</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>&lt;b&gt;Piratecash&lt;/b&gt; version</source>
-        <translation>&lt;b&gt;Piratecash&lt;/b&gt; версия</translation>
+        <source>&lt;b&gt;PirateCash&lt;/b&gt; version</source>
+        <translation>&lt;b&gt;PirateCash&lt;/b&gt; версия</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Copyright © 2009-2014 The Bitcoin developers
 Copyright © 2012-2014 The NovaCoin developers
-Copyright © 2015-2017 The Piratecash developers</source>
+Copyright © 2015-2017 The PirateCash developers</source>
         <translation>Все права защищены © 2009-2014 Разработчики Bitcoin
 Все права защищены © 2012-2014 Разработчики NovaCoin
-Все права защищены © 2015-2017 Разработчики Piratecash</translation>
+Все права защищены © 2015-2017 Разработчики PirateCash</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -60,7 +60,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-43"/>
-        <source>These are your Piratecash addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
+        <source>These are your PirateCash addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
         <translation>Это Ваши адреса для получения платежей. Вы можете дать разные адреса отправителям, чтобы отслеживать, кто именно вам платит.</translation>
     </message>
     <message>
@@ -75,8 +75,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+7"/>
-        <source>Sign a message to prove you own a Piratecash address</source>
-        <translation>Подписать сообщение, чтобы доказать владение адресом Piratecash</translation>
+        <source>Sign a message to prove you own a PirateCash address</source>
+        <translation>Подписать сообщение, чтобы доказать владение адресом PirateCash</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -90,8 +90,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-10"/>
-        <source>Verify a message to ensure it was signed with a specified Piratecash address</source>
-        <translation>Проверить сообщение, чтобы убедиться, что оно было подписано указанным адресом Piratecash</translation>
+        <source>Verify a message to ensure it was signed with a specified PirateCash address</source>
+        <translation>Проверить сообщение, чтобы убедиться, что оно было подписано указанным адресом PirateCash</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -258,7 +258,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+82"/>
-        <source>Piratecash will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
+        <source>PirateCash will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
         <translation>Сейчас программа закроется для завершения процесса шифрования. Помните, что шифрование вашего бумажника не может полностью защитить ваши монеты от кражи с помощью инфицирования вашего компьютера вредоносным ПО.</translation>
     </message>
     <message>
@@ -352,8 +352,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+4"/>
-        <source>Show information about Piratecash</source>
-        <translation>Показать информацию о Piratecash&apos;е</translation>
+        <source>Show information about PirateCash</source>
+        <translation>Показать информацию о PirateCash&apos;е</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -392,13 +392,13 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-55"/>
-        <source>Send coins to a Piratecash address</source>
-        <translation>Отправить монеты на указанный адрес Piratecash</translation>
+        <source>Send coins to a PirateCash address</source>
+        <translation>Отправить монеты на указанный адрес PirateCash</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Modify configuration options for Piratecash</source>
-        <translation>Изменить параметры конфигурации Piratecash</translation>
+        <source>Modify configuration options for PirateCash</source>
+        <translation>Изменить параметры конфигурации PirateCash</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -438,8 +438,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     <message>
         <location line="-214"/>
         <location line="+551"/>
-        <source>Piratecash</source>
-        <translation>Piratecash</translation>
+        <source>PirateCash</source>
+        <translation>PirateCash</translation>
     </message>
     <message>
         <location line="-551"/>
@@ -448,8 +448,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+193"/>
-        <source>&amp;About Piratecash</source>
-        <translation>&amp;О Piratecash</translation>
+        <source>&amp;About PirateCash</source>
+        <translation>&amp;О PirateCash</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -500,12 +500,12 @@ This product includes software developed by the OpenSSL Project for use in the O
     <message>
         <location line="+0"/>
         <location line="+58"/>
-        <source>Piratecash client</source>
-        <translation>Piratecash клиент</translation>
+        <source>PirateCash client</source>
+        <translation>PirateCash клиент</translation>
     </message>
     <message numerus="yes">
         <location line="+70"/>
-        <source>%n active connection(s) to Piratecash network</source>
+        <source>%n active connection(s) to PirateCash network</source>
         <translation><numerusform>%n активное соединение с сетью</numerusform><numerusform>%n активных соединений с сетью</numerusform><numerusform>%n активных соединений с сетью</numerusform></translation>
     </message>
     <message>
@@ -600,8 +600,8 @@ Address: %4
     <message>
         <location line="-15"/>
         <location line="+15"/>
-        <source>URI can not be parsed! This can be caused by an invalid Piratecash address or malformed URI parameters.</source>
-        <translation>Не удалось обработать URI! Это может быть связано с неверным адресом Piratecash или неправильными параметрами URI.</translation>
+        <source>URI can not be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
+        <translation>Не удалось обработать URI! Это может быть связано с неверным адресом PirateCash или неправильными параметрами URI.</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -723,8 +723,8 @@ Address: %4
     </message>
     <message>
         <location filename="../bitcoin.cpp" line="+104"/>
-        <source>A fatal error occurred. Piratecash can no longer continue safely and will quit.</source>
-        <translation>Произошла неисправимая ошибка. Piratecash не может безопасно продолжать работу и будет закрыт.</translation>
+        <source>A fatal error occurred. PirateCash can no longer continue safely and will quit.</source>
+        <translation>Произошла неисправимая ошибка. PirateCash не может безопасно продолжать работу и будет закрыт.</translation>
     </message>
 </context>
 <context>
@@ -1043,8 +1043,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="-5"/>
-        <source>The entered address &quot;%1&quot; is not a valid Piratecash address.</source>
-        <translation>Введённый адрес &quot;%1&quot; не является правильным Piratecash-адресом.</translation>
+        <source>The entered address &quot;%1&quot; is not a valid PirateCash address.</source>
+        <translation>Введённый адрес &quot;%1&quot; не является правильным PirateCash-адресом.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1062,8 +1062,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location filename="../guiutil.cpp" line="+426"/>
         <location line="+12"/>
-        <source>Piratecash-Qt</source>
-        <translation>Piratecash-Qt</translation>
+        <source>PirateCash-Qt</source>
+        <translation>PirateCash-Qt</translation>
     </message>
     <message>
         <location line="-12"/>
@@ -1135,13 +1135,13 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+31"/>
-        <source>Automatically start Piratecash after logging in to the system.</source>
-        <translation>Автоматически запускать Piratecash после входа в систему</translation>
+        <source>Automatically start PirateCash after logging in to the system.</source>
+        <translation>Автоматически запускать PirateCash после входа в систему</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>&amp;Start Piratecash on system login</source>
-        <translation>&amp;Запускать Piratecash при входе в систему</translation>
+        <source>&amp;Start PirateCash on system login</source>
+        <translation>&amp;Запускать PirateCash при входе в систему</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1150,8 +1150,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+6"/>
-        <source>Automatically open the Piratecash client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Автоматически открыть порт для Piratecash-клиента на роутере. Работает только если Ваш роутер поддерживает UPnP, и данная функция включена.</translation>
+        <source>Automatically open the PirateCash client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Автоматически открыть порт для PirateCash-клиента на роутере. Работает только если Ваш роутер поддерживает UPnP, и данная функция включена.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1160,8 +1160,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+7"/>
-        <source>Connect to the Piratecash network through a SOCKS proxy (e.g. when connecting through Tor).</source>
-        <translation>Подключаться к сети Piratecash через прокси SOCKS (например, при подключении через Tor).</translation>
+        <source>Connect to the PirateCash network through a SOCKS proxy (e.g. when connecting through Tor).</source>
+        <translation>Подключаться к сети PirateCash через прокси SOCKS (например, при подключении через Tor).</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1235,8 +1235,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+13"/>
-        <source>The user interface language can be set here. This setting will take effect after restarting Piratecash.</source>
-        <translation>Здесь можно выбрать язык интерфейса. Настройки вступят в силу после перезапуска Piratecash.</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting PirateCash.</source>
+        <translation>Здесь можно выбрать язык интерфейса. Настройки вступят в силу после перезапуска PirateCash.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1302,8 +1302,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="-9"/>
         <location line="+9"/>
-        <source>This setting will take effect after restarting Piratecash.</source>
-        <translation>Эта настройка вступит в силу после перезапуска Piratecash</translation>
+        <source>This setting will take effect after restarting PirateCash.</source>
+        <translation>Эта настройка вступит в силу после перезапуска PirateCash</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -1321,8 +1321,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+46"/>
         <location line="+247"/>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Piratecash network after a connection is established, but this process has not completed yet.</source>
-        <translation>Отображаемая информация может быть устаревшей. Ваш бумажник автоматически синхронизируется с сетью Piratecash после подключения, но этот процесс пока не завершён.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
+        <translation>Отображаемая информация может быть устаревшей. Ваш бумажник автоматически синхронизируется с сетью PirateCash после подключения, но этот процесс пока не завершён.</translation>
     </message>
     <message>
         <location line="-173"/>
@@ -1563,8 +1563,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+7"/>
-        <source>Show the Piratecash-Qt help message to get a list with possible Piratecash command-line options.</source>
-        <translation>Показать помощь по Piratecash-Qt, чтобы получить список доступных параметров командной строки.</translation>
+        <source>Show the PirateCash-Qt help message to get a list with possible PirateCash command-line options.</source>
+        <translation>Показать помощь по PirateCash-Qt, чтобы получить список доступных параметров командной строки.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1583,13 +1583,13 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="-104"/>
-        <source>Piratecash - Debug window</source>
-        <translation>Piratecash - Окно отладки</translation>
+        <source>PirateCash - Debug window</source>
+        <translation>PirateCash - Окно отладки</translation>
     </message>
     <message>
         <location line="+25"/>
-        <source>Piratecash Core</source>
-        <translation>Ядро Piratecash</translation>
+        <source>PirateCash Core</source>
+        <translation>Ядро PirateCash</translation>
     </message>
     <message>
         <location line="+256"/>
@@ -1598,8 +1598,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+7"/>
-        <source>Open the Piratecash debug log file from the current data directory. This can take a few seconds for large log files.</source>
-        <translation>Открыть отладочный лог-файл Piratecash из текущего каталога данных. Это может занять несколько секунд для больших лог-файлов.</translation>
+        <source>Open the PirateCash debug log file from the current data directory. This can take a few seconds for large log files.</source>
+        <translation>Открыть отладочный лог-файл PirateCash из текущего каталога данных. Это может занять несколько секунд для больших лог-файлов.</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -1608,8 +1608,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location filename="../rpcconsole.cpp" line="+325"/>
-        <source>Welcome to the Piratecash RPC console.</source>
-        <translation>Добро пожаловать в RPC-консоль Piratecash.</translation>
+        <source>Welcome to the PirateCash RPC console.</source>
+        <translation>Добро пожаловать в RPC-консоль PirateCash.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1802,8 +1802,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location filename="../sendcoinsdialog.cpp" line="-173"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Введите Piratecash-адрес (например Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Введите PirateCash-адрес (например PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1902,7 +1902,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+247"/>
-        <source>WARNING: Invalid Piratecash address</source>
+        <source>WARNING: Invalid PirateCash address</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -1935,8 +1935,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+34"/>
-        <source>The address to send the payment to (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Адрес получателя платежа (например Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>The address to send the payment to (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Адрес получателя платежа (например PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+60"/>
@@ -1976,8 +1976,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location filename="../sendcoinsentry.cpp" line="+1"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Введите Piratecash-адрес (например Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Введите PirateCash-адрес (например PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
 </context>
 <context>
@@ -2000,8 +2000,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+18"/>
-        <source>The address to sign the message with (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Адрес, которым вы хотите подписать сообщение  (напр. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>The address to sign the message with (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Адрес, которым вы хотите подписать сообщение  (напр. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2037,8 +2037,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+21"/>
-        <source>Sign the message to prove you own this Piratecash address</source>
-        <translation>Подписать сообщение, чтобы доказать владение адресом Piratecash</translation>
+        <source>Sign the message to prove you own this PirateCash address</source>
+        <translation>Подписать сообщение, чтобы доказать владение адресом PirateCash</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2064,13 +2064,13 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+21"/>
-        <source>The address the message was signed with (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Адрес, которым было подписано сообщение (напр. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>The address the message was signed with (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Адрес, которым было подписано сообщение (напр. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+40"/>
-        <source>Verify the message to ensure it was signed with the specified Piratecash address</source>
-        <translation>Проверить сообщение, чтобы убедиться, что оно было подписано указанным адресом Piratecash</translation>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
+        <translation>Проверить сообщение, чтобы убедиться, что оно было подписано указанным адресом PirateCash</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2080,8 +2080,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location filename="../signverifymessagedialog.cpp" line="+27"/>
         <location line="+3"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Введите адрес Piratecash (напр. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Введите адрес PirateCash (напр. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -2090,8 +2090,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+3"/>
-        <source>Enter Piratecash signature</source>
-        <translation>Введите подпись Piratecash</translation>
+        <source>Enter PirateCash signature</source>
+        <translation>Введите подпись PirateCash</translation>
     </message>
     <message>
         <location line="+82"/>
@@ -2669,7 +2669,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <name>bitcoin-core</name>
     <message>
         <location filename="../bitcoinstrings.cpp" line="+173"/>
-        <source>Piratecash version</source>
+        <source>PirateCash version</source>
         <translation>Версия</translation>
     </message>
     <message>
@@ -2835,8 +2835,8 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="-103"/>
-        <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong Piratecash will not work properly.</source>
-        <translation>Внимание: убедитесь, что дата и время на Вашем компьютере выставлены верно. Если Ваши часы идут неправильно, Piratecash будет работать некорректно.</translation>
+        <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong PirateCash will not work properly.</source>
+        <translation>Внимание: убедитесь, что дата и время на Вашем компьютере выставлены верно. Если Ваши часы идут неправильно, PirateCash будет работать некорректно.</translation>
     </message>
     <message>
         <location line="+132"/>
@@ -3142,7 +3142,7 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="+10"/>
-        <source>Initialization sanity check failed. Piratecash is shutting down.</source>
+        <source>Initialization sanity check failed. PirateCash is shutting down.</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -3207,13 +3207,13 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="+4"/>
-        <source>Error loading wallet.dat: Wallet requires newer version of Piratecash</source>
-        <translation>Ошибка загрузки wallet.dat: бумажник требует более новую версию Piratecash</translation>
+        <source>Error loading wallet.dat: Wallet requires newer version of PirateCash</source>
+        <translation>Ошибка загрузки wallet.dat: бумажник требует более новую версию PirateCash</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Wallet needed to be rewritten: restart Piratecash to complete</source>
-        <translation>Необходимо перезаписать бумажник, перезапустите Piratecash для завершения операции</translation>
+        <source>Wallet needed to be rewritten: restart PirateCash to complete</source>
+        <translation>Необходимо перезаписать бумажник, перезапустите PirateCash для завершения операции</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3277,8 +3277,8 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="+125"/>
-        <source>Unable to bind to %s on this computer. Piratecash is probably already running.</source>
-        <translation>Невозможно привязаться к %s на этом компьютере.  Возможно, Piratecash уже работает.</translation>
+        <source>Unable to bind to %s on this computer. PirateCash is probably already running.</source>
+        <translation>Невозможно привязаться к %s на этом компьютере.  Возможно, PirateCash уже работает.</translation>
     </message>
     <message>
         <location line="-101"/>
@@ -3317,7 +3317,7 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="+3"/>
-        <source>Cannot obtain a lock on data directory %s. Piratecash is probably already running.</source>
+        <source>Cannot obtain a lock on data directory %s. PirateCash is probably already running.</source>
         <translation>Невозможно установить блокировку на рабочую директорию %s.  Возможно, бумажник уже запущен.</translation>
     </message>
     <message>

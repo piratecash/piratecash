@@ -732,7 +732,7 @@ void BitcoinGUI::setNumConnections(int count)
     default: icon = fUseBlackTheme ? ":/icons/black/connect_4" : ":/icons/connect_4"; break;
     }
     labelConnectionsIcon->setPixmap(QIcon(icon).pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-    labelConnectionsIcon->setToolTip(tr("%n active connection(s) to Piratecash network", "", count));
+    labelConnectionsIcon->setToolTip(tr("%n active connection(s) to PirateCash network", "", count));
 }
 
 void BitcoinGUI::setNumBlocks(int count)

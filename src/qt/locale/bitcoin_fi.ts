@@ -3,22 +3,22 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../forms/aboutdialog.ui" line="+14"/>
-        <source>About Piratecash</source>
+        <source>About PirateCash</source>
         <translation>Tietoa madcoinista</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>&lt;b&gt;Piratecash&lt;/b&gt; version</source>
-        <translation>&lt;b&gt;Piratecash&lt;/b&gt;-asiakasohjelman versio</translation>
+        <source>&lt;b&gt;PirateCash&lt;/b&gt; version</source>
+        <translation>&lt;b&gt;PirateCash&lt;/b&gt;-asiakasohjelman versio</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Copyright © 2009-2014 The Bitcoin developers
 Copyright © 2012-2014 The NovaCoin developers
-Copyright © 2015-2017 The Piratecash developers</source>
+Copyright © 2015-2017 The PirateCash developers</source>
         <translation>Copyright © 2009-2014 The Bitcoin developers
 Copyright © 2012-2014 The NovaCoin developers
-Copyright © 2015-2017 The Piratecash developers</translation>
+Copyright © 2015-2017 The PirateCash developers</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -66,8 +66,8 @@ Tämä tuote sisältää OpenSSL-projektin kehittämää ohjelmistoa OpenSSL-ty�
     </message>
     <message>
         <location line="-43"/>
-        <source>These are your Piratecash addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
-        <translation>Nämä ovat Piratecash-osoitteesi rahansiirtojen vastaanottoa varten. Jos haluat, voit antaa jokaiselle lähettäjälle oman osoitteen jotta voit pitää kirjaa sinulle rahaa siirtäneistä henkilöistä.</translation>
+        <source>These are your PirateCash addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
+        <translation>Nämä ovat PirateCash-osoitteesi rahansiirtojen vastaanottoa varten. Jos haluat, voit antaa jokaiselle lähettäjälle oman osoitteen jotta voit pitää kirjaa sinulle rahaa siirtäneistä henkilöistä.</translation>
     </message>
     <message>
         <location line="+53"/>
@@ -81,8 +81,8 @@ Tämä tuote sisältää OpenSSL-projektin kehittämää ohjelmistoa OpenSSL-ty�
     </message>
     <message>
         <location line="+7"/>
-        <source>Sign a message to prove you own a Piratecash address</source>
-        <translation>Allekirjoita viesti osoittaaksesi Piratecash-osoitteesi omistajuus</translation>
+        <source>Sign a message to prove you own a PirateCash address</source>
+        <translation>Allekirjoita viesti osoittaaksesi PirateCash-osoitteesi omistajuus</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -96,8 +96,8 @@ Tämä tuote sisältää OpenSSL-projektin kehittämää ohjelmistoa OpenSSL-ty�
     </message>
     <message>
         <location line="-10"/>
-        <source>Verify a message to ensure it was signed with a specified Piratecash address</source>
-        <translation>Vahvista viesti varmistaaksesi että kyseinen Piratecash-osoitteesi on allekirjoittanut sen</translation>
+        <source>Verify a message to ensure it was signed with a specified PirateCash address</source>
+        <translation>Vahvista viesti varmistaaksesi että kyseinen PirateCash-osoitteesi on allekirjoittanut sen</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -264,8 +264,8 @@ Tämä tuote sisältää OpenSSL-projektin kehittämää ohjelmistoa OpenSSL-ty�
     </message>
     <message>
         <location line="+82"/>
-        <source>Piratecash will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
-        <translation>Piratecash-ohjelma sulkee itsensä päättääkseen salauksen luonnin. Muista, että lompakon salaaminen ei täysin turvaa kolikoitasi haittaohjelmien aiheuttamien varkauksien uhalta.</translation>
+        <source>PirateCash will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
+        <translation>PirateCash-ohjelma sulkee itsensä päättääkseen salauksen luonnin. Muista, että lompakon salaaminen ei täysin turvaa kolikoitasi haittaohjelmien aiheuttamien varkauksien uhalta.</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -358,7 +358,7 @@ Tämä tuote sisältää OpenSSL-projektin kehittämää ohjelmistoa OpenSSL-ty�
     </message>
     <message>
         <location line="+4"/>
-        <source>Show information about Piratecash</source>
+        <source>Show information about PirateCash</source>
         <translation>Näytä tietoja madcoinista</translation>
     </message>
     <message>
@@ -398,12 +398,12 @@ Tämä tuote sisältää OpenSSL-projektin kehittämää ohjelmistoa OpenSSL-ty�
     </message>
     <message>
         <location line="-55"/>
-        <source>Send coins to a Piratecash address</source>
-        <translation>Lähetä varoja Piratecash-osoitteeseen</translation>
+        <source>Send coins to a PirateCash address</source>
+        <translation>Lähetä varoja PirateCash-osoitteeseen</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Modify configuration options for Piratecash</source>
+        <source>Modify configuration options for PirateCash</source>
         <translation>Mukauta asiakasohjelman asetuksia</translation>
     </message>
     <message>
@@ -444,8 +444,8 @@ Tämä tuote sisältää OpenSSL-projektin kehittämää ohjelmistoa OpenSSL-ty�
     <message>
         <location line="-214"/>
         <location line="+551"/>
-        <source>Piratecash</source>
-        <translation>Piratecash</translation>
+        <source>PirateCash</source>
+        <translation>PirateCash</translation>
     </message>
     <message>
         <location line="-551"/>
@@ -454,7 +454,7 @@ Tämä tuote sisältää OpenSSL-projektin kehittämää ohjelmistoa OpenSSL-ty�
     </message>
     <message>
         <location line="+193"/>
-        <source>&amp;About Piratecash</source>
+        <source>&amp;About PirateCash</source>
         <translation>&amp;Tietoa madcoinista</translation>
     </message>
     <message>
@@ -506,13 +506,13 @@ Tämä tuote sisältää OpenSSL-projektin kehittämää ohjelmistoa OpenSSL-ty�
     <message>
         <location line="+0"/>
         <location line="+58"/>
-        <source>Piratecash client</source>
-        <translation>Piratecash-asiakasohjelma</translation>
+        <source>PirateCash client</source>
+        <translation>PirateCash-asiakasohjelma</translation>
     </message>
     <message numerus="yes">
         <location line="+70"/>
-        <source>%n active connection(s) to Piratecash network</source>
-        <translation><numerusform>%n aktiivinen yhteys Piratecash-verkkoon</numerusform><numerusform>%n aktiivista yhteyttä Piratecash-verkkoon</numerusform></translation>
+        <source>%n active connection(s) to PirateCash network</source>
+        <translation><numerusform>%n aktiivinen yhteys PirateCash-verkkoon</numerusform><numerusform>%n aktiivista yhteyttä PirateCash-verkkoon</numerusform></translation>
     </message>
     <message>
         <location line="+488"/>
@@ -605,8 +605,8 @@ Osoite: %4</translation>
     <message>
         <location line="-15"/>
         <location line="+15"/>
-        <source>URI can not be parsed! This can be caused by an invalid Piratecash address or malformed URI parameters.</source>
-        <translation>URI-merkkijonoa ei voida jäsentää! Tämä voi johtua väärästä Piratecash-osoitteesta tai väärässä muodossa olevista URI-parametreistä.</translation>
+        <source>URI can not be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
+        <translation>URI-merkkijonoa ei voida jäsentää! Tämä voi johtua väärästä PirateCash-osoitteesta tai väärässä muodossa olevista URI-parametreistä.</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -728,8 +728,8 @@ Osoite: %4</translation>
     </message>
     <message>
         <location filename="../bitcoin.cpp" line="+104"/>
-        <source>A fatal error occurred. Piratecash can no longer continue safely and will quit.</source>
-        <translation>Virhe kohdattu. Piratecash-asiakasohjelma ei voi enää jatkaa turvallisesti ja se suljetaan.</translation>
+        <source>A fatal error occurred. PirateCash can no longer continue safely and will quit.</source>
+        <translation>Virhe kohdattu. PirateCash-asiakasohjelma ei voi enää jatkaa turvallisesti ja se suljetaan.</translation>
     </message>
 </context>
 <context>
@@ -1062,8 +1062,8 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location line="-5"/>
-        <source>The entered address &quot;%1&quot; is not a valid Piratecash address.</source>
-        <translation>Syöttämäsi osoite &quot;%1&quot; ei ole hyväksytty Piratecash-osoite.</translation>
+        <source>The entered address &quot;%1&quot; is not a valid PirateCash address.</source>
+        <translation>Syöttämäsi osoite &quot;%1&quot; ei ole hyväksytty PirateCash-osoite.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1081,8 +1081,8 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     <message>
         <location filename="../guiutil.cpp" line="+426"/>
         <location line="+12"/>
-        <source>Piratecash-Qt</source>
-        <translation>Piratecash-Qt</translation>
+        <source>PirateCash-Qt</source>
+        <translation>PirateCash-Qt</translation>
     </message>
     <message>
         <location line="-12"/>
@@ -1154,13 +1154,13 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location line="+31"/>
-        <source>Automatically start Piratecash after logging in to the system.</source>
-        <translation>Käynnistä Piratecash-asiakasohjelma automaattisesti kun olet kirjautunut järjestelmään.</translation>
+        <source>Automatically start PirateCash after logging in to the system.</source>
+        <translation>Käynnistä PirateCash-asiakasohjelma automaattisesti kun olet kirjautunut järjestelmään.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>&amp;Start Piratecash on system login</source>
-        <translation>%Käynnistä Piratecash-asiakasohjelma kirjautuessasi</translation>
+        <source>&amp;Start PirateCash on system login</source>
+        <translation>%Käynnistä PirateCash-asiakasohjelma kirjautuessasi</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1169,8 +1169,8 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>Automatically open the Piratecash client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Avaa Piratecash-asiakkaalle automaattisesti portti reitittimestä. Tämä toimii vain, kun reitittimesi tukee UPnP:tä ja se on aktivoituna.</translation>
+        <source>Automatically open the PirateCash client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Avaa PirateCash-asiakkaalle automaattisesti portti reitittimestä. Tämä toimii vain, kun reitittimesi tukee UPnP:tä ja se on aktivoituna.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1179,8 +1179,8 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>Connect to the Piratecash network through a SOCKS proxy (e.g. when connecting through Tor).</source>
-        <translation>Yhdistä Piratecash-verkkoon SOCKS-välityspalvelimen lävitse. (esim. yhdistettäessä Tor:n kautta).</translation>
+        <source>Connect to the PirateCash network through a SOCKS proxy (e.g. when connecting through Tor).</source>
+        <translation>Yhdistä PirateCash-verkkoon SOCKS-välityspalvelimen lävitse. (esim. yhdistettäessä Tor:n kautta).</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1254,8 +1254,8 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location line="+13"/>
-        <source>The user interface language can be set here. This setting will take effect after restarting Piratecash.</source>
-        <translation>Käyttöliittymän kieli voidaan valita tästä. Tämä asetus tulee voimaan vasta Piratecash-asiakasohjelman uudelleenkäynnistyksen jälkeen.</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting PirateCash.</source>
+        <translation>Käyttöliittymän kieli voidaan valita tästä. Tämä asetus tulee voimaan vasta PirateCash-asiakasohjelman uudelleenkäynnistyksen jälkeen.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1321,8 +1321,8 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     <message>
         <location line="-9"/>
         <location line="+9"/>
-        <source>This setting will take effect after restarting Piratecash.</source>
-        <translation>Tämä asetus tulee voimaan vasta Piratecash-asiakasohjelman uudelleenkäynnistyksen jälkeen.</translation>
+        <source>This setting will take effect after restarting PirateCash.</source>
+        <translation>Tämä asetus tulee voimaan vasta PirateCash-asiakasohjelman uudelleenkäynnistyksen jälkeen.</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -1340,8 +1340,8 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     <message>
         <location line="+46"/>
         <location line="+247"/>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Piratecash network after a connection is established, but this process has not completed yet.</source>
-        <translation>Näytettävät tiedot voivat olla vanhentuneet. Lompakkosi synkronoituu automaattisesti Piratecash-verkon kanssa kun yhteys on muodostettu, mutta tätä prosessia ei ole viety vielä päätökseen.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
+        <translation>Näytettävät tiedot voivat olla vanhentuneet. Lompakkosi synkronoituu automaattisesti PirateCash-verkon kanssa kun yhteys on muodostettu, mutta tätä prosessia ei ole viety vielä päätökseen.</translation>
     </message>
     <message>
         <location line="-173"/>
@@ -1582,8 +1582,8 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>Show the Piratecash-Qt help message to get a list with possible Piratecash command-line options.</source>
-        <translation>Näytä Piratecash-Qt:n avustusohje saadaksesi listan käytettävistä madcoinin komentokehotteen määritteistä.</translation>
+        <source>Show the PirateCash-Qt help message to get a list with possible PirateCash command-line options.</source>
+        <translation>Näytä PirateCash-Qt:n avustusohje saadaksesi listan käytettävistä madcoinin komentokehotteen määritteistä.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1602,12 +1602,12 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location line="-104"/>
-        <source>Piratecash - Debug window</source>
-        <translation>Piratecash - Debug-ikkuna</translation>
+        <source>PirateCash - Debug window</source>
+        <translation>PirateCash - Debug-ikkuna</translation>
     </message>
     <message>
         <location line="+25"/>
-        <source>Piratecash Core</source>
+        <source>PirateCash Core</source>
         <translation>madcoinin ydin</translation>
     </message>
     <message>
@@ -1617,8 +1617,8 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>Open the Piratecash debug log file from the current data directory. This can take a few seconds for large log files.</source>
-        <translation>Avaa Piratecash-asiakasohjelman debug-lokitiedosto nykyisestä hakemistostaan. Tämä voi kestää muutaman sekunnin avattaessa suuria lokitiedostoja.</translation>
+        <source>Open the PirateCash debug log file from the current data directory. This can take a few seconds for large log files.</source>
+        <translation>Avaa PirateCash-asiakasohjelman debug-lokitiedosto nykyisestä hakemistostaan. Tämä voi kestää muutaman sekunnin avattaessa suuria lokitiedostoja.</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -1627,7 +1627,7 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location filename="../rpcconsole.cpp" line="+325"/>
-        <source>Welcome to the Piratecash RPC console.</source>
+        <source>Welcome to the PirateCash RPC console.</source>
         <translation>Tervetuloa madcoinin RPC-konsoliin.</translation>
     </message>
     <message>
@@ -1821,8 +1821,8 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location filename="../sendcoinsdialog.cpp" line="-173"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Syötä Piratecash-osoite (esim. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Syötä PirateCash-osoite (esim. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1921,8 +1921,8 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location line="+247"/>
-        <source>WARNING: Invalid Piratecash address</source>
-        <translation>VAROITUS: Epäkelpo Piratecash-osoite</translation>
+        <source>WARNING: Invalid PirateCash address</source>
+        <translation>VAROITUS: Epäkelpo PirateCash-osoite</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1954,7 +1954,7 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location line="+34"/>
-        <source>The address to send the payment to (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
+        <source>The address to send the payment to (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -1995,8 +1995,8 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location filename="../sendcoinsentry.cpp" line="+1"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Syötä Piratecash-osoite (esim. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Syötä PirateCash-osoite (esim. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
 </context>
 <context>
@@ -2019,8 +2019,8 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location line="+18"/>
-        <source>The address to sign the message with (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Osoite, jolle viesti kirjataan (esim. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>The address to sign the message with (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Osoite, jolle viesti kirjataan (esim. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2056,8 +2056,8 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location line="+21"/>
-        <source>Sign the message to prove you own this Piratecash address</source>
-        <translation>Allekirjoita viesti vahvistaaksesi, että omistat tämän Piratecash-osoitteen</translation>
+        <source>Sign the message to prove you own this PirateCash address</source>
+        <translation>Allekirjoita viesti vahvistaaksesi, että omistat tämän PirateCash-osoitteen</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2083,13 +2083,13 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location line="+21"/>
-        <source>The address the message was signed with (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Osoite, jolla viesti on allekirjoitettu (esim. Piratecash_Address_Here_QsAqFckyf9pRHN) </translation>
+        <source>The address the message was signed with (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Osoite, jolla viesti on allekirjoitettu (esim. PirateCash_Address_Here_QsAqFckyf9pRHN) </translation>
     </message>
     <message>
         <location line="+40"/>
-        <source>Verify the message to ensure it was signed with the specified Piratecash address</source>
-        <translation>Vahvista viesti varmistaaksesi että se on allekirjoitettu kyseisellä Piratecash-osoitteella</translation>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
+        <translation>Vahvista viesti varmistaaksesi että se on allekirjoitettu kyseisellä PirateCash-osoitteella</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2099,8 +2099,8 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     <message>
         <location filename="../signverifymessagedialog.cpp" line="+27"/>
         <location line="+3"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Syötä Piratecash-osoite (esim. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Syötä PirateCash-osoite (esim. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -2109,8 +2109,8 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Enter Piratecash signature</source>
-        <translation>Syötä Piratecash-allekirjoitus</translation>
+        <source>Enter PirateCash signature</source>
+        <translation>Syötä PirateCash-allekirjoitus</translation>
     </message>
     <message>
         <location line="+82"/>
@@ -2688,7 +2688,7 @@ Tämä tarkoittaa, että ainakin %2 rahansiirtopalkkio tarvitaan.</translation>
     <name>bitcoin-core</name>
     <message>
         <location filename="../bitcoinstrings.cpp" line="+173"/>
-        <source>Piratecash version</source>
+        <source>PirateCash version</source>
         <translation>madcoinin versio</translation>
     </message>
     <message>
@@ -2853,8 +2853,8 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="-103"/>
-        <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong Piratecash will not work properly.</source>
-        <translation>Varoitus: Tarkista, että tietokoneesi aika ja päivämäärä ovat oikeassa! Jos kellosi on väärässä, Piratecash ei toimi oikein.</translation>
+        <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong PirateCash will not work properly.</source>
+        <translation>Varoitus: Tarkista, että tietokoneesi aika ja päivämäärä ovat oikeassa! Jos kellosi on väärässä, PirateCash ei toimi oikein.</translation>
     </message>
     <message>
         <location line="+132"/>
@@ -3160,8 +3160,8 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="+10"/>
-        <source>Initialization sanity check failed. Piratecash is shutting down.</source>
-        <translation>Käyttöönottotarkistus epäonnistui. Piratecash-asiakasohjelma suljetaan.</translation>
+        <source>Initialization sanity check failed. PirateCash is shutting down.</source>
+        <translation>Käyttöönottotarkistus epäonnistui. PirateCash-asiakasohjelma suljetaan.</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -3225,13 +3225,13 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="+4"/>
-        <source>Error loading wallet.dat: Wallet requires newer version of Piratecash</source>
-        <translation>Virhe ladattaessa wallet.dat-tiedostoa: Lompakko tarvitsee uudemman version Piratecash-asiakasohjelmasta</translation>
+        <source>Error loading wallet.dat: Wallet requires newer version of PirateCash</source>
+        <translation>Virhe ladattaessa wallet.dat-tiedostoa: Lompakko tarvitsee uudemman version PirateCash-asiakasohjelmasta</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Wallet needed to be rewritten: restart Piratecash to complete</source>
-        <translation>Lompakko on kirjoitettava uudelleen: käynnistä Piratecash-asiakasohjelma uudelleen päättääksesi toiminnon</translation>
+        <source>Wallet needed to be rewritten: restart PirateCash to complete</source>
+        <translation>Lompakko on kirjoitettava uudelleen: käynnistä PirateCash-asiakasohjelma uudelleen päättääksesi toiminnon</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3295,8 +3295,8 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="+125"/>
-        <source>Unable to bind to %s on this computer. Piratecash is probably already running.</source>
-        <translation>Ei voitu liittää %s tällä tietokoneella. Piratecash-asiakasohjelma on jo ehkä päällä.</translation>
+        <source>Unable to bind to %s on this computer. PirateCash is probably already running.</source>
+        <translation>Ei voitu liittää %s tällä tietokoneella. PirateCash-asiakasohjelma on jo ehkä päällä.</translation>
     </message>
     <message>
         <location line="-101"/>
@@ -3335,7 +3335,7 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="+3"/>
-        <source>Cannot obtain a lock on data directory %s. Piratecash is probably already running.</source>
+        <source>Cannot obtain a lock on data directory %s. PirateCash is probably already running.</source>
         <translation type="unfinished"/>
     </message>
     <message>

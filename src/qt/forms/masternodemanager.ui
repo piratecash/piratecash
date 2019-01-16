@@ -45,7 +45,7 @@ border: 1px solid #c4c1bd;</string>
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
-         <string>Piratecash Network</string>
+         <string>PirateCash Network</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout">
          <item row="1" column="0">

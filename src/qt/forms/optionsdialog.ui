@@ -229,7 +229,7 @@
        <item>
         <widget class="QCheckBox" name="connectSocks">
          <property name="toolTip">
-          <string>Connect to the Piratecash network through a SOCKS5 proxy (e.g. when connecting through Tor).</string>
+          <string>Connect to the PirateCash network through a SOCKS5 proxy (e.g. when connecting through Tor).</string>
          </property>
          <property name="text">
           <string>&amp;Connect through SOCKS5 proxy:</string>

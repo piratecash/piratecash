@@ -3,22 +3,22 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../forms/aboutdialog.ui" line="+14"/>
-        <source>About Piratecash</source>
+        <source>About PirateCash</source>
         <translation>O madcoinu</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>&lt;b&gt;Piratecash&lt;/b&gt; version</source>
+        <source>&lt;b&gt;PirateCash&lt;/b&gt; version</source>
         <translation>Verze &lt;b&gt;madcoinu&lt;/b&gt; </translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Copyright © 2009-2014 The Bitcoin developers
 Copyright © 2012-2014 The NovaCoin developers
-Copyright © 2015-2017 The Piratecash developers</source>
+Copyright © 2015-2017 The PirateCash developers</source>
         <translation>Copyright © 2009-2014 The Bitcoin developers
 Copyright © 2012-2014 The NovaCoin developers
-Copyright © 2015-2017 The Piratecash developers</translation>
+Copyright © 2015-2017 The PirateCash developers</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -60,8 +60,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-43"/>
-        <source>These are your Piratecash addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
-        <translation>Tato jsou tvé Piratecash adresy pro příjem plateb. Každému odesílateli můžeš dát jinou adresu, aby jsi mohl sledovat, kdo ti platí.</translation>
+        <source>These are your PirateCash addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
+        <translation>Tato jsou tvé PirateCash adresy pro příjem plateb. Každému odesílateli můžeš dát jinou adresu, aby jsi mohl sledovat, kdo ti platí.</translation>
     </message>
     <message>
         <location line="+53"/>
@@ -75,8 +75,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+7"/>
-        <source>Sign a message to prove you own a Piratecash address</source>
-        <translation>Podepiš zprávu, aby jsi dokázal, že vlastníš tuto Piratecash adresu.</translation>
+        <source>Sign a message to prove you own a PirateCash address</source>
+        <translation>Podepiš zprávu, aby jsi dokázal, že vlastníš tuto PirateCash adresu.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -90,8 +90,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-10"/>
-        <source>Verify a message to ensure it was signed with a specified Piratecash address</source>
-        <translation>Ověř zprávu, aby jsi zajistil, že byla podepsaná určitou Piratecash adresou.</translation>
+        <source>Verify a message to ensure it was signed with a specified PirateCash address</source>
+        <translation>Ověř zprávu, aby jsi zajistil, že byla podepsaná určitou PirateCash adresou.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -258,8 +258,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+82"/>
-        <source>Piratecash will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
-        <translation>Pro dokončení procesu šifrování se Piratecash nyní zavře, Pamatuj, že zašifrování tvé peněženky nemůže plně ochránit tvé mince před krádeží, pokud máš počítač infikován malwerem.</translation>
+        <source>PirateCash will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
+        <translation>Pro dokončení procesu šifrování se PirateCash nyní zavře, Pamatuj, že zašifrování tvé peněženky nemůže plně ochránit tvé mince před krádeží, pokud máš počítač infikován malwerem.</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -352,7 +352,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+4"/>
-        <source>Show information about Piratecash</source>
+        <source>Show information about PirateCash</source>
         <translation>Zobraz informace a madcoinu</translation>
     </message>
     <message>
@@ -392,13 +392,13 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-55"/>
-        <source>Send coins to a Piratecash address</source>
-        <translation>Odešli mince na Piratecash adresu</translation>
+        <source>Send coins to a PirateCash address</source>
+        <translation>Odešli mince na PirateCash adresu</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Modify configuration options for Piratecash</source>
-        <translation>Uprav možnosti konfigurace pro Piratecash</translation>
+        <source>Modify configuration options for PirateCash</source>
+        <translation>Uprav možnosti konfigurace pro PirateCash</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -438,8 +438,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     <message>
         <location line="-214"/>
         <location line="+551"/>
-        <source>Piratecash</source>
-        <translation>Piratecash</translation>
+        <source>PirateCash</source>
+        <translation>PirateCash</translation>
     </message>
     <message>
         <location line="-551"/>
@@ -448,7 +448,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+193"/>
-        <source>&amp;About Piratecash</source>
+        <source>&amp;About PirateCash</source>
         <translation>&amp;O madcoinu</translation>
     </message>
     <message>
@@ -500,13 +500,13 @@ This product includes software developed by the OpenSSL Project for use in the O
     <message>
         <location line="+0"/>
         <location line="+58"/>
-        <source>Piratecash client</source>
-        <translation>Piratecash klient</translation>
+        <source>PirateCash client</source>
+        <translation>PirateCash klient</translation>
     </message>
     <message numerus="yes">
         <location line="+70"/>
-        <source>%n active connection(s) to Piratecash network</source>
-        <translation><numerusform>%n aktivní spojení do Piratecash sítě</numerusform><numerusform>%n aktivních spojení do Piratecash sítě</numerusform><numerusform>%n aktivních spojení do Piratecash sítě</numerusform></translation>
+        <source>%n active connection(s) to PirateCash network</source>
+        <translation><numerusform>%n aktivní spojení do PirateCash sítě</numerusform><numerusform>%n aktivních spojení do PirateCash sítě</numerusform><numerusform>%n aktivních spojení do PirateCash sítě</numerusform></translation>
     </message>
     <message>
         <location line="+488"/>
@@ -600,8 +600,8 @@ Adresa: %4
     <message>
         <location line="-15"/>
         <location line="+15"/>
-        <source>URI can not be parsed! This can be caused by an invalid Piratecash address or malformed URI parameters.</source>
-        <translation>URI nejde rozparsovat! To může být způsobeno neplatnou Piratecash adresou nebo chybnými URI parametry.</translation>
+        <source>URI can not be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
+        <translation>URI nejde rozparsovat! To může být způsobeno neplatnou PirateCash adresou nebo chybnými URI parametry.</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -723,8 +723,8 @@ Adresa: %4
     </message>
     <message>
         <location filename="../bitcoin.cpp" line="+104"/>
-        <source>A fatal error occurred. Piratecash can no longer continue safely and will quit.</source>
-        <translation>Došlo k závažné chybě. Piratecash již nemůže dále bezpečně pokračovat a bude ukončen.</translation>
+        <source>A fatal error occurred. PirateCash can no longer continue safely and will quit.</source>
+        <translation>Došlo k závažné chybě. PirateCash již nemůže dále bezpečně pokračovat a bude ukončen.</translation>
     </message>
 </context>
 <context>
@@ -1057,8 +1057,8 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location line="-5"/>
-        <source>The entered address &quot;%1&quot; is not a valid Piratecash address.</source>
-        <translation>Zadaná adresa &quot;%1&quot; není platná Piratecash adresa.</translation>
+        <source>The entered address &quot;%1&quot; is not a valid PirateCash address.</source>
+        <translation>Zadaná adresa &quot;%1&quot; není platná PirateCash adresa.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1076,8 +1076,8 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     <message>
         <location filename="../guiutil.cpp" line="+426"/>
         <location line="+12"/>
-        <source>Piratecash-Qt</source>
-        <translation>Piratecash-Qt</translation>
+        <source>PirateCash-Qt</source>
+        <translation>PirateCash-Qt</translation>
     </message>
     <message>
         <location line="-12"/>
@@ -1149,13 +1149,13 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location line="+31"/>
-        <source>Automatically start Piratecash after logging in to the system.</source>
-        <translation>Automaticky spustit Piratecash po přihlášení do systému.</translation>
+        <source>Automatically start PirateCash after logging in to the system.</source>
+        <translation>Automaticky spustit PirateCash po přihlášení do systému.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>&amp;Start Piratecash on system login</source>
-        <translation>&amp;Spustit Piratecash při přihlášení do systému</translation>
+        <source>&amp;Start PirateCash on system login</source>
+        <translation>&amp;Spustit PirateCash při přihlášení do systému</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1164,8 +1164,8 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>Automatically open the Piratecash client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Automaticky otevřít port Piratecash klienta na routeru. Funguje to jen tehdy, když router podporuje UPnP a je povoleno.</translation>
+        <source>Automatically open the PirateCash client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Automaticky otevřít port PirateCash klienta na routeru. Funguje to jen tehdy, když router podporuje UPnP a je povoleno.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1174,8 +1174,8 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>Connect to the Piratecash network through a SOCKS proxy (e.g. when connecting through Tor).</source>
-        <translation>Připoj se do sítě Piratecash přes SOCKS proxy (např. při připojení přes Tor)</translation>
+        <source>Connect to the PirateCash network through a SOCKS proxy (e.g. when connecting through Tor).</source>
+        <translation>Připoj se do sítě PirateCash přes SOCKS proxy (např. při připojení přes Tor)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1249,7 +1249,7 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location line="+13"/>
-        <source>The user interface language can be set here. This setting will take effect after restarting Piratecash.</source>
+        <source>The user interface language can be set here. This setting will take effect after restarting PirateCash.</source>
         <translation>Zde můžeš nastavit jazyk uživatelského rozhraní. Nastavení se projeví až po restartu madcoinu.</translation>
     </message>
     <message>
@@ -1316,7 +1316,7 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     <message>
         <location line="-9"/>
         <location line="+9"/>
-        <source>This setting will take effect after restarting Piratecash.</source>
+        <source>This setting will take effect after restarting PirateCash.</source>
         <translation>Nastavení se projeví až po restartu madcoinu.</translation>
     </message>
     <message>
@@ -1335,8 +1335,8 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     <message>
         <location line="+46"/>
         <location line="+247"/>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Piratecash network after a connection is established, but this process has not completed yet.</source>
-        <translation>Zobrazené informace můžou být zastaralé. Tvá peněženka se automaticky synchronizuje s Piratecash sítí po navázaní spojení, ale tento proces ještě není dokončený.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
+        <translation>Zobrazené informace můžou být zastaralé. Tvá peněženka se automaticky synchronizuje s PirateCash sítí po navázaní spojení, ale tento proces ještě není dokončený.</translation>
     </message>
     <message>
         <location line="-173"/>
@@ -1577,8 +1577,8 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>Show the Piratecash-Qt help message to get a list with possible Piratecash command-line options.</source>
-        <translation>Zobrazit Piratecash-Qt nápovědu pro zobrazení seznam dostupným možností příkazového řádku.</translation>
+        <source>Show the PirateCash-Qt help message to get a list with possible PirateCash command-line options.</source>
+        <translation>Zobrazit PirateCash-Qt nápovědu pro zobrazení seznam dostupným možností příkazového řádku.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1597,12 +1597,12 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location line="-104"/>
-        <source>Piratecash - Debug window</source>
-        <translation>Piratecash - Ladící okno</translation>
+        <source>PirateCash - Debug window</source>
+        <translation>PirateCash - Ladící okno</translation>
     </message>
     <message>
         <location line="+25"/>
-        <source>Piratecash Core</source>
+        <source>PirateCash Core</source>
         <translation>Jádro madcoinu</translation>
     </message>
     <message>
@@ -1612,7 +1612,7 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>Open the Piratecash debug log file from the current data directory. This can take a few seconds for large log files.</source>
+        <source>Open the PirateCash debug log file from the current data directory. This can take a few seconds for large log files.</source>
         <translation>Otevři logovací soubor madcoinu z aktuálního datového adresáře. Pro velké logy to může trvat několik sekund.</translation>
     </message>
     <message>
@@ -1622,8 +1622,8 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location filename="../rpcconsole.cpp" line="+325"/>
-        <source>Welcome to the Piratecash RPC console.</source>
-        <translation>Vítej v Piratecash RPC konzoli.</translation>
+        <source>Welcome to the PirateCash RPC console.</source>
+        <translation>Vítej v PirateCash RPC konzoli.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1816,8 +1816,8 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location filename="../sendcoinsdialog.cpp" line="-173"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Napiš Piratecash adresu (např. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Napiš PirateCash adresu (např. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1916,8 +1916,8 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location line="+247"/>
-        <source>WARNING: Invalid Piratecash address</source>
-        <translation>UPOZORNĚNÍ: Neplatná Piratecash adresa</translation>
+        <source>WARNING: Invalid PirateCash address</source>
+        <translation>UPOZORNĚNÍ: Neplatná PirateCash adresa</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1949,7 +1949,7 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location line="+34"/>
-        <source>The address to send the payment to (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
+        <source>The address to send the payment to (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -1990,8 +1990,8 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location filename="../sendcoinsentry.cpp" line="+1"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Zadej Piratecash adresu (např. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Zadej PirateCash adresu (např. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
 </context>
 <context>
@@ -2014,8 +2014,8 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location line="+18"/>
-        <source>The address to sign the message with (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Adresa pro podepsání zprávy (např. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>The address to sign the message with (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Adresa pro podepsání zprávy (např. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2051,8 +2051,8 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location line="+21"/>
-        <source>Sign the message to prove you own this Piratecash address</source>
-        <translation>Podepiš zprávu jako důkaz, že vlastníš tuto Piratecash adresu</translation>
+        <source>Sign the message to prove you own this PirateCash address</source>
+        <translation>Podepiš zprávu jako důkaz, že vlastníš tuto PirateCash adresu</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2078,13 +2078,13 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location line="+21"/>
-        <source>The address the message was signed with (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Adresa kterou byla zpráva podepsána (např. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>The address the message was signed with (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Adresa kterou byla zpráva podepsána (např. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+40"/>
-        <source>Verify the message to ensure it was signed with the specified Piratecash address</source>
-        <translation>Ověř zprávu, aby ses ujistil, že byla podepsána danou Piratecash adresou</translation>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
+        <translation>Ověř zprávu, aby ses ujistil, že byla podepsána danou PirateCash adresou</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2094,8 +2094,8 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     <message>
         <location filename="../signverifymessagedialog.cpp" line="+27"/>
         <location line="+3"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Zadej Piratecash adresu (např. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Zadej PirateCash adresu (např. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -2104,8 +2104,8 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Enter Piratecash signature</source>
-        <translation>Zadej Piratecash podpis</translation>
+        <source>Enter PirateCash signature</source>
+        <translation>Zadej PirateCash podpis</translation>
     </message>
     <message>
         <location line="+82"/>
@@ -2683,7 +2683,7 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     <name>bitcoin-core</name>
     <message>
         <location filename="../bitcoinstrings.cpp" line="+173"/>
-        <source>Piratecash version</source>
+        <source>PirateCash version</source>
         <translation>Verze madcoinu</translation>
     </message>
     <message>
@@ -2848,8 +2848,8 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="-103"/>
-        <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong Piratecash will not work properly.</source>
-        <translation>Upozornění: Zkontroluj prosím datum a čas tvého počítače! Pokud jdou tvé hodiny špatně, tak Piratecash nebude pracovat správně. </translation>
+        <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong PirateCash will not work properly.</source>
+        <translation>Upozornění: Zkontroluj prosím datum a čas tvého počítače! Pokud jdou tvé hodiny špatně, tak PirateCash nebude pracovat správně. </translation>
     </message>
     <message>
         <location line="+132"/>
@@ -3155,7 +3155,7 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="+10"/>
-        <source>Initialization sanity check failed. Piratecash is shutting down.</source>
+        <source>Initialization sanity check failed. PirateCash is shutting down.</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -3220,13 +3220,13 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="+4"/>
-        <source>Error loading wallet.dat: Wallet requires newer version of Piratecash</source>
+        <source>Error loading wallet.dat: Wallet requires newer version of PirateCash</source>
         <translation>Chyba načítání wallet.dat: Peněženka vyžaduje novější verzi madcoinu</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Wallet needed to be rewritten: restart Piratecash to complete</source>
-        <translation>Peněženka by potřebovala být přepsána: restartuj Piratecash pro dokončení</translation>
+        <source>Wallet needed to be rewritten: restart PirateCash to complete</source>
+        <translation>Peněženka by potřebovala být přepsána: restartuj PirateCash pro dokončení</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3290,8 +3290,8 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="+125"/>
-        <source>Unable to bind to %s on this computer. Piratecash is probably already running.</source>
-        <translation>Nemůžu se svázat s %s na tomto počítači. Piratecash nejspíše již běží.</translation>
+        <source>Unable to bind to %s on this computer. PirateCash is probably already running.</source>
+        <translation>Nemůžu se svázat s %s na tomto počítači. PirateCash nejspíše již běží.</translation>
     </message>
     <message>
         <location line="-101"/>
@@ -3330,7 +3330,7 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="+3"/>
-        <source>Cannot obtain a lock on data directory %s. Piratecash is probably already running.</source>
+        <source>Cannot obtain a lock on data directory %s. PirateCash is probably already running.</source>
         <translation type="unfinished"/>
     </message>
     <message>

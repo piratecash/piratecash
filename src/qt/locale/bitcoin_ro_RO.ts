@@ -3,22 +3,22 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../forms/aboutdialog.ui" line="+14"/>
-        <source>About Piratecash</source>
-        <translation>Despre Piratecash</translation>
+        <source>About PirateCash</source>
+        <translation>Despre PirateCash</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>&lt;b&gt;Piratecash&lt;/b&gt; version</source>
-        <translation>Versiune &lt;b&gt;Piratecash&lt;/b&gt;</translation>
+        <source>&lt;b&gt;PirateCash&lt;/b&gt; version</source>
+        <translation>Versiune &lt;b&gt;PirateCash&lt;/b&gt;</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Copyright © 2009-2014 The Bitcoin developers
 Copyright © 2012-2014 The NovaCoin developers
-Copyright © 2015-2017 The Piratecash developers</source>
+Copyright © 2015-2017 The PirateCash developers</source>
         <translation>Copyright © 2009-2014 The Bitcoin developers
 Copyright © 2012-2014 The NovaCoin developers
-Copyright © 2015-2017 The Piratecash developers</translation>
+Copyright © 2015-2017 The PirateCash developers</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -60,8 +60,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-43"/>
-        <source>These are your Piratecash addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
-        <translation>Acestea sunt adresele Piratecash pentru a primi plăți. Poate doriți sa dați o adresa noua fiecarui expeditor pentru a putea ține evidența la cine efectuează plăti.</translation>
+        <source>These are your PirateCash addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
+        <translation>Acestea sunt adresele PirateCash pentru a primi plăți. Poate doriți sa dați o adresa noua fiecarui expeditor pentru a putea ține evidența la cine efectuează plăti.</translation>
     </message>
     <message>
         <location line="+53"/>
@@ -75,8 +75,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+7"/>
-        <source>Sign a message to prove you own a Piratecash address</source>
-        <translation>Semnează un mesaj pentru a dovedi că dețineti o adresă Piratecash</translation>
+        <source>Sign a message to prove you own a PirateCash address</source>
+        <translation>Semnează un mesaj pentru a dovedi că dețineti o adresă PirateCash</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -90,8 +90,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-10"/>
-        <source>Verify a message to ensure it was signed with a specified Piratecash address</source>
-        <translation>Verifică un mesaj pentru a vă asigura că a fost semnat cu o anumită adresă Piratecash</translation>
+        <source>Verify a message to ensure it was signed with a specified PirateCash address</source>
+        <translation>Verifică un mesaj pentru a vă asigura că a fost semnat cu o anumită adresă PirateCash</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -258,8 +258,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+82"/>
-        <source>Piratecash will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
-        <translation>Piratecash se va inchide pentru a termina procesul de encriptie. Amintiți-vă, criptarea portofelul dumneavoastră nu poate proteja pe deplin monedele dvs. de a fi furate de  infectarea cu malware a computerului.</translation>
+        <source>PirateCash will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
+        <translation>PirateCash se va inchide pentru a termina procesul de encriptie. Amintiți-vă, criptarea portofelul dumneavoastră nu poate proteja pe deplin monedele dvs. de a fi furate de  infectarea cu malware a computerului.</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -352,8 +352,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+4"/>
-        <source>Show information about Piratecash</source>
-        <translation>Arată informații despre Piratecash</translation>
+        <source>Show information about PirateCash</source>
+        <translation>Arată informații despre PirateCash</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -392,13 +392,13 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-55"/>
-        <source>Send coins to a Piratecash address</source>
-        <translation>Trimite monede către o adresă Piratecash</translation>
+        <source>Send coins to a PirateCash address</source>
+        <translation>Trimite monede către o adresă PirateCash</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Modify configuration options for Piratecash</source>
-        <translation>Modifică opțiuni de configurare pentru Piratecash</translation>
+        <source>Modify configuration options for PirateCash</source>
+        <translation>Modifică opțiuni de configurare pentru PirateCash</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -438,8 +438,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     <message>
         <location line="-214"/>
         <location line="+551"/>
-        <source>Piratecash</source>
-        <translation>Piratecash</translation>
+        <source>PirateCash</source>
+        <translation>PirateCash</translation>
     </message>
     <message>
         <location line="-551"/>
@@ -448,8 +448,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+193"/>
-        <source>&amp;About Piratecash</source>
-        <translation>Despre Piratecash</translation>
+        <source>&amp;About PirateCash</source>
+        <translation>Despre PirateCash</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -500,13 +500,13 @@ This product includes software developed by the OpenSSL Project for use in the O
     <message>
         <location line="+0"/>
         <location line="+58"/>
-        <source>Piratecash client</source>
-        <translation>Clientul Piratecash</translation>
+        <source>PirateCash client</source>
+        <translation>Clientul PirateCash</translation>
     </message>
     <message numerus="yes">
         <location line="+70"/>
-        <source>%n active connection(s) to Piratecash network</source>
-        <translation><numerusform>%n conexiune activă la reteaua Piratecash</numerusform><numerusform>%n conexiuni active la reteaua Piratecash</numerusform><numerusform>%n conexiuni active la reteaua Piratecash</numerusform></translation>
+        <source>%n active connection(s) to PirateCash network</source>
+        <translation><numerusform>%n conexiune activă la reteaua PirateCash</numerusform><numerusform>%n conexiuni active la reteaua PirateCash</numerusform><numerusform>%n conexiuni active la reteaua PirateCash</numerusform></translation>
     </message>
     <message>
         <location line="+488"/>
@@ -600,8 +600,8 @@ Adresa: %4
     <message>
         <location line="-15"/>
         <location line="+15"/>
-        <source>URI can not be parsed! This can be caused by an invalid Piratecash address or malformed URI parameters.</source>
-        <translation>URI nu poate fi parsatt! Cauza poate fi o adresa Piratecash invalidă sau parametrii URI malformați.</translation>
+        <source>URI can not be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
+        <translation>URI nu poate fi parsatt! Cauza poate fi o adresa PirateCash invalidă sau parametrii URI malformați.</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -723,8 +723,8 @@ Adresa: %4
     </message>
     <message>
         <location filename="../bitcoin.cpp" line="+104"/>
-        <source>A fatal error occurred. Piratecash can no longer continue safely and will quit.</source>
-        <translation>A apărut o eroare fatală. Piratecash nu mai poate continua în condiții de siguranță și va iesi.</translation>
+        <source>A fatal error occurred. PirateCash can no longer continue safely and will quit.</source>
+        <translation>A apărut o eroare fatală. PirateCash nu mai poate continua în condiții de siguranță și va iesi.</translation>
     </message>
 </context>
 <context>
@@ -1057,8 +1057,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="-5"/>
-        <source>The entered address &quot;%1&quot; is not a valid Piratecash address.</source>
-        <translation>Adresa introdusă &quot;%1&quot; nu este o adresă Piratecash validă</translation>
+        <source>The entered address &quot;%1&quot; is not a valid PirateCash address.</source>
+        <translation>Adresa introdusă &quot;%1&quot; nu este o adresă PirateCash validă</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1076,8 +1076,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     <message>
         <location filename="../guiutil.cpp" line="+426"/>
         <location line="+12"/>
-        <source>Piratecash-Qt</source>
-        <translation>Piratecash-Qt</translation>
+        <source>PirateCash-Qt</source>
+        <translation>PirateCash-Qt</translation>
     </message>
     <message>
         <location line="-12"/>
@@ -1149,13 +1149,13 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+31"/>
-        <source>Automatically start Piratecash after logging in to the system.</source>
-        <translation>Pornește Piratecash imdiat după logarea în sistem</translation>
+        <source>Automatically start PirateCash after logging in to the system.</source>
+        <translation>Pornește PirateCash imdiat după logarea în sistem</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>&amp;Start Piratecash on system login</source>
-        <translation>$Pornește Piratecash la logarea în sistem</translation>
+        <source>&amp;Start PirateCash on system login</source>
+        <translation>$Pornește PirateCash la logarea în sistem</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1164,8 +1164,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>Automatically open the Piratecash client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Deschide automat portul pentru cientul Piratecash pe router. Aces lucru este posibil doara daca routerul suporta UPnP si este activat</translation>
+        <source>Automatically open the PirateCash client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Deschide automat portul pentru cientul PirateCash pe router. Aces lucru este posibil doara daca routerul suporta UPnP si este activat</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1174,8 +1174,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>Connect to the Piratecash network through a SOCKS proxy (e.g. when connecting through Tor).</source>
-        <translation>Conecteaza la reteaua Piratecash prinr-un proxy SOCKS(ex. cand te conectezi prin Tor)</translation>
+        <source>Connect to the PirateCash network through a SOCKS proxy (e.g. when connecting through Tor).</source>
+        <translation>Conecteaza la reteaua PirateCash prinr-un proxy SOCKS(ex. cand te conectezi prin Tor)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1249,8 +1249,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+13"/>
-        <source>The user interface language can be set here. This setting will take effect after restarting Piratecash.</source>
-        <translation>Limba interfeței utilizator poate fi setat aici. Această setare va avea efect după repornirea Piratecash.</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting PirateCash.</source>
+        <translation>Limba interfeței utilizator poate fi setat aici. Această setare va avea efect după repornirea PirateCash.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1316,8 +1316,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     <message>
         <location line="-9"/>
         <location line="+9"/>
-        <source>This setting will take effect after restarting Piratecash.</source>
-        <translation>Aceasta setare va avea efect dupa repornirea Piratecash.</translation>
+        <source>This setting will take effect after restarting PirateCash.</source>
+        <translation>Aceasta setare va avea efect dupa repornirea PirateCash.</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -1335,8 +1335,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     <message>
         <location line="+46"/>
         <location line="+247"/>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Piratecash network after a connection is established, but this process has not completed yet.</source>
-        <translation>Informatia afisata poate fi depasita.  Portofel se sincronizează automat cu rețeaua Piratecash după ce se stabilește o conexiune, dar acest proces nu s-a finalizat încă.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
+        <translation>Informatia afisata poate fi depasita.  Portofel se sincronizează automat cu rețeaua PirateCash după ce se stabilește o conexiune, dar acest proces nu s-a finalizat încă.</translation>
     </message>
     <message>
         <location line="-173"/>
@@ -1577,8 +1577,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>Show the Piratecash-Qt help message to get a list with possible Piratecash command-line options.</source>
-        <translation>Afișa mesajul de ajutor Piratecash-Qt pentru a obține o listă cu posibile opțiuni de linie de comandă Piratecash.</translation>
+        <source>Show the PirateCash-Qt help message to get a list with possible PirateCash command-line options.</source>
+        <translation>Afișa mesajul de ajutor PirateCash-Qt pentru a obține o listă cu posibile opțiuni de linie de comandă PirateCash.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1597,13 +1597,13 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="-104"/>
-        <source>Piratecash - Debug window</source>
-        <translation>Piratecash - fereastră depanare</translation>
+        <source>PirateCash - Debug window</source>
+        <translation>PirateCash - fereastră depanare</translation>
     </message>
     <message>
         <location line="+25"/>
-        <source>Piratecash Core</source>
-        <translation>Piratecash Core</translation>
+        <source>PirateCash Core</source>
+        <translation>PirateCash Core</translation>
     </message>
     <message>
         <location line="+256"/>
@@ -1612,8 +1612,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>Open the Piratecash debug log file from the current data directory. This can take a few seconds for large log files.</source>
-        <translation>Deschideti fisierul de depanare Piratecash din folderul curent. Acest lucru poate dura cateva secunde pentru fisiere de log mari.</translation>
+        <source>Open the PirateCash debug log file from the current data directory. This can take a few seconds for large log files.</source>
+        <translation>Deschideti fisierul de depanare PirateCash din folderul curent. Acest lucru poate dura cateva secunde pentru fisiere de log mari.</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -1622,8 +1622,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location filename="../rpcconsole.cpp" line="+325"/>
-        <source>Welcome to the Piratecash RPC console.</source>
-        <translation>Bine ati venit la consola Piratecash RPC.</translation>
+        <source>Welcome to the PirateCash RPC console.</source>
+        <translation>Bine ati venit la consola PirateCash RPC.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1816,8 +1816,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location filename="../sendcoinsdialog.cpp" line="-173"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Introduceți o adresă Piratecash(ex:Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Introduceți o adresă PirateCash(ex:PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1916,8 +1916,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+247"/>
-        <source>WARNING: Invalid Piratecash address</source>
-        <translation>Atenție: Adresă Piratecash invalidă</translation>
+        <source>WARNING: Invalid PirateCash address</source>
+        <translation>Atenție: Adresă PirateCash invalidă</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1949,7 +1949,7 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+34"/>
-        <source>The address to send the payment to (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
+        <source>The address to send the payment to (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -1990,8 +1990,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location filename="../sendcoinsentry.cpp" line="+1"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Introduceți o adresă Piratecash(ex:Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Introduceți o adresă PirateCash(ex:PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
 </context>
 <context>
@@ -2014,8 +2014,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+18"/>
-        <source>The address to sign the message with (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Adresa cu care semnati mesajul(ex. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>The address to sign the message with (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Adresa cu care semnati mesajul(ex. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2051,8 +2051,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+21"/>
-        <source>Sign the message to prove you own this Piratecash address</source>
-        <translation>Semnează un mesaj pentru a dovedi că dețineti o adresă Piratecash</translation>
+        <source>Sign the message to prove you own this PirateCash address</source>
+        <translation>Semnează un mesaj pentru a dovedi că dețineti o adresă PirateCash</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2078,13 +2078,13 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+21"/>
-        <source>The address the message was signed with (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Adresa cu care a fost semnat mesajul(ex. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>The address the message was signed with (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Adresa cu care a fost semnat mesajul(ex. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+40"/>
-        <source>Verify the message to ensure it was signed with the specified Piratecash address</source>
-        <translation>Verifică un mesaj pentru a vă asigura că a fost semnat cu o anumită adresă Piratecash</translation>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
+        <translation>Verifică un mesaj pentru a vă asigura că a fost semnat cu o anumită adresă PirateCash</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2094,8 +2094,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     <message>
         <location filename="../signverifymessagedialog.cpp" line="+27"/>
         <location line="+3"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Introduceți o adresă Piratecash(ex:Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Introduceți o adresă PirateCash(ex:PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -2104,8 +2104,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Enter Piratecash signature</source>
-        <translation>Introduceti semnatura Piratecash</translation>
+        <source>Enter PirateCash signature</source>
+        <translation>Introduceti semnatura PirateCash</translation>
     </message>
     <message>
         <location line="+82"/>
@@ -2683,8 +2683,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     <name>bitcoin-core</name>
     <message>
         <location filename="../bitcoinstrings.cpp" line="+173"/>
-        <source>Piratecash version</source>
-        <translation>Versiune Piratecash</translation>
+        <source>PirateCash version</source>
+        <translation>Versiune PirateCash</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2693,8 +2693,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Send command to -server or Piratecashd</source>
-        <translation>Trimite comanda catre server sau Piratecashd</translation>
+        <source>Send command to -server or PirateCashd</source>
+        <translation>Trimite comanda catre server sau PirateCashd</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2713,13 +2713,13 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>Specify configuration file (default: Piratecash.conf)</source>
-        <translation>Specifica fisier de configurare(implicit: Piratecash.conf)</translation>
+        <source>Specify configuration file (default: PirateCash.conf)</source>
+        <translation>Specifica fisier de configurare(implicit: PirateCash.conf)</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Specify pid file (default: Piratecashd.pid)</source>
-        <translation>Speficica fisier pid(implicit: Piratecash.pid)</translation>
+        <source>Specify pid file (default: PirateCashd.pid)</source>
+        <translation>Speficica fisier pid(implicit: PirateCash.pid)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2736,7 +2736,7 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
         <source>%s, you must set a rpcpassword in the configuration file:
 %s
 It is recommended you use the following random password:
-rpcuser=Piratecashrpc
+rpcuser=PirateCashrpc
 rpcpassword=%s
 (you do not need to remember this password)
 The username and password MUST NOT be the same.
@@ -2848,8 +2848,8 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="-103"/>
-        <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong Piratecash will not work properly.</source>
-        <translation>Atentie: Va rugam verificati ca timpul si data calculatorului sunt corete. Daca timpul este gresit Piratecash nu va functiona corect.</translation>
+        <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong PirateCash will not work properly.</source>
+        <translation>Atentie: Va rugam verificati ca timpul si data calculatorului sunt corete. Daca timpul este gresit PirateCash nu va functiona corect.</translation>
     </message>
     <message>
         <location line="+132"/>
@@ -3155,7 +3155,7 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="+10"/>
-        <source>Initialization sanity check failed. Piratecash is shutting down.</source>
+        <source>Initialization sanity check failed. PirateCash is shutting down.</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -3220,13 +3220,13 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="+4"/>
-        <source>Error loading wallet.dat: Wallet requires newer version of Piratecash</source>
-        <translation>Eroare la încărcarea wallet.dat: Portofelul necesita o versiune mai noua de Piratecash</translation>
+        <source>Error loading wallet.dat: Wallet requires newer version of PirateCash</source>
+        <translation>Eroare la încărcarea wallet.dat: Portofelul necesita o versiune mai noua de PirateCash</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Wallet needed to be rewritten: restart Piratecash to complete</source>
-        <translation>A fost nevoie de rescrierea portofelului: restartați Piratecash pentru a finaliza</translation>
+        <source>Wallet needed to be rewritten: restart PirateCash to complete</source>
+        <translation>A fost nevoie de rescrierea portofelului: restartați PirateCash pentru a finaliza</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3290,8 +3290,8 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="+125"/>
-        <source>Unable to bind to %s on this computer. Piratecash is probably already running.</source>
-        <translation>Imposibil de conectat %s pe acest computer. Cel mai probabil Piratecash ruleaza</translation>
+        <source>Unable to bind to %s on this computer. PirateCash is probably already running.</source>
+        <translation>Imposibil de conectat %s pe acest computer. Cel mai probabil PirateCash ruleaza</translation>
     </message>
     <message>
         <location line="-101"/>
@@ -3330,7 +3330,7 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="+3"/>
-        <source>Cannot obtain a lock on data directory %s. Piratecash is probably already running.</source>
+        <source>Cannot obtain a lock on data directory %s. PirateCash is probably already running.</source>
         <translation type="unfinished"/>
     </message>
     <message>

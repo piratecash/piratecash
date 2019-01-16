@@ -3,22 +3,22 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../forms/aboutdialog.ui" line="+14"/>
-        <source>About Piratecash</source>
+        <source>About PirateCash</source>
         <translation>关于黑币</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>&lt;b&gt;Piratecash&lt;/b&gt; version</source>
+        <source>&lt;b&gt;PirateCash&lt;/b&gt; version</source>
         <translation>&lt;b&gt;黑币客户端&lt;/b&gt; 版本</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Copyright © 2009-2014 The Bitcoin developers
 Copyright © 2012-2014 The NovaCoin developers
-Copyright © 2015-2017 The Piratecash developers</source>
+Copyright © 2015-2017 The PirateCash developers</source>
         <translation>版权所有 © 2009-2014 比特币Bitcoin开发组
 版权所有 © 2012-2014 新星币Novacoin开发组
-版权所有 © 2015-2017 黑币Piratecash开发组</translation>
+版权所有 © 2015-2017 黑币PirateCash开发组</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -65,7 +65,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-43"/>
-        <source>These are your Piratecash addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
+        <source>These are your PirateCash addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
         <translation>这是您用来接收支付的黑币地址列表。为不同的支付方建立不同的地址以便于了解支付来源。</translation>
     </message>
     <message>
@@ -80,7 +80,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+7"/>
-        <source>Sign a message to prove you own a Piratecash address</source>
+        <source>Sign a message to prove you own a PirateCash address</source>
         <translation>对信息进行签名以证明您对该黑币地址的所有权</translation>
     </message>
     <message>
@@ -95,7 +95,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-10"/>
-        <source>Verify a message to ensure it was signed with a specified Piratecash address</source>
+        <source>Verify a message to ensure it was signed with a specified PirateCash address</source>
         <translation>验证信息以保证其经过指定黑币地址的签名</translation>
     </message>
     <message>
@@ -263,7 +263,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+82"/>
-        <source>Piratecash will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
+        <source>PirateCash will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
         <translation>黑币客户端即将关闭以完成加密过程。请记住，加密钱包并不能完全防止您的电子货币被入侵您计算机的木马软件盗窃。</translation>
     </message>
     <message>
@@ -357,7 +357,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+4"/>
-        <source>Show information about Piratecash</source>
+        <source>Show information about PirateCash</source>
         <translation>显示关于黑币的信息</translation>
     </message>
     <message>
@@ -397,12 +397,12 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-55"/>
-        <source>Send coins to a Piratecash address</source>
+        <source>Send coins to a PirateCash address</source>
         <translation>向指定的地址发送黑币</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Modify configuration options for Piratecash</source>
+        <source>Modify configuration options for PirateCash</source>
         <translation>更改设置选项</translation>
     </message>
     <message>
@@ -443,7 +443,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     <message>
         <location line="-214"/>
         <location line="+551"/>
-        <source>Piratecash</source>
+        <source>PirateCash</source>
         <translation>黑币</translation>
     </message>
     <message>
@@ -453,7 +453,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+193"/>
-        <source>&amp;About Piratecash</source>
+        <source>&amp;About PirateCash</source>
         <translation>关于黑币(&amp;A)</translation>
     </message>
     <message>
@@ -505,12 +505,12 @@ This product includes software developed by the OpenSSL Project for use in the O
     <message>
         <location line="+0"/>
         <location line="+58"/>
-        <source>Piratecash client</source>
+        <source>PirateCash client</source>
         <translation>黑币客户端</translation>
     </message>
     <message numerus="yes">
         <location line="+70"/>
-        <source>%n active connection(s) to Piratecash network</source>
+        <source>%n active connection(s) to PirateCash network</source>
         <translation><numerusform>与黑币网络建立了 %n 个连接</numerusform></translation>
     </message>
     <message>
@@ -605,7 +605,7 @@ Address: %4
     <message>
         <location line="-15"/>
         <location line="+15"/>
-        <source>URI can not be parsed! This can be caused by an invalid Piratecash address or malformed URI parameters.</source>
+        <source>URI can not be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
         <translation>无法解析URI：无效的黑币地址或错误的URI参数。</translation>
     </message>
     <message>
@@ -728,7 +728,7 @@ Address: %4
     </message>
     <message>
         <location filename="../bitcoin.cpp" line="+104"/>
-        <source>A fatal error occurred. Piratecash can no longer continue safely and will quit.</source>
+        <source>A fatal error occurred. PirateCash can no longer continue safely and will quit.</source>
         <translation>发生严重错误，黑币客户端即将关闭。</translation>
     </message>
 </context>
@@ -1055,7 +1055,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="-5"/>
-        <source>The entered address &quot;%1&quot; is not a valid Piratecash address.</source>
+        <source>The entered address &quot;%1&quot; is not a valid PirateCash address.</source>
         <translation>“%1” 不是有效的黑币地址。</translation>
     </message>
     <message>
@@ -1074,8 +1074,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location filename="../guiutil.cpp" line="+426"/>
         <location line="+12"/>
-        <source>Piratecash-Qt</source>
-        <translation>黑币客户端Piratecash-Qt</translation>
+        <source>PirateCash-Qt</source>
+        <translation>黑币客户端PirateCash-Qt</translation>
     </message>
     <message>
         <location line="-12"/>
@@ -1147,12 +1147,12 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+31"/>
-        <source>Automatically start Piratecash after logging in to the system.</source>
+        <source>Automatically start PirateCash after logging in to the system.</source>
         <translation>开机自动启动黑币客户端</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>&amp;Start Piratecash on system login</source>
+        <source>&amp;Start PirateCash on system login</source>
         <translation>开机时自动启动黑币客户端(&amp;S)</translation>
     </message>
     <message>
@@ -1162,7 +1162,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+6"/>
-        <source>Automatically open the Piratecash client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <source>Automatically open the PirateCash client port on the router. This only works when your router supports UPnP and it is enabled.</source>
         <translation>路由器自动打开黑币客户端端口。该功能仅在路由器开启UPnP支持时有效。</translation>
     </message>
     <message>
@@ -1172,7 +1172,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+7"/>
-        <source>Connect to the Piratecash network through a SOCKS proxy (e.g. when connecting through Tor).</source>
+        <source>Connect to the PirateCash network through a SOCKS proxy (e.g. when connecting through Tor).</source>
         <translation>经SOCKS代理连接到黑币网络(例如使用Tor)</translation>
     </message>
     <message>
@@ -1247,7 +1247,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+13"/>
-        <source>The user interface language can be set here. This setting will take effect after restarting Piratecash.</source>
+        <source>The user interface language can be set here. This setting will take effect after restarting PirateCash.</source>
         <translation>在此设置用户界面语言。重启黑币客户端后设置生效。</translation>
     </message>
     <message>
@@ -1314,7 +1314,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="-9"/>
         <location line="+9"/>
-        <source>This setting will take effect after restarting Piratecash.</source>
+        <source>This setting will take effect after restarting PirateCash.</source>
         <translation>重启客户端后设置生效</translation>
     </message>
     <message>
@@ -1333,7 +1333,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+46"/>
         <location line="+247"/>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Piratecash network after a connection is established, but this process has not completed yet.</source>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
         <translation>所显示的信息尚未更新，建立连接后钱包客户端会自动和网络进行同步，但目前该过程尚未完成。</translation>
     </message>
     <message>
@@ -1575,7 +1575,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+7"/>
-        <source>Show the Piratecash-Qt help message to get a list with possible Piratecash command-line options.</source>
+        <source>Show the PirateCash-Qt help message to get a list with possible PirateCash command-line options.</source>
         <translation>显示关于命令行选项的帮助信息。</translation>
     </message>
     <message>
@@ -1595,12 +1595,12 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="-104"/>
-        <source>Piratecash - Debug window</source>
+        <source>PirateCash - Debug window</source>
         <translation>黑币客户端-调试窗口</translation>
     </message>
     <message>
         <location line="+25"/>
-        <source>Piratecash Core</source>
+        <source>PirateCash Core</source>
         <translation>黑币核心进程</translation>
     </message>
     <message>
@@ -1610,7 +1610,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+7"/>
-        <source>Open the Piratecash debug log file from the current data directory. This can take a few seconds for large log files.</source>
+        <source>Open the PirateCash debug log file from the current data directory. This can take a few seconds for large log files.</source>
         <translation>打开调试日志文件，对于较大的文件，这可能持续几秒钟。</translation>
     </message>
     <message>
@@ -1620,7 +1620,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location filename="../rpcconsole.cpp" line="+325"/>
-        <source>Welcome to the Piratecash RPC console.</source>
+        <source>Welcome to the PirateCash RPC console.</source>
         <translation>欢迎使用黑币RPC控制台。</translation>
     </message>
     <message>
@@ -1814,8 +1814,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location filename="../sendcoinsdialog.cpp" line="-173"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>输入黑币地址(例如：Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>输入黑币地址(例如：PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1914,7 +1914,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+247"/>
-        <source>WARNING: Invalid Piratecash address</source>
+        <source>WARNING: Invalid PirateCash address</source>
         <translation>警告：无效的黑币地址</translation>
     </message>
     <message>
@@ -1947,8 +1947,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+34"/>
-        <source>The address to send the payment to (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>收款人地址(例：Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>The address to send the payment to (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>收款人地址(例：PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+60"/>
@@ -1988,8 +1988,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location filename="../sendcoinsentry.cpp" line="+1"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>输入一个黑币地址 (例：Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>输入一个黑币地址 (例：PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
 </context>
 <context>
@@ -2012,8 +2012,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+18"/>
-        <source>The address to sign the message with (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>用来签名该消息的地址(例： Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>The address to sign the message with (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>用来签名该消息的地址(例： PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2049,7 +2049,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+21"/>
-        <source>Sign the message to prove you own this Piratecash address</source>
+        <source>Sign the message to prove you own this PirateCash address</source>
         <translation>对该消息进行签名以证明您对该黑币地址的所有权</translation>
     </message>
     <message>
@@ -2076,12 +2076,12 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+21"/>
-        <source>The address the message was signed with (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>用来签名该消息的黑币地址(例： Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>The address the message was signed with (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>用来签名该消息的黑币地址(例： PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+40"/>
-        <source>Verify the message to ensure it was signed with the specified Piratecash address</source>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
         <translation>确认该消息以保证它经由指定的黑币地址签名</translation>
     </message>
     <message>
@@ -2092,8 +2092,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location filename="../signverifymessagedialog.cpp" line="+27"/>
         <location line="+3"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>输入黑币地址(例： Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>输入黑币地址(例： PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -2102,7 +2102,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+3"/>
-        <source>Enter Piratecash signature</source>
+        <source>Enter PirateCash signature</source>
         <translation>输入黑币签名</translation>
     </message>
     <message>
@@ -2681,7 +2681,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <name>bitcoin-core</name>
     <message>
         <location filename="../bitcoinstrings.cpp" line="+173"/>
-        <source>Piratecash version</source>
+        <source>PirateCash version</source>
         <translation>黑币客户端 版本</translation>
     </message>
     <message>
@@ -2691,8 +2691,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+1"/>
-        <source>Send command to -server or Piratecashd</source>
-        <translation>向-server服务器或Piratecashd发送命令</translation>
+        <source>Send command to -server or PirateCashd</source>
+        <translation>向-server服务器或PirateCashd发送命令</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2714,13 +2714,13 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+2"/>
-        <source>Specify configuration file (default: Piratecash.conf)</source>
-        <translation>指定配置文件(默认: Piratecash.conf)</translation>
+        <source>Specify configuration file (default: PirateCash.conf)</source>
+        <translation>指定配置文件(默认: PirateCash.conf)</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Specify pid file (default: Piratecashd.pid)</source>
-        <translation>指定pid文件(默认: Piratecashd.pid)</translation>
+        <source>Specify pid file (default: PirateCashd.pid)</source>
+        <translation>指定pid文件(默认: PirateCashd.pid)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2738,7 +2738,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
         <source>%s, you must set a rpcpassword in the configuration file:
 %s
 It is recommended you use the following random password:
-rpcuser=Piratecashrpc
+rpcuser=PirateCashrpc
 rpcpassword=%s
 (you do not need to remember this password)
 The username and password MUST NOT be the same.
@@ -2749,7 +2749,7 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
         <translation>%s, 必须在配置文件里设置rpc密码:
  %s
 建议使用如下的随机密码:
-rpcuser=Piratecashrpc
+rpcuser=PirateCashrpc
 rpcpassword=%s
 (不需要记住该密码)
 用户名和密码不能重复。
@@ -2864,7 +2864,7 @@ alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@foo.com
     </message>
     <message>
         <location line="-103"/>
-        <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong Piratecash will not work properly.</source>
+        <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong PirateCash will not work properly.</source>
         <translation>警告：请确认您计算机的本地时间。如果时钟错误，黑币客户端将不能正常工作。</translation>
     </message>
     <message>
@@ -3174,7 +3174,7 @@ alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@foo.com
     </message>
     <message>
         <location line="+10"/>
-        <source>Initialization sanity check failed. Piratecash is shutting down.</source>
+        <source>Initialization sanity check failed. PirateCash is shutting down.</source>
         <translation>初始化完整性检查失败。 黑币客户端即将关闭。</translation>
     </message>
     <message>
@@ -3240,12 +3240,12 @@ alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@foo.com
     </message>
     <message>
         <location line="+4"/>
-        <source>Error loading wallet.dat: Wallet requires newer version of Piratecash</source>
+        <source>Error loading wallet.dat: Wallet requires newer version of PirateCash</source>
         <translation>wallet.dat 钱包文件加载出错：需要新版本的客户端</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Wallet needed to be rewritten: restart Piratecash to complete</source>
+        <source>Wallet needed to be rewritten: restart PirateCash to complete</source>
         <translation>需要重写钱包，重启客户端以完成该操作。</translation>
     </message>
     <message>
@@ -3310,7 +3310,7 @@ alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@foo.com
     </message>
     <message>
         <location line="+125"/>
-        <source>Unable to bind to %s on this computer. Piratecash is probably already running.</source>
+        <source>Unable to bind to %s on this computer. PirateCash is probably already running.</source>
         <translation>无法绑定到该计算机上的 %s. 黑币客户端可能已在运行中。</translation>
     </message>
     <message>
@@ -3350,7 +3350,7 @@ alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@foo.com
     </message>
     <message>
         <location line="+3"/>
-        <source>Cannot obtain a lock on data directory %s. Piratecash is probably already running.</source>
+        <source>Cannot obtain a lock on data directory %s. PirateCash is probably already running.</source>
         <translation>无法从数据目录 %s 获得锁定.  黑币客户端可能已在运行中.</translation>
     </message>
     <message>

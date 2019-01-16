@@ -3,22 +3,22 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../forms/aboutdialog.ui" line="+14"/>
-        <source>About Piratecash</source>
-        <translation>Sobre Piratecash</translation>
+        <source>About PirateCash</source>
+        <translation>Sobre PirateCash</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>&lt;b&gt;Piratecash&lt;/b&gt; version</source>
-        <translation>versió &lt;b&gt;Piratecash&lt;/b&gt;</translation>
+        <source>&lt;b&gt;PirateCash&lt;/b&gt; version</source>
+        <translation>versió &lt;b&gt;PirateCash&lt;/b&gt;</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Copyright © 2009-2014 The Bitcoin developers
 Copyright © 2012-2014 The NovaCoin developers
-Copyright © 2015-2017 The Piratecash developers</source>
+Copyright © 2015-2017 The PirateCash developers</source>
         <translation>Copyright © 2009-2014 The Bitcoin developers
 Copyright © 2012-2014 The NovaCoin developers
-Copyright © 2015-2017 The Piratecash developers</translation>
+Copyright © 2015-2017 The PirateCash developers</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -60,8 +60,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-43"/>
-        <source>These are your Piratecash addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
-        <translation>Aquestes són les teves adreces de Piratecash per rebre els pagaments. És possible que vulgueu donar una diferent a cada remitent per a poder realitzar un seguiment de qui li está pagant.</translation>
+        <source>These are your PirateCash addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
+        <translation>Aquestes són les teves adreces de PirateCash per rebre els pagaments. És possible que vulgueu donar una diferent a cada remitent per a poder realitzar un seguiment de qui li está pagant.</translation>
     </message>
     <message>
         <location line="+53"/>
@@ -75,8 +75,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+7"/>
-        <source>Sign a message to prove you own a Piratecash address</source>
-        <translation>Signar un missatge per demostrar que és propietari d&apos;una adreça Piratecash</translation>
+        <source>Sign a message to prove you own a PirateCash address</source>
+        <translation>Signar un missatge per demostrar que és propietari d&apos;una adreça PirateCash</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -90,8 +90,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-10"/>
-        <source>Verify a message to ensure it was signed with a specified Piratecash address</source>
-        <translation>Comproveu el missatge per assegurar-se que es va signar amb una adreça Piratecash especificada.</translation>
+        <source>Verify a message to ensure it was signed with a specified PirateCash address</source>
+        <translation>Comproveu el missatge per assegurar-se que es va signar amb una adreça PirateCash especificada.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -258,8 +258,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+82"/>
-        <source>Piratecash will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
-        <translation>Piratecash tancarà ara per acabar el procés de xifrat. Recordeu que l&apos;encriptació del seu moneder no pot protegir completament les seves monedes de ser robades pel malware que pugui infectar al seu equip.</translation>
+        <source>PirateCash will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
+        <translation>PirateCash tancarà ara per acabar el procés de xifrat. Recordeu que l&apos;encriptació del seu moneder no pot protegir completament les seves monedes de ser robades pel malware que pugui infectar al seu equip.</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -352,8 +352,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+4"/>
-        <source>Show information about Piratecash</source>
-        <translation>Mostra informació sobre Piratecash</translation>
+        <source>Show information about PirateCash</source>
+        <translation>Mostra informació sobre PirateCash</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -392,13 +392,13 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="-55"/>
-        <source>Send coins to a Piratecash address</source>
-        <translation>Enviar monedes a una adreça Piratecash</translation>
+        <source>Send coins to a PirateCash address</source>
+        <translation>Enviar monedes a una adreça PirateCash</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Modify configuration options for Piratecash</source>
-        <translation>Modificar les opcions de configuració per a Piratecash</translation>
+        <source>Modify configuration options for PirateCash</source>
+        <translation>Modificar les opcions de configuració per a PirateCash</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -438,8 +438,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     <message>
         <location line="-214"/>
         <location line="+551"/>
-        <source>Piratecash</source>
-        <translation>Piratecash</translation>
+        <source>PirateCash</source>
+        <translation>PirateCash</translation>
     </message>
     <message>
         <location line="-551"/>
@@ -448,8 +448,8 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+193"/>
-        <source>&amp;About Piratecash</source>
-        <translation>&amp;Sobre Piratecash</translation>
+        <source>&amp;About PirateCash</source>
+        <translation>&amp;Sobre PirateCash</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -500,13 +500,13 @@ This product includes software developed by the OpenSSL Project for use in the O
     <message>
         <location line="+0"/>
         <location line="+58"/>
-        <source>Piratecash client</source>
-        <translation>Client Piratecash</translation>
+        <source>PirateCash client</source>
+        <translation>Client PirateCash</translation>
     </message>
     <message numerus="yes">
         <location line="+70"/>
-        <source>%n active connection(s) to Piratecash network</source>
-        <translation><numerusform>%n conexió activa a la xarxa Piratecash</numerusform><numerusform>%n conexions actives a la xarxa Piratecash</numerusform></translation>
+        <source>%n active connection(s) to PirateCash network</source>
+        <translation><numerusform>%n conexió activa a la xarxa PirateCash</numerusform><numerusform>%n conexions actives a la xarxa PirateCash</numerusform></translation>
     </message>
     <message>
         <location line="+488"/>
@@ -596,8 +596,8 @@ Address: %4
     <message>
         <location line="-15"/>
         <location line="+15"/>
-        <source>URI can not be parsed! This can be caused by an invalid Piratecash address or malformed URI parameters.</source>
-        <translation>l&apos;URI no es pot analitzar! Això pot ser causat per una adreça Piratecash no vàlida o paràmetres URI malformats.</translation>
+        <source>URI can not be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
+        <translation>l&apos;URI no es pot analitzar! Això pot ser causat per una adreça PirateCash no vàlida o paràmetres URI malformats.</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -719,8 +719,8 @@ Address: %4
     </message>
     <message>
         <location filename="../bitcoin.cpp" line="+104"/>
-        <source>A fatal error occurred. Piratecash can no longer continue safely and will quit.</source>
-        <translation>S&apos;ha produït un error fatal. Piratecash ja no pot continuar de forma segura i es tancarà.</translation>
+        <source>A fatal error occurred. PirateCash can no longer continue safely and will quit.</source>
+        <translation>S&apos;ha produït un error fatal. PirateCash ja no pot continuar de forma segura i es tancarà.</translation>
     </message>
 </context>
 <context>
@@ -1053,8 +1053,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location line="-5"/>
-        <source>The entered address &quot;%1&quot; is not a valid Piratecash address.</source>
-        <translation>La direcció introduïda &quot;%1&quot; no és una adreça Piratecash vàlida.</translation>
+        <source>The entered address &quot;%1&quot; is not a valid PirateCash address.</source>
+        <translation>La direcció introduïda &quot;%1&quot; no és una adreça PirateCash vàlida.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1072,8 +1072,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     <message>
         <location filename="../guiutil.cpp" line="+426"/>
         <location line="+12"/>
-        <source>Piratecash-Qt</source>
-        <translation>Piratecash-Qt</translation>
+        <source>PirateCash-Qt</source>
+        <translation>PirateCash-Qt</translation>
     </message>
     <message>
         <location line="-12"/>
@@ -1145,13 +1145,13 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location line="+31"/>
-        <source>Automatically start Piratecash after logging in to the system.</source>
-        <translation>Inicia automàticament Piratecash després d&apos;entrar en el sistema.</translation>
+        <source>Automatically start PirateCash after logging in to the system.</source>
+        <translation>Inicia automàticament PirateCash després d&apos;entrar en el sistema.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>&amp;Start Piratecash on system login</source>
-        <translation>&amp;Iniciar Piratecash amb l&apos;inici de sessió</translation>
+        <source>&amp;Start PirateCash on system login</source>
+        <translation>&amp;Iniciar PirateCash amb l&apos;inici de sessió</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1160,8 +1160,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>Automatically open the Piratecash client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Obrir automàticament el port de client Piratecash en el router. Això només funciona quan el router és compatible amb UPnP i està habilitat.</translation>
+        <source>Automatically open the PirateCash client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Obrir automàticament el port de client PirateCash en el router. Això només funciona quan el router és compatible amb UPnP i està habilitat.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1170,8 +1170,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>Connect to the Piratecash network through a SOCKS proxy (e.g. when connecting through Tor).</source>
-        <translation>Connecteu-vos a la xarxa Piratecash través d&apos;un proxy SOCKS (per exemple, quan es connecta a través de Tor).</translation>
+        <source>Connect to the PirateCash network through a SOCKS proxy (e.g. when connecting through Tor).</source>
+        <translation>Connecteu-vos a la xarxa PirateCash través d&apos;un proxy SOCKS (per exemple, quan es connecta a través de Tor).</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1245,8 +1245,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location line="+13"/>
-        <source>The user interface language can be set here. This setting will take effect after restarting Piratecash.</source>
-        <translation>L&apos;idioma de la interfície d&apos;usuari es pot configurar aquí. Aquesta configuració s&apos;aplicarà després de reiniciar Piratecash.</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting PirateCash.</source>
+        <translation>L&apos;idioma de la interfície d&apos;usuari es pot configurar aquí. Aquesta configuració s&apos;aplicarà després de reiniciar PirateCash.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1312,8 +1312,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     <message>
         <location line="-9"/>
         <location line="+9"/>
-        <source>This setting will take effect after restarting Piratecash.</source>
-        <translation>Aquesta configuració s&apos;aplicarà després de reiniciar Piratecash.</translation>
+        <source>This setting will take effect after restarting PirateCash.</source>
+        <translation>Aquesta configuració s&apos;aplicarà després de reiniciar PirateCash.</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -1331,8 +1331,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     <message>
         <location line="+46"/>
         <location line="+247"/>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Piratecash network after a connection is established, but this process has not completed yet.</source>
-        <translation>La informació mostrada pot estar fora de data. El seu moneder es sincronitza automàticament amb la xarxa Piratecash després d&apos;establir una connexió, però aquest procés no s&apos;ha completat encara.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
+        <translation>La informació mostrada pot estar fora de data. El seu moneder es sincronitza automàticament amb la xarxa PirateCash després d&apos;establir una connexió, però aquest procés no s&apos;ha completat encara.</translation>
     </message>
     <message>
         <location line="-173"/>
@@ -1573,8 +1573,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>Show the Piratecash-Qt help message to get a list with possible Piratecash command-line options.</source>
-        <translation>Mostra el missatge d&apos;ajuda de Piratecash-Qt per obtenir una llista amb les possibles opcions de línia d&apos;ordres Piratecash.</translation>
+        <source>Show the PirateCash-Qt help message to get a list with possible PirateCash command-line options.</source>
+        <translation>Mostra el missatge d&apos;ajuda de PirateCash-Qt per obtenir una llista amb les possibles opcions de línia d&apos;ordres PirateCash.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1593,13 +1593,13 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location line="-104"/>
-        <source>Piratecash - Debug window</source>
-        <translation>Piratecash - Finestra Depuració</translation>
+        <source>PirateCash - Debug window</source>
+        <translation>PirateCash - Finestra Depuració</translation>
     </message>
     <message>
         <location line="+25"/>
-        <source>Piratecash Core</source>
-        <translation>Nucli Piratecash</translation>
+        <source>PirateCash Core</source>
+        <translation>Nucli PirateCash</translation>
     </message>
     <message>
         <location line="+256"/>
@@ -1608,8 +1608,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>Open the Piratecash debug log file from the current data directory. This can take a few seconds for large log files.</source>
-        <translation>Obriu el fitxer de registre de depuració Piratecash des del directori de dades actual. Això pot trigar uns segons en els arxius de registre de grans dimensions.</translation>
+        <source>Open the PirateCash debug log file from the current data directory. This can take a few seconds for large log files.</source>
+        <translation>Obriu el fitxer de registre de depuració PirateCash des del directori de dades actual. Això pot trigar uns segons en els arxius de registre de grans dimensions.</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -1618,8 +1618,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location filename="../rpcconsole.cpp" line="+325"/>
-        <source>Welcome to the Piratecash RPC console.</source>
-        <translation>Benvingut a la consola RPC de Piratecash.</translation>
+        <source>Welcome to the PirateCash RPC console.</source>
+        <translation>Benvingut a la consola RPC de PirateCash.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1812,8 +1812,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location filename="../sendcoinsdialog.cpp" line="-173"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Introdueix una adreça Piratecash (p.ex. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Introdueix una adreça PirateCash (p.ex. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1912,8 +1912,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location line="+247"/>
-        <source>WARNING: Invalid Piratecash address</source>
-        <translation>ADVERTÈNCIA: Direcció Piratecash invàlida</translation>
+        <source>WARNING: Invalid PirateCash address</source>
+        <translation>ADVERTÈNCIA: Direcció PirateCash invàlida</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1945,7 +1945,7 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location line="+34"/>
-        <source>The address to send the payment to (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
+        <source>The address to send the payment to (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -1986,8 +1986,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location filename="../sendcoinsentry.cpp" line="+1"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Introdueix una adreça Piratecash (p.ex. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Introdueix una adreça PirateCash (p.ex. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
 </context>
 <context>
@@ -2010,8 +2010,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location line="+18"/>
-        <source>The address to sign the message with (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>L&apos;adreça per a signar el missatge (per exemple Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>The address to sign the message with (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>L&apos;adreça per a signar el missatge (per exemple PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2047,8 +2047,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location line="+21"/>
-        <source>Sign the message to prove you own this Piratecash address</source>
-        <translation>Signar un missatge per demostrar que és propietari d&apos;aquesta adreça Piratecash</translation>
+        <source>Sign the message to prove you own this PirateCash address</source>
+        <translation>Signar un missatge per demostrar que és propietari d&apos;aquesta adreça PirateCash</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2074,13 +2074,13 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location line="+21"/>
-        <source>The address the message was signed with (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>La direcció que va ser signada amb un missatge (per exemple Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>The address the message was signed with (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>La direcció que va ser signada amb un missatge (per exemple PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="+40"/>
-        <source>Verify the message to ensure it was signed with the specified Piratecash address</source>
-        <translation>Comproveu el missatge per assegurar-se que es va signar amb l&apos;adreça Piratecash especificada.</translation>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
+        <translation>Comproveu el missatge per assegurar-se que es va signar amb l&apos;adreça PirateCash especificada.</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2090,8 +2090,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     <message>
         <location filename="../signverifymessagedialog.cpp" line="+27"/>
         <location line="+3"/>
-        <source>Enter a Piratecash address (e.g. Piratecash_Address_Here_QsAqFckyf9pRHN)</source>
-        <translation>Introdueix una adreça Piratecash (p.ex. Piratecash_Address_Here_QsAqFckyf9pRHN)</translation>
+        <source>Enter a PirateCash address (e.g. PirateCash_Address_Here_QsAqFckyf9pRHN)</source>
+        <translation>Introdueix una adreça PirateCash (p.ex. PirateCash_Address_Here_QsAqFckyf9pRHN)</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -2100,8 +2100,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Enter Piratecash signature</source>
-        <translation>Introduïu la signatura Piratecash</translation>
+        <source>Enter PirateCash signature</source>
+        <translation>Introduïu la signatura PirateCash</translation>
     </message>
     <message>
         <location line="+82"/>
@@ -2679,8 +2679,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     <name>bitcoin-core</name>
     <message>
         <location filename="../bitcoinstrings.cpp" line="+173"/>
-        <source>Piratecash version</source>
-        <translation>versió Piratecash</translation>
+        <source>PirateCash version</source>
+        <translation>versió PirateCash</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2689,8 +2689,8 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Send command to -server or Piratecashd</source>
-        <translation>Enviar comandes a -server o Piratecashd</translation>
+        <source>Send command to -server or PirateCashd</source>
+        <translation>Enviar comandes a -server o PirateCashd</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2709,13 +2709,13 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>Specify configuration file (default: Piratecash.conf)</source>
-        <translation>Especifiqueu el fitxer de configuració (per defecte: Piratecash.conf)</translation>
+        <source>Specify configuration file (default: PirateCash.conf)</source>
+        <translation>Especifiqueu el fitxer de configuració (per defecte: PirateCash.conf)</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Specify pid file (default: Piratecashd.pid)</source>
-        <translation>Especificar arxiu pid (per defecte: Piratecashd.pid)</translation>
+        <source>Specify pid file (default: PirateCashd.pid)</source>
+        <translation>Especificar arxiu pid (per defecte: PirateCashd.pid)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2732,7 +2732,7 @@ En aquest cas es requereix una comisió d&apos;almenys 2%.</translation>
         <source>%s, you must set a rpcpassword in the configuration file:
 %s
 It is recommended you use the following random password:
-rpcuser=Piratecashrpc
+rpcuser=PirateCashrpc
 rpcpassword=%s
 (you do not need to remember this password)
 The username and password MUST NOT be the same.
@@ -2844,8 +2844,8 @@ for example: alertnotify=echo %%s | mail -s &quot;Piratecash Alert&quot; admin@f
     </message>
     <message>
         <location line="-103"/>
-        <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong Piratecash will not work properly.</source>
-        <translation>Avís: Comproveu que la data i hora de l&apos;equip siguin correctes! Si el seu rellotge és erroni Piratecash no funcionarà correctament.</translation>
+        <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong PirateCash will not work properly.</source>
+        <translation>Avís: Comproveu que la data i hora de l&apos;equip siguin correctes! Si el seu rellotge és erroni PirateCash no funcionarà correctament.</translation>
     </message>
     <message>
         <location line="+132"/>
@@ -3152,7 +3152,7 @@ Executar una ordre quan es rep un avís rellevant (%s en cmd es substitueix per 
     </message>
     <message>
         <location line="+10"/>
-        <source>Initialization sanity check failed. Piratecash is shutting down.</source>
+        <source>Initialization sanity check failed. PirateCash is shutting down.</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -3217,13 +3217,13 @@ Executar una ordre quan es rep un avís rellevant (%s en cmd es substitueix per 
     </message>
     <message>
         <location line="+4"/>
-        <source>Error loading wallet.dat: Wallet requires newer version of Piratecash</source>
-        <translation>Error en carregar wallet.dat: El moneder requereix la versió més recent de Piratecash</translation>
+        <source>Error loading wallet.dat: Wallet requires newer version of PirateCash</source>
+        <translation>Error en carregar wallet.dat: El moneder requereix la versió més recent de PirateCash</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Wallet needed to be rewritten: restart Piratecash to complete</source>
-        <translation>El moneder necessita ser reescrita: reiniciar Piratecash per completar</translation>
+        <source>Wallet needed to be rewritten: restart PirateCash to complete</source>
+        <translation>El moneder necessita ser reescrita: reiniciar PirateCash per completar</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3287,8 +3287,8 @@ Executar una ordre quan es rep un avís rellevant (%s en cmd es substitueix per 
     </message>
     <message>
         <location line="+125"/>
-        <source>Unable to bind to %s on this computer. Piratecash is probably already running.</source>
-        <translation>No es pot enllaçar a %s en aquest equip. Piratecash probablement ja estigui en funcionament.</translation>
+        <source>Unable to bind to %s on this computer. PirateCash is probably already running.</source>
+        <translation>No es pot enllaçar a %s en aquest equip. PirateCash probablement ja estigui en funcionament.</translation>
     </message>
     <message>
         <location line="-101"/>
@@ -3327,7 +3327,7 @@ Executar una ordre quan es rep un avís rellevant (%s en cmd es substitueix per 
     </message>
     <message>
         <location line="+3"/>
-        <source>Cannot obtain a lock on data directory %s. Piratecash is probably already running.</source>
+        <source>Cannot obtain a lock on data directory %s. PirateCash is probably already running.</source>
         <translation type="unfinished"/>
     </message>
     <message>
