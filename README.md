@@ -52,6 +52,8 @@ Copyright © 2018-2019	PirateCash Developers
 | Explorer      | [https://block.piratecash.net:3001](http://block.piratecash.net:3001)|
 | Telegram	| [https://t.me/joinchat/FtUaLREioKVyF6EPNVtnIQ](https://t.me/joinchat/FtUaLREioKVyF6EPNVtnIQ)|
 | Discord       | [https://discord.gg/cbTdqxx](https://discord.gg/cbTdqxx)|
+| ...           | ... |
+| Test-NET	| [http://block.piratecash.net:3002/](http://block.piratecash.net:3002/)|
 
 License
 -------
