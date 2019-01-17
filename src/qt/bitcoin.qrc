@@ -62,6 +62,7 @@
         <file alias="about">res/images/about.png</file>
         <file alias="splash">res/images/splash.png</file>
         <file alias="header">res/images/header.png</file>
+        <file alias="header_testnet">res/images/header_testnet.png</file>
     </qresource>
     <qresource prefix="/movies">
         <file alias="spinner-000">res/movies/spinner-000.png</file>

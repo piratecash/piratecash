@@ -82,6 +82,7 @@ private:
     MasternodeManager *masternodeManagerPage;
     MessagePage *messagePage;
     QLabel* netLabel;
+    QLabel* header;
     BlockBrowser *blockBrowser;
     tradingDialog   *tradingDialogPage;
     QLabel *labelEncryptionIcon;

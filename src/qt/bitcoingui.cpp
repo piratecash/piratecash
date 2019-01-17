@@ -498,7 +498,7 @@ void BitcoinGUI::createToolBars()
 #endif
         
 
-    QLabel* header = new QLabel();
+    header = new QLabel();
     header->setMinimumSize(152, 152);
     header->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     header->setPixmap(QPixmap(":/images/header"));
@@ -548,6 +548,7 @@ void BitcoinGUI::setClientModel(ClientModel *clientModel)
     if(!fOnlyTor)
         if (TestNet()) {
             netLabel->setText("TEST-NET");
+            header->setPixmap(QPixmap(":/images/header_testnet"));
         } else {
             netLabel->setText("PIRATE-NET");
         }
@@ -557,6 +558,7 @@ void BitcoinGUI::setClientModel(ClientModel *clientModel)
     {
         if (TestNet()) {
             netLabel->setText("TEST-TOR");
+            header->setPixmap(QPixmap(":/images/header_testnet"));
         } else {
             netLabel->setText("TOR");
         }
