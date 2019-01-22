@@ -369,7 +369,7 @@ bool CheckNode(CAddress addrConnect)
 	if (ConnectSocket(addrConnect, hSocket))
 	{
 		LogPrint("net", "connected masternode %s\n", addrConnect.ToString());
-		closesocket(hSocket);
+        CloseSocket(hSocket);
 
 		/*        // Set to non-blocking
 		#ifdef WIN32
@@ -457,7 +457,7 @@ void CNode::CloseSocketDisconnect()
     if (hSocket != INVALID_SOCKET)
     {
         LogPrint("net", "disconnecting node %s\n", addrName);
-        closesocket(hSocket);
+        CloseSocket(hSocket);
         hSocket = INVALID_SOCKET;
     }
 
@@ -966,12 +966,12 @@ void ThreadSocketHandler()
 				}
 				else if (nInbound >= nMaxConnections - MAX_OUTBOUND_CONNECTIONS)
 				{
-					closesocket(hSocket);
+                    CloseSocket(hSocket);
 				}
 				else if (CNode::IsBanned(addr))
 				{
 					LogPrintf("connection from %s dropped (banned)\n", addr.ToString());
-					closesocket(hSocket);
+                    CloseSocket(hSocket);
 				}
 				else
 				{
@@ -1879,11 +1879,11 @@ public:
         // Close sockets
         BOOST_FOREACH(CNode* pnode, vNodes)
             if (pnode->hSocket != INVALID_SOCKET)
-                closesocket(pnode->hSocket);
+                CloseSocket(pnode->hSocket);
         BOOST_FOREACH(SOCKET hListenSocket, vhListenSocket)
             if (hListenSocket != INVALID_SOCKET)
-                if (closesocket(hListenSocket) == SOCKET_ERROR)
-                    LogPrintf("closesocket(hListenSocket) failed with error %s\n", NetworkErrorString(WSAGetLastError()));
+                if (CloseSocket(hListenSocket) == SOCKET_ERROR)
+                    LogPrintf("CloseSocket(hListenSocket) failed with error %s\n", NetworkErrorString(WSAGetLastError()));
 
         // clean up some globals (to help leak detection)
         BOOST_FOREACH(CNode *pnode, vNodes)
