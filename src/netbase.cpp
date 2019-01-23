@@ -62,8 +62,7 @@ void SplitHostPort(std::string in, int &portOut, std::string &hostOut) {
         int32_t n;
         if (ParseInt32(in.substr(colon + 1), &n) && n > 0 && n < 0x10000) {
             in = in.substr(0, colon);
-            if (n > 0 && n < 0x10000)
-                portOut = n;
+            portOut = n;
         }
     }
     if (in.size()>0 && in[0] == '[' && in[in.size()-1] == ']')
@@ -334,9 +333,8 @@ bool static ConnectSocketDirectly(const CService &addrConnect, SOCKET& hSocketRe
     if (hSocket == INVALID_SOCKET)
         return false;
 
-    int set = 1;
 #ifdef SO_NOSIGPIPE
-    // Different way of disabling SIGPIPE on BSD
+    int set = 1;
     setsockopt(hSocket, SOL_SOCKET, SO_NOSIGPIPE, (void*)&set, sizeof(int));
 #endif
 
@@ -444,7 +442,7 @@ bool SetNameProxy(CService addrProxy) {
 
 bool GetNameProxy(CService &nameProxyOut) {
     LOCK(cs_proxyInfos);
-    if (!nameProxy.IsValid())
+    if(!nameProxy.IsValid())
         return false;
     nameProxyOut = nameProxy;
     return true;
@@ -500,12 +498,16 @@ bool ConnectSocketByName(CService &addr, SOCKET& hSocketRet, const char *pszDest
         addr = addrResolved;
         return ConnectSocket(addr, hSocketRet, nTimeout);
     }
+
     addr = CService("0.0.0.0:0");
 
     if (!HaveNameProxy())
         return false;
     // first connect to name proxy server
     if (!ConnectSocketDirectly(nameProxy, hSocket, nTimeout))
+        return false;
+    // do socks negotiation
+    if (!Socks5(strDest, (unsigned short)port, hSocket))
         return false;
 
     hSocketRet = hSocket;
