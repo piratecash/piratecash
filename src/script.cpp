@@ -10,16 +10,17 @@
 using namespace std;
 using namespace boost;
 
+#include "crypto/sha1.h"
+#include "crypto/sha256.h"
+#include "crypto/ripemd160.h"
 #include "script.h"
 #include "keystore.h"
 #include "bignum.h"
 #include "pubkey.h"
 #include "main.h"
+#include "random.h"
 #include "sync.h"
 #include "util.h"
-#include "crypto/ripemd160.h"
-#include "crypto/sha1.h"
-#include "crypto/sha256.h"
 
 namespace {
 
@@ -2129,7 +2130,6 @@ bool SignSignature(const CKeyStore &keystore, const CTransaction& txFrom, CTrans
 // Valid signature cache, to avoid doing expensive ECDSA signature checking
 // twice for every transaction (once when accepted into memory pool, and
 // again when accepted into the block chain)
-
 class CSignatureCache
 {
 private:

@@ -3,11 +3,12 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "assert.h"
-
 #include "chainparams.h"
-#include "main.h"
+
+#include "assert.h"
+#include "random.h"
 #include "util.h"
+#include "main.h"
 
 #include <boost/assign/list_of.hpp>
 

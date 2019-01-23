@@ -95,6 +95,7 @@ OBJS= \
     obj/sync.o \
     obj/txmempool.o \
     obj/util.o \
+    obj/random.o \
     obj/hash.o \
     obj/noui.o \
     obj/kernel.o \

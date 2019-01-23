@@ -11,6 +11,7 @@
 #include <secp256k1.h>
 #include <secp256k1_recovery.h>
 #include "util.h"
+#include "random.h"
 
 // anonymous namespace
 namespace {
