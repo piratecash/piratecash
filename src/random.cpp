@@ -53,15 +53,14 @@ void RandAddSeedPerfmon()
 #ifdef WIN32
     // Don't need this on Linux, OpenSSL automatically uses /dev/urandom
     // Seed with the entire set of perfmon data
-    unsigned char pdata[250000];
-    memset(pdata, 0, sizeof(pdata));
-    unsigned long nSize = sizeof(pdata);
-    long ret = RegQueryValueExA(HKEY_PERFORMANCE_DATA, "Global", NULL, NULL, pdata, &nSize);
+    std::vector <unsigned char> vData(250000,0);
+    unsigned long nSize = vData.size();
+    long ret = RegQueryValueExA(HKEY_PERFORMANCE_DATA, "Global", NULL, NULL, begin_ptr(vData), &nSize);
     RegCloseKey(HKEY_PERFORMANCE_DATA);
     if (ret == ERROR_SUCCESS)
     {
-        RAND_add(pdata, nSize, nSize/100.0);
-        OPENSSL_cleanse(pdata, nSize);
+        RAND_add(begin_ptr(vData), nSize, nSize/100.0);
+        OPENSSL_cleanse(begin_ptr(vData), nSize);
         LogPrint("rand", "RandAddSeed() %lu bytes\n", nSize);
     }
 #endif
