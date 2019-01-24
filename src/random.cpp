@@ -18,7 +18,7 @@
 #include <openssl/err.h>
 #include <openssl/rand.h>
 
-inline int64_t GetPerformanceCounter()
+static inline int64_t GetPerformanceCounter()
 {
     int64_t nCounter = 0;
 #ifdef WIN32
