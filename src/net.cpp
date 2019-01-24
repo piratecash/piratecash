@@ -1132,21 +1132,21 @@ void ThreadMapPort()
 
 	r = UPNP_GetValidIGD(devlist, &urls, &data, lanaddr, sizeof(lanaddr));
 	if (r == 1)
-	{
-		if (fDiscover) {
-			char externalIPAddress[40];
-			r = UPNP_GetExternalIPAddress(urls.controlURL, data.first.servicetype, externalIPAddress);
-			if (r != UPNPCOMMAND_SUCCESS)
-				LogPrintf("UPnP: GetExternalIPAddress() returned %d\n", r);
-			else
-			{
-				if (externalIPAddress[0])
+    {
+            if (GetBoolArg("-discover", true)) {
+                char externalIPAddress[40];
+                r = UPNP_GetExternalIPAddress(urls.controlURL, data.first.servicetype, externalIPAddress);
+                if(r != UPNPCOMMAND_SUCCESS)
+                    printf("UPnP: GetExternalIPAddress() returned %d\n", r);
+                else
 				{
-					LogPrintf("UPnP: ExternalIPAddress = %s\n", externalIPAddress);
-					AddLocal(CNetAddr(externalIPAddress), LOCAL_UPNP);
-				}
-				else
-					LogPrintf("UPnP: GetExternalIPAddress failed.\n");
+                    if(externalIPAddress[0])
+                    {
+                        printf("UPnP: ExternalIPAddress = %s\n", externalIPAddress);
+                        AddLocal(CNetAddr(externalIPAddress), LOCAL_UPNP);
+                    }
+                else
+                    LogPrintf("UPnP: GetExternalIPAddress failed.\n");
 			}
 		}
 
