@@ -27,7 +27,7 @@ inline int64_t GetPerformanceCounter()
 #else
     timeval t;
     gettimeofday(&t, NULL);
-    nCounter = (int64_t) t.tv_sec * 1000000 + t.tv_usec;
+    nCounter = (int64_t)(t.tv_sec * 1000000 + t.tv_usec);
 #endif
     return nCounter;
 }
@@ -70,15 +70,22 @@ void RandAddSeedPerfmon()
     {
         RAND_add(begin_ptr(vData), nSize, nSize/100.0);
         OPENSSL_cleanse(begin_ptr(vData), nSize);
-        LogPrint("rand", "RandAddSeed() %lu bytes\n", nSize);
+        LogPrint("rand", "%s: %lu bytes\n", __func__, nSize);
+    } else {
+        static bool warned = false; // Warn only once
+        if (!warned)
+        {
+            LogPrintf("%s: Warning: RegQueryValueExA(HKEY_PERFORMANCE_DATA) failed with code %i\n", __func__, ret);
+            warned = true;
+        }
     }
 #endif
 }
 
 bool GetRandBytes(unsigned char *buf, int num)
 {
-    if (RAND_bytes(buf, num) == 0) {
-        LogPrint("rand", "%s : OpenSSL RAND_bytes() failed with error: %s\n", __func__, ERR_error_string(ERR_get_error(), NULL));
+    if (RAND_bytes(buf, num) != 1) {
+        LogPrintf("%s: OpenSSL RAND_bytes() failed with error: %s\n", __func__, ERR_error_string(ERR_get_error(), NULL));
         return false;
     }
     return true;
@@ -115,19 +122,19 @@ uint32_t insecure_rand_Rz = 11;
 uint32_t insecure_rand_Rw = 11;
 void seed_insecure_rand(bool fDeterministic)
 {
-    //The seed values have some unlikely fixed points which we avoid.
+    // The seed values have some unlikely fixed points which we avoid.
     if(fDeterministic)
     {
         insecure_rand_Rz = insecure_rand_Rw = 11;
     } else {
         uint32_t tmp;
-        do{
-            GetRandBytes((unsigned char*)&tmp,4);
-        }while(tmp==0 || tmp==0x9068ffffU);
-        insecure_rand_Rz=tmp;
-        do{
-            GetRandBytes((unsigned char*)&tmp,4);
-        }while(tmp==0 || tmp==0x464fffffU);
-        insecure_rand_Rw=tmp;
+        do {
+            GetRandBytes((unsigned char*)&tmp, 4);
+        } while(tmp == 0 || tmp == 0x9068ffffU);
+        insecure_rand_Rz = tmp;
+        do {
+            GetRandBytes((unsigned char*)&tmp, 4);
+        } while(tmp == 0 || tmp == 0x464fffffU);
+        insecure_rand_Rw = tmp;
     }
 }
