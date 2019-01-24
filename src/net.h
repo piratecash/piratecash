@@ -453,10 +453,8 @@ public:
 
     ~CNode()
     {
-        if (hSocket != INVALID_SOCKET)
-        {
-            CloseSocket(hSocket);
-        }
+        CloseSocket(hSocket);
+
         GetNodeSignals().FinalizeNode(GetId());
     }
 
