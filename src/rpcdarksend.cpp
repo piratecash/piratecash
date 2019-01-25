@@ -520,6 +520,17 @@ Value masternode(const Array& params, bool fHelp)
             obj.push_back(Pair("protocol",      (int64_t)winner->protocolVersion));
             obj.push_back(Pair("vin",           winner->vin.prevout.hash.ToString().c_str()));
             obj.push_back(Pair("pubkey",        address2.ToString().c_str()));
+            obj.push_back(Pair("rewardPercent", winner->rewardPercentage));
+            if (winner->rewardPercentage != 0) {
+                CTxDestination address3;
+                CScript reward = winner->rewardAddress;
+                ExtractDestination(reward,address3);
+                CpiratecashcoinAddress RewardAddr(address3);
+                obj.push_back(Pair("rewardAddress", RewardAddr.ToString().c_str()));
+            }else{
+                obj.push_back(Pair("rewardAddress", ""));
+            }
+            obj.push_back(Pair("height", pindexBest->nHeight+1));
             obj.push_back(Pair("lastseen",      (int64_t)winner->lastTimeSeen));
             obj.push_back(Pair("activeseconds", (int64_t)(winner->lastTimeSeen - winner->sigTime)));
             return obj;
