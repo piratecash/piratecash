@@ -8,6 +8,7 @@
 #include "compat.h"
 #include "core.h"
 #include "hash.h"
+#include "bloom.h"
 #include "limitedmap.h"
 #include "mruset.h"
 #include "netbase.h"
@@ -361,6 +362,8 @@ public:
     bool fRelayTxes;
     bool fDarkSendMaster;
     CSemaphoreGrant grantOutbound;
+    CCriticalSection cs_filter;
+    CBloomFilter* pfilter;
     int nRefCount;
     NodeId id;
 protected:
@@ -447,6 +450,7 @@ public:
         fRelayTxes = false;
         hashCheckpointKnown = 0;
         setInventoryKnown.max_size(SendBufferSize() / 1000);
+        pfilter = NULL;
         nPingNonceSent = 0;
         nPingUsecStart = 0;
         nPingUsecTime = 0;
@@ -472,6 +476,8 @@ public:
     ~CNode()
     {
         CloseSocket(hSocket);
+        if (pfilter)
+            delete pfilter;
 
         GetNodeSignals().FinalizeNode(GetId());
     }
