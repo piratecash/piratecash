@@ -533,7 +533,7 @@ Value masternode(const Array& params, bool fHelp)
         CKey secret;
         secret.MakeNewKey(false);
 
-        return CpiratecashcoinSecret(secret).ToString();
+        return CBitcoinSecret(secret).ToString();
     }
 
     if (strCommand == "winners")

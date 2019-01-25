@@ -118,7 +118,7 @@ public:
 /**
  * A base58-encoded secret key
  */
-class CpiratecashcoinSecret : public CBase58Data
+class CBitcoinSecret : public CBase58Data
 {
 public:
     void SetKey(const CKey& vchSecret);
@@ -127,8 +127,8 @@ public:
     bool SetString(const char* pszSecret);
     bool SetString(const std::string& strSecret);
 
-    CpiratecashcoinSecret(const CKey& vchSecret) { SetKey(vchSecret); }
-    CpiratecashcoinSecret() {}
+    CBitcoinSecret(const CKey& vchSecret) { SetKey(vchSecret); }
+    CBitcoinSecret() {}
 };
 
 template<typename K, int Size, CChainParams::Base58Type Type> class CpiratecashcoinExtKeyBase : public CBase58Data

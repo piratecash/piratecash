@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE(base58_keys_valid_parse)
 {
     Array tests = read_json("base58_keys_valid.json");
     std::vector<unsigned char> result;
-    CpiratecashcoinSecret secret;
+    CBitcoinSecret secret;
     CpiratecashcoinAddress addr;
 
     BOOST_FOREACH(Value& tv, tests)
@@ -131,7 +131,7 @@ BOOST_AUTO_TEST_CASE(base58_keys_valid_parse)
         {
             bool isCompressed = find_value(metadata, "isCompressed").get_bool();
             // Must be valid private key
-            // Note: CpiratecashcoinSecret::SetString tests isValid, whereas CpiratecashcoinAddress does not!
+            // Note: CBitcoinSecret::SetString tests isValid, whereas CpiratecashcoinAddress does not!
             BOOST_CHECK_MESSAGE(secret.SetString(exp_base58string), "!SetString:"+ strTest);
             BOOST_CHECK_MESSAGE(secret.IsValid(), "!IsValid:" + strTest);
             CKey privkey = secret.GetKey();
@@ -189,7 +189,7 @@ BOOST_AUTO_TEST_CASE(base58_keys_valid_gen)
             CKey key;
             key.Set(exp_payload.begin(), exp_payload.end(), isCompressed);
             assert(key.IsValid());
-            CpiratecashcoinSecret secret;
+            CBitcoinSecret secret;
             secret.SetKey(key);
             BOOST_CHECK_MESSAGE(secret.ToString() == exp_base58string, "result mismatch: " + strTest);
         }
@@ -233,7 +233,7 @@ BOOST_AUTO_TEST_CASE(base58_keys_invalid)
 {
     Array tests = read_json("base58_keys_invalid.json"); // Negative testcases
     std::vector<unsigned char> result;
-    CpiratecashcoinSecret secret;
+    CBitcoinSecret secret;
     CpiratecashcoinAddress addr;
 
     BOOST_FOREACH(Value& tv, tests)
