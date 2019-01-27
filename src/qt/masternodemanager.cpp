@@ -7,6 +7,7 @@
 #include "clientmodel.h"
 #include "walletmodel.h"
 #include "activemasternode.h"
+#include "askpassphrasedialog.h"
 #include "masternodeconfig.h"
 #include "masternodeman.h"
 #include "masternode.h"
@@ -207,6 +208,23 @@ void MasternodeManager::on_createButton_clicked()
     aenode->exec();
 }
 
+
+bool MasternodeManager::requestunlock()
+{
+    WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
+    if(encStatus == walletModel->Locked || encStatus == walletModel->UnlockedForAnonymizationOnly || fWalletUnlockStakingOnly) {
+        // request unlock only if was locked or unlocked for mixing:
+        // this way we let users unlock by walletpassphrase or by menu
+        // and make many transactions while unlocking through this dialog
+        // will call relock
+        AskPassphraseDialog dlg(AskPassphraseDialog::Unlock);
+        dlg.setModel(walletModel);
+        dlg.exec();
+    }
+
+    return walletModel->getEncryptionStatus() == walletModel->Unlocked;
+}
+
 void MasternodeManager::on_startButton_clicked()
 {
     // start the node
@@ -219,8 +237,8 @@ void MasternodeManager::on_startButton_clicked()
     int r = index.row();
     std::string sAlias = ui->tableWidget_2->item(r, 0)->text().toStdString();
 
-    if(pwalletMain->IsLocked()) {
-    }
+    if (!requestunlock())
+        return;
 
     std::string statusObj;
     statusObj += "<center>Alias: " + sAlias;
@@ -252,8 +270,8 @@ void MasternodeManager::on_startButton_clicked()
 
 void MasternodeManager::on_startAllButton_clicked()
 {
-    if(pwalletMain->IsLocked()) {
-    }
+    if (!requestunlock())
+        return;
 
     std::vector<CMasternodeConfig::CMasternodeEntry> mnEntries;
 

@@ -36,6 +36,7 @@ public:
 
 private:
     QMenu* contextMenu;
+    bool requestunlock();
     
 public slots:
     void updateNodeList();
