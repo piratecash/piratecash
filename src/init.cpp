@@ -1061,7 +1061,11 @@ bool AppInit2(boost::thread_group& threadGroup)
             LogPrintf("magic is ok but data has invalid format, will try to recreate\n");
         else
             LogPrintf("file format is unknown or invalid, please fix it manually\n");
-    }
+    }else
+        mnodeman.CheckAndRemove(); // clean out expired
+
+    LogPrintf("Loaded info from masternodes.dat  %dms\n", GetTimeMillis() - nStart);
+    LogPrintf("  %s\n", mnodeman.ToString());
 
 
     fMasterNode = GetBoolArg("-masternode", false);

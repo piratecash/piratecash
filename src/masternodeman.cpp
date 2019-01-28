@@ -184,7 +184,8 @@ void DumpMasternodes()
     LogPrintf("Writting info to mncache.dat...\n");
     mndb.Write(mnodeman);
 
-    LogPrintf("Masternode dump finished  %dms\n", GetTimeMillis() - nStart);
+    LogPrintf("Flushed info to masternodes.dat  %dms\n", GetTimeMillis() - nStart);
+    LogPrintf("  %s\n", mnodeman.ToString());
 }
 
 CMasternodeMan::CMasternodeMan() {
