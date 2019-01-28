@@ -243,7 +243,7 @@ void CMasternodeMan::CheckAndRemove()
     while(it != vMasternodes.end()){
         if((*it).activeState == CMasternode::MASTERNODE_REMOVE || (*it).activeState == CMasternode::MASTERNODE_VIN_SPENT || (*it).protocolVersion < nMasternodeMinProtocol){
             LogPrint("masternode", "CMasternodeMan: Removing inactive masternode %s - %i now\n", (*it).addr.ToString().c_str(), size() - 1);
-            it = vMasternodes.erase(it);
+            vMasternodes.erase(it++);
         } else {
             ++it;
         }
@@ -252,25 +252,31 @@ void CMasternodeMan::CheckAndRemove()
     // check who's asked for the masternode list
     map<CNetAddr, int64_t>::iterator it1 = mAskedUsForMasternodeList.begin();
     while(it1 != mAskedUsForMasternodeList.end()){
-        if((*it1).second < GetTime())
-            it1 = mAskedUsForMasternodeList.erase(it1);
-        else ++it1;
+        if((*it1).second < GetTime()) {
+            mAskedUsForMasternodeList.erase(it1++);
+        } else {
+            it1++;
+        }
     }
 
     // check who we asked for the masternode list
     it1 = mWeAskedForMasternodeList.begin();
     while(it1 != mWeAskedForMasternodeList.end()){
-        if((*it1).second < GetTime())
-            it1 = mWeAskedForMasternodeList.erase(it1);
-        else ++it1;
+        if((*it1).second < GetTime()){
+            mWeAskedForMasternodeList.erase(it1++);
+        } else {
+            it1++;
+        }
     }
 
     // check which masternodes we've asked for
     map<COutPoint, int64_t>::iterator it2 = mWeAskedForMasternodeListEntry.begin();
     while(it2 != mWeAskedForMasternodeListEntry.end()){
-        if((*it2).second < GetTime())
-            it2 = mWeAskedForMasternodeListEntry.erase(it2);
-        else ++it2;
+        if((*it2).second < GetTime()){
+            mWeAskedForMasternodeListEntry.erase(it2++);
+        } else {
+            it2++;
+        }
     }
 
 }
