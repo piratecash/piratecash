@@ -252,31 +252,25 @@ void CMasternodeMan::CheckAndRemove()
     // check who's asked for the masternode list
     map<CNetAddr, int64_t>::iterator it1 = mAskedUsForMasternodeList.begin();
     while(it1 != mAskedUsForMasternodeList.end()){
-        if((*it1).second < GetTime()) {
-            mAskedUsForMasternodeList.erase(it1++);
-        } else {
-            ++it1;
-        }
+        if((*it1).second < GetTime())
+            it1 = mAskedUsForMasternodeList.erase(it1);
+        else ++it1;
     }
 
     // check who we asked for the masternode list
     it1 = mWeAskedForMasternodeList.begin();
     while(it1 != mWeAskedForMasternodeList.end()){
-        if((*it1).second < GetTime()){
-            mWeAskedForMasternodeList.erase(it1++);
-        } else {
-            ++it1;
-        }
+        if((*it1).second < GetTime())
+            it1 = mWeAskedForMasternodeList.erase(it1);
+        else ++it1;
     }
 
     // check which masternodes we've asked for
     map<COutPoint, int64_t>::iterator it2 = mWeAskedForMasternodeListEntry.begin();
     while(it2 != mWeAskedForMasternodeListEntry.end()){
-        if((*it2).second < GetTime()){
-            mWeAskedForMasternodeListEntry.erase(it2++);
-        } else {
-            ++it2;
-        }
+        if((*it2).second < GetTime())
+            it2 = mWeAskedForMasternodeListEntry.erase(it2);
+        else ++it2;
     }
 
 }
@@ -291,15 +285,13 @@ void CMasternodeMan::Clear()
     nDsqCount = 0;
 }
 
-int CMasternodeMan::CountEnabled(int protocolVersion)
+int CMasternodeMan::CountEnabled()
 {
     int i = 0;
-    protocolVersion = protocolVersion == -1 ? masternodePayments.GetMinMasternodePaymentsProto() : protocolVersion;
 
     BOOST_FOREACH(CMasternode& mn, vMasternodes) {
         mn.Check();
-        if(mn.protocolVersion < protocolVersion || !mn.IsEnabled()) continue;
-        i++;
+        if(mn.IsEnabled()) i++;
     }
 
     return i;
@@ -341,7 +333,7 @@ CMasternode *CMasternodeMan::Find(const CTxIn &vin)
 
     BOOST_FOREACH(CMasternode& mn, vMasternodes)
     {
-        if(mn.vin.prevout == vin.prevout)
+        if(mn.vin == vin)
             return &mn;
     }
     return NULL;
@@ -362,7 +354,7 @@ CMasternode* CMasternodeMan::FindOldestNotInVec(const std::vector<CTxIn> &vVins,
 
         bool found = false;
         BOOST_FOREACH(const CTxIn& vin, vVins)
-            if(mn.vin.prevout == vin.prevout)
+            if(mn.vin == vin)
             {   
                 found = true;
                 break;
@@ -405,7 +397,7 @@ CMasternode *CMasternodeMan::FindRandomNotInVec(std::vector<CTxIn> &vecToExclude
 
     protocolVersion = protocolVersion == -1 ? masternodePayments.GetMinMasternodePaymentsProto() : protocolVersion;
 
-    int nCountEnabled = CountEnabled(protocolVersion);
+    int nCountEnabled = CountMasternodesAboveProtocol(protocolVersion);
     LogPrintf("CMasternodeMan::FindRandomNotInVec - nCountEnabled - vecToExclude.size() %d\n", nCountEnabled - vecToExclude.size());
     if(nCountEnabled - vecToExclude.size() < 1) return NULL;
 
@@ -456,7 +448,7 @@ CMasternode* CMasternodeMan::GetCurrentMasterNode(int mod, int64_t nBlockHeight,
     return winner;
 }
 
-int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, int minProtocol, bool fOnlyActive)
+int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, int minProtocol)
 {
     std::vector<pair<unsigned int, CTxIn> > vecMasternodeScores;
 
@@ -467,10 +459,11 @@ int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, in
     // scan for winner
     BOOST_FOREACH(CMasternode& mn, vMasternodes) {
 
+        mn.Check();
+
         if(mn.protocolVersion < minProtocol) continue;
-        if(fOnlyActive) {
-            mn.Check();
-            if(!mn.IsEnabled()) continue;
+        if(!mn.IsEnabled()) {
+            continue;
         }
 
         uint256 n = mn.CalculateScore(1, nBlockHeight);
@@ -482,7 +475,7 @@ int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, in
 
     sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareValueOnly());
 
-    int rank = 0;
+    unsigned int rank = 0;
     BOOST_FOREACH (PAIRTYPE(unsigned int, CTxIn)& s, vecMasternodeScores){
         rank++;
         if(s.second == vin) {

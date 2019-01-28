@@ -1531,7 +1531,7 @@ bool CDarksendPool::DoAutomaticDenominating(bool fDryRun)
         }
 
         //if we've used 90% of the Masternode list then drop all the oldest first
-        int nThreshold = (int)(mnodeman.CountEnabled(MIN_POOL_PEER_PROTO_VERSION) * 0.9);
+        int nThreshold = (int)(mnodeman.CountMasternodesAboveProtocol(MIN_POOL_PEER_PROTO_VERSION) * 0.9);
         LogPrint("darksend", "Checking vecMasternodesUsed size %d threshold %d\n", (int)vecMasternodesUsed.size(), nThreshold);
         while((int)vecMasternodesUsed.size() > nThreshold){
             vecMasternodesUsed.erase(vecMasternodesUsed.begin());
@@ -1619,7 +1619,7 @@ bool CDarksendPool::DoAutomaticDenominating(bool fDryRun)
             }
 
             if(pmn->nLastDsq != 0 &&
-                pmn->nLastDsq + mnodeman.CountEnabled(MIN_POOL_PEER_PROTO_VERSION)/5 > mnodeman.nDsqCount){
+                pmn->nLastDsq + mnodeman.CountMasternodesAboveProtocol(MIN_POOL_PEER_PROTO_VERSION)/5 > mnodeman.nDsqCount){
                 i++;
                 continue;
             }
@@ -2269,37 +2269,66 @@ void ThreadCheckDarkSendPool()
 
     while (true)
     {
+        c++;
+
         MilliSleep(1000);
         //LogPrintf("ThreadCheckDarkSendPool::check timeout\n");
+        darkSendPool.CheckTimeout();
 
-        // try to sync from all available nodes, one step at a time
-        //masternodeSync.Process();
-
-
-        if(darkSendPool.IsBlockchainSynced()) {
-
-            c++;
-
-            // check if we should activate or ping every few minutes,
-            // start right after sync is considered to be done
-            if(c % MASTERNODE_PING_SECONDS == 1) activeMasternode.ManageStatus();
-
-            if(c % 60 == 0)
-            {
+        if(c % 60 == 0)
+        {
+            LOCK(cs_main);
+                /*
+                  cs_main is required for doing CMasternode.Check because something
+                  is modifying the coins view without a mempool lock. It causes
+                  segfaults from this code without the cs_main lock.
+                 */
                 mnodeman.CheckAndRemove();
                 mnodeman.ProcessMasternodeConnections();
                 masternodePayments.CleanPaymentList();
                 CleanTransactionLocksList();
+        }
+
+        // check if we should activate or ping every few minutes,
+        // start right after sync is considered to be done
+        if(c % MASTERNODE_PING_SECONDS == 0) activeMasternode.ManageStatus();
+
+        if(c % MASTERNODES_DUMP_SECONDS == 0) DumpMasternodes();
+
+        //try to sync the masternode list and payment list every 5 seconds from at least 3 nodes
+        if(c % 5 == 0 && RequestedMasterNodeList < 3){
+            bool fIsInitialDownload = IsInitialBlockDownload();
+            if(!fIsInitialDownload) {
+                LOCK(cs_vNodes);
+                BOOST_FOREACH(CNode* pnode, vNodes)
+                {
+                    if (pnode->nVersion >= MIN_PEER_PROTO_VERSION) {
+                        //keep track of who we've asked for the list
+                        if(pnode->HasFulfilledRequest("mnsync")) continue;
+                        pnode->FulfilledRequest("mnsync");
+
+                        LogPrintf("Successfully synced, asking for Masternode list and payment list\n");
+
+                        //request full mn list only if masternodes.dat was updated quite a long time ago
+                        mnodeman.DsegUpdate(pnode);
+                        pnode->PushMessage("mnget"); //sync payees
+                        pnode->PushMessage("getsporks"); //get current network sporks
+                        RequestedMasterNodeList++;
+                    }
+                }
             }
+        }
+        if(c % 60 == 0){
+            //if we've used 1/5 of the masternode list, then clear the list.
+            if((int)vecMasternodesUsed.size() > (int)mnodeman.size() / 5)
+                vecMasternodesUsed.clear();
+        }
 
-            //if(c % MASTERNODES_DUMP_SECONDS == 0) DumpMasternodes();
+        darkSendPool.CheckTimeout();
+        darkSendPool.CheckForCompleteQueue();
 
-            darkSendPool.CheckTimeout();
-            darkSendPool.CheckForCompleteQueue();
-
-            if(darkSendPool.GetState() == POOL_STATUS_IDLE && c % 15 == 0){
-                darkSendPool.DoAutomaticDenominating();
-            }
+        if(darkSendPool.GetState() == POOL_STATUS_IDLE && c % 15 == 0){
+            darkSendPool.DoAutomaticDenominating();
         }
     }
 }

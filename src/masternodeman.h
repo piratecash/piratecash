@@ -106,7 +106,7 @@ public:
     // Clear masternode vector
     void Clear();
 
-    int CountEnabled(int protocolVersion = -1);
+    int CountEnabled();
 
     int CountMasternodesAboveProtocol(int protocolVersion);
 
@@ -131,7 +131,7 @@ public:
     std::vector<CMasternode> GetFullMasternodeVector() { Check(); return vMasternodes; }
 
     std::vector<pair<int, CMasternode> > GetMasternodeRanks(int64_t nBlockHeight, int minProtocol=0);
-    int GetMasternodeRank(const CTxIn &vin, int64_t nBlockHeight, int minProtocol=0, bool fOnlyActive=true);
+    int GetMasternodeRank(const CTxIn &vin, int64_t nBlockHeight, int minProtocol=0);
     CMasternode* GetMasternodeByRank(int nRank, int64_t nBlockHeight, int minProtocol=0, bool fOnlyActive=true);
 
     void ProcessMasternodeConnections();
