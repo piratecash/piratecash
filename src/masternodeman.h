@@ -104,7 +104,7 @@ public:
     void CheckAndRemove();
 
     // Clear masternode vector
-    void Clear();
+    void Clear() { LOCK(cs); vMasternodes.clear(); }
 
     int CountEnabled();
 

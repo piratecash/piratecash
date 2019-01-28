@@ -236,6 +236,7 @@ void CMasternodeMan::CheckAndRemove()
 {
     LOCK(cs);
 
+
     Check();
 
     //remove inactive
@@ -243,7 +244,7 @@ void CMasternodeMan::CheckAndRemove()
     while(it != vMasternodes.end()){
         if((*it).activeState == CMasternode::MASTERNODE_REMOVE || (*it).activeState == CMasternode::MASTERNODE_VIN_SPENT || (*it).protocolVersion < nMasternodeMinProtocol){
             LogPrint("masternode", "CMasternodeMan: Removing inactive masternode %s - %i now\n", (*it).addr.ToString().c_str(), size() - 1);
-            vMasternodes.erase(it++);
+            it = vMasternodes.erase(it);
         } else {
             ++it;
         }
@@ -255,7 +256,7 @@ void CMasternodeMan::CheckAndRemove()
         if((*it1).second < GetTime()) {
             mAskedUsForMasternodeList.erase(it1++);
         } else {
-            it1++;
+            ++it1;
         }
     }
 
@@ -265,7 +266,7 @@ void CMasternodeMan::CheckAndRemove()
         if((*it1).second < GetTime()){
             mWeAskedForMasternodeList.erase(it1++);
         } else {
-            it1++;
+            ++it1;
         }
     }
 
@@ -275,7 +276,7 @@ void CMasternodeMan::CheckAndRemove()
         if((*it2).second < GetTime()){
             mWeAskedForMasternodeListEntry.erase(it2++);
         } else {
-            it2++;
+            ++it2;
         }
     }
 
