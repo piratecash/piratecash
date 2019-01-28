@@ -200,7 +200,7 @@ bool CMasternodeMan::Add(CMasternode &mn)
 
     if (pmn == NULL)
     {
-        LogPrint("masternode", "CMasternodeMan: Adding new masternode %s - %i now\n", mn.addr.ToString().c_str(), size() + 1);
+        if(fDebug) LogPrintf("CMasternodeMan: Adding new masternode %s - %i now\n", mn.addr.ToString().c_str(), size() + 1);
         vMasternodes.push_back(mn);
         return true;
     }
@@ -244,7 +244,7 @@ void CMasternodeMan::CheckAndRemove()
     vector<CMasternode>::iterator it = vMasternodes.begin();
     while(it != vMasternodes.end()){
         if((*it).activeState == CMasternode::MASTERNODE_REMOVE || (*it).activeState == CMasternode::MASTERNODE_VIN_SPENT || (*it).protocolVersion < nMasternodeMinProtocol){
-            LogPrint("masternode", "CMasternodeMan: Removing inactive masternode %s - %i now\n", (*it).addr.ToString().c_str(), size() - 1);
+            if(fDebug) LogPrintf("CMasternodeMan: Removing inactive masternode %s - %i now\n", (*it).addr.ToString().c_str(), size() - 1);
             it = vMasternodes.erase(it);
         } else {
             ++it;
