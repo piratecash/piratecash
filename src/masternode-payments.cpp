@@ -229,7 +229,7 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
     if(nBlockHeight <= nLastBlockHeight) return false;
     if(!enabled) return false;
     CMasternodePaymentWinner newWinner;
-    int nMinimumAge = mnodeman.CountEnabled();
+    int nEnabled = mnodeman.CountEnabled();
     CScript payeeSource;
 
     uint256 hash;
@@ -243,12 +243,12 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
     BOOST_REVERSE_FOREACH(CMasternodePaymentWinner& winner, vWinning)
     {
         //if we already have the same vin - we have one full payment cycle, break
-        if(vecLastPayments.size() > (unsigned int)nMinimumAge) break;
+        if(vecLastPayments.size() > (unsigned int)nEnabled) break;
         vecLastPayments.push_back(winner.vin);
     }
 
     // pay to the oldest MN that still had no payment but its input is old enough and it was active long enough
-    CMasternode *pmn = mnodeman.FindOldestNotInVec(vecLastPayments, nMinimumAge);
+    CMasternode *pmn = mnodeman.FindOldestNotInVec(vecLastPayments, nEnabled);
     if(pmn != NULL)
     {
         LogPrintf(" Found by FindOldestNotInVec \n");
@@ -267,7 +267,7 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
     }
 
     //if we can't find new MN to get paid, pick first active MN counting back from the end of vecLastPayments list
-    if(newWinner.nBlockHeight == 0 && nMinimumAge > 0)
+    if(newWinner.nBlockHeight == 0 && nEnabled > 0)
     {
         LogPrintf(" Find by reverse \n");
 
