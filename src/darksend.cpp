@@ -2273,7 +2273,10 @@ void ThreadCheckDarkSendPool()
 
         MilliSleep(1000);
         //LogPrintf("ThreadCheckDarkSendPool::check timeout\n");
+
+        if(c % 10 == 0) darkSendPool.Check();
         darkSendPool.CheckTimeout();
+        darkSendPool.CheckForCompleteQueue();
 
         if(c % 60 == 0)
         {
@@ -2324,8 +2327,6 @@ void ThreadCheckDarkSendPool()
                 vecMasternodesUsed.clear();
         }
 
-        darkSendPool.CheckTimeout();
-        darkSendPool.CheckForCompleteQueue();
 
         if(darkSendPool.GetState() == POOL_STATUS_IDLE && c % 15 == 0){
             darkSendPool.DoAutomaticDenominating();

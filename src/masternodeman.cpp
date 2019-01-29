@@ -184,8 +184,7 @@ void DumpMasternodes()
     LogPrintf("Writting info to mncache.dat...\n");
     mndb.Write(mnodeman);
 
-    LogPrintf("Flushed info to masternodes.dat  %dms\n", GetTimeMillis() - nStart);
-    LogPrintf("  %s\n", mnodeman.ToString());
+    LogPrintf("Masternode dump finished  %dms\n", GetTimeMillis() - nStart);
 }
 
 CMasternodeMan::CMasternodeMan() {
@@ -195,6 +194,9 @@ CMasternodeMan::CMasternodeMan() {
 bool CMasternodeMan::Add(CMasternode &mn)
 {
     LOCK(cs);
+
+    if (!mn.IsEnabled())
+        return false;
 
     CMasternode *pmn = Find(mn.vin);
 
@@ -236,7 +238,6 @@ void CMasternodeMan::Check()
 void CMasternodeMan::CheckAndRemove()
 {
     LOCK(cs);
-
 
     Check();
 
@@ -354,25 +355,22 @@ CMasternode* CMasternodeMan::FindOldestNotInVec(const std::vector<CTxIn> &vVins,
     CMasternode *pOldestMasternode = NULL;
 
     BOOST_FOREACH(CMasternode &mn, vMasternodes)
-    {   
+    {
         mn.Check();
         if(!mn.IsEnabled()) continue;
-
-        if(mn.GetMasternodeInputAge() < nMinimumAge) continue;
 
         bool found = false;
         BOOST_FOREACH(const CTxIn& vin, vVins)
             if(mn.vin == vin)
-            {   
+            {
                 found = true;
                 break;
             }
+
         if(found) continue;
 
-        if(pOldestMasternode == NULL || pOldestMasternode->SecondsSincePayment() < mn.SecondsSincePayment())
-        {
+        if(pOldestMasternode == NULL || pOldestMasternode->GetMasternodeInputAge() < mn.GetMasternodeInputAge())
             pOldestMasternode = &mn;
-        }
     }
 
     return pOldestMasternode;
@@ -581,13 +579,27 @@ void CMasternodeMan::ProcessMasternodeConnections()
     }
 }
 
+void CMasternodeMan::RelayMasternodeEntry(const CTxIn vin, const CService addr, const std::vector<unsigned char> vchSig, const int64_t nNow, const CPubKey pubkey, const CPubKey pubkey2, const int count, const int current, const int64_t lastUpdated, const int protocolVersion, CScript rewardAddress, int rewardPercentage)
+{
+    LOCK(cs_vNodes);
+    BOOST_FOREACH(CNode* pnode, vNodes){
+        pnode->PushMessage("dsee", vin, addr, vchSig, nNow, pubkey, pubkey2, count, current, lastUpdated, protocolVersion, rewardAddress, rewardPercentage);
+    }
+}
+
+void CMasternodeMan::RelayMasternodeEntryPing(const CTxIn vin, const std::vector<unsigned char> vchSig, const int64_t nNow, const bool stop)
+{
+    LOCK(cs_vNodes);
+    BOOST_FOREACH(CNode* pnode, vNodes)
+        pnode->PushMessage("dseep", vin, vchSig, nNow, stop);
+}
+
 void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
 
     //Normally would disable functionality, NEED this enabled for staking.
     //if(fLiteMode) return;
-
-    if(!darkSendPool.IsBlockchainSynced()) return;
+    if(IsInitialBlockDownload()) return;
 
     LOCK(cs_process_message);
 
@@ -707,7 +719,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             return;
         }
 
-        LogPrint("masternode", "dsee - Got NEW masternode entry %s\n", addr.ToString().c_str());
+        if(fDebug) LogPrintf("dsee - Got NEW masternode entry %s\n", addr.ToString().c_str());
 
         // make sure it's still unspent
         //  - this is checked later by .check() in many places and by ThreadCheckDarkSendPool()
@@ -767,7 +779,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             }          
 
             this->Add(mn);
-            
+
             // if it matches our masternodeprivkey, then we've been remotely activated
             if(pubkey2 == activeMasternode.pubKeyMasternode && protocolVersion == PROTOCOL_VERSION){
                 activeMasternode.EnableHotColdMasterNode(vin, addr);
@@ -789,7 +801,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             }
         }
     }
-    
+
     else if (strCommand == "dseep") { //DarkSend Election Entry Ping
 
         CTxIn vin;
@@ -845,7 +857,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             return;
         }
 
-        LogPrint("masternode", "dseep - Couldn't find masternode entry %s\n", vin.ToString().c_str());
+        if(fDebug) LogPrintf("dseep - Couldn't find masternode entry %s\n", vin.ToString().c_str());
 
         std::map<COutPoint, int64_t>::iterator i = mWeAskedForMasternodeListEntry.find(vin.prevout);
         if (i != mWeAskedForMasternodeListEntry.end())
@@ -914,7 +926,6 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
                         return;
                     }
                 }
-
                 int64_t askAgain = GetTime() + MASTERNODES_DSEG_SECONDS;
                 mAskedUsForMasternodeList[pfrom->addr] = askAgain;
             }
@@ -944,21 +955,6 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         LogPrintf("dseg - Sent %d masternode entries to %s\n", i, pfrom->addr.ToString().c_str());
     }
 
-}
-
-void CMasternodeMan::RelayMasternodeEntry(const CTxIn vin, const CService addr, const std::vector<unsigned char> vchSig, const int64_t nNow, const CPubKey pubkey, const CPubKey pubkey2, const int count, const int current, const int64_t lastUpdated, const int protocolVersion, CScript rewardAddress, int rewardPercentage)
-{
-    LOCK(cs_vNodes);
-    BOOST_FOREACH(CNode* pnode, vNodes){
-        pnode->PushMessage("dsee", vin, addr, vchSig, nNow, pubkey, pubkey2, count, current, lastUpdated, protocolVersion, rewardAddress, rewardPercentage);
-    }
-}
-
-void CMasternodeMan::RelayMasternodeEntryPing(const CTxIn vin, const std::vector<unsigned char> vchSig, const int64_t nNow, const bool stop)
-{
-    LOCK(cs_vNodes);
-    BOOST_FOREACH(CNode* pnode, vNodes)
-        pnode->PushMessage("dseep", vin, vchSig, nNow, stop);
 }
 
 void CMasternodeMan::Remove(CTxIn vin)
