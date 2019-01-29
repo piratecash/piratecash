@@ -1439,6 +1439,13 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits)
     return true;
 }
 
+int WalletGracePeriodLeft(){
+    if (GetTime() < WalletStart + 3600) {
+            return WalletStart + 3600 - GetTime();
+    }
+    return 0;
+}
+
 bool IsWalletGracePeriod()
 {
         if (IsInitialBlockDownload()) {

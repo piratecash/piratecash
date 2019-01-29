@@ -65,6 +65,12 @@ Value getinfo(const Array& params, bool fHelp)
     obj.push_back(Pair("difficulty",    GetDifficulty(GetLastBlockIndex(pindexBest, true))));
 
     obj.push_back(Pair("testnet",       TestNet()));
+    bool fIsWalletGracePeriod = IsWalletGracePeriod();
+    obj.push_back(Pair("isGracePeriod", fIsWalletGracePeriod));
+    if (fIsWalletGracePeriod)
+    {
+        obj.push_back(Pair("GracePeriodLeft", (int)WalletGracePeriodLeft()));
+    }
 #ifdef ENABLE_WALLET
     if (pwalletMain) {
         obj.push_back(Pair("keypoololdest", (int64_t)pwalletMain->GetOldestKeyPoolTime()));
