@@ -35,6 +35,7 @@ using namespace boost;
 // Global state
 //
 int64_t WalletStart = GetTime();
+int GraceCount = 0;
 CCriticalSection cs_setpwalletRegistered;
 set<CWallet*> setpwalletRegistered;
 
@@ -1439,6 +1440,16 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits)
     return true;
 }
 
+void incGraceCount(){
+    GraceCount++;
+    WalletStart = GetTime() - 3000; // 10 mineutes
+    LogPrintf("CheckBlock() : New GracePeriod on block %d\n", pindexBest->nHeight+1);
+}
+
+int getGraceCount(){
+    return GraceCount;
+}
+
 int WalletGracePeriodLeft(){
     if (GetTime() < WalletStart + 3600) {
             return WalletStart + 3600 - GetTime();
@@ -2606,8 +2617,15 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
                     ExtractDestination(payee, address1);
                     CpiratecashcoinAddress address2(address1);
 
-                    // Accept blocks in GracePeriod is payment payee is different
                     bool fIsWalletGracePeriod = IsWalletGracePeriod();
+                    //Workaround in case stop syncing
+                    if (!fIsWalletGracePeriod && (GetTime() - nTimeBestReceived) > 900)
+                    {
+                        incGraceCount();
+                        fIsWalletGracePeriod = true;
+                    }
+
+                    // Accept blocks in GracePeriod is payment payee is different
                     if (!foundPaymentAndPayee and fIsWalletGracePeriod) {
                         foundPaymentAmount = true;
                         foundPayee = true;
