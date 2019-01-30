@@ -30,6 +30,7 @@ namespace Checkpoints
         boost::assign::map_list_of
         (0, uint256("0x212a796316c63f41e26b31b9a947f48b56d5e0df7767774b152e29b08da8b0b7"))
         (102114, uint256("0x21617fcf6e6463dadb5852399a40a2318c8ba3e5e8ebba72802e59defc1fddd6"))
+        (121719, uint256("0x5cace4a5ad16de8e13c1cfa8dffeb4fcfa6e7b668a3561f70480ce97cfa187f5"))
     ;
 
     static ListBannedBlocks listBanned =
