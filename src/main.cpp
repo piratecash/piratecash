@@ -3614,6 +3614,19 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         if (!vRecv.empty()) {
             vRecv >> pfrom->strSubVer;
             pfrom->cleanSubVer = SanitizeString(pfrom->strSubVer);
+            if (pfrom->cleanSubVer == "/Piratecash:1.0.1.3/" ||
+                pfrom->cleanSubVer == "/Piratecash:1.0.2.4/" ||
+                pfrom->cleanSubVer == "/Piratecash:1.0.3.10/" ||
+                pfrom->cleanSubVer == "/Piratecash:1.0.3.13/" ||
+                pfrom->cleanSubVer == "/Piratecash:1.0.3.15/" ||
+                pfrom->cleanSubVer == "/PirateCash:1.0.3.16/")
+            {
+                // disconnect from peers older than 1.0.4.0 version
+                LogPrintf("peer=%d using obsolete version %i; disconnecting\n", pfrom->id, pfrom->cleanSubVer);
+                pfrom->fDisconnect = true;
+                return false;
+            }
+
         }
         if (!vRecv.empty())
             vRecv >> pfrom->nStartingHeight;
