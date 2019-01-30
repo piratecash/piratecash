@@ -39,12 +39,12 @@ static const int INIT_PROTO_VERSION = 209;
 static const int MIN_PEER_PROTO_VERSION = 60010;
 
 // minimum peer version accepted by DarkSendPool
-static const int MIN_POOL_PEER_PROTO_VERSION = 60010; 
+static const int MIN_POOL_PEER_PROTO_VERSION = 60011;
 
 static const int MIN_INSTANTX_PROTO_VERSION = 60010;
 
 // minimum peer version that can receive masternode payments
-static const int MIN_MASTERNODE_PAYMENT_PROTO = 60010;
+static const int MIN_MASTERNODE_PAYMENT_PROTO = 60011;
 
 // nTime field added to CAddress, starting with this version;
 // if possible, avoid requesting addresses nodes older than this
