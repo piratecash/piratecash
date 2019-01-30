@@ -1463,6 +1463,8 @@ bool IsWalletGracePeriod()
                 WalletStart = GetTime();
                 LogPrintf("Updated start time is : %d \n", WalletStart);
         }
+        if (!TestNet())
+            return true; //Temporary disable SoftFork
         if (GetTime() < WalletStart + 3600) {
                 return true;
         }
