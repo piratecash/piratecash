@@ -161,7 +161,7 @@ namespace {
 struct CNodeState {
     // Accumulated misbehaviour score for this peer.
     int nMisbehavior;
-    // Whether this peer should be disconnected and banned (unless whitelisted).
+    // Whether this peer should be disconnected and banned.
     bool fShouldBan;
     std::string name;
 

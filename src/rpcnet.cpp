@@ -100,7 +100,6 @@ Value getpeerinfo(const Array& params, bool fHelp)
             obj.push_back(Pair("banscore", statestats.nMisbehavior));
         }
         obj.push_back(Pair("syncnode", stats.fSyncNode));
-        obj.push_back(Pair("whitelisted", stats.fWhitelisted));
 
         ret.push_back(obj);
     }
