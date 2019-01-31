@@ -67,7 +67,7 @@ bool fReindex = false;
 bool fAddrIndex = false;
 bool fHaveGUI = false;
 
-static bool isSoftForkEnabled() { return GetArg("-softfork120k", true); }
+static bool isSoftForkEnabled() { return GetArg("-softfork120k", false); }
 
 struct COrphanBlock {
     uint256 hashBlock;
