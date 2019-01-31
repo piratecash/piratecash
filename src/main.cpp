@@ -67,6 +67,8 @@ bool fReindex = false;
 bool fAddrIndex = false;
 bool fHaveGUI = false;
 
+static bool isSoftForkEnabled() { return GetArg("-softfork120k", true); }
+
 struct COrphanBlock {
     uint256 hashBlock;
     uint256 hashPrev;
@@ -1463,8 +1465,8 @@ bool IsWalletGracePeriod()
                 WalletStart = GetTime();
                 LogPrintf("Updated start time is : %d \n", WalletStart);
         }
-        if (!TestNet())
-                    return true; //Temporary disable SoftFork
+        if (!isSoftForkEnabled())
+                    return true;
         if (GetTime() < WalletStart + 3600) {
                 return true;
         }
