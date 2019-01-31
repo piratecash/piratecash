@@ -1273,7 +1273,7 @@ icon-size: 0;</string>
           <item row="11" column="0">
            <widget class="QLabel" name="label_18">
             <property name="text">
-             <string>Last Send:</string>
+             <string>Bytes Sent</string>
             </property>
            </widget>
           </item>
