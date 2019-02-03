@@ -222,7 +222,8 @@ bool MasternodeManager::requestunlock()
         dlg.exec();
     }
 
-    return walletModel->getEncryptionStatus() == walletModel->Unlocked;
+    encStatus = walletModel->getEncryptionStatus();
+    return encStatus == walletModel->Unlocked || encStatus == WalletModel::Unencrypted;
 }
 
 void MasternodeManager::on_startButton_clicked()
