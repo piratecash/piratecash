@@ -397,8 +397,8 @@ Value masternode(const Array& params, bool fHelp)
     		if(mne.getAlias() == alias) {
     			found = true;
     			std::string errorMessage;
-                std::string strRewardAddress = "";
-                std::string strRewardPercentage = "";
+                std::string strRewardAddress = mne.getRewardAddress();;
+                std::string strRewardPercentage = mne.getRewardPercentage();
 
                 bool result = activeMasternode.Register(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strRewardAddress, strRewardPercentage, errorMessage);
   
@@ -451,8 +451,8 @@ Value masternode(const Array& params, bool fHelp)
 			total++;
 
 			std::string errorMessage;
-            std::string strRewardAddress = "";
-            std::string strRewardPercentage = "";
+            std::string strRewardAddress = mne.getRewardAddress();
+            std::string strRewardPercentage = mne.getRewardPercentage();
 
             bool result = activeMasternode.Register(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strRewardAddress, strRewardPercentage, errorMessage);
 
@@ -609,13 +609,15 @@ Value masternode(const Array& params, bool fHelp)
         Object resultObj;
 
         BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
-    		Object mnObj;
-    		mnObj.push_back(Pair("alias", mne.getAlias()));
-    		mnObj.push_back(Pair("address", mne.getIp()));
-    		mnObj.push_back(Pair("privateKey", mne.getPrivKey()));
-    		mnObj.push_back(Pair("txHash", mne.getTxHash()));
-    		mnObj.push_back(Pair("outputIndex", mne.getOutputIndex()));
-    		resultObj.push_back(Pair("masternode", mnObj));
+            Object mnObj;
+            mnObj.push_back(Pair("alias", mne.getAlias()));
+            mnObj.push_back(Pair("address", mne.getIp()));
+            mnObj.push_back(Pair("privateKey", mne.getPrivKey()));
+            mnObj.push_back(Pair("txHash", mne.getTxHash()));
+            mnObj.push_back(Pair("outputIndex", mne.getOutputIndex()));
+            mnObj.push_back(Pair("rewardAddress", mne.getRewardAddress()));
+            mnObj.push_back(Pair("rewardPercentage", mne.getRewardPercentage()));
+            resultObj.push_back(Pair("masternode", mnObj));
     	}
 
     	return resultObj;
