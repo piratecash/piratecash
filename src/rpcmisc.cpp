@@ -71,11 +71,6 @@ Value getinfo(const Array& params, bool fHelp)
     {
         obj.push_back(Pair("GracePeriodLeft", (int)WalletGracePeriodLeft()));
     }
-    int gCount = getGraceCount();
-    if (gCount > 0)
-    {
-        obj.push_back(Pair("GracePeriodCount", (int)gCount));
-    }
 #ifdef ENABLE_WALLET
     if (pwalletMain) {
         obj.push_back(Pair("keypoololdest", (int64_t)pwalletMain->GetOldestKeyPoolTime()));
