@@ -434,8 +434,6 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool darkSendMaste
     {
         addrman.Attempt(addrConnect);
 
-        LogPrint("net", "connected %s\n", pszDest ? pszDest : addrConnect.ToString());
-
         // Set to non-blocking
         if (!SetSocketNonBlocking(hSocket, true))
             LogPrintf("ConnectNode: Setting socket to non-blocking failed, error %s\n", NetworkErrorString(WSAGetLastError()));
@@ -450,6 +448,7 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool darkSendMaste
         }
 
         pnode->nTimeConnected = GetTime();
+
         return pnode;
     }
     return NULL;
@@ -460,7 +459,7 @@ void CNode::CloseSocketDisconnect()
     fDisconnect = true;
     if (hSocket != INVALID_SOCKET)
     {
-        LogPrint("net", "disconnecting node %s\n", addrName);
+        LogPrint("net", "disconnecting peer=%d\n", id);
         CloseSocket(hSocket);
         hSocket = INVALID_SOCKET;
     }
@@ -482,7 +481,10 @@ void CNode::PushVersion()
     CAddress addrYou = (addr.IsRoutable() && !IsProxy(addr) ? addr : CAddress(CService("0.0.0.0",0)));
     CAddress addrMe = GetLocalAddress(&addr);
     GetRandBytes((unsigned char*)&nLocalHostNonce, sizeof(nLocalHostNonce));
-    LogPrint("net", "send version message: version %d, blocks=%d, us=%s, them=%s, peer=%s\n", PROTOCOL_VERSION, nBestHeight, addrMe.ToString(), addrYou.ToString(), addr.ToString());
+    if (fLogIPs)
+        LogPrint("net", "send version message: version %d, blocks=%d, us=%s, them=%s, peer=%d\n", PROTOCOL_VERSION, nBestHeight, addrMe.ToString(), addrYou.ToString(), id);
+    else
+        LogPrint("net", "send version message: version %d, blocks=%d, us=%s, peer=%d\n", PROTOCOL_VERSION, nBestHeight, addrMe.ToString(), id);
     PushMessage("version", PROTOCOL_VERSION, nLocalServices, nTime, addrYou, addrMe,
                 nLocalHostNonce, strSubVersion, nBestHeight);
 }
@@ -988,7 +990,6 @@ void ThreadSocketHandler()
                 setsockopt(hSocket, IPPROTO_TCP, TCP_NODELAY, (void*)&set, sizeof(int));
 #endif
 
-					LogPrint("net", "accepted connection %s\n", addr.ToString());
 					CNode* pnode = new CNode(hSocket, addr, "", true);
 					pnode->AddRef();
 					{
@@ -1083,7 +1084,7 @@ void ThreadSocketHandler()
 			{
 				if (pnode->nLastRecv == 0 || pnode->nLastSend == 0)
 				{
-					LogPrint("net", "socket no message in first 60 seconds, %d %d\n", pnode->nLastRecv != 0, pnode->nLastSend != 0);
+                    LogPrint("net", "socket no message in first 60 seconds, %d %d from %d\n", pnode->nLastRecv != 0, pnode->nLastSend != 0, pnode->id);
 					pnode->fDisconnect = true;
 				}
 				else if (GetTime() - pnode->nLastSend > 90 * 60 && GetTime() - pnode->nLastSendEmpty > 90 * 60)
