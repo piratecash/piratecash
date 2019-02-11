@@ -71,6 +71,7 @@ Value getinfo(const Array& params, bool fHelp)
     {
         obj.push_back(Pair("GracePeriodLeft", (int)WalletGracePeriodLeft()));
     }
+    obj.push_back(Pair("Patch120k", IsSporkActive(SPORK_120K)));
 #ifdef ENABLE_WALLET
     if (pwalletMain) {
         obj.push_back(Pair("keypoololdest", (int64_t)pwalletMain->GetOldestKeyPoolTime()));
