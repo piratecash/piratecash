@@ -303,8 +303,7 @@ strUsage += "\n" + _("Masternode options:") + "\n";
         "  -nosmsg                                  " + _("Disable secure messaging.") + "\n" +
         "  -debugsmsg                               " + _("Log extra debug messages.") + "\n" +
         "  -smsgscanchain                           " + _("Scan the block chain for public key addresses on startup.") + "\n" +
-    strUsage += "  -stakethreshold=<n> " + _("This will set the output size of your stakes to never be below this number (default: 250)") + "\n" +
-    strUsage += "  -softfork120k=<n> " + _("This will activate soft fork at 120 000 block (default: false)") + "\n";
+    strUsage += "  -stakethreshold=<n> " + _("This will set the output size of your stakes to never be below this number (default: 250)") + "\n";
 
     return strUsage;
 }
