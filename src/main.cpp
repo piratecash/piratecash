@@ -2618,15 +2618,6 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
                         foundPaymentAndPayee = true;
                         if(fDebug) { LogPrintf("CheckBlock() : Wallet is in GracePeriod, block %d\n", pindexBest->nHeight+1); }
                     }
-                    // Accept old blocks
-                    if (pindexBest->nHeight + 1 < 120000 and !foundPaymentAndPayee and !TestNet()){
-                        if(!masternodePayments.GetBlockPayee(pindexBest->nHeight+1, payee, vin) || payee == CScript()){
-                            foundPaymentAmount = true;
-                            foundPayee = true;
-                            foundPaymentAndPayee = true;
-                            if(fDebug) { LogPrintf("CheckBlock() : Using non-specific masternode payments %d\n", pindexBest->nHeight+1); }
-                        }
-                    }
 
                     if(!foundPaymentAndPayee) {
                         if(fDebug) { LogPrintf("CheckBlock() : Couldn't find masternode payment(%d|%d) or payee(%d|%s) nHeight %d. \n", foundPaymentAmount, masternodePaymentAmount, foundPayee, address2.ToString().c_str(), pindexBest->nHeight+1); }
