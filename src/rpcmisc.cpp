@@ -261,7 +261,16 @@ Value spork(const Array& params, bool fHelp)
             it++;
         }
         return ret;
-    } else if (params.size() == 2){
+    } else if (params.size() == 1 && params[0].get_str() == "active") {
+        std::map<int, CSporkMessage>::iterator it = mapSporksActive.begin();
+
+        Object ret;
+        while(it != mapSporksActive.end()) {
+            ret.push_back(Pair(sporkManager.GetSporkNameByID(it->second.nSporkID), IsSporkActive(it->second.nSporkID)));
+            it++;
+        }
+        return ret;
+    }else if (params.size() == 2){
         int nSporkID = sporkManager.GetSporkIDByName(params[0].get_str());
         if(nSporkID == -1){
             return "Invalid spork name";
