@@ -163,6 +163,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "checkkernel", 1 },
     { "setban", 2 },
     { "setban", 3 },
+    { "spork", 1},
     { "sendtostealthaddress", 1 },
     { "searchrawtransactions", 1 },
     { "searchrawtransactions", 2 },
