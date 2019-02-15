@@ -2313,7 +2313,7 @@ To znamená, že je potřebný poplatek ve výši nejméně %2.</translation>
     <message>
         <location line="+3"/>
         <source>Generated coins must mature 120 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to &quot;not accepted&quot; and it won&apos;t be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
-        <translation>Vygenerované mince musí zrát 510 bloků, než mohou být utraceny. Když jsi vygeneroval tento blok, tak byl vyslán do sítě, aby byl přidán do řetězce bloků. Pokud přidání do řetězce selže, tak se jeho stav změní na &quot;neakceptován&quot; a nebude ho možné utratit. To se někdy může stát, když jiný uzel vygeneruje blok pár vteřin před tím tvým. </translation>
+        <translation>Vygenerované mince musí zrát 120 bloků, než mohou být utraceny. Když jsi vygeneroval tento blok, tak byl vyslán do sítě, aby byl přidán do řetězce bloků. Pokud přidání do řetězce selže, tak se jeho stav změní na &quot;neakceptován&quot; a nebude ho možné utratit. To se někdy může stát, když jiný uzel vygeneruje blok pár vteřin před tím tvým. </translation>
     </message>
     <message>
         <location line="+7"/>
