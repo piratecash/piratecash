@@ -35,7 +35,6 @@ using namespace boost;
 // Global state
 //
 int64_t WalletStart = GetTime();
-int GraceCount = 0;
 CCriticalSection cs_setpwalletRegistered;
 set<CWallet*> setpwalletRegistered;
 
@@ -162,7 +161,7 @@ namespace {
 struct CNodeState {
     // Accumulated misbehaviour score for this peer.
     int nMisbehavior;
-    // Whether this peer should be disconnected and banned.
+    // Whether this peer should be disconnected and banned (unless whitelisted).
     bool fShouldBan;
     std::string name;
 
@@ -1441,16 +1440,6 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits)
     return true;
 }
 
-void incGraceCount(){
-    GraceCount++;
-    WalletStart = GetTime() - 3000; // 10 mineutes
-    LogPrintf("CheckBlock() : New GracePeriod on block %d\n", pindexBest->nHeight+1);
-}
-
-int getGraceCount(){
-    return GraceCount;
-}
-
 int WalletGracePeriodLeft(){
     if (GetTime() < WalletStart + 3600) {
             return WalletStart + 3600 - GetTime();
@@ -2621,28 +2610,12 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
                     CpiratecashcoinAddress address2(address1);
 
                     bool fIsWalletGracePeriod = IsWalletGracePeriod();
-                    //Workaround in case stop syncing
-                    if (!fIsWalletGracePeriod && (GetTime() - nTimeBestReceived) > 900)
-                    {
-                        incGraceCount();
-                        fIsWalletGracePeriod = true;
-                    }
-
                     // Accept blocks in GracePeriod is payment payee is different
                     if (!foundPaymentAndPayee and fIsWalletGracePeriod) {
                         foundPaymentAmount = true;
                         foundPayee = true;
                         foundPaymentAndPayee = true;
                         if(fDebug) { LogPrintf("CheckBlock() : Wallet is in GracePeriod, block %d\n", pindexBest->nHeight+1); }
-                    }
-                    // Accept old blocks
-                    if (pindexBest->nHeight + 1 < 120000 and !foundPaymentAndPayee and !TestNet()){
-                        if(!masternodePayments.GetBlockPayee(pindexBest->nHeight+1, payee, vin) || payee == CScript()){
-                            foundPaymentAmount = true;
-                            foundPayee = true;
-                            foundPaymentAndPayee = true;
-                            if(fDebug) { LogPrintf("CheckBlock() : Using non-specific masternode payments %d\n", pindexBest->nHeight+1); }
-                        }
                     }
 
                     if(!foundPaymentAndPayee) {
@@ -2717,11 +2690,14 @@ bool CBlock::AcceptBlock()
         return error("AcceptBlock() : block already in mapBlockIndex");
 
     // Get prev block index
+    CBlockIndex* pindexPrev = NULL;
+    int nHeight = 0;
+
     map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(hashPrevBlock);
     if (mi == mapBlockIndex.end())
         return DoS(10, error("AcceptBlock() : prev block not found"));
-    CBlockIndex* pindexPrev = (*mi).second;
-    int nHeight = pindexPrev->nHeight+1;
+    pindexPrev = (*mi).second;
+    nHeight = pindexPrev->nHeight+1;
 
     uint256 hashProof;
     if (IsProofOfWork() && nHeight > Params().LastPOWBlock()){
@@ -2846,7 +2822,8 @@ void Misbehaving(NodeId pnode, int howmuch)
         return;
 
     state->nMisbehavior += howmuch;
-    if (state->nMisbehavior >= GetArg("-banscore", 100))
+    int banscore = GetArg("-banscore", 100);
+    if (state->nMisbehavior >= banscore && state->nMisbehavior - howmuch < banscore)
     {
         LogPrintf("Misbehaving: %s (%d -> %d) BAN THRESHOLD EXCEEDED\n", state->name.c_str(), state->nMisbehavior-howmuch, state->nMisbehavior);
         state->fShouldBan = true;
@@ -3574,10 +3551,10 @@ void static ProcessGetData(CNode* pfrom)
     }
 }
 
-bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
+bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, int64_t nTimeReceived)
 {
     RandAddSeedPerfmon();
-    LogPrint("net", "received: %s (%u bytes)\n", strCommand, vRecv.size());
+    LogPrint("net", "received: %s (%u bytes) peer=%d\n", strCommand, vRecv.size(), pfrom->id);
     if (mapArgs.count("-dropmessagestest") && GetRand(atoi(mapArgs["-dropmessagestest"])) == 0)
     {
         LogPrintf("dropmessagestest DROPPING RECV MESSAGE\n");
@@ -3601,7 +3578,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         if (pfrom->nVersion < MIN_PEER_PROTO_VERSION)
         {
             // disconnect from peers older than this proto version
-            LogPrintf("partner %s using obsolete version %i; disconnecting\n", pfrom->addr.ToString(), pfrom->nVersion);
+            LogPrintf("peer=%d using obsolete version %i; disconnecting\n", pfrom->id, pfrom->nVersion);
             pfrom->fDisconnect = true;
             return false;
         }
@@ -3613,31 +3590,12 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         if (!vRecv.empty()) {
             vRecv >> pfrom->strSubVer;
             pfrom->cleanSubVer = SanitizeString(pfrom->strSubVer);
-            if (pfrom->cleanSubVer == "/Piratecash:1.0.1.3/" ||
-                pfrom->cleanSubVer == "/Piratecash:1.0.2.4/" ||
-                pfrom->cleanSubVer == "/Piratecash:1.0.3.10/" ||
-                pfrom->cleanSubVer == "/Piratecash:1.0.3.13/" ||
-                pfrom->cleanSubVer == "/Piratecash:1.0.3.15/" ||
-                pfrom->cleanSubVer == "/PirateCash:1.0.3.16/" ||
-                pfrom->cleanSubVer == "/PirateCash:1.0.4.1/" ||
-                pfrom->cleanSubVer == "/PirateCash:1.0.4.2/" ||
-                pfrom->cleanSubVer == "/PirateCash:1.0.4.3/" ||
-                pfrom->cleanSubVer == "/PirateCash:1.0.4.4/" ||
-                pfrom->cleanSubVer == "/PirateCash:1.0.4.5/" ||
-                pfrom->cleanSubVer == "/PirateCash:1.0.4.6/" ||
-                pfrom->cleanSubVer == "/PirateCash:1.0.4.7/" ||
-                pfrom->cleanSubVer == "/PirateCash:1.0.4.8/")
-            {
-                // disconnect from peers older than 1.0.4.0 version
-                LogPrintf("peer=%d using obsolete version %i; disconnecting\n", pfrom->id, pfrom->cleanSubVer);
-                pfrom->fDisconnect = true;
-                return false;
-            }
-
         }
         if (!vRecv.empty())
             vRecv >> pfrom->nStartingHeight;
         if (!vRecv.empty())
+            vRecv >> pfrom->fRelayTxes; // set to true after we get the first filter* message
+        else
             pfrom->fRelayTxes = true;
 
         // Disconnect if we connected to ourself
@@ -3703,7 +3661,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
 
         pfrom->fSuccessfullyConnected = true;
 
-        LogPrintf("receive version message: version %d, blocks=%d, us=%s, them=%s, peer=%s\n", pfrom->nVersion, pfrom->nStartingHeight, addrMe.ToString(), addrFrom.ToString(), pfrom->addr.ToString());
+        LogPrintf("receive version message: %s: version %d, blocks=%d, us=%s, peer=%d\n", pfrom->cleanSubVer, pfrom->nVersion, pfrom->nStartingHeight, addrMe.ToString(), pfrom->id);
 
         if (GetBoolArg("-synctime", true)){
             AddTimeData(pfrom->addr, nTime);
@@ -3822,7 +3780,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
             pfrom->AddInventoryKnown(inv);
 
             bool fAlreadyHave = AlreadyHave(txdb, inv);
-            LogPrint("net", "  got inventory: %s  %s\n", inv.ToString(), fAlreadyHave ? "have" : "new");
+            LogPrint("net", "got inv: %s  %s peer=%d\n", inv.ToString(), fAlreadyHave ? "have" : "new", pfrom->id);
 
             if (!fAlreadyHave) {
                 if (!fImporting)
@@ -3855,10 +3813,10 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         }
 
         if (fDebug || (vInv.size() != 1))
-            LogPrint("net", "received getdata (%u invsz)\n", vInv.size());
+            LogPrint("net", "received getdata (%u invsz) peer=%d\n", vInv.size(), pfrom->id);
 
         if ((fDebug && vInv.size() > 0) || (vInv.size() == 1))
-            LogPrint("net", "received getdata for: %s\n", vInv[0].ToString());
+            LogPrint("net", "received getdata for: %s peer=%d\n", vInv[0].ToString(), pfrom->id);
 
         pfrom->vRecvGetData.insert(pfrom->vRecvGetData.end(), vInv.begin(), vInv.end());
         ProcessGetData(pfrom);
@@ -4061,6 +4019,11 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
             unsigned int nEvicted = LimitOrphanTxSize(MAX_ORPHAN_TRANSACTIONS);
             if (nEvicted > 0)
                 LogPrint("mempool", "mapOrphan overflow, removed %u tx\n", nEvicted);
+        } else if (pfrom->fWhitelisted) {
+                    // Always relay transactions received from whitelisted peers, even
+                    // if they are already in the mempool (allowing the node to function
+                    // as a gateway for nodes hidden behind it).
+                    //RelayTransaction(tx); //it will be later in PirateCash
         }
         if(strCommand == "dstx"){
             inv = CInv(MSG_DSTX, tx.GetHash());
@@ -4076,7 +4039,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         vRecv >> block;
         uint256 hashBlock = block.GetHash();
 
-        LogPrint("net", "received block %s\n", hashBlock.ToString());
+        LogPrint("net", "received block %s peer=%d\n", block.GetHash().ToString(), pfrom->id);
 
         CInv inv(MSG_BLOCK, hashBlock);
         pfrom->AddInventoryKnown(inv);
@@ -4149,7 +4112,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
 
     else if (strCommand == "pong")
     {
-        int64_t pingUsecEnd = GetTimeMicros();
+        int64_t pingUsecEnd = nTimeReceived;
         uint64_t nonce = 0;
         size_t nAvail = vRecv.in_avail();
         bool bPingFinished = false;
@@ -4190,8 +4153,8 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         }
 
         if (!(sProblem.empty())) {
-            LogPrint("net", "pong %s %s: %s, %x expected, %x received, %zu bytes\n"
-                , pfrom->addr.ToString()
+            LogPrint("net", "pong peer=%d %s: %s, %x expected, %x received, %zu bytes\n"
+                , pfrom->id
                 , pfrom->strSubVer
                 , sProblem
                 , pfrom->nPingNonceSent
@@ -4234,6 +4197,51 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         }
     }
 
+    else if (strCommand == "filterload")
+    {
+        CBloomFilter filter;
+        vRecv >> filter;
+
+        if (!filter.IsWithinSizeConstraints())
+            // There is no excuse for sending a too-large filter
+            Misbehaving(pfrom->GetId(), 100);
+        else
+        {
+            LOCK(pfrom->cs_filter);
+            delete pfrom->pfilter;
+            pfrom->pfilter = new CBloomFilter(filter);
+        }
+        pfrom->fRelayTxes = true;
+    }
+
+
+    else if (strCommand == "filteradd")
+    {
+        vector<unsigned char> vData;
+        vRecv >> vData;
+
+        // Nodes must NEVER send a data item > 520 bytes (the max size for a script data object,
+        // and thus, the maximum size any matched object can have) in a filteradd message
+        if (vData.size() > 520)
+        {
+            Misbehaving(pfrom->GetId(), 100);
+        } else {
+            LOCK(pfrom->cs_filter);
+            if (pfrom->pfilter)
+                pfrom->pfilter->insert(vData);
+            else
+                Misbehaving(pfrom->GetId(), 100);
+        }
+    }
+
+
+    else if (strCommand == "filterclear")
+    {
+        LOCK(pfrom->cs_filter);
+        delete pfrom->pfilter;
+        pfrom->pfilter = NULL;
+        pfrom->fRelayTxes = true;
+    }
 
     else
     {
@@ -4337,7 +4345,7 @@ bool ProcessMessages(CNode* pfrom)
         bool fRet = false;
         try
         {
-            fRet = ProcessMessage(pfrom, strCommand, vRecv);
+            fRet = ProcessMessage(pfrom, strCommand, vRecv, msg.nTime);
             boost::this_thread::interruption_point();
         }
         catch (std::ios_base::failure& e)
@@ -4367,7 +4375,7 @@ bool ProcessMessages(CNode* pfrom)
         }
 
         if (!fRet)
-            LogPrintf("ProcessMessage(%s, %u bytes) FAILED\n", strCommand, nMessageSize);
+            LogPrintf("ProcessMessage(%s, %u bytes) FAILED peer=%d\n", strCommand, nMessageSize, pfrom->id);
 
         break;
     }
@@ -4420,6 +4428,20 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
         TRY_LOCK(cs_main, lockMain); // Acquire cs_main for IsInitialBlockDownload() and CNodeState()
         if (!lockMain)
             return true;
+
+        CNodeState &state = *State(pto->GetId());
+        if (state.fShouldBan) {
+            if (pto->fWhitelisted)
+                LogPrintf("Warning: not punishing whitelisted peer %s!\n", pto->addr.ToString());
+            else {
+                pto->fDisconnect = true;
+                if (pto->addr.IsLocal())
+                    LogPrintf("Warning: not banning local peer %s!\n", pto->addr.ToString());
+                //else
+                    //CNode::Ban(pto->addr); //it will be later in PirateCash
+            }
+            state.fShouldBan = false;
+        }
 
         // Start block sync
         if (pto->fStartSync && !fImporting && !fReindex) {
@@ -4555,7 +4577,7 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
             if (!AlreadyHave(txdb, inv))
             {
                 if (fDebug)
-                    LogPrint("net", "sending getdata: %s\n", inv.ToString());
+                    LogPrint("net", "Requesting %s peer=%d\n", inv.ToString(), pto->id);
                 vGetData.push_back(inv);
                 if (vGetData.size() >= 1000)
                 {
