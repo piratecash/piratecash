@@ -3590,12 +3590,6 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         if (!vRecv.empty()) {
             vRecv >> pfrom->strSubVer;
             pfrom->cleanSubVer = SanitizeString(pfrom->strSubVer);
-            if (pfrom->cleanSubVer == "/PirateCash:1.0.8/"){
-                // disconnect from peers 1.0.8
-                LogPrintf("peer=%d using obsolete version %i; disconnecting\n", pfrom->id, pfrom->nVersion);
-                pfrom->fDisconnect = true;
-                return false;
-            }
         }
         if (!vRecv.empty())
             vRecv >> pfrom->nStartingHeight;
@@ -4411,7 +4405,7 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
             // RPC ping request by user
             pingSend = true;
         }
-        if (pto->nPingNonceSent == 0 && pto->nPingUsecStart + PING_INTERVAL * 1000000 < GetTimeMicros()) {
+        if (pto->nLastSend && GetTime() - pto->nLastSend > 30 * 60 && pto->vSendMsg.empty()) {
             // Ping automatically sent as a latency probe & keepalive.
             pingSend = true;
         }
