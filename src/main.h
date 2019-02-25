@@ -71,6 +71,7 @@ static const int64_t DRIFT = 120;
 inline int64_t FutureDrift(int64_t nTime) { return nTime + DRIFT; }
 
 /** "reject" message codes **/
+static const unsigned char REJECT_MALFORMED = 0x01;
 static const unsigned char REJECT_INVALID = 0x10;
 
 inline int64_t GetMNCollateral(int nHeight) { return 10000; }

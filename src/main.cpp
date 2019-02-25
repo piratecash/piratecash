@@ -3598,6 +3598,12 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         else
             pfrom->fRelayTxes = true;
 
+        if (pfrom->fInbound && addrMe.IsRoutable())
+        {
+            pfrom->addrLocal = addrMe;
+            SeenLocal(addrMe);
+        }
+
         // Disconnect if we connected to ourself
         if (nNonce == nLocalHostNonce && nNonce > 1)
         {
@@ -3606,17 +3612,12 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             return true;
         }
 
-        if (pfrom->fInbound && addrMe.IsRoutable())
-        {
-            pfrom->addrLocal = addrMe;
-            SeenLocal(addrMe);
-        }
-
         // Be shy and don't send version until we hear
         if (pfrom->fInbound)
             pfrom->PushVersion();
 
         pfrom->fClient = !(pfrom->nServices & NODE_NETWORK);
+
 
         // Change version
         pfrom->PushMessage("verack");
@@ -3750,6 +3751,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             pfrom->fDisconnect = true;
     }
 
+
     else if (strCommand == "inv")
     {
         vector<CInv> vInv;
@@ -3857,6 +3859,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             }
         }
     }
+
 
     else if (strCommand == "getheaders")
     {
@@ -4351,6 +4354,7 @@ bool ProcessMessages(CNode* pfrom)
         }
         catch (std::ios_base::failure& e)
         {
+            pfrom->PushMessage("reject", strCommand, REJECT_MALFORMED, string("error parsing message"));
             if (strstr(e.what(), "end of data"))
             {
                 // Allow exceptions from under-length message on vRecv
@@ -4391,8 +4395,7 @@ bool ProcessMessages(CNode* pfrom)
 
 bool SendMessages(CNode* pto, bool fSendTrickle)
 {
-    TRY_LOCK(cs_main, lockMain);
-    if (lockMain) {
+    {
         // Don't send anything until we get their version message
         if (pto->nVersion == 0)
             return true;
@@ -4406,22 +4409,23 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
             pingSend = true;
         }
         if (pto->nLastSend && GetTime() - pto->nLastSend > 30 * 60 && pto->vSendMsg.empty()) {
-            // Ping automatically sent as a latency probe & keepalive.
+            // Ping automatically sent as a keepalive
             pingSend = true;
         }
         if (pingSend) {
             uint64_t nonce = 0;
             while (nonce == 0) {
-                GetRandBytes((unsigned char*)&nonce, sizeof(nonce));
+                RAND_bytes((unsigned char*)&nonce, sizeof(nonce));
             }
+            pto->nPingNonceSent = nonce;
             pto->fPingQueued = false;
-            pto->nPingUsecStart = GetTimeMicros();
             if (pto->nVersion > BIP0031_VERSION) {
-                pto->nPingNonceSent = nonce;
+                // Take timestamp as close as possible before transmitting ping
+                pto->nPingUsecStart = GetTimeMicros();
                 pto->PushMessage("ping", nonce);
             } else {
-                // Peer is too old to support ping command with nonce, pong will never arrive.
-                pto->nPingNonceSent = 0;
+                // Peer is too old to support ping command with nonce, pong will never arrive, disable timing
+                pto->nPingUsecStart = 0;
                 pto->PushMessage("ping");
             }
         }
