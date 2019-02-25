@@ -39,7 +39,8 @@ namespace boost {
     class thread_group;
 }
 
-
+/** Time between pings automatically sent out for latency probing and keepalive (in seconds). */
+static const int PING_INTERVAL = 2 * 60;
 /** Maximum length of strSubVer in `version` message */
 static const unsigned int MAX_SUBVERSION_LENGTH = 256;
 /** The maximum number of entries in an 'inv' protocol message */
