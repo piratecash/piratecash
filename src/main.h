@@ -74,6 +74,11 @@ inline int64_t FutureDrift(int64_t nTime) { return nTime + DRIFT; }
 static const unsigned char REJECT_MALFORMED = 0x01;
 static const unsigned char REJECT_INVALID = 0x10;
 static const unsigned char REJECT_OBSOLETE = 0x11;
+static const unsigned char REJECT_DUPLICATE = 0x12;
+static const unsigned char REJECT_NONSTANDARD = 0x40;
+static const unsigned char REJECT_DUST = 0x41;
+static const unsigned char REJECT_INSUFFICIENTFEE = 0x42;
+static const unsigned char REJECT_CHECKPOINT = 0x43;
 
 inline int64_t GetMNCollateral(int nHeight) { return 10000; }
 
