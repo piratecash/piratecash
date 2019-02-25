@@ -599,7 +599,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
     //Normally would disable functionality, NEED this enabled for staking.
     //if(fLiteMode) return;
-    if(IsInitialBlockDownload()) return;
+    if(!darkSendPool.IsBlockchainSynced()) return;
 
     LOCK(cs_process_message);
 
