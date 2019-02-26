@@ -119,9 +119,10 @@ unsigned short GetListenPort()
 // find 'best' local address for a particular peer
 bool GetLocal(CService& addr, const CNetAddr *paddrPeer)
 {
-   if (!fListen)
+    if (!fListen)
         return false;
-     int nBestScore = -1;
+
+    int nBestScore = -1;
     int nBestReachability = -1;
     {
         LOCK(cs_mapLocalHost);
@@ -141,16 +142,19 @@ bool GetLocal(CService& addr, const CNetAddr *paddrPeer)
 }
 
 // get best local address for a particular peer as a CAddress
+// Otherwise, return the unroutable 0.0.0.0 but filled in with
+// the normal parameters, since the IP may be changed to a useful
+// one by discovery.
 CAddress GetLocalAddress(const CNetAddr *paddrPeer)
 {
-    CAddress ret(CService("0.0.0.0",0),0);
+    CAddress ret(CService("0.0.0.0",GetListenPort()),0);
     CService addr;
     if (GetLocal(addr, paddrPeer))
     {
         ret = CAddress(addr);
-        ret.nServices = nLocalServices;
-        ret.nTime = GetAdjustedTime();
     }
+    ret.nServices = nLocalServices;
+    ret.nTime = GetAdjustedTime();
     return ret;
 }
 
@@ -206,36 +210,38 @@ bool RecvLine(SOCKET hSocket, string& strLine)
 
 int GetnScore(const CService& addr)
 {
-	LOCK(cs_mapLocalHost);
-	if (mapLocalHost.count(addr) == LOCAL_NONE)
-		return 0;
-	return mapLocalHost[addr].nScore;
+    LOCK(cs_mapLocalHost);
+    if (mapLocalHost.count(addr) == LOCAL_NONE)
+        return 0;
+    return mapLocalHost[addr].nScore;
 }
 
 // Is our peer's addrLocal potentially useful as an external IP source?
 bool IsPeerAddrLocalGood(CNode *pnode)
 {
-	return fDiscover && pnode->addr.IsRoutable() && pnode->addrLocal.IsRoutable() &&
-		!IsLimited(pnode->addrLocal.GetNetwork());
+    return fDiscover && pnode->addr.IsRoutable() && pnode->addrLocal.IsRoutable() &&
+           !IsLimited(pnode->addrLocal.GetNetwork());
 }
 
-// used when scores of local addresses may have changed
-// pushes better local address to peers
-void static AdvertizeLocal()
+// pushes our own address to a peer
+void AdvertizeLocal(CNode *pnode)
 {
-	LOCK(cs_vNodes);
-	BOOST_FOREACH(CNode* pnode, vNodes)
-	{
-		if (pnode->fSuccessfullyConnected)
-		{
-			CAddress addrLocal = GetLocalAddress(&pnode->addr);
-			if (addrLocal.IsRoutable() && (CService)addrLocal != (CService)pnode->addrLocal)
-			{
-				pnode->PushAddress(addrLocal);
-				pnode->addrLocal = addrLocal;
-			}
-		}
-	}
+    if (fListen && pnode->fSuccessfullyConnected)
+    {
+        CAddress addrLocal = GetLocalAddress(&pnode->addr);
+        // If discovery is enabled, sometimes give our peer the address it
+        // tells us that it sees us as in case it has a better idea of our
+        // address than we do.
+        if (IsPeerAddrLocalGood(pnode) && (!addrLocal.IsRoutable() ||
+             GetRand((GetnScore(addrLocal) > LOCAL_MANUAL) ? 8:2) == 0))
+        {
+            addrLocal.SetIP(pnode->addrLocal);
+        }
+        if (addrLocal.IsRoutable())
+        {
+            pnode->PushAddress(addrLocal);
+        }
+    }
 }
 
 void SetReachable(enum Network net, bool fFlag)
@@ -270,8 +276,6 @@ bool AddLocal(const CService& addr, int nScore)
 		}
 		SetReachable(addr.GetNetwork());
 	}
-
-    AdvertizeLocal();
 
     return true;
 }
@@ -310,11 +314,9 @@ bool SeenLocal(const CService& addr)
             return false;
         mapLocalHost[addr].nScore++;
     }
-
-    AdvertizeLocal();
-
     return true;
 }
+
 
 /** check whether a given address is potentially local */
 bool IsLocal(const CService& addr)
@@ -1548,7 +1550,7 @@ bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOu
     // Initiate outbound network connection
     //
     boost::this_thread::interruption_point();
-    if (!pszDest){
+    if (!pszDest) {
         if (IsLocal(addrConnect) ||
             FindNode((CNetAddr)addrConnect) || CNode::IsBanned(addrConnect) ||
             FindNode(addrConnect.ToStringIPPort()))
