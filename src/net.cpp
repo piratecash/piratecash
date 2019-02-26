@@ -449,10 +449,6 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool darkSendMaste
     {
         addrman.Attempt(addrConnect);
 
-        // Set to non-blocking
-        if (!SetSocketNonBlocking(hSocket, true))
-            LogPrintf("ConnectNode: Setting socket to non-blocking failed, error %s\n", NetworkErrorString(WSAGetLastError()));
-
         // Add node
         CNode* pnode = new CNode(hSocket, addrConnect, pszDest ? pszDest : "", false);
         pnode->AddRef();
