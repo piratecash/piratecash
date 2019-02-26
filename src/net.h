@@ -62,7 +62,7 @@ bool RecvLine(SOCKET hSocket, std::string& strLine);
 void AddressCurrentlyConnected(const CService& addr);
 CNode* FindNode(const CNetAddr& ip);
 CNode* FindNode(const CSubNet& subNet);
-CNode* FindNode(std::string addrName);
+CNode* FindNode(const std::string& addrName);
 CNode* FindNode(const CService& ip);
 CNode* ConnectNode(CAddress addrConnect, const char *pszDest = NULL, bool darkSendMaster=false);
 bool CheckNode(CAddress addrConnect);
