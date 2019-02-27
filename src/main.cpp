@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2014-2015 The Dash developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "main.h"
@@ -166,8 +167,9 @@ namespace {
 struct CNodeState {
     // Accumulated misbehaviour score for this peer.
     int nMisbehavior;
-    // Whether this peer should be disconnected and banned (unless whitelisted).
+    //! Whether this peer should be disconnected and banned (unless whitelisted).
     bool fShouldBan;
+    //! String name of this peer (debugging/logging purposes).
     std::string name;
 
     CNodeState() {
@@ -176,6 +178,7 @@ struct CNodeState {
     }
 };
 
+/** Map maintaining per-node state. Requires cs_main. */
 map<NodeId, CNodeState> mapNodeState;
 
 // Requires cs_main.
@@ -217,7 +220,6 @@ bool GetNodeStateStats(NodeId nodeid, CNodeStateStats &stats) {
     stats.nMisbehavior = state->nMisbehavior;
     return true;
 }
-
 
 void RegisterNodeSignals(CNodeSignals& nodeSignals)
 {
@@ -280,7 +282,7 @@ bool AddOrphanTx(const CTransaction& tx, NodeId peer)
         mapOrphanTransactionsByPrev[txin.prevout.hash].insert(hash);
 
     LogPrint("mempool", "stored orphan tx %s (mapsz %u prevsz %u)\n", hash.ToString(),
-        mapOrphanTransactions.size(), mapOrphanTransactionsByPrev.size());
+             mapOrphanTransactions.size(), mapOrphanTransactionsByPrev.size());
     return true;
 }
 
@@ -316,6 +318,7 @@ void EraseOrphansFor(NodeId peer)
     }
     if (nErased > 0) LogPrint("mempool", "Erased %d orphan tx from peer %d\n", nErased, peer);
 }
+
 
 unsigned int LimitOrphanTxSize(unsigned int nMaxOrphans)
 {
@@ -441,14 +444,13 @@ bool IsStandardTx(const CTransaction& tx, string& reason)
     }
 
     unsigned int nDataOut = 0;
-
     txnouttype whichType;
     BOOST_FOREACH(const CTxOut& txout, tx.vout) {
-        if (!::IsStandard(txout.scriptPubKey, whichType))
-        {
+        if (!::IsStandard(txout.scriptPubKey, whichType)) {
             reason = "scriptpubkey";
             return false;
         }
+
         if (whichType == TX_NULL_DATA)
         {
             nDataOut++;
@@ -543,7 +545,6 @@ bool AreInputsStandard(const CTransaction& tx, const MapPrevTx& mapInputs)
                     return false;
                 if (tmpExpected < 0)
                     return false;
-
                 nArgsExpected += tmpExpected;
             }
             else
@@ -795,6 +796,7 @@ bool AcceptToMemoryPool(CValidationState &state, CTxMemPool& pool, CTransaction 
         }
     }
     }
+
 
     {
         CTxDB txdb("r");
@@ -1283,8 +1285,14 @@ bool GetTransaction(const uint256 &hash, CTransaction &tx, uint256 &hashBlock)
             }
         }
     }
+
     return false;
 }
+
+
+
+
+
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -1953,7 +1961,6 @@ bool CBlock::ConnectBlock(CValidationState &state, CTxDB& txdb, CBlockIndex* pin
         uint256 hashTx = tx.GetHash();
         nInputs += tx.vin.size();
         nSigOps += GetLegacySigOpCount(tx);
-
         if (nSigOps > MAX_BLOCK_SIGOPS)
             return state.DoS(100, error("ConnectBlock() : too many sigops"));
 
@@ -2662,7 +2669,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
         if(fDebug) { LogPrintf("CheckBlock() : Is initial download, skipping masternode payment check %d\n", pindexBest->nHeight+1); }
     }
 
-
+    // -------------------------------------------
 
     // Check transactions
     BOOST_FOREACH(const CTransaction& tx, vtx)
@@ -3272,6 +3279,8 @@ void PrintBlockTree()
     }
 }
 
+
+
 bool LoadExternalBlockFile(FILE* fileIn)
 {
     int64_t nStart = GetTimeMillis();
@@ -3551,6 +3560,8 @@ void static ProcessGetData(CNode* pfrom)
                         pushed = true;
                     }
                 }
+
+
                 if (!pushed) {
                     vNotFound.push_back(inv);
                 }
@@ -3559,7 +3570,7 @@ void static ProcessGetData(CNode* pfrom)
             // Track requests for our stuff.
             g_signals.Inventory(inv.hash);
 
-            if (inv.type == MSG_BLOCK  || inv.type == MSG_FILTERED_BLOCK)
+            if (inv.type == MSG_BLOCK || inv.type == MSG_FILTERED_BLOCK)
                 break;
         }
     }
@@ -4248,6 +4259,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         }
     }
 
+
     else if (strCommand == "filterload")
     {
         CBloomFilter filter;
@@ -4322,7 +4334,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 bool ProcessMessages(CNode* pfrom)
 {
     //if (fDebug)
-    //    LogPrintf("ProcessMessages(%zu messages)\n", pfrom->vRecvMsg.size());
+    //    LogPrintf("ProcessMessages(%u messages)\n", pfrom->vRecvMsg.size());
 
     //
     // Message format
@@ -4350,7 +4362,7 @@ bool ProcessMessages(CNode* pfrom)
         CNetMessage& msg = *it;
 
         //if (fDebug)
-        //    LogPrintf("ProcessMessages(message %u msgsz, %zu bytes, complete:%s)\n",
+        //    LogPrintf("ProcessMessages(message %u msgsz, %u bytes, complete:%s)\n",
         //            msg.hdr.nMessageSize, msg.vRecv.size(),
         //            msg.complete() ? "Y" : "N");
 
@@ -4520,6 +4532,7 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
                 // Periodically clear setAddrKnown to allow refresh broadcasts
                 if (nLastRebroadcast)
                     pnode->setAddrKnown.clear();
+
                 // Rebroadcast our address
                 AdvertizeLocal(pnode);
             }

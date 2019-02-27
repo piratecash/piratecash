@@ -1,7 +1,9 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2014-2015 The Dash developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef BITCOIN_MAIN_H
 #define BITCOIN_MAIN_H
 
@@ -14,8 +16,6 @@
 #include "scrypt.h"
 
 #include <list>
-
-class CValidationState;
 
 #define START_MASTERNODE_PAYMENTS_TESTNET 1508779800
 #define START_MASTERNODE_PAYMENTS 1508779800
@@ -38,6 +38,7 @@ class CKeyItem;
 class CNode;
 class CReserveKey;
 class CWallet;
+class CValidationState;
 
 /** The maximum allowed size for a serialized block, in bytes (network rule) */
 static const unsigned int MAX_BLOCK_SIZE = 40000000;
@@ -116,7 +117,7 @@ extern unsigned int nDerivationMethodIndex;
 extern bool fLargeWorkForkFound;
 extern bool fLargeWorkInvalidChainFound;
 
-// Minimum disk space required - used in CheckDiskSpace()
+/** Minimum disk space required - used in CheckDiskSpace() */
 static const uint64_t nMinDiskSpace = 52428800;
 
 class CReserveKey;
@@ -499,8 +500,8 @@ inline bool AllowFree(double dPriority)
 }
 
 /** Check for standard transaction types
-    @return True if all outputs (scriptPubKeys) use only standard transaction forms
-*/
+ * @return True if all outputs (scriptPubKeys) use only standard transaction forms
+ */
 bool IsStandardTx(const CTransaction& tx, std::string& reason);
 
 bool IsFinalTx(const CTransaction &tx, int nBlockHeight = 0, int64_t nBlockTime = 0);
@@ -1439,4 +1440,4 @@ protected:
     friend void ::UnregisterAllWallets();
 };
 
-#endif
+#endif // BITCOIN_MAIN_H
