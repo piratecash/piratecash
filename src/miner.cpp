@@ -468,7 +468,8 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
         }
 
         // Process this block the same as if we had received it from another node
-        if (!ProcessBlock(NULL, pblock))
+        CValidationState state;
+        if (!ProcessBlock(state, NULL, pblock))
             return error("CheckWork() : ProcessBlock, block not accepted");
     }
 
@@ -505,7 +506,8 @@ bool CheckStake(CBlock* pblock, CWallet& wallet)
         }
 
         // Process this block the same as if we had received it from another node
-        if (!ProcessBlock(NULL, pblock))
+        CValidationState state;
+        if (!ProcessBlock(state, NULL, pblock))
             return error("CheckStake() : ProcessBlock, block not accepted");
         else
         {

@@ -457,7 +457,8 @@ bool CTxDB::LoadBlockIndex()
             return error("LoadBlockIndex() : block.ReadFromDisk failed");
         // check level 1: verify block validity
         // check level 7: verify block signature too
-        if (nCheckLevel>0 && !block.CheckBlock(true, true, (nCheckLevel>6)))
+        CValidationState state;
+        if (nCheckLevel>0 && !block.CheckBlock(state, true, true, (nCheckLevel>6)))
         {
             LogPrintf("LoadBlockIndex() : *** found bad block at %d, hash=%s\n", pindex->nHeight, pindex->GetBlockHash().ToString());
             pindexFork = pindex->pprev;
@@ -508,12 +509,13 @@ bool CTxDB::LoadBlockIndex()
                                 if (nCheckLevel>5)
                                 {
                                     CTransaction txSpend;
+                                    CValidationState state;
                                     if (!txSpend.ReadFromDisk(txpos))
                                     {
                                         LogPrintf("LoadBlockIndex(): *** cannot read spending transaction of %s:%i from disk\n", hashTx.ToString(), nOutput);
                                         pindexFork = pindex->pprev;
                                     }
-                                    else if (!txSpend.CheckTransaction())
+                                    else if (!txSpend.CheckTransaction(state))
                                     {
                                         LogPrintf("LoadBlockIndex(): *** spending transaction of %s:%i is invalid\n", hashTx.ToString(), nOutput);
                                         pindexFork = pindex->pprev;
@@ -562,7 +564,8 @@ bool CTxDB::LoadBlockIndex()
         if (!block.ReadFromDisk(pindexFork))
             return error("LoadBlockIndex() : block.ReadFromDisk failed");
         CTxDB txdb;
-        block.SetBestChain(txdb, pindexFork);
+        CValidationState state;
+        block.SetBestChain(state, txdb, pindexFork);
     }
 
     return true;

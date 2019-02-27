@@ -143,7 +143,7 @@ void UnregisterNodeSignals(CNodeSignals& nodeSignals);
 
 void PushGetBlocks(CNode* pnode, CBlockIndex* pindexBegin, uint256 hashEnd);
 
-bool ProcessBlock(CNode* pfrom, CBlock* pblock);
+bool ProcessBlock(CValidationState &state, CNode* pfrom, CBlock* pblock);
 bool CheckDiskSpace(uint64_t nAdditionalBytes=0);
 FILE* OpenBlockFile(unsigned int nFile, unsigned int nBlockPos, const char* pszMode="rb");
 FILE* AppendBlockFile(unsigned int& nFileRet);
@@ -171,10 +171,10 @@ void ThreadStakeMiner(CWallet *pwallet);
 
 
 /** (try to) add transaction to memory pool **/
-bool AcceptToMemoryPool(CTxMemPool& pool, CTransaction &tx, bool fLimitFree,
+bool AcceptToMemoryPool(CValidationState &state, CTxMemPool& pool, CTransaction &tx, bool fLimitFree,
                         bool* pfMissingInputs, bool fRejectInsaneFee=false, bool ignoreFees=false);
 
-bool AcceptableInputs(CTxMemPool& pool, const CTransaction &txo, bool fLimitFree,
+bool AcceptableInputs(CValidationState &state, CTxMemPool& pool, const CTransaction &txo, bool fLimitFree,
                         bool* pfMissingInputs, bool fRejectInsaneFee=false, bool isDSTX=false);
 
 
@@ -446,7 +446,7 @@ public:
     bool ConnectInputs(CTxDB& txdb, MapPrevTx inputs,
                        std::map<uint256, CTxIndex>& mapTestPool, const CDiskTxPos& posThisTx,
                        const CBlockIndex* pindexBlock, bool fBlock, bool fMiner, unsigned int flags = STANDARD_SCRIPT_VERIFY_FLAGS, bool fValidateSig = true);
-    bool CheckTransaction() const;
+    bool CheckTransaction(CValidationState &state) const;
     bool GetCoinAge(CTxDB& txdb, const CBlockIndex* pindexPrev, uint64_t& nCoinAge) const;
 
     const CTxOut& GetOutputFor(const CTxIn& input, const MapPrevTx& inputs) const;
@@ -888,19 +888,19 @@ public:
     }
 
 
-    bool DisconnectBlock(CTxDB& txdb, CBlockIndex* pindex);
-    bool ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck=false);
+    bool DisconnectBlock(CValidationState &state, CTxDB& txdb, CBlockIndex* pindex);
+    bool ConnectBlock(CValidationState &state, CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck=false);
     bool ReadFromDisk(const CBlockIndex* pindex, bool fReadTransactions=true);
-    bool SetBestChain(CTxDB& txdb, CBlockIndex* pindexNew);
-    bool AddToBlockIndex(unsigned int nFile, unsigned int nBlockPos, const uint256& hashProof);
-    bool CheckBlock(bool fCheckPOW=true, bool fCheckMerkleRoot=true, bool fCheckSig=true) const;
-    bool AcceptBlock();
+    bool SetBestChain(CValidationState &state, CTxDB& txdb, CBlockIndex* pindexNew);
+    bool AddToBlockIndex(CValidationState &state, unsigned int nFile, unsigned int nBlockPos, const uint256& hashProof);
+    bool CheckBlock(CValidationState &state, bool fCheckPOW=true, bool fCheckMerkleRoot=true, bool fCheckSig=true) const;
+    bool AcceptBlock(CValidationState &state);
     bool SignBlock(CWallet& keystore, int64_t nFees);
     bool CheckBlockSignature() const;
     void RebuildAddressIndex(CTxDB& txdb);
 
 private:
-    bool SetBestChainInner(CTxDB& txdb, CBlockIndex *pindexNew);
+    bool SetBestChainInner(CValidationState state, CTxDB& txdb, CBlockIndex *pindexNew);
 };
 
 

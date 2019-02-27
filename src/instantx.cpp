@@ -73,7 +73,8 @@ void ProcessMessageInstantX(CNode* pfrom, std::string& strCommand, CDataStream& 
         bool fAccepted = false;
         {
             LOCK(cs_main);
-            fAccepted = AcceptToMemoryPool(mempool, tx, true, &fMissingInputs);
+            CValidationState state;
+            fAccepted = AcceptToMemoryPool(state, mempool, tx, true, &fMissingInputs);
         }
         if (fAccepted)
         {
@@ -115,7 +116,8 @@ void ProcessMessageInstantX(CNode* pfrom, std::string& strCommand, CDataStream& 
                         LogPrintf("ProcessMessageInstantX::txlreq - Found Existing Complete IX Lock\n");
 
                         //reprocess the last 15 blocks
-                        block.DisconnectBlock(txdb, pindex);
+                        CValidationState state;
+                        block.DisconnectBlock(state, txdb, pindex);
                         tx.DisconnectInputs(txdb);
                     }
                 }
@@ -387,7 +389,8 @@ bool ProcessConsensusVote(CNode* pnode, CConsensusVote& ctx)
                 //if this tx lock was rejected, we need to remove the conflicting blocks
                 if(mapTxLockReqRejected.count((*i).second.txHash)){
                     //reprocess the last 15 blocks
-                    block.DisconnectBlock(txdb, pindex);
+                    CValidationState state;
+                    block.DisconnectBlock(state, txdb, pindex);
                     tx.DisconnectInputs(txdb);
                 }
             }

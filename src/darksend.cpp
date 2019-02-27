@@ -260,7 +260,7 @@ void CDarksendPool::ProcessMessageDarksend(CNode* pfrom, std::string& strCommand
                 return;
             }
 
-            if(!AcceptableInputs(mempool, tx, false, NULL, false, true)){
+            if(!AcceptableInputs(state, mempool, tx, false, NULL, false, true)){
                 LogPrintf("dsi -- transaction not valid! \n");
                 error = _("Transaction not valid.");
                 pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, error);
@@ -1000,7 +1000,7 @@ bool CDarksendPool::IsCollateralValid(const CTransaction& txCollateral){
     {
         LOCK(cs_main);
         CValidationState state;
-        if(!AcceptableInputs(mempool, txCollateral, true, NULL)){
+        if(!AcceptableInputs(state, mempool, txCollateral, true, NULL)){
             LogPrintf ("CDarksendPool::IsCollateralValid - didn't pass IsAcceptable\n");
             return false;
         }
@@ -1185,7 +1185,7 @@ void CDarksendPool::SendDarksendDenominate(std::vector<CTxIn>& vin, std::vector<
         while(true){
             TRY_LOCK(cs_main, lockMain);
             if(!lockMain) { MilliSleep(50); continue;}
-            if(!AcceptableInputs(mempool, txCollateral, false, NULL, false, true)){
+            if(!AcceptableInputs(state, mempool, txCollateral, false, NULL, false, true)){
                 LogPrintf("dsi -- transaction not valid! %s \n", tx.ToString());
                 UnlockCoins();
                 SetNull();
