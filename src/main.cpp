@@ -4450,8 +4450,8 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
                 pto->fDisconnect = true;
                 if (pto->addr.IsLocal())
                     LogPrintf("Warning: not banning local peer %s!\n", pto->addr.ToString());
-                //else
-                    //CNode::Ban(pto->addr); //it will be later in PirateCash
+                else
+                    CNode::Ban(pto->addr, BanReasonNodeMisbehaving);
             }
             state.fShouldBan = false;
         }
@@ -4514,11 +4514,14 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
         }
 
         if (State(pto->GetId())->fShouldBan) {
-            if (pto->addr.IsLocal())
-                LogPrintf("Warning: not banning local node %s!\n", pto->addr.ToString().c_str());
+            if (pto->fWhitelisted)
+                LogPrintf("Warning: not punishing whitelisted peer %s!\n", pto->addr.ToString());
             else {
                 pto->fDisconnect = true;
-                CNode::Ban(pto->addr, BanReasonNodeMisbehaving);
+                if (pto->addr.IsLocal())
+                    LogPrintf("Warning: not banning local peer %s!\n", pto->addr.ToString());
+                else
+                    CNode::Ban(pto->addr, BanReasonNodeMisbehaving);
             }
             State(pto->GetId())->fShouldBan = false;
         }
