@@ -74,7 +74,7 @@ void ProcessMessageInstantX(CNode* pfrom, std::string& strCommand, CDataStream& 
         {
             LOCK(cs_main);
             CValidationState state;
-            fAccepted = AcceptToMemoryPool(state, mempool, tx, true, &fMissingInputs);
+            fAccepted = AcceptToMemoryPool(mempool, state, tx, true, &fMissingInputs);
         }
         if (fAccepted)
         {
