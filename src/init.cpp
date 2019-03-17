@@ -313,7 +313,7 @@ strUsage += "\n" + _("Masternode options:") + "\n";
     strUsage += "  -mnconflock=<n>            " + _("Lock masternodes from masternode configuration file (default: 1)") + "\n";
     strUsage += "  -masternodeprivkey=<n>     " + _("Set the masternode private key") + "\n";
     strUsage += "  -masternodeaddr=<n>        " + _("Set external address:port to get to this masternode (example: address:port)") + "\n";
-    strUsage += "  -masternodeminprotocol=<n> " + _("Ignore masternodes less than version (example: 61401; default : 0)") + "\n";
+    strUsage += "  -masternodeminprotocol=<n> " + strprintf(_("Ignore masternodes less than version (example: 70050; default: %u)"), masternodePayments.GetMinMasternodePaymentsProto()) + "\n";
 
     strUsage += "\n" + _("Darksend options:") + "\n";
     strUsage += "  -enabledarksend=<n>          " + _("Enable use of automated darksend for funds stored in this wallet (0-1, default: 0)") + "\n";
@@ -613,7 +613,7 @@ bool AppInit2(boost::thread_group& threadGroup)
     }
 
     //ignore masternodes below protocol version
-    nMasternodeMinProtocol = GetArg("-masternodeminprotocol", MIN_POOL_PEER_PROTO_VERSION);
+    nMasternodeMinProtocol = GetArg("-masternodeminprotocol", masternodePayments.GetMinMasternodePaymentsProto());
 
     if (fDaemon)
         fprintf(stdout, "Piratecash server starting\n"); 

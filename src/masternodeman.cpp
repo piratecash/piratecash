@@ -294,19 +294,8 @@ void CMasternodeMan::Clear()
     nDsqCount = 0;
 }
 
-int CMasternodeMan::CountEnabled()
-{
-    int i = 0;
 
-    BOOST_FOREACH(CMasternode& mn, vMasternodes) {
-        mn.Check();
-        if(mn.IsEnabled()) i++;
-    }
-
-    return i;
-}
-
-int CMasternodeMan::CountMasternodesAboveProtocol(int protocolVersion)
+int CMasternodeMan::CountEnabled(int protocolVersion)
 {
     int i = 0;
 
@@ -403,7 +392,7 @@ CMasternode *CMasternodeMan::FindRandomNotInVec(std::vector<CTxIn> &vecToExclude
 
     protocolVersion = protocolVersion == -1 ? masternodePayments.GetMinMasternodePaymentsProto() : protocolVersion;
 
-    int nCountEnabled = CountMasternodesAboveProtocol(protocolVersion);
+    int nCountEnabled = CountEnabled(protocolVersion);
     LogPrintf("CMasternodeMan::FindRandomNotInVec - nCountEnabled - vecToExclude.size() %d\n", nCountEnabled - vecToExclude.size());
     if(nCountEnabled - vecToExclude.size() < 1) return NULL;
 

@@ -79,7 +79,7 @@ CMasternode::CMasternode()
     cacheInputAgeBlock = 0;
     unitTest = false;
     allowFreeTx = true;
-    protocolVersion = MIN_PEER_PROTO_VERSION;
+    protocolVersion = PROTOCOL_VERSION;
     nLastDsq = 0;
     rewardAddress = CScript();
     rewardPercentage = 0;
