@@ -481,6 +481,7 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool darkSendMaste
         // the proxy, mark this as an attempt.
         addrman.Attempt(addrConnect);
     }
+
     return NULL;
 }
 
@@ -491,7 +492,6 @@ void CNode::CloseSocketDisconnect()
     {
         LogPrint("net", "disconnecting peer=%d\n", id);
         CloseSocket(hSocket);
-        hSocket = INVALID_SOCKET;
     }
 
     // in case this fails, we'll empty the recv buffer when the CNode is deleted
