@@ -4452,7 +4452,12 @@ bool ProcessMessages(CNode* pfrom)
     return fOk;
 }
 
-
+/**
+ * Send queued protocol messages to be sent to a give node.
+ *
+ * @param[in]   pto             The node which we are sending messages to.
+ * @param[in]   fSendTrickle    When true send the trickled data, otherwise trickle the data until true.
+ */
 bool SendMessages(CNode* pto, bool fSendTrickle)
 {
     {
