@@ -2,7 +2,7 @@
 
 #include "main.h"
 #include "wallet.h"
-#include "util.h"
+#include "utilstrencodings.h"
 
 BOOST_AUTO_TEST_SUITE(base64_tests)
 

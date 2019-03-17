@@ -9,6 +9,10 @@
 #include "kernel.h"
 #include "masternodeman.h"
 #include "masternode-payments.h"
+#include "util.h"
+#include "utilmoneystr.h"
+
+#include <boost/thread.hpp>
 
 using namespace std;
 

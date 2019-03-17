@@ -11,6 +11,7 @@
 #include "alert.h"
 #include "main.h"
 #include "ui_interface.h"
+#include "util.h"
 #include "masternodeman.h"
 
 #include <QDateTime>

@@ -15,6 +15,7 @@
 #include "key.h"
 #include "pubkey.h"
 #include "util.h"
+#include "utilmoneystr.h"
 #include "ui_interface.h"
 #include "checkpoints.h"
 #include "darksend-relay.h"

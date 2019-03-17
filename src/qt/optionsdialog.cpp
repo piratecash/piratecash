@@ -6,6 +6,7 @@
 #include "netbase.h"
 #include "optionsmodel.h"
 
+#include <boost/thread.hpp>
 #include <QDir>
 #include <QIntValidator>
 #include <QLocale>

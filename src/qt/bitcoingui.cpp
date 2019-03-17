@@ -33,6 +33,7 @@
 #include "wallet.h"
 #include "main.h"
 #include "init.h"
+#include "util.h"
 #include "ui_interface.h"
 #include "masternodemanager.h"
 #include "messagemodel.h"

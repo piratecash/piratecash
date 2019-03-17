@@ -10,6 +10,8 @@
 
 #include <sstream>
 #include <string>
+#include <boost/thread.hpp>
+
 double getBlockHardness(int height)
 {
     const CBlockIndex* blockindex = getBlockIndex(height);

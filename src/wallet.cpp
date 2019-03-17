@@ -24,6 +24,7 @@
 #include "smessage.h"
 
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/thread.hpp>
 
 using namespace std;
 

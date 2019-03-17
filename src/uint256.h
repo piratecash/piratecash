@@ -11,15 +11,12 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <utilstrencodings.h>
 
 extern const signed char p_util_hexdigit[256]; // defined in util.cpp
 
 inline int Testuint256AdHoc(std::vector<std::string> vArg);
 
-inline signed char HexDigit(char c)
-{
-    return p_util_hexdigit[(unsigned char)c];
-}
 
 /** Base class without constructors for uint256 and uint160.
  * This makes the compiler let u use it in a union.

@@ -28,6 +28,7 @@
 #include <boost/iostreams/stream.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/thread.hpp>
 #include <list>
 
 using namespace std;
@@ -81,6 +82,11 @@ void RPCTypeCheck(const Object& o,
             throw JSONRPCError(RPC_TYPE_ERROR, err);
         }
     }
+}
+
+static inline int64_t roundint64(double d)
+{
+    return (int64_t)(d > 0 ? d + 0.5 : d - 0.5);
 }
 
 int64_t AmountFromValue(const Value& value)

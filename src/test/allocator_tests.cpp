@@ -4,6 +4,8 @@
 #include "main.h"
 #include "util.h"
 
+#include "allocators.h"
+
 BOOST_AUTO_TEST_SUITE(allocator_tests)
 
 // Dummy memory page locker for platform independent tests

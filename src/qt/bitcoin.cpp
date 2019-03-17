@@ -2,6 +2,7 @@
  * W.J. van der Laan 2011-2012
  */
 
+#include <boost/thread.hpp>
 #include <QApplication>
 
 #include "bitcoingui.h"

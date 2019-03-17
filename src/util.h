@@ -12,20 +12,19 @@
 #include <sys/resource.h>
 #endif
 
-#include "serialize.h"
+#include "utiltime.h"
 #include "tinyformat.h"
 
 #include <map>
 #include <list>
-#include <utility>
 #include <vector>
 #include <string>
 
-#include <boost/thread.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <boost/thread/exceptions.hpp>
 
 #include <openssl/bio.h>
 #include <openssl/evp.h>
@@ -51,11 +50,6 @@ static const int64_t CENT = 1000000;
 
 typedef int64_t CAmount;
 
-#define BEGIN(a)            ((char*)&(a))
-#define END(a)              ((char*)&((&(a))[1]))
-#define UBEGIN(a)           ((unsigned char*)&(a))
-#define UEND(a)             ((unsigned char*)&((&(a))[1]))
-#define ARRAYLEN(array)     (sizeof(array)/sizeof((array)[0]))
 
 #define UVOIDBEGIN(a)        ((void*)&(a))
 #define CVOIDBEGIN(a)        ((const void*)&(a))
@@ -111,14 +105,6 @@ T* alignup(T* p)
 #define MAX_PATH            1024
 #endif
 
-inline void MilliSleep(int64_t n)
-{
-#if BOOST_VERSION >= 105000
-    boost::this_thread::sleep_for(boost::chrono::milliseconds(n));
-#else
-    boost::this_thread::sleep(boost::posix_time::milliseconds(n));
-#endif
-}
 
 //Dark features
 
@@ -218,23 +204,6 @@ void RandAddSeedPerfmon();
 void PrintException(std::exception* pex, const char* pszThread);
 void PrintExceptionContinue(std::exception* pex, const char* pszThread);
 void ParseString(const std::string& str, char c, std::vector<std::string>& v);
-std::string FormatMoney(int64_t n, bool fPlus=false);
-bool ParseMoney(const std::string& str, int64_t& nRet);
-bool ParseMoney(const char* pszIn, int64_t& nRet);
-std::string SanitizeString(const std::string& str);
-std::vector<unsigned char> ParseHex(const char* psz);
-std::vector<unsigned char> ParseHex(const std::string& str);
-bool IsHex(const std::string& str);
-std::vector<unsigned char> DecodeBase64(const char* p, bool* pfInvalid = NULL);
-std::string DecodeBase64(const std::string& str);
-std::string EncodeBase64(const unsigned char* pch, size_t len);
-std::string EncodeBase64(const std::string& str);
-SecureString DecodeBase64Secure(const SecureString& input);
-SecureString EncodeBase64Secure(const SecureString& input);
-std::vector<unsigned char> DecodeBase32(const char* p, bool* pfInvalid = NULL);
-std::string DecodeBase32(const std::string& str);
-std::string EncodeBase32(const unsigned char* pch, size_t len);
-std::string EncodeBase32(const std::string& str);
 void ParseParameters(int argc, const char*const argv[]);
 bool WildcardMatch(const char* psz, const char* mask);
 bool WildcardMatch(const std::string& str, const std::string& mask);
@@ -257,8 +226,6 @@ std::string getTimeString(int64_t timestamp, char *buffer, size_t nBuffer);
 std::string bytesReadable(uint64_t nBytes);
 
 void ShrinkDebugFile();
-int64_t GetTime();
-void SetMockTime(int64_t nMockTimeIn);
 int64_t GetAdjustedTime();
 int64_t GetTimeOffset();
 std::string FormatFullVersion();
@@ -266,64 +233,12 @@ std::string FormatSubVersion(const std::string& name, int nClientVersion, const 
 void AddTimeData(const CNetAddr& ip, int64_t nTime);
 void runCommand(std::string strCommand);
 
-/**
- * Convert string to signed 32-bit integer with strict parse error feedback.
- * @returns true if the entire string could be parsed as valid integer,
- *   false if not the entire string could be parsed or when overflow or underflow occurred.
- */
-bool ParseInt32(const std::string& str, int32_t *out);
-
-
-/** 
- * Format a paragraph of text to a fixed width, adding spaces for
- * indentation to any added line.
- */
-std::string FormatParagraph(const std::string in, size_t width=79, size_t indent=0);
-
-
-
-inline std::string i64tostr(int64_t n)
-{
-    return strprintf("%d", n);
-}
-
-inline std::string itostr(int n)
-{
-    return strprintf("%d", n);
-}
-
-inline int64_t atoi64(const char* psz)
-{
-#ifdef _MSC_VER
-    return _atoi64(psz);
-#else
-    return strtoll(psz, NULL, 10);
-#endif
-}
-
-inline int64_t atoi64(const std::string& str)
-{
-#ifdef _MSC_VER
-    return _atoi64(str.c_str());
-#else
-    return strtoll(str.c_str(), NULL, 10);
-#endif
-}
-
-inline int atoi(const std::string& str)
-{
-    return atoi(str.c_str());
-}
 
 inline int roundint(double d)
 {
     return (int)(d > 0 ? d + 0.5 : d - 0.5);
 }
 
-inline int64_t roundint64(double d)
-{
-    return (int64_t)(d > 0 ? d + 0.5 : d - 0.5);
-}
 
 inline int64_t abs64(int64_t n)
 {
@@ -365,20 +280,6 @@ inline std::string HexStr(const T& vch, bool fSpaces=false)
     return HexStr(vch.begin(), vch.end(), fSpaces);
 }
 
-
-inline int64_t GetTimeMillis()
-{
-    return (boost::posix_time::ptime(boost::posix_time::microsec_clock::universal_time()) -
-            boost::posix_time::ptime(boost::gregorian::date(1970,1,1))).total_milliseconds();
-}
-
-inline int64_t GetTimeMicros()
-{
-    return (boost::posix_time::ptime(boost::posix_time::microsec_clock::universal_time()) -
-            boost::posix_time::ptime(boost::gregorian::date(1970,1,1))).total_microseconds();
-}
-
-std::string DateTimeStrFormat(const char* pszFormat, int64_t nTime);
 
 static const std::string strTimestampFormat = "%Y-%m-%d %H:%M:%S UTC";
 inline std::string DateTimeStrFormat(int64_t nTime)
