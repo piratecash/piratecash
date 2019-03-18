@@ -19,9 +19,9 @@
 #include <QSlider>
 
 double getBlockHardness(int);
-double getTxTotalValue(std::string);
+QString getTxTotalValue(std::string);
 double convertCoins(int64_t);
-double getTxFees(std::string);
+QString getTxFees(std::string);
 int getBlockTime(int);
 int getBlocknBits(int);
 int getBlockNonce(int);
