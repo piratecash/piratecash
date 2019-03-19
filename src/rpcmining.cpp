@@ -726,7 +726,7 @@ Value submitblock(const Array& params, bool fHelp)
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
     }
     CValidationState state;
-    bool fAccepted = ProcessBlock(state, NULL, &block);
+    bool fAccepted = ProcessNewBlock(state, NULL, &block);
     if (!fAccepted)
         return "rejected"; // TODO: report validation state
 

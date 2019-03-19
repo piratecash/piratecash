@@ -473,7 +473,7 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
 
         // Process this block the same as if we had received it from another node
         CValidationState state;
-        if (!ProcessBlock(state, NULL, pblock))
+        if (!ProcessNewBlock(state, NULL, pblock))
             return error("CheckWork() : ProcessBlock, block not accepted");
     }
 
@@ -511,8 +511,8 @@ bool CheckStake(CBlock* pblock, CWallet& wallet)
 
         // Process this block the same as if we had received it from another node
         CValidationState state;
-        if (!ProcessBlock(state, NULL, pblock))
-            return error("CheckStake() : ProcessBlock, block not accepted");
+        if (!ProcessNewBlock(state, NULL, pblock))
+            return error("CheckStake() : ProcessNewBlock, block not accepted");
         else
         {
             //ProcessBlock successful for PoS. now FixSpentCoins.

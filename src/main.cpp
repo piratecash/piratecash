@@ -2866,7 +2866,7 @@ void Misbehaving(NodeId pnode, int howmuch)
         LogPrintf("Misbehaving: %s (%d -> %d)\n", state->name.c_str(), state->nMisbehavior-howmuch, state->nMisbehavior);
 }
 
-bool ProcessBlock(CValidationState &state, CNode* pfrom, CBlock* pblock)
+bool ProcessNewBlock(CValidationState &state, CNode* pfrom, CBlock* pblock)
 {
     AssertLockHeld(cs_main);
 
@@ -2885,7 +2885,7 @@ bool ProcessBlock(CValidationState &state, CNode* pfrom, CBlock* pblock)
     // Limited duplicity on stake: prevents block flood attack
     // Duplicate stake allowed only when there is orphan child block
     if (!fReindex && !fImporting && pblock->IsProofOfStake() && setStakeSeen.count(pblock->GetProofOfStake()) && !mapOrphanBlocksByPrev.count(hash))
-        return error("ProcessBlock() : duplicate proof-of-stake (%s, %d) for block %s", pblock->GetProofOfStake().first.ToString(), pblock->GetProofOfStake().second, hash.ToString());
+        return error("%s : duplicate proof-of-stake (%s, %d) for block %s",__func__, pblock->GetProofOfStake().first.ToString(), pblock->GetProofOfStake().second, hash.ToString());
 
     if (pblock->hashPrevBlock != hashBestChain)
     {
@@ -2901,12 +2901,12 @@ bool ProcessBlock(CValidationState &state, CNode* pfrom, CBlock* pblock)
     // Block signature can be malleated in such a way that it increases block size up to maximum allowed by protocol
     // For now we just strip garbage from newly received blocks
     if (!IsCanonicalBlockSignature(pblock)) {
-        return error("ProcessBlock(): bad block signature encoding");
+        return error("%s : bad block signature encoding", __func__);
     }
 
     // Preliminary checks
     if (!pblock->CheckBlock(state))
-        return error("ProcessBlock() : CheckBlock FAILED");
+        return error("%s : CheckBlock FAILED", __func__);
 
     // If we don't already have its previous block, shunt it off to holding area until we get it
     if (!mapBlockIndex.count(pblock->hashPrevBlock))
@@ -2921,7 +2921,7 @@ bool ProcessBlock(CValidationState &state, CNode* pfrom, CBlock* pblock)
                 // Limited duplicity on stake: prevents block flood attack
                 // Duplicate stake allowed only when there is orphan child block
                 if (setStakeSeenOrphan.count(pblock->GetProofOfStake()) && !mapOrphanBlocksByPrev.count(hash))
-                    return error("ProcessBlock() : duplicate proof-of-stake (%s, %d) for orphan block %s", pblock->GetProofOfStake().first.ToString(), pblock->GetProofOfStake().second, hash.ToString());
+                    return error("%s : duplicate proof-of-stake (%s, %d) for orphan block %s", __func__, pblock->GetProofOfStake().first.ToString(), pblock->GetProofOfStake().second, hash.ToString());
             }
             PruneOrphanBlocks();
             COrphanBlock* pblock2 = new COrphanBlock();
@@ -2950,7 +2950,7 @@ bool ProcessBlock(CValidationState &state, CNode* pfrom, CBlock* pblock)
 
     // Store to disk
     if (!pblock->AcceptBlock(state))
-        return error("ProcessBlock() : AcceptBlock FAILED");
+        return error("%s : AcceptBlock FAILED", __func__);
 
     // Recursively process any orphan blocks that depended on this one
     vector<uint256> vWorkQueue;
@@ -3330,7 +3330,7 @@ bool LoadExternalBlockFile(FILE* fileIn)
                     blkdat >> block;
                     LOCK(cs_main);
                     CValidationState state;
-                    if (ProcessBlock(state, NULL, &block))
+                    if (ProcessNewBlock(state, NULL, &block))
                     {
                         nLoaded++;
                         nPos += 4 + nSize;
@@ -4107,7 +4107,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
         LOCK(cs_main);
         CValidationState state;
-        if (ProcessBlock(state, pfrom, &block))
+        if (ProcessNewBlock(state, pfrom, &block))
             mapAlreadyAskedFor.erase(inv);
         int nDoS;
         if (state.IsInvalid(nDoS))
