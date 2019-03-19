@@ -16,6 +16,8 @@
 #include "scrypt.h"
 #include "utilmoneystr.h"
 
+#include <boost/unordered_map.hpp>
+
 #include <list>
 
 #define START_MASTERNODE_PAYMENTS_TESTNET 1508779800
@@ -84,10 +86,15 @@ static const unsigned char REJECT_CHECKPOINT = 0x43;
 
 inline int64_t GetMNCollateral(int nHeight) { return 10000; }
 
+struct BlockHasher
+{
+    size_t operator()(const uint256& hash) const { return hash.GetLow64(); }
+};
+
 extern CScript COINBASE_FLAGS;
 extern CCriticalSection cs_main;
 extern CTxMemPool mempool;
-typedef std::map<uint256, CBlockIndex*> BlockMap;
+typedef boost::unordered_map<uint256, CBlockIndex*, BlockHasher> BlockMap;
 extern BlockMap mapBlockIndex;
 extern std::set<std::pair<COutPoint, unsigned int> > setStakeSeen;
 extern CBlockIndex* pindexGenesisBlock;
