@@ -1,3 +1,8 @@
+// Copyright (c) 2011-2014 The Bitcoin developers
+// Copyright (c) 2014-2015 The Dash developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #include "coincontroldialog.h"
 #include "ui_coincontroldialog.h"
 
@@ -117,7 +122,7 @@ CoinControlDialog::CoinControlDialog(QWidget *parent) :
     // Toggle lock state
     connect(ui->pushButtonToggleLock, SIGNAL(clicked()), this, SLOT(buttonToggleLockClicked()));
 
-    // change coin control first column label due Qt4 bug.
+    // change coin control first column label due Qt4 bug. 
     // see https://github.com/bitcoin/bitcoin/issues/5716
     // ui->treeWidget->headerItem()->setText(COLUMN_CHECKBOX, QString());
 
@@ -231,7 +236,6 @@ void CoinControlDialog::buttonToggleLockClicked()
         msgBox.exec();
     }
 }
-
 
 // context menu
 void CoinControlDialog::showMenu(const QPoint &point)
@@ -482,15 +486,15 @@ void CoinControlDialog::updateLabelLocked()
     if (vOutpts.size() > 0)
     {
        ui->labelLocked->setText(tr("(%1 locked)").arg(vOutpts.size()));
-       ui->labelLocked->setVisible(true); 
+       ui->labelLocked->setVisible(true);
     }
     else ui->labelLocked->setVisible(false);
 }
 
 void CoinControlDialog::updateLabels(WalletModel *model, QDialog* dialog)
 {
-    if (!model) 
-    	return;
+    if (!model)
+        return;
 
     // nPayAmount
     qint64 nPayAmount = 0;
@@ -687,7 +691,7 @@ void CoinControlDialog::updateLabels(WalletModel *model, QDialog* dialog)
 
 void CoinControlDialog::updateView()
 {
-    if (!model || !model->getOptionsModel() || !model->getAddressTableModel())	
+    if (!model || !model->getOptionsModel() || !model->getAddressTableModel())
         return;
     clock_t begin = clock();
 
@@ -719,13 +723,15 @@ void CoinControlDialog::updateView()
             ui->treeWidget->addTopLevelItem(itemWalletAddress);
 
             itemWalletAddress->setFlags(flgTristate);
-            itemWalletAddress->setCheckState(COLUMN_CHECKBOX,Qt::Unchecked);
+            itemWalletAddress->setCheckState(COLUMN_CHECKBOX, Qt::Unchecked);
 
             // label
             itemWalletAddress->setText(COLUMN_LABEL, sWalletLabel);
+            itemWalletAddress->setToolTip(COLUMN_LABEL, sWalletLabel);
 
             // address
             itemWalletAddress->setText(COLUMN_ADDRESS, sWalletAddress);
+            itemWalletAddress->setToolTip(COLUMN_ADDRESS, sWalletAddress);
         }
 
         int64_t nSum = 0;
@@ -755,6 +761,8 @@ void CoinControlDialog::updateView()
                 if (!treeMode || (!(sAddress == sWalletAddress)))
                     itemOutput->setText(COLUMN_ADDRESS, sAddress);
 
+                itemOutput->setToolTip(COLUMN_ADDRESS, sAddress);
+                
                 CPubKey pubkey;
                 CKeyID *keyid = boost::get< CKeyID >(&outputAddress);
                 if (keyid && model->getPubKey(*keyid, pubkey) && !pubkey.IsCompressed())
@@ -778,10 +786,12 @@ void CoinControlDialog::updateView()
 
             // amount
             itemOutput->setText(COLUMN_AMOUNT, BitcoinUnits::format(nDisplayUnit, out.tx->vout[out.i].nValue));
+            itemOutput->setToolTip(COLUMN_AMOUNT, BitcoinUnits::format(nDisplayUnit, out.tx->vout[out.i].nValue));
             itemOutput->setText(COLUMN_AMOUNT_INT64, strPad(QString::number(out.tx->vout[out.i].nValue), 15, " ")); // padding so that sorting works correctly
 
             // date
             itemOutput->setText(COLUMN_DATE, GUIUtil::dateTimeStr(out.tx->GetTxTime()));
+            itemOutput->setToolTip(COLUMN_DATE, GUIUtil::dateTimeStr(out.tx->GetTxTime()));
             itemOutput->setText(COLUMN_DATE_INT64, strPad(QString::number(out.tx->GetTxTime()), 20, " "));
 
             // immature PoS reward
@@ -814,7 +824,7 @@ void CoinControlDialog::updateView()
             // vout index
             itemOutput->setText(COLUMN_VOUT_INDEX, QString::number(out.i));
 
-            // disable locked coins     
+             // disable locked coins
             if (model->isLockedCoin(txhash, out.i))
             {
                 COutPoint outpt(txhash, out.i);
@@ -834,6 +844,7 @@ void CoinControlDialog::updateView()
             dPrioritySum = dPrioritySum / (nInputSum + 78);
             itemWalletAddress->setText(COLUMN_CHECKBOX, "(" + QString::number(nChildren) + ")");
             itemWalletAddress->setText(COLUMN_AMOUNT, BitcoinUnits::format(nDisplayUnit, nSum));
+            itemWalletAddress->setToolTip(COLUMN_AMOUNT, BitcoinUnits::format(nDisplayUnit, nSum));
             itemWalletAddress->setText(COLUMN_AMOUNT_INT64, strPad(QString::number(nSum), 15, " "));
             itemWalletAddress->setText(COLUMN_PRIORITY, CoinControlDialog::getPriorityLabel(dPrioritySum));
             itemWalletAddress->setText(COLUMN_PRIORITY_INT64, strPad(QString::number((int64_t)dPrioritySum), 20, " "));
