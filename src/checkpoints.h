@@ -7,6 +7,7 @@
 #include <map>
 #include "net.h"
 #include "util.h"
+#include "main.h"
 
 class uint256;
 class CBlockIndex;
@@ -27,7 +28,7 @@ namespace Checkpoints
     int GetTotalBlocksEstimate();
 
     // Returns last CBlockIndex* in mapBlockIndex that is a checkpoint
-    CBlockIndex* GetLastCheckpoint(const std::map<uint256, CBlockIndex*>& mapBlockIndex);
+    CBlockIndex* GetLastCheckpoint(const BlockMap& mapBlockIndex);
 
     const CBlockIndex* AutoSelectSyncCheckpoint();
     bool CheckSync(int nHeight);

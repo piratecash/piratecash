@@ -87,7 +87,8 @@ inline int64_t GetMNCollateral(int nHeight) { return 10000; }
 extern CScript COINBASE_FLAGS;
 extern CCriticalSection cs_main;
 extern CTxMemPool mempool;
-extern std::map<uint256, CBlockIndex*> mapBlockIndex;
+typedef std::map<uint256, CBlockIndex*> BlockMap;
+extern BlockMap mapBlockIndex;
 extern std::set<std::pair<COutPoint, unsigned int> > setStakeSeen;
 extern CBlockIndex* pindexGenesisBlock;
 extern int nStakeMinConfirmations;
@@ -1250,7 +1251,7 @@ public:
 
     explicit CBlockLocator(uint256 hashBlock)
     {
-        std::map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(hashBlock);
+        BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
         if (mi != mapBlockIndex.end())
             Set((*mi).second);
     }
@@ -1301,7 +1302,7 @@ public:
         int nStep = 1;
         BOOST_FOREACH(const uint256& hash, vHave)
         {
-            std::map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(hash);
+            BlockMap::iterator mi = mapBlockIndex.find(hash);
             if (mi != mapBlockIndex.end())
             {
                 CBlockIndex* pindex = (*mi).second;
@@ -1320,7 +1321,7 @@ public:
         // Find the first block the caller has in the main chain
         BOOST_FOREACH(const uint256& hash, vHave)
         {
-            std::map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(hash);
+            BlockMap::iterator mi = mapBlockIndex.find(hash);
             if (mi != mapBlockIndex.end())
             {
                 CBlockIndex* pindex = (*mi).second;
@@ -1336,7 +1337,7 @@ public:
         // Find the first block the caller has in the main chain
         BOOST_FOREACH(const uint256& hash, vHave)
         {
-            std::map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(hash);
+            BlockMap::iterator mi = mapBlockIndex.find(hash);
             if (mi != mapBlockIndex.end())
             {
                 CBlockIndex* pindex = (*mi).second;
