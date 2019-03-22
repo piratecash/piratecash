@@ -8,8 +8,9 @@
 
 #include "wallet.h"
 
-namespace boost {
-    class thread_group;
+namespace boost
+{
+class thread_group;
 } // namespace boost
 
 extern CWallet* pwalletMain;
@@ -17,7 +18,7 @@ extern CWallet* pwalletMain;
 void StartShutdown();
 bool ShutdownRequested();
 void Shutdown();
-void Prepare_Shutdown();
+void PrepareShutdown();
 bool AppInit2(boost::thread_group& threadGroup);
 std::string HelpMessage();
 extern bool fOnlyTor;

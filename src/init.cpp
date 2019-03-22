@@ -55,7 +55,7 @@ CWallet* pwalletMain = NULL;
 int nWalletBackups = 10;
 #endif
 bool fFeeEstimatesInitialized = false;
-bool wallet_restart = false;  // true: restart false: shutdown
+bool fRestartRequested = false;  // true: restart false: shutdown
 CClientUIInterface uiInterface;
 
 // Used to pass flags to the Bind() function
@@ -111,12 +111,12 @@ void StartShutdown()
 }
 bool ShutdownRequested()
 {
-    return fRequestShutdown;
+    return fRequestShutdown || fRestartRequested;
 }
 
 /** Preparing steps before shutting down or restarting the wallet */
-void Prepare_Shutdown(){
-    wallet_restart = true; // Needed when we restart the wallet
+void PrepareShutdown(){
+    fRestartRequested = true; // Needed when we restart the wallet
     LogPrintf("%s: In progress...\n", __func__);
     static CCriticalSection cs_Shutdown;
     TRY_LOCK(cs_Shutdown, lockShutdown);
@@ -161,19 +161,19 @@ static boost::scoped_ptr<ECCVerifyHandle> globalVerifyHandle;
 
 /**
 * Shutdown is split into 2 parts:
-* Part 1: shut down everything but the main wallet instance (done in Prepare_Shutdown() )
+* Part 1: shut down everything but the main wallet instance (done in PrepareShutdown() )
 * Part 2: delete wallet instance
 *
-* In case of a restart Prepare_Shutdown() was already called before, but this method here gets
+* In case of a restart PrepareShutdown() was already called before, but this method here gets
 * called implicitly when the parent object is deleted. In this case we have to skip the
-* Prepare_Shutdown() part because it was already executed and just delete the wallet instance.
+* PrepareShutdown() part because it was already executed and just delete the wallet instance.
 */
 void Shutdown()
 {
 	fRequestShutdown = true; // Needed when we shutdown the wallet
     // true is workaround (need move it to the void BitcoinCore::restart(QStringList args) - this function isn't implemented ye)
-    if(!wallet_restart || true){ // most of shutdown is already done when we're restarting the wallet
-        Prepare_Shutdown();
+    if(!fRestartRequested || true){ // most of shutdown is already done when we're restarting the wallet
+        PrepareShutdown();
     }
     boost::filesystem::remove(GetPidFile());
     UnregisterAllWallets();
