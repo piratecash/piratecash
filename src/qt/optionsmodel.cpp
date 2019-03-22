@@ -7,12 +7,14 @@
 #include "guiutil.h"
 
 #include "init.h"
+#include "core.h"
 #include "main.h"
 #include "net.h"
 #ifdef ENABLE_WALLET
 #include "wallet.h"
 #include "walletdb.h"
 #endif
+#include "netbase.h"
 
 #include <QNetworkProxy>
 #include <QSettings>

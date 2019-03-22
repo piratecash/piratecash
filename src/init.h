@@ -6,7 +6,9 @@
 #ifndef BITCOIN_INIT_H
 #define BITCOIN_INIT_H
 
-#include "wallet.h"
+#include <string>
+
+class CWallet;
 
 namespace boost
 {
