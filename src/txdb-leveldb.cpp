@@ -8,6 +8,7 @@
 #include <boost/version.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <boost/thread.hpp>
 
 #include <leveldb/env.h>
 #include <leveldb/cache.h>
