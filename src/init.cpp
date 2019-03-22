@@ -55,6 +55,7 @@ CWallet* pwalletMain = NULL;
 int nWalletBackups = 10;
 #endif
 bool fFeeEstimatesInitialized = false;
+bool wallet_restart = false;  // true: restarted false: shutdown
 CClientUIInterface uiInterface;
 
 // Used to pass flags to the Bind() function
@@ -113,26 +114,32 @@ bool ShutdownRequested()
     return fRequestShutdown;
 }
 
+void Prepare_Restart(){
+    wallet_restart = true; // we're restarting the wallet, so skip shutdown later in the process
+}
+
 static boost::scoped_ptr<ECCVerifyHandle> globalVerifyHandle;
 
 void Shutdown()
 {
 	fRequestShutdown = true; // Needed when we shutdown the wallet
-    LogPrintf("Shutdown : In progress...\n");
-    static CCriticalSection cs_Shutdown;
-    TRY_LOCK(cs_Shutdown, lockShutdown);
-    if (!lockShutdown)
-        return;
+    Prepare_Restart(); // it's workaround (neded to move void BitcoinCore::restart(QStringList args) - this function isn't implemented ye)
+    if(!wallet_restart){ // most of shutdown is already done when we're restarting the wallet
+        LogPrintf("%s: In progress...\n", __func__);
+        static CCriticalSection cs_Shutdown;
+        TRY_LOCK(cs_Shutdown, lockShutdown);
+        if (!lockShutdown)
+            return;
 
-    /// Note: Shutdown() must be able to handle cases in which AppInit2() failed part of the way,
-    /// for example if the data directory was found to be locked.
-    /// Be sure that anything that writes files or flushes caches only does this if the respective
-    /// module was initialized.
-    RenameThread("piratecash-shutoff");
-    mempool.AddTransactionsUpdated(1);
-    StopRPCThreads();
-    SecureMsgShutdown();
-
+        /// Note: Shutdown() must be able to handle cases in which AppInit2() failed part of the way,
+        /// for example if the data directory was found to be locked.
+        /// Be sure that anything that writes files or flushes caches only does this if the respective
+        /// module was initialized.
+        RenameThread("piratecash-shutoff");
+        mempool.AddTransactionsUpdated(1);
+        StopRPCThreads();
+        SecureMsgShutdown();
+    }
 #ifdef ENABLE_WALLET
     ShutdownRPCMining();
     if (pwalletMain)
