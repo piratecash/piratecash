@@ -3,9 +3,13 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include "clientversion.h"
 #include "rpcserver.h"
 #include "rpcclient.h"
 #include "init.h"
+#include "main.h"
+#include "ui_interface.h"
+#include "util.h"
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/thread.hpp>
 
