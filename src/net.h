@@ -956,8 +956,8 @@ template<typename T1, typename T2, typename T3, typename T4, typename T5, typena
 };
 
 class CTransaction;
-void RelayTransaction(const CTransaction& tx, const uint256& hash);
-void RelayTransaction(const CTransaction& tx, const uint256& hash, const CDataStream& ss);
+void RelayTransaction(const CTransaction& tx);
+void RelayTransaction(const CTransaction& tx, const CDataStream& ss);
 void RelayTransactionLockReq(const CTransaction& tx, bool relayToAll=false);
 
 /** Access to the (IP) address database (peers.dat) */

@@ -4002,7 +4002,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
         if (AcceptToMemoryPool(mempool, state, tx, true, &fMissingInputs, false, ignoreFees))
         {
-            RelayTransaction(tx, inv.hash);
+            RelayTransaction(tx);
             vWorkQueue.push_back(inv.hash);
 
             // Recursively process any orphan transactions that depended on this one
@@ -4029,7 +4029,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                     if (AcceptToMemoryPool(mempool, state, orphanTx, true, &fMissingInputs2))
                     {
                         LogPrint("mempool", "   accepted orphan tx %s\n", orphanTxHash.ToString());
-                        RelayTransaction(orphanTx, orphanTxHash);
+                        RelayTransaction(orphanTx);
                         vWorkQueue.push_back(orphanTxHash);
                     }
                     else if (!fMissingInputs2)
@@ -4056,7 +4056,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                     // Always relay transactions received from whitelisted peers, even
                     // if they are already in the mempool (allowing the node to function
                     // as a gateway for nodes hidden behind it).
-                    //RelayTransaction(tx); //it will be later in PirateCash
+                    RelayTransaction(tx);
         }
         if(strCommand == "dstx"){
             inv = CInv(MSG_DSTX, tx.GetHash());

@@ -1326,7 +1326,7 @@ void CWalletTx::RelayWalletTransaction(CTxDB& txdb, std::string strCommand)
                 RelayTransactionLockReq((CTransaction)*this, true);
             } else {
                 LogPrintf("Relaying wtx %s\n", hash.ToString());
-                RelayTransaction((CTransaction)*this, hash);
+                RelayTransaction((CTransaction)*this);
             }
         }
     }

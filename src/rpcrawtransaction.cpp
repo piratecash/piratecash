@@ -594,7 +594,7 @@ Value sendrawtransaction(const Array& params, bool fHelp)
         if (!AcceptToMemoryPool(mempool, state, tx, true, NULL))
             throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX rejected");
     }
-    RelayTransaction(tx, hashTx);
+    RelayTransaction(tx);
 
     return hashTx.GetHex();
 }
