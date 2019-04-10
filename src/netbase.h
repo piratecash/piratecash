@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2013 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef BITCOIN_NETBASE_H
 #define BITCOIN_NETBASE_H
 
@@ -12,6 +13,7 @@
 #include <vector>
 
 extern int nConnectTimeout;
+extern bool fNameLookup;
 
 /** -timeout default */
 static const int DEFAULT_CONNECT_TIMEOUT = 5000;
@@ -31,9 +33,6 @@ enum Network
 
     NET_MAX,
 };
-
-extern int nConnectTimeout;
-extern bool fNameLookup;
 
 /** IP address (IPv6, or IPv4 using mapped IPv6 range (::FFFF:0:0/96)) */
 class CNetAddr
@@ -98,6 +97,7 @@ class CNetAddr
             (
              READWRITE(FLATDATA(ip));
             )
+        friend class CSubNet;
 };
 
 class CSubNet
