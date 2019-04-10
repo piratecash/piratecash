@@ -1995,6 +1995,8 @@ void RelayTransaction(const CTransaction& tx, const CDataStream& ss)
     LOCK(cs_vNodes);
     BOOST_FOREACH(CNode* pnode, vNodes)
     {
+        if(!pnode->fRelayTxes)
+            continue;
         LOCK(pnode->cs_filter);
         if (pnode->pfilter)
         {
