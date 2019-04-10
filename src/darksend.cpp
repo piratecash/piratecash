@@ -644,7 +644,12 @@ void CDarksendPool::CheckFinalTransaction()
         }
 
         CInv inv(MSG_DSTX, txNew.GetHash());
-        RelayInventory(inv);
+        // Put on lists to offer to the other nodes
+        {
+            LOCK(cs_vNodes);
+            BOOST_FOREACH(CNode* pnode, vNodes)
+                pnode->PushInventory(inv);
+        }
 
         // Tell the clients it was successful
         RelayCompletedTransaction(sessionID, false, _("Transaction created successfully."));

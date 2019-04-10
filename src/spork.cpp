@@ -233,7 +233,12 @@ void CSporkManager::Relay(CSporkMessage& msg)
 {
     CInv inv(MSG_SPORK, msg.GetHash());
 
-    RelayInventory(inv);
+    // Put on lists to offer to the other nodes
+    {
+        LOCK(cs_vNodes);
+        BOOST_FOREACH(CNode* pnode, vNodes)
+            pnode->PushInventory(inv);
+    }
 }
 
 bool CSporkManager::SetPrivKey(std::string strPrivKey)

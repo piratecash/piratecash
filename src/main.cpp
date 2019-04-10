@@ -4060,7 +4060,12 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         }
         if(strCommand == "dstx"){
             inv = CInv(MSG_DSTX, tx.GetHash());
-            RelayInventory(inv);
+            // Put on lists to offer to the other nodes
+            {
+                LOCK(cs_vNodes);
+                BOOST_FOREACH(CNode* pnode, vNodes)
+                    pnode->PushInventory(inv);
+            }
         }
         int nDoS;
         if (state.IsInvalid(nDoS))

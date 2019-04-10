@@ -78,7 +78,12 @@ void ProcessMessageInstantX(CNode* pfrom, std::string& strCommand, CDataStream& 
         }
         if (fAccepted)
         {
-            RelayInventory(inv);
+            // Put on lists to offer to the other nodes
+            {
+                LOCK(cs_vNodes);
+                BOOST_FOREACH(CNode* pnode, vNodes)
+                    pnode->PushInventory(inv);
+            }
 
             DoConsensusVote(tx, nBlockHeight);
 
@@ -164,7 +169,12 @@ void ProcessMessageInstantX(CNode* pfrom, std::string& strCommand, CDataStream& 
                 }
             }
 
-            RelayInventory(inv);
+            // Put on lists to offer to the other nodes
+            {
+                LOCK(cs_vNodes);
+                BOOST_FOREACH(CNode* pnode, vNodes)
+                    pnode->PushInventory(inv);
+            }
         }
 
         return;
@@ -295,7 +305,12 @@ void DoConsensusVote(CTransaction& tx, int64_t nBlockHeight)
 
     CInv inv(MSG_TXLOCK_VOTE, ctx.GetHash());
 
-    RelayInventory(inv);
+    // Put on lists to offer to the other nodes
+    {
+        LOCK(cs_vNodes);
+        BOOST_FOREACH(CNode* pnode, vNodes)
+            pnode->PushInventory(inv);
+    }
 
 }
 
