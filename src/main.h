@@ -197,7 +197,7 @@ void ThreadStakeMiner(CWallet *pwallet);
 bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState &state, CTransaction &tx, bool fLimitFree,
                         bool* pfMissingInputs, bool fRejectInsaneFee=false, bool ignoreFees=false);
 
-bool AcceptableInputs(CValidationState &state, CTxMemPool& pool, const CTransaction &txo, bool fLimitFree,
+bool AcceptableInputs(CTxMemPool& pool, CValidationState &state, const CTransaction &txo, bool fLimitFree,
                         bool* pfMissingInputs, bool fRejectInsaneFee=false, bool isDSTX=false);
 
 

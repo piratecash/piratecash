@@ -199,7 +199,7 @@ void CMasternode::Check()
         tx.vin.push_back(vin);
         tx.vout.push_back(vout);
 
-    if(!AcceptableInputs(state, mempool, tx, false, NULL)){
+    if(!AcceptableInputs(mempool, state, tx, false, NULL)){
             activeState = MASTERNODE_VIN_SPENT;
             return;
         }

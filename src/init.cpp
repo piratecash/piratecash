@@ -1160,9 +1160,9 @@ bool AppInit2(boost::thread_group& threadGroup)
         nDarksendRounds = 99999;
     }
 
-    nAnonymizepiratecashAmount = GetArg("-anonymizepiratecashamount", 0);
-    if(nAnonymizepiratecashAmount > 999999) nAnonymizepiratecashAmount = 999999;
-    if(nAnonymizepiratecashAmount < 2) nAnonymizepiratecashAmount = 2;
+    nAnonymizeDarkcoinAmount = GetArg("-anonymizepiratecashamount", 0);
+    if(nAnonymizeDarkcoinAmount > 999999) nAnonymizeDarkcoinAmount = 999999;
+    if(nAnonymizeDarkcoinAmount < 2) nAnonymizeDarkcoinAmount = 2;
 
     fEnableInstantX = GetBoolArg("-enableinstantx", fEnableInstantX);
     nInstantXDepth = GetArg("-instantxdepth", nInstantXDepth);
@@ -1177,7 +1177,7 @@ bool AppInit2(boost::thread_group& threadGroup)
     LogPrintf("fLiteMode %d\n", fLiteMode);
     LogPrintf("nInstantXDepth %d\n", nInstantXDepth);
     LogPrintf("Darksend rounds %d\n", nDarksendRounds);
-    LogPrintf("Anonymize Piratecash Amount %d\n", nAnonymizepiratecashAmount);
+    LogPrintf("Anonymize Piratecash Amount %d\n", nAnonymizeDarkcoinAmount);
 
     /* Denominations
        A note about convertability. Within Darksend pools, each denomination

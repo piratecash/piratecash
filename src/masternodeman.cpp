@@ -725,7 +725,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             TRY_LOCK(cs_main, lockMain);
             if(!lockMain) return;
             CValidationState state;
-            fAcceptable = AcceptableInputs(state, mempool, tx, false, NULL);
+            fAcceptable = AcceptableInputs(mempool, state, tx, false, NULL);
         }
         if(fAcceptable){
             LogPrint("masternode", "dsee - Accepted masternode entry %i %i\n", count, current);

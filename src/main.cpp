@@ -923,7 +923,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState &state, CTransaction 
     return true;
 }
 
-bool AcceptableInputs(CValidationState &state, CTxMemPool& pool, const CTransaction &txo, bool fLimitFree,
+bool AcceptableInputs(CTxMemPool& pool, CValidationState &state, const CTransaction &txo, bool fLimitFree,
                          bool* pfMissingInputs, bool fRejectInsaneFee, bool isDSTX)
 {
     AssertLockHeld(cs_main);
