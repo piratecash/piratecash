@@ -232,13 +232,7 @@ bool CSporkManager::UpdateSpork(int nSporkID, int64_t nValue)
 void CSporkManager::Relay(CSporkMessage& msg)
 {
     CInv inv(MSG_SPORK, msg.GetHash());
-
-    // Put on lists to offer to the other nodes
-    {
-        LOCK(cs_vNodes);
-        BOOST_FOREACH(CNode* pnode, vNodes)
-            pnode->PushInventory(inv);
-    }
+    RelayInv(inv);
 }
 
 bool CSporkManager::SetPrivKey(std::string strPrivKey)

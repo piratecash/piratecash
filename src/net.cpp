@@ -2023,6 +2023,13 @@ void RelayTransactionLockReq(const CTransaction& tx, bool relayToAll)
 
 }
 
+void RelayInv(CInv &inv, const int minProtoVersion) {
+    LOCK(cs_vNodes);
+    BOOST_FOREACH(CNode* pnode, vNodes)
+        if(pnode->nVersion >= minProtoVersion)
+            pnode->PushInventory(inv);
+}
+
 void CNode::RecordBytesRecv(uint64_t bytes)
 {
     LOCK(cs_totalBytesRecv);

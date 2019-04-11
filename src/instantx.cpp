@@ -78,12 +78,7 @@ void ProcessMessageInstantX(CNode* pfrom, std::string& strCommand, CDataStream& 
         }
         if (fAccepted)
         {
-            // Put on lists to offer to the other nodes
-            {
-                LOCK(cs_vNodes);
-                BOOST_FOREACH(CNode* pnode, vNodes)
-                    pnode->PushInventory(inv);
-            }
+            RelayInv(inv);
 
             DoConsensusVote(tx, nBlockHeight);
 
@@ -168,13 +163,7 @@ void ProcessMessageInstantX(CNode* pfrom, std::string& strCommand, CDataStream& 
                     mapUnknownVotes[ctx.vinMasternode.prevout.hash] = GetTime()+(60*10);
                 }
             }
-
-            // Put on lists to offer to the other nodes
-            {
-                LOCK(cs_vNodes);
-                BOOST_FOREACH(CNode* pnode, vNodes)
-                    pnode->PushInventory(inv);
-            }
+            RelayInv(inv);
         }
 
         return;
@@ -261,6 +250,8 @@ int64_t CreateNewLock(CTransaction tx)
         LogPrint("instantx", "CreateNewLock - Transaction Lock Exists %s !\n", tx.GetHash().ToString().c_str());
     }
 
+
+
     return nBlockHeight;
 }
 
@@ -304,14 +295,7 @@ void DoConsensusVote(CTransaction& tx, int64_t nBlockHeight)
     mapTxLockVote[ctx.GetHash()] = ctx;
 
     CInv inv(MSG_TXLOCK_VOTE, ctx.GetHash());
-
-    // Put on lists to offer to the other nodes
-    {
-        LOCK(cs_vNodes);
-        BOOST_FOREACH(CNode* pnode, vNodes)
-            pnode->PushInventory(inv);
-    }
-
+    RelayInv(inv);
 }
 
 //received a consensus vote
@@ -321,9 +305,7 @@ bool ProcessConsensusVote(CNode* pnode, CConsensusVote& ctx)
 
     CMasternode* pmn = mnodeman.Find(ctx.vinMasternode);
     if(pmn != NULL)
-    {
         LogPrint("instantx", "InstantX::ProcessConsensusVote - Masternode ADDR %s %d\n", pmn->addr.ToString().c_str(), n);
-    }
 
     if(n == -1)
     {
@@ -341,7 +323,7 @@ bool ProcessConsensusVote(CNode* pnode, CConsensusVote& ctx)
 
     if(!ctx.SignatureValid()) {
         LogPrintf("InstantX::ProcessConsensusVote - Signature invalid\n");
-        //don't ban, it could just be a non-synced masternode
+        // don't ban, it could just be a non-synced masternode
         mnodeman.AskForMN(pnode, ctx.vinMasternode);
         return false;
     }
@@ -355,9 +337,8 @@ bool ProcessConsensusVote(CNode* pnode, CConsensusVote& ctx)
         newLock.nTimeout = GetTime()+(60*5);
         newLock.txHash = ctx.txHash;
         mapTxLocks.insert(make_pair(ctx.txHash, newLock));
-    } else {
+    } else
         LogPrint("instantx", "InstantX::ProcessConsensusVote - Transaction Lock Exists %s !\n", ctx.txHash.ToString().c_str());
-    }
 
     CBlockIndex* pindex;
     CBlock block;
