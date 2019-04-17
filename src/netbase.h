@@ -93,9 +93,14 @@ class CNetAddr
         friend bool operator<(const CNetAddr& a, const CNetAddr& b);
 
         IMPLEMENT_SERIALIZE
-            (
-             READWRITE(FLATDATA(ip));
-            )
+
+        template <typename T, typename Stream, typename Operation>
+        inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+            size_t nSerSize = 0;
+            READWRITE(FLATDATA(thisPtr->ip));
+            return nSerSize;
+        }
+
         friend class CSubNet;
 };
 
@@ -123,11 +128,15 @@ class CSubNet
         friend bool operator<(const CSubNet& a, const CSubNet& b);
 
         IMPLEMENT_SERIALIZE
-        (
-            READWRITE(network);
-            READWRITE(FLATDATA(netmask));
-            READWRITE(FLATDATA(valid));
-        )
+
+        template <typename T, typename Stream, typename Operation>
+        inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+            size_t nSerSize = 0;
+            READWRITE(thisPtr->network);
+            READWRITE(FLATDATA(thisPtr->netmask));
+            READWRITE(FLATDATA(thisPtr->valid));
+            return nSerSize;
+        }
 };
 
 /** A combination of a network address (CNetAddr) and a (TCP) port */
@@ -162,14 +171,19 @@ class CService : public CNetAddr
         CService(const struct sockaddr_in6& addr);
 
         IMPLEMENT_SERIALIZE
-            (
-             CService* pthis = const_cast<CService*>(this);
-             READWRITE(FLATDATA(ip));
-             unsigned short portN = htons(port);
-             READWRITE(portN);
-             if (fRead)
-                 pthis->port = ntohs(portN);
-            )
+
+        template <typename T, typename Stream, typename Operation>
+        inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+            bool fRead = boost::is_same<Operation, CSerActionUnserialize>();
+            size_t nSerSize = 0;
+            CService* pthis = const_cast<CService*>(thisPtr);
+            READWRITE(FLATDATA(thisPtr->ip));
+            unsigned short portN = htons(thisPtr->port);
+            READWRITE(portN);
+            if (fRead)
+                pthis->port = ntohs(portN);
+            return nSerSize;
+        }
 };
 
 typedef CService proxyType;
@@ -195,4 +209,4 @@ bool CloseSocket(SOCKET& hSocket);
 /** Disable or enable blocking-mode for a socket */
 bool SetSocketNonBlocking(SOCKET& hSocket, bool fNonBlocking);
 
-#endif
+#endif // BITCOIN_NETBASE_H

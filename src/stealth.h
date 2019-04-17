@@ -89,16 +89,19 @@ public:
     }
     
     IMPLEMENT_SERIALIZE
-    (
-        READWRITE(this->options);
-        READWRITE(this->scan_pubkey);
-        READWRITE(this->spend_pubkey);
-        READWRITE(this->label);
-        
-        READWRITE(this->scan_secret);
-        READWRITE(this->spend_secret);
-    );
 
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        READWRITE(thisPtr->options);
+        READWRITE(thisPtr->scan_pubkey);
+        READWRITE(thisPtr->spend_pubkey);
+        READWRITE(thisPtr->label);
+
+        READWRITE(thisPtr->scan_secret);
+        READWRITE(thisPtr->spend_secret);
+        return nSerSize;
+    }
 };
 
 void AppendChecksum(data_chunk& data);

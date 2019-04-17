@@ -1,5 +1,5 @@
 
-// Copyright (c) 2014-2015 The Darkcoin developers
+// Copyright (c) 2014-2015 The Dash developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -27,15 +27,19 @@ public:
     CDarkSendRelay(CTxIn& vinMasternodeIn, vector<unsigned char>& vchSigIn, int nBlockHeightIn, int nRelayTypeIn, CTxIn& in2, CTxOut& out2);
     
     IMPLEMENT_SERIALIZE
-    (
-    	READWRITE(vinMasternode);
-        READWRITE(vchSig);
-        READWRITE(vchSig2);
-        READWRITE(nBlockHeight);
-        READWRITE(nRelayType);
-        READWRITE(in);
-        READWRITE(out);
-    )
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        READWRITE(thisPtr->vinMasternode);
+        READWRITE(thisPtr->vchSig);
+        READWRITE(thisPtr->vchSig2);
+        READWRITE(thisPtr->nBlockHeight);
+        READWRITE(thisPtr->nRelayType);
+        READWRITE(thisPtr->in);
+        READWRITE(thisPtr->out);
+        return nSerSize;
+    }
 
     std::string ToString();
 

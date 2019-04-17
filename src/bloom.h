@@ -1,6 +1,7 @@
-// Copyright (c) 2012 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2012-2014 The Bitcoin developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef BITCOIN_BLOOM_H
 #define BITCOIN_BLOOM_H
 
@@ -47,10 +48,13 @@ public:
     CBloomFilter() {}
 
     IMPLEMENT_SERIALIZE
-    (
-        READWRITE(vData);
-        READWRITE(nHashFuncs);
-    )
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        READWRITE(thisPtr->vData);
+        READWRITE(thisPtr->nHashFuncs);
+        return nSerSize;
+    }
 
     void insert(const std::vector<unsigned char>& vKey);
     void insert(const COutPoint& outpoint);
@@ -64,7 +68,8 @@ public:
     // (catch a filter which was just deserialized which was too big)
     bool IsWithinSizeConstraints() const;
 
+    //! Also adds any outputs which match the filter to the filter (to match their spending txes)
     bool IsRelevantAndUpdate(const CTransaction& tx);
 };
 
-#endif /* BITCOIN_BLOOM_H */
+#endif // BITCOIN_BLOOM_H

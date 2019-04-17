@@ -1,14 +1,14 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
+// Copyright (c) 2009-2013 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef __cplusplus
-# error This header can only be compiled as C++.
+#error This header can only be compiled as C++.
 #endif
 
-#ifndef __INCLUDED_PROTOCOL_H__
-#define __INCLUDED_PROTOCOL_H__
+#ifndef BITCOIN_PROTOCOL_H
+#define BITCOIN_PROTOCOL_H
 
 #include "chainparams.h"
 #include "serialize.h"
@@ -32,12 +32,16 @@ class CMessageHeader
         bool IsValid() const;
 
         IMPLEMENT_SERIALIZE
-            (
-             READWRITE(FLATDATA(pchMessageStart));
-             READWRITE(FLATDATA(pchCommand));
-             READWRITE(nMessageSize);
-             READWRITE(nChecksum);
-            )
+
+        template <typename T, typename Stream, typename Operation>
+        inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+            size_t nSerSize = 0;
+            READWRITE(FLATDATA(thisPtr->pchMessageStart));
+            READWRITE(FLATDATA(thisPtr->pchCommand));
+            READWRITE(thisPtr->nMessageSize);
+            READWRITE(thisPtr->nChecksum);
+            return nSerSize;
+        }
 
     // TODO: make private (improves encapsulation)
     public:
@@ -57,9 +61,16 @@ class CMessageHeader
 };
 
 /** nServices flags */
-enum
-{
+enum {
     NODE_NETWORK = (1 << 0),
+
+    // Bits 24-31 are reserved for temporary experiments. Just pick a bit that
+    // isn't getting used, or one not being used much, and notify the
+    // bitcoin-development mailing list. Remember that service bits are just
+    // unauthenticated advertisements, so your code must be robust against
+    // collisions and other cases where nodes may be advertising a service they
+    // do not actually support. Other service bits should be allocated via the
+    // BIP process.
 };
 
 /** A CService with information about it as peer */
@@ -72,30 +83,34 @@ class CAddress : public CService
         void Init();
 
         IMPLEMENT_SERIALIZE
-            (
-             CAddress* pthis = const_cast<CAddress*>(this);
-             CService* pip = (CService*)pthis;
-             if (fRead)
-                 pthis->Init();
-             if (nType & SER_DISK)
-                 READWRITE(nVersion);
-             if ((nType & SER_DISK) ||
-                 (nVersion >= CADDR_TIME_VERSION && !(nType & SER_GETHASH)))
-                 READWRITE(nTime);
-             READWRITE(nServices);
-             READWRITE(*pip);
-            )
+
+        template <typename T, typename Stream, typename Operation>
+        inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+            size_t nSerSize = 0;
+            bool fRead = boost::is_same<Operation, CSerActionUnserialize>();
+            CAddress* pthis = const_cast<CAddress*>(thisPtr);
+            CService* pip = (CService*)pthis;
+            if (fRead)
+                pthis->Init();
+            if (nType & SER_DISK)
+                READWRITE(nVersion);
+            if ((nType & SER_DISK) ||
+                    (nVersion >= CADDR_TIME_VERSION && !(nType & SER_GETHASH)))
+                READWRITE(thisPtr->nTime);
+            READWRITE(thisPtr->nServices);
+            READWRITE(*pip);
+        }
 
 
     // TODO: make private (improves encapsulation)
-    public:
-        uint64_t nServices;
+public:
+    uint64_t nServices;
 
-        // disk and network only
-        unsigned int nTime;
+    // disk and network only
+    unsigned int nTime;
 
-        // memory only
-        int64_t nLastTry;
+    // memory only
+    int64_t nLastTry;
 };
 
 /** inv message data */
@@ -107,10 +122,14 @@ class CInv
         CInv(const std::string& strType, const uint256& hashIn);
 
         IMPLEMENT_SERIALIZE
-        (
-            READWRITE(type);
-            READWRITE(hash);
-        )
+
+        template <typename T, typename Stream, typename Operation>
+        inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+            size_t nSerSize = 0;
+            READWRITE(thisPtr->type);
+            READWRITE(thisPtr->hash);
+            return nSerSize;
+        }
 
         friend bool operator<(const CInv& a, const CInv& b);
 
@@ -126,4 +145,4 @@ class CInv
 
 
 
-#endif // __INCLUDED_PROTOCOL_H__
+#endif // BITCOIN_PROTOCOL_H

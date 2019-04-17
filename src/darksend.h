@@ -171,13 +171,17 @@ public:
     }
 
     IMPLEMENT_SERIALIZE
-    (
-        READWRITE(nDenom);
-        READWRITE(vin);
-        READWRITE(time);
-        READWRITE(ready);
-        READWRITE(vchSig);
-    )
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        READWRITE(thisPtr->nDenom);
+        READWRITE(thisPtr->vin);
+        READWRITE(thisPtr->time);
+        READWRITE(thisPtr->ready);
+        READWRITE(thisPtr->vchSig);
+        return nSerSize;
+    }
 
     bool GetAddress(CService &addr)
     {

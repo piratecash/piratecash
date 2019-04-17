@@ -1,10 +1,10 @@
 // Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
+// Copyright (c) 2009-2013 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef _BITCOINALERT_H_
-#define _BITCOINALERT_H_ 1
+#ifndef BITCOIN_ALERT_H
+#define BITCOIN_ALERT_H
 
 #include "serialize.h"
 
@@ -40,23 +40,27 @@ public:
     std::string strReserved;
 
     IMPLEMENT_SERIALIZE
-    (
-        READWRITE(this->nVersion);
-        nVersion = this->nVersion;
-        READWRITE(nRelayUntil);
-        READWRITE(nExpiration);
-        READWRITE(nID);
-        READWRITE(nCancel);
-        READWRITE(setCancel);
-        READWRITE(nMinVer);
-        READWRITE(nMaxVer);
-        READWRITE(setSubVer);
-        READWRITE(nPriority);
 
-        READWRITE(LIMITED_STRING(strComment, 65536));
-        READWRITE(LIMITED_STRING(strStatusBar, 256));
-        READWRITE(LIMITED_STRING(strReserved, 256));
-    )
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        READWRITE(thisPtr->nVersion);
+        nVersion = thisPtr->nVersion;
+        READWRITE(thisPtr->nRelayUntil);
+        READWRITE(thisPtr->nExpiration);
+        READWRITE(thisPtr->nID);
+        READWRITE(thisPtr->nCancel);
+        READWRITE(thisPtr->setCancel);
+        READWRITE(thisPtr->nMinVer);
+        READWRITE(thisPtr->nMaxVer);
+        READWRITE(thisPtr->setSubVer);
+        READWRITE(thisPtr->nPriority);
+
+        READWRITE(LIMITED_STRING(thisPtr->strComment, 65536));
+        READWRITE(LIMITED_STRING(thisPtr->strStatusBar, 256));
+        READWRITE(LIMITED_STRING(thisPtr->strReserved, 256));
+        return nSerSize;
+    }
 
     void SetNull();
 
@@ -76,10 +80,13 @@ public:
     }
 
     IMPLEMENT_SERIALIZE
-    (
-        READWRITE(vchMsg);
-        READWRITE(vchSig);
-    )
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        READWRITE(thisPtr->vchMsg);
+        READWRITE(thisPtr->vchSig);
+        return nSerSize;
+    }
 
     void SetNull();
     bool IsNull() const;
@@ -98,4 +105,4 @@ public:
     static CAlert getAlertByHash(const uint256 &hash);
 };
 
-#endif
+#endif // BITCOIN_ALERT_H

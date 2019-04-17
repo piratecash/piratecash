@@ -64,12 +64,16 @@ public:
     bool Sign();
 
     IMPLEMENT_SERIALIZE
-    (
-        READWRITE(txHash);
-        READWRITE(vinMasternode);
-        READWRITE(vchMasterNodeSignature);
-        READWRITE(nBlockHeight);
-    )
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        READWRITE(thisPtr->txHash);
+        READWRITE(thisPtr->vinMasternode);
+        READWRITE(thisPtr->vchMasterNodeSignature);
+        READWRITE(thisPtr->nBlockHeight);
+        return nSerSize;
+    }
 };
 
 class CTransactionLock

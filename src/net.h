@@ -1,7 +1,8 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
+// Copyright (c) 2009-2014 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef BITCOIN_NET_H
 #define BITCOIN_NET_H
 
@@ -38,7 +39,7 @@ class CNode;
 
 namespace boost {
     class thread_group;
-}
+} // namespace boost
 
 /** Time between pings automatically sent out for latency probing and keepalive (in seconds). */
 static const int PING_INTERVAL = 2 * 60;
@@ -87,6 +88,7 @@ struct CNodeSignals
     boost::signals2::signal<void (NodeId, const CNode*)> InitializeNode;
     boost::signals2::signal<void (NodeId)> FinalizeNode;
 };
+
 
 CNodeSignals& GetNodeSignals();
 
@@ -260,13 +262,17 @@ public:
     }
   
     IMPLEMENT_SERIALIZE
-    (
-        READWRITE(this->nVersion);
-        nVersion = this->nVersion;
-        READWRITE(nCreateTime);
-        READWRITE(nBanUntil);
-        READWRITE(banReason);
-    )
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        READWRITE(thisPtr->nVersion);
+        nVersion = thisPtr->nVersion;
+        READWRITE(thisPtr->nCreateTime);
+        READWRITE(thisPtr->nBanUntil);
+        READWRITE(thisPtr->banReason);
+        return nSerSize;
+    }
 
     void SetNull()
     {
@@ -502,6 +508,7 @@ private:
     void operator=(const CNode&);
 
 public:
+
     NodeId GetId() const {
       return id;
     }
@@ -516,7 +523,7 @@ public:
     unsigned int GetTotalRecvSize()
     {
         unsigned int total = 0;
-        BOOST_FOREACH(const CNetMessage &msg, vRecvMsg) 
+        BOOST_FOREACH(const CNetMessage &msg, vRecvMsg)
             total += msg.vRecv.size() + 24;
         return total;
     }
@@ -857,9 +864,10 @@ template<typename T1, typename T2, typename T3, typename T4, typename T5, typena
             throw;
         }
     }
+
     template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8, typename T9, typename T10, typename T11>
     void PushMessage(const char* pszCommand, const T1& a1, const T2& a2, const T3& a3, const T4& a4, const T5& a5, const T6& a6, const T7& a7, const T8& a8, const T9& a9, const T10& a10, const T11& a11)
-   {
+    {
         try
         {
             BeginMessage(pszCommand);
@@ -869,7 +877,7 @@ template<typename T1, typename T2, typename T3, typename T4, typename T5, typena
         catch (...)
         {
             AbortMessage();
-           throw;
+            throw;
         }
     }
 
@@ -904,12 +912,10 @@ template<typename T1, typename T2, typename T3, typename T4, typename T5, typena
         vecRequestsFulfilled.push_back(strRequest);
     }
 
-
     bool IsSubscribed(unsigned int nChannel);
     void Subscribe(unsigned int nChannel, unsigned int nHops=0);
     void CancelSubscribe(unsigned int nChannel);
     void CloseSocketDisconnect();
-
 
     // Denial-of-service detection/prevention
     // The idea is to detect peers that are behaving

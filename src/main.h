@@ -238,7 +238,15 @@ public:
         nTxPos = nTxPosIn;
     }
 
-    IMPLEMENT_SERIALIZE( READWRITE(FLATDATA(*this)); )
+    IMPLEMENT_SERIALIZE
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        READWRITE(FLATDATA(*thisPtr));
+        return nSerSize;
+    }
+
     void SetNull() { nFile = (unsigned int) -1; nBlockPos = 0; nTxPos = 0; }
     bool IsNull() const { return (nFile == (unsigned int) -1); }
 
@@ -308,14 +316,18 @@ public:
     }
 
     IMPLEMENT_SERIALIZE
-    (
-        READWRITE(this->nVersion);
-        nVersion = this->nVersion;
-        READWRITE(nTime);
-        READWRITE(vin);
-        READWRITE(vout);
-        READWRITE(nLockTime);
-    )
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        READWRITE(thisPtr->nVersion);
+        nVersion = thisPtr->nVersion;
+        READWRITE(thisPtr->nTime);
+        READWRITE(thisPtr->vin);
+        READWRITE(thisPtr->vout);
+        READWRITE(thisPtr->nLockTime);
+        return nSerSize;
+    }
 
     void SetNull()
     {
@@ -486,11 +498,16 @@ private:
 public:
     CTxOutCompressor(CTxOut &txoutIn) : txout(txoutIn) { }
 
-    IMPLEMENT_SERIALIZE(
-        READWRITE(VARINT(txout.nValue));
-        CScriptCompressor cscript(REF(txout.scriptPubKey));
+    IMPLEMENT_SERIALIZE
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        READWRITE(VARINT(thisPtr->txout.nValue));
+        CScriptCompressor cscript(REF(thisPtr->txout.scriptPubKey));
         READWRITE(cscript);
-    )
+        return nSerSize;
+    }
 };
 
 /** Check for standard transaction types
@@ -563,13 +580,17 @@ public:
 
 
     IMPLEMENT_SERIALIZE
-    (
-        nSerSize += SerReadWrite(s, *(CTransaction*)this, nType, nVersion, ser_action);
-        nVersion = this->nVersion;
-        READWRITE(hashBlock);
-        READWRITE(vMerkleBranch);
-        READWRITE(nIndex);
-    )
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        nSerSize += SerReadWrite(s, *(CTransaction*)thisPtr, nType, nVersion, ser_action);
+        nVersion = thisPtr->nVersion;
+        READWRITE(thisPtr->hashBlock);
+        READWRITE(thisPtr->vMerkleBranch);
+        READWRITE(thisPtr->nIndex);
+        return nSerSize;
+    }
 
     int SetMerkleBranch(const CBlock* pblock=NULL);
 
@@ -611,12 +632,17 @@ public:
     }
 
     IMPLEMENT_SERIALIZE
-    (
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
         if (!(nType & SER_GETHASH))
             READWRITE(nVersion);
-        READWRITE(pos);
-        READWRITE(vSpent);
-    )
+        READWRITE(thisPtr->pos);
+        READWRITE(thisPtr->vSpent);
+
+        return nSerSize;
+    }
 
     void SetNull()
     {
@@ -688,27 +714,32 @@ public:
     }
 
     IMPLEMENT_SERIALIZE
-    (
-        READWRITE(this->nVersion);
-        nVersion = this->nVersion;
-        READWRITE(hashPrevBlock);
-        READWRITE(hashMerkleRoot);
-        READWRITE(nTime);
-        READWRITE(nBits);
-        READWRITE(nNonce);
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        bool fRead = boost::is_same<Operation, CSerActionUnserialize>();
+        READWRITE(thisPtr->nVersion);
+        nVersion = thisPtr->nVersion;
+        READWRITE(thisPtr->hashPrevBlock);
+        READWRITE(thisPtr->hashMerkleRoot);
+        READWRITE(thisPtr->nTime);
+        READWRITE(thisPtr->nBits);
+        READWRITE(thisPtr->nNonce);
 
         // ConnectBlock depends on vtx following header to generate CDiskTxPos
         if (!(nType & (SER_GETHASH|SER_BLOCKHEADERONLY)))
         {
-            READWRITE(vtx);
-            READWRITE(vchBlockSig);
+            READWRITE(thisPtr->vtx);
+            READWRITE(thisPtr->vchBlockSig);
         }
         else if (fRead)
         {
-            const_cast<CBlock*>(this)->vtx.clear();
-            const_cast<CBlock*>(this)->vchBlockSig.clear();
+            const_cast<CBlock*>(thisPtr)->vtx.clear();
+            const_cast<CBlock*>(thisPtr)->vchBlockSig.clear();
         }
-    )
+        return nSerSize;
+    }
 
     void SetNull()
     {
@@ -1177,41 +1208,47 @@ public:
     }
 
     IMPLEMENT_SERIALIZE
-    (
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        bool fRead = boost::is_same<Operation, CSerActionUnserialize>();
+
         if (!(nType & SER_GETHASH))
             READWRITE(nVersion);
 
-        READWRITE(hashNext);
-        READWRITE(nFile);
-        READWRITE(nBlockPos);
-        READWRITE(nHeight);
+        READWRITE(thisPtr->hashNext);
+        READWRITE(thisPtr->nFile);
+        READWRITE(thisPtr->nBlockPos);
+        READWRITE(thisPtr->nHeight);
 #ifndef LOWMEM
-        READWRITE(nMint);
-        READWRITE(nMoneySupply);
+        READWRITE(thisPtr->nMint);
+        READWRITE(thisPtr->nMoneySupply);
 #endif
-        READWRITE(nFlags);
-        READWRITE(nStakeModifier);
-        if (IsProofOfStake())
+        READWRITE(thisPtr->nFlags);
+        READWRITE(thisPtr->nStakeModifier);
+        if (thisPtr->IsProofOfStake())
         {
-            READWRITE(prevoutStake);
-            READWRITE(nStakeTime);
+            READWRITE(thisPtr->prevoutStake);
+            READWRITE(thisPtr->nStakeTime);
         }
         else if (fRead)
         {
-            const_cast<CDiskBlockIndex*>(this)->prevoutStake.SetNull();
-            const_cast<CDiskBlockIndex*>(this)->nStakeTime = 0;
+            const_cast<CDiskBlockIndex*>(thisPtr)->prevoutStake.SetNull();
+            const_cast<CDiskBlockIndex*>(thisPtr)->nStakeTime = 0;
         }
-        READWRITE(hashProof);
+        READWRITE(thisPtr->hashProof);
 
         // block header
-        READWRITE(this->nVersion);
-        READWRITE(hashPrev);
-        READWRITE(hashMerkleRoot);
-        READWRITE(nTime);
-        READWRITE(nBits);
-        READWRITE(nNonce);
-        READWRITE(blockHash);
-    )
+        READWRITE(thisPtr->nVersion);
+        READWRITE(thisPtr->hashPrev);
+        READWRITE(thisPtr->hashMerkleRoot);
+        READWRITE(thisPtr->nTime);
+        READWRITE(thisPtr->nBits);
+        READWRITE(thisPtr->nNonce);
+        READWRITE(thisPtr->blockHash);
+        return nSerSize;
+    }
 
     uint256 GetBlockHash() const
     {
@@ -1282,11 +1319,16 @@ public:
     }
 
     IMPLEMENT_SERIALIZE
-    (
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
         if (!(nType & SER_GETHASH))
             READWRITE(nVersion);
-        READWRITE(vHave);
-    )
+        READWRITE(thisPtr->vHave);
+
+        return nSerSize;
+    }
 
     void SetNull()
     {

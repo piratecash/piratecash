@@ -1,7 +1,9 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2014-2015 The Dash developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef BITCOIN_WALLET_H
 #define BITCOIN_WALLET_H
 
@@ -57,6 +59,7 @@ enum AvailableCoinsType
     ONLY_NONDENOMINATED_NOT10000IFMN = 4
 };
 
+
 /** A key pool entry */
 class CKeyPool
 {
@@ -76,12 +79,17 @@ public:
     }
 
     IMPLEMENT_SERIALIZE
-    (
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
         if (!(nType & SER_GETHASH))
             READWRITE(nVersion);
-        READWRITE(nTime);
-        READWRITE(vchPubKey);
-    )
+        READWRITE(thisPtr->nTime);
+        READWRITE(thisPtr->vchPubKey);
+
+        return nSerSize;
+    }
 };
 
 /** A CWallet is an extension of a keystore, which also maintains a set of transactions and balances,
@@ -153,6 +161,7 @@ public:
     {
         SetNull();
     }
+
     CWallet(std::string strWalletFileIn)
     {
         SetNull();
@@ -212,21 +221,23 @@ public:
     void ListLockedCoins(std::vector<COutPoint>& vOutpts);
     CAmount GetTotalValue(std::vector<CTxIn> vCoins);
 
-    // keystore implementation
-    // Generate a new key
+    /**
+     * keystore implementation
+     * Generate a new key
+     */
     CPubKey GenerateNewKey();
-    // Adds a key to the store, and saves it to disk.
+    //! Adds a key to the store, and saves it to disk.
     bool AddKeyPubKey(const CKey& key, const CPubKey &pubkey);
-    // Adds a key to the store, without saving it to disk (used by LoadWallet)
+    //! Adds a key to the store, without saving it to disk (used by LoadWallet)
     bool LoadKey(const CKey& key, const CPubKey &pubkey) { return CCryptoKeyStore::AddKeyPubKey(key, pubkey); }
-    // Load metadata (used by LoadWallet)
+    //! Load metadata (used by LoadWallet)
     bool LoadKeyMetadata(const CPubKey &pubkey, const CKeyMetadata &metadata);
 
     bool LoadMinVersion(int nVersion) { AssertLockHeld(cs_wallet); nWalletVersion = nVersion; nWalletMaxVersion = std::max(nWalletMaxVersion, nVersion); return true; }
 
-    // Adds an encrypted key to the store, and saves it to disk.
+    //! Adds an encrypted key to the store, and saves it to disk.
     bool AddCryptedKey(const CPubKey &vchPubKey, const std::vector<unsigned char> &vchCryptedSecret);
-    // Adds an encrypted key to the store, without saving it to disk (used by LoadWallet)
+    //! Adds an encrypted key to the store, without saving it to disk (used by LoadWallet)
     bool LoadCryptedKey(const CPubKey &vchPubKey, const std::vector<unsigned char> &vchCryptedSecret);
     bool AddCScript(const CScript& redeemScript);
     bool LoadCScript(const CScript& redeemScript);
@@ -234,7 +245,7 @@ public:
     // Adds a watch-only address to the store, and saves it to disk.
     bool AddWatchOnly(const CScript &dest);
     bool RemoveWatchOnly(const CScript &dest);
-    // Adds a watch-only address to the store, without saving it to disk (used by LoadWallet)
+    //! Adds a watch-only address to the store, without saving it to disk (used by LoadWallet)
     bool LoadWatchOnly(const CScript &dest);
 
     bool Lock();
@@ -244,9 +255,9 @@ public:
 
     void GetKeyBirthTimes(std::map<CKeyID, int64_t> &mapKeyBirth) const;
 
-
-    /** Increment the next transaction order id
-        @return next transaction order id
+    /** 
+     * Increment the next transaction order id
+     * @return next transaction order id
      */
     int64_t IncOrderPosNext(CWalletDB *pwalletdb = NULL);
 
@@ -321,11 +332,9 @@ public:
     int GetInputDarksendRounds(CTxIn in) const;
 
     bool IsDenominated(const CTxIn &txin) const;
-
     bool IsDenominated(const CTransaction& tx) const;
 
     bool IsDenominatedAmount(int64_t nInputAmount) const;
-
 
     isminetype IsMine(const CTxIn& txin) const;
     CAmount GetDebit(const CTxIn& txin, const isminefilter& filter) const;
@@ -419,16 +428,16 @@ public:
 
     bool SetDefaultKey(const CPubKey &vchPubKey);
 
-    // signify that a particular wallet feature is now used. this may change nWalletVersion and nWalletMaxVersion if those are lower
+    //! signify that a particular wallet feature is now used. this may change nWalletVersion and nWalletMaxVersion if those are lower
     bool SetMinVersion(enum WalletFeature, CWalletDB* pwalletdbIn = NULL, bool fExplicit = false);
 
-    // change which version we're allowed to upgrade to (note that this does not immediately imply upgrading to that format)
+    //! change which version we're allowed to upgrade to (note that this does not immediately imply upgrading to that format)
     bool SetMaxVersion(int nVersion);
 
-    // get the current wallet format (the oldest client version guaranteed to understand this wallet)
+    //! get the current wallet format (the oldest client version guaranteed to understand this wallet)
     int GetVersion() { LOCK(cs_wallet); return nWalletVersion; }
 
-    // Get wallet transactions that conflict with given transaction (spend same outputs)
+    //! Get wallet transactions that conflict with given transaction (spend same outputs)
     std::set<uint256> GetConflicts(const uint256& txid) const;
 
     void FixSpentCoins(int& nMismatchSpent, int64_t& nBalanceInQuestion, bool fCheckOnly = false);
@@ -441,10 +450,12 @@ public:
         &address, const std::string &label, bool isMine,
         ChangeType status)> NotifyAddressBookChanged;
 
-    /** Wallet transaction added, removed or updated.
+    /** 
+     * Wallet transaction added, removed or updated.
      * @note called with lock cs_wallet held.
      */
-    boost::signals2::signal<void (CWallet *wallet, const uint256 &hashTx, ChangeType status)> NotifyTransactionChanged;
+    boost::signals2::signal<void (CWallet *wallet, const uint256 &hashTx,
+            ChangeType status)> NotifyTransactionChanged;
 
     /** Show progress e.g. for rescan */
     boost::signals2::signal<void (const std::string &title, int nProgress)> ShowProgress;
@@ -610,8 +621,12 @@ public:
     }
 
     IMPLEMENT_SERIALIZE
-    (
-        CWalletTx* pthis = const_cast<CWalletTx*>(this);
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        bool fRead = boost::is_same<Operation, CSerActionUnserialize>();
+        CWalletTx* pthis = const_cast<CWalletTx*>(thisPtr);
         if (fRead)
             pthis->Init(NULL);
         char fSpent = false;
@@ -621,7 +636,7 @@ public:
             pthis->mapValue["fromaccount"] = pthis->strFromAccount;
 
             std::string str;
-            BOOST_FOREACH(char f, vfSpent)
+            BOOST_FOREACH(char f, thisPtr->vfSpent)
             {
                 str += (f ? '1' : '0');
                 if (f)
@@ -631,32 +646,32 @@ public:
 
             WriteOrderPos(pthis->nOrderPos, pthis->mapValue);
 
-            if (nTimeSmart)
-                pthis->mapValue["timesmart"] = strprintf("%u", nTimeSmart);
+            if (thisPtr->nTimeSmart)
+                pthis->mapValue["timesmart"] = strprintf("%u", thisPtr->nTimeSmart);
         }
 
-        nSerSize += SerReadWrite(s, *(CMerkleTx*)this, nType, nVersion,ser_action);
-        READWRITE(vtxPrev);
-        READWRITE(mapValue);
-        READWRITE(vOrderForm);
-        READWRITE(fTimeReceivedIsTxTime);
-        READWRITE(nTimeReceived);
-        READWRITE(fFromMe);
+        nSerSize += SerReadWrite(s, *(CMerkleTx*)thisPtr, nType, nVersion,ser_action);
+        READWRITE(thisPtr->vtxPrev);
+        READWRITE(thisPtr->mapValue);
+        READWRITE(thisPtr->vOrderForm);
+        READWRITE(thisPtr->fTimeReceivedIsTxTime);
+        READWRITE(thisPtr->nTimeReceived);
+        READWRITE(thisPtr->fFromMe);
         READWRITE(fSpent);
 
         if (fRead)
         {
             pthis->strFromAccount = pthis->mapValue["fromaccount"];
 
-            if (mapValue.count("spent"))
+            if (thisPtr->mapValue.count("spent"))
                 BOOST_FOREACH(char c, pthis->mapValue["spent"])
                     pthis->vfSpent.push_back(c != '0');
             else
-                pthis->vfSpent.assign(vout.size(), fSpent);
+                pthis->vfSpent.assign(thisPtr->vout.size(), fSpent);
 
             ReadOrderPos(pthis->nOrderPos, pthis->mapValue);
 
-            pthis->nTimeSmart = mapValue.count("timesmart") ? (unsigned int)atoi64(pthis->mapValue["timesmart"]) : 0;
+            pthis->nTimeSmart = thisPtr->mapValue.count("timesmart") ? (unsigned int)atoi64(pthis->mapValue["timesmart"]) : 0;
         }
 
         pthis->mapValue.erase("fromaccount");
@@ -664,7 +679,8 @@ public:
         pthis->mapValue.erase("spent");
         pthis->mapValue.erase("n");
         pthis->mapValue.erase("timesmart");
-    )
+        return nSerSize;
+    }
 
     // marks certain txout's as spent
     // returns true if any update took place
@@ -918,7 +934,6 @@ public:
         return nCredit;
     }
 
-
     CAmount GetDenominatedCredit(bool unconfirmed, bool fUseCache=true) const
     {
         if (pwallet == 0)
@@ -963,7 +978,6 @@ public:
         }
         return nCredit;
     }
-
 
     CAmount GetImmatureWatchOnlyCredit(const bool& fUseCache=true) const
     {
@@ -1034,7 +1048,6 @@ public:
         // Quick answer in most cases
         if (!IsFinalTx(*this))
             return false;
-
         int nDepth = GetDepthInMainChain();
         if (nDepth >= 1)
             return true;
@@ -1042,6 +1055,7 @@ public:
             return false;
         if (fConfChange || !IsFromMe(ISMINE_ALL))// using wtx's cached debit
             return false;
+
         // Trusted if all inputs are from us and are in the mempool:
         BOOST_FOREACH(const CTxIn& txin, vin)
         {
@@ -1131,14 +1145,18 @@ public:
     }
 
     IMPLEMENT_SERIALIZE
-    (
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
         if (!(nType & SER_GETHASH))
             READWRITE(nVersion);
-        READWRITE(vchPrivKey);
-        READWRITE(nTimeCreated);
-        READWRITE(nTimeExpires);
-        READWRITE(LIMITED_STRING(strComment, 65536));
-    )
+        READWRITE(thisPtr->vchPrivKey);
+        READWRITE(thisPtr->nTimeCreated);
+        READWRITE(thisPtr->nTimeExpires);
+        READWRITE(LIMITED_STRING(thisPtr->strComment, 65536));
+        return nSerSize;
+    }
 };
 
 
@@ -1146,7 +1164,8 @@ public:
 
 
 
-/** Account information.
+/** 
+ * Account information.
  * Stored in wallet with key "acc"+string account name.
  */
 class CAccount
@@ -1165,16 +1184,21 @@ public:
     }
 
     IMPLEMENT_SERIALIZE
-    (
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
         if (!(nType & SER_GETHASH))
             READWRITE(nVersion);
-        READWRITE(vchPubKey);
-    )
+        READWRITE(thisPtr->vchPubKey);
+        return nSerSize;
+    }
 };
 
 
 
-/** Internal transfers.
+/** 
+ * Internal transfers.
  * Database key is acentry<account><counter>.
  */
 class CAccountingEntry
@@ -1205,38 +1229,42 @@ public:
     }
 
     IMPLEMENT_SERIALIZE
-    (
-        CAccountingEntry& me = *const_cast<CAccountingEntry*>(this);
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        bool fRead = boost::is_same<Operation, CSerActionUnserialize>();
+        CAccountingEntry& me = *const_cast<CAccountingEntry*>(thisPtr);
         if (!(nType & SER_GETHASH))
             READWRITE(nVersion);
         // Note: strAccount is serialized as part of the key, not here.
-        READWRITE(nCreditDebit);
-        READWRITE(nTime);
-        READWRITE(LIMITED_STRING(strOtherAccount, 65536));
+        READWRITE(thisPtr->nCreditDebit);
+        READWRITE(thisPtr->nTime);
+        READWRITE(LIMITED_STRING(thisPtr->strOtherAccount, 65536));
 
         if (!fRead)
         {
-            WriteOrderPos(nOrderPos, me.mapValue);
+            WriteOrderPos(thisPtr->nOrderPos, me.mapValue);
 
-            if (!(mapValue.empty() && _ssExtra.empty()))
+            if (!(thisPtr->mapValue.empty() && thisPtr->_ssExtra.empty()))
             {
                 CDataStream ss(nType, nVersion);
                 ss.insert(ss.begin(), '\0');
-                ss << mapValue;
-                ss.insert(ss.end(), _ssExtra.begin(), _ssExtra.end());
+                ss << thisPtr->mapValue;
+                ss.insert(ss.end(), thisPtr->_ssExtra.begin(), thisPtr->_ssExtra.end());
                 me.strComment.append(ss.str());
             }
         }
 
-        READWRITE(LIMITED_STRING(strComment, 65536));
+        READWRITE(LIMITED_STRING(thisPtr->strComment, 65536));
 
-        size_t nSepPos = strComment.find("\0", 0, 1);
+        size_t nSepPos = thisPtr->strComment.find("\0", 0, 1);
         if (fRead)
         {
             me.mapValue.clear();
             if (std::string::npos != nSepPos)
             {
-                CDataStream ss(std::vector<char>(strComment.begin() + nSepPos + 1, strComment.end()), nType, nVersion);
+                CDataStream ss(std::vector<char>(thisPtr->strComment.begin() + nSepPos + 1, thisPtr->strComment.end()), nType, nVersion);
                 ss >> me.mapValue;
                 me._ssExtra = std::vector<char>(ss.begin(), ss.end());
             }
@@ -1246,10 +1274,11 @@ public:
             me.strComment.erase(nSepPos);
 
         me.mapValue.erase("n");
-    )
+        return nSerSize;
+    }
 
 private:
     std::vector<char> _ssExtra;
 };
 
-#endif
+#endif // BITCOIN_WALLET_H

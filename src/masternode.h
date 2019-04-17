@@ -1,5 +1,5 @@
-// Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Darkcoin developers
+
+// Copyright (c) 2014-2015 The Dash developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #ifndef MASTERNODE_H
@@ -62,7 +62,7 @@ public:
         MASTERNODE_POS_ERROR = 5
     };
 
-    CTxIn vin;  
+    CTxIn vin;
     CService addr;
     CPubKey pubkey;
     CPubKey pubkey2;
@@ -141,40 +141,44 @@ public:
     uint256 CalculateScore(int mod=1, int64_t nBlockHeight=0);
 
     IMPLEMENT_SERIALIZE
-    (
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
         // serialized format:
         // * version byte (currently 0)
         // * all fields (?)
         {
-                LOCK(cs);
+                LOCK(thisPtr->cs);
                 unsigned char nVersion = 0;
                 READWRITE(nVersion);
-                READWRITE(vin);
-                READWRITE(addr);
-                READWRITE(pubkey);
-                READWRITE(pubkey2);
-                READWRITE(sig);
-                READWRITE(activeState);
-                READWRITE(sigTime);
-                READWRITE(lastDseep);
-                READWRITE(lastTimeSeen);
-                READWRITE(cacheInputAge);
-                READWRITE(cacheInputAgeBlock);
-                READWRITE(unitTest);
-                READWRITE(allowFreeTx);
-                READWRITE(protocolVersion);
-                READWRITE(nLastDsq);
-                READWRITE(rewardAddress);
-                READWRITE(rewardPercentage);
-                READWRITE(nVote);
-                READWRITE(lastVote);
-                READWRITE(nScanningErrorCount);
-                READWRITE(nLastScanningErrorBlockHeight);
-                READWRITE(nLastPaid);
-                READWRITE(isPortOpen);
+                READWRITE(thisPtr->vin);
+                READWRITE(thisPtr->addr);
+                READWRITE(thisPtr->pubkey);
+                READWRITE(thisPtr->pubkey2);
+                READWRITE(thisPtr->sig);
+                READWRITE(thisPtr->activeState);
+                READWRITE(thisPtr->sigTime);
+                READWRITE(thisPtr->lastDseep);
+                READWRITE(thisPtr->lastTimeSeen);
+                READWRITE(thisPtr->cacheInputAge);
+                READWRITE(thisPtr->cacheInputAgeBlock);
+                READWRITE(thisPtr->unitTest);
+                READWRITE(thisPtr->allowFreeTx);
+                READWRITE(thisPtr->protocolVersion);
+                READWRITE(thisPtr->nLastDsq);
+                READWRITE(thisPtr->rewardAddress);
+                READWRITE(thisPtr->rewardPercentage);
+                READWRITE(thisPtr->nVote);
+                READWRITE(thisPtr->lastVote);
+                READWRITE(thisPtr->nScanningErrorCount);
+                READWRITE(thisPtr->nLastScanningErrorBlockHeight);
+                READWRITE(thisPtr->nLastPaid);
+                READWRITE(thisPtr->isPortOpen);
       
         }
-    )
+        return nSerSize;
+    }
 
     int64_t SecondsSincePayment()
     {

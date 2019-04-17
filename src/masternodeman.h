@@ -1,8 +1,7 @@
-
-// Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
+// Copyright (c) 2014-2015 The Dash developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef MASTERNODEMAN_H
 #define MASTERNODEMAN_H
 
@@ -39,7 +38,7 @@ private:
 public:
     enum ReadResult {
         Ok,
-       FileError,
+        FileError,
         HashReadError,
         IncorrectHash,
         IncorrectMagicMessage,
@@ -72,26 +71,30 @@ public:
     int64_t nDsqCount;
 
     IMPLEMENT_SERIALIZE
-    (
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
         // serialized format:
         // * version byte (currently 0)
         // * masternodes vector
         {
-                LOCK(cs);
+                LOCK(thisPtr->cs);
                 unsigned char nVersion = 0;
                 READWRITE(nVersion);
-                READWRITE(vMasternodes);
-                READWRITE(mAskedUsForMasternodeList);
-                READWRITE(mWeAskedForMasternodeList);
-                READWRITE(mWeAskedForMasternodeListEntry);
-                READWRITE(nDsqCount);
+                READWRITE(thisPtr->vMasternodes);
+                READWRITE(thisPtr->mAskedUsForMasternodeList);
+                READWRITE(thisPtr->mWeAskedForMasternodeList);
+                READWRITE(thisPtr->mWeAskedForMasternodeListEntry);
+                READWRITE(thisPtr->nDsqCount);
         }
-    )
+        return nSerSize;
+    }
 
     CMasternodeMan();
     CMasternodeMan(CMasternodeMan& other);
 
-    // Add an entry
+    /// Add an entry
     bool Add(CMasternode &mn);
 
     // Check all masternodes
@@ -136,7 +139,7 @@ public:
 
     void ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
 
-    // Return the number of (unique) masternodes
+    /// Return the number of (unique) Masternodes
     int size() { return vMasternodes.size(); }
 
     std::string ToString() const;

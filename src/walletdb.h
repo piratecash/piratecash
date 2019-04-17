@@ -1,7 +1,8 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
+// Copyright (c) 2009-2013 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef BITCOIN_WALLETDB_H
 #define BITCOIN_WALLETDB_H
 
@@ -55,11 +56,16 @@ public:
     }
 
     IMPLEMENT_SERIALIZE
-    (
-        READWRITE(this->nVersion);
-        nVersion = this->nVersion;
-        READWRITE(nCreateTime);
-    )
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        READWRITE(thisPtr->nVersion);
+        nVersion = thisPtr->nVersion;
+        READWRITE(thisPtr->nCreateTime);
+
+        return nSerSize;
+    }
 
     void SetNull()
     {
@@ -84,10 +90,15 @@ public:
     CPubKey pkScan;
 
     IMPLEMENT_SERIALIZE
-    (
-        READWRITE(pkEphem);
-        READWRITE(pkScan);
-    )
+
+    template <typename T, typename Stream, typename Operation>
+    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+        size_t nSerSize = 0;
+        READWRITE(thisPtr->pkEphem);
+        READWRITE(thisPtr->pkScan);
+
+        return nSerSize;
+    }
 
 };
 
@@ -103,7 +114,6 @@ private:
     void operator=(const CWalletDB&);
 public:
     bool WriteName(const std::string& strAddress, const std::string& strName);
-
     bool EraseName(const std::string& strAddress);
 
     bool WriteTx(uint256 hash, const CWalletTx& wtx);
