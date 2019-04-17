@@ -40,14 +40,6 @@ inline T& REF(const T& val)
     return const_cast<T&>(val);
 }
 
-// Used to acquire a const pointer "this" and generate a const
-// serialization operation from a template
-template<typename T>
-inline T MAKE_CONST(T val)
-{
-    return const_cast<const T>(val);
-}
-
 /**
  * Used to acquire a non-const pointer "this" to generate bodies
  * of const serialization operations from a template
@@ -117,15 +109,15 @@ enum
         ser_streamplaceholder s;                                                                    \
         s.nType = nType;                                                                            \
         s.nVersion = nVersion;                                                                      \
-        return SerializationOp(MAKE_CONST(this), s, CSerActionGetSerializeSize(), nType, nVersion); \
+        return NCONST_PTR(this)->SerializationOp(s, CSerActionGetSerializeSize(), nType, nVersion); \
     }                                                                                               \
     template<typename Stream>                                                                       \
     void Serialize(Stream& s, int nType, int nVersion) const {                                      \
-        SerializationOp(MAKE_CONST(this), s, CSerActionSerialize(), nType, nVersion);               \
+        NCONST_PTR(this)->SerializationOp(s, CSerActionSerialize(), nType, nVersion);               \
     }                                                                                               \
     template<typename Stream>                                                                       \
     void Unserialize(Stream& s, int nType, int nVersion) {                                          \
-        SerializationOp(this, s, CSerActionUnserialize(), nType, nVersion);                         \
+        SerializationOp(s, CSerActionUnserialize(), nType, nVersion);                               \
     }
 
 /**

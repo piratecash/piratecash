@@ -70,23 +70,23 @@ public:
     // keep track of dsq count to prevent masternodes from gaming darksend queue
     int64_t nDsqCount;
 
-    IMPLEMENT_SERIALIZE
+    IMPLEMENT_SERIALIZE;
 
-    template <typename T, typename Stream, typename Operation>
-    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+    template <typename Stream, typename Operation>
+    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         size_t nSerSize = 0;
         // serialized format:
         // * version byte (currently 0)
         // * masternodes vector
         {
-                LOCK(thisPtr->cs);
+                LOCK(cs);
                 unsigned char nVersion = 0;
                 READWRITE(nVersion);
-                READWRITE(thisPtr->vMasternodes);
-                READWRITE(thisPtr->mAskedUsForMasternodeList);
-                READWRITE(thisPtr->mWeAskedForMasternodeList);
-                READWRITE(thisPtr->mWeAskedForMasternodeListEntry);
-                READWRITE(thisPtr->nDsqCount);
+                READWRITE(vMasternodes);
+                READWRITE(mAskedUsForMasternodeList);
+                READWRITE(mWeAskedForMasternodeList);
+                READWRITE(mWeAskedForMasternodeListEntry);
+                READWRITE(nDsqCount);
         }
         return nSerSize;
     }

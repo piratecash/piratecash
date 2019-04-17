@@ -203,14 +203,14 @@ public:
     bool            fReceiveEnabled;
     bool            fReceiveAnon;
 
-    IMPLEMENT_SERIALIZE
+    IMPLEMENT_SERIALIZE;
 
-    template <typename T, typename Stream, typename Operation>
-    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+    template <typename Stream, typename Operation>
+    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         size_t nSerSize = 0;
-        READWRITE(thisPtr->sAddress);
-        READWRITE(thisPtr->fReceiveEnabled);
-        READWRITE(thisPtr->fReceiveAnon);
+        READWRITE(this->sAddress);
+        READWRITE(this->fReceiveEnabled);
+        READWRITE(this->fReceiveAnon);
 
         return nSerSize;
     }
@@ -279,17 +279,17 @@ public:
     std::string               sAddrOutbox;    // owned address this copy was encrypted with
     std::vector<uint8_t>      vchMessage;     // message header + encryped payload
 
-    IMPLEMENT_SERIALIZE
+    IMPLEMENT_SERIALIZE;
 
-    template <typename T, typename Stream, typename Operation>
-    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+    template <typename Stream, typename Operation>
+    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         size_t nSerSize = 0;
-        READWRITE(thisPtr->timeReceived);
-        READWRITE(thisPtr->status);
-        READWRITE(thisPtr->folderId);
-        READWRITE(thisPtr->sAddrTo);
-        READWRITE(thisPtr->sAddrOutbox);
-        READWRITE(thisPtr->vchMessage);
+        READWRITE(this->timeReceived);
+        READWRITE(this->status);
+        READWRITE(this->folderId);
+        READWRITE(this->sAddrTo);
+        READWRITE(this->sAddrOutbox);
+        READWRITE(this->vchMessage);
 
         return nSerSize;
     }

@@ -140,41 +140,41 @@ public:
 
     uint256 CalculateScore(int mod=1, int64_t nBlockHeight=0);
 
-    IMPLEMENT_SERIALIZE
+    IMPLEMENT_SERIALIZE;
 
-    template <typename T, typename Stream, typename Operation>
-    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+    template <typename Stream, typename Operation>
+    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         size_t nSerSize = 0;
         // serialized format:
         // * version byte (currently 0)
         // * all fields (?)
         {
-                LOCK(thisPtr->cs);
+                LOCK(cs);
                 unsigned char nVersion = 0;
                 READWRITE(nVersion);
-                READWRITE(thisPtr->vin);
-                READWRITE(thisPtr->addr);
-                READWRITE(thisPtr->pubkey);
-                READWRITE(thisPtr->pubkey2);
-                READWRITE(thisPtr->sig);
-                READWRITE(thisPtr->activeState);
-                READWRITE(thisPtr->sigTime);
-                READWRITE(thisPtr->lastDseep);
-                READWRITE(thisPtr->lastTimeSeen);
-                READWRITE(thisPtr->cacheInputAge);
-                READWRITE(thisPtr->cacheInputAgeBlock);
-                READWRITE(thisPtr->unitTest);
-                READWRITE(thisPtr->allowFreeTx);
-                READWRITE(thisPtr->protocolVersion);
-                READWRITE(thisPtr->nLastDsq);
-                READWRITE(thisPtr->rewardAddress);
-                READWRITE(thisPtr->rewardPercentage);
-                READWRITE(thisPtr->nVote);
-                READWRITE(thisPtr->lastVote);
-                READWRITE(thisPtr->nScanningErrorCount);
-                READWRITE(thisPtr->nLastScanningErrorBlockHeight);
-                READWRITE(thisPtr->nLastPaid);
-                READWRITE(thisPtr->isPortOpen);
+                READWRITE(vin);
+                READWRITE(addr);
+                READWRITE(pubkey);
+                READWRITE(pubkey2);
+                READWRITE(sig);
+                READWRITE(activeState);
+                READWRITE(sigTime);
+                READWRITE(lastDseep);
+                READWRITE(lastTimeSeen);
+                READWRITE(cacheInputAge);
+                READWRITE(cacheInputAgeBlock);
+                READWRITE(unitTest);
+                READWRITE(allowFreeTx);
+                READWRITE(protocolVersion);
+                READWRITE(nLastDsq);
+                READWRITE(rewardAddress);
+                READWRITE(rewardPercentage);
+                READWRITE(nVote);
+                READWRITE(lastVote);
+                READWRITE(nScanningErrorCount);
+                READWRITE(nLastScanningErrorBlockHeight);
+                READWRITE(nLastPaid);
+                READWRITE(isPortOpen);
       
         }
         return nSerSize;

@@ -55,14 +55,14 @@ public:
         nCreateTime = nCreateTime_;
     }
 
-    IMPLEMENT_SERIALIZE
+    IMPLEMENT_SERIALIZE;
 
-    template <typename T, typename Stream, typename Operation>
-    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+    template <typename Stream, typename Operation>
+    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         size_t nSerSize = 0;
-        READWRITE(thisPtr->nVersion);
-        nVersion = thisPtr->nVersion;
-        READWRITE(thisPtr->nCreateTime);
+        READWRITE(this->nVersion);
+        nVersion = this->nVersion;
+        READWRITE(nCreateTime);
 
         return nSerSize;
     }
@@ -89,13 +89,13 @@ public:
     CPubKey pkEphem;
     CPubKey pkScan;
 
-    IMPLEMENT_SERIALIZE
+    IMPLEMENT_SERIALIZE;
 
-    template <typename T, typename Stream, typename Operation>
-    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+    template <typename Stream, typename Operation>
+    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         size_t nSerSize = 0;
-        READWRITE(thisPtr->pkEphem);
-        READWRITE(thisPtr->pkScan);
+        READWRITE(pkEphem);
+        READWRITE(pkScan);
 
         return nSerSize;
     }

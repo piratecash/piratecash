@@ -26,18 +26,18 @@ public:
     CDarkSendRelay();
     CDarkSendRelay(CTxIn& vinMasternodeIn, vector<unsigned char>& vchSigIn, int nBlockHeightIn, int nRelayTypeIn, CTxIn& in2, CTxOut& out2);
     
-    IMPLEMENT_SERIALIZE
+    IMPLEMENT_SERIALIZE;
 
-    template <typename T, typename Stream, typename Operation>
-    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+    template <typename Stream, typename Operation>
+    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         size_t nSerSize = 0;
-        READWRITE(thisPtr->vinMasternode);
-        READWRITE(thisPtr->vchSig);
-        READWRITE(thisPtr->vchSig2);
-        READWRITE(thisPtr->nBlockHeight);
-        READWRITE(thisPtr->nRelayType);
-        READWRITE(thisPtr->in);
-        READWRITE(thisPtr->out);
+        READWRITE(vinMasternode);
+        READWRITE(vchSig);
+        READWRITE(vchSig2);
+        READWRITE(nBlockHeight);
+        READWRITE(nRelayType);
+        READWRITE(in);
+        READWRITE(out);
         return nSerSize;
     }
 

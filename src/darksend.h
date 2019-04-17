@@ -170,16 +170,16 @@ public:
         ready = false;
     }
 
-    IMPLEMENT_SERIALIZE
+    IMPLEMENT_SERIALIZE;
 
-    template <typename T, typename Stream, typename Operation>
-    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+    template <typename Stream, typename Operation>
+    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         size_t nSerSize = 0;
-        READWRITE(thisPtr->nDenom);
-        READWRITE(thisPtr->vin);
-        READWRITE(thisPtr->time);
-        READWRITE(thisPtr->ready);
-        READWRITE(thisPtr->vchSig);
+        READWRITE(nDenom);
+        READWRITE(vin);
+        READWRITE(time);
+        READWRITE(ready);
+        READWRITE(vchSig);
         return nSerSize;
     }
 

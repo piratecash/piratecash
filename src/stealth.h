@@ -88,18 +88,18 @@ public:
         return memcmp(&scan_pubkey[0], &y.scan_pubkey[0], ec_compressed_size) < 0;
     }
     
-    IMPLEMENT_SERIALIZE
+    IMPLEMENT_SERIALIZE;
 
-    template <typename T, typename Stream, typename Operation>
-    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+    template <typename Stream, typename Operation>
+    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         size_t nSerSize = 0;
-        READWRITE(thisPtr->options);
-        READWRITE(thisPtr->scan_pubkey);
-        READWRITE(thisPtr->spend_pubkey);
-        READWRITE(thisPtr->label);
+        READWRITE(this->options);
+        READWRITE(this->scan_pubkey);
+        READWRITE(this->spend_pubkey);
+        READWRITE(this->label);
 
-        READWRITE(thisPtr->scan_secret);
-        READWRITE(thisPtr->spend_secret);
+        READWRITE(this->scan_secret);
+        READWRITE(this->spend_secret);
         return nSerSize;
     }
 };

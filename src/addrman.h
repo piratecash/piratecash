@@ -47,16 +47,16 @@ private:
 
 public:
 
-    IMPLEMENT_SERIALIZE
+    IMPLEMENT_SERIALIZE;
 
-    template <typename T, typename Stream, typename Operation>
-    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+    template <typename Stream, typename Operation>
+    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         size_t nSerSize = 0;
-        CAddress* pthis = (CAddress*)(thisPtr);
+        CAddress* pthis = (CAddress*)(this);
         READWRITE(*pthis);
-        READWRITE(thisPtr->source);
-        READWRITE(thisPtr->nLastSuccess);
-        READWRITE(thisPtr->nAttempts);
+        READWRITE(source);
+        READWRITE(nLastSuccess);
+        READWRITE(nAttempts);
         return nSerSize;
     }
 
@@ -263,10 +263,10 @@ public:
 
 
 
-    IMPLEMENT_SERIALIZE
+    IMPLEMENT_SERIALIZE;
 
-    template <typename T, typename Stream, typename Operation>
-    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+    template <typename Stream, typename Operation>
+    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         size_t nSerSize = 0;
         bool fWrite = boost::is_same<Operation, CSerActionUnserialize>();
     ({
@@ -291,14 +291,14 @@ public:
         // This format is more complex, but significantly smaller (at most 1.5 MiB), and supports
         // changes to the ADDRMAN_ parameters without breaking the on-disk structure.
         {
-            LOCK(thisPtr->cs);
+            LOCK(cs);
             unsigned char nVersion = 0;
             READWRITE(nVersion);
-            READWRITE(thisPtr->nKey);
-            READWRITE(thisPtr->nNew);
-            READWRITE(thisPtr->nTried);
+            READWRITE(nKey);
+            READWRITE(nNew);
+            READWRITE(nTried);
 
-            CAddrMan *am = const_cast<CAddrMan*>(thisPtr);
+            CAddrMan *am = const_cast<CAddrMan*>(this);
             if (fWrite)
             {
                 int nUBuckets = ADDRMAN_NEW_BUCKET_COUNT;
@@ -307,7 +307,7 @@ public:
                 int nIds = 0;
                 for (std::map<int, CAddrInfo>::iterator it = am->mapInfo.begin(); it != am->mapInfo.end(); it++)
                 {
-                    if (nIds == thisPtr->nNew) break; // this means nNew was wrong, oh ow
+                    if (nIds == nNew) break; // this means nNew was wrong, oh ow
                     mapUnkIds[(*it).first] = nIds;
                     CAddrInfo &info = (*it).second;
                     if (info.nRefCount)
@@ -319,7 +319,7 @@ public:
                 nIds = 0;
                 for (std::map<int, CAddrInfo>::iterator it = am->mapInfo.begin(); it != am->mapInfo.end(); it++)
                 {
-                    if (nIds == thisPtr->nTried) break; // this means nTried was wrong, oh ow
+                    if (nIds == nTried) break; // this means nTried was wrong, oh ow
                     CAddrInfo &info = (*it).second;
                     if (info.fInTried)
                     {
@@ -352,7 +352,7 @@ public:
                     CAddrInfo &info = am->mapInfo[n];
                     READWRITE(info);
                     am->mapAddr[info] = n;
-                    info.nRandomPos = thisPtr->vRandom.size();
+                    info.nRandomPos = vRandom.size();
                     am->vRandom.push_back(n);
                     if (nUBuckets != ADDRMAN_NEW_BUCKET_COUNT)
                     {
@@ -369,7 +369,7 @@ public:
                     std::vector<int> &vTried = am->vvTried[info.GetTriedBucket(am->nKey)];
                     if (vTried.size() < ADDRMAN_TRIED_BUCKET_SIZE)
                     {
-                        info.nRandomPos = thisPtr->vRandom.size();
+                        info.nRandomPos = vRandom.size();
                         info.fInTried = true;
                         am->vRandom.push_back(am->nIdCount);
                         am->mapInfo[am->nIdCount] = info;

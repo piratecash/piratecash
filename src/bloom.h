@@ -47,12 +47,13 @@ public:
     // Should only be used for deserialization
     CBloomFilter() {}
 
-    IMPLEMENT_SERIALIZE
-    template <typename T, typename Stream, typename Operation>
-    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         size_t nSerSize = 0;
-        READWRITE(thisPtr->vData);
-        READWRITE(thisPtr->nHashFuncs);
+        READWRITE(vData);
+        READWRITE(nHashFuncs);
         return nSerSize;
     }
 

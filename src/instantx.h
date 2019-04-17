@@ -63,15 +63,15 @@ public:
     bool SignatureValid();
     bool Sign();
 
-    IMPLEMENT_SERIALIZE
+    IMPLEMENT_SERIALIZE;
 
-    template <typename T, typename Stream, typename Operation>
-    inline static size_t SerializationOp(T thisPtr, Stream& s, Operation ser_action, int nType, int nVersion) {
+    template <typename Stream, typename Operation>
+    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         size_t nSerSize = 0;
-        READWRITE(thisPtr->txHash);
-        READWRITE(thisPtr->vinMasternode);
-        READWRITE(thisPtr->vchMasterNodeSignature);
-        READWRITE(thisPtr->nBlockHeight);
+        READWRITE(txHash);
+        READWRITE(vinMasternode);
+        READWRITE(vchMasterNodeSignature);
+        READWRITE(nBlockHeight);
         return nSerSize;
     }
 };
