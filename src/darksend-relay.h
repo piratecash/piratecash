@@ -29,8 +29,7 @@ public:
     IMPLEMENT_SERIALIZE;
 
     template <typename Stream, typename Operation>
-    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
-        size_t nSerSize = 0;
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(vinMasternode);
         READWRITE(vchSig);
         READWRITE(vchSig2);
@@ -38,7 +37,6 @@ public:
         READWRITE(nRelayType);
         READWRITE(in);
         READWRITE(out);
-        return nSerSize;
     }
 
     std::string ToString();

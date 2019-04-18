@@ -95,10 +95,8 @@ class CNetAddr
         IMPLEMENT_SERIALIZE;
 
         template <typename Stream, typename Operation>
-        inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
-            size_t nSerSize = 0;
+        inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
             READWRITE(FLATDATA(ip));
-            return nSerSize;
         }
 
         friend class CSubNet;
@@ -130,12 +128,10 @@ class CSubNet
         IMPLEMENT_SERIALIZE;
 
         template <typename Stream, typename Operation>
-        inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
-            size_t nSerSize = 0;
+        inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
             READWRITE(network);
             READWRITE(FLATDATA(netmask));
             READWRITE(FLATDATA(valid));
-            return nSerSize;
         }
 };
 

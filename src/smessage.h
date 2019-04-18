@@ -206,13 +206,10 @@ public:
     IMPLEMENT_SERIALIZE;
 
     template <typename Stream, typename Operation>
-    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
-        size_t nSerSize = 0;
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(this->sAddress);
         READWRITE(this->fReceiveEnabled);
         READWRITE(this->fReceiveAnon);
-
-        return nSerSize;
     }
 };
 
@@ -282,16 +279,13 @@ public:
     IMPLEMENT_SERIALIZE;
 
     template <typename Stream, typename Operation>
-    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
-        size_t nSerSize = 0;
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(this->timeReceived);
         READWRITE(this->status);
         READWRITE(this->folderId);
         READWRITE(this->sAddrTo);
         READWRITE(this->sAddrOutbox);
         READWRITE(this->vchMessage);
-
-        return nSerSize;
     }
 };
 
