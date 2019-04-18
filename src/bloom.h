@@ -34,6 +34,7 @@ class CBloomFilter
 private:
     std::vector<unsigned char> vData;
     unsigned int nHashFuncs;
+    unsigned int nTweak;
 
     unsigned int Hash(unsigned int nHashNum, const std::vector<unsigned char>& vDataToHash) const;
 
@@ -42,7 +43,9 @@ public:
     // Note that if the given parameters will result in a filter outside the bounds of the protocol limits,
     // the filter created will be as close to the given parameters as possible within the protocol limits.
     // This will apply if nFPRate is very low or nElements is unreasonably high.
-    CBloomFilter(unsigned int nElements, double nFPRate);
+    // nTweak is a constant which is added to the seed value passed to the hash function
+    // It should generally always be a random value (and is largely only exposed for unit testing)
+    CBloomFilter(unsigned int nElements, double nFPRate, unsigned int nTweak);
     // Using a filter initialized with this results in undefined behavior
     // Should only be used for deserialization
     CBloomFilter() {}
@@ -53,6 +56,7 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(vData);
         READWRITE(nHashFuncs);
+        READWRITE(nTweak);
     }
 
     void insert(const std::vector<unsigned char>& vKey);
