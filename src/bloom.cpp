@@ -1,12 +1,19 @@
 // Copyright (c) 2012-2014 The Bitcoin developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#include "bloom.h"
+
+#include "primitives/transaction.h"
+#include "hash.h"
+#include "script/script.h"
+#include "script/standard.h"
+#include "streams.h"
+
 #include <math.h>
 #include <stdlib.h>
 
-#include "bloom.h"
-#include "main.h"
-#include "script.h"
+#include <boost/foreach.hpp>
 
 #define LN2SQUARED 0.4804530139182014246671025263266649717305529515945455
 #define LN2 0.6931471805599453094172321214581765680755001343602552
@@ -113,11 +120,11 @@ bool CBloomFilter::IsRelevantAndUpdate(const CTransaction& tx)
     bool fFound = false;
     // Match if the filter contains the hash of tx
     //  for finding tx when they appear in a block
-    const uint256& hash = tx.GetHash();
     if (isFull)
         return true;
     if (isEmpty)
         return false;
+    const uint256& hash = tx.GetHash();
     if (contains(hash))
         fFound = true;
 
