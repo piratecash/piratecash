@@ -84,14 +84,16 @@ public:
     bool contains(const COutPoint& outpoint) const;
     bool contains(const uint256& hash) const;
 
-    // True if the size is <= MAX_BLOOM_FILTER_SIZE and the number of hash functions is <= MAX_HASH_FUNCS
-    // (catch a filter which was just deserialized which was too big)
+    void clear();
+
+    //! True if the size is <= MAX_BLOOM_FILTER_SIZE and the number of hash functions is <= MAX_HASH_FUNCS
+    //! (catch a filter which was just deserialized which was too big)
     bool IsWithinSizeConstraints() const;
 
     //! Also adds any outputs which match the filter to the filter (to match their spending txes)
     bool IsRelevantAndUpdate(const CTransaction& tx);
 
-    // Checks for empty and full filters to avoid wasting cpu
+    //! Checks for empty and full filters to avoid wasting cpu
     void UpdateEmptyFull();
 };
 
