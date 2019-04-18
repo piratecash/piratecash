@@ -45,6 +45,8 @@ class CBloomFilter
 {
 private:
     std::vector<unsigned char> vData;
+    bool isFull;
+    bool isEmpty;
     unsigned int nHashFuncs;
     unsigned int nTweak;
     unsigned char nFlags;
@@ -62,9 +64,7 @@ public:
      * nFlags should be one of the BLOOM_UPDATE_* enums (not _MASK)
      */
     CBloomFilter(unsigned int nElements, double nFPRate, unsigned int nTweak, unsigned char nFlagsIn);
-    // Using a filter initialized with this results in undefined behavior
-    // Should only be used for deserialization
-    CBloomFilter() {}
+    CBloomFilter() : isFull(true) {}
 
     IMPLEMENT_SERIALIZE;
 
@@ -90,6 +90,9 @@ public:
 
     //! Also adds any outputs which match the filter to the filter (to match their spending txes)
     bool IsRelevantAndUpdate(const CTransaction& tx);
+
+    // Checks for empty and full filters to avoid wasting cpu
+    void UpdateEmptyFull();
 };
 
 #endif // BITCOIN_BLOOM_H

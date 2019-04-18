@@ -464,7 +464,7 @@ public:
         fRelayTxes = false;
         hashCheckpointKnown = 0;
         setInventoryKnown.max_size(SendBufferSize() / 1000);
-        pfilter = NULL;
+        pfilter = new CBloomFilter();
         nPingNonceSent = 0;
         nPingUsecStart = 0;
         nPingUsecTime = 0;
