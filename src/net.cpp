@@ -390,40 +390,6 @@ CNode* FindNode(const CService& addr)
     return NULL;
 }
 
-bool CheckNode(CAddress addrConnect)
-{
-	// Look for an existing connection. If found then just add it to masternode list.
-	CNode* pnode = FindNode((CService)addrConnect);
-	if (pnode)
-		return true;
-
-	// Connect
-	SOCKET hSocket;
-	bool proxyConnectionFailed = false;
-	if (ConnectSocket(addrConnect, hSocket))
-	{
-		LogPrint("net", "connected masternode %s\n", addrConnect.ToString());
-        CloseSocket(hSocket);
-
-		/*        // Set to non-blocking
-		#ifdef WIN32
-				u_long nOne = 1;
-                if (ioctlsocket(hSocket, FIONBIO, &nOne) == SOCKET_ERROR)
-                    LogPrintf("ConnectSocket() : ioctlsocket non-blocking setting failed, error %s\n", NetworkErrorString(WSAGetLastError()));
-		#else
-                if (fcntl(hSocket, F_SETFL, O_NONBLOCK) == SOCKET_ERROR)
-                    LogPrintf("ConnectSocket() : fcntl non-blocking setting failed, error %s\n", NetworkErrorString(errno));
-		#endif
-				CNode* pnode = new CNode(hSocket, addrConnect, "", false);
-				// Close connection
-				pnode->CloseSocketDisconnect();
-		*/
-		return true;
-	}
-	LogPrint("net", "connecting to masternode %s failed\n", addrConnect.ToString());
-	return false;
-}
-
 
 CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool darkSendMaster)
 {

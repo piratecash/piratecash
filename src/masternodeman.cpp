@@ -679,12 +679,6 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
                 pmn->UpdateLastSeen();
 
                 if(pmn->sigTime < sigTime){ //take the newest entry
-                    if (!CheckNode((CAddress)addr)){
-                        pmn->isPortOpen = false;
-                    } else {
-                        pmn->isPortOpen = true;
-                        addrman.Add(CAddress(addr), pfrom->addr, 2*60*60); // use this as a peer
-                    }
                     LogPrintf("dsee - Got updated entry for %s\n", addr.ToString().c_str());
                     pmn->pubkey2 = pubkey2;
                     pmn->sigTime = sigTime;
@@ -763,13 +757,6 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             // add our masternode
             CMasternode mn(addr, vin, pubkey, vchSig, sigTime, pubkey2, protocolVersion, rewardAddress, rewardPercentage);
             mn.UpdateLastSeen(lastUpdated);
-
-            if (!CheckNode((CAddress)addr)){
-                mn.ChangePortStatus(false);
-            } else {
-                addrman.Add(CAddress(addr), pfrom->addr, 2*60*60); // use this as a peer
-            }          
-
             this->Add(mn);
 
             // if it matches our masternodeprivkey, then we've been remotely activated
