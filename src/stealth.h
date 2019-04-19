@@ -91,8 +91,7 @@ public:
     IMPLEMENT_SERIALIZE;
 
     template <typename Stream, typename Operation>
-    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
-        size_t nSerSize = 0;
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(this->options);
         READWRITE(this->scan_pubkey);
         READWRITE(this->spend_pubkey);
@@ -100,7 +99,6 @@ public:
 
         READWRITE(this->scan_secret);
         READWRITE(this->spend_secret);
-        return nSerSize;
     }
 };
 

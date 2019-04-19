@@ -73,8 +73,7 @@ public:
     IMPLEMENT_SERIALIZE;
 
     template <typename Stream, typename Operation>
-    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
-        size_t nSerSize = 0;
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         // serialized format:
         // * version byte (currently 0)
         // * masternodes vector
@@ -88,7 +87,6 @@ public:
                 READWRITE(mWeAskedForMasternodeListEntry);
                 READWRITE(nDsqCount);
         }
-        return nSerSize;
     }
 
     CMasternodeMan();

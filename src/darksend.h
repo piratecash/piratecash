@@ -173,14 +173,12 @@ public:
     IMPLEMENT_SERIALIZE;
 
     template <typename Stream, typename Operation>
-    inline size_t SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
-        size_t nSerSize = 0;
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(nDenom);
         READWRITE(vin);
         READWRITE(time);
         READWRITE(ready);
         READWRITE(vchSig);
-        return nSerSize;
     }
 
     bool GetAddress(CService &addr)
