@@ -16,9 +16,9 @@
 #include <stdint.h>
 #include <vector>
 
-#include <openssl/rand.h>
-
-/** Extended statistics about a CAddress */
+/** 
+ * Extended statistics about a CAddress 
+ */
 class CAddrInfo : public CAddress
 {
 private:
@@ -302,7 +302,7 @@ public:
         for (std::map<int, CAddrInfo>::const_iterator it = mapInfo.begin(); it != mapInfo.end(); it++) {
             const CAddrInfo &info = (*it).second;
             if (info.fInTried) {
-                assert(nIds != nNew); // this means nNew was wrong, oh ow
+                assert(nIds != nTried); // this means nTried was wrong, oh ow
                 s << info;
                 nIds++;
             }

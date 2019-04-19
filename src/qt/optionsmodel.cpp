@@ -7,7 +7,7 @@
 #include "guiutil.h"
 
 #include "init.h"
-#include "core.h"
+#include "primitives/transaction.h"
 #include "main.h"
 #include "net.h"
 #ifdef ENABLE_WALLET

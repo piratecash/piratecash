@@ -6,7 +6,7 @@
 #ifndef DARKSEND_RELAY_H
 #define DARKSEND_RELAY_H
 
-#include "core.h"
+#include "primitives/transaction.h"
 #include "main.h"
 #include "activemasternode.h"
 #include "masternodeman.h"

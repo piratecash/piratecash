@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "main.h"
-#include "core.h"
+#include "primitives/transaction.h"
 #include "db.h"
 #include "init.h"
 #include "activemasternode.h"

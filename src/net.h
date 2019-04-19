@@ -7,7 +7,7 @@
 #define BITCOIN_NET_H
 
 #include "compat.h"
-#include "core.h"
+#include "primitives/transaction.h"
 #include "hash.h"
 #include "bloom.h"
 #include "limitedmap.h"

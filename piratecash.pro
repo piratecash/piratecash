@@ -230,7 +230,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/pbkdf2.h \
     src/serialize.h \
     src/support/cleanse.h \
-    src/core.h \
+    src/primitives/transaction.h \
     src/main.h \
     src/miner.h \
     src/net.h \
@@ -359,7 +359,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/pubkey.cpp \
     src/script.cpp \
     src/scrypt.cpp \
-    src/core.cpp \
+    src/primitives/transaction.cpp \
     src/main.cpp \
     src/miner.cpp \
     src/init.cpp \

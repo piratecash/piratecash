@@ -5,7 +5,7 @@
 #ifndef DARKSEND_H
 #define DARKSEND_H
 
-#include "core.h"
+#include "primitives/transaction.h"
 #include "main.h"
 #include "sync.h"
 #include "activemasternode.h"

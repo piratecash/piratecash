@@ -1,7 +1,7 @@
 #ifndef COINCONTROL_H
 #define COINCONTROL_H
 
-#include "core.h"
+#include "primitives/transaction.h"
 
 /** Coin Control Features. */
 class CCoinControl

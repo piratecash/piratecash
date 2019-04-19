@@ -1,18 +1,33 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2013 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-#ifndef BITCOIN_CORE_H
-#define BITCOIN_CORE_H
 
-#include "uint256.h"
-#include "serialize.h"
+#ifndef BITCOIN_PRIMITIVES_TRANSACTION_H
+#define BITCOIN_PRIMITIVES_TRANSACTION_H
+
+//#include "script/script.h"
 #include "script.h"
+#include "serialize.h"
+#include "uint256.h"
 
 #include <stdio.h>
 
 class CScript;
 class CTransaction;
+
+/** An inpoint - a combination of a transaction and an index n into its vin */
+class CInPoint
+{
+public:
+    CTransaction* ptx;
+    unsigned int n;
+
+    CInPoint() { SetNull(); }
+    CInPoint(CTransaction* ptxIn, unsigned int nIn) { ptx = ptxIn; n = nIn; }
+    void SetNull() { ptx = NULL; n = (unsigned int) -1; }
+    bool IsNull() const { return (ptx == NULL && n == (unsigned int) -1); }
+};
 
 /** An outpoint - a combination of a transaction hash and an index n into its vout */
 class COutPoint
@@ -23,6 +38,7 @@ public:
 
     COutPoint() { SetNull(); }
     COutPoint(uint256 hashIn, unsigned int nIn) { hash = hashIn; n = nIn; }
+
     IMPLEMENT_SERIALIZE;
 
     template <typename Stream, typename Operation>
@@ -51,19 +67,6 @@ public:
     std::string ToString() const;
     std::string ToStringShort() const;
 
-};
-
-/** An inpoint - a combination of a transaction and an index n into its vin */
-class CInPoint
-{
-public:
-    CTransaction* ptx;
-    unsigned int n;
-
-    CInPoint() { SetNull(); }
-    CInPoint(CTransaction* ptxIn, unsigned int nIn) { ptx = ptxIn; n = nIn; }
-    void SetNull() { ptx = NULL; n = (unsigned int) -1; }
-    bool IsNull() const { return (ptx == NULL && n == (unsigned int) -1); }
 };
 
 /** An input of a transaction.  It contains the location of the previous
@@ -116,9 +119,6 @@ public:
     std::string ToString() const;
 };
 
-
-
-
 /** An output of a transaction.  It contains the public key that the next input
  * must be able to sign with to claim it.
  */
@@ -147,8 +147,8 @@ public:
     void SetNull()
     {
         nValue = -1;
-        nRounds = -10; // an initial value, should be no way to get this by calculations
         scriptPubKey.clear();
+        nRounds = -10; // an initial value, should be no way to get this by calculations
     }
 
     bool IsNull() const
@@ -197,4 +197,4 @@ public:
     std::string ToString() const;
 };
 
-#endif
+#endif // BITCOIN_PRIMITIVES_TRANSACTION_H

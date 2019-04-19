@@ -7,7 +7,7 @@
 #ifndef BITCOIN_MAIN_H
 #define BITCOIN_MAIN_H
 
-#include "core.h"
+#include "primitives/transaction.h"
 #include "bignum.h"
 #include "sync.h"
 #include "txmempool.h"

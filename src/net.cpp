@@ -8,7 +8,7 @@
 #include "main.h"
 #include "addrman.h"
 #include "chainparams.h"
-#include "core.h"
+#include "primitives/transaction.h"
 #include "ui_interface.h"
 #include "darksend.h"
 #include "wallet.h"

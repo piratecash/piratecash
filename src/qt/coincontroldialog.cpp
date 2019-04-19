@@ -9,7 +9,7 @@
 #include "addresstablemodel.h"
 #include "bitcoinunits.h"
 #include "base58.h"
-#include "core.h"
+#include "primitives/transaction.h"
 #include "guiutil.h"
 #include "init.h"
 #include "optionsmodel.h"
