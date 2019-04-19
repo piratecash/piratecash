@@ -673,7 +673,7 @@ bool CTransaction::CheckTransaction(CValidationState &state) const
         return state.DoS(100, error("CTransaction::CheckTransaction() : size limits failed"));
 
     // Check for negative or overflow output values
-    int64_t nValueOut = 0;
+    CAmount nValueOut = 0;
     for (unsigned int i = 0; i < vout.size(); i++)
     {
         const CTxOut& txout = vout[i];
@@ -844,7 +844,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState &state, CTransaction 
                           error("AcceptToMemoryPool : too many sigops %s, %d > %d",
                                 hash.ToString(), nSigOps, MAX_TX_SIGOPS));
 
-        int64_t nFees = tx.GetValueIn(mapInputs)-tx.GetValueOut();
+        CAmount nFees = tx.GetValueIn(mapInputs)-tx.GetValueOut();
         unsigned int nSize = ::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION);
 
         // Don't accept it if it can't get into a block
@@ -1006,7 +1006,7 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState &state, const CTransact
                           error("AcceptableInputs : too many sigops %s, %d > %d",
                                 hash.ToString(), nSigOps, MAX_TX_SIGOPS));
 
-        int64_t nFees = tx.GetValueIn(mapInputs)-tx.GetValueOut();
+        CAmount nFees = tx.GetValueIn(mapInputs)-tx.GetValueOut();
         unsigned int nSize = ::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION);
         int64_t txMinFee = GetMinFee(tx, nSize, true, GMF_RELAY);
 
@@ -1362,9 +1362,9 @@ static CBigNum GetProofOfStakeLimit(int nHeight)
 {
     return bnProofOfStakeLimit;
 }
-int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
+CAmount GetProofOfWorkReward(int nHeight, CAmount nFees)
 {
-    int64_t nSubsidy = 10 * COIN;
+    CAmount nSubsidy = 10 * COIN;
 
     return nSubsidy + nFees;
 }
@@ -1372,9 +1372,9 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
 
 
 // miner's coin stake reward
-int64_t GetProofOfStakeReward(const CBlockIndex* pindexPrev, int64_t nCoinAge, int64_t nFees)
+CAmount GetProofOfStakeReward(const CBlockIndex* pindexPrev, int64_t nCoinAge, CAmount nFees)
 {
-    int64_t nSubsidy = INIT_POS_REWARD;
+    CAmount nSubsidy = INIT_POS_REWARD;
 
     if (nBestHeight==0){
         return nSubsidy + nFees;
@@ -1671,8 +1671,8 @@ bool CTransaction::ConnectInputs(CTxDB& txdb, MapPrevTx inputs, map<uint256, CTx
     // ... both are false when called from CTransaction::AcceptToMemoryPool
     if (!IsCoinBase())
     {
-        int64_t nValueIn = 0;
-        int64_t nFees = 0;
+        CAmount nValueIn = 0;
+        CAmount nFees = 0;
         for (unsigned int i = 0; i < vin.size(); i++)
         {
             COutPoint prevout = vin[i].prevout;
@@ -1926,9 +1926,9 @@ bool CBlock::ConnectBlock(CValidationState &state, CTxDB& txdb, CBlockIndex* pin
         nTxPos = pindex->nBlockPos + ::GetSerializeSize(CBlock(), SER_DISK, CLIENT_VERSION) - (2 * GetSizeOfCompactSize(0)) + GetSizeOfCompactSize(vtx.size());
 
     map<uint256, CTxIndex> mapQueuedChanges;
-    int64_t nFees = 0;
-    int64_t nValueIn = 0;
-    int64_t nValueOut = 0;
+    CAmount nFees = 0;
+    CAmount nValueIn = 0;
+    CAmount nValueOut = 0;
     int64_t nStakeReward = 0;
     unsigned int nSigOps = 0;
     int nInputs = 0;
@@ -2361,7 +2361,7 @@ bool CTransaction::GetCoinAge(CTxDB& txdb, const CBlockIndex* pindexPrev, uint64
         if (block.GetBlockTime() + nStakeMinAge > nTime)
             continue; // only count coins meeting min age requirement
 
-        int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
+        CAmount nValueIn = txPrev.vout[txin.prevout.n].nValue;
         bnCentSecond += CBigNum(nValueIn) * (nTime-txPrev.nTime) / CENT;
 
         LogPrint("coinage", "coin age nValueIn=%d nTimeDiff=%d bnCentSecond=%s\n", nValueIn, nTime - txPrev.nTime, bnCentSecond.ToString());
@@ -2997,7 +2997,7 @@ bool ProcessNewBlock(CValidationState &state, CNode* pfrom, CBlock* pblock)
 
 #ifdef ENABLE_WALLET
 // novacoin: attempt to generate suitable proof-of-stake
-bool CBlock::SignBlock(CWallet& wallet, int64_t nFees)
+bool CBlock::SignBlock(CWallet& wallet, CAmount nFees)
 {
     // if we are trying to sign
     //    something except proof-of-stake block template

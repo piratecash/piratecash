@@ -6,6 +6,7 @@
 #ifndef BITCOIN_PRIMITIVES_TRANSACTION_H
 #define BITCOIN_PRIMITIVES_TRANSACTION_H
 
+#include "amount.h"
 //#include "script/script.h"
 #include "script.h"
 #include "serialize.h"
@@ -125,7 +126,7 @@ public:
 class CTxOut
 {
 public:
-    int64_t nValue;
+    CAmount nValue;
     int nRounds;
     CScript scriptPubKey;
 
@@ -134,7 +135,7 @@ public:
         SetNull();
     }
 
-    CTxOut(int64_t nValueIn, CScript scriptPubKeyIn);
+    CTxOut(const CAmount& nValueIn, CScript scriptPubKeyIn);
 
     IMPLEMENT_SERIALIZE;
 
