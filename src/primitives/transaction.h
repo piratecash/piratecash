@@ -38,7 +38,7 @@ public:
     unsigned int n;
 
     COutPoint() { SetNull(); }
-    COutPoint(uint256 hashIn, unsigned int nIn) { hash = hashIn; n = nIn; }
+    COutPoint(uint256 hashIn, uint32_t nIn) { hash = hashIn; n = nIn; }
 
     IMPLEMENT_SERIALIZE;
 
@@ -47,8 +47,8 @@ public:
         READWRITE(FLATDATA(*this));
     }
 
-    void SetNull() { hash = 0; n = (unsigned int) -1; }
-    bool IsNull() const { return (hash == 0 && n == (unsigned int) -1); }
+    void SetNull() { hash = 0; n = (uint32_t) -1; }
+    bool IsNull() const { return (hash == 0 && n == (uint32_t) -1); }
 
     friend bool operator<(const COutPoint& a, const COutPoint& b)
     {
@@ -79,17 +79,16 @@ class CTxIn
 public:
     COutPoint prevout;
     CScript scriptSig;
+    uint32_t nSequence;
     CScript prevPubKey;
-    unsigned int nSequence;
 
     CTxIn()
     {
         nSequence = std::numeric_limits<unsigned int>::max();
     }
 
-    explicit CTxIn(COutPoint prevoutIn, CScript scriptSigIn=CScript(), unsigned int nSequenceIn=std::numeric_limits<unsigned int>::max());
-
-    explicit CTxIn(uint256 hashPrevTx, unsigned int nOut, CScript scriptSigIn=CScript(), unsigned int nSequenceIn=std::numeric_limits<unsigned int>::max());
+    explicit CTxIn(COutPoint prevoutIn, CScript scriptSigIn=CScript(), uint32_t nSequenceIn=std::numeric_limits<unsigned int>::max());
+    CTxIn(uint256 hashPrevTx, uint32_t nOut, CScript scriptSigIn=CScript(), uint32_t nSequenceIn=std::numeric_limits<uint32_t>::max());
 
     IMPLEMENT_SERIALIZE;
 
@@ -102,7 +101,7 @@ public:
 
     bool IsFinal() const
     {
-        return (nSequence == std::numeric_limits<unsigned int>::max());
+        return (nSequence == std::numeric_limits<uint32_t>::max());
     }
 
     friend bool operator==(const CTxIn& a, const CTxIn& b)
@@ -127,8 +126,8 @@ class CTxOut
 {
 public:
     CAmount nValue;
-    int nRounds;
     CScript scriptPubKey;
+    int nRounds;
 
     CTxOut()
     {
@@ -186,8 +185,8 @@ public:
     friend bool operator==(const CTxOut& a, const CTxOut& b)
     {
         return (a.nValue       == b.nValue &&
-                a.nRounds      == b.nRounds &&
-                a.scriptPubKey == b.scriptPubKey);
+                a.scriptPubKey == b.scriptPubKey &&
+                a.nRounds      == b.nRounds);
     }
 
     friend bool operator!=(const CTxOut& a, const CTxOut& b)
