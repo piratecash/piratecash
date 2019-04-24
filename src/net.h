@@ -68,7 +68,9 @@ CNode* FindNode(const CNetAddr& ip);
 CNode* FindNode(const CSubNet& subNet);
 CNode* FindNode(const std::string& addrName);
 CNode* FindNode(const CService& ip);
-CNode* ConnectNode(CAddress addrConnect, const char *pszDest = NULL, bool darkSendMaster=false);
+// fConnectToMasternode should be 'true' only if you want this node to allow to connect to itself
+// and/or you want it to be disconnected on CMasternodeMan::ProcessMasternodeConnections()
+CNode* ConnectNode(CAddress addrConnect, const char *pszDest = NULL, bool fConnectToMasternode = false);
 void MapPort(bool fUseUPnP);
 unsigned short GetListenPort();
 bool BindListenPort(const CService &bindAddr, std::string& strError, bool fWhitelisted = false);
@@ -366,12 +368,8 @@ public:
     // b) the peer may tell us in their version message that we should not relay tx invs
     //    until they have initialized their bloom filter.
     bool fRelayTxes;
-    // Should be 'true' only if we connected to this node to actually mix funds.
-    // In this case node will be released automatically via CMasternodeMan::ProcessMasternodeConnections().
-    // Connecting to verify connectability/status or connecting for sending/relaying single message
-    // (even if it's relative to mixing e.g. for blinding) should NOT set this to 'true'.
-    // For such cases node should be released manually (preferably right after corresponding code).
-    bool fDarkSendMaster;
+    // If 'true' this node will be disconnected on CMasternodeMan::ProcessMasternodeConnections()
+    bool fMasternode;
     CSemaphoreGrant grantOutbound;
     CCriticalSection cs_filter;
     CBloomFilter* pfilter;
@@ -428,7 +426,7 @@ public:
     // Whether a ping is requested.
     bool fPingQueued;
 
-    CNode(SOCKET hSocketIn, CAddress addrIn, std::string addrNameIn = "", bool fInboundIn=false) : ssSend(SER_NETWORK, INIT_PROTO_VERSION), setAddrKnown(5000)
+    CNode(SOCKET hSocketIn, CAddress addrIn, std::string addrNameIn = "", bool fInboundIn=false, bool fNetworkNodeIn=false) : ssSend(SER_NETWORK, INIT_PROTO_VERSION), setAddrKnown(5000)
     {
         nServices = 0;
         hSocket = hSocketIn;
@@ -447,7 +445,7 @@ public:
         fOneShot = false;
         fClient = false; // set by version message
         fInbound = fInboundIn;
-        fNetworkNode = false;
+        fNetworkNode = fNetworkNodeIn;
         fSuccessfullyConnected = false;
         fDisconnect = false;
         nRefCount = 0;
@@ -465,6 +463,7 @@ public:
         pfilter = new CBloomFilter();
         nPingNonceSent = 0;
         nPingUsecStart = 0;
+        fMasternode = false;
         nPingUsecTime = 0;
         fPingQueued = false;
 
@@ -472,6 +471,9 @@ public:
             LOCK(cs_nLastNodeId);
             id = nLastNodeId++;
         }
+
+        if(fNetworkNode || fInbound)
+            AddRef();
 
         if (fLogIPs)
             LogPrint("net", "Added connection to %s peer=%d\n", addrName, id);

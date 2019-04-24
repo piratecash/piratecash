@@ -561,11 +561,10 @@ void CMasternodeMan::ProcessMasternodeConnections()
     {
         if(darkSendPool.pSubmittedToMasternode->addr == pnode->addr) continue;
 
-        if(pnode->fDarkSendMaster){
+        if(pnode->fMasternode){
             LogPrintf("Closing masternode connection %s \n", pnode->addr.ToString().c_str());
             pnode->CloseSocketDisconnect();
-            pnode->fDarkSendMaster = false;
-            pnode->Release();
+            pnode->fDisconnect = true;
         }
     }
 }

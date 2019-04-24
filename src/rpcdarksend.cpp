@@ -599,7 +599,6 @@ Value masternode(const Array& params, bool fHelp)
 
         CNode *pnode = ConnectNode((CAddress)addr, NULL, true);
         if(pnode){
-            pnode->Release();
             return "successfully connected";
         } else {
             return "error connecting";
