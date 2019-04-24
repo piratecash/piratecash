@@ -1,4 +1,5 @@
 // Copyright (c) 2012 Pieter Wuille
+// Copyright (c) 2012-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -346,13 +347,17 @@ void CAddrMan::Attempt_(const CService& addr, int64_t nTime)
     info.nAttempts++;
 }
 
-CAddress CAddrMan::Select_()
+CAddress CAddrMan::Select_(bool newOnly)
 {
     if (size() == 0)
         return CAddress();
 
+    if (newOnly && nNew == 0)
+        return CAddrInfo();
+
     // Use a 50% chance for choosing between tried and new table entries.
-    if (nTried > 0 && (nNew == 0 || GetRandInt(2) == 0)) {
+    if (!newOnly &&
+            (nTried > 0 && (nNew == 0 || GetRandInt(2) == 0))) {
         // use a tried node
         double fChanceFactor = 1.0;
         while (1) {

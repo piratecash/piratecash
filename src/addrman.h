@@ -1,4 +1,5 @@
 // Copyright (c) 2012 Pieter Wuille
+// Copyright (c) 2012-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -16,8 +17,8 @@
 #include <stdint.h>
 #include <vector>
 
-/** 
- * Extended statistics about a CAddress 
+/**
+ * Extended statistics about a CAddress
  */
 class CAddrInfo : public CAddress
 {
@@ -228,9 +229,8 @@ protected:
     //! Mark an entry as attempted to connect.
     void Attempt_(const CService &addr, int64_t nTime);
 
-    //! Select an address to connect to.
-    //! nUnkBias determines how much to favor new addresses over tried ones (min=0, max=100)
-    CAddress Select_();
+    //! Select an address to connect to, if newOnly is set to true, only the new table is selected from.
+    CAddress Select_(bool newOnly);
 
 #ifdef DEBUG_ADDRMAN
     //! Perform consistency check. Returns an error code or zero.
@@ -509,12 +509,10 @@ public:
     //! Mark an entry as accessible.
     void Good(const CService &addr, int64_t nTime = GetAdjustedTime())
     {
-        {
-            LOCK(cs);
-            Check();
-            Good_(addr, nTime);
-            Check();
-        }
+        LOCK(cs);
+        Check();
+        Good_(addr, nTime);
+        Check();
     }
 
     //! Mark an entry as connection attempted to.
@@ -532,13 +530,13 @@ public:
      * Choose an address to connect to.
      * nUnkBias determines how much "new" entries are favored over "tried" ones (0-100).
      */
-    CAddress Select()
+    CAddress Select(bool newOnly = false)
     {
         CAddress addrRet;
         {
             LOCK(cs);
             Check();
-            addrRet = Select_();
+            addrRet = Select_(newOnly);
             Check();
         }
         return addrRet;
