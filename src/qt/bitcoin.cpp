@@ -246,6 +246,7 @@ int main(int argc, char *argv[])
             GUIUtil::SetBlackThemeQSS(app);
         else
             app.setStyleSheet("QMenu { background: rgb(255,255,255); color: rgb(0,0,0); }"
+                              "QMenu::item:disabled { color: rgb(200,200,200); }"
                               "QMenu::item:selected { background-color: rgb(48,140,198); }");
 
         // Regenerate startup link, to fix links to old versions
