@@ -18,6 +18,7 @@
 #include "coincontrol.h"
 #include "wallet.h"
 #include "darksend.h"
+#include "amount.h"
 
 #include <ctime>
 #include <QMessageBox>
@@ -33,7 +34,7 @@
 #include <QTreeWidgetItem>
 
 using namespace std;
-QList<qint64> CoinControlDialog::payAmounts;
+QList<CAmount> CoinControlDialog::payAmounts;
 CCoinControl* CoinControlDialog::coinControl = new CCoinControl();
 
 CoinControlDialog::CoinControlDialog(QWidget *parent) :
