@@ -537,7 +537,7 @@ padding-right: 10px;</string>
       <bool>false</bool>
      </property>
      <property name="columnCount">
-      <number>12</number>
+      <number>13</number>
      </property>
      <attribute name="headerShowSortIndicator" stdset="0">
       <bool>true</bool>
@@ -586,6 +586,11 @@ padding-right: 10px;</string>
      <column>
       <property name="text">
        <string>Priority</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string/>
       </property>
      </column>
      <column>
