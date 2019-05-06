@@ -1,3 +1,7 @@
+// Copyright (c) 2014-2015 The Dash developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #include "masternodeman.h"
 #include "masternode.h"
 #include "activemasternode.h"
@@ -29,7 +33,6 @@ struct CompareValueOnlyMN
         return t1.first < t2.first;
     }
 };
-
 
 //
 // CMasternodeDB
@@ -331,7 +334,7 @@ CMasternode *CMasternodeMan::Find(const CTxIn &vin)
 
     BOOST_FOREACH(CMasternode& mn, vMasternodes)
     {
-        if(mn.vin == vin)
+        if(mn.vin.prevout == vin.prevout)
             return &mn;
     }
     return NULL;
