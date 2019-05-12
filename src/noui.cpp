@@ -5,7 +5,9 @@
 
 #include "ui_interface.h"
 #include "init.h"
+#include "util.h"
 
+#include <cstdio>
 #include <string>
 
 static int noui_ThreadSafeMessageBox(const std::string& message, const std::string& caption, unsigned int style)

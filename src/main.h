@@ -1,21 +1,25 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2014-2015 The Dash developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef BITCOIN_MAIN_H
 #define BITCOIN_MAIN_H
 
-#include "core.h"
+#include "amount.h"
+#include "primitives/transaction.h"
 #include "bignum.h"
 #include "sync.h"
 #include "txmempool.h"
 #include "net.h"
 #include "script.h"
 #include "scrypt.h"
+#include "utilmoneystr.h"
+
+#include <boost/unordered_map.hpp>
 
 #include <list>
-
-class CValidationState;
 
 #define START_MASTERNODE_PAYMENTS_TESTNET 1508779800
 #define START_MASTERNODE_PAYMENTS 1508779800
@@ -38,6 +42,7 @@ class CKeyItem;
 class CNode;
 class CReserveKey;
 class CWallet;
+class CValidationState;
 
 /** The maximum allowed size for a serialized block, in bytes (network rule) */
 static const unsigned int MAX_BLOCK_SIZE = 40000000;
@@ -62,8 +67,8 @@ static const int64_t MIN_TX_FEE = 1000;
 /** Fees smaller than this (in satoshi) are considered zero fee (for relaying) */
 static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
 /** No amount larger than this (in satoshi) is valid */
-static const int64_t MAX_MONEY = 105000000 * COIN; // 105M PoW coins
-inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
+static const CAmount MAX_MONEY = 105000000 * COIN; // 105M PoW coins
+inline bool MoneyRange(const CAmount& nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 /** Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp. */
 static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20 1985 UTC
 
@@ -82,10 +87,16 @@ static const unsigned char REJECT_CHECKPOINT = 0x43;
 
 inline int64_t GetMNCollateral(int nHeight) { return 10000; }
 
+struct BlockHasher
+{
+    size_t operator()(const uint256& hash) const { return hash.GetLow64(); }
+};
+
 extern CScript COINBASE_FLAGS;
 extern CCriticalSection cs_main;
 extern CTxMemPool mempool;
-extern std::map<uint256, CBlockIndex*> mapBlockIndex;
+typedef boost::unordered_map<uint256, CBlockIndex*, BlockHasher> BlockMap;
+extern BlockMap mapBlockIndex;
 extern std::set<std::pair<COutPoint, unsigned int> > setStakeSeen;
 extern CBlockIndex* pindexGenesisBlock;
 extern int nStakeMinConfirmations;
@@ -103,6 +114,8 @@ extern uint64_t nLastBlockSize;
 extern int64_t nLastCoinStakeSearchInterval;
 extern const std::string strMessageMagic;
 extern int64_t nTimeBestReceived;
+extern CWaitableCriticalSection csBestBlock;
+extern CConditionVariable cvBlockChange;
 extern bool fImporting;
 extern bool fReindex;
 struct COrphanBlock;
@@ -116,7 +129,7 @@ extern unsigned int nDerivationMethodIndex;
 extern bool fLargeWorkForkFound;
 extern bool fLargeWorkInvalidChainFound;
 
-// Minimum disk space required - used in CheckDiskSpace()
+/** Minimum disk space required - used in CheckDiskSpace() */
 static const uint64_t nMinDiskSpace = 52428800;
 
 class CReserveKey;
@@ -143,7 +156,18 @@ void UnregisterNodeSignals(CNodeSignals& nodeSignals);
 
 void PushGetBlocks(CNode* pnode, CBlockIndex* pindexBegin, uint256 hashEnd);
 
-bool ProcessBlock(CValidationState &state, CNode* pfrom, CBlock* pblock);
+/**
+ * Process an incoming block. This only returns after the best known valid
+ * block is made active. Note that it does not, however, guarantee that the
+ * specific block passed to it has been checked for validity!
+ * 
+ * @param[out]  state   This may be set to an Error state if any error occurred processing it, including during validation/connection/etc of otherwise unrelated blocks during reorganisation; or it may be set to an Invalid state if pblock is itself invalid (but this is not guaranteed even when the block is checked). If you want to *possibly* get feedback on whether pblock is valid, you must also install a CValidationInterface - this will have its BlockChecked method called whenever *any* block completes validation.
+ * @param[in]   pfrom   The node which we are receiving the block from; it is added to mapBlockSource and may be penalised if the block is invalid.
+ * @param[in]   pblock  The block we want to process.
+ * @param[out]  dbp     If pblock is stored to disk (or already there), this will be set to its location.
+ * @return True if state.IsValid()
+ */
+bool ProcessNewBlock(CValidationState &state, CNode* pfrom, CBlock* pblock);
 bool CheckDiskSpace(uint64_t nAdditionalBytes=0);
 FILE* OpenBlockFile(unsigned int nFile, unsigned int nBlockPos, const char* pszMode="rb");
 FILE* AppendBlockFile(unsigned int& nFileRet);
@@ -157,8 +181,8 @@ void ThreadImport(std::vector<boost::filesystem::path> vImportFiles);
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits);
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake);
-int64_t GetProofOfWorkReward(int nHeight, int64_t nFees);
-int64_t GetProofOfStakeReward(const CBlockIndex* pindexPrev, int64_t nCoinAge, int64_t nFees);
+CAmount GetProofOfWorkReward(int nHeight, CAmount nFees);
+CAmount GetProofOfStakeReward(const CBlockIndex* pindexPrev, int64_t nCoinAge, CAmount nFees);
 bool IsInitialBlockDownload();
 int WalletGracePeriodLeft();
 bool IsWalletGracePeriod();
@@ -171,10 +195,10 @@ void ThreadStakeMiner(CWallet *pwallet);
 
 
 /** (try to) add transaction to memory pool **/
-bool AcceptToMemoryPool(CValidationState &state, CTxMemPool& pool, CTransaction &tx, bool fLimitFree,
+bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState &state, CTransaction &tx, bool fLimitFree,
                         bool* pfMissingInputs, bool fRejectInsaneFee=false, bool ignoreFees=false);
 
-bool AcceptableInputs(CValidationState &state, CTxMemPool& pool, const CTransaction &txo, bool fLimitFree,
+bool AcceptableInputs(CTxMemPool& pool, CValidationState &state, const CTransaction &txo, bool fLimitFree,
                         bool* pfMissingInputs, bool fRejectInsaneFee=false, bool isDSTX=false);
 
 
@@ -215,7 +239,13 @@ public:
         nTxPos = nTxPosIn;
     }
 
-    IMPLEMENT_SERIALIZE( READWRITE(FLATDATA(*this)); )
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+        READWRITE(FLATDATA(*this));
+    }
+
     void SetNull() { nFile = (unsigned int) -1; nBlockPos = 0; nTxPos = 0; }
     bool IsNull() const { return (nFile == (unsigned int) -1); }
 
@@ -284,15 +314,17 @@ public:
     {
     }
 
-    IMPLEMENT_SERIALIZE
-    (
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(this->nVersion);
         nVersion = this->nVersion;
         READWRITE(nTime);
         READWRITE(vin);
         READWRITE(vout);
         READWRITE(nLockTime);
-    )
+    }
 
     void SetNull()
     {
@@ -463,11 +495,14 @@ private:
 public:
     CTxOutCompressor(CTxOut &txoutIn) : txout(txoutIn) { }
 
-    IMPLEMENT_SERIALIZE(
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(VARINT(txout.nValue));
         CScriptCompressor cscript(REF(txout.scriptPubKey));
         READWRITE(cscript);
-    )
+    }
 };
 
 /** Check for standard transaction types
@@ -499,8 +534,8 @@ inline bool AllowFree(double dPriority)
 }
 
 /** Check for standard transaction types
-    @return True if all outputs (scriptPubKeys) use only standard transaction forms
-*/
+ * @return True if all outputs (scriptPubKeys) use only standard transaction forms
+ */
 bool IsStandardTx(const CTransaction& tx, std::string& reason);
 
 bool IsFinalTx(const CTransaction &tx, int nBlockHeight = 0, int64_t nBlockTime = 0);
@@ -539,14 +574,16 @@ public:
     }
 
 
-    IMPLEMENT_SERIALIZE
-    (
-        nSerSize += SerReadWrite(s, *(CTransaction*)this, nType, nVersion, ser_action);
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+        READWRITE(*(CTransaction*)this);
         nVersion = this->nVersion;
         READWRITE(hashBlock);
         READWRITE(vMerkleBranch);
         READWRITE(nIndex);
-    )
+    }
 
     int SetMerkleBranch(const CBlock* pblock=NULL);
 
@@ -587,13 +624,15 @@ public:
         vSpent.resize(nOutputs);
     }
 
-    IMPLEMENT_SERIALIZE
-    (
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         if (!(nType & SER_GETHASH))
             READWRITE(nVersion);
         READWRITE(pos);
         READWRITE(vSpent);
-    )
+    }
 
     void SetNull()
     {
@@ -664,8 +703,11 @@ public:
         SetNull();
     }
 
-    IMPLEMENT_SERIALIZE
-    (
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+        bool fRead = ser_action.ForRead();
         READWRITE(this->nVersion);
         nVersion = this->nVersion;
         READWRITE(hashPrevBlock);
@@ -685,7 +727,7 @@ public:
             const_cast<CBlock*>(this)->vtx.clear();
             const_cast<CBlock*>(this)->vchBlockSig.clear();
         }
-    )
+    }
 
     void SetNull()
     {
@@ -895,7 +937,7 @@ public:
     bool AddToBlockIndex(CValidationState &state, unsigned int nFile, unsigned int nBlockPos, const uint256& hashProof);
     bool CheckBlock(CValidationState &state, bool fCheckPOW=true, bool fCheckMerkleRoot=true, bool fCheckSig=true) const;
     bool AcceptBlock(CValidationState &state);
-    bool SignBlock(CWallet& keystore, int64_t nFees);
+    bool SignBlock(CWallet& keystore, CAmount nFees);
     bool CheckBlockSignature() const;
     void RebuildAddressIndex(CTxDB& txdb);
 
@@ -1153,8 +1195,12 @@ public:
         hashNext = (pnext ? pnext->GetBlockHash() : 0);
     }
 
-    IMPLEMENT_SERIALIZE
-    (
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+        bool fRead = ser_action.ForRead();
+
         if (!(nType & SER_GETHASH))
             READWRITE(nVersion);
 
@@ -1188,7 +1234,7 @@ public:
         READWRITE(nBits);
         READWRITE(nNonce);
         READWRITE(blockHash);
-    )
+    }
 
     uint256 GetBlockHash() const
     {
@@ -1248,7 +1294,7 @@ public:
 
     explicit CBlockLocator(uint256 hashBlock)
     {
-        std::map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(hashBlock);
+        BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
         if (mi != mapBlockIndex.end())
             Set((*mi).second);
     }
@@ -1258,12 +1304,14 @@ public:
         vHave = vHaveIn;
     }
 
-    IMPLEMENT_SERIALIZE
-    (
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         if (!(nType & SER_GETHASH))
             READWRITE(nVersion);
         READWRITE(vHave);
-    )
+    }
 
     void SetNull()
     {
@@ -1299,7 +1347,7 @@ public:
         int nStep = 1;
         BOOST_FOREACH(const uint256& hash, vHave)
         {
-            std::map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(hash);
+            BlockMap::iterator mi = mapBlockIndex.find(hash);
             if (mi != mapBlockIndex.end())
             {
                 CBlockIndex* pindex = (*mi).second;
@@ -1318,7 +1366,7 @@ public:
         // Find the first block the caller has in the main chain
         BOOST_FOREACH(const uint256& hash, vHave)
         {
-            std::map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(hash);
+            BlockMap::iterator mi = mapBlockIndex.find(hash);
             if (mi != mapBlockIndex.end())
             {
                 CBlockIndex* pindex = (*mi).second;
@@ -1334,7 +1382,7 @@ public:
         // Find the first block the caller has in the main chain
         BOOST_FOREACH(const uint256& hash, vHave)
         {
-            std::map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(hash);
+            BlockMap::iterator mi = mapBlockIndex.find(hash);
             if (mi != mapBlockIndex.end())
             {
                 CBlockIndex* pindex = (*mi).second;
@@ -1439,4 +1487,4 @@ protected:
     friend void ::UnregisterAllWallets();
 };
 
-#endif
+#endif // BITCOIN_MAIN_H

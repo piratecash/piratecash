@@ -10,6 +10,8 @@
 
 #include <sstream>
 #include <string>
+#include <boost/thread.hpp>
+
 double getBlockHardness(int height)
 {
     const CBlockIndex* blockindex = getBlockIndex(height);
@@ -154,7 +156,7 @@ int blocksInPastHours(int hours)
     return 0;
 }
 
-double getTxTotalValue(std::string txid)
+QString getTxTotalValue(std::string txid)
 {
     uint256 hash;
     hash.SetHex(txid);
@@ -162,7 +164,7 @@ double getTxTotalValue(std::string txid)
     CTransaction tx;
     uint256 hashBlock = 0;
     if (!GetTransaction(hash, tx, hashBlock))
-        return 1000;
+        return "fail";
 
     CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
     ssTx << tx;
@@ -177,7 +179,8 @@ double getTxTotalValue(std::string txid)
         value = buffer;
     }
 
-    return value;
+    QString QValue = QString::number(value, 'f', 6);
+    return  QValue + " PIRATE";
 }
 
 double convertCoins(int64_t amount)
@@ -279,7 +282,7 @@ int64_t getInputValue(CTransaction tx, CScript target)
     return 0;
 }
 
-double getTxFees(std::string txid)
+QString getTxFees(std::string txid)
 {
     uint256 hash;
     hash.SetHex(txid);
@@ -288,7 +291,7 @@ double getTxFees(std::string txid)
     CTransaction tx;
     uint256 hashBlock = 0;
     if (!GetTransaction(hash, tx, hashBlock))
-        return 51;
+        return "fail";
 
     CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
     ssTx << tx;
@@ -321,7 +324,8 @@ double getTxFees(std::string txid)
         value0 = buffer0;
     }
 
-    return value0 - value;
+    QString QFees = QString::number(value0 - value, 'f', 6);
+    return QFees + " PIRATE";
 }
 
 
@@ -381,9 +385,7 @@ void BlockBrowser::updateExplorer(bool block)
         ui->nonceBox->setText(QNonce);
         ui->timeBox->setText(QTime);     
         ui->hardBox->setText(QHardness);
-    } 
-    
-    if(block == false) {
+    } else {
         ui->txID->show();
         ui->txLabel->show();
         ui->valueLabel->show();
@@ -395,20 +397,18 @@ void BlockBrowser::updateExplorer(bool block)
         ui->feesLabel->show();
         ui->feesBox->show();
         std::string txid = ui->txBox->text().toUtf8().constData();
-        double value = getTxTotalValue(txid);
-        double fees = getTxFees(txid);
+        QString txValue = getTxTotalValue(txid);
+        QString txFees = getTxFees(txid);
         std::string outputs = getOutputs(txid);
         std::string inputs = getInputs(txid);
-        QString QValue = QString::number(value, 'f', 6);
         QString QID = QString::fromUtf8(txid.c_str());
         QString QOutputs = QString::fromUtf8(outputs.c_str());
         QString QInputs = QString::fromUtf8(inputs.c_str());
-        QString QFees = QString::number(fees, 'f', 6);
-        ui->valueBox->setText(QValue + " PIRATE");
+        ui->valueBox->setText(txValue);
         ui->txID->setText(QID);
         ui->outputBox->setText(QOutputs);
         ui->inputBox->setText(QInputs);
-        ui->feesBox->setText(QFees + " PIRATE");
+        ui->feesBox->setText(txFees);
     }
 }
 

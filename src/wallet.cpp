@@ -24,6 +24,7 @@
 #include "smessage.h"
 
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/thread.hpp>
 
 using namespace std;
 
@@ -1176,6 +1177,33 @@ void CWalletTx::AddSupportingTransactions(CTxDB& txdb)
     reverse(vtxPrev.begin(), vtxPrev.end());
 }
 
+
+bool CWalletTx::AcceptWalletTransaction(CTxDB& txdb)
+{
+
+    {
+        // Add previous supporting transactions first
+        BOOST_FOREACH(CMerkleTx& tx, vtxPrev)
+        {
+            if (!(tx.IsCoinBase() || tx.IsCoinStake()))
+            {
+                uint256 hash = tx.GetHash();
+                if (!mempool.exists(hash) && !txdb.ContainsTx(hash))
+                    tx.AcceptToMemoryPool(false);
+            }
+        }
+        return AcceptToMemoryPool(false);
+    }
+    return false;
+}
+
+bool CWalletTx::AcceptWalletTransaction()
+{
+    CTxDB txdb("r");
+    return AcceptWalletTransaction(txdb);
+}
+
+
 bool CWalletTx::WriteToDisk()
 {
     return CWalletDB(pwallet->strWalletFile).WriteTx(GetHash(), *this);
@@ -1298,7 +1326,7 @@ void CWalletTx::RelayWalletTransaction(CTxDB& txdb, std::string strCommand)
                 RelayTransactionLockReq((CTransaction)*this, true);
             } else {
                 LogPrintf("Relaying wtx %s\n", hash.ToString());
-                RelayTransaction((CTransaction)*this, hash);
+                RelayTransaction((CTransaction)*this);
             }
         }
     }
@@ -4530,7 +4558,7 @@ void CWallet::GetKeyBirthTimes(std::map<CKeyID, int64_t> &mapKeyBirth) const {
     for (std::map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); it++) {
         // iterate over all wallet transactions...
         const CWalletTx &wtx = (*it).second;
-        std::map<uint256, CBlockIndex*>::const_iterator blit = mapBlockIndex.find(wtx.hashBlock);
+        BlockMap::const_iterator blit = mapBlockIndex.find(wtx.hashBlock);
         if (blit != mapBlockIndex.end() && blit->second->IsInMainChain()) {
             // ... which are already in a block
             int nHeight = blit->second->nHeight;

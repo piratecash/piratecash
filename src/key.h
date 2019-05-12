@@ -47,7 +47,7 @@ private:
 public:
 
     // Construct an invalid private key.
-    CKey() : fValid(false) {
+    CKey() : fValid(false), fCompressed(false) {
         LockObject(vch);
     }
 

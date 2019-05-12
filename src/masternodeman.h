@@ -1,8 +1,7 @@
-
-// Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
+// Copyright (c) 2014-2015 The Dash developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef MASTERNODEMAN_H
 #define MASTERNODEMAN_H
 
@@ -10,7 +9,7 @@
 #include "sync.h"
 #include "net.h"
 #include "key.h"
-#include "core.h"
+#include "primitives/transaction.h"
 #include "util.h"
 #include "script.h"
 #include "base58.h"
@@ -39,7 +38,7 @@ private:
 public:
     enum ReadResult {
         Ok,
-       FileError,
+        FileError,
         HashReadError,
         IncorrectHash,
         IncorrectMagicMessage,
@@ -71,8 +70,10 @@ public:
     // keep track of dsq count to prevent masternodes from gaming darksend queue
     int64_t nDsqCount;
 
-    IMPLEMENT_SERIALIZE
-    (
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         // serialized format:
         // * version byte (currently 0)
         // * masternodes vector
@@ -86,12 +87,12 @@ public:
                 READWRITE(mWeAskedForMasternodeListEntry);
                 READWRITE(nDsqCount);
         }
-    )
+    }
 
     CMasternodeMan();
     CMasternodeMan(CMasternodeMan& other);
 
-    // Add an entry
+    /// Add an entry
     bool Add(CMasternode &mn);
 
     // Check all masternodes
@@ -106,9 +107,7 @@ public:
     // Clear masternode vector
     void Clear();
 
-    int CountEnabled();
-
-    int CountMasternodesAboveProtocol(int protocolVersion);
+    int CountEnabled(int protocolVersion = nMasternodeMinProtocol);
 
     void DsegUpdate(CNode* pnode);
 
@@ -138,7 +137,7 @@ public:
 
     void ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
 
-    // Return the number of (unique) masternodes
+    /// Return the number of (unique) Masternodes
     int size() { return vMasternodes.size(); }
 
     std::string ToString() const;

@@ -1,10 +1,15 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2013 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "core.h"
+#include "primitives/transaction.h"
+
+#include "hash.h"
+#include "tinyformat.h"
+#include "utilstrencodings.h"
 #include "util.h"
+#include "utilmoneystr.h"
 
 std::string COutPoint::ToString() const
 {
@@ -16,14 +21,14 @@ std::string COutPoint::ToStringShort() const
     return strprintf("%s-%u", hash.ToString().substr(0,64), n);
 }
 
-CTxIn::CTxIn(COutPoint prevoutIn, CScript scriptSigIn, unsigned int nSequenceIn)
+CTxIn::CTxIn(COutPoint prevoutIn, CScript scriptSigIn, uint32_t nSequenceIn)
 {
     prevout = prevoutIn;
     scriptSig = scriptSigIn;
     nSequence = nSequenceIn;
 }
 
-CTxIn::CTxIn(uint256 hashPrevTx, unsigned int nOut, CScript scriptSigIn, unsigned int nSequenceIn)
+CTxIn::CTxIn(uint256 hashPrevTx, uint32_t nOut, CScript scriptSigIn, uint32_t nSequenceIn)
 {
     prevout = COutPoint(hashPrevTx, nOut);
     scriptSig = scriptSigIn;
@@ -45,10 +50,11 @@ std::string CTxIn::ToString() const
     return str;
 }
 
-CTxOut::CTxOut(int64_t nValueIn, CScript scriptPubKeyIn)
+CTxOut::CTxOut(const CAmount& nValueIn, CScript scriptPubKeyIn)
 {
     nValue = nValueIn;
     scriptPubKey = scriptPubKeyIn;
+    nRounds = -10;
 }
 
 uint256 CTxOut::GetHash() const

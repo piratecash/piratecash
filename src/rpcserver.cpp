@@ -28,6 +28,7 @@
 #include <boost/iostreams/stream.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/thread.hpp>
 #include <list>
 
 using namespace std;
@@ -36,6 +37,8 @@ using namespace boost::asio;
 using namespace json_spirit;
 
 static std::string strRPCUserColonPass;
+
+static bool fRPCRunning = false;
 
 // These are created by StartRPCThreads, destroyed in StopRPCThreads
 static asio::io_service* rpc_io_service = NULL;
@@ -81,6 +84,11 @@ void RPCTypeCheck(const Object& o,
             throw JSONRPCError(RPC_TYPE_ERROR, err);
         }
     }
+}
+
+static inline int64_t roundint64(double d)
+{
+    return (int64_t)(d > 0 ? d + 0.5 : d - 0.5);
 }
 
 int64_t AmountFromValue(const Value& value)
@@ -639,19 +647,28 @@ void StartRPCThreads()
     rpc_worker_group = new boost::thread_group();
     for (int i = 0; i < GetArg("-rpcthreads", 4); i++)
         rpc_worker_group->create_thread(boost::bind(&asio::io_service::run, rpc_io_service));
+    fRPCRunning = true;
 }
 
 void StopRPCThreads()
 {
     if (rpc_io_service == NULL) return;
+    // Set this to false first, so that longpolling loops will exit when woken up
+    fRPCRunning = false;
 
     deadlineTimers.clear();
     rpc_io_service->stop();
+    cvBlockChange.notify_all();
     if (rpc_worker_group != NULL)
         rpc_worker_group->join_all();
     delete rpc_worker_group; rpc_worker_group = NULL;
     delete rpc_ssl_context; rpc_ssl_context = NULL;
     delete rpc_io_service; rpc_io_service = NULL;
+}
+
+bool IsRPCRunning()
+{
+    return fRPCRunning;
 }
 
 void RPCRunHandler(const boost::system::error_code& err, boost::function<void(void)> func)
@@ -702,7 +719,7 @@ void JSONRequest::parse(const Value& valRequest)
         throw JSONRPCError(RPC_INVALID_REQUEST, "Method must be a string");
     strMethod = valMethod.get_str();
     if (strMethod != "getwork" && strMethod != "getblocktemplate")
-        LogPrint("rpc", "ThreadRPCServer method=%s\n", strMethod);
+        LogPrint("rpc", "ThreadRPCServer method=%s\n", SanitizeString(strMethod));
 
     // Parse params
     Value valParams = find_value(request, "params");

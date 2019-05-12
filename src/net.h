@@ -1,12 +1,13 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
+// Copyright (c) 2009-2014 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef BITCOIN_NET_H
 #define BITCOIN_NET_H
 
 #include "compat.h"
-#include "core.h"
+#include "primitives/transaction.h"
 #include "hash.h"
 #include "bloom.h"
 #include "limitedmap.h"
@@ -16,7 +17,7 @@
 #include "random.h"
 #include "sync.h"
 #include "uint256.h"
-#include "util.h"
+#include "utilstrencodings.h"
 
 #include <deque>
 #include <stdint.h>
@@ -26,6 +27,7 @@
 #endif
 
 #include <boost/array.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/foreach.hpp>
 #include <boost/signals2/signal.hpp>
 
@@ -37,7 +39,7 @@ class CNode;
 
 namespace boost {
     class thread_group;
-}
+} // namespace boost
 
 /** Time between pings automatically sent out for latency probing and keepalive (in seconds). */
 static const int PING_INTERVAL = 2 * 60;
@@ -53,6 +55,8 @@ static const size_t MAPASKFOR_MAX_SZ = MAX_INV_SZ;
 static const size_t SETASKFOR_MAX_SZ = 2 * MAX_INV_SZ;
 /** The maximum number of new addresses to accumulate before announcing. */
 static const unsigned int MAX_ADDR_TO_SEND = 1000;
+/** Maximum length of incoming protocol messages (no message over 80 MiB is currently acceptable). */
+static const unsigned int MAX_PROTOCOL_MESSAGE_LENGTH = 80 * 1024 * 1024;
 
 inline unsigned int ReceiveFloodSize() { return 1000*GetArg("-maxreceivebuffer", 5*1000); }
 inline unsigned int SendBufferSize() { return 1000*GetArg("-maxsendbuffer", 1*1000); }
@@ -64,8 +68,9 @@ CNode* FindNode(const CNetAddr& ip);
 CNode* FindNode(const CSubNet& subNet);
 CNode* FindNode(const std::string& addrName);
 CNode* FindNode(const CService& ip);
-CNode* ConnectNode(CAddress addrConnect, const char *pszDest = NULL, bool darkSendMaster=false);
-bool CheckNode(CAddress addrConnect);
+// fConnectToMasternode should be 'true' only if you want this node to allow to connect to itself
+// and/or you want it to be disconnected on CMasternodeMan::ProcessMasternodeConnections()
+CNode* ConnectNode(CAddress addrConnect, const char *pszDest = NULL, bool fConnectToMasternode = false);
 void MapPort(bool fUseUPnP);
 unsigned short GetListenPort();
 bool BindListenPort(const CService &bindAddr, std::string& strError, bool fWhitelisted = false);
@@ -84,6 +89,7 @@ struct CNodeSignals
     boost::signals2::signal<void (NodeId, const CNode*)> InitializeNode;
     boost::signals2::signal<void (NodeId)> FinalizeNode;
 };
+
 
 CNodeSignals& GetNodeSignals();
 
@@ -256,14 +262,16 @@ public:
         nCreateTime = nCreateTimeIn;
     }
   
-    IMPLEMENT_SERIALIZE
-    (
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(this->nVersion);
         nVersion = this->nVersion;
         READWRITE(nCreateTime);
         READWRITE(nBanUntil);
         READWRITE(banReason);
-    )
+    }
 
     void SetNull()
     {
@@ -360,7 +368,8 @@ public:
     // b) the peer may tell us in their version message that we should not relay tx invs
     //    until they have initialized their bloom filter.
     bool fRelayTxes;
-    bool fDarkSendMaster;
+    // If 'true' this node will be disconnected on CMasternodeMan::ProcessMasternodeConnections()
+    bool fMasternode;
     CSemaphoreGrant grantOutbound;
     CCriticalSection cs_filter;
     CBloomFilter* pfilter;
@@ -417,7 +426,7 @@ public:
     // Whether a ping is requested.
     bool fPingQueued;
 
-    CNode(SOCKET hSocketIn, CAddress addrIn, std::string addrNameIn = "", bool fInboundIn=false) : ssSend(SER_NETWORK, INIT_PROTO_VERSION), setAddrKnown(5000)
+    CNode(SOCKET hSocketIn, CAddress addrIn, std::string addrNameIn = "", bool fInboundIn=false, bool fNetworkNodeIn=false) : ssSend(SER_NETWORK, INIT_PROTO_VERSION), setAddrKnown(5000)
     {
         nServices = 0;
         hSocket = hSocketIn;
@@ -436,7 +445,7 @@ public:
         fOneShot = false;
         fClient = false; // set by version message
         fInbound = fInboundIn;
-        fNetworkNode = false;
+        fNetworkNode = fNetworkNodeIn;
         fSuccessfullyConnected = false;
         fDisconnect = false;
         nRefCount = 0;
@@ -451,9 +460,10 @@ public:
         fRelayTxes = false;
         hashCheckpointKnown = 0;
         setInventoryKnown.max_size(SendBufferSize() / 1000);
-        pfilter = NULL;
+        pfilter = new CBloomFilter();
         nPingNonceSent = 0;
         nPingUsecStart = 0;
+        fMasternode = false;
         nPingUsecTime = 0;
         fPingQueued = false;
 
@@ -461,6 +471,9 @@ public:
             LOCK(cs_nLastNodeId);
             id = nLastNodeId++;
         }
+
+        if(fNetworkNode || fInbound)
+            AddRef();
 
         if (fLogIPs)
             LogPrint("net", "Added connection to %s peer=%d\n", addrName, id);
@@ -494,6 +507,7 @@ private:
     void operator=(const CNode&);
 
 public:
+
     NodeId GetId() const {
       return id;
     }
@@ -508,7 +522,7 @@ public:
     unsigned int GetTotalRecvSize()
     {
         unsigned int total = 0;
-        BOOST_FOREACH(const CNetMessage &msg, vRecvMsg) 
+        BOOST_FOREACH(const CNetMessage &msg, vRecvMsg)
             total += msg.vRecv.size() + 24;
         return total;
     }
@@ -849,9 +863,10 @@ template<typename T1, typename T2, typename T3, typename T4, typename T5, typena
             throw;
         }
     }
+
     template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8, typename T9, typename T10, typename T11>
     void PushMessage(const char* pszCommand, const T1& a1, const T2& a2, const T3& a3, const T4& a4, const T5& a5, const T6& a6, const T7& a7, const T8& a8, const T9& a9, const T10& a10, const T11& a11)
-   {
+    {
         try
         {
             BeginMessage(pszCommand);
@@ -861,7 +876,7 @@ template<typename T1, typename T2, typename T3, typename T4, typename T5, typena
         catch (...)
         {
             AbortMessage();
-           throw;
+            throw;
         }
     }
 
@@ -896,12 +911,10 @@ template<typename T1, typename T2, typename T3, typename T4, typename T5, typena
         vecRequestsFulfilled.push_back(strRequest);
     }
 
-
     bool IsSubscribed(unsigned int nChannel);
     void Subscribe(unsigned int nChannel, unsigned int nHops=0);
     void CancelSubscribe(unsigned int nChannel);
     void CloseSocketDisconnect();
-
 
     // Denial-of-service detection/prevention
     // The idea is to detect peers that are behaving
@@ -947,20 +960,11 @@ template<typename T1, typename T2, typename T3, typename T4, typename T5, typena
     static uint64_t GetTotalBytesSent();
 };
 
-inline void RelayInventory(const CInv& inv)
-{
-    // Put on lists to offer to the other nodes
-    {
-        LOCK(cs_vNodes);
-        BOOST_FOREACH(CNode* pnode, vNodes)
-            pnode->PushInventory(inv);
-    }
-}
-
 class CTransaction;
-void RelayTransaction(const CTransaction& tx, const uint256& hash);
-void RelayTransaction(const CTransaction& tx, const uint256& hash, const CDataStream& ss);
+void RelayTransaction(const CTransaction& tx);
+void RelayTransaction(const CTransaction& tx, const CDataStream& ss);
 void RelayTransactionLockReq(const CTransaction& tx, bool relayToAll=false);
+void RelayInv(CInv &inv, const int minProtoVersion = MIN_PEER_PROTO_VERSION);
 
 /** Access to the (IP) address database (peers.dat) */
 class CAddrDB

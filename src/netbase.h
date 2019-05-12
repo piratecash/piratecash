@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2013 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef BITCOIN_NETBASE_H
 #define BITCOIN_NETBASE_H
 
@@ -12,6 +13,10 @@
 #include <vector>
 
 extern int nConnectTimeout;
+extern bool fNameLookup;
+
+/** -timeout default */
+static const int DEFAULT_CONNECT_TIMEOUT = 5000;
 
 #ifdef WIN32
 // In MSVC, this is defined as a macro, undefine it to prevent a compile and link error
@@ -28,9 +33,6 @@ enum Network
 
     NET_MAX,
 };
-
-extern int nConnectTimeout;
-extern bool fNameLookup;
 
 /** IP address (IPv6, or IPv4 using mapped IPv6 range (::FFFF:0:0/96)) */
 class CNetAddr
@@ -56,6 +58,9 @@ class CNetAddr
         bool IsIPv4() const;    // IPv4 mapped address (::FFFF:0:0/96, 0.0.0.0/0)
         bool IsIPv6() const;    // IPv6 address (not mapped IPv4, not Tor/I2P)
         bool IsRFC1918() const; // IPv4 private networks (10.0.0.0/8, 192.168.0.0/16, 172.16.0.0/12)
+        bool IsRFC2544() const; // IPv4 inter-network communcations (192.18.0.0/15)
+        bool IsRFC6598() const; // IPv4 ISP-level NAT (100.64.0.0/10)
+        bool IsRFC5737() const; // IPv4 documentation addresses (192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24)
         bool IsRFC3849() const; // IPv6 documentation address (2001:0DB8::/32)
         bool IsRFC3927() const; // IPv4 autoconfig (169.254.0.0/16)
         bool IsRFC3964() const; // IPv6 6to4 tunnelling (2002::/16)
@@ -79,7 +84,6 @@ class CNetAddr
         bool GetInAddr(struct in_addr* pipv4Addr) const;
         std::vector<unsigned char> GetGroup() const;
         int GetReachabilityFrom(const CNetAddr *paddrPartner = NULL) const;
-        void print() const;
 
         CNetAddr(const struct in6_addr& pipv6Addr);
         bool GetIn6Addr(struct in6_addr* pipv6Addr) const;
@@ -88,10 +92,14 @@ class CNetAddr
         friend bool operator!=(const CNetAddr& a, const CNetAddr& b);
         friend bool operator<(const CNetAddr& a, const CNetAddr& b);
 
-        IMPLEMENT_SERIALIZE
-            (
-             READWRITE(FLATDATA(ip));
-            )
+        IMPLEMENT_SERIALIZE;
+
+        template <typename Stream, typename Operation>
+        inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+            READWRITE(FLATDATA(ip));
+        }
+
+        friend class CSubNet;
 };
 
 class CSubNet
@@ -117,12 +125,14 @@ class CSubNet
         friend bool operator!=(const CSubNet& a, const CSubNet& b);
         friend bool operator<(const CSubNet& a, const CSubNet& b);
 
-        IMPLEMENT_SERIALIZE
-        (
+        IMPLEMENT_SERIALIZE;
+
+        template <typename Stream, typename Operation>
+        inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
             READWRITE(network);
             READWRITE(FLATDATA(netmask));
             READWRITE(FLATDATA(valid));
-        )
+        }
 };
 
 /** A combination of a network address (CNetAddr) and a (TCP) port */
@@ -152,20 +162,22 @@ class CService : public CNetAddr
         std::string ToString() const;
         std::string ToStringPort() const;
         std::string ToStringIPPort() const;
-        void print() const;
 
         CService(const struct in6_addr& ipv6Addr, unsigned short port);
         CService(const struct sockaddr_in6& addr);
 
-        IMPLEMENT_SERIALIZE
-            (
-             CService* pthis = const_cast<CService*>(this);
-             READWRITE(FLATDATA(ip));
-             unsigned short portN = htons(port);
-             READWRITE(portN);
-             if (fRead)
-                 pthis->port = ntohs(portN);
-            )
+        IMPLEMENT_SERIALIZE;
+
+        template <typename Stream, typename Operation>
+        inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+            bool fRead = ser_action.ForRead();
+            CService* pthis = const_cast<CService*>(this);
+            READWRITE(FLATDATA(ip));
+            unsigned short portN = htons(port);
+            READWRITE(portN);
+            if (fRead)
+                pthis->port = ntohs(portN);
+        }
 };
 
 typedef CService proxyType;
@@ -182,8 +194,8 @@ bool LookupHost(const char *pszName, std::vector<CNetAddr>& vIP, unsigned int nM
 bool Lookup(const char *pszName, CService& addr, int portDefault = 0, bool fAllowLookup = true);
 bool Lookup(const char *pszName, std::vector<CService>& vAddr, int portDefault = 0, bool fAllowLookup = true, unsigned int nMaxSolutions = 0);
 bool LookupNumeric(const char *pszName, CService& addr, int portDefault = 0);
-bool ConnectSocket(const CService &addr, SOCKET& hSocketRet, int nTimeout = nConnectTimeout);
-bool ConnectSocketByName(CService &addr, SOCKET& hSocketRet, const char *pszDest, int portDefault = 0, int nTimeout = nConnectTimeout);
+bool ConnectSocket(const CService &addr, SOCKET& hSocketRet, int nTimeout = nConnectTimeout, bool *outProxyConnectionFailed = 0);
+bool ConnectSocketByName(CService &addr, SOCKET& hSocketRet, const char *pszDest, int portDefault = 0, int nTimeout = nConnectTimeout, bool *outProxyConnectionFailed = 0);
 /** Return readable error string for a network error code */
 std::string NetworkErrorString(int err);
 /** Close socket and set hSocket to INVALID_SOCKET */
@@ -191,4 +203,4 @@ bool CloseSocket(SOCKET& hSocket);
 /** Disable or enable blocking-mode for a socket */
 bool SetSocketNonBlocking(SOCKET& hSocket, bool fNonBlocking);
 
-#endif
+#endif // BITCOIN_NETBASE_H

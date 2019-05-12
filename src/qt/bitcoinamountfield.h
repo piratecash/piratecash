@@ -17,7 +17,7 @@ class BitcoinAmountField: public QWidget
 
     // ugly hack: for some unknown reason CAmount (instead of qint64) does not work here as expected
     // discussion: https://github.com/bitcoin/bitcoin/pull/5117
-    Q_PROPERTY(qint64 value READ value WRITE setValue NOTIFY textChanged USER true)
+    Q_PROPERTY(CAmount value READ value WRITE setValue NOTIFY textChanged USER true)
 
 public:
     explicit BitcoinAmountField(QWidget *parent = 0);

@@ -312,6 +312,7 @@ void MasternodeManager::on_startAllButton_clicked()
 
 void MasternodeManager::on_UpdateButton_clicked()
 {
+    ui->tableWidget_2->setSortingEnabled(false);
     BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
         std::string errorMessage;
         std::string strRewardAddress = mne.getRewardAddress();
@@ -334,6 +335,7 @@ void MasternodeManager::on_UpdateButton_clicked()
             }
         }
     }
+    ui->tableWidget_2->setSortingEnabled(true);
 }
 
 void MasternodeManager::showContextMenu(const QPoint& point)

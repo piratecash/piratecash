@@ -6,6 +6,7 @@
 #include "rpcprotocol.h"
 
 #include "util.h"
+#include "utilstrencodings.h"
 
 #include <stdint.h>
 

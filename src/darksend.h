@@ -5,7 +5,7 @@
 #ifndef DARKSEND_H
 #define DARKSEND_H
 
-#include "core.h"
+#include "primitives/transaction.h"
 #include "main.h"
 #include "sync.h"
 #include "activemasternode.h"
@@ -170,14 +170,16 @@ public:
         ready = false;
     }
 
-    IMPLEMENT_SERIALIZE
-    (
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(nDenom);
         READWRITE(vin);
         READWRITE(time);
         READWRITE(ready);
         READWRITE(vchSig);
-    )
+    }
 
     bool GetAddress(CService &addr)
     {
@@ -318,9 +320,7 @@ public:
     CScript collateralPubKey;
 
     CMasternode* pSubmittedToMasternode;
-
     int sessionDenom; //Users must submit an denom matching this
-
     int cachedNumBlocks; //used for the overview screen
 
     CDarksendPool()
@@ -431,7 +431,7 @@ public:
     bool IsCompatibleWithEntries(std::vector<CTxOut>& vout);
 
     /// Is this amount compatible with other client in the pool?
-    bool IsCompatibleWithSession(int64_t nAmount, CTransaction txCollateral, std::string& strReason);
+    bool IsCompatibleWithSession(int64_t nAmount, CTransaction txCollateral, int &errorID);
 
     /// Passively run Darksend in the background according to the configuration in settings (only for QT)
     bool DoAutomaticDenominating(bool fDryRun=false);
@@ -454,7 +454,7 @@ public:
     /// If the collateral is valid given by a client
     bool IsCollateralValid(const CTransaction& txCollateral);
     /// Add a clients entry to the pool
-    bool AddEntry(const std::vector<CTxIn>& newInput, const int64_t& nAmount, const CTransaction& txCollateral, const std::vector<CTxOut>& newOutput, std::string& error);
+    bool AddEntry(const std::vector<CTxIn>& newInput, const int64_t& nAmount, const CTransaction& txCollateral, const std::vector<CTxOut>& newOutput, int& errorID);
     /// Add signature to a vin
     bool AddScriptSig(const CTxIn& newVin);
     /// Check that all inputs are signed. (Are all inputs signed?)
@@ -462,7 +462,7 @@ public:
     /// As a client, send a transaction to a Masternode to start the denomination process
     void SendDarksendDenominate(std::vector<CTxIn>& vin, std::vector<CTxOut>& vout, int64_t amount);
     /// Get Masternode updates about the progress of Darksend
-    bool StatusUpdate(int newState, int newEntriesCount, int newAccepted, std::string& error, int newSessionID=0);
+    bool StatusUpdate(int newState, int newEntriesCount, int newAccepted, int &errorID, int newSessionID=0);
 
     /// As a client, check and sign the final transaction
     bool SignFinalTransaction(CTransaction& finalTransactionNew, CNode* node);
@@ -500,8 +500,8 @@ public:
     void RelaySignaturesAnon(std::vector<CTxIn>& vin);
     void RelayInAnon(std::vector<CTxIn>& vin, std::vector<CTxOut>& vout);
     void RelayIn(const std::vector<CTxDSIn>& vin, const int64_t& nAmount, const CTransaction& txCollateral, const std::vector<CTxDSOut>& vout);
-    void RelayStatus(const int sessionID, const int newState, const int newEntriesCount, const int newAccepted, const std::string error="");
-    void RelayCompletedTransaction(const int sessionID, const bool error, const std::string errorMessage);
+    void RelayStatus(const int sessionID, const int newState, const int newEntriesCount, const int newAccepted, const int errorID=MSG_NOERR);
+    void RelayCompletedTransaction(const int sessionID, const bool error, const int errorID);
 };
 
 void ThreadCheckDarkSendPool();

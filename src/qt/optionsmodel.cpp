@@ -7,12 +7,14 @@
 #include "guiutil.h"
 
 #include "init.h"
+#include "primitives/transaction.h"
 #include "main.h"
 #include "net.h"
 #ifdef ENABLE_WALLET
 #include "wallet.h"
 #include "walletdb.h"
 #endif
+#include "netbase.h"
 
 #include <QNetworkProxy>
 #include <QSettings>
@@ -67,13 +69,13 @@ void OptionsModel::Init()
     if (!settings.contains("nDarksendRounds"))
         settings.setValue("nDarksendRounds", 2);
     nDarksendRounds = settings.value("nDarksendRounds").toLongLong();
-    if (!settings.contains("nAnonymizepiratecashAmount"))
-        settings.setValue("nAnonymizepiratecashAmount", 1000);
-    nAnonymizepiratecashAmount = settings.value("nAnonymizepiratecashAmount").toLongLong();
+    if (!settings.contains("nAnonymizeDarkcoinAmount"))
+        settings.setValue("nAnonymizeDarkcoinAmount", 1000);
+    nAnonymizeDarkcoinAmount = settings.value("nAnonymizeDarkcoinAmount").toLongLong();
     if (settings.contains("nDarksendRounds"))
         SoftSetArg("-darksendrounds", settings.value("nDarksendRounds").toString().toStdString());
-    if (settings.contains("nAnonymizepiratecashAmount"))
-        SoftSetArg("-anonymizetraveamount", settings.value("nAnonymizepiratecashAmount").toString().toStdString());
+    if (settings.contains("nAnonymizeDarkcoinAmount"))
+        SoftSetArg("-anonymizetraveamount", settings.value("nAnonymizeDarkcoinAmount").toString().toStdString());
 
 
 
@@ -201,7 +203,7 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
         case DarksendRounds:
             return QVariant(nDarksendRounds);
         case AnonymizepiratecashAmount:
-            return QVariant(nAnonymizepiratecashAmount);
+            return QVariant(nAnonymizeDarkcoinAmount);
         case UseBlackTheme:
             return QVariant(fUseBlackTheme);
         default:
@@ -306,9 +308,9 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
             emit darksendRoundsChanged(nDarksendRounds);
             break;
         case AnonymizepiratecashAmount:
-            nAnonymizepiratecashAmount = value.toInt();
-            settings.setValue("nAnonymizepiratecashAmount", nAnonymizepiratecashAmount);
-            emit AnonymizepiratecashAmountChanged(nAnonymizepiratecashAmount);
+            nAnonymizeDarkcoinAmount = value.toInt();
+            settings.setValue("nAnonymizeDarkcoinAmount", nAnonymizeDarkcoinAmount);
+            emit AnonymizepiratecashAmountChanged(nAnonymizeDarkcoinAmount);
             break;
         default:
             break;

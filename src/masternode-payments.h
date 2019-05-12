@@ -49,13 +49,16 @@ public:
         return n3;
     }
 
-    IMPLEMENT_SERIALIZE(
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(nBlockHeight);
         READWRITE(payee);
         READWRITE(vin);
         READWRITE(score);
         READWRITE(vchSig);
-    )
+    }
 };
 
 //
@@ -103,6 +106,7 @@ public:
 
     bool GetBlockPayee(int nBlockHeight, CScript& payee, CTxIn& vin);
 };
+
 
 
 #endif

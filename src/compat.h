@@ -56,4 +56,12 @@ typedef u_int SOCKET;
 #define SOCKET_ERROR        -1
 #endif
 
+bool static inline IsSelectableSocket(SOCKET s) {
+#ifdef WIN32
+    return true;
+#else
+    return (s < FD_SETSIZE);
 #endif
+}
+
+#endif // BITCOIN_COMPAT_H

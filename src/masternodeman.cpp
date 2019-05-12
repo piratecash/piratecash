@@ -1,8 +1,12 @@
+// Copyright (c) 2014-2015 The Dash developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #include "masternodeman.h"
 #include "masternode.h"
 #include "activemasternode.h"
 #include "darksend.h"
-#include "core.h"
+#include "primitives/transaction.h"
 #include "util.h"
 #include "addrman.h"
 #include <boost/lexical_cast.hpp>
@@ -29,7 +33,6 @@ struct CompareValueOnlyMN
         return t1.first < t2.first;
     }
 };
-
 
 //
 // CMasternodeDB
@@ -294,19 +297,8 @@ void CMasternodeMan::Clear()
     nDsqCount = 0;
 }
 
-int CMasternodeMan::CountEnabled()
-{
-    int i = 0;
 
-    BOOST_FOREACH(CMasternode& mn, vMasternodes) {
-        mn.Check();
-        if(mn.IsEnabled()) i++;
-    }
-
-    return i;
-}
-
-int CMasternodeMan::CountMasternodesAboveProtocol(int protocolVersion)
+int CMasternodeMan::CountEnabled(int protocolVersion)
 {
     int i = 0;
 
@@ -342,7 +334,7 @@ CMasternode *CMasternodeMan::Find(const CTxIn &vin)
 
     BOOST_FOREACH(CMasternode& mn, vMasternodes)
     {
-        if(mn.vin == vin)
+        if(mn.vin.prevout == vin.prevout)
             return &mn;
     }
     return NULL;
@@ -403,7 +395,7 @@ CMasternode *CMasternodeMan::FindRandomNotInVec(std::vector<CTxIn> &vecToExclude
 
     protocolVersion = protocolVersion == -1 ? masternodePayments.GetMinMasternodePaymentsProto() : protocolVersion;
 
-    int nCountEnabled = CountMasternodesAboveProtocol(protocolVersion);
+    int nCountEnabled = CountEnabled(protocolVersion);
     LogPrintf("CMasternodeMan::FindRandomNotInVec - nCountEnabled - vecToExclude.size() %d\n", nCountEnabled - vecToExclude.size());
     if(nCountEnabled - vecToExclude.size() < 1) return NULL;
 
@@ -572,9 +564,10 @@ void CMasternodeMan::ProcessMasternodeConnections()
     {
         if(darkSendPool.pSubmittedToMasternode->addr == pnode->addr) continue;
 
-        if(pnode->fDarkSendMaster){
+        if(pnode->fMasternode){
             LogPrintf("Closing masternode connection %s \n", pnode->addr.ToString().c_str());
             pnode->CloseSocketDisconnect();
+            pnode->fDisconnect = true;
         }
     }
 }
@@ -688,12 +681,6 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
                 pmn->UpdateLastSeen();
 
                 if(pmn->sigTime < sigTime){ //take the newest entry
-                    if (!CheckNode((CAddress)addr)){
-                        pmn->isPortOpen = false;
-                    } else {
-                        pmn->isPortOpen = true;
-                        addrman.Add(CAddress(addr), pfrom->addr, 2*60*60); // use this as a peer
-                    }
                     LogPrintf("dsee - Got updated entry for %s\n", addr.ToString().c_str());
                     pmn->pubkey2 = pubkey2;
                     pmn->sigTime = sigTime;
@@ -734,7 +721,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             TRY_LOCK(cs_main, lockMain);
             if(!lockMain) return;
             CValidationState state;
-            fAcceptable = AcceptableInputs(state, mempool, tx, false, NULL);
+            fAcceptable = AcceptableInputs(mempool, state, tx, false, NULL);
         }
         if(fAcceptable){
             LogPrint("masternode", "dsee - Accepted masternode entry %i %i\n", count, current);
@@ -749,7 +736,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             // should be at least not earlier than block when 10000 TansferCoin tx got MASTERNODE_MIN_CONFIRMATIONS
             uint256 hashBlock = 0;
             GetTransaction(vin.prevout.hash, tx, hashBlock);
-            map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(hashBlock);
+            BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
            if (mi != mapBlockIndex.end() && (*mi).second)
             {
                 CBlockIndex* pMNIndex = (*mi).second; // block for 10000 TansferCoin tx -> 1 confirmation
@@ -772,13 +759,6 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             // add our masternode
             CMasternode mn(addr, vin, pubkey, vchSig, sigTime, pubkey2, protocolVersion, rewardAddress, rewardPercentage);
             mn.UpdateLastSeen(lastUpdated);
-
-            if (!CheckNode((CAddress)addr)){
-                mn.ChangePortStatus(false);
-            } else {
-                addrman.Add(CAddress(addr), pfrom->addr, 2*60*60); // use this as a peer
-            }          
-
             this->Add(mn);
 
             // if it matches our masternodeprivkey, then we've been remotely activated

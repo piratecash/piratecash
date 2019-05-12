@@ -1,5 +1,5 @@
-// Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Darkcoin developers
+
+// Copyright (c) 2014-2015 The Dash developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #ifndef MASTERNODE_H
@@ -62,7 +62,7 @@ public:
         MASTERNODE_POS_ERROR = 5
     };
 
-    CTxIn vin;  
+    CTxIn vin;
     CService addr;
     CPubKey pubkey;
     CPubKey pubkey2;
@@ -84,7 +84,6 @@ public:
     int nScanningErrorCount;
     int nLastScanningErrorBlockHeight;
     int64_t nLastPaid;
-    bool isPortOpen;
 
     CMasternode();
     CMasternode(const CMasternode& other);
@@ -120,7 +119,6 @@ public:
         swap(first.nScanningErrorCount, second.nScanningErrorCount);
         swap(first.nLastScanningErrorBlockHeight, second.nLastScanningErrorBlockHeight);
         swap(first.nLastPaid, second.nLastPaid);
-        swap(first.isPortOpen, second.isPortOpen);
         
     }
 
@@ -140,8 +138,10 @@ public:
 
     uint256 CalculateScore(int mod=1, int64_t nBlockHeight=0);
 
-    IMPLEMENT_SERIALIZE
-    (
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         // serialized format:
         // * version byte (currently 0)
         // * all fields (?)
@@ -171,10 +171,9 @@ public:
                 READWRITE(nScanningErrorCount);
                 READWRITE(nLastScanningErrorBlockHeight);
                 READWRITE(nLastPaid);
-                READWRITE(isPortOpen);
       
         }
-    )
+    }
 
     int64_t SecondsSincePayment()
     {
@@ -190,10 +189,6 @@ public:
         }
     }
 
-    void ChangePortStatus(bool status)
-    {
-        isPortOpen = status;
-    }
 
    
     
@@ -220,7 +215,7 @@ public:
 
     bool IsEnabled()
     {
-        return isPortOpen && activeState == MASTERNODE_ENABLED;
+        return activeState == MASTERNODE_ENABLED;
     }
 
     int GetMasternodeInputAge()

@@ -1,3 +1,8 @@
+// Copyright (c) 2011-2014 The Bitcoin developers
+// Copyright (c) 2014-2015 The Dash developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #include "overviewpage.h"
 #include "ui_overviewpage.h"
 
@@ -132,6 +137,7 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui->listTransactions->setMinimumWidth(300);
 
     connect(ui->listTransactions, SIGNAL(clicked(QModelIndex)), this, SLOT(handleTransactionClicked(QModelIndex)));
+
 
     // init "out of sync" warning labels
     //ui->labelWalletStatus->setText("(" + tr("out of sync") + ")");
@@ -303,7 +309,6 @@ void OverviewPage::updateDisplayUnit()
 {
     if(walletModel && walletModel->getOptionsModel())
     {
-
         nDisplayUnit = walletModel->getOptionsModel()->getDisplayUnit();
         if(currentBalance != -1)
             setBalance(currentBalance, currentStake, currentUnconfirmedBalance, currentImmatureBalance, currentAnonymizedBalance,
@@ -329,8 +334,6 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
     ui->labelTransactionsStatus->setVisible(fShow);
 }
 
-
-
 void OverviewPage::updateDarksendProgress()
 {
     if(!darkSendPool.IsBlockchainSynced() || ShutdownRequested()) return;
@@ -338,15 +341,16 @@ void OverviewPage::updateDarksendProgress()
     if(!pwalletMain) return;
 
     QString strAmountAndRounds;
-    QString strAnonymizepiratecashAmount = BitcoinUnits::formatHtmlWithUnit(nDisplayUnit, nAnonymizepiratecashAmount * COIN, false, BitcoinUnits::separatorAlways);
+    QString strAnonymizeDarkcoinAmount = BitcoinUnits::formatHtmlWithUnit(nDisplayUnit, nAnonymizeDarkcoinAmount * COIN, false, BitcoinUnits::separatorAlways);
 
     if(currentBalance == 0)
     {
         ui->darksendProgress->setValue(0);
         ui->darksendProgress->setToolTip(tr("No inputs detected"));
+
         // when balance is zero just show info from settings
-        strAnonymizepiratecashAmount = strAnonymizepiratecashAmount.remove(strAnonymizepiratecashAmount.indexOf("."), BitcoinUnits::decimals(nDisplayUnit) + 1);
-        strAmountAndRounds = strAnonymizepiratecashAmount + " / " + tr("%n Rounds", "", nDarksendRounds);
+        strAnonymizeDarkcoinAmount = strAnonymizeDarkcoinAmount.remove(strAnonymizeDarkcoinAmount.indexOf("."), BitcoinUnits::decimals(nDisplayUnit) + 1);
+        strAmountAndRounds = strAnonymizeDarkcoinAmount + " / " + tr("%n Rounds", "", nDarksendRounds);
 
         ui->labelAmountRounds->setToolTip(tr("No inputs detected"));
         ui->labelAmountRounds->setText(strAmountAndRounds);
@@ -370,24 +374,23 @@ void OverviewPage::updateDarksendProgress()
         nAverageAnonymizedRounds = pwalletMain->GetAverageAnonymizedRounds();
     }
 
-    //Get the anon threshold
     CAmount nMaxToAnonymize = nAnonymizableBalance + currentAnonymizedBalance + nDenominatedUnconfirmedBalance;
 
     // If it's more than the anon threshold, limit to that.
-    if(nMaxToAnonymize > nAnonymizepiratecashAmount*COIN) nMaxToAnonymize = nAnonymizepiratecashAmount*COIN;
+    if(nMaxToAnonymize > nAnonymizeDarkcoinAmount*COIN) nMaxToAnonymize = nAnonymizeDarkcoinAmount*COIN;
 
     if(nMaxToAnonymize == 0) return;
 
-    if(nMaxToAnonymize >= nAnonymizepiratecashAmount * COIN) {
+    if(nMaxToAnonymize >= nAnonymizeDarkcoinAmount * COIN) {
         ui->labelAmountRounds->setToolTip(tr("Found enough compatible inputs to anonymize %1")
-                                          .arg(strAnonymizepiratecashAmount));
-        strAnonymizepiratecashAmount = strAnonymizepiratecashAmount.remove(strAnonymizepiratecashAmount.indexOf("."), BitcoinUnits::decimals(nDisplayUnit) + 1);
-        strAmountAndRounds = strAnonymizepiratecashAmount + " / " + tr("%n Rounds", "", nDarksendRounds);
+                                          .arg(strAnonymizeDarkcoinAmount));
+        strAnonymizeDarkcoinAmount = strAnonymizeDarkcoinAmount.remove(strAnonymizeDarkcoinAmount.indexOf("."), BitcoinUnits::decimals(nDisplayUnit) + 1);
+        strAmountAndRounds = strAnonymizeDarkcoinAmount + " / " + tr("%n Rounds", "", nDarksendRounds);
     } else {
         QString strMaxToAnonymize = BitcoinUnits::formatHtmlWithUnit(nDisplayUnit, nMaxToAnonymize, false, BitcoinUnits::separatorAlways);
         ui->labelAmountRounds->setToolTip(tr("Not enough compatible inputs to anonymize <span style='color:red;'>%1</span>,<br>"
                                              "will anonymize <span style='color:red;'>%2</span> instead")
-                                          .arg(strAnonymizepiratecashAmount)
+                                          .arg(strAnonymizeDarkcoinAmount)
                                           .arg(strMaxToAnonymize));
         strMaxToAnonymize = strMaxToAnonymize.remove(strMaxToAnonymize.indexOf("."), BitcoinUnits::decimals(nDisplayUnit) + 1);
         strAmountAndRounds = "<span style='color:red;'>" +
@@ -471,7 +474,6 @@ void OverviewPage::darkSendStatus()
     {
         // Balance and number of transactions might have changed
         darkSendPool.cachedNumBlocks = nBestHeight;
-
         updateDarksendProgress();
 
         ui->darksendEnabled->setText(tr("Enabled"));
@@ -495,7 +497,6 @@ void OverviewPage::darkSendStatus()
         ui->labelSubmittedDenom->setText(s2);
     }
 
-    // Get DarkSend Denomination Status
 }
 
 void OverviewPage::darksendAuto(){
@@ -512,7 +513,6 @@ void OverviewPage::darksendReset(){
 }
 
 void OverviewPage::toggleDarksend(){
-
     QSettings settings;
     // Popup some information on first mixing
     QString hasMixed = settings.value("hasMixed").toString();
@@ -562,7 +562,7 @@ void OverviewPage::toggleDarksend(){
 
         /* show darksend configuration if client has defaults set */
 
-        if(nAnonymizepiratecashAmount == 0){
+        if(nAnonymizeDarkcoinAmount == 0){
             DarksendConfig dlg(this);
             dlg.setModel(walletModel);
             dlg.exec();

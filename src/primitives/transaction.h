@@ -1,18 +1,34 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2013 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-#ifndef BITCOIN_CORE_H
-#define BITCOIN_CORE_H
 
-#include "uint256.h"
-#include "serialize.h"
+#ifndef BITCOIN_PRIMITIVES_TRANSACTION_H
+#define BITCOIN_PRIMITIVES_TRANSACTION_H
+
+#include "amount.h"
+//#include "script/script.h"
 #include "script.h"
+#include "serialize.h"
+#include "uint256.h"
 
 #include <stdio.h>
 
 class CScript;
 class CTransaction;
+
+/** An inpoint - a combination of a transaction and an index n into its vin */
+class CInPoint
+{
+public:
+    CTransaction* ptx;
+    unsigned int n;
+
+    CInPoint() { SetNull(); }
+    CInPoint(CTransaction* ptxIn, unsigned int nIn) { ptx = ptxIn; n = nIn; }
+    void SetNull() { ptx = NULL; n = (unsigned int) -1; }
+    bool IsNull() const { return (ptx == NULL && n == (unsigned int) -1); }
+};
 
 /** An outpoint - a combination of a transaction hash and an index n into its vout */
 class COutPoint
@@ -22,10 +38,17 @@ public:
     unsigned int n;
 
     COutPoint() { SetNull(); }
-    COutPoint(uint256 hashIn, unsigned int nIn) { hash = hashIn; n = nIn; }
-    IMPLEMENT_SERIALIZE( READWRITE(FLATDATA(*this)); )
-    void SetNull() { hash = 0; n = (unsigned int) -1; }
-    bool IsNull() const { return (hash == 0 && n == (unsigned int) -1); }
+    COutPoint(uint256 hashIn, uint32_t nIn) { hash = hashIn; n = nIn; }
+
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+        READWRITE(FLATDATA(*this));
+    }
+
+    void SetNull() { hash = 0; n = (uint32_t) -1; }
+    bool IsNull() const { return (hash == 0 && n == (uint32_t) -1); }
 
     friend bool operator<(const COutPoint& a, const COutPoint& b)
     {
@@ -47,19 +70,6 @@ public:
 
 };
 
-/** An inpoint - a combination of a transaction and an index n into its vin */
-class CInPoint
-{
-public:
-    CTransaction* ptx;
-    unsigned int n;
-
-    CInPoint() { SetNull(); }
-    CInPoint(CTransaction* ptxIn, unsigned int nIn) { ptx = ptxIn; n = nIn; }
-    void SetNull() { ptx = NULL; n = (unsigned int) -1; }
-    bool IsNull() const { return (ptx == NULL && n == (unsigned int) -1); }
-};
-
 /** An input of a transaction.  It contains the location of the previous
  * transaction's output that it claims and a signature that matches the
  * output's public key.
@@ -69,28 +79,29 @@ class CTxIn
 public:
     COutPoint prevout;
     CScript scriptSig;
+    uint32_t nSequence;
     CScript prevPubKey;
-    unsigned int nSequence;
 
     CTxIn()
     {
         nSequence = std::numeric_limits<unsigned int>::max();
     }
 
-    explicit CTxIn(COutPoint prevoutIn, CScript scriptSigIn=CScript(), unsigned int nSequenceIn=std::numeric_limits<unsigned int>::max());
+    explicit CTxIn(COutPoint prevoutIn, CScript scriptSigIn=CScript(), uint32_t nSequenceIn=std::numeric_limits<unsigned int>::max());
+    CTxIn(uint256 hashPrevTx, uint32_t nOut, CScript scriptSigIn=CScript(), uint32_t nSequenceIn=std::numeric_limits<uint32_t>::max());
 
-    explicit CTxIn(uint256 hashPrevTx, unsigned int nOut, CScript scriptSigIn=CScript(), unsigned int nSequenceIn=std::numeric_limits<unsigned int>::max());
+    IMPLEMENT_SERIALIZE;
 
-    IMPLEMENT_SERIALIZE
-    (
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(prevout);
         READWRITE(scriptSig);
         READWRITE(nSequence);
-    )
+    }
 
     bool IsFinal() const
     {
-        return (nSequence == std::numeric_limits<unsigned int>::max());
+        return (nSequence == std::numeric_limits<uint32_t>::max());
     }
 
     friend bool operator==(const CTxIn& a, const CTxIn& b)
@@ -108,37 +119,36 @@ public:
     std::string ToString() const;
 };
 
-
-
-
 /** An output of a transaction.  It contains the public key that the next input
  * must be able to sign with to claim it.
  */
 class CTxOut
 {
 public:
-    int64_t nValue;
-    int nRounds;
+    CAmount nValue;
     CScript scriptPubKey;
+    int nRounds;
 
     CTxOut()
     {
         SetNull();
     }
 
-    CTxOut(int64_t nValueIn, CScript scriptPubKeyIn);
+    CTxOut(const CAmount& nValueIn, CScript scriptPubKeyIn);
 
-    IMPLEMENT_SERIALIZE
-    (
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(nValue);
         READWRITE(scriptPubKey);
-    )
+    }
 
     void SetNull()
     {
         nValue = -1;
-        nRounds = -10; // an initial value, should be no way to get this by calculations
         scriptPubKey.clear();
+        nRounds = -10; // an initial value, should be no way to get this by calculations
     }
 
     bool IsNull() const
@@ -175,8 +185,8 @@ public:
     friend bool operator==(const CTxOut& a, const CTxOut& b)
     {
         return (a.nValue       == b.nValue &&
-                a.nRounds      == b.nRounds &&
-                a.scriptPubKey == b.scriptPubKey);
+                a.scriptPubKey == b.scriptPubKey &&
+                a.nRounds      == b.nRounds);
     }
 
     friend bool operator!=(const CTxOut& a, const CTxOut& b)
@@ -187,4 +197,4 @@ public:
     std::string ToString() const;
 };
 
-#endif
+#endif // BITCOIN_PRIMITIVES_TRANSACTION_H

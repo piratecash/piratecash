@@ -5,6 +5,7 @@
 #include "protocol.h"
 #include "activemasternode.h"
 #include "masternodeman.h"
+#include "masternodeconfig.h"
 #include <boost/lexical_cast.hpp>
 #include "clientversion.h"
 
@@ -15,9 +16,9 @@ void CActiveMasternode::ManageStatus()
 {
     std::string errorMessage;
 
-    if (fDebug) LogPrintf("CActiveMasternode::ManageStatus() - Begin\n");
-
     if(!fMasterNode) return;
+
+    if (fDebug) LogPrintf("CActiveMasternode::ManageStatus() - Begin\n");
 
     //need correct adjusted time to send ping
     bool fIsInitialDownload = IsInitialBlockDownload();
@@ -45,14 +46,13 @@ void CActiveMasternode::ManageStatus()
 
         LogPrintf("CActiveMasternode::ManageStatus() - Checking inbound connection to '%s'\n", service.ToString().c_str());
 
-                  
-            if(!ConnectNode((CAddress)service, service.ToString().c_str())){
+            if(!ConnectNode((CAddress)service, NULL, true)){
                 notCapableReason = "Could not connect to " + service.ToString();
                 status = MASTERNODE_NOT_CAPABLE;
                 LogPrintf("CActiveMasternode::ManageStatus() - not capable: %s\n", notCapableReason.c_str());
                 return;
             }
-        
+
 
         if(pwalletMain->IsLocked()){
             notCapableReason = "Wallet is locked.";
@@ -316,6 +316,9 @@ bool CActiveMasternode::GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secr
     CScript pubScript;
 
     // Find possible candidates
+    TRY_LOCK(pwalletMain->cs_wallet, fWallet);
+    if(!fWallet) return false;
+
     vector<COutput> possibleCoins = SelectCoinsMasternode();
     COutput *selectedOutput;
 
@@ -427,9 +430,27 @@ vector<COutput> CActiveMasternode::SelectCoinsMasternode()
 {
     vector<COutput> vCoins;
     vector<COutput> filteredCoins;
+    vector<COutPoint> confLockedCoins;
+
+    // Temporary unlock MN coins from masternode.conf
+    if(GetBoolArg("-mnconflock", true)) {
+        uint256 mnTxHash;
+        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+            mnTxHash.SetHex(mne.getTxHash());
+            COutPoint outpoint = COutPoint(mnTxHash, boost::lexical_cast<unsigned int>(mne.getOutputIndex()));
+            confLockedCoins.push_back(outpoint);
+            pwalletMain->UnlockCoin(outpoint);
+        }
+    }
 
     // Retrieve all possible outputs
     pwalletMain->AvailableCoinsMN(vCoins);
+
+    // Lock MN coins from masternode.conf back if they where temporary unlocked
+    if(!confLockedCoins.empty()) {
+        BOOST_FOREACH(COutPoint outpoint, confLockedCoins)
+                pwalletMain->LockCoin(outpoint);
+    }
 
     // Filter
     BOOST_FOREACH(const COutput& out, vCoins)

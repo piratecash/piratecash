@@ -9,7 +9,7 @@
 #include "sync.h"
 #include "net.h"
 #include "key.h"
-#include "core.h"
+#include "primitives/transaction.h"
 #include "util.h"
 #include "script.h"
 #include "base58.h"
@@ -63,13 +63,15 @@ public:
     bool SignatureValid();
     bool Sign();
 
-    IMPLEMENT_SERIALIZE
-    (
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(txHash);
         READWRITE(vinMasternode);
         READWRITE(vchMasterNodeSignature);
         READWRITE(nBlockHeight);
-    )
+    }
 };
 
 class CTransactionLock

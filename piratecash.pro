@@ -205,6 +205,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/editaddressdialog.h \
     src/qt/bitcoinaddressvalidator.h \
     src/alert.h \
+    src/amount.h \
     src/allocators.h \
     src/addrman.h \
     src/base58.h \
@@ -216,6 +217,9 @@ HEADERS += src/qt/bitcoingui.h \
     src/coincontrol.h \
     src/sync.h \
     src/util.h \
+    src/utilstrencodings.h \
+    src/utilmoneystr.h \
+    src/utiltime.h \
     src/random.h \
     src/hash.h \
     src/uint256.h \
@@ -227,7 +231,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/pbkdf2.h \
     src/serialize.h \
     src/support/cleanse.h \
-    src/core.h \
+    src/primitives/transaction.h \
     src/main.h \
     src/miner.h \
     src/net.h \
@@ -345,6 +349,9 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/sync.cpp \
     src/txmempool.cpp \
     src/util.cpp \
+    src/utilstrencodings.cpp \
+    src/utilmoneystr.cpp \
+    src/utiltime.cpp \
     src/random.cpp \
     src/hash.cpp \
     src/netbase.cpp \
@@ -353,7 +360,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/pubkey.cpp \
     src/script.cpp \
     src/scrypt.cpp \
-    src/core.cpp \
+    src/primitives/transaction.cpp \
     src/main.cpp \
     src/miner.cpp \
     src/init.cpp \

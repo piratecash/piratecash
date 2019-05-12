@@ -9,6 +9,10 @@
 #include "kernel.h"
 #include "masternodeman.h"
 #include "masternode-payments.h"
+#include "util.h"
+#include "utilmoneystr.h"
+
+#include <boost/thread.hpp>
 
 using namespace std;
 
@@ -164,7 +168,7 @@ CBlock* CreateNewBlock(CReserveKey& reservekey, bool fProofOfStake, int64_t* pFe
 
 
     // Collect memory pool transactions into the block
-    int64_t nFees = 0;
+    CAmount nFees = 0;
     {
         LOCK2(cs_main, mempool.cs);
         CTxDB txdb("r");
@@ -184,7 +188,7 @@ CBlock* CreateNewBlock(CReserveKey& reservekey, bool fProofOfStake, int64_t* pFe
 
             COrphan* porphan = NULL;
             double dPriority = 0;
-            int64_t nTotalIn = 0;
+            CAmount nTotalIn = 0;
             bool fMissingInputs = false;
             BOOST_FOREACH(const CTxIn& txin, tx.vin)
             {
@@ -218,7 +222,7 @@ CBlock* CreateNewBlock(CReserveKey& reservekey, bool fProofOfStake, int64_t* pFe
                     nTotalIn += mempool.mapTx[txin.prevout.hash].vout[txin.prevout.n].nValue;
                     continue;
                 }
-                int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
+                CAmount nValueIn = txPrev.vout[txin.prevout.n].nValue;
                 nTotalIn += nValueIn;
 
                 int nConf = txindex.GetDepthInMainChain();
@@ -300,7 +304,7 @@ CBlock* CreateNewBlock(CReserveKey& reservekey, bool fProofOfStake, int64_t* pFe
             if (!tx.FetchInputs(txdb, mapTestPoolTmp, false, true, mapInputs, fInvalid))
                 continue;
 
-            int64_t nTxFees = tx.GetValueIn(mapInputs)-tx.GetValueOut();
+            CAmount nTxFees = tx.GetValueIn(mapInputs)-tx.GetValueOut();
 
             nTxSigOps += GetP2SHSigOpCount(tx, mapInputs);
             if (nBlockSigOps + nTxSigOps >= MAX_BLOCK_SIGOPS)
@@ -469,7 +473,7 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
 
         // Process this block the same as if we had received it from another node
         CValidationState state;
-        if (!ProcessBlock(state, NULL, pblock))
+        if (!ProcessNewBlock(state, NULL, pblock))
             return error("CheckWork() : ProcessBlock, block not accepted");
     }
 
@@ -507,8 +511,8 @@ bool CheckStake(CBlock* pblock, CWallet& wallet)
 
         // Process this block the same as if we had received it from another node
         CValidationState state;
-        if (!ProcessBlock(state, NULL, pblock))
-            return error("CheckStake() : ProcessBlock, block not accepted");
+        if (!ProcessNewBlock(state, NULL, pblock))
+            return error("CheckStake() : ProcessNewBlock, block not accepted");
         else
         {
             //ProcessBlock successful for PoS. now FixSpentCoins.

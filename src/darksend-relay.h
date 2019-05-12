@@ -1,12 +1,12 @@
 
-// Copyright (c) 2014-2015 The Darkcoin developers
+// Copyright (c) 2014-2015 The Dash developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef DARKSEND_RELAY_H
 #define DARKSEND_RELAY_H
 
-#include "core.h"
+#include "primitives/transaction.h"
 #include "main.h"
 #include "activemasternode.h"
 #include "masternodeman.h"
@@ -26,16 +26,18 @@ public:
     CDarkSendRelay();
     CDarkSendRelay(CTxIn& vinMasternodeIn, vector<unsigned char>& vchSigIn, int nBlockHeightIn, int nRelayTypeIn, CTxIn& in2, CTxOut& out2);
     
-    IMPLEMENT_SERIALIZE
-    (
-    	READWRITE(vinMasternode);
+    IMPLEMENT_SERIALIZE;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+        READWRITE(vinMasternode);
         READWRITE(vchSig);
         READWRITE(vchSig2);
         READWRITE(nBlockHeight);
         READWRITE(nRelayType);
         READWRITE(in);
         READWRITE(out);
-    )
+    }
 
     std::string ToString();
 

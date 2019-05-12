@@ -31,7 +31,7 @@ const std::string CLIENT_NAME("PirateCash");
 // git will put "#define GIT_ARCHIVE 1" on the next line inside archives. 
 #define GIT_ARCHIVE 1
 #ifdef GIT_ARCHIVE
-#    define GIT_COMMIT_ID "60016"
+#    define GIT_COMMIT_ID "60018"
 #endif
 
 #define BUILD_DESC_FROM_COMMIT(maj,min,rev,build,commit) \

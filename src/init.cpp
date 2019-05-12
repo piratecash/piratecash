@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2014-2015 The Dash developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "init.h"
@@ -14,6 +15,7 @@
 #include "key.h"
 #include "pubkey.h"
 #include "util.h"
+#include "utilmoneystr.h"
 #include "ui_interface.h"
 #include "checkpoints.h"
 #include "darksend-relay.h"
@@ -52,6 +54,8 @@ using namespace boost;
 CWallet* pwalletMain = NULL;
 int nWalletBackups = 10;
 #endif
+bool fFeeEstimatesInitialized = false;
+bool fRestartRequested = false;  // true: restart false: shutdown
 CClientUIInterface uiInterface;
 
 // Used to pass flags to the Bind() function
@@ -107,24 +111,26 @@ void StartShutdown()
 }
 bool ShutdownRequested()
 {
-    return fRequestShutdown;
+    return fRequestShutdown || fRestartRequested;
 }
 
-static boost::scoped_ptr<ECCVerifyHandle> globalVerifyHandle;
-
-void Shutdown()
-{
-	fRequestShutdown = true; // Needed when we shutdown the wallet
-    LogPrintf("Shutdown : In progress...\n");
+/** Preparing steps before shutting down or restarting the wallet */
+void PrepareShutdown(){
+    fRestartRequested = true; // Needed when we restart the wallet
+    LogPrintf("%s: In progress...\n", __func__);
     static CCriticalSection cs_Shutdown;
     TRY_LOCK(cs_Shutdown, lockShutdown);
-    if (!lockShutdown) return;
+    if (!lockShutdown)
+        return;
 
+    /// Note: Shutdown() must be able to handle cases in which AppInit2() failed part of the way,
+    /// for example if the data directory was found to be locked.
+    /// Be sure that anything that writes files or flushes caches only does this if the respective
+    /// module was initialized.
     RenameThread("piratecash-shutoff");
     mempool.AddTransactionsUpdated(1);
     StopRPCThreads();
     SecureMsgShutdown();
-
 #ifdef ENABLE_WALLET
     ShutdownRPCMining();
     if (pwalletMain)
@@ -132,6 +138,11 @@ void Shutdown()
 #endif
     StopNode();
     UnregisterNodeSignals(GetNodeSignals());
+    if (fFeeEstimatesInitialized)
+    {
+        //will be implemeneted later
+        fFeeEstimatesInitialized = false;
+    }
     DumpMasternodes();
     {
         LOCK(cs_main);
@@ -144,6 +155,26 @@ void Shutdown()
     if (pwalletMain)
         bitdb.Flush(true);
 #endif
+}
+
+static boost::scoped_ptr<ECCVerifyHandle> globalVerifyHandle;
+
+/**
+* Shutdown is split into 2 parts:
+* Part 1: shut down everything but the main wallet instance (done in PrepareShutdown() )
+* Part 2: delete wallet instance
+*
+* In case of a restart PrepareShutdown() was already called before, but this method here gets
+* called implicitly when the parent object is deleted. In this case we have to skip the
+* PrepareShutdown() part because it was already executed and just delete the wallet instance.
+*/
+void Shutdown()
+{
+	fRequestShutdown = true; // Needed when we shutdown the wallet
+    // true is workaround (need move it to the void BitcoinCore::restart(QStringList args) - this function isn't implemented ye)
+    if(!fRestartRequested || true){ // most of shutdown is already done when we're restarting the wallet
+        PrepareShutdown();
+    }
     boost::filesystem::remove(GetPidFile());
     UnregisterAllWallets();
 #ifdef ENABLE_WALLET
@@ -192,7 +223,6 @@ bool static Bind(const CService &addr, unsigned int flags) {
     return true;
 }
 
-// Core-specific options shared between UI and daemon
 std::string HelpMessage()
 {
     string strUsage = _("Options:") + "\n";
@@ -204,7 +234,7 @@ std::string HelpMessage()
     strUsage += "  -dbcache=<n>           " + _("Set database cache size in megabytes (default: 10)") + "\n";
     strUsage += "  -dbwalletcache=<n>     " + _("Set wallet database cache size in megabytes (default: 1)") + "\n";
     strUsage += "  -dblogsize=<n>         " + _("Set database disk log size in megabytes (default: 100)") + "\n";
-    strUsage += "  -timeout=<n>           " + _("Specify connection timeout in milliseconds (default: 5000)") + "\n";
+    strUsage += "  -timeout=<n>           " + strprintf(_("Specify connection timeout in milliseconds (minimum: 1, default: %d)"), DEFAULT_CONNECT_TIMEOUT) + "\n";
     strUsage += "  -proxy=<ip:port>       " + _("Connect through SOCKS5 proxy") + "\n";
     strUsage += "  -tor=<ip:port>         " + _("Use proxy to reach tor hidden services (default: same as -proxy)") + "\n";
     strUsage += "  -dns                   " + _("Allow DNS lookups for -addnode, -seednode and -connect") + "\n";
@@ -300,7 +330,7 @@ strUsage += "\n" + _("Masternode options:") + "\n";
     strUsage += "  -mnconflock=<n>            " + _("Lock masternodes from masternode configuration file (default: 1)") + "\n";
     strUsage += "  -masternodeprivkey=<n>     " + _("Set the masternode private key") + "\n";
     strUsage += "  -masternodeaddr=<n>        " + _("Set external address:port to get to this masternode (example: address:port)") + "\n";
-    strUsage += "  -masternodeminprotocol=<n> " + _("Ignore masternodes less than version (example: 61401; default : 0)") + "\n";
+    strUsage += "  -masternodeminprotocol=<n> " + strprintf(_("Ignore masternodes less than version (example: 70050; default: %u)"), masternodePayments.GetMinMasternodePaymentsProto()) + "\n";
 
     strUsage += "\n" + _("Darksend options:") + "\n";
     strUsage += "  -enabledarksend=<n>          " + _("Enable use of automated darksend for funds stored in this wallet (0-1, default: 0)") + "\n";
@@ -335,6 +365,26 @@ bool InitSanityCheck(void)
     // TODO: remaining sanity checks, see #4081
 
     return true;
+}
+
+std::string LicenseInfo()
+{
+    return FormatParagraph(strprintf(_("Copyright (C) 2009-%i The Bitcoin Core Developers"), COPYRIGHT_YEAR)) + "\n" +
+           "\n" +
+           FormatParagraph(strprintf(_("Copyright (C) 2009-%i The Dash Core developers"), COPYRIGHT_YEAR)) + "\n" +
+           "\n" +
+           FormatParagraph(strprintf(_("Copyright (C) 2009-%i The PIVX developers"), COPYRIGHT_YEAR)) + "\n" +
+           "\n" +
+           FormatParagraph(strprintf(_("Copyright (C) 2009-%i The NovaCoin developers"), COPYRIGHT_YEAR)) + "\n" +
+           "\n" +
+           FormatParagraph(strprintf(_("Copyright (C) 2009-%i The PirateCash developers"), COPYRIGHT_YEAR)) + "\n" +
+           "\n" +
+           FormatParagraph(_("This is experimental software.")) + "\n" +
+           "\n" +
+           FormatParagraph(_("Distributed under the MIT/X11 software license, see the accompanying file COPYING or <http://www.opensource.org/licenses/mit-license.php>.")) + "\n" +
+           "\n" +
+           FormatParagraph(_("This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit <https://www.openssl.org/> and cryptographic software written by Eric Young and UPnP software written by Thomas Bernard.")) +
+           "\n";
 }
 
 struct CImportingNow
@@ -530,12 +580,9 @@ bool AppInit2(boost::thread_group& threadGroup)
     bool fDisableWallet = GetBoolArg("-disablewallet", false);
 #endif
 
-    if (mapArgs.count("-timeout"))
-    {
-        int nNewTimeout = GetArg("-timeout", 5000);
-        if (nNewTimeout > 0 && nNewTimeout < 600000)
-            nConnectTimeout = nNewTimeout;
-    }
+    nConnectTimeout = GetArg("-timeout", DEFAULT_CONNECT_TIMEOUT);
+    if (nConnectTimeout <= 0)
+        nConnectTimeout = DEFAULT_CONNECT_TIMEOUT;
 
 #ifdef ENABLE_WALLET
     if (mapArgs.count("-paytxfee"))
@@ -603,7 +650,7 @@ bool AppInit2(boost::thread_group& threadGroup)
     }
 
     //ignore masternodes below protocol version
-    nMasternodeMinProtocol = GetArg("-masternodeminprotocol", MIN_POOL_PEER_PROTO_VERSION);
+    nMasternodeMinProtocol = GetArg("-masternodeminprotocol", masternodePayments.GetMinMasternodePaymentsProto());
 
     if (fDaemon)
         fprintf(stdout, "Piratecash server starting\n"); 
@@ -896,7 +943,7 @@ bool AppInit2(boost::thread_group& threadGroup)
     {
         string strMatch = mapArgs["-printblock"];
         int nFound = 0;
-        for (map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.begin(); mi != mapBlockIndex.end(); ++mi)
+        for (BlockMap::iterator mi = mapBlockIndex.begin(); mi != mapBlockIndex.end(); ++mi)
         {
             uint256 hash = (*mi).first;
             if (strncmp(hash.ToString().c_str(), strMatch.c_str(), strMatch.size()) == 0)
@@ -914,6 +961,7 @@ bool AppInit2(boost::thread_group& threadGroup)
         return false;
     }
 
+    fFeeEstimatesInitialized = true;
 
     // ********************************************************* Step 8: load wallet
 #ifdef ENABLE_WALLET
@@ -1021,26 +1069,11 @@ bool AppInit2(boost::thread_group& threadGroup)
     }
     threadGroup.create_thread(boost::bind(&ThreadImport, vImportFiles));
 
-    // ********************************************************* Step 10: load peers
-
-    uiInterface.InitMessage(_("Loading addresses..."));
-
-    nStart = GetTimeMillis();
-
-    {
-        CAddrDB adb;
-        if (!adb.Read(addrman))
-            LogPrintf("Invalid or missing peers.dat; recreating\n");
-    }
-
-    LogPrintf("Loaded %i addresses from peers.dat  %dms\n",
-           addrman.size(), GetTimeMillis() - nStart);
-
-    // ********************************************************* Step 10.1: startup secure messaging
+    // ********************************************************* Step 9.1: startup secure messaging
     
     SecureMsgStart(fNoSmsg, GetBoolArg("-smsgscanchain", false));
 
-    // ********************************************************* Step 11: start node
+    // ********************************************************* Step 10: start node
 
     if (!CheckDiskSpace())
         return false;
@@ -1127,9 +1160,9 @@ bool AppInit2(boost::thread_group& threadGroup)
         nDarksendRounds = 99999;
     }
 
-    nAnonymizepiratecashAmount = GetArg("-anonymizepiratecashamount", 0);
-    if(nAnonymizepiratecashAmount > 999999) nAnonymizepiratecashAmount = 999999;
-    if(nAnonymizepiratecashAmount < 2) nAnonymizepiratecashAmount = 2;
+    nAnonymizeDarkcoinAmount = GetArg("-anonymizepiratecashamount", 0);
+    if(nAnonymizeDarkcoinAmount > 999999) nAnonymizeDarkcoinAmount = 999999;
+    if(nAnonymizeDarkcoinAmount < 2) nAnonymizeDarkcoinAmount = 2;
 
     fEnableInstantX = GetBoolArg("-enableinstantx", fEnableInstantX);
     nInstantXDepth = GetArg("-instantxdepth", nInstantXDepth);
@@ -1144,7 +1177,7 @@ bool AppInit2(boost::thread_group& threadGroup)
     LogPrintf("fLiteMode %d\n", fLiteMode);
     LogPrintf("nInstantXDepth %d\n", nInstantXDepth);
     LogPrintf("Darksend rounds %d\n", nDarksendRounds);
-    LogPrintf("Anonymize Piratecash Amount %d\n", nAnonymizepiratecashAmount);
+    LogPrintf("Anonymize Piratecash Amount %d\n", nAnonymizeDarkcoinAmount);
 
     /* Denominations
        A note about convertability. Within Darksend pools, each denomination
@@ -1213,7 +1246,7 @@ bool AppInit2(boost::thread_group& threadGroup)
         threadGroup.create_thread(boost::bind(&ThreadStakeMiner, pwalletMain));
 #endif
 
-    // ********************************************************* Step 12: finished
+    // ********************************************************* Step 11: finished
 
     uiInterface.InitMessage(_("Done loading"));
 

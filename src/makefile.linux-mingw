@@ -78,7 +78,7 @@ OBJS= \
     obj/init.o \
     obj/bitcoind.o \
     obj/keystore.o \
-    obj/core.o \
+    obj/primitives/transaction.o \
     obj/main.o \
     obj/net.o \
     obj/protocol.o \
@@ -95,6 +95,9 @@ OBJS= \
     obj/sync.o \
     obj/txmempool.o \
     obj/util.o \
+    obj/utilstrencodings.o \
+    obj/utilmoneystr.o \
+    obj/utiltime.o \
     obj/random.o \
     obj/hash.o \
     obj/bloom.o \

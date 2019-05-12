@@ -1,7 +1,7 @@
 #include "masternode.h"
 #include "masternodeman.h"
 #include "darksend.h"
-#include "core.h"
+#include "primitives/transaction.h"
 #include "main.h"
 #include "sync.h"
 #include "util.h"
@@ -79,7 +79,7 @@ CMasternode::CMasternode()
     cacheInputAgeBlock = 0;
     unitTest = false;
     allowFreeTx = true;
-    protocolVersion = MIN_PEER_PROTO_VERSION;
+    protocolVersion = PROTOCOL_VERSION;
     nLastDsq = 0;
     rewardAddress = CScript();
     rewardPercentage = 0;
@@ -89,7 +89,6 @@ CMasternode::CMasternode()
     nLastScanningErrorBlockHeight = 0;
     //mark last paid as current for new entries
     nLastPaid = GetAdjustedTime();
-    isPortOpen = true;
 }
 
 CMasternode::CMasternode(const CMasternode& other)
@@ -118,7 +117,6 @@ CMasternode::CMasternode(const CMasternode& other)
     nLastScanningErrorBlockHeight = other.nLastScanningErrorBlockHeight;
     nLastPaid = other.nLastPaid;
     nLastPaid = GetAdjustedTime();
-    isPortOpen = other.isPortOpen;
 }
 
 CMasternode::CMasternode(CService newAddr, CTxIn newVin, CPubKey newPubkey, std::vector<unsigned char> newSig, int64_t newSigTime, CPubKey newPubkey2, int protocolVersionIn, CScript newRewardAddress, int newRewardPercentage)
@@ -145,7 +143,6 @@ CMasternode::CMasternode(CService newAddr, CTxIn newVin, CPubKey newPubkey, std:
     lastVote = 0;
     nScanningErrorCount = 0;
     nLastScanningErrorBlockHeight = 0;
-    isPortOpen = true;
 }
 
 //
@@ -199,7 +196,7 @@ void CMasternode::Check()
         tx.vin.push_back(vin);
         tx.vout.push_back(vout);
 
-    if(!AcceptableInputs(state, mempool, tx, false, NULL)){
+    if(!AcceptableInputs(mempool, state, tx, false, NULL)){
             activeState = MASTERNODE_VIN_SPENT;
             return;
         }

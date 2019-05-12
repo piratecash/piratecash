@@ -89,7 +89,7 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, Object& entry)
     if (hashBlock != 0)
     {
         entry.push_back(Pair("blockhash", hashBlock.GetHex()));
-        map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(hashBlock);
+        BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
         if (mi != mapBlockIndex.end() && (*mi).second)
         {
             CBlockIndex* pindex = (*mi).second;
@@ -591,10 +591,10 @@ Value sendrawtransaction(const Array& params, bool fHelp)
     {
         // push to local node
         CValidationState state;
-        if (!AcceptToMemoryPool(state, mempool, tx, true, NULL))
+        if (!AcceptToMemoryPool(mempool, state, tx, true, NULL))
             throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX rejected");
     }
-    RelayTransaction(tx, hashTx);
+    RelayTransaction(tx);
 
     return hashTx.GetHex();
 }

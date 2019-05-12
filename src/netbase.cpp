@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2014 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifdef HAVE_CONFIG_H
@@ -13,6 +13,7 @@
 #include "sync.h"
 #include "uint256.h"
 #include "util.h"
+#include "utilstrencodings.h"
 
 #ifdef HAVE_GETADDRINFO_A
 #include <netdb.h>
@@ -27,6 +28,7 @@
 
 #include <boost/algorithm/string/case_conv.hpp> // for to_lower()
 #include <boost/algorithm/string/predicate.hpp> // for startswith() and endswith()
+#include <boost/thread.hpp>
 
 #if !defined(HAVE_MSG_NOSIGNAL) && !defined(MSG_NOSIGNAL)
 #define MSG_NOSIGNAL 0
@@ -38,7 +40,7 @@ using namespace std;
 static proxyType proxyInfo[NET_MAX];
 static CService nameProxy;
 static CCriticalSection cs_proxyInfos;
-int nConnectTimeout = 5000;
+int nConnectTimeout = DEFAULT_CONNECT_TIMEOUT;
 bool fNameLookup = false;
 
 static const unsigned char pchIPv4[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xff, 0xff };
@@ -266,6 +268,9 @@ bool static InterruptibleRecv(char* data, size_t len, int timeout, SOCKET& hSock
         } else { // Other error or blocking
             int nErr = WSAGetLastError();
             if (nErr == WSAEINPROGRESS || nErr == WSAEWOULDBLOCK || nErr == WSAEINVAL) {
+                if (!IsSelectableSocket(hSocket)) {
+                    return false;
+                }
                 struct timeval tval = MillisToTimeval(std::min(endTime - curTime, maxWait));
                 fd_set fdset;
                 FD_ZERO(&fdset);
@@ -409,7 +414,7 @@ bool static ConnectSocketDirectly(const CService &addrConnect, SOCKET& hSocketRe
     setsockopt(hSocket, SOL_SOCKET, SO_NOSIGPIPE, (void*)&set, sizeof(int));
 #endif
 
-     //Disable Nagle's algorithm
+    //Disable Nagle's algorithm
 #ifdef WIN32
     setsockopt(hSocket, IPPROTO_TCP, TCP_NODELAY, (const char*)&set, sizeof(int));
 #else
@@ -427,7 +432,6 @@ bool static ConnectSocketDirectly(const CService &addrConnect, SOCKET& hSocketRe
         if (nErr == WSAEINPROGRESS || nErr == WSAEWOULDBLOCK || nErr == WSAEINVAL)
         {
             struct timeval timeout = MillisToTimeval(nTimeout);
-
             fd_set fdset;
             FD_ZERO(&fdset);
             FD_SET(hSocket, &fdset);
@@ -526,9 +530,11 @@ bool IsProxy(const CNetAddr &addr) {
     return false;
 }
 
-bool ConnectSocket(const CService &addrDest, SOCKET& hSocketRet, int nTimeout)
+bool ConnectSocket(const CService &addrDest, SOCKET& hSocketRet, int nTimeout, bool *outProxyConnectionFailed)
 {
     proxyType proxy;
+    if (outProxyConnectionFailed)
+        *outProxyConnectionFailed = false;
     // no proxy needed (none set for target network)
     if (!GetProxy(addrDest.GetNetwork(), proxy))
         return ConnectSocketDirectly(addrDest, hSocketRet, nTimeout);
@@ -536,8 +542,11 @@ bool ConnectSocket(const CService &addrDest, SOCKET& hSocketRet, int nTimeout)
     SOCKET hSocket = INVALID_SOCKET;
 
     // first connect to proxy server
-    if (!ConnectSocketDirectly(proxy, hSocket, nTimeout))
+    if (!ConnectSocketDirectly(proxy, hSocket, nTimeout)) {
+        if (outProxyConnectionFailed)
+            *outProxyConnectionFailed = true;
         return false;
+    }
     // do socks negotiation
     if (!Socks5(addrDest.ToStringIP(), addrDest.GetPort(), hSocket))
         return false;
@@ -546,10 +555,14 @@ bool ConnectSocket(const CService &addrDest, SOCKET& hSocketRet, int nTimeout)
     return true;
 }
 
-bool ConnectSocketByName(CService &addr, SOCKET& hSocketRet, const char *pszDest, int portDefault, int nTimeout)
+bool ConnectSocketByName(CService &addr, SOCKET& hSocketRet, const char *pszDest, int portDefault, int nTimeout, bool *outProxyConnectionFailed)
 {
     string strDest;
     int port = portDefault;
+
+    if (outProxyConnectionFailed)
+        *outProxyConnectionFailed = false;
+
     SplitHostPort(string(pszDest), port, strDest);
 
     SOCKET hSocket = INVALID_SOCKET;
@@ -568,8 +581,11 @@ bool ConnectSocketByName(CService &addr, SOCKET& hSocketRet, const char *pszDest
     if (!HaveNameProxy())
         return false;
     // first connect to name proxy server
-    if (!ConnectSocketDirectly(nameProxy, hSocket, nTimeout))
+    if (!ConnectSocketDirectly(nameProxy, hSocket, nTimeout)) {
+        if (outProxyConnectionFailed)
+            *outProxyConnectionFailed = true;
         return false;
+    }
     // do socks negotiation
     if (!Socks5(strDest, (unsigned short)port, hSocket))
         return false;
@@ -684,9 +700,26 @@ bool CNetAddr::IsRFC1918() const
         (GetByte(3) == 172 && (GetByte(2) >= 16 && GetByte(2) <= 31)));
 }
 
+bool CNetAddr::IsRFC2544() const
+{
+    return IsIPv4() && GetByte(3) == 198 && (GetByte(2) == 18 || GetByte(2) == 19);
+}
+
 bool CNetAddr::IsRFC3927() const
 {
     return IsIPv4() && (GetByte(3) == 169 && GetByte(2) == 254);
+}
+
+bool CNetAddr::IsRFC6598() const
+{
+    return IsIPv4() && GetByte(3) == 100 && GetByte(2) >= 64 && GetByte(2) <= 127;
+}
+
+bool CNetAddr::IsRFC5737() const
+{
+    return IsIPv4() && ((GetByte(3) == 192 && GetByte(2) == 0 && GetByte(1) == 2) ||
+        (GetByte(3) == 198 && GetByte(2) == 51 && GetByte(1) == 100) ||
+        (GetByte(3) == 203 && GetByte(2) == 0 && GetByte(1) == 113));
 }
 
 bool CNetAddr::IsRFC3849() const
@@ -800,7 +833,7 @@ bool CNetAddr::IsValid() const
 
 bool CNetAddr::IsRoutable() const
 {
-    return IsValid() && !(IsRFC1918() || IsRFC3927() || IsRFC4862() || (IsRFC4193() && !IsTor() && !IsI2P()) || IsRFC4843() || IsLocal());
+    return IsValid() && !(IsRFC1918() || IsRFC2544() || IsRFC3927() || IsRFC4862() || IsRFC6598() || IsRFC5737() || (IsRFC4193() && !IsTor() && !IsI2P()) || IsRFC4843() || IsLocal());
 }
 
 enum Network CNetAddr::GetNetwork() const
@@ -959,11 +992,6 @@ uint64_t CNetAddr::GetHash() const
     uint64_t nRet;
     memcpy(&nRet, &hash, sizeof(nRet));
     return nRet;
-}
-
-void CNetAddr::print() const
-{
-    LogPrintf("CNetAddr(%s)\n", ToString());
 }
 
 // private extensions to enum Network, only returned by GetExtNetwork,
@@ -1200,11 +1228,6 @@ std::string CService::ToString() const
     return ToStringIPPort();
 }
 
-void CService::print() const
-{
-    LogPrintf("CService(%s)\n", ToString());
-}
-
 void CService::SetPort(unsigned short portIn)
 {
     port = portIn;
@@ -1234,15 +1257,15 @@ CSubNet::CSubNet(const std::string &strSubnet, bool fAllowLookup)
             std::string strNetmask = strSubnet.substr(slash + 1);
             int32_t n;
             // IPv4 addresses start at offset 12, and first 12 bytes must match, so just offset n
-            int noffset = network.IsIPv4() ? (12 * 8) : 0;
+            const int astartofs = network.IsIPv4() ? 12 : 0;
             if (ParseInt32(strNetmask, &n)) // If valid number, assume /24 symtex
             {
-                if(n >= 0 && n <= (128 - noffset)) // Only valid if in range of bits of address
+                if(n >= 0 && n <= (128 - astartofs*8)) // Only valid if in range of bits of address
                 {
-                    n += noffset;
+                    n += astartofs*8;
                     // Clear bits [n..127]
                     for (; n < 128; ++n)
-                        netmask[n>>3] &= ~(1<<(n&7));
+                        netmask[n>>3] &= ~(1<<(7-(n&7)));
                 }
                 else
                 {
@@ -1253,12 +1276,10 @@ CSubNet::CSubNet(const std::string &strSubnet, bool fAllowLookup)
             {
                 if (LookupHost(strNetmask.c_str(), vIP, 1, false)) // Never allow lookup for netmask
                 {
-                    // Remember: GetByte returns bytes in reversed order
                     // Copy only the *last* four bytes in case of IPv4, the rest of the mask should stay 1's as
                     // we don't want pchIPv4 to be part of the mask.
-                    int asize = network.IsIPv4() ? 4 : 16;
-                    for(int x=0; x<asize; ++x)
-                        netmask[15-x] = vIP[0].GetByte(x);
+                    for(int x=astartofs; x<16; ++x)
+                        netmask[x] = vIP[0].ip[x];
                 }
                 else
                 {
@@ -1271,6 +1292,10 @@ CSubNet::CSubNet(const std::string &strSubnet, bool fAllowLookup)
     {
         valid = false;
     }
+
+    // Normalize network according to netmask
+    for(int x=0; x<16; ++x)
+        network.ip[x] &= netmask[x];
 }
 
 bool CSubNet::Match(const CNetAddr &addr) const
@@ -1278,62 +1303,22 @@ bool CSubNet::Match(const CNetAddr &addr) const
     if (!valid || !addr.IsValid())
         return false;
     for(int x=0; x<16; ++x)
-        if ((addr.GetByte(x) & netmask[15-x]) != network.GetByte(x))
+        if ((addr.ip[x] & netmask[x]) != network.ip[x])
             return false;
     return true;
 }
 
-static inline int NetmaskBits(uint8_t x)
-{
-    switch(x) {
-    case 0x00: return 0; break;
-    case 0x80: return 1; break;
-    case 0xc0: return 2; break;
-    case 0xe0: return 3; break;
-    case 0xf0: return 4; break;
-    case 0xf8: return 5; break;
-    case 0xfc: return 6; break;
-    case 0xfe: return 7; break;
-    case 0xff: return 8; break;
-    default: return -1; break;
-    }
-}
-
 std::string CSubNet::ToString() const
 {
-    /* Parse binary 1{n}0{N-n} to see if mask can be represented as /n */
-    int cidr = 0;
-    bool valid_cidr = true;
-    int n = network.IsIPv4() ? 12 : 0;
-    for (; n < 16 && netmask[n] == 0xff; ++n)
-        cidr += 8;
-    if (n < 16) {
-        int bits = NetmaskBits(netmask[n]);
-        if (bits < 0)
-            valid_cidr = false;
-        else
-            cidr += bits;
-        ++n;
-    }
-    for (; n < 16 && valid_cidr; ++n)
-        if (netmask[n] != 0x00)
-            valid_cidr = false;
-
-    /* Format output */
     std::string strNetmask;
-    if (valid_cidr) {
-        strNetmask = strprintf("%u", cidr);
-    } else {
-        if (network.IsIPv4())
-            strNetmask = strprintf("%u.%u.%u.%u", netmask[12], netmask[13], netmask[14], netmask[15]);
-        else
-            strNetmask = strprintf("%x:%x:%x:%x:%x:%x:%x:%x",
-                             netmask[0] << 8 | netmask[1], netmask[2] << 8 | netmask[3],
-                             netmask[4] << 8 | netmask[5], netmask[6] << 8 | netmask[7],
-                             netmask[8] << 8 | netmask[9], netmask[10] << 8 | netmask[11],
-                             netmask[12] << 8 | netmask[13], netmask[14] << 8 | netmask[15]);
-    }
-
+    if (network.IsIPv4())
+        strNetmask = strprintf("%u.%u.%u.%u", netmask[12], netmask[13], netmask[14], netmask[15]);
+    else
+        strNetmask = strprintf("%x:%x:%x:%x:%x:%x:%x:%x",
+                         netmask[0] << 8 | netmask[1], netmask[2] << 8 | netmask[3],
+                         netmask[4] << 8 | netmask[5], netmask[6] << 8 | netmask[7],
+                         netmask[8] << 8 | netmask[9], netmask[10] << 8 | netmask[11],
+                         netmask[12] << 8 | netmask[13], netmask[14] << 8 | netmask[15]);
     return network.ToString() + "/" + strNetmask;
 }
 

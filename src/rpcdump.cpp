@@ -6,9 +6,12 @@
 #include <fstream>
 
 #include "init.h" // for pwalletMain
+#include "wallet.h"
 #include "rpcserver.h"
 #include "ui_interface.h"
 #include "base58.h"
+#include "utiltime.h"
+#include "util.h"
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/variant/get.hpp>

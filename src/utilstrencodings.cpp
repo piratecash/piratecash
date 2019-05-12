@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2014 The Bitcoin developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,18 +7,93 @@
 
 #include "tinyformat.h"
 
-#include <errno.h>
-#include <limits>
 #include <cstdlib>
 #include <cstring>
+#include <errno.h>
+#include <limits>
+
+#include <openssl/bio.h>
+#include <openssl/evp.h>
+#include <openssl/buffer.h>
+#include <openssl/crypto.h> // for OPENSSL_cleanse()
+
 
 using namespace std;
 
+string SanitizeString(const string& str)
+{
+    /**
+     * safeChars chosen to allow simple messages/URLs/email addresses, but avoid anything
+     * even possibly remotely dangerous like & or >
+     */
+    static string safeChars("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890 .,;_/:?@()");
+    string strResult;
+    for (std::string::size_type i = 0; i < str.size(); i++)
+    {
+        if (safeChars.find(str[i]) != std::string::npos)
+            strResult.push_back(str[i]);
+    }
+    return strResult;
+}
 
+const signed char p_util_hexdigit[256] =
+{ -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+  -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+  -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+  0,1,2,3,4,5,6,7,8,9,-1,-1,-1,-1,-1,-1,
+  -1,0xa,0xb,0xc,0xd,0xe,0xf,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+  -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+  -1,0xa,0xb,0xc,0xd,0xe,0xf,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+  -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+  -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+  -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+  -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+  -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+  -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+  -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+  -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+  -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, };
 
+signed char HexDigit(char c)
+{
+    return p_util_hexdigit[(unsigned char)c];
+}
 
+bool IsHex(const string& str)
+{
+    for(std::string::const_iterator it(str.begin()); it != str.end(); ++it)
+    {
+        if (HexDigit(*it) < 0)
+            return false;
+    }
+    return (str.size() > 0) && (str.size()%2 == 0);
+}
 
+vector<unsigned char> ParseHex(const char* psz)
+{
+    // convert hex dump to vector
+    vector<unsigned char> vch;
+    while (true)
+    {
+        while (isspace(*psz))
+            psz++;
+        signed char c = HexDigit(*psz++);
+        if (c == (signed char)-1)
+            break;
+        unsigned char n = (c << 4);
+        c = HexDigit(*psz++);
+        if (c == (signed char)-1)
+            break;
+        n |= c;
+        vch.push_back(n);
+    }
+    return vch;
+}
 
+vector<unsigned char> ParseHex(const string& str)
+{
+    return ParseHex(str.c_str());
+}
 
 string EncodeBase64(const unsigned char* pch, size_t len)
 {
@@ -160,33 +235,6 @@ string DecodeBase64(const string& str)
     return (vchRet.size() == 0) ? string() : string((const char*)&vchRet[0], vchRet.size());
 }
 
-// Base64 encoding with secure memory allocation
-SecureString EncodeBase64Secure(const SecureString& input)
-{
-    // Init openssl BIO with base64 filter and memory output
-    BIO *b64, *mem;
-    b64 = BIO_new(BIO_f_base64());
-    BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL); // No newlines in output
-    mem = BIO_new(BIO_s_mem());
-    BIO_push(b64, mem);
-
-    // Decode the string
-    BIO_write(b64, &input[0], input.size());
-    (void) BIO_flush(b64);
-
-    // Create output variable from buffer mem ptr
-    BUF_MEM *bptr;
-    BIO_get_mem_ptr(b64, &bptr);
-    SecureString output(bptr->data, bptr->length);
-
-    // Cleanse secure data buffer from memory
-    OPENSSL_cleanse((void *) bptr->data, bptr->length);
-
-    // Free memory
-    BIO_free_all(b64);
-    return output;
-}
-
 // Base64 decoding with secure memory allocation
 SecureString DecodeBase64Secure(const SecureString& input)
 {
@@ -216,8 +264,32 @@ SecureString DecodeBase64Secure(const SecureString& input)
     return output;
 }
 
+// Base64 encoding with secure memory allocation
+SecureString EncodeBase64Secure(const SecureString& input)
+{
+    // Init openssl BIO with base64 filter and memory output
+    BIO *b64, *mem;
+    b64 = BIO_new(BIO_f_base64());
+    BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL); // No newlines in output
+    mem = BIO_new(BIO_s_mem());
+    BIO_push(b64, mem);
 
+    // Decode the string
+    BIO_write(b64, &input[0], input.size());
+    (void) BIO_flush(b64);
 
+    // Create output variable from buffer mem ptr
+    BUF_MEM *bptr;
+    BIO_get_mem_ptr(b64, &bptr);
+    SecureString output(bptr->data, bptr->length);
+
+    // Cleanse secure data buffer from memory
+    OPENSSL_cleanse((void *) bptr->data, bptr->length);
+
+    // Free memory
+    BIO_free_all(b64);
+    return output;
+}
 
 string EncodeBase32(const unsigned char* pch, size_t len)
 {
