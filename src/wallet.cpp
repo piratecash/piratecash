@@ -1793,31 +1793,22 @@ void CWallet::AvailableCoinsForStaking(vector<COutput>& vCoins, unsigned int nSp
             if (pcoin->GetBlocksToMaturity() > 0)
                 continue;
 
-            bool found = false;
             for (unsigned int i = 0; i < pcoin->vout.size(); i++){
                 if (IsDenominatedAmount(pcoin->vout[i].nValue)){
 
                     //LogPrintf("CWallet::AvailableCoinsForStaking - Found denominated amounts.\n");
-                    found = true;
-                    break;
+                    continue;
                 }
                 if (pcoin->vout[i].nValue == GetMNCollateral(pindexBest->nHeight)*COIN){
 
                     //LogPrintf("CWallet::AvailableCoinsForStaking - Found Masternode collateral.\n");
-                    found = true;
-                    break;
+                    continue;
                 }
                 if (IsCollateralAmount(pcoin->vout[i].nValue)){
 
                     //LogPrintf("CWallet::AvailableCoinsForStaking - Found Collateral amount.\n");
-                    found = true;
-                    break;
+                    continue;
                 }
-            }
-
-            if(found) continue;
-
-            for (unsigned int i = 0; i < pcoin->vout.size(); i++) {
                 isminetype mine = IsMine(pcoin->vout[i]);
                 if (!(pcoin->IsSpent(i)) && mine != ISMINE_NO && pcoin->vout[i].nValue >= nMinimumInputValue)
                     vCoins.push_back(COutput(pcoin, i, nDepth, mine & ISMINE_SPENDABLE));
