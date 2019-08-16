@@ -394,6 +394,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/rpcmisc.cpp \
     src/rpcnet.cpp \
     src/rpcmining.cpp \
+    src/rpcminting.cpp \
     src/rpcwallet.cpp \
     src/rpcblockchain.cpp \
     src/rpcrawtransaction.cpp \

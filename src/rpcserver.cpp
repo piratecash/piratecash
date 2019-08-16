@@ -11,6 +11,7 @@
 #include "sync.h"
 #include "base58.h"
 #include "db.h"
+#include "kernelrecord.h"
 #include "ui_interface.h"
 #ifdef ENABLE_WALLET
 #include "wallet.h"
@@ -277,6 +278,7 @@ static const CRPCCommand vRPCCommands[] =
     { "sendtoaddress",          &sendtoaddress,          false,     false,     true },
     { "getreceivedbyaddress",   &getreceivedbyaddress,   false,     false,     true },
     { "getreceivedbyaccount",   &getreceivedbyaccount,   false,     false,     true },
+    { "listminting",            &listminting,            false,     false },
     { "listreceivedbyaddress",  &listreceivedbyaddress,  false,     false,     true },
     { "listreceivedbyaccount",  &listreceivedbyaccount,  false,     false,     true },
     { "backupwallet",           &backupwallet,           true,      false,     true },
