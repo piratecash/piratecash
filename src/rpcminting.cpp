@@ -69,7 +69,7 @@ Value listminting(const Array& params, bool fHelp)
                 obj.push_back(Pair("time",                      strTime));
                 obj.push_back(Pair("amount",                    strAmount));
                 obj.push_back(Pair("status",                    status));
-                obj.push_back(Pair("age-in-day",                strAge));
+                obj.push_back(Pair("age-in-hours",                strAge));
                 obj.push_back(Pair("coin-day-weight",           strCoinAge));
                 obj.push_back(Pair("proof-of-stake-difficulty", difficulty));
                 obj.push_back(Pair("minting-probability-10min", kr.getProbToMintWithinNMinutes(difficulty, 10)));
