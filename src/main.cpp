@@ -2545,10 +2545,12 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
 
                     CScript payee;
                     string targetNode;
+                    string targetNode2;
                     CTxIn vin;
                     CScript payeerewardaddress = CScript();
 
                     bool hasPayment = true;
+                    bool hasSync = false;
                     int payeerewardpercent = 0;
                     int64_t expectedreward;
 
@@ -2599,6 +2601,30 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                             foundPayee = true;
                             foundPaymentAndPayee = true;
                         }
+                    }else{
+                        expectedreward = masternodePaymentAmount;
+                        CTxDestination address1;
+                        ExtractDestination(payee, address1);
+                        CpiratecashcoinAddress address2(address1);
+                        targetNode = address2.ToString().c_str();
+                        hasSync = true;
+                        CMasternode* winningNode = mnodeman.GetCurrentMasterNode(1);
+                        if (winningNode) {
+                            payeerewardpercent = winningNode->rewardPercentage;
+                            if (hasPayment && payeerewardpercent > 0 && payeerewardpercent < 100) {
+                                CTxDestination address3;
+                                payeerewardaddress = winningNode->rewardAddress;
+                                ExtractDestination(payeerewardaddress, address3);
+                                CpiratecashcoinAddress address4(address3);
+                                targetNode2 = address4.ToString().c_str();
+                                if(fDebug) {
+                                    LogPrintf("CheckBlock() : Primary reward Address is %s\n", targetNode);
+                                    LogPrintf("CheckBlock() : Secondary reward Address is %s\n", targetNode2);
+                                }
+                            }else{
+                                targetNode2 = targetNode;
+                            }
+                        }
                     }
 
                     for (unsigned int i = 0; i < vtx[1].vout.size(); i++) {
@@ -2608,8 +2634,12 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                         if(fDebug) {LogPrintf("CheckBlock() : Payment to %s [%d], size is  %s\n",address2.ToString().c_str(),i,vtx[1].vout[i].nValue);}
                         if(vtx[1].vout[i].nValue == expectedreward )
                             foundPaymentAmount = true;
-                        if(address2.ToString().c_str() == targetNode )
+                        if(address2.ToString().c_str() == targetNode ){
                             foundPayee = true;
+                        }else if (hasSync and address2.ToString().c_str() == targetNode2){
+                            foundPayee = true;
+                            if(fDebug) {LogPrintf("CheckBlock() : Secondary reward Address is using\n", targetNode2);}
+                           }
                         if(vtx[1].vout[i].nValue == expectedreward && address2.ToString().c_str() == targetNode)
                             foundPaymentAndPayee = true;
                     }
