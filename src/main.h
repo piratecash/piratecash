@@ -29,6 +29,8 @@ static const int64_t DARKSEND_POOL_MAX = (24999.99*COIN);
 
 static const int64_t INIT_POS_REWARD = 50 * COIN; //Inital reward 50 Coins
 static const int64_t TARGET_SPACING = 90;
+static const int64_t TARGET_SPACING_SPEC = 120;
+int64_t SPEC_TARGET_FIX = 310000;
 
 
 #define INSTANTX_SIGNATURES_REQUIRED           10
@@ -72,7 +74,7 @@ inline bool MoneyRange(const CAmount& nValue) { return (nValue >= 0 && nValue <=
 /** Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp. */
 static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20 1985 UTC
 
-static const int64_t DRIFT = 120;
+static const int64_t DRIFT = 160;
 inline int64_t FutureDrift(int64_t nTime) { return nTime + DRIFT; }
 
 /** "reject" message codes **/
@@ -121,6 +123,7 @@ extern bool fReindex;
 struct COrphanBlock;
 extern std::map<uint256, COrphanBlock*> mapOrphanBlocks;
 extern bool fHaveGUI;
+extern int64_t SPEC_TARGET_FIX;
 
 // Settings
 extern bool fUseFastIndex;

@@ -144,6 +144,7 @@ public:
         nDefaultPort = 28888;
         nRPCPort = 21888;
         strDataDir = "testnet";
+        SPEC_TARGET_FIX = 104000;
 
         // Modify the testnet genesis block so the timestamp is valid for a later start.
         genesis.nBits  = 0x1f04ade3;

@@ -1415,17 +1415,28 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
 
     int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
 
-    if (nActualSpacing < 0){
-        nActualSpacing = TARGET_SPACING;
-    }
+    if (pindexBest->nHeight < SPEC_TARGET_FIX)
+        {
+            if (nActualSpacing < 0)
+            {
+                nActualSpacing = TARGET_SPACING;
+            }
+        }
 
     // ppcoin: target change every block
     // ppcoin: retarget with exponential moving toward target spacing
     CBigNum bnNew;
     bnNew.SetCompact(pindexPrev->nBits);
-    int64_t nInterval = nTargetTimespan / TARGET_SPACING;
-    bnNew *= ((nInterval - 1) * TARGET_SPACING + nActualSpacing + nActualSpacing);
-    bnNew /= ((nInterval + 1) * TARGET_SPACING);
+    int64_t nInterval;
+    if (pindexBest->nHeight > SPEC_TARGET_FIX){
+        nInterval = nTargetTimespan / TARGET_SPACING_SPEC;
+        bnNew *= ((nInterval - 1) * TARGET_SPACING_SPEC + nActualSpacing + nActualSpacing);
+        bnNew /= ((nInterval + 1) * TARGET_SPACING_SPEC);
+    }else{
+        nInterval = nTargetTimespan / TARGET_SPACING;
+        bnNew *= ((nInterval - 1) * TARGET_SPACING + nActualSpacing + nActualSpacing);
+        bnNew /= ((nInterval + 1) * TARGET_SPACING);
+    }
 
     if (bnNew <= 0 || bnNew > bnTargetLimit)
         bnNew = bnTargetLimit;

@@ -404,7 +404,11 @@ QString MintingTableModel::formatTxPoSTime(KernelRecord *wtx) const
     uint64_t nWeight = wtx->nValue;
     uint64_t nNetworkWeight = GetPoSKernelPS();
     unsigned nEstimateTime = 0;
-    nEstimateTime = TARGET_SPACING * nNetworkWeight / nWeight;
+    if (pindexBest->nHeight > SPEC_TARGET_FIX){
+        nEstimateTime = TARGET_SPACING_SPEC * nNetworkWeight / nWeight;
+    }else{
+        nEstimateTime = TARGET_SPACING * nNetworkWeight / nWeight;
+    }
 
     QString text;
     if (nEstimateTime < 60)
