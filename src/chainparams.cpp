@@ -66,7 +66,6 @@ public:
         nDefaultPort = 18888;
         nRPCPort = 11888;
         bnProofOfWorkLimit = CBigNum(~uint256(0) >> 16);
-        SPEC_TARGET_FIX = 310000;
 
         const char* pszTimestamp = "2018/11/03 The Pirate Code of Conduct consisted of a number of agreements between the Captain and pirate crew which were called Articles. The Pirate Code of Conduct was necessary as pirates were not governed by any other rules such as Naval regulations. Pirate captains were elected and could lose their position for abuse of their authority.";
         std::vector<CTxIn> vin;
@@ -145,7 +144,6 @@ public:
         nDefaultPort = 28888;
         nRPCPort = 21888;
         strDataDir = "testnet";
-        SPEC_TARGET_FIX = 104000;
 
         // Modify the testnet genesis block so the timestamp is valid for a later start.
         genesis.nBits  = 0x1f04ade3;

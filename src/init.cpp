@@ -486,6 +486,7 @@ bool AppInit2(boost::thread_group& threadGroup)
 
     if (TestNet())
     {
+        SPEC_TARGET_FIX = 104000;
         SoftSetBoolArg("-irc", true);
     }
 
