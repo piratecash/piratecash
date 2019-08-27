@@ -84,6 +84,7 @@ OBJS= \
     obj/rpcprotocol.o \
     obj/rpcserver.o \
     obj/rpcmisc.o \
+    obj/kernelrecord.o \
     obj/rpcminting.o \
     obj/rpcnet.o \
     obj/rpcblockchain.o \
