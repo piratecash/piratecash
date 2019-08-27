@@ -2457,7 +2457,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
 
     // Check timestamp
     if (GetBlockTime() > FutureDrift(GetAdjustedTime()))
-        return state.Invalid("CheckBlock() : block timestamp too far in the future");
+        return state.Invalid(false, REJECT_INVALID,"CheckBlock() : block timestamp too far in the future");
 
     // First transaction must be coinbase, the rest must not be
     if (vtx.empty() || !vtx[0].IsCoinBase())
