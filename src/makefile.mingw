@@ -13,15 +13,19 @@ INCLUDEPATHS= \
  -I"$(CURDIR)" \
  -I"$(DEPSDIR)/boost_1_57_0" \
  -I"$(DEPSDIR)/miniupnpc" \
- -I"$(DEPSDIR)/db-4.8.30.NC" \
+ -I"$(DEPSDIR)/db-4.8.30.NC/build_unix" \
  -I"$(DEPSDIR)/openssl-1.0.2p/include" \
- -I"c:/project/madcoin/include" \
- -I"d:/project/madcoin"
+ -I"$(DEPSDIR)/secp256k1/include" \
+ -I"c:/src/piratecash/src/leveldb/include" \
+ -I"c:/src/piratecash/src/leveldb/helpers" \
+ -I"c:/src/piratecash"
 
 LIBPATHS= \
  -L"$(CURDIR)/leveldb" \
- -L"d:/project/madcoin/lib" \
- -L"d:/project/madcoin"
+ -L"$(DEPSDIR)/boost_1_57_0/stage/lib" \
+ -L"$(DEPSDIR)/secp256k1/.libs" \
+ -L"$(DEPSDIR)/db-4.8.30.NC/build_unix" \
+ -L"$(DEPSDIR)/openssl-1.0.2q"
 
 LIBS= \
  -l leveldb \
@@ -136,14 +140,14 @@ ifeq (${USE_WALLET}, 1)
         obj/walletdb.o
 endif
 
-all: madcoind.exe
+all: piratecashd.exe
 
 LIBS += $(CURDIR)/leveldb/libleveldb.a $(CURDIR)/leveldb/libmemenv.a -l shlwapi
 DEFS += $(addprefix -I,$(CURDIR)/leveldb/include)
 DEFS += $(addprefix -I,$(CURDIR)/leveldb/helpers)
 OBJS += obj/txdb-leveldb.o
 leveldb/libleveldb.a:
-	@echo "Building LevelDB ..."; cd leveldb; chmod 755 *;make libleveldb.a libmemenv.a; cd ..;
+	@echo "Building LevelDB ..."; cd leveldb; chmod 755 *;TARGET_OS=OS_WINDOWS_CROSSCOMPILE make libleveldb.a libmemenv.a; cd ..;
 obj/txdb-leveldb.o: leveldb/libleveldb.a
 
 obj/%.o: %.cpp $(HEADERS)
@@ -152,12 +156,12 @@ obj/%.o: %.cpp $(HEADERS)
 obj/%.o: %.c $(HEADERS)
 	$(CXX) -c $(CFLAGS) -fpermissive -o $@ $<
 
-madcoind.exe: $(OBJS:obj/%=obj/%)
+piratecashd.exe: $(OBJS:obj/%=obj/%)
 	g++ $(CFLAGS) $(LDFLAGS) -o $@ $(LIBPATHS) $^ $(LIBS)
 
 clean:
 	-rm -f obj/*.o
-	-rm -f madcoind.exe
+	-rm -f piratecashd.exe
 	-rm -f obj/build.h
 	cd leveldb && TARGET_OS=NATIVE_WINDOWS $(MAKE) clean && cd ..
 
