@@ -355,8 +355,12 @@ public:
 
     bool IsCoinStake() const
     {
-        // ppcoin: the coin stake transaction is marked with the first output empty
-        return (vin.size() > 0 && (!vin[0].prevout.IsNull()) && vout.size() >= 2 && vout[0].IsEmpty());
+        if (nBestHeight < 100000){
+            // ppcoin: the coin stake transaction is marked with the first output empty
+            return (vin.size() > 0 && (!vin[0].prevout.IsNull()) && vout.size() >= 2 && vout[0].IsEmpty());
+        }
+        // piratecash: I don't see any reason to mark coin stake transaction after block 100,000 and we'll use it later
+        return (vin.size() > 0 && (!vin[0].prevout.IsNull()) && vout.size() >= 1);
     }
 
     // Compute priority, given priority of inputs and (optionally) tx size
@@ -782,7 +786,10 @@ public:
     // ppcoin: two types of block: proof-of-work or proof-of-stake
     bool IsProofOfStake() const
     {
-        return (vtx.size() > 1 && vtx[1].IsCoinStake());
+        if (vtx[0].vout.size()==1 and vtx[0].vout[0].IsEmpty()){
+            return (vtx.size() > 1 && vtx[1].IsCoinStake());
+        }
+        return (vtx.size() > 0 && vtx[0].IsCoinStake());
     }
 
     bool IsProofOfWork() const
