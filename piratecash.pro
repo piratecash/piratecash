@@ -44,6 +44,7 @@ win32:QRENCODE_INCLUDE_PATH=C:/dev/coindeps32/qrencode-3.4.4
 win32:QRENCODE_LIB_PATH=C:/dev/coindeps32/qrencode-3.4.4/.libs
 win32:SECP256K1_LIB_PATH =C:/dev/coindeps32/secp256k1/.libs
 win32:SECP256K1_INCLUDE_PATH =C:/dev/coindeps32/secp256k1/include
+macx:QMAKE_MAC_SDK = macosx10.15
 
 OBJECTS_DIR = build
 MOC_DIR = build
@@ -51,10 +52,10 @@ UI_DIR = build
 # use: qmake "RELEASE=1"
 contains(RELEASE, 1) {
     # Mac: compile for maximum compatibility (10.5, 32-bit)
-    macx:QMAKE_CXXFLAGS += -arch x86_64 -mmacosx-version-min=10.7 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk
-    macx:QMAKE_CFLAGS += -arch x86_64 -mmacosx-version-min=10.7 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk
-    macx:QMAKE_LFLAGS += -arch x86_64 -mmacosx-version-min=10.7 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk
-    macx:QMAKE_OBJECTIVE_CFLAGS += -arch x86_64 -mmacosx-version-min=10.7 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk
+    macx:QMAKE_CXXFLAGS += -arch x86_64 -mmacosx-version-min=10.7 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
+    macx:QMAKE_CFLAGS += -arch x86_64 -mmacosx-version-min=10.7 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
+    macx:QMAKE_LFLAGS += -arch x86_64 -mmacosx-version-min=10.7 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
+    macx:QMAKE_OBJECTIVE_CFLAGS += -arch x86_64 -mmacosx-version-min=10.7 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
 
 
     !windows:!macx {
@@ -510,7 +511,7 @@ OTHER_FILES += \
 
 # platform specific defaults, if not overridden on command line
 isEmpty(BOOST_LIB_SUFFIX) {
-    macx:BOOST_LIB_SUFFIX = -mt
+    macx:BOOST_LIB_SUFFIX =
     windows:BOOST_LIB_SUFFIX=-mgw49-mt-s-1_57
 }
 
@@ -535,21 +536,21 @@ isEmpty(BDB_INCLUDE_PATH) {
 }
 
 isEmpty(BOOST_LIB_PATH) {
-    macx:BOOST_LIB_PATH = /opt/local/lib
+    macx:BOOST_LIB_PATH = /opt/local/boost-1.66/lib
     windows:BOOST_LIB_PATH=C:/dev/coindeps32/boost_1_57_0/stage/lib
 }
 
 isEmpty(BOOST_INCLUDE_PATH) {
-    macx:BOOST_INCLUDE_PATH = /opt/local/include
+    macx:BOOST_INCLUDE_PATH = /opt/local/boost-1.66/include
     windows:BOOST_INCLUDE_PATH=C:/dev/coindeps32/boost_1_57_0
 }
 
 isEmpty(QRENCODE_LIB_PATH) {
-    macx:QRENCODE_LIB_PATH = /usr/local/lib
+    macx:QRENCODE_LIB_PATH = /opt/local/lib
 }
 
 isEmpty(QRENCODE_INCLUDE_PATH) {
-    macx:QRENCODE_INCLUDE_PATH = /usr/local/include
+    macx:QRENCODE_INCLUDE_PATH = /opt/local/include
 }
 
 isEmpty(MINIUPNPC_LIB_SUFFIX) {
@@ -557,7 +558,7 @@ isEmpty(MINIUPNPC_LIB_SUFFIX) {
 }
 
 isEmpty(MINIUPNPC_INCLUDE_PATH) {
-    macx:MINIUPNPC_INCLUDE_PATH=/opt/local/include/miniupnpc
+    macx:MINIUPNPC_INCLUDE_PATH=/opt/local/include
     windows:MINIUPNPC_INCLUDE_PATH=C:/dev/coindeps32\miniupnpc
 }
 
@@ -567,14 +568,17 @@ isEmpty(MINIUPNPC_LIB_PATH) {
 }
 
 isEmpty(OPENSSL_INCLUDE_PATH) {
-    macx:OPENSSL_INCLUDE_PATH = /opt/local/include/openssl
+    macx:OPENSSL_INCLUDE_PATH = /opt/local/include/openssl-1.0/
     windows:OPENSSL_INCLUDE_PATH=C:/dev/coindeps32/openssl-1.0.2q/include
 }
 
 isEmpty(OPENSSL_LIB_PATH) {
-    macx:OPENSSL_LIB_PATH = /opt/local/lib
+    macx:OPENSSL_LIB_PATH = /opt/local/lib/openssl-1.0
     windows:OPENSSL_LIB_PATH=C:/dev/coindeps32/openssl-1.0.2q/lib
 }
+
+INCLUDEPATH += $$OPENSSL_INCLUDE_PATH $$BOOST_INCLUDE_PATH
+LIBS += $$join(BOOST_LIB_PATH,,-L,) $$join(OPENSSL_LIB_PATH,,-L,)
 
 # use: qmake "USE_UPNP=1" ( enabled by default; default)
 #  or: qmake "USE_UPNP=0" (disabled by default)
@@ -619,8 +623,8 @@ macx:QMAKE_CXXFLAGS_THREAD += -pthread
 macx:QMAKE_INFO_PLIST = share/qt/Info.plist
 
 # Set libraries and includes at end, to use platform-defined defaults if not overridden
-INCLUDEPATH += $$BOOST_INCLUDE_PATH $$BDB_INCLUDE_PATH $$OPENSSL_INCLUDE_PATH $$QRENCODE_INCLUDE_PATH
-LIBS += $$join(BOOST_LIB_PATH,,-L,) $$join(BDB_LIB_PATH,,-L,) $$join(OPENSSL_LIB_PATH,,-L,) $$join(QRENCODE_LIB_PATH,,-L,)
+INCLUDEPATH += $$BDB_INCLUDE_PATH $$QRENCODE_INCLUDE_PATH
+LIBS += $$join(BDB_LIB_PATH,,-L,) $$join(QRENCODE_LIB_PATH,,-L,)
 LIBS += -lssl -lcrypto -ldb_cxx$$BDB_LIB_SUFFIX
 # -lgdi32 has to happen after -lcrypto (see  #681)
 windows:LIBS += -lws2_32 -lshlwapi -lmswsock -lole32 -loleaut32 -luuid -lgdi32
@@ -631,6 +635,7 @@ windows:LIBS += -lws2_32 -lshlwapi -lmswsock -lole32 -loleaut32 -luuid -lgdi32
     LIBS += $$join(SECP256K1_LIB_PATH,,-L,) -lsecp256k1
 }
 LIBS += -lboost_system$$BOOST_LIB_SUFFIX -lboost_filesystem$$BOOST_LIB_SUFFIX -lboost_program_options$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_THREAD_LIB_SUFFIX
+macx:LIBS += -lboost_chrono$$BOOST_LIB_SUFFIX
 windows:LIBS += -lboost_chrono$$BOOST_LIB_SUFFIX
 
 contains(RELEASE, 1) {
