@@ -2485,11 +2485,16 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
             return state.DoS(100, error("CheckBlock() : coinbase output not empty for proof-of-stake block"));
 
         // Second transaction must be coinstake, the rest must not be
-        if (vtx.empty() || !vtx[1].IsCoinStake())
-            return state.DoS(100, error("CheckBlock() : second tx is not coinstake"));
-        for (unsigned int i = 2; i < vtx.size(); i++)
+        if (vtx.empty())
+            return state.DoS(100, error("CheckBlock() : missing coinstake tx"));
+        int countCoinStake = 0;
+        for (unsigned int i = 0; i < vtx.size(); i++)
             if (vtx[i].IsCoinStake())
-                return state.DoS(100, error("CheckBlock() : more than one coinstake"));
+                countCoinStake++;
+        if (countCoinStake > 1)
+            return state.DoS(100, error("CheckBlock() : more than one coinstake"));
+        if (countCoinStake != 1)
+            return state.DoS(100, error("CheckBlock() : missing coinstake tx"));
     }
 
     // Check proof-of-stake block signature
