@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>960</width>
-    <height>594</height>
+    <height>686</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -442,11 +442,11 @@ padding: 10px;
            <height>350</height>
           </size>
          </property>
-         <property name="visible">
-          <bool>false</bool>
-         </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border:0</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
@@ -473,7 +473,7 @@ padding: 10px;
             <item>
              <widget class="QLabel" name="labelDarksendSyncStatus">
               <property name="toolTip">
-               <string>The displayed information may be out of date. Your wallet automatically synchronizes with the EthCash network after a connection is established, but this process has not completed yet.</string>
+               <string>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</string>
               </property>
               <property name="styleSheet">
                <string notr="true">QLabel { color: red; }</string>
@@ -1000,7 +1000,7 @@ padding: 10px;
             <item row="4" column="1">
              <widget class="QLabel" name="labelAmountRounds">
               <property name="text">
-               <string>0 PCC / 0 Rounds</string>
+               <string>0 PIRATE / 0 Rounds</string>
               </property>
              </widget>
             </item>
@@ -1046,7 +1046,7 @@ padding: 10px;
              </size>
             </property>
             <property name="text">
-             <string>(Last Message)</string>
+             <string/>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -1067,6 +1067,16 @@ padding: 10px;
             <property name="toolTip">
              <string>Try to manually submit a Darksend request.</string>
             </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(240, 213, 17);
+color: rgb(0,0,0);
+border-radius: 4px;
+border-color:  rgb(240, 213, 17);
+font-weight: 600;
+padding: 4px;
+padding-left: 10px;
+padding-right: 10px;</string>
+            </property>
             <property name="text">
              <string>Try Mix</string>
             </property>
@@ -1079,6 +1089,16 @@ padding: 10px;
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(240, 213, 17);
+color: rgb(0,0,0);
+border-radius: 4px;
+border-color:  rgb(240, 213, 17);
+font-weight: 600;
+padding: 4px;
+padding-left: 10px;
+padding-right: 10px;</string>
             </property>
             <property name="text">
              <string>Start/Stop Mixing</string>
@@ -1098,6 +1118,16 @@ padding: 10px;
             </property>
             <property name="autoFillBackground">
              <bool>false</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(240, 213, 17);
+color: rgb(0,0,0);
+border-radius: 4px;
+border-color:  rgb(240, 213, 17);
+font-weight: 600;
+padding: 4px;
+padding-left: 10px;
+padding-right: 10px;</string>
             </property>
             <property name="text">
              <string>Reset</string>
@@ -1161,7 +1191,7 @@ padding: 10px;
                <cursorShape>WhatsThisCursor</cursorShape>
               </property>
               <property name="toolTip">
-               <string>The displayed information may be out of date. Your wallet automatically synchronizes with the EthCash network after a connection is established, but this process has not completed yet.</string>
+               <string>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</string>
               </property>
               <property name="styleSheet">
                <string notr="true">QLabel { color: red; }</string>
