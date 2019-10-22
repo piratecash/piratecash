@@ -1794,12 +1794,12 @@ void CWallet::AvailableCoinsForStaking(vector<COutput>& vCoins, unsigned int nSp
                 continue;
 
             for (unsigned int i = 0; i < pcoin->vout.size(); i++){
-                if (IsDenominatedAmount(pcoin->vout[i].nValue)){
+                if (IsDenominatedAmount(pcoin->vout[i].nValue) and inputStakeProtect){
 
                     //LogPrintf("CWallet::AvailableCoinsForStaking - Found denominated amounts.\n");
                     continue;
                 }
-                if (pcoin->vout[i].nValue == GetMNCollateral(pindexBest->nHeight)*COIN){
+                if (pcoin->vout[i].nValue == GetMNCollateral(pindexBest->nHeight)*COIN and inputStakeProtect){
 
                     //LogPrintf("CWallet::AvailableCoinsForStaking - Found Masternode collateral.\n");
                     continue;

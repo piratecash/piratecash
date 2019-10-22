@@ -71,6 +71,8 @@ namespace boost {
 
 using namespace std;
 
+//Stack features
+bool inputStakeProtect = true;
 //Dark  features
 bool fMasterNode = false;
 string strMasterNodePrivKey = "";

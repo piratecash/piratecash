@@ -345,7 +345,8 @@ strUsage += "\n" + _("Masternode options:") + "\n";
         "  -nosmsg                                  " + _("Disable secure messaging.") + "\n" +
         "  -debugsmsg                               " + _("Log extra debug messages.") + "\n" +
         "  -smsgscanchain                           " + _("Scan the block chain for public key addresses on startup.") + "\n" +
-    strUsage += "  -stakethreshold=<n> " + _("This will set the output size of your stakes to never be below this number (default: 250)") + "\n";
+    strUsage += "  -stakethreshold=<n> " + _("This will set the output size of your stakes to never be below this number (default: 250)") + "\n" +
+    strUsage += "  -inputstakeprotect=<n> " + _("Don't use masternode collateral and denominated amounts for staking (0-1, default: 1)") + "\n";
 
     return strUsage;
 }
@@ -1148,6 +1149,7 @@ bool AppInit2(boost::thread_group& threadGroup)
         }
     }
 
+    inputStakeProtect = GetBoolArg("-inputstakeprotect", true);
     fEnableDarksend = GetBoolArg("-enabledarksend", false);
 
     nDarksendRounds = GetArg("-darksendrounds", 2);
