@@ -487,15 +487,15 @@ void BitcoinGUI::createToolBars()
     toolbar->setObjectName("tabs");
 #ifdef Q_OS_MAC
     toolbar->setStyleSheet("QToolButton { color: #000000; font-weight:bold;} "
-                           "QToolButton:hover { background-color: #F0D511 } "
-                           "QToolButton:checked { background-color: #FFC300 } "
-                           "QToolButton:pressed { background-color: #FFC300 } "
+                           "QToolButton:hover { background-color: #4AC3C3 } "
+                           "QToolButton:checked { background-color: #45C1C1 } "
+                           "QToolButton:pressed { background-color: #45C1C1 } "
                            "#tabs { color: #E5DDA7; background-color: qradialgradient(cx: -0.8, cy: 0, fx: -0.8, fy: 0, radius: 0.6, stop: 0 #404040, stop: 1 #101010);  }");
 #else
     toolbar->setStyleSheet("QToolButton { color: #000000; font-weight:bold; background-color: #dedede;} "
-                           "QToolButton:hover { background-color: #F0D511 } "
-                           "QToolButton:checked { background-color: #FFC300 } "
-                           "QToolButton:pressed { background-color: #FFC300 } ");
+                           "QToolButton:hover { background-color: #4AC3C3 } "
+                           "QToolButton:checked { background-color: #45C1C1 } "
+                           "QToolButton:pressed { background-color: #45C1C1 } ");
 #endif
         
 

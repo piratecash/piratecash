@@ -403,7 +403,7 @@ padding: 10px;</string>
                <bool>false</bool>
               </property>
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(240, 213, 17);
+               <string notr="true">background-color: rgb(74, 195, 195);
 color: rgb(0,0,0);
  font-weight: 900;
 padding: 10px;
@@ -1068,10 +1068,10 @@ padding: 10px;
              <string>Try to manually submit a Darksend request.</string>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(240, 213, 17);
+             <string notr="true">background-color: rgb(74, 195, 195);
 color: rgb(0,0,0);
 border-radius: 4px;
-border-color:  rgb(240, 213, 17);
+border-color:  rgb(74, 195, 195);
 font-weight: 600;
 padding: 4px;
 padding-left: 10px;
@@ -1091,10 +1091,10 @@ padding-right: 10px;</string>
              </sizepolicy>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(240, 213, 17);
+             <string notr="true">background-color: rgb(74, 195, 195);
 color: rgb(0,0,0);
 border-radius: 4px;
-border-color:  rgb(240, 213, 17);
+border-color:  rgb(74, 195, 195);
 font-weight: 600;
 padding: 4px;
 padding-left: 10px;
@@ -1120,10 +1120,10 @@ padding-right: 10px;</string>
              <bool>false</bool>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(240, 213, 17);
+             <string notr="true">background-color: rgb(74, 195, 195);
 color: rgb(0,0,0);
 border-radius: 4px;
-border-color:  rgb(240, 213, 17);
+border-color:  rgb(74, 195, 195);
 font-weight: 600;
 padding: 4px;
 padding-left: 10px;

@@ -31,10 +31,10 @@ border: 0;</string>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(240, 213, 17);
+      <string notr="true">background-color: rgb(74, 195, 195);
 color: rgb(0,0,0);
 border-radius: 4px;
-border-color:  rgb(240, 213, 17);
+border-color:  rgb(74, 195, 195);
 font-weight: 600;
 padding: 4px;
 padding-left: 10px;
