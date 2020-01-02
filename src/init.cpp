@@ -9,6 +9,7 @@
 #include "addrman.h"
 #include "main.h"
 #include "chainparams.h"
+#include "scheduler.h"
 #include "txdb.h"
 #include "rpcserver.h"
 #include "net.h"
@@ -429,7 +430,7 @@ void ThreadImport(std::vector<boost::filesystem::path> vImportFiles)
 /** Initialize bitcoin.
  *  @pre Parameters should be parsed and config file should be read.
  */
-bool AppInit2(boost::thread_group& threadGroup)
+bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 {
     // ********************************************************* Step 1: setup
 #ifdef _MSC_VER
@@ -642,6 +643,10 @@ bool AppInit2(boost::thread_group& threadGroup)
     LogPrintf("Default data directory %s\n", GetDefaultDataDir().string());
     LogPrintf("Used data directory %s\n", strDataDir);
     std::ostringstream strErrors;
+
+    // Start the lightweight task scheduler thread
+    CScheduler::Function serviceLoop = boost::bind(&CScheduler::serviceQueue, &scheduler);
+    threadGroup.create_thread(boost::bind(&TraceThread<CScheduler::Function>, "scheduler", serviceLoop));
 
     if (mapArgs.count("-masternodepaymentskey")) // masternode payments priv key
     {
