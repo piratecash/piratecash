@@ -66,7 +66,7 @@ CBlockIndex* pindexBest = NULL;
 int64_t nTimeBestReceived = 0;
 CWaitableCriticalSection csBestBlock;
 CConditionVariable cvBlockChange;
-bool fImporting = false;
+std::atomic_bool fImporting(false);
 bool fReindex = false;
 bool fAddrIndex = false;
 bool fHaveGUI = false;
