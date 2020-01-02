@@ -205,6 +205,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/aboutdialog.h \
     src/qt/editaddressdialog.h \
     src/qt/bitcoinaddressvalidator.h \
+    src/addrdb.h \
     src/alert.h \
     src/amount.h \
     src/allocators.h \
@@ -342,6 +343,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/aboutdialog.cpp \
     src/qt/editaddressdialog.cpp \
     src/qt/bitcoinaddressvalidator.cpp \
+    src/addrdb.cpp \
     src/alert.cpp \
     src/allocators.cpp \
     src/base58.cpp \

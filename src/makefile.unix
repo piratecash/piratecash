@@ -114,6 +114,7 @@ OBJS= \
     obj/support/cleanse.o \
     obj/checkpoints.o \
     obj/netbase.o \
+    obj/addrdb.o \
     obj/addrman.o \
     obj/base58.o \
     obj/crypter.o \
