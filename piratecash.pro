@@ -278,6 +278,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/rpcclient.h \
     src/rpcprotocol.h \
     src/rpcserver.h \
+    src/scheduler.h \
     src/limitedmap.h \
     src/qt/overviewpage.h \
     src/qt/csvmodelwriter.h \
@@ -363,6 +364,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/ecwrapper.cpp \
     src/key.cpp \
     src/pubkey.cpp \
+    src/scheduler.cpp \
     src/script.cpp \
     src/scrypt.cpp \
     src/primitives/transaction.cpp \

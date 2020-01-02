@@ -70,6 +70,7 @@ OBJS= \
     obj/support/cleanse.o \
     obj/base58.o \
     obj/validationinterface.o \
+    obj/scheduler.o \
     obj/version.o \
     obj/checkpoints.o \
     obj/netbase.o \

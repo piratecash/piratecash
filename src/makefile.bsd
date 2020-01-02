@@ -103,6 +103,7 @@ OBJS= \
     obj/validationinterface.o \
     obj/version.o \
     obj/checkpoints.o \
+    obj/scheduler.o \
     obj/netbase.o \
     obj/addrdb.o \
     obj/addrman.o \
