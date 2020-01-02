@@ -186,7 +186,7 @@ private:
     std::map<int, CAddrInfo> mapInfo;
 
     //! find an nId based on its network address
-    std::map<CNetAddr, int> mapAddr;
+    std::map<CService, int> mapAddr;
 
     //! randomly-ordered vector of all nIds
     std::vector<int> vRandom;
@@ -203,15 +203,18 @@ private:
     //! list of "new" buckets
     int vvNew[ADDRMAN_NEW_BUCKET_COUNT][ADDRMAN_BUCKET_SIZE];
 
-     //! last time Good was called (memory only)
-     int64_t nLastGood;
+    //! last time Good was called (memory only)
+    int64_t nLastGood;
+
+    // discriminate entries based on port. Should be false on mainnet/testnet and can be true on devnet/regtest
+    bool discriminatePorts;
 
 protected:
      //! secret key to randomize bucket select with
      uint256 nKey;
 
     //! Find an entry.
-    CAddrInfo* Find(const CNetAddr& addr, int *pnId = NULL);
+    CAddrInfo* Find(const CService& addr, int *pnId = NULL);
 
     //! find an entry, creating it if necessary.
     //! nTime and nServices of the found node are updated, if necessary.
@@ -459,7 +462,8 @@ public:
         nLastGood = 1; //Initially at 1 so that "never" is strictly worse.
     }
 
-    CAddrMan()
+    CAddrMan(bool _discriminatePorts = false) :
+        discriminatePorts(_discriminatePorts)
     {
         Clear();
     }
