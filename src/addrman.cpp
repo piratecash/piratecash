@@ -350,10 +350,10 @@ void CAddrMan::Attempt_(const CService& addr, int64_t nTime)
     info.nAttempts++;
 }
 
-CAddress CAddrMan::Select_(bool newOnly)
+CAddrInfo CAddrMan::Select_(bool newOnly)
 {
     if (size() == 0)
-        return CAddress();
+        return CAddrInfo();
 
     if (newOnly && nNew == 0)
         return CAddrInfo();
