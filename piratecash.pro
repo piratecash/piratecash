@@ -292,6 +292,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/paymentserver.h \
     src/ui_interface.h \
     src/qt/rpcconsole.h \
+    src/validationinterface.h \
     src/version.h \
     src/netbase.h \
     src/clientversion.h \
@@ -348,6 +349,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/allocators.cpp \
     src/base58.cpp \
     src/chainparams.cpp \
+    src/validationinterface.cpp \
     src/version.cpp \
     src/sync.cpp \
     src/txmempool.cpp \

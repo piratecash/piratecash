@@ -69,6 +69,7 @@ OBJS= \
     obj/allocators.o \
     obj/support/cleanse.o \
     obj/base58.o \
+    obj/validationinterface.o \
     obj/version.o \
     obj/checkpoints.o \
     obj/netbase.o \

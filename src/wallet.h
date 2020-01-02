@@ -20,6 +20,7 @@
 #include "keystore.h"
 #include "script.h"
 #include "ui_interface.h"
+#include "validationinterface.h"
 #include "util.h"
 #include "stealth.h"
 
