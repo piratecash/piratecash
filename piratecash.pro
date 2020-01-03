@@ -45,6 +45,7 @@ win32:QRENCODE_LIB_PATH=C:/dev/coindeps32/qrencode-3.4.4/.libs
 win32:SECP256K1_LIB_PATH =C:/dev/coindeps32/secp256k1/.libs
 win32:SECP256K1_INCLUDE_PATH =C:/dev/coindeps32/secp256k1/include
 macx:QMAKE_MAC_SDK = macosx10.15
+macx:LIBS += /opt/local/lib/libevent.a
 
 OBJECTS_DIR = build
 MOC_DIR = build
@@ -224,6 +225,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/utiltime.h \
     src/random.h \
     src/reverselock.h \
+    src/torcontrol.h \
     src/hash.h \
     src/uint256.h \
     src/kernel.h \
@@ -352,6 +354,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/base58.cpp \
     src/chainparams.cpp \
     src/validationinterface.cpp \
+    src/torcontrol.cpp \
     src/version.cpp \
     src/sync.cpp \
     src/txmempool.cpp \

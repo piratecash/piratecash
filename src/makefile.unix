@@ -109,6 +109,7 @@ xLDFLAGS=$(LDHARDENING) $(LDFLAGS)
 
 OBJS= \
     obj/alert.o \
+    obj/torcontrol.o \
     obj/allocators.o \
     obj/validationinterface.o \
     obj/scheduler.o \

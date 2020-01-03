@@ -71,6 +71,7 @@ CFLAGS += -Wall -Wextra -Wformat -Wno-ignored-qualifiers -Wformat-security -Wno-
 
 OBJS= \
     obj/alert.o \
+    obj/torcontrol.o \
     obj/allocators.o \
     obj/validationinterface.o \
     obj/scheduler.o \
