@@ -32,6 +32,13 @@
 #include <boost/foreach.hpp>
 #include <boost/signals2/signal.hpp>
 
+#ifdef __cplusplus
+#include <atomic>
+using namespace std;
+#else
+#include <stdatomic.h>
+#endif
+
 class CAddrMan;
 class CBlockIndex;
 extern int nBestHeight;
