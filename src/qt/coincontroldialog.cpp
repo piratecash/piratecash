@@ -16,7 +16,7 @@
 #include "walletmodel.h"
 
 #include "coincontrol.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 #include "darksend.h"
 #include "amount.h"
 

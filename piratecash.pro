@@ -243,10 +243,10 @@ HEADERS += src/qt/bitcoingui.h \
     src/ecwrapper.h \
     src/key.h \
     src/pubkey.h \
-    src/db.h \
+    src/wallet/db.h \
     src/txdb.h \
     src/txmempool.h \
-    src/walletdb.h \
+    src/wallet/walletdb.h \
     src/script.h \
     src/scrypt.h \
     src/init.h \
@@ -272,7 +272,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/transactiondesc.h \
     src/qt/transactiondescdialog.h \
     src/qt/bitcoinamountfield.h \
-    src/wallet.h \
+    src/wallet/wallet.h \
     src/keystore.h \
     src/qt/transactionfilterproxy.h \
     src/qt/transactionview.h \
@@ -379,8 +379,8 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/bloom.cpp \
     src/checkpoints.cpp \
     src/addrman.cpp \
-    src/db.cpp \
-    src/walletdb.cpp \
+    src/wallet/db.cpp \
+    src/wallet/walletdb.cpp \
     src/qt/clientmodel.cpp \
     src/qt/guiutil.cpp \
     src/qt/transactionrecord.cpp \
@@ -392,7 +392,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactiondescdialog.cpp \
     src/qt/bitcoinstrings.cpp \
     src/qt/bitcoinamountfield.cpp \
-    src/wallet.cpp \
+    src/wallet/wallet.cpp \
     src/keystore.cpp \
     src/qt/transactionfilterproxy.cpp \
     src/qt/transactionview.cpp \
@@ -401,12 +401,12 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/rpcclient.cpp \
     src/rpcprotocol.cpp \
     src/rpcserver.cpp \
-    src/rpcdump.cpp \
+    src/wallet/rpcdump.cpp \
     src/rpcmisc.cpp \
     src/rpcnet.cpp \
     src/rpcmining.cpp \
     src/rpcminting.cpp \
-    src/rpcwallet.cpp \
+    src/wallet/rpcwallet.cpp \
     src/rpcblockchain.cpp \
     src/rpcrawtransaction.cpp \
     src/qt/overviewpage.cpp \

@@ -4,7 +4,7 @@
 #include "clientmodel.h"
 #include "walletmodel.h"
 #include "main.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 #include "base58.h"
 #include <QWidget>
 

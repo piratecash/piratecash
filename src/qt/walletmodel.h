@@ -9,7 +9,7 @@
 
 #include "allocators.h" /* for SecureString */
 #include "instantx.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 
 #include <map>
 #include <vector>

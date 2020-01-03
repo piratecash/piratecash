@@ -14,7 +14,7 @@
 #include "guiconstants.h"
 #include "init.h"
 #include "util.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 #include "scheduler.h"
 #include "ui_interface.h"
 #include "paymentserver.h"

@@ -135,13 +135,13 @@ OBJS= \
 ifeq (${USE_WALLET}, 1)
     DEFS += -DENABLE_WALLET
     OBJS += \
-        obj/db.o \
+        obj/wallet/db.o \
         obj/miner.o \
-        obj/rpcdump.o \
+        obj/wallet/rpcdump.o \
         obj/rpcmining.o \
-        obj/rpcwallet.o \
-        obj/wallet.o \
-        obj/walletdb.o
+        obj/wallet/rpcwallet.o \
+        obj/wallet/wallet.o \
+        obj/wallet/walletdb.o
 endif
 
 all: piratecashd.exe

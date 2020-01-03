@@ -11,8 +11,8 @@
 #include "masternodeconfig.h"
 #include "masternodeman.h"
 #include "masternode.h"
-#include "walletdb.h"
-#include "wallet.h"
+#include "wallet/walletdb.h"
+#include "wallet/wallet.h"
 #include "init.h"
 #include "rpcserver.h"
 #include <boost/lexical_cast.hpp>

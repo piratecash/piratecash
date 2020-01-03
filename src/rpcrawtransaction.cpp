@@ -13,7 +13,7 @@
 #include "net.h"
 #include "keystore.h"
 #ifdef ENABLE_WALLET
-#include "wallet.h"
+#include "wallet/wallet.h"
 #endif
 
 using namespace std;
