@@ -162,6 +162,12 @@ void PrepareShutdown(){
 
 static boost::scoped_ptr<ECCVerifyHandle> globalVerifyHandle;
 
+void Interrupt(boost::thread_group& threadGroup)
+{
+    InterruptTorControl();
+    threadGroup.interrupt_all();
+}
+
 /**
 * Shutdown is split into 2 parts:
 * Part 1: shut down everything but the main wallet instance (done in PrepareShutdown() )
@@ -239,6 +245,7 @@ std::string HelpMessage()
     strUsage += "  -dblogsize=<n>         " + _("Set database disk log size in megabytes (default: 100)") + "\n";
     strUsage += "  -timeout=<n>           " + strprintf(_("Specify connection timeout in milliseconds (minimum: 1, default: %d)"), DEFAULT_CONNECT_TIMEOUT) + "\n";
     strUsage += "  -torcontrol=<ip>:<port>" + strprintf(_("Tor control port to use if onion listening enabled (default: %s)"), DEFAULT_TOR_CONTROL);
+    strUsage += "  -torpassword=<pass>    " + _("Tor control port password (default: empty)");
     strUsage += "  -proxy=<ip:port>       " + _("Connect through SOCKS5 proxy") + "\n";
     strUsage += "  -tor=<ip:port>         " + _("Use proxy to reach tor hidden services (default: same as -proxy)") + "\n";
     strUsage += "  -dns                   " + _("Allow DNS lookups for -addnode, -seednode and -connect") + "\n";

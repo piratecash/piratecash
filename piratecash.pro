@@ -45,7 +45,7 @@ win32:QRENCODE_LIB_PATH=C:/dev/coindeps32/qrencode-3.4.4/.libs
 win32:SECP256K1_LIB_PATH =C:/dev/coindeps32/secp256k1/.libs
 win32:SECP256K1_INCLUDE_PATH =C:/dev/coindeps32/secp256k1/include
 macx:QMAKE_MAC_SDK = macosx10.15
-macx:LIBS += /opt/local/lib/libevent.a
+macx:LIBS += /opt/local/lib/libevent.a /opt/local/lib/libevent_pthreads.a
 
 OBJECTS_DIR = build
 MOC_DIR = build
