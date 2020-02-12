@@ -567,7 +567,8 @@ void CMasternodeMan::ProcessMasternodeConnections()
         if(pnode->fMasternode){
             LogPrintf("Closing masternode connection %s \n", pnode->addr.ToString().c_str());
             pnode->CloseSocketDisconnect();
-            pnode->fDisconnect = true;
+            pnode->fMasternode = false;
+            pnode->Release();
         }
     }
 }

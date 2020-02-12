@@ -597,8 +597,9 @@ Value masternode(const Array& params, bool fHelp)
 
         CService addr = CService(strAddress);
 
-        CNode *pnode = ConnectNode((CAddress)addr, NULL, true);
+        CNode *pnode = ConnectNode((CAddress)addr, NULL, false);
         if(pnode){
+            pnode->Release();
             return "successfully connected";
         } else {
             return "error connecting";
