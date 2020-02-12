@@ -353,7 +353,7 @@ CMasternode* CMasternodeMan::FindOldestNotInVec(const std::vector<CTxIn> &vVins,
 
         bool found = false;
         BOOST_FOREACH(const CTxIn& vin, vVins)
-            if(mn.vin == vin)
+            if(mn.vin.prevout == vin.prevout)
             {
                 found = true;
                 break;
