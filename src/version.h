@@ -46,6 +46,9 @@ static const int MIN_INSTANTX_PROTO_VERSION = 60020;
 // minimum peer version that can receive masternode payments
 static const int MIN_MASTERNODE_PAYMENT_PROTO = 60020;
 
+//! minimum peer version for masternode winner broadcasts
+static const int MIN_MNW_PEER_PROTO_VERSION = 60020;
+
 // nTime field added to CAddress, starting with this version;
 // if possible, avoid requesting addresses nodes older than this
 static const int CADDR_TIME_VERSION = 31402;

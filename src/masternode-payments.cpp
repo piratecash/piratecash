@@ -46,6 +46,8 @@ void ProcessMessageMasternodePayments(CNode* pfrom, std::string& strCommand, CDa
         CMasternodePaymentWinner winner;
         vRecv >> winner;
 
+        if(pfrom->nVersion < MIN_MNW_PEER_PROTO_VERSION) return;
+
         if(pindexBest == NULL) return;
 
         CTxDestination address1;
