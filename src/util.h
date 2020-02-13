@@ -93,21 +93,6 @@ T* alignup(T* p)
     return u.ptr;
 }
 
-#ifdef WIN32
-#define MSG_NOSIGNAL        0
-#define MSG_DONTWAIT        0
-
-#ifndef S_IRUSR
-#define S_IRUSR             0400
-#define S_IWUSR             0200
-#endif
-#else
-#define MAX_PATH            1024
-#endif
-// As Solaris does not have the MSG_NOSIGNAL flag for send(2) syscall, it is defined as 0
-#ifndef MSG_NOSIGNAL
-#define MSG_NOSIGNAL 0
-#endif
 
 
 //Dark features
