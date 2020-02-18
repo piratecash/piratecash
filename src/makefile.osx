@@ -177,10 +177,10 @@ piratecashd: secp256k1/src/libsecp256k1_la-secp256k1.o
 LIBS += $(CURDIR)/leveldb/libleveldb.a $(CURDIR)/leveldb/libmemenv.a
 DEFS += $(addprefix -I,$(CURDIR)/leveldb/include)
 DEFS += $(addprefix -I,$(CURDIR)/leveldb/helpers)
-OBJS += obj/txdb-leveldb.o
+OBJS += obj/txdb.o
 leveldb/libleveldb.a:
 	@echo "Building LevelDB ..."; cd leveldb; chmod 755 *; make libleveldb.a libmemenv.a; cd ..
-obj/txdb-leveldb.o: leveldb/libleveldb.a
+obj/txdb.o: leveldb/libleveldb.a
 
 # auto-generated dependencies:
 -include obj/*.P
