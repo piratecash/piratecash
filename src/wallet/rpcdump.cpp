@@ -183,7 +183,7 @@ Value importaddress(const Array& params, bool fHelp)
 
     CScript script;
 
-    CpiratecashcoinAddress address(params[0].get_str());
+    CBitcoinAddress address(params[0].get_str());
     if (address.IsValid()) {
         script = GetScriptForDestination(address.Get());
     } else if (IsHex(params[0].get_str())) {
@@ -268,7 +268,7 @@ Value importwallet(const Array& params, bool fHelp)
         assert(key.VerifyPubKey(pubkey));
         CKeyID keyid = pubkey.GetID();
         if (pwalletMain->HaveKey(keyid)) {
-            LogPrintf("Skipping import of %s (key already present)\n", CpiratecashcoinAddress(keyid).ToString());
+            LogPrintf("Skipping import of %s (key already present)\n", CBitcoinAddress(keyid).ToString());
             continue;
         }
         int64_t nTime = DecodeDumpTime(vstr[1]);
@@ -286,7 +286,7 @@ Value importwallet(const Array& params, bool fHelp)
                 fLabel = true;
             }
         }
-        LogPrintf("Importing %s...\n", CpiratecashcoinAddress(keyid).ToString());
+        LogPrintf("Importing %s...\n", CBitcoinAddress(keyid).ToString());
         if (!pwalletMain->AddKey(key)) {
             fGood = false;
             continue;
@@ -328,7 +328,7 @@ Value dumpprivkey(const Array& params, bool fHelp)
     EnsureWalletIsUnlocked();
 
     string strAddress = params[0].get_str();
-    CpiratecashcoinAddress address;
+    CBitcoinAddress address;
     if (!address.SetString(strAddress))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Piratecash address");
     if (fWalletUnlockStakingOnly)
@@ -381,7 +381,7 @@ Value dumpwallet(const Array& params, bool fHelp)
     for (std::vector<std::pair<int64_t, CKeyID> >::const_iterator it = vKeyBirth.begin(); it != vKeyBirth.end(); it++) {
         const CKeyID &keyid = it->second;
         std::string strTime = EncodeDumpTime(it->first);
-        std::string strAddr = CpiratecashcoinAddress(keyid).ToString();
+        std::string strAddr = CBitcoinAddress(keyid).ToString();
 
         CKey key;
         if (pwalletMain->GetKey(keyid, key)) {

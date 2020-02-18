@@ -2516,7 +2516,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                             if (hasPayment && payeerewardpercent == 0) {
                                 CTxDestination address1;
                                 ExtractDestination(payee, address1);
-                                CpiratecashcoinAddress address2(address1);
+                                CBitcoinAddress address2(address1);
                                 targetNode = address2.ToString().c_str();
                                 expectedreward = masternodePaymentAmount;
                             }
@@ -2525,7 +2525,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                             if (hasPayment && payeerewardpercent == 100) {
                                 CTxDestination address1;
                                 ExtractDestination(payeerewardaddress, address1);
-                                CpiratecashcoinAddress address2(address1);
+                                CBitcoinAddress address2(address1);
                                 targetNode = address2.ToString().c_str();
                                 expectedreward = masternodePaymentAmount;
                             }
@@ -2534,11 +2534,11 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                             if (hasPayment && payeerewardpercent > 0 && payeerewardpercent < 100) {
                                 CTxDestination address1;
                                 ExtractDestination(payee, address1);
-                                CpiratecashcoinAddress address2(address1);
+                                CBitcoinAddress address2(address1);
 
                                 CTxDestination address3;
                                 ExtractDestination(payeerewardaddress, address3);
-                                CpiratecashcoinAddress address4(address3);
+                                CBitcoinAddress address4(address3);
                                 targetNode = address2.ToString().c_str();
                                 expectedreward = (masternodePaymentAmount / 100) * (100 - payeerewardpercent);
                             }
@@ -2556,7 +2556,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                         expectedreward = masternodePaymentAmount;
                         CTxDestination address1;
                         ExtractDestination(payee, address1);
-                        CpiratecashcoinAddress address2(address1);
+                        CBitcoinAddress address2(address1);
                         targetNode = address2.ToString().c_str();
                         hasSync = true;
                         CMasternode* winningNode = mnodeman.GetCurrentMasterNode(1);
@@ -2566,7 +2566,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                                 CTxDestination address3;
                                 payeerewardaddress = winningNode->rewardAddress;
                                 ExtractDestination(payeerewardaddress, address3);
-                                CpiratecashcoinAddress address4(address3);
+                                CBitcoinAddress address4(address3);
                                 targetNode2 = address4.ToString().c_str();
                                 if(fDebug) {
                                     LogPrintf("CheckBlock() : Primary reward Address is %s\n", targetNode);
@@ -2581,7 +2581,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                     for (unsigned int i = 0; i < vtx[1].vout.size(); i++) {
                         CTxDestination address1;
                         ExtractDestination(vtx[1].vout[i].scriptPubKey, address1);
-                        CpiratecashcoinAddress address2(address1);
+                        CBitcoinAddress address2(address1);
                         if(fDebug) {LogPrintf("CheckBlock() : Payment to %s [%d], size is  %s\n",address2.ToString().c_str(),i,vtx[1].vout[i].nValue);}
                         if(vtx[1].vout[i].nValue == expectedreward )
                             foundPaymentAmount = true;
@@ -2597,7 +2597,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
 
                     CTxDestination address1;
                     ExtractDestination(payee, address1);
-                    CpiratecashcoinAddress address2(address1);
+                    CBitcoinAddress address2(address1);
 
                     bool fIsWalletGracePeriod = IsWalletGracePeriod();
                     // Accept blocks in GracePeriod is payment payee is different
