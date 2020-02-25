@@ -30,6 +30,8 @@ extern int64_t nReserveBalance;
 extern int64_t nMinimumInputValue;
 extern bool fWalletUnlockStakingOnly;
 extern bool fConfChange;
+//! -keypool default
+static const unsigned int DEFAULT_KEYPOOL_SIZE = 1000;
 
 class CAccountingEntry;
 class CCoinControl;

@@ -1879,25 +1879,19 @@ Value keypoolrefill(const Array& params, bool fHelp)
             + HelpExampleRpc("keypoolrefill", "")
         );
 
-    fLiteMode = GetBoolArg("-litemode", false);
-    unsigned int nSize;
-
-    if (fLiteMode)
-        nSize = max(GetArg("-keypool", 100), (int64_t)0);
-    else
-        nSize = max(GetArg("-keypool", 10), (int64_t)0);
+    unsigned int kpSize = max(GetArg("-keypool", DEFAULT_KEYPOOL_SIZE), (int64_t) 0);
 
     if (params.size() > 0) {
         if (params[0].get_int() < 0)
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, expected valid size");
-        nSize = (unsigned int) params[0].get_int();
+        kpSize = (unsigned int) params[0].get_int();
     }
 
     EnsureWalletIsUnlocked();
 
-    pwalletMain->TopUpKeyPool(nSize);
+    pwalletMain->TopUpKeyPool(kpSize);
 
-    if (pwalletMain->GetKeyPoolSize() < nSize)
+    if (pwalletMain->GetKeyPoolSize() < kpSize)
         throw JSONRPCError(RPC_WALLET_ERROR, "Error refreshing keypool.");
 
     return Value::null;
