@@ -170,6 +170,12 @@ public:
         fFileBacked = true;
     }
 
+    ~CWallet()
+    {
+        delete pwalletdbEncryption;
+        pwalletdbEncryption = NULL;
+    }
+
     void SetNull()
     {
         nWalletVersion = FEATURE_BASE;
