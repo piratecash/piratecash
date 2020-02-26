@@ -1121,10 +1121,10 @@ void ThreadSocketHandler()
                     pnode->fDisconnect = true;
                 }
                 else if (nTime - pnode->nLastSend > TIMEOUT_INTERVAL)
-				{
-					LogPrintf("socket not sending\n");
-					pnode->fDisconnect = true;
-				}
+                {
+                    LogPrintf("socket sending timeout: %is\n", nTime - pnode->nLastSend);
+                    pnode->fDisconnect = true;
+                }
                 else if (nTime - pnode->nLastRecv > (pnode->nVersion > BIP0031_VERSION ? TIMEOUT_INTERVAL : 90*60))
                 {
                     LogPrintf("socket receive timeout: %is\n", nTime - pnode->nLastRecv);
