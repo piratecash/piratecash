@@ -2987,7 +2987,8 @@ int SecureMsgStore(uint8_t *pHeader, uint8_t *pPayload, uint32_t nPayload, bool 
     if (!pHeader
         || !pPayload)
     {
-        return errorN(1, "null pointer to header or payload.");
+        LogPrint("smessage", "null pointer to header or payload.");
+        return 1;
     };
 
     SecureMessage* psmsg = (SecureMessage*) pHeader;
@@ -3000,7 +3001,8 @@ int SecureMsgStore(uint8_t *pHeader, uint8_t *pPayload, uint32_t nPayload, bool 
         fs::create_directory(pathSmsgDir);
     } catch (const boost::filesystem::filesystem_error& ex)
     {
-        return errorN(1, "Failed to create directory %s - %s.", pathSmsgDir.string().c_str(), ex.what());
+        LogPrint("smessage","Failed to create directory %s - %s.", pathSmsgDir.string().c_str(), ex.what());
+        return 1;
     };
 
     int64_t now = GetTime();
@@ -3056,14 +3058,16 @@ int SecureMsgStore(uint8_t *pHeader, uint8_t *pPayload, uint32_t nPayload, bool 
     errno = 0;
     if (!(fp = fopen(fullpath.string().c_str(), "ab")))
     {
-        return errorN(1, "fopen failed: %s.", strerror(errno));
+        LogPrint("smessage", "fopen failed: %s.", strerror(errno));
+        return 1;
     };
 
     // -- on windows ftell will always return 0 after fopen(ab), call fseek to set.
     errno = 0;
     if (fseek(fp, 0, SEEK_END) != 0)
     {
-        return errorN(1, "fseek failed: %s.", strerror(errno));
+        LogPrint("smessage", "fseek failed: %s.", strerror(errno));
+        return 1;
     };
 
 
@@ -3073,7 +3077,8 @@ int SecureMsgStore(uint8_t *pHeader, uint8_t *pPayload, uint32_t nPayload, bool 
         || fwrite(pPayload, sizeof(uint8_t), nPayload, fp) != nPayload)
     {
         fclose(fp);
-        return errorN(1, "fwrite failed: %s.", strerror(errno));
+        LogPrint("smessage", "fwrite failed: %s.", strerror(errno));
+        return 1;
     };
 
     fclose(fp);
@@ -3304,7 +3309,8 @@ int SecureMsgEncrypt(SecureMessage &smsg, const std::string &addressFrom, const 
 
     if (message.size() > SMSG_MAX_MSG_BYTES)
     {
-        return errorN(2, "%s: Message is too long, %u.", __func__, message.size());
+        LogPrint("smessage", "ERROR: %s: Message is too long, %u.\n", message.size());
+        return 2;
     };
 
     smsg.version[0] = 1;
@@ -3327,12 +3333,14 @@ int SecureMsgEncrypt(SecureMessage &smsg, const std::string &addressFrom, const 
 
         if (!coinAddrFrom.SetString(addressFrom))
         {
-            return errorN(3, "%s: addressFrom is not valid.", __func__);
+            LogPrint("smessage",  "%s: addressFrom is not valid.", __func__);
+            return 3;
         };
 
         if (!coinAddrFrom.GetKeyID(ckidFrom))
         {
-            return errorN(4, "%s: coinAddrFrom.GetKeyID failed: %s.", __func__, coinAddrFrom.ToString().c_str());
+            LogPrint("smessage",  "%s: coinAddrFrom.GetKeyID failed: %s.", __func__, coinAddrFrom.ToString().c_str());
+            return 4;
         };
     };
 
@@ -3342,12 +3350,14 @@ int SecureMsgEncrypt(SecureMessage &smsg, const std::string &addressFrom, const 
 
     if (!coinAddrDest.SetString(addressTo))
     {
-        return errorN(4, "%s: addressTo is not valid.", __func__);
+        LogPrint("smessage", "%s: addressTo is not valid.", __func__);
+        return 4;
     };
 
     if (!coinAddrDest.GetKeyID(ckidDest))
     {
-        return errorN(4, "%s: coinAddrDest.GetKeyID failed: %s.", __func__, coinAddrDest.ToString().c_str());
+        LogPrint("smessage", "%s: coinAddrDest.GetKeyID failed: %s.", __func__, coinAddrDest.ToString().c_str());
+        return 4;
     };
 
     // -- public key K is the destination address
@@ -3355,7 +3365,8 @@ int SecureMsgEncrypt(SecureMessage &smsg, const std::string &addressFrom, const 
     if (SecureMsgGetStoredKey(ckidDest, cpkDestK) != 0
         && SecureMsgGetLocalKey(ckidDest, cpkDestK) != 0) // maybe it's a local key (outbox?)
     {
-        return errorN(5, "%s: Could not get public key for destination address.", __func__);
+        LogPrint("smessage", "%s: Could not get public key for destination address.", __func__);
+        return 5;
     };
 
 
@@ -3376,7 +3387,8 @@ int SecureMsgEncrypt(SecureMessage &smsg, const std::string &addressFrom, const 
     if (!ecKeyK.SetPubKey(cpkDestK.begin(), cpkDestK.size()))
     {
         // address to is invalid
-        return errorN(4, "%s: Could not set pubkey for K: %s.", __func__, HexStr(cpkDestK).c_str());
+        LogPrint("smessage", "%s: Could not set pubkey for K: %s.", __func__, HexStr(cpkDestK).c_str());
+        return 4;
     };
 
     std::vector<uint8_t> vchP;
@@ -3395,14 +3407,16 @@ int SecureMsgEncrypt(SecureMessage &smsg, const std::string &addressFrom, const 
 
     if (lenP != 32)
     {
-        return errorN(6, "%s: ECDH_compute_key failed, lenP: %d.", __func__, lenP);
+        LogPrint("smessage", "%s: ECDH_compute_key failed, lenP: %d.", __func__, lenP);
+        return 6;
     };
 
     CPubKey cpkR = keyR.GetPubKey();
     if (!cpkR.IsValid()
         || !cpkR.IsCompressed())
     {
-        return errorN(1, "%s: Could not get public key for key R.", __func__);
+        LogPrint("smessage", "%s: Could not get public key for key R.", __func__);
+        return 1;
     };
 
     memcpy(smsg.cpkR, cpkR.begin(), 33);
@@ -3429,13 +3443,15 @@ int SecureMsgEncrypt(SecureMessage &smsg, const std::string &addressFrom, const 
         int worstCase = LZ4_compressBound(message.size());
         try { vchCompressed.resize(worstCase); } catch (std::exception& e)
         {
-            return errorN(8, "%s: vchCompressed.resize %u threw: %s.", __func__, worstCase, e.what());
+            LogPrint("smessage", "%s: vchCompressed.resize %u threw: %s.", __func__, worstCase, e.what());
+            return 8;
         };
 
         int lenComp = LZ4_compress((char*)message.c_str(), (char*)&vchCompressed[0], lenMsg);
         if (lenComp < 1)
         {
-            return errorN(9, "%s: Could not compress message data.", __func__);
+            LogPrint("smessage", "%s: Could not compress message data.", __func__);
+            return 9;
         };
 
         pMsgData = &vchCompressed[0];
@@ -3452,7 +3468,8 @@ int SecureMsgEncrypt(SecureMessage &smsg, const std::string &addressFrom, const 
     {
         try { vchPayload.resize(9 + lenMsgData); } catch (std::exception& e)
         {
-            return errorN(8, "%s: vchPayload.resize %u threw: %s.", __func__, 9 + lenMsgData, e.what());
+            LogPrint("smessage", "%s: vchPayload.resize %u threw: %s.", __func__, 9 + lenMsgData, e.what());
+            return 8;
         };
 
         memcpy(&vchPayload[9], pMsgData, lenMsgData);
@@ -3464,14 +3481,16 @@ int SecureMsgEncrypt(SecureMessage &smsg, const std::string &addressFrom, const 
     {
         try { vchPayload.resize(SMSG_PL_HDR_LEN + lenMsgData); } catch (std::exception& e)
         {
-            return errorN(8, "%s: vchPayload.resize %u threw: %s.", __func__, SMSG_PL_HDR_LEN + lenMsgData, e.what());
+            LogPrint("smessage", "%s: vchPayload.resize %u threw: %s.", __func__, SMSG_PL_HDR_LEN + lenMsgData, e.what());
+            return 8;
         };
         
         memcpy(&vchPayload[SMSG_PL_HDR_LEN], pMsgData, lenMsgData);
         // -- compact signature proves ownership of from address and allows the public key to be recovered, recipient can always reply.
         if (!pwalletMain->GetKey(ckidFrom, keyFrom))
         {
-            return errorN(7, "%s: Could not get private key for addressFrom.", __func__);
+            LogPrint("smessage", "%s: Could not get private key for addressFrom.", __func__);
+            return 7;
         };
 
         // -- sign the plaintext
@@ -3494,12 +3513,14 @@ int SecureMsgEncrypt(SecureMessage &smsg, const std::string &addressFrom, const 
 
     if (!crypter.Encrypt(&vchPayload[0], vchPayload.size(), vchCiphertext))
     {
-        return errorN(11, "%s: crypter.Encrypt failed.", __func__);
+        LogPrint("smessage", "%s: crypter.Encrypt failed.", __func__);
+        return 11;
     };
 
     try { smsg.pPayload = new uint8_t[vchCiphertext.size()]; } catch (std::exception& e)
     {
-        return errorN(8, "%s: Could not allocate pPayload, exception: %s.", __func__, e.what());
+        LogPrint("smessage", "%s: Could not allocate pPayload, exception: %s.", __func__, e.what());
+        return 8;
     };
 
     memcpy(smsg.pPayload, &vchCiphertext[0], vchCiphertext.size());
@@ -3524,7 +3545,8 @@ int SecureMsgEncrypt(SecureMessage &smsg, const std::string &addressFrom, const 
 
     if (!fHmacOk)
     {
-        return errorN(10, "%s: Could not generate MAC.", __func__);
+        LogPrint("smessage", "%s: Could not generate MAC.", __func__);
+        return 10;
     };
 
     return 0;
@@ -3720,7 +3742,8 @@ int SecureMsgDecrypt(bool fTestOnly, std::string &address, uint8_t *pHeader, uin
     if (!pHeader
         || !pPayload)
     {
-        return errorN(1, "%s: null pointer to header or payload.", __func__);
+        LogPrint("smessage", "%s: null pointer to header or payload.", __func__);
+        return 1;
     };
 
     SecureMessage* psmsg = (SecureMessage*) pHeader;
@@ -3728,7 +3751,8 @@ int SecureMsgDecrypt(bool fTestOnly, std::string &address, uint8_t *pHeader, uin
 
     if (psmsg->version[0] != 1)
     {
-        return errorN(2, "%s: Unknown version number.", __func__);
+        LogPrint("smessage", "%s: Unknown version number.", __func__);
+        return 2;
     };
 
 
@@ -3739,15 +3763,18 @@ int SecureMsgDecrypt(bool fTestOnly, std::string &address, uint8_t *pHeader, uin
     CKey keyDest;
     if (!coinAddrDest.SetString(address))
     {
-        return errorN(3, "%s: Address is not valid.", __func__);
+        LogPrint("smessage", "%s: Address is not valid.", __func__);
+        return 3;
     };
     if (!coinAddrDest.GetKeyID(ckidDest))
     {
-        return errorN(3, "%s: coinAddrDest.GetKeyID failed: %s.", __func__, coinAddrDest.ToString().c_str());
+        LogPrint("smessage", "%s: coinAddrDest.GetKeyID failed: %s.", __func__, coinAddrDest.ToString().c_str());
+        return 3;
     };
     if (!pwalletMain->GetKey(ckidDest, keyDest))
     {
-        return errorN(3, "%s: Could not get private key for addressDest.", __func__);
+        LogPrint("smessage", "%s: Could not get private key for addressDest.", __func__);
+        return 3;
     };
 
 
@@ -3755,13 +3782,15 @@ int SecureMsgDecrypt(bool fTestOnly, std::string &address, uint8_t *pHeader, uin
     CPubKey cpkR(psmsg->cpkR, psmsg->cpkR+33);
     if (!cpkR.IsValid())
     {
-        return errorN(1, "%s: Could not get pubkey for key R.", __func__);
+        LogPrint("smessage", "%s: Could not get pubkey for key R.", __func__);
+        return 1;
     };
 
     CECKey ecKeyR;
     if (!ecKeyR.SetPubKey(cpkR.begin(), cpkR.size()))
     {
-        return errorN(1, "%s: Could not set pubkey for key R: %s.", __func__, HexStr(cpkR).c_str());
+        LogPrint("smessage", "%s: Could not set pubkey for key R: %s.", __func__, HexStr(cpkR).c_str());
+        return 1;
     };
 
     CECKey ecKeyDest;
@@ -3778,7 +3807,8 @@ int SecureMsgDecrypt(bool fTestOnly, std::string &address, uint8_t *pHeader, uin
 
     if (lenPdec != 32)
     {
-        return errorN(1, "%s: ECDH_compute_key failed, lenPdec: %d.", __func__, lenPdec);
+        LogPrint("smessage", "%s: ECDH_compute_key failed, lenPdec: %d.", __func__, lenPdec);
+        return 1;
     };
 
 
@@ -3809,7 +3839,8 @@ int SecureMsgDecrypt(bool fTestOnly, std::string &address, uint8_t *pHeader, uin
 
     if (!fHmacOk)
     {
-        return errorN(1, "%s: Could not generate MAC.", __func__);
+        LogPrint("smessage", "%s: Could not generate MAC.", __func__);
+        return 1;
     };
 
     if (memcmp(MAC, psmsg->mac, 32) != 0)
@@ -3828,7 +3859,8 @@ int SecureMsgDecrypt(bool fTestOnly, std::string &address, uint8_t *pHeader, uin
     std::vector<uint8_t> vchPayload;
     if (!crypter.Decrypt(pPayload, nPayload, vchPayload))
     {
-        return errorN(1, "%s: Decrypt failed.", __func__);
+        LogPrint("smessage", "%s: Decrypt failed.", __func__);
+        return 1;
     };
 
     msg.timestamp = psmsg->timestamp;
@@ -3854,7 +3886,8 @@ int SecureMsgDecrypt(bool fTestOnly, std::string &address, uint8_t *pHeader, uin
     try {
         msg.vchMessage.resize(lenPlain + 1);
     } catch (std::exception& e) {
-        return errorN(8, "%s: msg.vchMessage.resize %u threw: %s.", __func__, lenPlain + 1, e.what());
+        LogPrint("smessage", "%s: msg.vchMessage.resize %u threw: %s.", __func__, lenPlain + 1, e.what());
+        return 8;
     };
 
 
@@ -3863,7 +3896,8 @@ int SecureMsgDecrypt(bool fTestOnly, std::string &address, uint8_t *pHeader, uin
         // -- decompress
         if (LZ4_decompress_safe((char*) pMsgData, (char*) &msg.vchMessage[0], lenData, lenPlain) != (int) lenPlain)
         {
-            return errorN(1, "%s: Could not decompress message data.", __func__);
+            LogPrint("smessage", "%s: Could not decompress message data.", __func__);
+            return 1;
         };
     } else
     {
@@ -3891,7 +3925,8 @@ int SecureMsgDecrypt(bool fTestOnly, std::string &address, uint8_t *pHeader, uin
         coinAddrFrom.Set(ckidFrom);
         if (!coinAddrFrom.IsValid())
         {
-            return errorN(1, "%s: From Address is invalid.", __func__);
+            LogPrint("smessage", "%s: From Address is invalid.", __func__);
+            return 1;
         };
 
         std::vector<uint8_t> vchSig;
@@ -3903,7 +3938,8 @@ int SecureMsgDecrypt(bool fTestOnly, std::string &address, uint8_t *pHeader, uin
         cpkFromSig.RecoverCompact(Hash(msg.vchMessage.begin(), msg.vchMessage.end()-1), vchSig);
         if (!cpkFromSig.IsValid())
         {
-            return errorN(1, "%s: Signature validation failed.", __func__);
+            LogPrint("smessage", "%s: Signature validation failed.", __func__);
+            return 1;
         };
 
         // -- get address for the compressed public key
@@ -3912,7 +3948,8 @@ int SecureMsgDecrypt(bool fTestOnly, std::string &address, uint8_t *pHeader, uin
 
         if (!(coinAddrFrom == coinAddrFromSig))
         {
-            return errorN(1, "%s: Signature validation failed.", __func__);
+            LogPrint("smessage", "%s: Signature validation failed.", __func__);
+            return 1;
         };
 
         int rv = 5;
