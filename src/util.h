@@ -190,7 +190,7 @@ boost::filesystem::path GetSpecialFolderPath(int nFolder, bool fCreate = true);
 
 std::string getTimeString(int64_t timestamp, char *buffer, size_t nBuffer);
 std::string bytesReadable(uint64_t nBytes);
-
+boost::filesystem::path GetTempPath();
 void ShrinkDebugFile();
 int64_t GetAdjustedTime();
 int64_t GetTimeOffset();
