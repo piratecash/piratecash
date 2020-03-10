@@ -247,7 +247,7 @@ std::string HelpMessage()
     strUsage += "  -torcontrol=<ip>:<port>" + strprintf(_("Tor control port to use if onion listening enabled (default: %s)"), DEFAULT_TOR_CONTROL);
     strUsage += "  -torpassword=<pass>    " + _("Tor control port password (default: empty)");
     strUsage += "  -proxy=<ip:port>       " + _("Connect through SOCKS5 proxy") + "\n";
-    strUsage += "  -tor=<ip:port>         " + _("Use proxy to reach tor hidden services (default: same as -proxy)") + "\n";
+    strUsage += "  -onion=<ip:port>       " + _("Use proxy to reach tor hidden services (default: same as -proxy)") + "\n";
     strUsage += "  -dns                   " + _("Allow DNS lookups for -addnode, -seednode and -connect") + "\n";
     strUsage += "  -port=<port>           " + _("Listen for connections on <port> (default: 23232)") + "\n";
     strUsage += "  -maxconnections=<n>    " + _("Maintain at most <n> connections to peers (default: 125)") + "\n";
@@ -854,15 +854,20 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         fProxy = true;
     }
 
-    // -tor can override normal proxy, -notor disables tor entirely
-    if (!(mapArgs.count("-tor") && mapArgs["-tor"] == "0") && (fProxy || mapArgs.count("-tor"))) {
+    // -onion can override normal proxy, -noonion disables tor entirely
+    // -tor here is a temporary backwards compatibility measure
+    if (mapArgs.count("-tor"))
+        printf("Notice: option -tor has been replaced with -onion and will be removed in a later version.\n");
+    if (!(mapArgs.count("-onion") && mapArgs["-onion"] == "0") &&
+            !(mapArgs.count("-tor") && mapArgs["-tor"] == "0") &&
+            (fProxy || mapArgs.count("-onion") || mapArgs.count("-tor"))) {
         CService addrOnion;
-        if (!mapArgs.count("-tor"))
+        if (!mapArgs.count("-onion") && !mapArgs.count("-tor"))
             addrOnion = addrProxy;
         else
-            addrOnion = CService(mapArgs["-tor"], 9050);
+            addrOnion = mapArgs.count("-onion")?CService(mapArgs["-onion"], 9050):CService(mapArgs["-tor"], 9050);
         if (!addrOnion.IsValid())
-            return InitError(strprintf(_("Invalid -tor address: '%s'"), mapArgs["-tor"]));
+            return InitError(strprintf(_("Invalid -onion address: '%s'"), mapArgs.count("-onion")?mapArgs["-onion"].c_str():mapArgs["-tor"].c_str()));
         SetProxy(NET_TOR, addrOnion);
         SetReachable(NET_TOR);
     }
