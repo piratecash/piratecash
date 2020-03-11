@@ -184,7 +184,9 @@ void Shutdown()
     if(!fRestartRequested || true){ // most of shutdown is already done when we're restarting the wallet
         PrepareShutdown();
     }
+#ifndef WIN32
     boost::filesystem::remove(GetPidFile());
+#endif
     UnregisterAllWallets();
 #ifdef ENABLE_WALLET
     delete pwalletMain;
@@ -251,6 +253,9 @@ std::string HelpMessage()
     strUsage += "  -dns                   " + _("Allow DNS lookups for -addnode, -seednode and -connect") + "\n";
     strUsage += "  -port=<port>           " + _("Listen for connections on <port> (default: 23232)") + "\n";
     strUsage += "  -maxconnections=<n>    " + _("Maintain at most <n> connections to peers (default: 125)") + "\n";
+#ifndef WIN32
+    strUsage += "  -pid=<file>            " + _("Specify pid file (default: piratecashd.pid)") + "\n";
+#endif
     strUsage += "  -addnode=<ip>          " + _("Add a node to connect to and attempt to keep the connection open") + "\n";
     strUsage += "  -connect=<ip>          " + _("Connect only to the specified node(s)") + "\n";
     strUsage += "  -seednode=<ip>         " + _("Connect to a node to retrieve peer addresses, and disconnect") + "\n";
@@ -648,7 +653,9 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     static boost::interprocess::file_lock lock(pathLockFile.string().c_str());
     if (!lock.try_lock())
         return InitError(strprintf(_("Cannot obtain a lock on data directory %s. Piratecash is probably already running."), strDataDir));
-
+#ifndef WIN32
+    CreatePidFile(GetPidFile(), getpid());
+#endif
     if (GetBoolArg("-shrinkdebugfile", !fDebug))
         ShrinkDebugFile();
     LogPrintf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
