@@ -922,4 +922,4 @@ void RelayInv(CInv &inv, const int minProtoVersion = MIN_PEER_PROTO_VERSION);
 
 void DumpBanlist();
 
-#endif
+#endif // BITCOIN_NET_H

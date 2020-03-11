@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_SYNC_H
@@ -14,16 +14,13 @@
 #include <boost/thread/recursive_mutex.hpp>
 
 
-////////////////////////////////////////////////
-//                                            //
-// THE SIMPLE DEFINITON, EXCLUDING DEBUG CODE //
-//                                            //
-////////////////////////////////////////////////
+/////////////////////////////////////////////////
+//                                             //
+// THE SIMPLE DEFINITION, EXCLUDING DEBUG CODE //
+//                                             //
+/////////////////////////////////////////////////
 
 /*
- 
- 
- 
 CCriticalSection mutex;
     boost::recursive_mutex mutex;
 
@@ -42,12 +39,7 @@ ENTER_CRITICAL_SECTION(mutex); // no RAII
 
 LEAVE_CRITICAL_SECTION(mutex); // no RAII
     mutex.unlock();
- 
- 
- 
  */
-
-
 
 ///////////////////////////////
 //                           //
@@ -261,5 +253,5 @@ public:
         return fHaveGrant;
     }
 };
-#endif
 
+#endif // BITCOIN_SYNC_H

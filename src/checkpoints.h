@@ -34,4 +34,4 @@ namespace Checkpoints
     bool CheckSync(int nHeight);
 }
 
-#endif
+#endif // BITCOIN_CHECKPOINT_H
