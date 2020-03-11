@@ -3,6 +3,11 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#if (defined(__FreeBSD__) || defined(__OpenBSD__))
+#include <pthread.h>
+#include <pthread_np.h>
+#endif
+
 #include "util.h"
 
 #include "chainparams.h"
@@ -814,10 +819,7 @@ void RenameThread(const char* name)
 #if defined(PR_SET_NAME)
     // Only the first 15 characters are used (16 - NUL terminator)
     ::prctl(PR_SET_NAME, name, 0, 0, 0);
-#elif 0 && (defined(__FreeBSD__) || defined(__OpenBSD__))
-    // TODO: This is currently disabled because it needs to be verified to work
-    //       on FreeBSD or OpenBSD first. When verified the '0 &&' part can be
-    //       removed.
+#elif (defined(__FreeBSD__) || defined(__OpenBSD__))
     pthread_set_name_np(pthread_self(), name);
 
 #elif defined(MAC_OSX)
