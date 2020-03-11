@@ -266,18 +266,21 @@ void ParseString(const string& str, char c, vector<string>& v)
 }
 
 
-static void InterpretNegativeSetting(string name, map<string, string>& mapSettingsRet)
+/** Interpret string as boolean, for argument parsing */
+static bool InterpretBool(const std::string& strValue)
 {
-    // interpret -nofoo as -foo=0 (and -nofoo=0 as -foo=1) as long as -foo not set
-    if (name.find("-no") == 0)
+    if (strValue.empty())
+        return true;
+    return (atoi(strValue) != 0);
+}
+
+/** Turn -noX into -X=0 */
+static void InterpretNegativeSetting(std::string& strKey, std::string& strValue)
+{
+    if (strKey.length()>3 && strKey[0]=='-' && strKey[1]=='n' && strKey[2]=='o')
     {
-        std::string positive("-");
-        positive.append(name.begin()+3, name.end());
-        if (mapSettingsRet.count(positive) == 0)
-        {
-            bool value = !GetBoolArg(name, false);
-            mapSettingsRet[positive] = (value ? "1" : "0");
-        }
+        strKey = "-" + strKey.substr(3);
+        strValue = InterpretBool(strValue) ? "0" : "1";
     }
 }
 
@@ -309,17 +312,12 @@ void ParseParameters(int argc, const char* const argv[])
         // If both --foo and -foo are set, the last takes effect.
         if (str.length() > 1 && str[1] == '-')
             str = str.substr(1);
+        InterpretNegativeSetting(str, strValue);
 
         mapArgs[str] = strValue;
         mapMultiArgs[str].push_back(strValue);
     }
 
-    // New 0.6 features:
-    BOOST_FOREACH(const PAIRTYPE(string,string)& entry, mapArgs)
-    {
-        // interpret -nofoo as -foo=0 (and -nofoo=0 as -foo=1) as long as -foo not set
-        InterpretNegativeSetting(entry.first, mapArgs);
-    }
 }
 
 std::string GetArg(const std::string& strArg, const std::string& strDefault)
@@ -339,11 +337,7 @@ int64_t GetArg(const std::string& strArg, int64_t nDefault)
 bool GetBoolArg(const std::string& strArg, bool fDefault)
 {
     if (mapArgs.count(strArg))
-    {
-        if (mapArgs[strArg].empty())
-            return true;
-        return (atoi(mapArgs[strArg]) != 0);
-    }
+        return InterpretBool(mapArgs[strArg]);
     return fDefault;
 }
 
@@ -561,13 +555,11 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
     {
         // Don't overwrite existing settings so command line settings override bitcoin.conf
         string strKey = string("-") + it->string_key;
+        string strValue = it->value[0];
+        InterpretNegativeSetting(strKey, strValue);
         if (mapSettingsRet.count(strKey) == 0)
-        {
-            mapSettingsRet[strKey] = it->value[0];
-            // interpret nofoo=1 as foo=0 (and nofoo=0 as foo=1) as long as foo not set)
-            InterpretNegativeSetting(strKey, mapSettingsRet);
-        }
-        mapMultiSettingsRet[strKey].push_back(it->value[0]);
+            mapSettingsRet[strKey] = strValue;
+        mapMultiSettingsRet[strKey].push_back(strValue);
     }
     // If datadir is changed in .conf file:
     ClearDatadirCache();
