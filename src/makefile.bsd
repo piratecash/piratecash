@@ -1,4 +1,5 @@
 # Copyright (c) 2009-2010 Satoshi Nakamoto
+# Copyright (c) 2016-2020 Mistific@tor https://piratecash.mistificator.ru/
 # Distributed under the MIT/X11 software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -6,110 +7,84 @@ USE_UPNP:=0
 USE_WALLET:=1
 USE_LOWMEM:=0
 
-LINK:=$(CXX)
+C:=clang
+CXX:=clang++
+
+DEPSDIR=/usr/local
+DEPSDIR1=/usr
+
+INCLUDEPATHS= \
+ -I"$(CURDIR)" \
+ -I"$(CURDIR)"/obj \
+ -I"$(DEPSDIR)/include" \
+ -I"$(DEPSDIR)/include/boost/" \
+ -I"$(DEPSDIR)/include/db48/" \
+ -I"$(DEPSDIR)/include/openssl/"
+
+LIBPATHS= \
+ -L"$(DEPSDIR)/lib" \
+ -L"$(DEPSDIR)/lib/" \
+ -L"$(DEPSDIR)/lib/db48/"
+
+LIBS= 
+
+ifdef STATIC
+# Build STATIC if you are redistributing the piratecashd binary
+LIBS += \
+ $(DEPSDIR)/lib/db48/libdb_cxx-4.8.a \
+ $(DEPSDIR)/lib/libboost_system.a \
+ $(DEPSDIR)/lib/libboost_filesystem.a \
+ $(DEPSDIR)/lib/libboost_program_options.a \
+ $(DEPSDIR)/lib/libboost_thread.a \
+ $(DEPSDIR)/lib/libboost_chrono.a \
+ $(DEPSDIR)/lib/libevent.a \
+ $(DEPSDIR)/lib/libevent_pthreads.a \
+ $(DEPSDIR)/lib/libgmp.a \
+ $(DEPSDIR)/lib/libssl.a \
+ $(DEPSDIR)/lib/libcrypto.a \
+ $(DEPSDIR1)/lib/libz.a
+else
+LIBS += \
+ -l db_cxx-4.8 \
+ -l boost_system \
+ -l boost_filesystem \
+ -l boost_program_options \
+ -l boost_thread \
+ -l boost_chrono \
+ -l ssl \
+ -l event \
+ -l event_pthreads \
+ -l gmp \
+ -l crypto \
+ -l z
+endif
 
 DEFS=-DBOOST_SPIRIT_THREADSAFE
-
-DEFS += $(addprefix -I,$(CURDIR) $(CURDIR)/obj $(BOOST_INCLUDE_PATH) $(BDB_INCLUDE_PATH) $(OPENSSL_INCLUDE_PATH))
-LIBS = $(addprefix -L,$(BOOST_LIB_PATH) $(BDB_LIB_PATH) $(OPENSSL_LIB_PATH))
-
-LMODE = dynamic
-LMODE2 = dynamic
-ifdef STATIC
-	LMODE = static
-	ifeq (${STATIC}, all)
-		LMODE2 = static
-	endif
-endif
-
-# for boost 1.37, add -mt to the boost libraries
-LIBS += \
- -Wl,-B$(LMODE) \
-   -l boost_system$(BOOST_LIB_SUFFIX) \
-   -l boost_filesystem$(BOOST_LIB_SUFFIX) \
-   -l boost_program_options$(BOOST_LIB_SUFFIX) \
-   -l boost_thread$(BOOST_LIB_SUFFIX) \
-   -l db_cxx$(BDB_LIB_SUFFIX) \
-   -l ssl \
-   -l crypto \
-   -l execinfo
-
-ifndef USE_UPNP
-	override USE_UPNP = -
-endif
-ifneq (${USE_UPNP}, -)
-	LIBS += -l miniupnpc
-	DEFS += -DUSE_UPNP=$(USE_UPNP)
-endif
-
-ifeq (${USE_LOWMEM}, 1)
-    DEFS += -DLOWMEM
-endif
-
-LIBS+= \
- -Wl,-B$(LMODE2) \
-   -l z \
-   -l dl \
-   -l pthread
-
-
-# Hardening
-# Make some classes of vulnerabilities unexploitable in case one is discovered.
-#
-    # This is a workaround for Ubuntu bug #691722, the default -fstack-protector causes
-    # -fstack-protector-all to be ignored unless -fno-stack-protector is used first.
-    # see: https://bugs.launchpad.net/ubuntu/+source/gcc-4.5/+bug/691722
-    HARDENING=-fno-stack-protector
-
-    # Stack Canaries
-    # Put numbers at the beginning of each stack frame and check that they are the same.
-    # If a stack buffer if overflowed, it writes over the canary number and then on return
-    # when that number is checked, it won't be the same and the program will exit with
-    # a "Stack smashing detected" error instead of being exploited.
-    HARDENING+=-fstack-protector-all -Wstack-protector
-
-    # Make some important things such as the global offset table read only as soon as
-    # the dynamic linker is finished building it. This will prevent overwriting of addresses
-    # which would later be jumped to.
-    LDHARDENING+=-Wl,-z,relro -Wl,-z,now
-
-    # Build position independent code to take advantage of Address Space Layout Randomization
-    # offered by some kernels.
-    # see doc/build-unix.txt for more information.
-    ifdef PIE
-        HARDENING+=-fPIE
-        LDHARDENING+=-pie
-    endif
-
-    # -D_FORTIFY_SOURCE=2 does some checking for potentially exploitable code patterns in
-    # the source such overflowing a statically defined buffer.
-    HARDENING+=-D_FORTIFY_SOURCE=2
-#
-
 
 DEBUGFLAGS=-g
 
 # CXXFLAGS can be specified on the make command line, so we use xCXXFLAGS that only
 # adds some defaults in front. Unfortunately, CXXFLAGS=... $(CXXFLAGS) does not work.
-xCXXFLAGS=-O0 -msse2 -pthread -Wall -Wextra -Wno-ignored-qualifiers -Wformat -Wformat-security -Wno-unused-parameter \
-    $(DEBUGFLAGS) $(DEFS) $(HARDENING) $(CXXFLAGS)
-
-# LDFLAGS can be specified on the make command line, so we use xLDFLAGS that only
-# adds some defaults in front. Unfortunately, LDFLAGS=... $(LDFLAGS) does not work.
-xLDFLAGS=$(LDHARDENING) $(LDFLAGS)
+xCXXFLAGS=-pthread -Wall -Wextra -Wno-ignored-qualifiers -Wformat -Wformat-security -Wno-unused-parameter -Wunused-function -Wunused-variable -fpermissive -Wconversion-null -Wno-deprecated-declarations\
+    $(DEBUGFLAGS) $(DEFS) $(INCLUDEPATHS)
 
 OBJS= \
     obj/alert.o \
     obj/torcontrol.o \
+    obj/allocators.o \
     obj/validationinterface.o \
-    obj/version.o \
-    obj/checkpoints.o \
     obj/scheduler.o \
+    obj/version.o \
+    obj/support/cleanse.o \
+    obj/checkpoints.o \
     obj/netbase.o \
     obj/addrdb.o \
     obj/addrman.o \
+    obj/base58.o \
     obj/crypter.o \
     obj/key.o \
+    obj/pubkey.o \
+    obj/ecwrapper.o \
     obj/init.o \
     obj/bitcoind.o \
     obj/keystore.o \
@@ -126,7 +101,9 @@ OBJS= \
     obj/rpcnet.o \
     obj/rpcblockchain.o \
     obj/rpcrawtransaction.o \
+    obj/rpcsmessage.o \
     obj/script.o \
+    obj/scrypt.o \
     obj/sync.o \
     obj/txmempool.o \
     obj/util.o \
@@ -139,8 +116,25 @@ OBJS= \
     obj/noui.o \
     obj/kernel.o \
     obj/pbkdf2.o \
-    obj/scrypt.o \
-    obj/chainparams.o
+    obj/chainparams.o \
+    obj/stealth.o \
+    obj/activemasternode.o \
+    obj/darksend.o \
+    obj/darksend-relay.o \
+    obj/instantx.o \
+    obj/masternodeconfig.o \
+    obj/masternodeman.o \
+    obj/masternode.o \
+    obj/masternode-payments.o \
+    obj/rpcdarksend.o \
+    obj/spork.o \
+    obj/crypto/hmac_sha256.o \
+    obj/crypto/hmac_sha512.o \
+    obj/crypto/ripemd160.o \
+    obj/crypto/sha1.o \
+    obj/crypto/sha256.o \
+    obj/crypto/sha512.o \
+    obj/smessage.o
 
 ifeq (${USE_WALLET}, 1)
     DEFS += -DENABLE_WALLET
@@ -154,14 +148,37 @@ ifeq (${USE_WALLET}, 1)
         obj/wallet/walletdb.o
 endif
 
-all: madcoind
+ifndef USE_UPNP
+    override USE_UPNP = -
+endif
+ifneq (${USE_UPNP}, -)
+    DEFS += -DUSE_UPNP=$(USE_UPNP)
+ifdef STATIC
+    LIBS += $(DEPSDIR)/lib/libminiupnpc.a
+else
+    LIBS += -lminiupnpc
+endif
+endif
 
+ifeq (${USE_LOWMEM}, 1)
+    DEFS += -DLOWMEM
+endif
+
+all: piratecashd
+
+# build secp256k1
+DEFS += $(addprefix -I,$(CURDIR)/secp256k1/include)
+secp256k1/src/libsecp256k1_la-secp256k1.o:
+	@echo "Building Secp256k1 ..."; cd secp256k1; chmod 755 *; ./autogen.sh; ./configure --enable-module-recovery; C=$(C) CXX=$(CXX) gmake; cd ..;
+piratecashd: secp256k1/src/libsecp256k1_la-secp256k1.o
+
+# build leveldb
 LIBS += $(CURDIR)/leveldb/libleveldb.a $(CURDIR)/leveldb/libmemenv.a
 DEFS += $(addprefix -I,$(CURDIR)/leveldb/include)
 DEFS += $(addprefix -I,$(CURDIR)/leveldb/helpers)
 OBJS += obj/txdb.o
 leveldb/libleveldb.a:
-	@echo "Building LevelDB ..."; cd leveldb; make libleveldb.a libmemenv.a; cd ..;
+	@echo "Building LevelDB ..."; cd leveldb; chmod 755 *; C=$(C) CXX=$(CXX) gmake libleveldb.a libmemenv.a; cd ..;
 obj/txdb.o: leveldb/libleveldb.a
 
 # auto-generated dependencies:
@@ -170,15 +187,22 @@ obj/txdb.o: leveldb/libleveldb.a
 obj/%.o: %.cpp
 	$(CXX) -c $(xCXXFLAGS) -MMD -MF $(@:%.o=%.d) -o $@ $<
 	@cp $(@:%.o=%.d) $(@:%.o=%.P); \
-	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
-	      -e '/^$$/ d' -e 's/$$/ :/' < $(@:%.o=%.d) >> $(@:%.o=%.P); \
-	  rm -f $(@:%.o=%.d)
+	sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	-e '/^$$/ d' -e 's/$$/ :/' < $(@:%.o=%.d) >> $(@:%.o=%.P); \
+	rm -f $(@:%.o=%.d)
 
-madcoind: $(OBJS:obj/%=obj/%)
-	$(LINK) $(xCXXFLAGS) -o $@ $^ $(xLDFLAGS) $(LIBS)
+obj/%.o: %.c
+	$(C) -c $(xCXXFLAGS) -fpermissive -MMD -MF $(@:%.o=%.d) -o $@ $<
+	@cp $(@:%.o=%.d) $(@:%.o=%.P); \
+	sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	-e '/^$$/ d' -e 's/$$/ :/' < $(@:%.o=%.d) >> $(@:%.o=%.P); \
+	rm -f $(@:%.o=%.d)
+
+piratecashd: $(OBJS:obj/%=obj/%)
+	$(CXX) $(xCXXFLAGS) -o $@ $(LIBPATHS) $^ $(LIBS)
 
 clean:
-	-rm -f madcoind
+	-rm -f piratecashd
 	-rm -f obj/*.o
 	-rm -f obj/*.P
 	-rm -f obj/build.h
