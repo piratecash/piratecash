@@ -30,7 +30,7 @@
 #include "guiutil.h"
 #include "rpcconsole.h"
 #include "mintingview.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 #include "main.h"
 #include "init.h"
 #include "util.h"

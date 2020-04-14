@@ -11,7 +11,7 @@
 #include "primitives/transaction.h"
 #include "ui_interface.h"
 #include "darksend.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 
 #ifdef WIN32
 #include <string.h>
@@ -60,8 +60,6 @@ namespace {
         ListenSocket(SOCKET socket, bool whitelisted) : socket(socket), whitelisted(whitelisted) {}
     };
 }
-
-bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOutbound = NULL, const char *strDest = NULL, bool fOneShot = false);
 
 
 //
@@ -243,6 +241,7 @@ void AdvertizeLocal(CNode *pnode)
         }
         if (addrLocal.IsRoutable())
         {
+            LogPrintf("AdvertizeLocal: advertizing address %s\n", addrLocal.ToString());
             pnode->PushAddress(addrLocal);
         }
     }
@@ -287,6 +286,14 @@ bool AddLocal(const CService& addr, int nScore)
 bool AddLocal(const CNetAddr &addr, int nScore)
 {
     return AddLocal(CService(addr, GetListenPort()), nScore);
+}
+
+bool RemoveLocal(const CService& addr)
+{
+    LOCK(cs_mapLocalHost);
+    LogPrintf("RemoveLocal(%s)\n", addr.ToString());
+    mapLocalHost.erase(addr);
+    return true;
 }
 
 /** Make a particular network entirely off-limits (no automatic connects to it) */
@@ -391,7 +398,7 @@ CNode* FindNode(const CService& addr)
 }
 
 
-CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool fConnectToMasternode)
+CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool fCountFailure, bool fConnectToMasternode)
 {
     if (pszDest == NULL) {
         // we clean masternode connections in CMasternodeMan::ProcessMasternodeConnections()
@@ -431,7 +438,7 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool fConnectToMas
             return NULL;
         }
 
-        addrman.Attempt(addrConnect);
+        addrman.Attempt(addrConnect, fCountFailure);
 
         // Add node
         CNode* pnode = new CNode(hSocket, addrConnect, pszDest ? pszDest : "", false, true);
@@ -451,7 +458,7 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool fConnectToMas
     } else if (!proxyConnectionFailed) {
         // If connecting to the node failed, and failure is not caused by a problem connecting to
         // the proxy, mark this as an attempt.
-        addrman.Attempt(addrConnect);
+        addrman.Attempt(addrConnect, fCountFailure);
     }
 
     return NULL;
@@ -802,7 +809,7 @@ void SocketSendData(CNode *pnode)
                 if (nErr != WSAEWOULDBLOCK && nErr != WSAEMSGSIZE && nErr != WSAEINTR && nErr != WSAEINPROGRESS)
                 {
                     LogPrintf("socket send error %s\n", NetworkErrorString(nErr));
-                    pnode->CloseSocketDisconnect();
+                    pnode->fDisconnect = true;
                 }
             }
             // couldn't send anything at all
@@ -1114,10 +1121,10 @@ void ThreadSocketHandler()
                     pnode->fDisconnect = true;
                 }
                 else if (nTime - pnode->nLastSend > TIMEOUT_INTERVAL)
-				{
-					LogPrintf("socket not sending\n");
-					pnode->fDisconnect = true;
-				}
+                {
+                    LogPrintf("socket sending timeout: %is\n", nTime - pnode->nLastSend);
+                    pnode->fDisconnect = true;
+                }
                 else if (nTime - pnode->nLastRecv > (pnode->nVersion > BIP0031_VERSION ? TIMEOUT_INTERVAL : 90*60))
                 {
                     LogPrintf("socket receive timeout: %is\n", nTime - pnode->nLastRecv);
@@ -1355,7 +1362,7 @@ void static ProcessOneShot()
     CAddress addr;
     CSemaphoreGrant grant(*semOutbound, true);
     if (grant) {
-        if (!OpenNetworkConnection(addr, &grant, strDest.c_str(), true))
+        if (!OpenNetworkConnection(addr, false, &grant, strDest.c_str(), true))
             AddOneShot(strDest);
     }
 }
@@ -1371,7 +1378,7 @@ void ThreadOpenConnections()
             BOOST_FOREACH(string strAddr, mapMultiArgs["-connect"])
             {
                 CAddress addr;
-                OpenNetworkConnection(addr, NULL, strAddr.c_str());
+                OpenNetworkConnection(addr, false, NULL, strAddr.c_str());
                 for (int i = 0; i < 10 && i < nLoop; i++)
                 {
                     MilliSleep(500);
@@ -1426,7 +1433,7 @@ void ThreadOpenConnections()
         int nTries = 0;
         while (true)
         {
-            CAddress addr = addrman.Select();
+            CAddrInfo addr = addrman.Select();
 
             // if we selected an invalid address, restart
             if (!addr.IsValid() || setConnected.count(addr.GetGroup()) || IsLocal(addr))
@@ -1455,7 +1462,7 @@ void ThreadOpenConnections()
         }
 
         if (addrConnect.IsValid())
-            OpenNetworkConnection(addrConnect, &grant);
+            OpenNetworkConnection(addrConnect, (int)setConnected.size() >= std::min(nMaxConnections - 1, 2), &grant);
     }
 }
 
@@ -1477,7 +1484,7 @@ void ThreadOpenAddedConnections()
             BOOST_FOREACH(string& strAddNode, lAddresses) {
                 CAddress addr;
                 CSemaphoreGrant grant(*semOutbound);
-                OpenNetworkConnection(addr, &grant, strAddNode.c_str());
+                OpenNetworkConnection(addr, false, &grant, strAddNode.c_str());
                 MilliSleep(500);
             }
             MilliSleep(120000); // Retry every 2 minutes
@@ -1524,7 +1531,7 @@ void ThreadOpenAddedConnections()
         BOOST_FOREACH(vector<CService>& vserv, lservAddressesToAdd)
         {
             CSemaphoreGrant grant(*semOutbound);
-            OpenNetworkConnection(CAddress(vserv[i % vserv.size()]), &grant);
+            OpenNetworkConnection(CAddress(vserv[i % vserv.size()]), false, &grant);
             MilliSleep(500);
         }
         MilliSleep(120000); // Retry every 2 minutes
@@ -1532,7 +1539,7 @@ void ThreadOpenAddedConnections()
 }
 
 // if successful, this moves the passed grant to the constructed node
-bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOutbound, const char *pszDest, bool fOneShot)
+bool OpenNetworkConnection(const CAddress& addrConnect, bool fCountFailure, CSemaphoreGrant *grantOutbound, const char *pszDest, bool fOneShot)
 {
     //
     // Initiate outbound network connection
@@ -1546,7 +1553,7 @@ bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOu
     } else if (FindNode(pszDest))
         return false;
 
-    CNode* pnode = ConnectNode(addrConnect, pszDest);
+    CNode* pnode = ConnectNode(addrConnect, pszDest, fCountFailure);
     boost::this_thread::interruption_point();
 
     if (!pnode)
@@ -1639,7 +1646,7 @@ void ThreadMessageHandler()
 				if (lockRecv)
 				{
 					if (!g_signals.ProcessMessages(pnode))
-						pnode->CloseSocketDisconnect();
+                        pnode->fDisconnect = true;
 
 					if (pnode->nSendSize < SendBufferSize())
 					{
@@ -2025,211 +2032,6 @@ uint64_t CNode::GetTotalBytesSent()
 {
     LOCK(cs_totalBytesSent);
     return nTotalBytesSent;
-}
-
-//
-// CAddrDB
-//
-
-CAddrDB::CAddrDB()
-{
-    pathAddr = GetDataDir() / "peers.dat";
-}
-
-bool CAddrDB::Write(const CAddrMan& addr)
-{
-	// Generate random temporary filename
-	unsigned short randv = 0;
-	GetRandBytes((unsigned char *)&randv, sizeof(randv));
-	std::string tmpfn = strprintf("peers.dat.%04x", randv);
-
-	// serialize addresses, checksum data up to that point, then append csum
-	CDataStream ssPeers(SER_DISK, CLIENT_VERSION);
-	ssPeers << FLATDATA(Params().MessageStart());
-	ssPeers << addr;
-	uint256 hash = Hash(ssPeers.begin(), ssPeers.end());
-	ssPeers << hash;
-
-	// open temp output file, and associate with CAutoFile
-	boost::filesystem::path pathTmp = GetDataDir() / tmpfn;
-	FILE *file = fopen(pathTmp.string().c_str(), "wb");
-	CAutoFile fileout = CAutoFile(file, SER_DISK, CLIENT_VERSION);
-	if (fileout.IsNull())
-		return error("CAddrman::Write() : open failed");
-
-	// Write and commit header, data
-	try {
-		fileout << ssPeers;
-	}
-	catch (std::exception &e) {
-		return error("CAddrman::Write() : I/O error");
-	}
-	FileCommit(fileout.Get());
-	fileout.fclose();
-
-	// replace existing peers.dat, if any, with new peers.dat.XXXX
-	if (!RenameOver(pathTmp, pathAddr))
-		return error("CAddrman::Write() : Rename-into-place failed");
-
-	return true;
-}
-
-bool CAddrDB::Read(CAddrMan& addr)
-{
-	// open input file, and associate with CAutoFile
-	FILE *file = fopen(pathAddr.string().c_str(), "rb");
-	CAutoFile filein = CAutoFile(file, SER_DISK, CLIENT_VERSION);
-	if (filein.IsNull())
-		return error("CAddrman::Read() : open failed");
-
-	// use file size to size memory buffer
-	int64_t fileSize = boost::filesystem::file_size(pathAddr);
-	int64_t dataSize = fileSize - sizeof(uint256);
-	// Don't try to resize to a negative number if file is small
-	if (fileSize >= sizeof(uint256))
-		dataSize = fileSize - sizeof(uint256);
-	if (dataSize < 0)
-		dataSize = 0;
-	vector<unsigned char> vchData;
-	vchData.resize(dataSize);
-	uint256 hashIn;
-
-	// read data and checksum from file
-	try {
-		filein.read((char *)&vchData[0], dataSize);
-		filein >> hashIn;
-	}
-	catch (std::exception &e) {
-		return error("CAddrman::Read() 2 : I/O error or stream data corrupted");
-	}
-	filein.fclose();
-
-	CDataStream ssPeers(vchData, SER_DISK, CLIENT_VERSION);
-
-	// verify stored checksum matches input data
-	uint256 hashTmp = Hash(ssPeers.begin(), ssPeers.end());
-	if (hashIn != hashTmp)
-		return error("CAddrman::Read() : checksum mismatch; data corrupted");
-
-	unsigned char pchMsgTmp[4];
-	try {
-		// de-serialize file header (network specific magic number) and ..
-		ssPeers >> FLATDATA(pchMsgTmp);
-
-		// ... verify the network matches ours
-		if (memcmp(pchMsgTmp, Params().MessageStart(), sizeof(pchMsgTmp)))
-			return error("CAddrman::Read() : invalid network magic number");
-
-		// de-serialize address data into one CAddrMan object
-		ssPeers >> addr;
-	}
-	catch (std::exception &e) {
-		return error("CAddrman::Read() : I/O error or stream data corrupted");
-	}
-
-	return true;
-}
-
-
-//
-// CBanDB
-//
-
-CBanDB::CBanDB()
-{
-    pathBanlist = GetDataDir() / "banlist.dat";
-}
-
-bool CBanDB::Write(const banmap_t& banSet)
-{
- 	// Generate random temporary filename
-	unsigned short randv = 0;
-	GetRandBytes((unsigned char*)&randv, sizeof(randv));
-	std::string tmpfn = strprintf("banlist.dat.%04x", randv);
-
-	// serialize banlist, checksum data up to that point, then append csum
-	CDataStream ssBanlist(SER_DISK, CLIENT_VERSION);
-	ssBanlist << FLATDATA(Params().MessageStart());
-	ssBanlist << banSet;
-	uint256 hash = Hash(ssBanlist.begin(), ssBanlist.end());
-	ssBanlist << hash;
-
-	// open temp output file, and associate with CAutoFile
-	boost::filesystem::path pathTmp = GetDataDir() / tmpfn;
-	FILE *file = fopen(pathTmp.string().c_str(), "wb");
-	CAutoFile fileout(file, SER_DISK, CLIENT_VERSION);
-	if (fileout.IsNull())
-		return error("%s: Failed to open file %s", __func__, pathTmp.string());
-
-	// Write and commit header, data
-	try {
-		fileout << ssBanlist;
-	}
-	catch (const std::exception& e) {
-		return error("%s: Serialize or I/O error - %s", __func__, e.what());
-	}
-	FileCommit(fileout.Get());
-	fileout.fclose();
-
-	// replace existing banlist.dat, if any, with new banlist.dat.XXXX
-	if (!RenameOver(pathTmp, pathBanlist))
-		return error("%s: Rename-into-place failed", __func__);
-
-	return true;
-}
-
-bool CBanDB::Read(banmap_t& banSet)
-{
-	// open input file, and associate with CAutoFile
-	FILE *file = fopen(pathBanlist.string().c_str(), "rb");
-	CAutoFile filein(file, SER_DISK, CLIENT_VERSION);
-	if (filein.IsNull())
-		return error("%s: Failed to open file %s", __func__, pathBanlist.string());
-
-	// use file size to size memory buffer
-	uint64_t fileSize = boost::filesystem::file_size(pathBanlist);
-	uint64_t dataSize = 0;
-	// Don't try to resize to a negative number if file is small
-	if (fileSize >= sizeof(uint256))
-		dataSize = fileSize - sizeof(uint256);
-	vector<unsigned char> vchData;
-	vchData.resize(dataSize);
-	uint256 hashIn;
-
-	// read data and checksum from file
-	try {
-		filein.read((char *)&vchData[0], dataSize);
-		filein >> hashIn;
-	}
-	catch (const std::exception& e) {
-		return error("%s: Deserialize or I/O error - %s", __func__, e.what());
-	}
-	filein.fclose();
-
-	CDataStream ssBanlist(vchData, SER_DISK, CLIENT_VERSION);
-
-	// verify stored checksum matches input data
-	uint256 hashTmp = Hash(ssBanlist.begin(), ssBanlist.end());
-	if (hashIn != hashTmp)
-		return error("%s: Checksum mismatch, data corrupted", __func__);
-
-	unsigned char pchMsgTmp[4];
-	try {
-		// de-serialize file header (network specific magic number) and ..
-		ssBanlist >> FLATDATA(pchMsgTmp);
-
-		// ... verify the network matches ours
-		if (memcmp(pchMsgTmp, Params().MessageStart(), sizeof(pchMsgTmp)))
-			return error("%s: Invalid network magic number", __func__);
-
-		// de-serialize address data into one CAddrMan object
-		ssBanlist >> banSet;
-	}
-	catch (const std::exception& e) {
-		return error("%s: Deserialize or I/O error - %s", __func__, e.what());
-	}
-
-	return true;
 }
 
 void DumpBanlist()

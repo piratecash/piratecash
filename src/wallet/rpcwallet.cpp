@@ -105,7 +105,7 @@ CScript _createmultisig(const Array& params)
         const std::string& ks = keys[i].get_str();
 #ifdef ENABLE_WALLET
         // Case 1: Bitcoin address and we have full public key:
-        CpiratecashcoinAddress address(ks);
+        CBitcoinAddress address(ks);
         if (pwalletMain && address.IsValid())
         {
             CKeyID keyID;
@@ -175,7 +175,7 @@ Value createmultisig(const Array& params, bool fHelp)
     // Construct using pay-to-script-hash:
     CScript inner = _createmultisig(params);
     CScriptID innerID = inner.GetID();
-    CpiratecashcoinAddress address(innerID);
+    CBitcoinAddress address(innerID);
 
     Object result;
     result.push_back(Pair("address", address.ToString()));
@@ -246,11 +246,11 @@ Value getnewaddress(const Array& params, bool fHelp)
 
     pwalletMain->SetAddressBookName(keyID, strAccount);
 
-    return CpiratecashcoinAddress(keyID).ToString();
+    return CBitcoinAddress(keyID).ToString();
 }
 
 
-CpiratecashcoinAddress GetAccountAddress(string strAccount, bool bForceNew=false)
+CBitcoinAddress GetAccountAddress(string strAccount, bool bForceNew=false)
 {
     CWalletDB walletdb(pwalletMain->strWalletFile);
 
@@ -285,7 +285,7 @@ CpiratecashcoinAddress GetAccountAddress(string strAccount, bool bForceNew=false
         walletdb.WriteAccount(strAccount, account);
     }
 
-    return CpiratecashcoinAddress(account.vchPubKey.GetID());
+    return CBitcoinAddress(account.vchPubKey.GetID());
 }
 
 Value getaccountaddress(const Array& params, bool fHelp)
@@ -331,7 +331,7 @@ Value setaccount(const Array& params, bool fHelp)
             + HelpExampleRpc("setaccount", "\"PPw71sdvf1ZszjwvmPS8jjcEMYEHFGnQDZ\", \"tabby\"")
         );
 
-    CpiratecashcoinAddress address(params[0].get_str());
+    CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Piratecash address");
 
@@ -374,7 +374,7 @@ Value getaccount(const Array& params, bool fHelp)
             + HelpExampleRpc("getaccount", "\"PPw71sdvf1ZszjwvmPS8jjcEMYEHFGnQDZ\"")
         );
 
-    CpiratecashcoinAddress address(params[0].get_str());
+    CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Piratecash address");
 
@@ -408,9 +408,9 @@ Value getaddressesbyaccount(const Array& params, bool fHelp)
 
     // Find all addresses that have the given account
     Array ret;
-    BOOST_FOREACH(const PAIRTYPE(CpiratecashcoinAddress, string)& item, pwalletMain->mapAddressBook)
+    BOOST_FOREACH(const PAIRTYPE(CBitcoinAddress, string)& item, pwalletMain->mapAddressBook)
     {
-        const CpiratecashcoinAddress& address = item.first;
+        const CBitcoinAddress& address = item.first;
         const string& strName = item.second;
         if (strName == strAccount)
             ret.push_back(address.ToString());
@@ -447,7 +447,7 @@ Value sendtoaddress(const Array& params, bool fHelp)
         && IsStealthAddress(params[0].get_str()))
         return sendtostealthaddress(params, false);
 
-    CpiratecashcoinAddress address(params[0].get_str());
+    CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Piratecash address");
 
@@ -508,12 +508,12 @@ Value listaddressgroupings(const Array& params, bool fHelp)
         BOOST_FOREACH(CTxDestination address, grouping)
         {
             Array addressInfo;
-            addressInfo.push_back(CpiratecashcoinAddress(address).ToString());
+            addressInfo.push_back(CBitcoinAddress(address).ToString());
             addressInfo.push_back(ValueFromAmount(balances[address]));
             {
                 LOCK(pwalletMain->cs_wallet);
-                if (pwalletMain->mapAddressBook.find(CpiratecashcoinAddress(address).Get()) != pwalletMain->mapAddressBook.end())
-                    addressInfo.push_back(pwalletMain->mapAddressBook.find(CpiratecashcoinAddress(address).Get())->second);
+                if (pwalletMain->mapAddressBook.find(CBitcoinAddress(address).Get()) != pwalletMain->mapAddressBook.end())
+                    addressInfo.push_back(pwalletMain->mapAddressBook.find(CBitcoinAddress(address).Get())->second);
             }
             jsonGrouping.push_back(addressInfo);
         }
@@ -550,7 +550,7 @@ Value signmessage(const Array& params, bool fHelp)
     string strAddress = params[0].get_str();
     string strMessage = params[1].get_str();
 
-    CpiratecashcoinAddress addr(strAddress);
+    CBitcoinAddress addr(strAddress);
     if (!addr.IsValid())
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid address");
 
@@ -596,7 +596,7 @@ Value getreceivedbyaddress(const Array& params, bool fHelp)
        );
 
     // Bitcoin address
-    CpiratecashcoinAddress address = CpiratecashcoinAddress(params[0].get_str());
+    CBitcoinAddress address = CBitcoinAddress(params[0].get_str());
     CScript scriptPubKey;
     if (!address.IsValid())
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Piratecash address");
@@ -902,7 +902,7 @@ Value sendfrom(const Array& params, bool fHelp)
     EnsureWalletIsUnlocked();
 
     string strAccount = AccountFromValue(params[0]);
-    CpiratecashcoinAddress address(params[1].get_str());
+    CBitcoinAddress address(params[1].get_str());
     if (!address.IsValid())
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Piratecash address");
     CAmount nAmount = AmountFromValue(params[2]);
@@ -979,13 +979,13 @@ Value sendmany(const Array& params, bool fHelp)
     if (params.size() > 3 && params[3].type() != null_type && !params[3].get_str().empty())
         wtx.mapValue["comment"] = params[3].get_str();
 
-    set<CpiratecashcoinAddress> setAddress;
+    set<CBitcoinAddress> setAddress;
     vector<pair<CScript, int64_t> > vecSend;
 
     int64_t totalAmount = 0;
     BOOST_FOREACH(const Pair& s, sendTo)
     {
-        CpiratecashcoinAddress address(s.name_);
+        CBitcoinAddress address(s.name_);
         if (!address.IsValid())
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid Piratecash address: ")+s.name_);
 
@@ -1080,7 +1080,7 @@ Value addmultisigaddress(const Array& params, bool fHelp)
         const std::string& ks = keys[i].get_str();
 
         // Case 1: Bitcoin address and we have full public key:
-        CpiratecashcoinAddress address(ks);
+        CBitcoinAddress address(ks);
         if (pwalletMain && address.IsValid())
         {
             CKeyID keyID;
@@ -1118,7 +1118,7 @@ Value addmultisigaddress(const Array& params, bool fHelp)
         throw runtime_error("AddCScript() failed");
 
     pwalletMain->SetAddressBookName(innerID, strAccount);
-    return CpiratecashcoinAddress(innerID).ToString();
+    return CBitcoinAddress(innerID).ToString();
 }
 
 Value addredeemscript(const Array& params, bool fHelp)
@@ -1143,7 +1143,7 @@ Value addredeemscript(const Array& params, bool fHelp)
         throw runtime_error("AddCScript() failed");
 
     pwalletMain->SetAddressBookName(innerID, strAccount);
-    return CpiratecashcoinAddress(innerID).ToString();
+    return CBitcoinAddress(innerID).ToString();
 }
 
 struct tallyitem
@@ -1180,7 +1180,7 @@ Value ListReceived(const Array& params, bool fByAccounts)
             filter = filter | ISMINE_WATCH_ONLY;
 
     // Tally
-    map<CpiratecashcoinAddress, tallyitem> mapTally;
+    map<CBitcoinAddress, tallyitem> mapTally;
     for (map<uint256, CWalletTx>::iterator it = pwalletMain->mapWallet.begin(); it != pwalletMain->mapWallet.end(); ++it)
     {
         const CWalletTx& wtx = (*it).second;
@@ -1216,11 +1216,11 @@ Value ListReceived(const Array& params, bool fByAccounts)
     // Reply
     Array ret;
     map<string, tallyitem> mapAccountTally;
-    BOOST_FOREACH(const PAIRTYPE(CpiratecashcoinAddress, string)& item, pwalletMain->mapAddressBook)
+    BOOST_FOREACH(const PAIRTYPE(CBitcoinAddress, string)& item, pwalletMain->mapAddressBook)
     {
-        const CpiratecashcoinAddress& address = item.first;
+        const CBitcoinAddress& address = item.first;
         const string& strAccount = item.second;
-        map<CpiratecashcoinAddress, tallyitem>::iterator it = mapTally.find(address);
+        map<CBitcoinAddress, tallyitem>::iterator it = mapTally.find(address);
         if (it == mapTally.end() && !fIncludeEmpty)
             continue;
 
@@ -1357,7 +1357,7 @@ Value listreceivedbyaccount(const Array& params, bool fHelp)
 
 static void MaybePushAddress(Object & entry, const CTxDestination &dest)
 {
-    CpiratecashcoinAddress addr;
+    CBitcoinAddress addr;
     if (addr.Set(dest))
         entry.push_back(Pair("address", addr.ToString()));
 }
@@ -1879,25 +1879,19 @@ Value keypoolrefill(const Array& params, bool fHelp)
             + HelpExampleRpc("keypoolrefill", "")
         );
 
-    fLiteMode = GetBoolArg("-litemode", false);
-    unsigned int nSize;
-
-    if (fLiteMode)
-        nSize = max(GetArg("-keypool", 100), (int64_t)0);
-    else
-        nSize = max(GetArg("-keypool", 10), (int64_t)0);
+    unsigned int kpSize = max(GetArg("-keypool", DEFAULT_KEYPOOL_SIZE), (int64_t) 0);
 
     if (params.size() > 0) {
         if (params[0].get_int() < 0)
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, expected valid size");
-        nSize = (unsigned int) params[0].get_int();
+        kpSize = (unsigned int) params[0].get_int();
     }
 
     EnsureWalletIsUnlocked();
 
-    pwalletMain->TopUpKeyPool(nSize);
+    pwalletMain->TopUpKeyPool(kpSize);
 
-    if (pwalletMain->GetKeyPoolSize() < nSize)
+    if (pwalletMain->GetKeyPoolSize() < kpSize)
         throw JSONRPCError(RPC_WALLET_ERROR, "Error refreshing keypool.");
 
     return Value::null;

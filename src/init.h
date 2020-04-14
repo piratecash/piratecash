@@ -8,6 +8,7 @@
 
 #include <string>
 
+class CScheduler;
 class CWallet;
 
 namespace boost
@@ -19,9 +20,11 @@ extern CWallet* pwalletMain;
 
 void StartShutdown();
 bool ShutdownRequested();
+/** Interrupt threads */
+void Interrupt(boost::thread_group& threadGroup);
 void Shutdown();
 void PrepareShutdown();
-bool AppInit2(boost::thread_group& threadGroup);
+bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler);
 /** Help for options shared between UI and daemon (for -help) */
 std::string HelpMessage();
 /** Returns licensing information (for -version) */

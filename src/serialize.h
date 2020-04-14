@@ -101,9 +101,9 @@ enum
 
 /* Implement three methods for serializable objects. These are actually wrappers over
  * "SerializationOp" template, which implements the body of each class' serialization
- * code. Adding "IMPLEMENT_SERIALIZE" in the body of the class causes these wrappers to be
+ * code. Adding "ADD_SERIALIZE_METHODS" in the body of the class causes these wrappers to be
  * added as members. */
-#define IMPLEMENT_SERIALIZE                                                          \
+#define ADD_SERIALIZE_METHODS                                                          \
     size_t GetSerializeSize(int nType, int nVersion) const {                         \
         CSizeComputer s(nType, nVersion);                                            \
         NCONST_PTR(this)->SerializationOp(s, CSerActionSerialize(), nType, nVersion);\
@@ -419,7 +419,7 @@ class LimitedString
 protected:
     std::string& string;
 public:
-    LimitedString(std::string& string) : string(string) {}
+    LimitedString(std::string& _string) : string(_string) {}
 
     template<typename Stream>
     void Unserialize(Stream& s, int, int=0)
@@ -843,15 +843,15 @@ void Unserialize(Stream& is, std::set<K, Pred, A>& m, int nType, int nVersion)
 
 
 //
-// Support for IMPLEMENT_SERIALIZE and READWRITE macro
+// Support for ADD_SERIALIZE_METHODS and READWRITE macro
 //
 struct CSerActionSerialize
 {
-    bool ForRead() const { return false; }
+    constexpr bool ForRead() const { return false; }
 };
 struct CSerActionUnserialize
 {
-    bool ForRead() const { return true; }
+    constexpr bool ForRead() const { return true; }
 };
 
 template<typename Stream, typename T>

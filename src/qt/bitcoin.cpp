@@ -14,7 +14,8 @@
 #include "guiconstants.h"
 #include "init.h"
 #include "util.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
+#include "scheduler.h"
 #include "ui_interface.h"
 #include "paymentserver.h"
 #ifdef Q_OS_MAC
@@ -254,6 +255,7 @@ int main(int argc, char *argv[])
             GUIUtil::SetStartOnSystemStartup(true);
 
         boost::thread_group threadGroup;
+        CScheduler scheduler;
 
         BitcoinGUI window;
         guiref = &window;
@@ -262,7 +264,7 @@ int main(int argc, char *argv[])
         QObject::connect(pollShutdownTimer, SIGNAL(timeout()), guiref, SLOT(detectShutdown()));
         pollShutdownTimer->start(200);
 
-        if(AppInit2(threadGroup))
+        if(AppInit2(threadGroup, scheduler))
         {
             {
                 // Put this in a block, so that the Model objects are cleaned up before

@@ -64,11 +64,15 @@ HEADERS = $(wildcard *.h)
 
 OBJS= \
     obj/alert.o \
+    obj/torcontrol.o \
     obj/allocators.o \
+    obj/validationinterface.o \
+    obj/scheduler.o \
     obj/version.o \
     obj/support/cleanse.o \
     obj/checkpoints.o \
     obj/netbase.o \
+    obj/addrdb.o \
     obj/addrman.o \
     obj/base58.o \
     obj/crypter.o \
@@ -128,13 +132,13 @@ OBJS= \
 ifeq (${USE_WALLET}, 1)
     DEFS += -DENABLE_WALLET
     OBJS += \
-        obj/db.o \
+        obj/wallet/db.o \
         obj/miner.o \
-        obj/rpcdump.o \
+        obj/wallet/rpcdump.o \
         obj/rpcmining.o \
-        obj/rpcwallet.o \
-        obj/wallet.o \
-        obj/walletdb.o
+        obj/wallet/rpcwallet.o \
+        obj/wallet/wallet.o \
+        obj/wallet/walletdb.o
 endif
 
 all: madcoind.exe
@@ -142,10 +146,10 @@ all: madcoind.exe
 LIBS += $(CURDIR)/leveldb/libleveldb.a $(CURDIR)/leveldb/libmemenv.a
 DEFS += -I"$(CURDIR)/leveldb/include"
 DEFS += -I"$(CURDIR)/leveldb/helpers"
-OBJS += obj/txdb-leveldb.o
+OBJS += obj/txdb.o
 leveldb/libleveldb.a:
 	@echo "Building LevelDB ..." && cd leveldb && CC=$(CC) CXX=$(CXX) TARGET_OS=OS_WINDOWS_CROSSCOMPILE CXXFLAGS="-I$(INCLUDEPATHS)" LDFLAGS="-L$(LIBPATHS)" $(MAKE) libleveldb.a libmemenv.a && $(RANLIB) libleveldb.a && $(RANLIB) libmemenv.a && cd ..
-obj/txdb-leveldb.o: leveldb/libleveldb.a
+obj/txdb.o: leveldb/libleveldb.a
 
 obj/%.o: %.cpp $(HEADERS)
 	$(CXX) -c $(CFLAGS) -o $@ $<

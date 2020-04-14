@@ -118,7 +118,7 @@ extern const std::string strMessageMagic;
 extern int64_t nTimeBestReceived;
 extern CWaitableCriticalSection csBestBlock;
 extern CConditionVariable cvBlockChange;
-extern bool fImporting;
+extern std::atomic_bool fImporting;
 extern bool fReindex;
 struct COrphanBlock;
 extern std::map<uint256, COrphanBlock*> mapOrphanBlocks;
@@ -140,14 +140,6 @@ class CTxIndex;
 class CWalletInterface;
 struct CNodeStateStats;
 
-/** Register a wallet to receive updates from core */
-void RegisterWallet(CWalletInterface* pwalletIn);
-/** Unregister a wallet from core */
-void UnregisterWallet(CWalletInterface* pwalletIn);
-/** Unregister all wallets from core */
-void UnregisterAllWallets();
-/** Push an updated transaction to all registered wallets */
-void SyncWithWallets(const CTransaction& tx, const CBlock* pblock = NULL, bool fConnect = true);
 /** Ask wallets to resend their transactions */
 void ResendWalletTransactions(bool fForce = false);
 
@@ -241,7 +233,7 @@ public:
         nTxPos = nTxPosIn;
     }
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -316,7 +308,7 @@ public:
     {
     }
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -497,7 +489,7 @@ private:
 public:
     CTxOutCompressor(CTxOut &txoutIn) : txout(txoutIn) { }
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -576,7 +568,7 @@ public:
     }
 
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -626,7 +618,7 @@ public:
         vSpent.resize(nOutputs);
     }
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -705,7 +697,7 @@ public:
         SetNull();
     }
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -1197,7 +1189,7 @@ public:
         hashNext = (pnext ? pnext->GetBlockHash() : 0);
     }
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -1306,7 +1298,7 @@ public:
         vHave = vHaveIn;
     }
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -1468,25 +1460,6 @@ public:
     }
     unsigned char GetRejectCode() const { return chRejectCode; }
     std::string GetRejectReason() const { return strRejectReason; }
-};
-
-
-
-
-
-
-
-class CWalletInterface {
-protected:
-    virtual void SyncTransaction(const CTransaction &tx, const CBlock *pblock, bool fConnect) =0;
-    virtual void EraseFromWallet(const uint256 &hash) =0;
-    virtual void SetBestChain(const CBlockLocator &locator) =0;
-    virtual bool UpdatedTransaction(const uint256 &hash) =0;
-    virtual void Inventory(const uint256 &hash) =0;
-    virtual void ResendWalletTransactions(bool fForce) =0;
-    friend void ::RegisterWallet(CWalletInterface*);
-    friend void ::UnregisterWallet(CWalletInterface*);
-    friend void ::UnregisterAllWallets();
 };
 
 #endif // BITCOIN_MAIN_H

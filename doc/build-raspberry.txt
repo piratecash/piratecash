@@ -51,6 +51,7 @@ Dependencies
  libboost    Boost             C++ Library
  miniupnpc   UPnP Support      Optional firewall-jumping support
  libqrencode QRCode generation Optional QRCode generation
+ libevent-dev
 
 Note that libexecinfo should be installed, if you building under *BSD systems. 
 This library provides backtrace facility.
@@ -91,6 +92,7 @@ sudo apt-get install libqrencode-dev
 sudo apt-get install dh-autoreconf
 sudo apt-get install libminiupnpc-dev
 sudo apt-get install libgmp-dev
+sudo apt-get install libevent-dev
 
 If using Boost 1.37, append -mt to the boost libraries in the makefile.
 

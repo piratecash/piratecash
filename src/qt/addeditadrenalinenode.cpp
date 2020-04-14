@@ -4,8 +4,8 @@
 #include "masternodemanager.h"
 #include "ui_masternodemanager.h"
 
-#include "walletdb.h"
-#include "wallet.h"
+#include "wallet/walletdb.h"
+#include "wallet/wallet.h"
 #include "ui_interface.h"
 #include "util.h"
 #include "key.h"

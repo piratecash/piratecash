@@ -9,6 +9,7 @@
 #include "init.h"
 #include "main.h"
 #include "ui_interface.h"
+#include "scheduler.h"
 #include "util.h"
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/thread.hpp>
@@ -36,6 +37,7 @@ void WaitForShutdown(boost::thread_group* threadGroup)
 bool AppInit(int argc, char* argv[])
 {
     boost::thread_group threadGroup;
+    CScheduler scheduler;
 
     bool fRet = false;
     fHaveGUI = false;
@@ -107,7 +109,7 @@ bool AppInit(int argc, char* argv[])
         }
 #endif
 
-		fRet = AppInit2(threadGroup);
+		fRet = AppInit2(threadGroup, scheduler);
     }
     catch (std::exception& e) {
         PrintException(&e, "AppInit()");

@@ -31,7 +31,7 @@ public:
     std::string GetCommand() const;
     bool IsValid() const;
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
@@ -81,7 +81,7 @@ public:
 
     void Init();
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
@@ -103,9 +103,6 @@ public:
 
     // disk and network only
     unsigned int nTime;
-
-    // memory only
-    int64_t nLastTry;
 };
 
 /** inv message data */
@@ -116,7 +113,7 @@ public:
     CInv(int typeIn, const uint256& hashIn);
     CInv(const std::string& strType, const uint256& hashIn);
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)

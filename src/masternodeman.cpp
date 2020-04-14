@@ -353,7 +353,7 @@ CMasternode* CMasternodeMan::FindOldestNotInVec(const std::vector<CTxIn> &vVins,
 
         bool found = false;
         BOOST_FOREACH(const CTxIn& vin, vVins)
-            if(mn.vin == vin)
+            if(mn.vin.prevout == vin.prevout)
             {
                 found = true;
                 break;
@@ -361,7 +361,7 @@ CMasternode* CMasternodeMan::FindOldestNotInVec(const std::vector<CTxIn> &vVins,
 
         if(found) continue;
 
-        if(pOldestMasternode == NULL || pOldestMasternode->GetMasternodeInputAge() < mn.GetMasternodeInputAge())
+        if(pOldestMasternode == NULL || pOldestMasternode->SecondsSincePayment() < mn.SecondsSincePayment())
             pOldestMasternode = &mn;
     }
 
@@ -567,7 +567,8 @@ void CMasternodeMan::ProcessMasternodeConnections()
         if(pnode->fMasternode){
             LogPrintf("Closing masternode connection %s \n", pnode->addr.ToString().c_str());
             pnode->CloseSocketDisconnect();
-            pnode->fDisconnect = true;
+            pnode->fMasternode = false;
+            pnode->Release();
         }
     }
 }

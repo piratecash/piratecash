@@ -9,6 +9,7 @@
 #include "addrman.h"
 #include "main.h"
 #include "chainparams.h"
+#include "scheduler.h"
 #include "txdb.h"
 #include "rpcserver.h"
 #include "net.h"
@@ -16,6 +17,7 @@
 #include "pubkey.h"
 #include "util.h"
 #include "utilmoneystr.h"
+#include "torcontrol.h"
 #include "ui_interface.h"
 #include "checkpoints.h"
 #include "darksend-relay.h"
@@ -28,9 +30,9 @@
 #include "smessage.h"
 
 #ifdef ENABLE_WALLET
-#include "db.h"
-#include "wallet.h"
-#include "walletdb.h"
+#include "wallet/db.h"
+#include "wallet/wallet.h"
+#include "wallet/walletdb.h"
 #endif
 
 #include <boost/algorithm/string/predicate.hpp>
@@ -137,6 +139,7 @@ void PrepareShutdown(){
         bitdb.Flush(false);
 #endif
     StopNode();
+    StopTorControl();
     UnregisterNodeSignals(GetNodeSignals());
     if (fFeeEstimatesInitialized)
     {
@@ -158,6 +161,12 @@ void PrepareShutdown(){
 }
 
 static boost::scoped_ptr<ECCVerifyHandle> globalVerifyHandle;
+
+void Interrupt(boost::thread_group& threadGroup)
+{
+    InterruptTorControl();
+    threadGroup.interrupt_all();
+}
 
 /**
 * Shutdown is split into 2 parts:
@@ -215,7 +224,7 @@ bool static Bind(const CService &addr, unsigned int flags) {
     if (!(flags & BF_EXPLICIT) && IsLimited(addr))
         return false;
     std::string strError;
-    if (!BindListenPort(addr, strError, flags & BF_WHITELIST)) {
+    if (!BindListenPort(addr, strError, flags & BF_WHITELIST) != 0) {
         if (flags & BF_REPORT_ERROR)
             return InitError(strError);
         return false;
@@ -235,6 +244,8 @@ std::string HelpMessage()
     strUsage += "  -dbwalletcache=<n>     " + _("Set wallet database cache size in megabytes (default: 1)") + "\n";
     strUsage += "  -dblogsize=<n>         " + _("Set database disk log size in megabytes (default: 100)") + "\n";
     strUsage += "  -timeout=<n>           " + strprintf(_("Specify connection timeout in milliseconds (minimum: 1, default: %d)"), DEFAULT_CONNECT_TIMEOUT) + "\n";
+    strUsage += "  -torcontrol=<ip>:<port>" + strprintf(_("Tor control port to use if onion listening enabled (default: %s)"), DEFAULT_TOR_CONTROL);
+    strUsage += "  -torpassword=<pass>    " + _("Tor control port password (default: empty)");
     strUsage += "  -proxy=<ip:port>       " + _("Connect through SOCKS5 proxy") + "\n";
     strUsage += "  -tor=<ip:port>         " + _("Use proxy to reach tor hidden services (default: same as -proxy)") + "\n";
     strUsage += "  -dns                   " + _("Allow DNS lookups for -addnode, -seednode and -connect") + "\n";
@@ -248,6 +259,7 @@ std::string HelpMessage()
     strUsage += "  -discover              " + _("Discover own IP address (default: 1 when listening and no -externalip)") + "\n";
     strUsage += "  -irc                   " + _("Find peers using internet relay chat (default: 0)") + "\n";
     strUsage += "  -listen                " + _("Accept connections from outside (default: 1 if no -proxy or -connect)") + "\n";
+    strUsage += "  -listenonion           " + strprintf(_("Automatically create Tor hidden service (default: %d)"), DEFAULT_LISTEN_ONION);
     strUsage += "  -bind=<addr>           " + _("Bind to given address and always listen on it. Use [host]:port notation for IPv6") + "\n";
     strUsage += "  -dnsseed               " + _("Query for peer addresses via DNS lookup, if low on addresses (default: 1 unless -connect)") + "\n";
     strUsage += "  -forcednsseed          " + _("Always query for peer addresses via DNS lookup (default: 0)") + "\n";
@@ -278,7 +290,7 @@ std::string HelpMessage()
     strUsage +=                               _("If <category> is not supplied, output all debugging information.") + "\n";
     strUsage +=                               _("<category> can be:");
     strUsage +=                                 " addrman, alert, db, lock, rand, rpc, selectcoins, mempool, net,"; // Don't translate these and qt below
-    strUsage +=                                 " coinage, coinstake, creation, stakemodifier";
+    strUsage +=                                 " coinage, coinstake, creation, stakemodifier, tor";
     if (fHaveGUI){
         strUsage += ", qt.\n";
     }else{
@@ -305,7 +317,7 @@ std::string HelpMessage()
     strUsage += "  -alertnotify=<cmd>     " + _("Execute command when a relevant alert is received (%s in cmd is replaced by message)") + "\n";
     strUsage += "  -upgradewallet         " + _("Upgrade wallet to latest format") + "\n";
     strUsage += "  -createwalletbackups=<n> " + _("Number of automatic wallet backups (default: 10)") + "\n";
-    strUsage += "  -keypool=<n>           " + _("Set key pool size to <n> (default: 100) (litemode: 10)") + "\n";
+    strUsage += "  -keypool=<n>           " + strprintf(_("Set key pool size to <n> (default: %u)"), DEFAULT_KEYPOOL_SIZE) + "\n";
     strUsage += "  -rescan                " + _("Rescan the block chain for missing wallet transactions") + "\n";
     strUsage += "  -salvagewallet         " + _("Attempt to recover private keys from a corrupt wallet.dat") + "\n";
     strUsage += "  -checkblocks=<n>       " + _("How many blocks to check at startup (default: 500, 0 = all)") + "\n";
@@ -429,7 +441,7 @@ void ThreadImport(std::vector<boost::filesystem::path> vImportFiles)
 /** Initialize bitcoin.
  *  @pre Parameters should be parsed and config file should be read.
  */
-bool AppInit2(boost::thread_group& threadGroup)
+bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 {
     // ********************************************************* Step 1: setup
 #ifdef _MSC_VER
@@ -520,6 +532,8 @@ bool AppInit2(boost::thread_group& threadGroup)
         // to protect privacy, do not discover addresses by default
         if (SoftSetBoolArg("-discover", false))
             LogPrintf("AppInit2 : parameter interaction: -proxy set -> setting -discover=0\n");
+        if (SoftSetBoolArg("-listenonion", false))
+            LogPrintf("%s: parameter interaction: -listen=0 -> setting -listenonion=0\n", __func__);
     }
 
     if (!GetBoolArg("-listen", true)) {
@@ -642,6 +656,10 @@ bool AppInit2(boost::thread_group& threadGroup)
     LogPrintf("Default data directory %s\n", GetDefaultDataDir().string());
     LogPrintf("Used data directory %s\n", strDataDir);
     std::ostringstream strErrors;
+
+    // Start the lightweight task scheduler thread
+    CScheduler::Function serviceLoop = boost::bind(&CScheduler::serviceQueue, &scheduler);
+    threadGroup.create_thread(boost::bind(&TraceThread<CScheduler::Function>, "scheduler", serviceLoop));
 
     if (mapArgs.count("-masternodepaymentskey")) // masternode payments priv key
     {
@@ -1232,6 +1250,9 @@ bool AppInit2(boost::thread_group& threadGroup)
     LogPrintf("mapWallet.size() = %u\n",       pwalletMain ? pwalletMain->mapWallet.size() : 0);
     LogPrintf("mapAddressBook.size() = %u\n",  pwalletMain ? pwalletMain->mapAddressBook.size() : 0);
 #endif
+
+    if (GetBoolArg("-listenonion", DEFAULT_LISTEN_ONION))
+        StartTorControl(threadGroup, scheduler);
 
     StartNode(threadGroup);
 #ifdef ENABLE_WALLET

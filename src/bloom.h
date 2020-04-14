@@ -5,13 +5,13 @@
 #ifndef BITCOIN_BLOOM_H
 #define BITCOIN_BLOOM_H
 
-#include <vector>
-
-#include "uint256.h"
 #include "serialize.h"
+
+#include <vector>
 
 class COutPoint;
 class CTransaction;
+class uint256;
 
 //! 20,000 items with fp rate < 0.1% or 10,000 items and <0.0001%
 static const unsigned int MAX_BLOOM_FILTER_SIZE = 36000; // bytes
@@ -66,7 +66,7 @@ public:
     CBloomFilter(unsigned int nElements, double nFPRate, unsigned int nTweak, unsigned char nFlagsIn);
     CBloomFilter() : isFull(true), isEmpty(false), nHashFuncs(0), nTweak(0), nFlags(0) {}
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {

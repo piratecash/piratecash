@@ -417,7 +417,7 @@ void CDarksendPool::SetNull(){
 }
 
 bool CDarksendPool::SetCollateralAddress(std::string strAddress){
-    CpiratecashcoinAddress address;
+    CBitcoinAddress address;
     if (!address.SetString(strAddress))
     {
         LogPrintf("CDarksendPool::SetCollateralAddress - Invalid Darksend collateral address\n");
@@ -1584,7 +1584,7 @@ bool CDarksendPool::DoAutomaticDenominating(bool fDryRun)
                 LogPrintf("DoAutomaticDenominating --- attempt to connect to masternode from queue %s\n", pmn->addr.ToString());
                 lastTimeChanged = GetTimeMillis();
                 // connect to Masternode and submit the queue request
-                CNode* pnode = ConnectNode((CAddress)addr, NULL, true);
+                CNode* pnode = ConnectNode((CAddress)addr, NULL, false, true);
                 if(pnode != NULL)
                 {
                     pSubmittedToMasternode = pmn;
@@ -1629,7 +1629,7 @@ bool CDarksendPool::DoAutomaticDenominating(bool fDryRun)
 
             lastTimeChanged = GetTimeMillis();
             LogPrintf("DoAutomaticDenominating --- attempt %d connection to Masternode %s\n", i, pmn->addr.ToString());
-            CNode* pnode = ConnectNode((CAddress)pmn->addr, NULL, true);
+            CNode* pnode = ConnectNode((CAddress)pmn->addr, NULL, false, true);
             if(pnode != NULL){
                 pSubmittedToMasternode = pmn;
                 vecMasternodesUsed.push_back(pmn->vin);

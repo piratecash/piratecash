@@ -93,17 +93,6 @@ T* alignup(T* p)
     return u.ptr;
 }
 
-#ifdef WIN32
-#define MSG_NOSIGNAL        0
-#define MSG_DONTWAIT        0
-
-#ifndef S_IRUSR
-#define S_IRUSR             0400
-#define S_IWUSR             0200
-#endif
-#else
-#define MAX_PATH            1024
-#endif
 
 
 //Dark features
@@ -145,54 +134,31 @@ bool LogAcceptCategory(const char* category);
 /* Send a string to the log output */
 int LogPrintStr(const std::string &str);
 
-#define LogPrintf(...) LogPrint(NULL, __VA_ARGS__)
+/** Get format string from VA_ARGS for error reporting */
+template<typename... Args> std::string FormatStringFromLogArgs(const char *fmt, const Args&... args) { return fmt; }
 
-/* When we switch to C++11, this can be switched to variadic templates instead
- * of this macro-based construction (see tinyformat.h).
- */
-#define MAKE_ERROR_AND_LOG_FUNC(n)                                        \
-    /*   Print to debug.log if -debug=category switch is given OR category is NULL. */ \
-    template<TINYFORMAT_ARGTYPES(n)>                                          \
-    static inline int LogPrint(const char* category, const char* format, TINYFORMAT_VARARGS(n))  \
-    {                                                                                \
-        if(!LogAcceptCategory(category)) return 0;                                   \
-        return LogPrintStr(tfm::format(format, TINYFORMAT_PASSARGS(n)));             \
-    }                                                                                \
-    /*   Log error and return false */                                               \
-    template<TINYFORMAT_ARGTYPES(n)>                                                 \
-    static inline bool error(const char* format, TINYFORMAT_VARARGS(n))              \
-    {                                                                                \
-        LogPrintStr("ERROR: " + tfm::format(format, TINYFORMAT_PASSARGS(n)) + "\n"); \
-        return false;                                                                \
-    }                                                                                \
-    /*   Log error and return n */                                                   \
-    template<TINYFORMAT_ARGTYPES(n)>                                                 \
-    static inline int errorN(int rv, const char* format, TINYFORMAT_VARARGS(n))      \
-    {                                                                                \
-        LogPrintStr("ERROR: " + tfm::format(format, TINYFORMAT_PASSARGS(n)) + "\n"); \
-        return rv;                                                                   \
-    }
+#define LogPrintf(...) do { \
+    std::string _log_msg_; /* Unlikely name to avoid shadowing variables */ \
+    try { \
+        _log_msg_ = tfm::format(__VA_ARGS__); \
+    } catch (std::runtime_error &e) { \
+        /* Original format string will have newline so don't add one here */ \
+        _log_msg_ = "Error \"" + std::string(e.what()) + "\" while formatting log message: " + FormatStringFromLogArgs(__VA_ARGS__); \
+    } \
+    LogPrintStr(_log_msg_); \
+} while(0)
 
+#define LogPrint(category, ...) do { \
+    if (LogAcceptCategory((category))) { \
+        LogPrintf(__VA_ARGS__); \
+    } \
+} while(0)                                                                            \
 
-TINYFORMAT_FOREACH_ARGNUM(MAKE_ERROR_AND_LOG_FUNC)
-
-/* Zero-arg versions of logging and error, these are not covered by
- * TINYFORMAT_FOREACH_ARGNUM
- */
-static inline int LogPrint(const char* category, const char* format)
+template<typename... Args>
+bool error(const char* fmt, const Args&... args)
 {
-    if(!LogAcceptCategory(category)) return 0;
-    return LogPrintStr(format);
-}
-static inline bool error(const char* format)
-{
-    LogPrintStr(std::string("ERROR: ") + format + "\n");
+    LogPrintStr("ERROR: " + tfm::format(fmt, args...) + "\n");
     return false;
-}
-static inline int errorN(int n, const char* format)
-{
-    LogPrintStr(std::string("ERROR: ") + format + "\n");
-    return n;
 }
 
 extern std::map<std::string, std::string> mapArgs;
@@ -428,6 +394,10 @@ inline void SetThreadPriority(int nPriority)
 }
 #else
 
+// PRIO_MAX is not defined on Solaris
+#ifndef PRIO_MAX
+    #define PRIO_MAX 20
+#endif
 #define THREAD_PRIORITY_LOWEST          PRIO_MAX
 #define THREAD_PRIORITY_BELOW_NORMAL    2
 #define THREAD_PRIORITY_NORMAL          0

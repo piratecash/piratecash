@@ -10,10 +10,10 @@
 #include "clientversion.h"
 
 //
-// Bootup the masternode, look for a 10000 PIRATE input and register on the network
+// Bootup the Masternode, look for a 10000 PIRATE input and register on the network
 //
 void CActiveMasternode::ManageStatus()
-{
+{    
     std::string errorMessage;
 
     if(!fMasterNode) return;
@@ -44,15 +44,6 @@ void CActiveMasternode::ManageStatus()
         	service = CService(strMasterNodeAddr, true);
         }
 
-        LogPrintf("CActiveMasternode::ManageStatus() - Checking inbound connection to '%s'\n", service.ToString().c_str());
-
-            if(!ConnectNode((CAddress)service, NULL, true)){
-                notCapableReason = "Could not connect to " + service.ToString();
-                status = MASTERNODE_NOT_CAPABLE;
-                LogPrintf("CActiveMasternode::ManageStatus() - not capable: %s\n", notCapableReason.c_str());
-                return;
-            }
-
 
         if(pwalletMain->IsLocked()){
             notCapableReason = "Wallet is locked.";
@@ -64,6 +55,17 @@ void CActiveMasternode::ManageStatus()
         // Set defaults
         status = MASTERNODE_NOT_CAPABLE;
         notCapableReason = "Unknown. Check debug.log for more information.\n";
+
+        LogPrintf("CActiveMasternode::ManageStatus() - Checking inbound connection to '%s'\n", service.ToString());
+
+        CNode *pnode = ConnectNode((CAddress)service, NULL, false);
+        if(!pnode){
+            notCapableReason = "Could not connect to " + service.ToString();
+            status = MASTERNODE_NOT_CAPABLE;
+            LogPrintf("CActiveMasternode::ManageStatus() - not capable: %s\n", notCapableReason.c_str());
+            return;
+        }
+        pnode->Release();
 
         // Choose coins to use
         CPubKey pubKeyCollateralAddress;
@@ -242,7 +244,7 @@ bool CActiveMasternode::Register(std::string strService, std::string strKeyMaste
         LogPrintf("CActiveMasternode::Register() - Error: %s\n", errorMessage.c_str());
         return false;
     }
-    CpiratecashcoinAddress address;
+    CBitcoinAddress address;
     if (strRewardAddress != "")
     {
         if(!address.SetString(strRewardAddress))
@@ -408,7 +410,7 @@ bool CActiveMasternode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubke
 
 	CTxDestination address1;
     ExtractDestination(pubScript, address1);
-    CpiratecashcoinAddress address2(address1);
+    CBitcoinAddress address2(address1);
 
     CKeyID keyID;
     if (!address2.GetKeyID(keyID)) {
@@ -465,7 +467,7 @@ vector<COutput> CActiveMasternode::SelectCoinsMasternode()
 // get all possible outputs for running masternode for a specific pubkey
 vector<COutput> CActiveMasternode::SelectCoinsMasternodeForPubKey(std::string collateralAddress)
 {
-    CpiratecashcoinAddress address(collateralAddress);
+    CBitcoinAddress address(collateralAddress);
     CScript scriptPubKey;
     scriptPubKey.SetDestination(address.Get());
     vector<COutput> vCoins;

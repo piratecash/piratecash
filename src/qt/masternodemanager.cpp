@@ -11,8 +11,8 @@
 #include "masternodeconfig.h"
 #include "masternodeman.h"
 #include "masternode.h"
-#include "walletdb.h"
-#include "wallet.h"
+#include "wallet/walletdb.h"
+#include "wallet/wallet.h"
 #include "init.h"
 #include "rpcserver.h"
 #include <boost/lexical_cast.hpp>
@@ -168,7 +168,7 @@ void MasternodeManager::updateNodeList()
         pubkey =GetScriptForDestination(mn.pubkey.GetID());
         CTxDestination address1;
         ExtractDestination(pubkey, address1);
-        CpiratecashcoinAddress address2(address1);
+        CBitcoinAddress address2(address1);
         QTableWidgetItem *pubkeyItem = new QTableWidgetItem(QString::fromStdString(address2.ToString()));
 
         ui->tableWidgetMasternodes->insertRow(0);

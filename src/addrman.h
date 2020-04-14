@@ -22,15 +22,21 @@
  */
 class CAddrInfo : public CAddress
 {
+
+
+public:
+    //! last try whatsoever by us (memory only)
+    int64_t nLastTry;
+
+    //! last counted attempt (memory only)
+    int64_t nLastCountAttempt;
+
 private:
     //! where knowledge about this address first came from
     CNetAddr source;
 
     //! last successful connection by us
     int64_t nLastSuccess;
-
-    //! last try whatsoever by us:
-    // int64_t CAddress::nLastTry
 
     //! connection attempts since last successful attempt
     int nAttempts;
@@ -48,7 +54,7 @@ private:
 
 public:
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -62,6 +68,7 @@ public:
     {
         nLastSuccess = 0;
         nLastTry = 0;
+        nLastCountAttempt = 0;
         nAttempts = 0;
         nRefCount = 0;
         fInTried = false;
@@ -104,15 +111,15 @@ public:
 /** Stochastic address manager
  *
  * Design goals:
- *  * Keep the address tables in-memory, and asynchronously dump the entire to able in peers.dat.
+ *  * Keep the address tables in-memory, and asynchronously dump the entire table to peers.dat.
  *  * Make sure no (localized) attacker can fill the entire table with his nodes/addresses.
  *
  * To that end:
  *  * Addresses are organized into buckets.
- *    * Address that have not yet been tried go into 1024 "new" buckets.
- *      * Based on the address range (/16 for IPv4) of source of the information, 64 buckets are selected at random
- *      * The actual bucket is chosen from one of these, based on the range the address itself is located.
- *      * One single address can occur in up to 8 different buckets, to increase selection chances for addresses that
+ *    * Addresses that have not yet been tried go into 1024 "new" buckets.
+ *      * Based on the address range (/16 for IPv4) of the source of information, 64 buckets are selected at random.
+ *      * The actual bucket is chosen from one of these, based on the range in which the address itself is located.
+ *      * One single address can occur in up to 8 different buckets to increase selection chances for addresses that
  *        are seen frequently. The chance for increasing this multiplicity decreases exponentially.
  *      * When adding a new address to a full bucket, a randomly chosen entry (with a bias favoring less recently seen
  *        ones) is removed from it first.
@@ -172,9 +179,6 @@ private:
     //! critical section to protect the inner data structures
     mutable CCriticalSection cs;
 
-    //! secret key to randomize bucket select with
-    uint256 nKey;
-
     //! last used nId
     int nIdCount;
 
@@ -182,7 +186,7 @@ private:
     std::map<int, CAddrInfo> mapInfo;
 
     //! find an nId based on its network address
-    std::map<CNetAddr, int> mapAddr;
+    std::map<CService, int> mapAddr;
 
     //! randomly-ordered vector of all nIds
     std::vector<int> vRandom;
@@ -199,10 +203,18 @@ private:
     //! list of "new" buckets
     int vvNew[ADDRMAN_NEW_BUCKET_COUNT][ADDRMAN_BUCKET_SIZE];
 
+    //! last time Good was called (memory only)
+    int64_t nLastGood;
+
+    // discriminate entries based on port. Should be false on mainnet/testnet and can be true on devnet/regtest
+    bool discriminatePorts;
+
 protected:
+     //! secret key to randomize bucket select with
+     uint256 nKey;
 
     //! Find an entry.
-    CAddrInfo* Find(const CNetAddr& addr, int *pnId = NULL);
+    CAddrInfo* Find(const CService& addr, int *pnId = NULL);
 
     //! find an entry, creating it if necessary.
     //! nTime and nServices of the found node are updated, if necessary.
@@ -227,10 +239,13 @@ protected:
     bool Add_(const CAddress &addr, const CNetAddr& source, int64_t nTimePenalty);
 
     //! Mark an entry as attempted to connect.
-    void Attempt_(const CService &addr, int64_t nTime);
+    void Attempt_(const CService &addr, bool fCountFailure, int64_t nTime);
 
     //! Select an address to connect to, if newOnly is set to true, only the new table is selected from.
-    CAddress Select_(bool newOnly);
+    CAddrInfo Select_(bool newOnly);
+
+    //! Wraps GetRandInt to allow tests to override RandomInt and make it determinismistic.
+    virtual int RandomInt(int nMax);
 
 #ifdef DEBUG_ADDRMAN
     //! Perform consistency check. Returns an error code or zero.
@@ -270,7 +285,7 @@ public:
      * This format is more complex, but significantly smaller (at most 1.5 MiB), and supports
      * changes to the ADDRMAN_ parameters without breaking the on-disk structure.
      *
-     * We don't use IMPLEMENT_SERIALIZE since the serialization and deserialization code has
+     * We don't use ADD_SERIALIZE_METHODS since the serialization and deserialization code has
      * very little in common.
      */
     template<typename Stream>
@@ -444,9 +459,11 @@ public:
         nIdCount = 0;
         nTried = 0;
         nNew = 0;
+        nLastGood = 1; //Initially at 1 so that "never" is strictly worse.
     }
 
-    CAddrMan()
+    CAddrMan(bool _discriminatePorts = false) :
+        discriminatePorts(_discriminatePorts)
     {
         Clear();
     }
@@ -459,6 +476,7 @@ public:
     //! Return the number of (unique) addresses in all tables.
     int size()
     {
+        LOCK(cs); // TODO: Cache this in an atomic to avoid this overhead
         return vRandom.size();
     }
 
@@ -478,13 +496,11 @@ public:
     //! Add a single address.
     bool Add(const CAddress &addr, const CNetAddr& source, int64_t nTimePenalty = 0)
     {
+        LOCK(cs);
         bool fRet = false;
-        {
-            LOCK(cs);
-            Check();
-            fRet |= Add_(addr, source, nTimePenalty);
-            Check();
-        }
+        Check();
+        fRet |= Add_(addr, source, nTimePenalty);
+        Check();
         if (fRet)
             LogPrint("addrman", "Added %s from %s: %i tried, %i new\n", addr.ToStringIPPort(), source.ToString(), nTried, nNew);
         return fRet;
@@ -493,14 +509,12 @@ public:
     //! Add multiple addresses.
     bool Add(const std::vector<CAddress> &vAddr, const CNetAddr& source, int64_t nTimePenalty = 0)
     {
+        LOCK(cs);
         int nAdd = 0;
-        {
-            LOCK(cs);
-            Check();
-            for (std::vector<CAddress>::const_iterator it = vAddr.begin(); it != vAddr.end(); it++)
-                nAdd += Add_(*it, source, nTimePenalty) ? 1 : 0;
-            Check();
-        }
+        Check();
+        for (std::vector<CAddress>::const_iterator it = vAddr.begin(); it != vAddr.end(); it++)
+            nAdd += Add_(*it, source, nTimePenalty) ? 1 : 0;
+        Check();
         if (nAdd)
             LogPrint("addrman", "Added %i addresses from %s: %i tried, %i new\n", nAdd, source.ToString(), nTried, nNew);
         return nAdd > 0;
@@ -516,23 +530,21 @@ public:
     }
 
     //! Mark an entry as connection attempted to.
-    void Attempt(const CService &addr, int64_t nTime = GetAdjustedTime())
+    void Attempt(const CService &addr, bool fCountFailure, int64_t nTime = GetAdjustedTime())
     {
-        {
-            LOCK(cs);
-            Check();
-            Attempt_(addr, nTime);
-            Check();
-        }
+        LOCK(cs);
+        Check();
+        Attempt_(addr, fCountFailure, nTime);
+        Check();
     }
 
     /**
      * Choose an address to connect to.
      * nUnkBias determines how much "new" entries are favored over "tried" ones (0-100).
      */
-    CAddress Select(bool newOnly = false)
+    CAddrInfo Select(bool newOnly = false)
     {
-        CAddress addrRet;
+        CAddrInfo addrRet;
         {
             LOCK(cs);
             Check();
@@ -558,13 +570,12 @@ public:
     //! Mark an entry as currently-connected-to.
     void Connected(const CService &addr, int64_t nTime = GetAdjustedTime())
     {
-        {
-            LOCK(cs);
-            Check();
-            Connected_(addr, nTime);
-            Check();
-        }
+        LOCK(cs);
+        Check();
+        Connected_(addr, nTime);
+        Check();
     }
+
 };
 
 #endif // BITCOIN_ADDRMAN_H

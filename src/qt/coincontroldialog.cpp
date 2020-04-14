@@ -16,7 +16,7 @@
 #include "walletmodel.h"
 
 #include "coincontrol.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 #include "darksend.h"
 #include "amount.h"
 
@@ -756,7 +756,7 @@ void CoinControlDialog::updateView()
             QString sAddress = "";
             if(ExtractDestination(out.tx->vout[out.i].scriptPubKey, outputAddress))
             {
-                sAddress = QString::fromStdString(CpiratecashcoinAddress(outputAddress).ToString());
+                sAddress = QString::fromStdString(CBitcoinAddress(outputAddress).ToString());
 
                 // if listMode or change => show bitcoin address. In tree mode, address is not shown again for direct wallet address outputs
                 if (!treeMode || (!(sAddress == sWalletAddress)))

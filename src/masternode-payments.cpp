@@ -46,11 +46,13 @@ void ProcessMessageMasternodePayments(CNode* pfrom, std::string& strCommand, CDa
         CMasternodePaymentWinner winner;
         vRecv >> winner;
 
+        if(pfrom->nVersion < MIN_MNW_PEER_PROTO_VERSION) return;
+
         if(pindexBest == NULL) return;
 
         CTxDestination address1;
         ExtractDestination(winner.payee, address1);
-        CpiratecashcoinAddress address2(address1);
+        CBitcoinAddress address2(address1);
 
         uint256 hash = winner.GetHash();
         if(mapSeenMasternodeVotes.count(hash)) {
@@ -229,7 +231,7 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
     if(nBlockHeight <= nLastBlockHeight) return false;
     if(!enabled) return false;
     CMasternodePaymentWinner newWinner;
-    int nEnabled = mnodeman.CountEnabled();
+    int nMinimumAge = mnodeman.CountEnabled();
     CScript payeeSource;
 
     uint256 hash;
@@ -243,12 +245,12 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
     BOOST_REVERSE_FOREACH(CMasternodePaymentWinner& winner, vWinning)
     {
         //if we already have the same vin - we have one full payment cycle, break
-        if(vecLastPayments.size() > (unsigned int)nEnabled) break;
+        if(vecLastPayments.size() > (unsigned int)nMinimumAge) break;
         vecLastPayments.push_back(winner.vin);
     }
 
     // pay to the oldest MN that still had no payment but its input is old enough and it was active long enough
-    CMasternode *pmn = mnodeman.FindOldestNotInVec(vecLastPayments, nEnabled);
+    CMasternode *pmn = mnodeman.FindOldestNotInVec(vecLastPayments, nMinimumAge);
     if(pmn != NULL)
     {
         LogPrintf(" Found by FindOldestNotInVec \n");
@@ -256,6 +258,7 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
         newWinner.score = 0;
         newWinner.nBlockHeight = nBlockHeight;
         newWinner.vin = pmn->vin;
+        pmn->nLastPaid = GetAdjustedTime();
 
         if(pmn->rewardPercentage > 0 && (nHash % 100) <= (unsigned int)pmn->rewardPercentage) {
             newWinner.payee = pmn->rewardAddress;
@@ -267,7 +270,7 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
     }
 
     //if we can't find new MN to get paid, pick first active MN counting back from the end of vecLastPayments list
-    if(newWinner.nBlockHeight == 0 && nEnabled > 0)
+    if(newWinner.nBlockHeight == 0 && nMinimumAge > 0)
     {
         LogPrintf(" Find by reverse \n");
 
@@ -282,6 +285,7 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
                 newWinner.score = 0;
                 newWinner.nBlockHeight = nBlockHeight;
                 newWinner.vin = pmn->vin;
+                pmn->nLastPaid = GetAdjustedTime();
 
                 if(pmn->rewardPercentage > 0 && (nHash % 100) <= (unsigned int)pmn->rewardPercentage) {
                     newWinner.payee = pmn->rewardAddress;
@@ -300,11 +304,11 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
 
     CTxDestination address1;
     ExtractDestination(newWinner.payee, address1);
-    CpiratecashcoinAddress address2(address1);
+    CBitcoinAddress address2(address1);
 
     CTxDestination address3;
     ExtractDestination(payeeSource, address3);
-    CpiratecashcoinAddress address4(address3);
+    CBitcoinAddress address4(address3);
 
     LogPrintf("Winner payee %s nHeight %d vin source %s. \n", address2.ToString().c_str(), newWinner.nBlockHeight, address4.ToString().c_str());
 

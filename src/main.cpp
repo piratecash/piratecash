@@ -24,6 +24,7 @@
 #include "spork.h"
 #include "smessage.h"
 #include "util.h"
+#include "validationinterface.h"
 
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/filesystem.hpp>
@@ -66,7 +67,7 @@ CBlockIndex* pindexBest = NULL;
 int64_t nTimeBestReceived = 0;
 CWaitableCriticalSection csBestBlock;
 CConditionVariable cvBlockChange;
-bool fImporting = false;
+std::atomic_bool fImporting(false);
 bool fReindex = false;
 bool fAddrIndex = false;
 bool fHaveGUI = false;
@@ -96,66 +97,6 @@ CScript COINBASE_FLAGS;
 const string strMessageMagic = "Piratecash Signed Message:\n";
 
 std::set<uint256> setValidatedTx;
-
-//////////////////////////////////////////////////////////////////////////////
-//
-// dispatching functions
-//
-
-// These functions dispatch to one or all registered wallets
-
-namespace {
-
-struct CMainSignals {
-    // Notifies listeners of updated transaction data (passing hash, transaction, and optionally the block it is found in.
-    boost::signals2::signal<void (const CTransaction &, const CBlock *, bool)> SyncTransaction;
-    // Notifies listeners of an erased transaction (currently disabled, requires transaction replacement).
-    boost::signals2::signal<void (const uint256 &)> EraseTransaction;
-    // Notifies listeners of an updated transaction without new data (for now: a coinbase potentially becoming visible).
-    boost::signals2::signal<void (const uint256 &)> UpdatedTransaction;
-    // Notifies listeners of a new active block chain.
-    boost::signals2::signal<void (const CBlockLocator &)> SetBestChain;
-    // Notifies listeners about an inventory item being seen on the network.
-    boost::signals2::signal<void (const uint256 &)> Inventory;
-    // Tells listeners to broadcast their data.
-    boost::signals2::signal<void (bool)> Broadcast;
-} g_signals;
-}
-
-void RegisterWallet(CWalletInterface* pwalletIn) {
-    g_signals.SyncTransaction.connect(boost::bind(&CWalletInterface::SyncTransaction, pwalletIn, _1, _2, _3));
-    g_signals.EraseTransaction.connect(boost::bind(&CWalletInterface::EraseFromWallet, pwalletIn, _1));
-    g_signals.UpdatedTransaction.connect(boost::bind(&CWalletInterface::UpdatedTransaction, pwalletIn, _1));
-    g_signals.SetBestChain.connect(boost::bind(&CWalletInterface::SetBestChain, pwalletIn, _1));
-    g_signals.Inventory.connect(boost::bind(&CWalletInterface::Inventory, pwalletIn, _1));
-    g_signals.Broadcast.connect(boost::bind(&CWalletInterface::ResendWalletTransactions, pwalletIn, _1));
-}
-
-void UnregisterWallet(CWalletInterface* pwalletIn) {
-    g_signals.Broadcast.disconnect(boost::bind(&CWalletInterface::ResendWalletTransactions, pwalletIn, _1));
-    g_signals.Inventory.disconnect(boost::bind(&CWalletInterface::Inventory, pwalletIn, _1));
-    g_signals.SetBestChain.disconnect(boost::bind(&CWalletInterface::SetBestChain, pwalletIn, _1));
-    g_signals.UpdatedTransaction.disconnect(boost::bind(&CWalletInterface::UpdatedTransaction, pwalletIn, _1));
-    g_signals.EraseTransaction.disconnect(boost::bind(&CWalletInterface::EraseFromWallet, pwalletIn, _1));
-    g_signals.SyncTransaction.disconnect(boost::bind(&CWalletInterface::SyncTransaction, pwalletIn, _1, _2, _3));
-}
-
-void UnregisterAllWallets() {
-    g_signals.Broadcast.disconnect_all_slots();
-    g_signals.Inventory.disconnect_all_slots();
-    g_signals.SetBestChain.disconnect_all_slots();
-    g_signals.UpdatedTransaction.disconnect_all_slots();
-    g_signals.EraseTransaction.disconnect_all_slots();
-    g_signals.SyncTransaction.disconnect_all_slots();
-}
-
-void SyncWithWallets(const CTransaction &tx, const CBlock *pblock, bool fConnect) {
-    g_signals.SyncTransaction(tx, pblock, fConnect);
-}
-
-void ResendWalletTransactions(bool fForce) {
-    g_signals.Broadcast(fForce);
-}
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -271,12 +212,10 @@ bool AddOrphanTx(const CTransaction& tx, NodeId peer)
     // have been mined or received.
     // 10,000 orphans, each of which is at most 5,000 bytes big is
     // at most 500 megabytes of orphans:
-
-    size_t nSize = tx.GetSerializeSize(SER_NETWORK, CTransaction::CURRENT_VERSION);
-
-    if (nSize > 5000)
+    unsigned int sz = tx.GetSerializeSize(SER_NETWORK, CTransaction::CURRENT_VERSION);
+    if (sz > 5000)
     {
-        LogPrint("mempool", "ignoring large orphan tx (size: %u, hash: %s)\n", nSize, hash.ToString());
+        LogPrint("mempool", "ignoring large orphan tx (size: %u, hash: %s)\n", sz, hash.ToString());
         return false;
     }
 
@@ -2292,7 +2231,7 @@ bool CBlock::SetBestChain(CValidationState &state, CTxDB& txdb, CBlockIndex* pin
     if ((pindexNew->nHeight % 20160) == 0 || (!fIsInitialDownload && (pindexNew->nHeight % 144) == 0))
     {
         const CBlockLocator locator(pindexNew);
-        g_signals.SetBestChain(locator);
+        GetMainSignals().SetBestChain(locator);
     }
 
     // New best block
@@ -2447,7 +2386,7 @@ bool CBlock::AddToBlockIndex(CValidationState &state, unsigned int nFile, unsign
     {
         // Notify UI to display prev block's coinbase if it was ours
         static uint256 hashPrevBestCoinBase;
-        g_signals.UpdatedTransaction(hashPrevBestCoinBase);
+        GetMainSignals().UpdatedTransaction(hashPrevBestCoinBase);
         hashPrevBestCoinBase = vtx[0].GetHash();
     }
 
@@ -2577,7 +2516,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                             if (hasPayment && payeerewardpercent == 0) {
                                 CTxDestination address1;
                                 ExtractDestination(payee, address1);
-                                CpiratecashcoinAddress address2(address1);
+                                CBitcoinAddress address2(address1);
                                 targetNode = address2.ToString().c_str();
                                 expectedreward = masternodePaymentAmount;
                             }
@@ -2586,7 +2525,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                             if (hasPayment && payeerewardpercent == 100) {
                                 CTxDestination address1;
                                 ExtractDestination(payeerewardaddress, address1);
-                                CpiratecashcoinAddress address2(address1);
+                                CBitcoinAddress address2(address1);
                                 targetNode = address2.ToString().c_str();
                                 expectedreward = masternodePaymentAmount;
                             }
@@ -2595,11 +2534,11 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                             if (hasPayment && payeerewardpercent > 0 && payeerewardpercent < 100) {
                                 CTxDestination address1;
                                 ExtractDestination(payee, address1);
-                                CpiratecashcoinAddress address2(address1);
+                                CBitcoinAddress address2(address1);
 
                                 CTxDestination address3;
                                 ExtractDestination(payeerewardaddress, address3);
-                                CpiratecashcoinAddress address4(address3);
+                                CBitcoinAddress address4(address3);
                                 targetNode = address2.ToString().c_str();
                                 expectedreward = (masternodePaymentAmount / 100) * (100 - payeerewardpercent);
                             }
@@ -2617,7 +2556,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                         expectedreward = masternodePaymentAmount;
                         CTxDestination address1;
                         ExtractDestination(payee, address1);
-                        CpiratecashcoinAddress address2(address1);
+                        CBitcoinAddress address2(address1);
                         targetNode = address2.ToString().c_str();
                         hasSync = true;
                         CMasternode* winningNode = mnodeman.GetCurrentMasterNode(1);
@@ -2627,7 +2566,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                                 CTxDestination address3;
                                 payeerewardaddress = winningNode->rewardAddress;
                                 ExtractDestination(payeerewardaddress, address3);
-                                CpiratecashcoinAddress address4(address3);
+                                CBitcoinAddress address4(address3);
                                 targetNode2 = address4.ToString().c_str();
                                 if(fDebug) {
                                     LogPrintf("CheckBlock() : Primary reward Address is %s\n", targetNode);
@@ -2642,7 +2581,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                     for (unsigned int i = 0; i < vtx[1].vout.size(); i++) {
                         CTxDestination address1;
                         ExtractDestination(vtx[1].vout[i].scriptPubKey, address1);
-                        CpiratecashcoinAddress address2(address1);
+                        CBitcoinAddress address2(address1);
                         if(fDebug) {LogPrintf("CheckBlock() : Payment to %s [%d], size is  %s\n",address2.ToString().c_str(),i,vtx[1].vout[i].nValue);}
                         if(vtx[1].vout[i].nValue == expectedreward )
                             foundPaymentAmount = true;
@@ -2658,7 +2597,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
 
                     CTxDestination address1;
                     ExtractDestination(payee, address1);
-                    CpiratecashcoinAddress address2(address1);
+                    CBitcoinAddress address2(address1);
 
                     bool fIsWalletGracePeriod = IsWalletGracePeriod();
                     // Accept blocks in GracePeriod is payment payee is different
@@ -3587,7 +3526,7 @@ void static ProcessGetData(CNode* pfrom)
             }
 
             // Track requests for our stuff.
-            g_signals.Inventory(inv.hash);
+            GetMainSignals().Inventory(inv.hash);
 
             if (inv.type == MSG_BLOCK || inv.type == MSG_FILTERED_BLOCK)
                 break;
@@ -3691,9 +3630,11 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                 CAddress addr = GetLocalAddress(&pfrom->addr);
                 if (addr.IsRoutable())
                 {
+                    LogPrintf("ProcessMessages: advertizing address %s\n", addr.ToString());
                     pfrom->PushAddress(addr);
                 } else if (IsPeerAddrLocalGood(pfrom)) {
                     addr.SetIP(pfrom->addrLocal);
+                    LogPrintf("ProcessMessages: advertizing address %s\n", addr.ToString());
                     pfrom->PushAddress(addr);
                 }
             }
@@ -3859,7 +3800,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             }
 
             // Track requests for our stuff
-            g_signals.Inventory(inv.hash);
+            GetMainSignals().Inventory(inv.hash);
         }
     }
 

@@ -92,7 +92,7 @@ class CNetAddr
         friend bool operator!=(const CNetAddr& a, const CNetAddr& b);
         friend bool operator<(const CNetAddr& a, const CNetAddr& b);
 
-        IMPLEMENT_SERIALIZE;
+        ADD_SERIALIZE_METHODS;
 
         template <typename Stream, typename Operation>
         inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -125,7 +125,7 @@ class CSubNet
         friend bool operator!=(const CSubNet& a, const CSubNet& b);
         friend bool operator<(const CSubNet& a, const CSubNet& b);
 
-        IMPLEMENT_SERIALIZE;
+        ADD_SERIALIZE_METHODS;
 
         template <typename Stream, typename Operation>
         inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -166,7 +166,7 @@ class CService : public CNetAddr
         CService(const struct in6_addr& ipv6Addr, unsigned short port);
         CService(const struct sockaddr_in6& addr);
 
-        IMPLEMENT_SERIALIZE;
+        ADD_SERIALIZE_METHODS;
 
         template <typename Stream, typename Operation>
         inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -202,5 +202,9 @@ std::string NetworkErrorString(int err);
 bool CloseSocket(SOCKET& hSocket);
 /** Disable or enable blocking-mode for a socket */
 bool SetSocketNonBlocking(SOCKET& hSocket, bool fNonBlocking);
+/**
+ * Convert milliseconds to a struct timeval for e.g. select.
+ */
+struct timeval MillisToTimeval(int64_t nTimeout);
 
 #endif // BITCOIN_NETBASE_H

@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
+// Copyright (c) 2009-2014 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file license.txt or http://www.opensource.org/licenses/mit-license.php.
 
@@ -203,20 +203,20 @@ bool CTxDB::WriteAddrIndex(uint160 addrHash, uint256 txHash)
     std::vector<uint256> txHashes;
     if(!ReadAddrIndex(addrHash, txHashes))
     {
-	txHashes.push_back(txHash);
+    txHashes.push_back(txHash);
         return Write(make_pair(string("adr"), addrHash), txHashes);
     }
     else
     {
-	if(std::find(txHashes.begin(), txHashes.end(), txHash) == txHashes.end()) 
-    	{
-    	    txHashes.push_back(txHash);
+    if(std::find(txHashes.begin(), txHashes.end(), txHash) == txHashes.end())
+        {
+            txHashes.push_back(txHash);
             return Write(make_pair(string("adr"), addrHash), txHashes);
-	}
-	else
-	{
-	    return true; // already have this tx hash
-	}
+    }
+    else
+    {
+        return true; // already have this tx hash
+    }
     }
 }
 
@@ -328,76 +328,8 @@ static CBlockIndex *InsertBlockIndex(uint256 hash)
 
 bool CTxDB::LoadBlockIndex()
 {
-    if (mapBlockIndex.size() > 0) {
-        // Already loaded once in this session. It can happen during migration
-        // from BDB.
-        return true;
-    }
-    // The block index is an in-memory structure that maps hashes to on-disk
-    // locations where the contents of the block can be found. Here, we scan it
-    // out of the DB and into mapBlockIndex.
-    leveldb::Iterator *iterator = pdb->NewIterator(leveldb::ReadOptions());
-    // Seek to start key.
-    CDataStream ssStartKey(SER_DISK, CLIENT_VERSION);
-    ssStartKey << make_pair(string("blockindex"), uint256(0));
-    iterator->Seek(ssStartKey.str());
-    // Now read each entry.
-    while (iterator->Valid())
-    {
-        boost::this_thread::interruption_point();
-        // Unpack keys and values.
-        CDataStream ssKey(SER_DISK, CLIENT_VERSION);
-        ssKey.write(iterator->key().data(), iterator->key().size());
-        CDataStream ssValue(SER_DISK, CLIENT_VERSION);
-        ssValue.write(iterator->value().data(), iterator->value().size());
-        string strType;
-        ssKey >> strType;
-        // Did we reach the end of the data to read?
-        if (strType != "blockindex")
-            break;
-        CDiskBlockIndex diskindex;
-        ssValue >> diskindex;
-
-        uint256 blockHash = diskindex.GetBlockHash();
-
-        // Construct block index object
-        CBlockIndex* pindexNew    = InsertBlockIndex(blockHash);
-        pindexNew->pprev          = InsertBlockIndex(diskindex.hashPrev);
-        pindexNew->pnext          = InsertBlockIndex(diskindex.hashNext);
-        pindexNew->nFile          = diskindex.nFile;
-        pindexNew->nBlockPos      = diskindex.nBlockPos;
-        pindexNew->nHeight        = diskindex.nHeight;
-#ifndef LOWMEM
-        pindexNew->nMint          = diskindex.nMint;
-        pindexNew->nMoneySupply   = diskindex.nMoneySupply;
-#endif
-        pindexNew->nFlags         = diskindex.nFlags;
-        pindexNew->nStakeModifier = diskindex.nStakeModifier;
-        pindexNew->prevoutStake   = diskindex.prevoutStake;
-        pindexNew->nStakeTime     = diskindex.nStakeTime;
-        pindexNew->hashProof      = diskindex.hashProof;
-        pindexNew->nVersion       = diskindex.nVersion;
-        pindexNew->hashMerkleRoot = diskindex.hashMerkleRoot;
-        pindexNew->nTime          = diskindex.nTime;
-        pindexNew->nBits          = diskindex.nBits;
-        pindexNew->nNonce         = diskindex.nNonce;
-
-        // Watch for genesis block
-        if (pindexGenesisBlock == NULL && blockHash == Params().HashGenesisBlock())
-            pindexGenesisBlock = pindexNew;
-
-        if (!pindexNew->CheckIndex()) {
-            delete iterator;
-            return error("LoadBlockIndex() : CheckIndex failed at %d", pindexNew->nHeight);
-        }
-
-        // NovaCoin: build setStakeSeen
-        if (pindexNew->IsProofOfStake())
-            setStakeSeen.insert(make_pair(pindexNew->prevoutStake, pindexNew->nStakeTime));
-
-        iterator->Next();
-    }
-    delete iterator;
+    if (!LoadBlockIndexGuts())
+             return false;
 
     boost::this_thread::interruption_point();
 
@@ -568,6 +500,82 @@ bool CTxDB::LoadBlockIndex()
         CValidationState state;
         block.SetBestChain(state, txdb, pindexFork);
     }
+
+    return true;
+}
+
+bool CTxDB::LoadBlockIndexGuts()
+{
+    if (mapBlockIndex.size() > 0) {
+        // Already loaded once in this session. It can happen during migration
+        // from BDB.
+        return true;
+    }
+    // The block index is an in-memory structure that maps hashes to on-disk
+    // locations where the contents of the block can be found. Here, we scan it
+    // out of the DB and into mapBlockIndex.
+    leveldb::Iterator *pcursor = pdb->NewIterator(leveldb::ReadOptions());
+    // Seek to start key.
+    CDataStream ssStartKey(SER_DISK, CLIENT_VERSION);
+    ssStartKey << make_pair(string("blockindex"), uint256(0));
+    pcursor->Seek(ssStartKey.str());
+    // Now read each entry.
+    while (pcursor->Valid())
+    {
+        boost::this_thread::interruption_point();
+        // Unpack keys and values.
+        CDataStream ssKey(SER_DISK, CLIENT_VERSION);
+        ssKey.write(pcursor->key().data(), pcursor->key().size());
+        CDataStream ssValue(SER_DISK, CLIENT_VERSION);
+        ssValue.write(pcursor->value().data(), pcursor->value().size());
+        string strType;
+        ssKey >> strType;
+        // Did we reach the end of the data to read?
+        if (strType != "blockindex")
+            break;
+        CDiskBlockIndex diskindex;
+        ssValue >> diskindex;
+
+        uint256 blockHash = diskindex.GetBlockHash();
+
+        // Construct block index object
+        CBlockIndex* pindexNew    = InsertBlockIndex(blockHash);
+        pindexNew->pprev          = InsertBlockIndex(diskindex.hashPrev);
+        pindexNew->pnext          = InsertBlockIndex(diskindex.hashNext);
+        pindexNew->nFile          = diskindex.nFile;
+        pindexNew->nBlockPos      = diskindex.nBlockPos;
+        pindexNew->nHeight        = diskindex.nHeight;
+#ifndef LOWMEM
+        pindexNew->nMint          = diskindex.nMint;
+        pindexNew->nMoneySupply   = diskindex.nMoneySupply;
+#endif
+        pindexNew->nFlags         = diskindex.nFlags;
+        pindexNew->nStakeModifier = diskindex.nStakeModifier;
+        pindexNew->prevoutStake   = diskindex.prevoutStake;
+        pindexNew->nStakeTime     = diskindex.nStakeTime;
+        pindexNew->hashProof      = diskindex.hashProof;
+        pindexNew->nVersion       = diskindex.nVersion;
+        pindexNew->hashMerkleRoot = diskindex.hashMerkleRoot;
+        pindexNew->nTime          = diskindex.nTime;
+        pindexNew->nBits          = diskindex.nBits;
+        pindexNew->nNonce         = diskindex.nNonce;
+
+        // Watch for genesis block
+        if (pindexGenesisBlock == NULL && blockHash == Params().HashGenesisBlock())
+            pindexGenesisBlock = pindexNew;
+
+        if (!pindexNew->CheckIndex()) {
+            delete pcursor;
+            return error("LoadBlockIndex() : CheckIndex failed at %d", pindexNew->nHeight);
+        }
+
+        // NovaCoin: build setStakeSeen
+        if (pindexNew->IsProofOfStake())
+            setStakeSeen.insert(make_pair(pindexNew->prevoutStake, pindexNew->nStakeTime));
+
+        pcursor->Next();
+    }
+    delete pcursor;
 
     return true;
 }

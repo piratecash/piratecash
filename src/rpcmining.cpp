@@ -6,7 +6,7 @@
 #include "rpcserver.h"
 #include "chainparams.h"
 #include "main.h"
-#include "db.h"
+#include "wallet/db.h"
 #include "txdb.h"
 #include "init.h"
 #include "miner.h"

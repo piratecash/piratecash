@@ -6,6 +6,7 @@
 #ifndef BITCOIN_NET_H
 #define BITCOIN_NET_H
 
+#include "addrdb.h"
 #include "compat.h"
 #include "primitives/transaction.h"
 #include "hash.h"
@@ -30,6 +31,13 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/foreach.hpp>
 #include <boost/signals2/signal.hpp>
+
+#ifdef __cplusplus
+#include <atomic>
+using namespace std;
+#else
+#include <stdatomic.h>
+#endif
 
 class CAddrMan;
 class CBlockIndex;
@@ -68,9 +76,10 @@ CNode* FindNode(const CNetAddr& ip);
 CNode* FindNode(const CSubNet& subNet);
 CNode* FindNode(const std::string& addrName);
 CNode* FindNode(const CService& ip);
+bool OpenNetworkConnection(const CAddress& addrConnect, bool fCountFailure, CSemaphoreGrant *grantOutbound = NULL, const char *strDest = NULL, bool fOneShot = false);
 // fConnectToMasternode should be 'true' only if you want this node to allow to connect to itself
 // and/or you want it to be disconnected on CMasternodeMan::ProcessMasternodeConnections()
-CNode* ConnectNode(CAddress addrConnect, const char *pszDest = NULL, bool fConnectToMasternode = false);
+CNode* ConnectNode(CAddress addrConnect, const char *pszDest = NULL, bool fCountFailure = false, bool fConnectToMasternode = false);
 void MapPort(bool fUseUPnP);
 unsigned short GetListenPort();
 bool BindListenPort(const CService &bindAddr, std::string& strError, bool fWhitelisted = false);
@@ -114,6 +123,7 @@ bool IsLimited(enum Network net);
 bool IsLimited(const CNetAddr& addr);
 bool AddLocal(const CService& addr, int nScore = LOCAL_NONE);
 bool AddLocal(const CNetAddr& addr, int nScore = LOCAL_NONE);
+bool RemoveLocal(const CService& addr);
 bool SeenLocal(const CService& addr);
 bool IsLocal(const CService& addr);
 bool GetLocal(CService &addr, const CNetAddr *paddrPeer = NULL);
@@ -235,66 +245,6 @@ public:
     int readData(const char *pch, unsigned int nBytes);
 };
 
-typedef enum BanReason
-{
-    BanReasonUnknown          = 0,
-    BanReasonNodeMisbehaving  = 1,
-    BanReasonManuallyAdded    = 2
-} BanReason;
-
-class CBanEntry
-{
-public:
-    static const int CURRENT_VERSION=1;
-    int nVersion;
-    int64_t nCreateTime;
-    int64_t nBanUntil;
-    uint8_t banReason;
-
-    CBanEntry()
-    {
-        SetNull();
-    }
-
-    CBanEntry(int64_t nCreateTimeIn)
-    {
-        SetNull();
-        nCreateTime = nCreateTimeIn;
-    }
-  
-    IMPLEMENT_SERIALIZE;
-
-    template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
-        READWRITE(this->nVersion);
-        nVersion = this->nVersion;
-        READWRITE(nCreateTime);
-        READWRITE(nBanUntil);
-        READWRITE(banReason);
-    }
-
-    void SetNull()
-    {
-        nVersion = CBanEntry::CURRENT_VERSION;
-        nCreateTime = 0;
-        nBanUntil = 0;
-        banReason = BanReasonUnknown;
-    }
-
-    std::string banReasonToString()
-    {
-        switch (banReason) {
-        case BanReasonNodeMisbehaving:
-            return "node misbehabing";
-        case BanReasonManuallyAdded:
-            return "manually added";
-        default:
-            return "unknown";
-        }
-    }
-};
-  
-typedef std::map<CSubNet, CBanEntry> banmap_t;
 
 class SecMsgNode
 {
@@ -362,13 +312,17 @@ public:
     bool fInbound;
     bool fNetworkNode;
     bool fSuccessfullyConnected;
-    bool fDisconnect;
+    std::atomic_bool fDisconnect;
     // We use fRelayTxes for two purposes -
     // a) it allows us to not relay tx invs before receiving the peer's version message
     // b) the peer may tell us in their version message that we should not relay tx invs
     //    until they have initialized their bloom filter.
     bool fRelayTxes;
-    // If 'true' this node will be disconnected on CMasternodeMan::ProcessMasternodeConnections()
+    // Should be 'true' only if we connected to this node to actually mix funds.
+    // In this case node will be released automatically via CMasternodeMan::ProcessMasternodeConnections().
+    // Connecting to verify connectability/status or connecting for sending/relaying single message
+    // (even if it's relative to mixing e.g. for blinding) should NOT set this to 'true'.
+    // For such cases node should be released manually (preferably right after corresponding code).
     bool fMasternode;
     CSemaphoreGrant grantOutbound;
     CCriticalSection cs_filter;
@@ -965,28 +919,6 @@ void RelayTransaction(const CTransaction& tx);
 void RelayTransaction(const CTransaction& tx, const CDataStream& ss);
 void RelayTransactionLockReq(const CTransaction& tx, bool relayToAll=false);
 void RelayInv(CInv &inv, const int minProtoVersion = MIN_PEER_PROTO_VERSION);
-
-/** Access to the (IP) address database (peers.dat) */
-class CAddrDB
-{
-private:
-    boost::filesystem::path pathAddr;
-public:
-    CAddrDB();
-    bool Write(const CAddrMan& addr);
-    bool Read(CAddrMan& addr);
-};
-
-/** Access to the banlist database (banlist.dat) */
-class CBanDB
-{
-private:
-    boost::filesystem::path pathBanlist;
-public:
-    CBanDB();
-    bool Write(const banmap_t& banSet);
-    bool Read(banmap_t& banSet);
-};
 
 void DumpBanlist();
 

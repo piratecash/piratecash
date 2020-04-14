@@ -10,7 +10,7 @@
 
 #include "net.h"
 #include "db.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 #include "base58.h"
 #include "lz4/lz4.h"
 
@@ -166,7 +166,7 @@ public:
 
 
 // -- get at the data
-class CpiratecashcoinAddress_B : public CpiratecashcoinAddress
+class CBitcoinAddress_B : public CBitcoinAddress
 {
 public:
     uint8_t getVersion()
@@ -203,7 +203,7 @@ public:
     bool            fReceiveEnabled;
     bool            fReceiveAnon;
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -276,7 +276,7 @@ public:
     std::string               sAddrOutbox;    // owned address this copy was encrypted with
     std::vector<uint8_t>      vchMessage;     // message header + encryped payload
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {

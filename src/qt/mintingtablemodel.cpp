@@ -13,7 +13,7 @@
 #include "kernel.h"
 #include "rpcserver.h"
 
-#include "wallet.h"
+#include "wallet/wallet.h"
 
 #include <QLocale>
 #include <QList>

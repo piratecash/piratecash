@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = piratecash-qt
-VERSION = 0.11.5.4
+VERSION = 0.11.5.7
 INCLUDEPATH += src src/json src/qt src/qt/plugins/mrichtexteditor
 QT += network printsupport
 DEFINES += ENABLE_WALLET
@@ -10,6 +10,7 @@ CONFIG += thread
 CONFIG += static
 #CONFIG += openssl-linked
 CONFIG += openssl
+CONFIG += c++11
 
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
@@ -45,6 +46,8 @@ win32:QRENCODE_LIB_PATH=C:/dev/coindeps32/qrencode-3.4.4/.libs
 win32:SECP256K1_LIB_PATH =C:/dev/coindeps32/secp256k1/.libs
 win32:SECP256K1_INCLUDE_PATH =C:/dev/coindeps32/secp256k1/include
 macx:QMAKE_MAC_SDK = macosx10.15
+macx:LIBS += /opt/local/lib/libevent.a /opt/local/lib/libevent_pthreads.a
+linux:LIBS += -levent -levent_pthreads
 
 OBJECTS_DIR = build
 MOC_DIR = build
@@ -109,7 +112,7 @@ contains(BITCOIN_NEED_QT_PLUGINS, 1) {
 #Build Leveldb
 INCLUDEPATH += src/leveldb/include src/leveldb/helpers
 LIBS += $$PWD/src/leveldb/libleveldb.a $$PWD/src/leveldb/libmemenv.a
-SOURCES += src/txdb-leveldb.cpp
+SOURCES += src/txdb.cpp
 !win32 {
     # we use QMAKE_CXXFLAGS_RELEASE even without RELEASE=1 because we use RELEASE to indicate linking preferences not -O preferences
     genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a
@@ -205,6 +208,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/aboutdialog.h \
     src/qt/editaddressdialog.h \
     src/qt/bitcoinaddressvalidator.h \
+    src/addrdb.h \
     src/alert.h \
     src/amount.h \
     src/allocators.h \
@@ -222,6 +226,9 @@ HEADERS += src/qt/bitcoingui.h \
     src/utilmoneystr.h \
     src/utiltime.h \
     src/random.h \
+    src/reverselock.h \
+    src/txdb.h \
+    src/torcontrol.h \
     src/hash.h \
     src/uint256.h \
     src/kernel.h \
@@ -239,10 +246,10 @@ HEADERS += src/qt/bitcoingui.h \
     src/ecwrapper.h \
     src/key.h \
     src/pubkey.h \
-    src/db.h \
+    src/wallet/db.h \
     src/txdb.h \
     src/txmempool.h \
-    src/walletdb.h \
+    src/wallet/walletdb.h \
     src/script.h \
     src/scrypt.h \
     src/init.h \
@@ -268,7 +275,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/transactiondesc.h \
     src/qt/transactiondescdialog.h \
     src/qt/bitcoinamountfield.h \
-    src/wallet.h \
+    src/wallet/wallet.h \
     src/keystore.h \
     src/qt/transactionfilterproxy.h \
     src/qt/transactionview.h \
@@ -277,6 +284,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/rpcclient.h \
     src/rpcprotocol.h \
     src/rpcserver.h \
+    src/scheduler.h \
     src/limitedmap.h \
     src/qt/overviewpage.h \
     src/qt/csvmodelwriter.h \
@@ -291,6 +299,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/paymentserver.h \
     src/ui_interface.h \
     src/qt/rpcconsole.h \
+    src/validationinterface.h \
     src/version.h \
     src/netbase.h \
     src/clientversion.h \
@@ -342,10 +351,13 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/aboutdialog.cpp \
     src/qt/editaddressdialog.cpp \
     src/qt/bitcoinaddressvalidator.cpp \
+    src/addrdb.cpp \
     src/alert.cpp \
     src/allocators.cpp \
     src/base58.cpp \
     src/chainparams.cpp \
+    src/validationinterface.cpp \
+    src/torcontrol.cpp \
     src/version.cpp \
     src/sync.cpp \
     src/txmempool.cpp \
@@ -359,6 +371,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/ecwrapper.cpp \
     src/key.cpp \
     src/pubkey.cpp \
+    src/scheduler.cpp \
     src/script.cpp \
     src/scrypt.cpp \
     src/primitives/transaction.cpp \
@@ -369,8 +382,8 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/bloom.cpp \
     src/checkpoints.cpp \
     src/addrman.cpp \
-    src/db.cpp \
-    src/walletdb.cpp \
+    src/wallet/db.cpp \
+    src/wallet/walletdb.cpp \
     src/qt/clientmodel.cpp \
     src/qt/guiutil.cpp \
     src/qt/transactionrecord.cpp \
@@ -382,7 +395,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactiondescdialog.cpp \
     src/qt/bitcoinstrings.cpp \
     src/qt/bitcoinamountfield.cpp \
-    src/wallet.cpp \
+    src/wallet/wallet.cpp \
     src/keystore.cpp \
     src/qt/transactionfilterproxy.cpp \
     src/qt/transactionview.cpp \
@@ -391,12 +404,12 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/rpcclient.cpp \
     src/rpcprotocol.cpp \
     src/rpcserver.cpp \
-    src/rpcdump.cpp \
+    src/wallet/rpcdump.cpp \
     src/rpcmisc.cpp \
     src/rpcnet.cpp \
     src/rpcmining.cpp \
     src/rpcminting.cpp \
-    src/rpcwallet.cpp \
+    src/wallet/rpcwallet.cpp \
     src/rpcblockchain.cpp \
     src/rpcrawtransaction.cpp \
     src/qt/overviewpage.cpp \
@@ -634,7 +647,7 @@ windows:LIBS += -lws2_32 -lshlwapi -lmswsock -lole32 -loleaut32 -luuid -lgdi32
     INCLUDEPATH += $$SECP256K1_INCLUDE_PATH
     LIBS += $$join(SECP256K1_LIB_PATH,,-L,) -lsecp256k1
 }
-LIBS += -lboost_system$$BOOST_LIB_SUFFIX -lboost_filesystem$$BOOST_LIB_SUFFIX -lboost_program_options$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_THREAD_LIB_SUFFIX
+LIBS += -lboost_system$$BOOST_LIB_SUFFIX -lboost_filesystem$$BOOST_LIB_SUFFIX -lboost_program_options$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_THREAD_LIB_SUFFIX -lboost_chrono$$BOOST_THREAD_LIB_SUFFIX
 macx:LIBS += -lboost_chrono$$BOOST_LIB_SUFFIX
 windows:LIBS += -lboost_chrono$$BOOST_LIB_SUFFIX
 

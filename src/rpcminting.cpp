@@ -4,7 +4,7 @@
 #include "init.h"
 #include "rpcserver.h"
 #include "kernelrecord.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 
 using namespace json_spirit;
 using namespace std;

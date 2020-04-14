@@ -17,8 +17,8 @@
 #include "keystore.h"
 #include "main.h"
 #include "ui_interface.h"
-#include "wallet.h"
-#include "walletdb.h" // for BackupWallet
+#include "wallet/wallet.h"
+#include "wallet/walletdb.h" // for BackupWallet
 #include "spork.h"
 #include "smessage.h"
 
@@ -222,7 +222,7 @@ bool WalletModel::validateAddress(const QString &address)
             return true;
     };
 
-    CpiratecashcoinAddress addressParsed(sAddr);
+    CBitcoinAddress addressParsed(sAddr);
     return addressParsed.IsValid();
 }
 
@@ -259,7 +259,7 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
         setAddress.insert(rcp.address);
         ++nAddresses;
 
-        CScript scriptPubKey = GetScriptForDestination(CpiratecashcoinAddress(rcp.address.toStdString()).Get());
+        CScript scriptPubKey = GetScriptForDestination(CBitcoinAddress(rcp.address.toStdString()).Get());
         vecSend.push_back(std::pair<CScript, CAmount>(scriptPubKey, rcp.amount));
 
         total += rcp.amount;
@@ -380,7 +380,7 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(WalletModelTransaction &tran
 
                     CKeyID ckidTo = cpkTo.GetID();
 
-                    CpiratecashcoinAddress addrTo(ckidTo);
+                    CBitcoinAddress addrTo(ckidTo);
 
                     if (SecretToPublicKey(ephem_secret, ephem_pubkey) != 0)
                     {
@@ -446,7 +446,7 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(WalletModelTransaction &tran
             }
 
             CScript scriptPubKey;
-            scriptPubKey.SetDestination(CpiratecashcoinAddress(sAddr).Get());
+            scriptPubKey.SetDestination(CBitcoinAddress(sAddr).Get());
             vecSend.push_back(make_pair(scriptPubKey, rcp.amount));
 
             if (rcp.narration.length() > 0)
@@ -524,7 +524,7 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(WalletModelTransaction &tran
     foreach(const SendCoinsRecipient &rcp, recipients)
     {
         std::string strAddress = rcp.address.toStdString();
-        CTxDestination dest = CpiratecashcoinAddress(strAddress).Get();
+        CTxDestination dest = CBitcoinAddress(strAddress).Get();
         std::string strLabel = rcp.label.toStdString();
         {
             LOCK(wallet->cs_wallet);
@@ -666,7 +666,7 @@ static void NotifyAddressBookChanged(WalletModel *walletmodel, CWallet *wallet,
                                   Q_ARG(int, status));
     } else
     {
-    QString strAddress = QString::fromStdString(CpiratecashcoinAddress(address).ToString());
+    QString strAddress = QString::fromStdString(CBitcoinAddress(address).ToString());
     QString strLabel = QString::fromStdString(label);
 
     qDebug() << "NotifyAddressBookChanged : " + strAddress + " " + strLabel + " isMine=" + QString::number(isMine) + " status=" + QString::number(status);
@@ -854,7 +854,7 @@ void WalletModel::listCoins(std::map<QString, std::vector<COutput> >& mapCoins) 
         CTxDestination address;
         if(!out.fSpendable || !ExtractDestination(cout.tx->vout[cout.i].scriptPubKey, address))
             continue;
-        mapCoins[QString::fromStdString(CpiratecashcoinAddress(address).ToString())].push_back(out);
+        mapCoins[QString::fromStdString(CBitcoinAddress(address).ToString())].push_back(out);
     }
 }
 

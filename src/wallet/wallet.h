@@ -20,6 +20,7 @@
 #include "keystore.h"
 #include "script.h"
 #include "ui_interface.h"
+#include "validationinterface.h"
 #include "util.h"
 #include "stealth.h"
 
@@ -29,6 +30,8 @@ extern int64_t nReserveBalance;
 extern int64_t nMinimumInputValue;
 extern bool fWalletUnlockStakingOnly;
 extern bool fConfChange;
+//! -keypool default
+static const unsigned int DEFAULT_KEYPOOL_SIZE = 1000;
 
 class CAccountingEntry;
 class CCoinControl;
@@ -78,7 +81,7 @@ public:
         vchPubKey = vchPubKeyIn;
     }
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -165,6 +168,12 @@ public:
 
         strWalletFile = strWalletFileIn;
         fFileBacked = true;
+    }
+
+    ~CWallet()
+    {
+        delete pwalletdbEncryption;
+        pwalletdbEncryption = NULL;
     }
 
     void SetNull()
@@ -617,7 +626,7 @@ public:
         nOrderPos = -1;
     }
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -1139,7 +1148,7 @@ public:
         nTimeExpires = nExpires;
     }
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
      inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -1176,7 +1185,7 @@ public:
         vchPubKey = CPubKey();
     }
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -1220,7 +1229,7 @@ public:
         nEntryNo = 0;
     }
 
-    IMPLEMENT_SERIALIZE;
+    ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {

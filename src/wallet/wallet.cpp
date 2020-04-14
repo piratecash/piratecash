@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2014-2017 The Dash Core developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "wallet.h"
@@ -22,6 +23,8 @@
 #include "masternode-payments.h"
 #include "chainparams.h"
 #include "smessage.h"
+
+#include <assert.h>
 
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/thread.hpp>
@@ -91,7 +94,7 @@ bool CWallet::AddKeyPubKey(const CKey& secret, const CPubKey &pubkey)
     if (!CCryptoKeyStore::AddKeyPubKey(secret, pubkey))
         return false;
 
-        // check if we need to remove from watch-only
+    // check if we need to remove from watch-only
     CScript script;
     script = GetScriptForDestination(pubkey.GetID());
     if (HaveWatchOnly(script))
@@ -157,7 +160,7 @@ bool CWallet::LoadCScript(const CScript& redeemScript)
      * these. Do not add them to the wallet and warn. */
     if (redeemScript.size() > MAX_SCRIPT_ELEMENT_SIZE)
     {
-        std::string strAddr = CpiratecashcoinAddress(redeemScript.GetID()).ToString();
+        std::string strAddr = CBitcoinAddress(redeemScript.GetID()).ToString();
         LogPrintf("%s: Warning: This wallet contains a redeemScript of size %u which exceeds maximum size %i thus can never be redeemed. Do not use address %s.\n",
             __func__, redeemScript.size(), MAX_SCRIPT_ELEMENT_SIZE, strAddr);
         return true;
@@ -466,6 +469,7 @@ bool CWallet::EncryptWallet(const SecureString& strWalletPassphrase)
     CMasterKey kMasterKey(nDerivationMethodIndex);
 
     RandAddSeedPerfmon();
+
     kMasterKey.vchSalt.resize(WALLET_CRYPTO_SALT_SIZE);
     if (!GetRandBytes(&kMasterKey.vchSalt[0], WALLET_CRYPTO_SALT_SIZE))
         return false;
@@ -494,17 +498,25 @@ bool CWallet::EncryptWallet(const SecureString& strWalletPassphrase)
         mapMasterKeys[++nMasterKeyMaxID] = kMasterKey;
         if (fFileBacked)
         {
+            assert(!pwalletdbEncryption);
             pwalletdbEncryption = new CWalletDB(strWalletFile);
-            if (!pwalletdbEncryption->TxnBegin())
+            if (!pwalletdbEncryption->TxnBegin()) {
+                delete pwalletdbEncryption;
+                pwalletdbEncryption = NULL;
                 return false;
+            }
             pwalletdbEncryption->WriteMasterKey(nMasterKeyMaxID, kMasterKey);
         }
 
         if (!EncryptKeys(vMasterKey))
         {
-            if (fFileBacked)
+            if (fFileBacked) {
                 pwalletdbEncryption->TxnAbort();
-            exit(1); //We now probably have half of our keys encrypted in memory, and half not...die and let the user reload their unencrypted wallet.
+                delete pwalletdbEncryption;
+            }
+            // We now probably have half of our keys encrypted in memory, and half not...
+            // die and let the user reload their unencrypted wallet.
+            assert(false);
         }
 
         std::set<CStealthAddress>::iterator it;
@@ -540,8 +552,12 @@ bool CWallet::EncryptWallet(const SecureString& strWalletPassphrase)
 
         if (fFileBacked)
         {
-            if (!pwalletdbEncryption->TxnCommit())
-                exit(1); //We now have keys encrypted in memory, but no on disk...die to avoid confusion and let the user reload their unencrypted wallet.
+            if (!pwalletdbEncryption->TxnCommit()) {
+                delete pwalletdbEncryption;
+                // We now have keys encrypted in memory, but no on disk...
+                // die to avoid confusion and let the user reload their unencrypted wallet.
+                assert(false);
+            }
 
             delete pwalletdbEncryption;
             pwalletdbEncryption = NULL;
@@ -612,6 +628,7 @@ void CWallet::MarkDirty()
 bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
 {
     uint256 hash = wtxIn.GetHash();
+
     if (fFromLoadWallet)
     {
         mapWallet[hash] = wtxIn;
@@ -768,6 +785,7 @@ bool CWallet::AddToWalletIfInvolvingMe(const CTransaction& tx, const CBlock* pbl
 void CWallet::SyncTransaction(const CTransaction& tx, const CBlock* pblock, bool fConnect)
 {
     LOCK2(cs_main, cs_wallet);
+
     if (!AddToWalletIfInvolvingMe(tx, pblock, true))
         return; // Not one of ours
 
@@ -892,6 +910,7 @@ int CWallet::GetRealInputDarksendRounds(CTxIn in, int rounds) const
         {
             fAllDenoms = fAllDenoms && IsDenominatedAmount(out.nValue);
         }
+
         // this one is denominated but there is another non-denominated output found in the same tx
         if(!fAllDenoms)
         {
@@ -944,6 +963,7 @@ bool CWallet::IsDenominated(const CTxIn &txin) const
             if (txin.prevout.n < prev.vout.size()) return IsDenominatedAmount(prev.vout[txin.prevout.n].nValue);
         }
     }
+
     return false;
 }
 
@@ -1084,7 +1104,6 @@ void CWalletTx::GetAmounts(list<pair<CTxDestination, int64_t> >& listReceived,
 void CWalletTx::GetAccountAmounts(const string& strAccount, CAmount& nReceived,
                                   CAmount& nSent, CAmount& nFee, const isminefilter& filter) const
 {
-
     nReceived = nSent = nFee = 0;
 
     CAmount allFee;
@@ -1571,6 +1590,7 @@ CAmount CWallet::GetDenominatedBalance(bool unconfirmed) const
 
     return nTotal;
 }
+
 CAmount CWallet::GetUnconfirmedBalance() const
 {
     CAmount nTotal = 0;
@@ -1830,7 +1850,7 @@ static void ApproximateBestSubset(vector<pair<int64_t, pair<const CWalletTx*,uns
     for (int nRep = 0; nRep < iterations && nBest != nTargetValue; nRep++)
     {
         vfIncluded.assign(vValue.size(), false);
-        int64_t nTotal = 0;
+        CAmount nTotal = 0;
         bool fReachedTarget = false;
         for (int nPass = 0; nPass < 2 && !fReachedTarget; nPass++)
         {
@@ -2018,10 +2038,10 @@ bool CWallet::SelectCoins(int64_t nTargetValue, unsigned int nSpendTime, set<pai
                 // make sure it's actually anonymized
                 if(rounds < nDarksendRounds) continue;
             }
-
             nValueRet += out.tx->vout[out.i].nValue;
             setCoinsRet.insert(make_pair(out.tx, out.i));
         }
+
         return (nValueRet >= nTargetValue);
     }
 
@@ -2452,7 +2472,7 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, int64_t> >& vecSend, 
 
                 // Choose coins to use
                 set<pair<const CWalletTx*,unsigned int> > setCoins;
-                int64_t nValueIn = 0;
+                CAmount nValueIn = 0;
 
                 if (!SelectCoins(nTotalValue, wtxNew.nTime, setCoins, nValueIn, coinControl, coin_type, useIX))
                 {
@@ -2472,6 +2492,8 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, int64_t> >& vecSend, 
                     }
                     return false;
                 }
+
+
                 BOOST_FOREACH(PAIRTYPE(const CWalletTx*, unsigned int) pcoin, setCoins)
                 {
                     int64_t nCredit = pcoin.first->vout[pcoin.second].nValue;
@@ -2568,6 +2590,7 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, int64_t> >& vecSend, 
                     strFailReason = _(" Transaction too large");
                     return false;
                 }
+
                 dPriority = wtxNew.ComputePriority(dPriority, nBytes);
 
                 // Check that enough fee is included
@@ -2778,7 +2801,7 @@ bool CWallet::UnlockStealthAddresses(const CKeyingMaterial& vMasterKeyIn)
             continue;
 
         CKeyID ckid = pubKey.GetID();
-        CpiratecashcoinAddress addr(ckid);
+        CBitcoinAddress addr(ckid);
 
         StealthKeyMetaMap::iterator mi = mapStealthKeyMeta.find(ckid);
         if (mi == mapStealthKeyMeta.end())
@@ -2866,7 +2889,7 @@ bool CWallet::UnlockStealthAddresses(const CKeyingMaterial& vMasterKeyIn)
         if (fDebug)
         {
             CKeyID keyID = cpkT.GetID();
-            CpiratecashcoinAddress coinAddress(keyID);
+            CBitcoinAddress coinAddress(keyID);
             printf("Adding secret to key %s.\n", coinAddress.ToString().c_str());
         };
 
@@ -3066,7 +3089,7 @@ bool CWallet::SendStealthMoneyToDestination(CStealthAddress& sxAddress, int64_t 
 
     CKeyID ckidTo = cpkTo.GetID();
 
-    CpiratecashcoinAddress addrTo(ckidTo);
+    CBitcoinAddress addrTo(ckidTo);
 
     if (SecretToPublicKey(ephem_secret, ephem_pubkey) != 0)
     {
@@ -3232,7 +3255,7 @@ bool CWallet::FindStealthTransactions(const CTransaction& tx, mapValue_t& mapNar
                     std::vector<uint8_t> vchEmpty;
                     AddCryptedKey(cpkE, vchEmpty);
                     CKeyID keyId = cpkE.GetID();
-                    CpiratecashcoinAddress coinAddress(keyId);
+                    CBitcoinAddress coinAddress(keyId);
                     std::string sLabel = it->Encoded();
                     SetAddressBookName(keyId, sLabel);
 
@@ -3295,7 +3318,7 @@ bool CWallet::FindStealthTransactions(const CTransaction& tx, mapValue_t& mapNar
                     CKeyID keyID = cpkT.GetID();
                     if (fDebug)
                     {
-                        CpiratecashcoinAddress coinAddress(keyID);
+                        CBitcoinAddress coinAddress(keyID);
                         printf("Adding key %s.\n", coinAddress.ToString().c_str());
                     };
 
@@ -3582,7 +3605,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
         CTxDestination address1;
         ExtractDestination(payee, address1);
-        CpiratecashcoinAddress address2(address1);
+        CBitcoinAddress address2(address1);
 
         LogPrintf("Masternode payment to %s\n", address2.ToString().c_str());
     }
@@ -3597,7 +3620,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
         CTxDestination address1;
         ExtractDestination(payeerewardaddress, address1);
-        CpiratecashcoinAddress address2(address1);
+        CBitcoinAddress address2(address1);
 
         LogPrintf("Masternode payment to %s\n", address2.ToString().c_str());
     }
@@ -3615,11 +3638,11 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
         CTxDestination address1;
         ExtractDestination(payee, address1);
-        CpiratecashcoinAddress address2(address1);
+        CBitcoinAddress address2(address1);
         
         CTxDestination address3;
         ExtractDestination(payeerewardaddress, address3);
-        CpiratecashcoinAddress address4(address3);
+        CBitcoinAddress address4(address3);
 
         LogPrintf("Masternode payment to %s\n", address2.ToString().c_str());
     }
@@ -3992,7 +4015,7 @@ bool CWallet::SetAddressBookName(const CTxDestination& address, const string& st
                              (fUpdated ? CT_UPDATED : CT_NEW) );
     if (!fFileBacked)
         return false;
-    return CWalletDB(strWalletFile).WriteName(CpiratecashcoinAddress(address).ToString(), strName);
+    return CWalletDB(strWalletFile).WriteName(CBitcoinAddress(address).ToString(), strName);
 }
 
 bool CWallet::DelAddressBookName(const CTxDestination& address)
@@ -4007,8 +4030,8 @@ bool CWallet::DelAddressBookName(const CTxDestination& address)
 
     if (!fFileBacked)
         return false;
-    CWalletDB(strWalletFile).EraseName(CpiratecashcoinAddress(address).ToString());
-    return CWalletDB(strWalletFile).EraseName(CpiratecashcoinAddress(address).ToString());
+    CWalletDB(strWalletFile).EraseName(CBitcoinAddress(address).ToString());
+    return CWalletDB(strWalletFile).EraseName(CBitcoinAddress(address).ToString());
 }
 
 bool CWallet::GetTransaction(const uint256 &hashTx, CWalletTx& wtx)
@@ -4036,10 +4059,10 @@ bool CWallet::SetDefaultKey(const CPubKey &vchPubKey)
     return true;
 }
 
-//
-// Mark old keypool keys as used,
-// and generate all new keys
-//
+/**
+ * Mark old keypool keys as used,
+ * and generate all new keys 
+ */
 bool CWallet::NewKeyPool()
 {
     {
@@ -4052,14 +4075,7 @@ bool CWallet::NewKeyPool()
         if (IsLocked())
             return false;
 
-        fLiteMode = GetBoolArg("-litemode", false);
-        int64_t nKeys;
-
-        if (fLiteMode)
-            nKeys = max(GetArg("-keypool", 10), (int64_t)0);
-        else
-            nKeys = max(GetArg("-keypool", 100), (int64_t)0);
-
+        int64_t nKeys = max(GetArg("-keypool", DEFAULT_KEYPOOL_SIZE), (int64_t)0);
         for (int i = 0; i < nKeys; i++)
         {
             int64_t nIndex = i+1;
@@ -4071,7 +4087,7 @@ bool CWallet::NewKeyPool()
     return true;
 }
 
-bool CWallet::TopUpKeyPool(unsigned int nSize)
+bool CWallet::TopUpKeyPool(unsigned int kpSize)
 {
     {
         LOCK(cs_wallet);
@@ -4083,14 +4099,10 @@ bool CWallet::TopUpKeyPool(unsigned int nSize)
 
         // Top up key pool
         unsigned int nTargetSize;
-        fLiteMode = GetBoolArg("-litemode", false);
-
-        if (nSize > 0)
-            nTargetSize = nSize;
-        else if (fLiteMode)
-            nTargetSize = max(GetArg("-keypool", 10), (int64_t)0);
+        if (kpSize > 0)
+            nTargetSize = kpSize;
         else
-            nTargetSize = max(GetArg("-keypool", 100), (int64_t)0);
+            nTargetSize = max(GetArg("-keypool", DEFAULT_KEYPOOL_SIZE), (int64_t) 0);
 
         while (setKeyPool.size() < (nTargetSize + 1))
         {
@@ -4108,7 +4120,6 @@ bool CWallet::TopUpKeyPool(unsigned int nSize)
     }
     return true;
 }
-
 
 void CWallet::ReserveKeyFromKeyPool(int64_t& nIndex, CKeyPool& keypool)
 {
