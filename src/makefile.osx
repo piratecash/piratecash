@@ -13,16 +13,17 @@ DEPSDIR=/opt/local
 INCLUDEPATHS= \
  -I"$(CURDIR)" \
  -I"$(CURDIR)"/obj \
- -I"$(DEPSDIR)/include" \
- -I"$(DEPSDIR)/include/boost/" \
+ -I"$(DEPSDIR)/libexec/boost169/include/" \
  -I"$(DEPSDIR)/include/db48/" \
- -I"$(DEPSDIR)/include/openssl/"
+ -I"$(DEPSDIR)/include/openssl-1.0/" \
+ -I"$(DEPSDIR)/include/"
+
 
 LIBPATHS= \
- -L"$(DEPSDIR)/lib" \
- -L"$(DEPSDIR)/lib/" \
  -L"$(DEPSDIR)/lib/db48/" \
- -L"$(DEPSDIR)/lib/openssl/"
+ -L"$(DEPSDIR)/lib/openssl-1.0/" \
+ -L"$(DEPSDIR)/libexec/boost169/lib/" \
+ -L"$(DEPSDIR)/lib"
 
 USE_UPNP:=1
 USE_WALLET:=1
@@ -34,10 +35,11 @@ ifdef STATIC
 # Build STATIC if you are redistributing the piratecashd binary
 LIBS += \
  $(DEPSDIR)/lib/db48/libdb_cxx-4.8.a \
- $(DEPSDIR)/lib/libboost_system-mt.a \
- $(DEPSDIR)/lib/libboost_filesystem-mt.a \
- $(DEPSDIR)/lib/libboost_program_options-mt.a \
- $(DEPSDIR)/lib/libboost_thread-mt.a \
+ $(DEPSDIR)/libexec/boost169/lib/libboost_system-mt.a \
+ $(DEPSDIR)/libexec/boost169/lib/libboost_filesystem-mt.a \
+ $(DEPSDIR)/libexec/boost169/lib/libboost_program_options-mt.a \
+ $(DEPSDIR)/libexec/boost169/lib/libboost_thread-mt.a \
+ $(DEPSDIR)/libexec/boost169/lib/libboost_chrono-mt.a \
  $(DEPSDIR)/lib/libssl.a \
  $(DEPSDIR)/lib/libcrypto.a \
  -lz
@@ -48,8 +50,11 @@ LIBS += \
  -l boost_filesystem-mt \
  -l boost_program_options-mt \
  -l boost_thread-mt \
+ -l boost_chrono-mt \
  -l ssl \
  -l gmp \
+ -l event \
+ -l event_pthreads \
  -l crypto \
  -l z
 endif
@@ -67,7 +72,7 @@ endif
 
 # ppc doesn't work because we don't support big-endian
 CFLAGS += -Wall -Wextra -Wformat -Wno-ignored-qualifiers -Wformat-security -Wno-unused-parameter -Wunused-function -Wunused-variable -fpermissive -Wconversion-null -Wno-deprecated-declarations\
-    $(DEBUGFLAGS) $(DEFS) $(INCLUDEPATHS)
+    $(DEBUGFLAGS) $(DEFS) $(INCLUDEPATHS) -std=c++11
 
 OBJS= \
     obj/alert.o \
