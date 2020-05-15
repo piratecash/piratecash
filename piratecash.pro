@@ -524,7 +524,7 @@ OTHER_FILES += \
 
 # platform specific defaults, if not overridden on command line
 isEmpty(BOOST_LIB_SUFFIX) {
-    macx:BOOST_LIB_SUFFIX =
+    macx:BOOST_LIB_SUFFIX = -mt
     windows:BOOST_LIB_SUFFIX=-mgw49-mt-s-1_57
 }
 
@@ -549,12 +549,12 @@ isEmpty(BDB_INCLUDE_PATH) {
 }
 
 isEmpty(BOOST_LIB_PATH) {
-    macx:BOOST_LIB_PATH = /opt/local/boost-1.66/lib
+    macx:BOOST_LIB_PATH = /opt/local/libexec/boost169/lib
     windows:BOOST_LIB_PATH=C:/dev/coindeps32/boost_1_57_0/stage/lib
 }
 
 isEmpty(BOOST_INCLUDE_PATH) {
-    macx:BOOST_INCLUDE_PATH = /opt/local/boost-1.66/include
+    macx:BOOST_INCLUDE_PATH = /opt/local/libexec/boost169/include
     windows:BOOST_INCLUDE_PATH=C:/dev/coindeps32/boost_1_57_0
 }
 

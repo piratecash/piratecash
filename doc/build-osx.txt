@@ -32,7 +32,7 @@ Download: https://www.boost.org/users/history/version_1_66_0.html
 
 3.1.  Install dependencies from MacPorts
 
-sudo port install db48 openssl10 miniupnpc automake autoconf libtool kerberos5 mesa qrencode libevent
+sudo port install db48 openssl10 miniupnpc automake autoconf libtool kerberos5 mesa qrencode libevent boost169
 sudo port install gmp +universal
 
 Optionally install qrencode (and set USE_QRCODE=1):
