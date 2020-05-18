@@ -114,6 +114,8 @@ Value importprivkey(const Array& params, bool fHelp)
             "Adds a private key (as returned by dumpprivkey) to your wallet.");
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
+    EnsureWalletIsUnlocked();
+
     string strSecret = params[0].get_str();
     string strLabel = "";
     if (params.size() > 1)
