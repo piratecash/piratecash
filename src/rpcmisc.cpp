@@ -35,6 +35,12 @@ Value getinfo(const Array& params, bool fHelp)
             "getinfo\n"
             "Returns an object containing various state info.");
 
+#ifdef ENABLE_WALLET
+    LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : NULL);
+#else
+    LOCK(cs_main);
+#endif
+
     proxyType proxy;
     GetProxy(NET_IPV4, proxy);
 
@@ -146,6 +152,12 @@ Value validateaddress(const Array& params, bool fHelp)
             "validateaddress <piratecashaddress>\n"
             "Return information about <piratecashaddress>.");
 
+#ifdef ENABLE_WALLET
+    LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : NULL);
+#else
+    LOCK(cs_main);
+#endif
+
     CBitcoinAddress address(params[0].get_str());
     bool isValid = address.IsValid();
 
@@ -217,6 +229,8 @@ Value verifymessage(const Array& params, bool fHelp)
         throw runtime_error(
             "verifymessage <piratecashaddress> <signature> <message>\n"
             "Verify a signed message");
+
+    LOCK(cs_main);
 
     string strAddress  = params[0].get_str();
     string strSign     = params[1].get_str();

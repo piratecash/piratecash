@@ -84,6 +84,8 @@ Value getmininginfo(const Array& params, bool fHelp)
             "getmininginfo\n"
             "Returns an object containing mining-related information.");
 
+    LOCK(cs_main);
+
     uint64_t nWeight = 0;
     if (pwalletMain)
         nWeight = pwalletMain->GetStakeWeight();
@@ -516,6 +518,8 @@ Value getblocktemplate(const Array& params, bool fHelp)
             "  \"masternode_payments\" : true|false,         (boolean) true, if masternode payments are enabled"
             "  \"enforce_masternode_payments\" : true|false  (boolean) true, if masternode payments are enforced"
             "See https://en.bitcoin.it/wiki/BIP_0022 for full specification.");
+
+    LOCK(cs_main);
 
     std::string strMode = "template";
     Value lpval = Value::null;

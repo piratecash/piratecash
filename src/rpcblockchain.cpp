@@ -170,6 +170,7 @@ Value getbestblockhash(const Array& params, bool fHelp)
             "getbestblockhash\n"
             "Returns the hash of the best block in the longest block chain.");
 
+    LOCK(cs_main);
     return hashBestChain.GetHex();
 }
 
@@ -180,6 +181,7 @@ Value getblockcount(const Array& params, bool fHelp)
             "getblockcount\n"
             "Returns the number of blocks in the longest block chain.");
 
+    LOCK(cs_main);
     return nBestHeight;
 }
 
@@ -194,6 +196,7 @@ Value getdifficulty(const Array& params, bool fHelp)
     //Object obj;
     //obj.push_back(Pair("proof-of-work",        GetDifficulty()));
     //obj.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex(pindexBest, true))));
+    LOCK(cs_main);
     return GetDifficulty(GetLastBlockIndex(pindexBest, true));
 }
 
@@ -204,6 +207,7 @@ Value getrawmempool(const Array& params, bool fHelp)
         throw runtime_error(
             "getrawmempool\n"
             "Returns all transaction ids in memory pool.");
+    LOCK(cs_main);
 
     vector<uint256> vtxid;
     mempool.queryHashes(vtxid);
@@ -222,6 +226,8 @@ Value getblockhash(const Array& params, bool fHelp)
             "getblockhash <index>\n"
             "Returns hash of block in best-block-chain at <index>.");
 
+    LOCK(cs_main);
+
     int nHeight = params[0].get_int();
     if (nHeight < 0 || nHeight > nBestHeight)
         throw runtime_error("Block number out of range.");
@@ -237,6 +243,8 @@ Value getblock(const Array& params, bool fHelp)
             "getblock <hash> [txinfo]\n"
             "txinfo optional to print more detailed tx info\n"
             "Returns details of a block with given block-hash.");
+
+    LOCK(cs_main);
 
     std::string strHash = params[0].get_str();
     uint256 hash(strHash);

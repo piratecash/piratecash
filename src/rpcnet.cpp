@@ -28,7 +28,8 @@ Value getconnectioncount(const Array& params, bool fHelp)
             "getconnectioncount\n"
             "Returns the number of connections to other nodes.");
 
-    LOCK(cs_vNodes);
+    LOCK2(cs_main, cs_vNodes);
+
     return (int)vNodes.size();
 }
 
@@ -42,7 +43,8 @@ Value ping(const Array& params, bool fHelp)
             "Ping command is handled in queue with all other commands, so it measures processing backlog, not just network ping.");
 
     // Request that each node send a ping during next message processing pass
-    LOCK(cs_vNodes);
+    LOCK2(cs_main, cs_vNodes);
+
     BOOST_FOREACH(CNode* pNode, vNodes) {
         pNode->fPingQueued = true;
     }
@@ -69,6 +71,8 @@ Value getpeerinfo(const Array& params, bool fHelp)
         throw runtime_error(
             "getpeerinfo\n"
             "Returns data about each connected network node.");
+
+    LOCK(cs_main);
 
     vector<CNodeStats> vstats;
     CopyNodeStats(vstats);

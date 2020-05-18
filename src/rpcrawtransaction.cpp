@@ -109,6 +109,8 @@ Value getrawtransaction(const Array& params, bool fHelp)
             "If verbose is non-zero, returns an Object\n"
             "with information about <txid>.");
 
+    LOCK(cs_main);
+
     uint256 hash = ParseHashV(params[0], "parameter 1");
 
     bool fVerbose = false;
@@ -171,6 +173,7 @@ Value listunspent(const Array& params, bool fHelp)
     Array results;
     vector<COutput> vecOutputs;
     assert(pwalletMain != NULL);
+    LOCK2(cs_main, pwalletMain->cs_wallet);
     pwalletMain->AvailableCoins(vecOutputs, false);
     BOOST_FOREACH(const COutput& out, vecOutputs) {
         if (out.nDepth < nMinDepth || out.nDepth > nMaxDepth)
@@ -228,6 +231,8 @@ Value createrawtransaction(const Array& params, bool fHelp)
             "Note that the transaction's inputs are not signed, and\n"
             "it is not stored in the wallet or transmitted to the network.");
 
+    LOCK(cs_main);
+
     RPCTypeCheck(params, list_of(array_type)(obj_type));
 
     Array inputs = params[0].get_array();
@@ -281,6 +286,8 @@ Value decoderawtransaction(const Array& params, bool fHelp)
             "decoderawtransaction <hex string>\n"
             "Return a JSON object representing the serialized, hex-encoded transaction.");
 
+    LOCK(cs_main);
+
 
     vector<unsigned char> txData(ParseHexV(params[0], "argument"));
     CDataStream ssData(txData, SER_NETWORK, PROTOCOL_VERSION);
@@ -304,6 +311,8 @@ Value decodescript(const Array& params, bool fHelp)
         throw runtime_error(
             "decodescript <hex string>\n"
             "Decode a hex-encoded script.");
+
+    LOCK(cs_main);
 
     RPCTypeCheck(params, list_of(str_type));
 
@@ -341,6 +350,11 @@ Value signrawtransaction(const Array& params, bool fHelp)
 #endif
             );
 
+#ifdef ENABLE_WALLET
+    LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : NULL);
+#else
+    LOCK(cs_main);
+#endif
     RPCTypeCheck(params, list_of(str_type)(array_type)(array_type)(str_type), true);
 
     vector<unsigned char> txData(ParseHexV(params[0], "argument 1"));
@@ -406,7 +420,7 @@ Value signrawtransaction(const Array& params, bool fHelp)
         }
     }
 #ifdef ENABLE_WALLET
-    else
+    else if (pwalletMain)
         EnsureWalletIsUnlocked();
 #endif
 
@@ -525,6 +539,8 @@ Value sendrawtransaction(const Array& params, bool fHelp)
         throw runtime_error(
             "sendrawtransaction <hex string>\n"
             "Submits raw transaction (serialized, hex-encoded) to local node and network.");
+
+    LOCK(cs_main);
 
 
     // parse hex string from parameter

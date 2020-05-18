@@ -112,6 +112,7 @@ Value importprivkey(const Array& params, bool fHelp)
         throw runtime_error(
             "importprivkey <piratecashprivkey> [label] [rescan=true]\n"
             "Adds a private key (as returned by dumpprivkey) to your wallet.");
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     string strSecret = params[0].get_str();
     string strLabel = "";
@@ -181,6 +182,8 @@ Value importaddress(const Array& params, bool fHelp)
             + HelpExampleRpc("importaddress", "\"myaddress\", \"testing\", false")
         );
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     CScript script;
 
     CBitcoinAddress address(params[0].get_str());
@@ -235,6 +238,8 @@ Value importwallet(const Array& params, bool fHelp)
         throw runtime_error(
             "importwallet <filename>\n"
             "Imports keys from a wallet dump file (see dumpwallet).");
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     EnsureWalletIsUnlocked();
 
@@ -325,6 +330,8 @@ Value dumpprivkey(const Array& params, bool fHelp)
             "dumpprivkey <piratecashaddress>\n"
             "Reveals the private key corresponding to <piratecashaddress>.");
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     EnsureWalletIsUnlocked();
 
     string strAddress = params[0].get_str();
@@ -348,6 +355,8 @@ Value dumpwallet(const Array& params, bool fHelp)
         throw runtime_error(
             "dumpwallet <filename>\n"
             "Dumps all wallet keys in a human-readable format.");
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     EnsureWalletIsUnlocked();
 
