@@ -139,7 +139,6 @@ void PrepareShutdown(){
         bitdb.Flush(false);
 #endif
     StopNode();
-    StopTorControl();
     UnregisterNodeSignals(GetNodeSignals());
     if (fFeeEstimatesInitialized)
     {
@@ -184,6 +183,8 @@ void Shutdown()
     if(!fRestartRequested || true){ // most of shutdown is already done when we're restarting the wallet
         PrepareShutdown();
     }
+    // Shutdown part 2: Stop TOR thread and delete wallet instance
+    StopTorControl();
 #ifndef WIN32
     boost::filesystem::remove(GetPidFile());
 #endif
