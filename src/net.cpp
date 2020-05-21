@@ -1042,7 +1042,7 @@ void ThreadSocketHandler()
                 }
                 else if (!whitelisted && (nInbound >= (nMaxInbound - nWhiteConnections)))
                 {
-                    LogPrint("net", "connection from %s dropped (full)\n", addr.ToString());
+                    LogPrint("net", "connection from %s dropped (non-whitelisted)\n", addr.ToString());
                     CloseSocket(hSocket);
                 }
                 else if (CNode::IsBanned(addr) && !whitelisted)
