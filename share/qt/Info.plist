@@ -7,11 +7,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleGetInfoString</key>
-        <string>0.11.5.7, Copyright © 2018 - 2020 The PirateCash developers</string>
+        <string>0.11.5.8, Copyright © 2018 - 2020 The PirateCash developers</string>
 	<key>CFBundleShortVersionString</key>
-        <string>0.11.5.7</string>
+        <string>0.11.5.8</string>
 	<key>CFBundleVersion</key>
-        <string>0.11.5.7</string>
+        <string>0.11.5.8</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleExecutable</key>
