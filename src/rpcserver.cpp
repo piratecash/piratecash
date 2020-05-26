@@ -1,6 +1,7 @@
 // Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2014-2015 The Dash developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "rpcserver.h"
@@ -36,11 +37,11 @@
 #include <boost/thread.hpp>
 #include <list>
 
-using namespace std;
 using namespace boost;
 using namespace boost::asio;
 using namespace RPCServer;
 using namespace json_spirit;
+using namespace std;
 
 static std::string strRPCUserColonPass;
 
@@ -158,12 +159,10 @@ uint256 ParseHashV(const Value& v, string strName)
     result.SetHex(strHex);
     return result;
 }
-
 uint256 ParseHashO(const Object& o, string strKey)
 {
     return ParseHashV(find_value(o, strKey), strKey);
 }
-
 vector<unsigned char> ParseHexV(const Value& v, string strName)
 {
     string strHex;
@@ -173,7 +172,6 @@ vector<unsigned char> ParseHexV(const Value& v, string strName)
         throw JSONRPCError(RPC_INVALID_PARAMETER, strName+" must be hexadecimal string (not '"+strHex+"')");
     return ParseHex(strHex);
 }
-
 vector<unsigned char> ParseHexO(const Object& o, string strKey)
 {
     return ParseHexV(find_value(o, strKey), strKey);
@@ -229,8 +227,13 @@ Value help(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
         throw runtime_error(
-            "help [command]\n"
-            "List commands, or get help for a command.");
+            "help ( \"command\" )\n"
+            "\nList all commands, or get help for a specified command.\n"
+            "\nArguments:\n"
+            "1. \"command\"     (string, optional) The command to get help on\n"
+            "\nResult:\n"
+            "\"text\"     (string) The help text\n"
+        );
 
     string strCommand;
     if (params.size() > 0)

@@ -1,5 +1,6 @@
-// Copyright (c) 2009-2012 Bitcoin Developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2014-2015 The Dash developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "rpcserver.h"
@@ -16,6 +17,7 @@
 #include "util.h"
 
 #include <boost/foreach.hpp>
+
 #include "json/json_spirit_value.h"
 
 using namespace json_spirit;
@@ -26,7 +28,13 @@ Value getconnectioncount(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getconnectioncount\n"
-            "Returns the number of connections to other nodes.");
+            "\nReturns the number of connections to other nodes.\n"
+            "\nbResult:\n"
+            "n          (numeric) The connection count\n"
+            "\nExamples:\n"
+            + HelpExampleCli("getconnectioncount", "")
+            + HelpExampleRpc("getconnectioncount", "")
+        );
 
     LOCK2(cs_main, cs_vNodes);
 
@@ -38,9 +46,13 @@ Value ping(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "ping\n"
-            "Requests that a ping be sent to all other nodes, to measure ping time.\n"
+            "\nRequests that a ping be sent to all other nodes, to measure ping time.\n"
             "Results provided in getpeerinfo, pingtime and pingwait fields are decimal seconds.\n"
-            "Ping command is handled in queue with all other commands, so it measures processing backlog, not just network ping.");
+            "Ping command is handled in queue with all other commands, so it measures processing backlog, not just network ping.\n"
+            "\nExamples:\n"
+            + HelpExampleCli("ping", "")
+            + HelpExampleRpc("ping", "")
+        );
 
     // Request that each node send a ping during next message processing pass
     LOCK2(cs_main, cs_vNodes);
@@ -86,7 +98,7 @@ Value getpeerinfo(const Array& params, bool fHelp)
             "    \"pingtime\": n,             (numeric) ping time\n"
             "    \"pingwait\": n,             (numeric) ping wait\n"
             "    \"version\": v,              (numeric) The peer version, such as 7001\n"
-            "    \"subver\": \"/PirateCash Core:x.x.x/\",  (string) The string version\n"
+            "    \"subver\": \"/Dash Core:x.x.x/\",  (string) The string version\n"
             "    \"inbound\": true|false,     (boolean) Inbound (true) or Outbound (false)\n"
             "    \"startingheight\": n,       (numeric) The starting height (block) of the peer\n"
             "    \"banscore\": n,             (numeric) The ban score\n"
@@ -153,8 +165,16 @@ Value addnode(const Array& params, bool fHelp)
     if (fHelp || params.size() != 2 ||
         (strCommand != "onetry" && strCommand != "add" && strCommand != "remove"))
         throw runtime_error(
-            "addnode <node> <add|remove|onetry>\n"
-            "Attempts add or remove <node> from the addnode list or try a connection to <node> once.");
+            "addnode \"node\" \"add|remove|onetry\"\n"
+            "\nAttempts add or remove a node from the addnode list.\n"
+            "Or try a connection to a node once.\n"
+            "\nArguments:\n"
+            "1. \"node\"     (string, required) The node (see getpeerinfo for nodes)\n"
+            "2. \"command\"  (string, required) 'add' to add a node to the list, 'remove' to remove a node from the list, 'onetry' to try a connection to the node once\n"
+            "\nExamples:\n"
+            + HelpExampleCli("addnode", "\"192.168.0.6:9999\" \"onetry\"")
+            + HelpExampleRpc("addnode", "\"192.168.0.6:9999\", \"onetry\"")
+        );
 
     string strNode = params[0].get_str();
 
@@ -191,11 +211,34 @@ Value getaddednodeinfo(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
-            "getaddednodeinfo <dns> [node]\n"
-            "Returns information about the given added node, or all added nodes\n"
+            "getaddednodeinfo dns ( \"node\" )\n"
+            "\nReturns information about the given added node, or all added nodes\n"
             "(note that onetry addnodes are not listed here)\n"
             "If dns is false, only a list of added nodes will be provided,\n"
-            "otherwise connected information will also be available.");
+            "otherwise connected information will also be available.\n"
+            "\nArguments:\n"
+            "1. dns        (boolean, required) If false, only a list of added nodes will be provided, otherwise connected information will also be available.\n"
+            "2. \"node\"   (string, optional) If provided, return information about this specific node, otherwise all nodes are returned.\n"
+            "\nResult:\n"
+            "[\n"
+            "  {\n"
+            "    \"addednode\" : \"192.168.0.201\",   (string) The node ip address\n"
+            "    \"connected\" : true|false,          (boolean) If connected\n"
+            "    \"addresses\" : [\n"
+            "       {\n"
+            "         \"address\" : \"192.168.0.201:9999\",  (string) The dash server host and port\n"
+            "         \"connected\" : \"outbound\"           (string) connection, inbound or outbound\n"
+            "       }\n"
+            "       ,...\n"
+            "     ]\n"
+            "  }\n"
+            "  ,...\n"
+            "]\n"
+            "\nExamples:\n"
+            + HelpExampleCli("getaddednodeinfo", "true")
+            + HelpExampleCli("getaddednodeinfo", "true \"192.168.0.201\"")
+            + HelpExampleRpc("getaddednodeinfo", "true, \"192.168.0.201\"")
+        );
 
     bool fDns = params[0].get_bool();
 
@@ -349,8 +392,18 @@ Value getnettotals(const Array& params, bool fHelp)
     if (fHelp || params.size() > 0)
         throw runtime_error(
             "getnettotals\n"
-            "Returns information about network traffic, including bytes in, bytes out,\n"
-            "and current time.");
+            "\nReturns information about network traffic, including bytes in, bytes out,\n"
+            "and current time.\n"
+            "\nResult:\n"
+            "{\n"
+            "  \"totalbytesrecv\": n,   (numeric) Total bytes received\n"
+            "  \"totalbytessent\": n,   (numeric) Total bytes sent\n"
+            "  \"timemillis\": t        (numeric) Total cpu time\n"
+            "}\n"
+            "\nExamples:\n"
+            + HelpExampleCli("getnettotals", "")
+            + HelpExampleRpc("getnettotals", "")
+       );
 
     Object obj;
     obj.push_back(Pair("totalbytesrecv", CNode::GetTotalBytesRecv()));

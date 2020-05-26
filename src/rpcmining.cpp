@@ -1,6 +1,7 @@
 // Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2014-2015 The Dash developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "rpcserver.h"
@@ -82,7 +83,25 @@ Value getmininginfo(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getmininginfo\n"
-            "Returns an object containing mining-related information.");
+            "\nReturns a json object containing mining-related information."
+            "\nResult:\n"
+            "{\n"
+            "  \"blocks\": nnn,             (numeric) The current block\n"
+            "  \"currentblocksize\": nnn,   (numeric) The last block size\n"
+            "  \"currentblocktx\": nnn,     (numeric) The last block transaction\n"
+            "  \"difficulty\": xxx.xxxxx    (numeric) The current difficulty\n"
+            "  \"errors\": \"...\"          (string) Current errors\n"
+            "  \"generate\": true|false     (boolean) If the generation is on or off (see getgenerate or setgenerate calls)\n"
+            "  \"genproclimit\": n          (numeric) The processor limit for generation. -1 if no generation. (see getgenerate or setgenerate calls)\n"
+            "  \"hashespersec\": n          (numeric) The hashes per second of the generation, or 0 if no generation.\n"
+            "  \"pooledtx\": n              (numeric) The size of the mem pool\n"
+            "  \"testnet\": true|false      (boolean) If using testnet or not\n"
+            "  \"chain\": \"xxxx\",         (string) current network name as defined in BIP70 (main, test, regtest)\n"
+            "}\n"
+            "\nExamples:\n"
+            + HelpExampleCli("getmininginfo", "")
+            + HelpExampleRpc("getmininginfo", "")
+        );
 
     LOCK(cs_main);
 
@@ -493,31 +512,71 @@ Value getblocktemplate(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
         throw runtime_error(
-            "getblocktemplate [params]\n"
-            "Returns data needed to construct a block to work on:\n"
-            "  \"version\" : block version\n"
-            "  \"previousblockhash\" : hash of current highest block\n"
-            "  \"transactions\" : contents of non-coinbase transactions that should be included in the next block\n"
-            "  \"coinbaseaux\" : data that should be included in coinbase\n"
-            "  \"coinbasevalue\" : maximum allowable input to coinbase transaction, including the generation award and transaction fees\n"
-            "  \"target\" : hash target\n"
-            "  \"mintime\" : minimum timestamp appropriate for next block\n"
-            "  \"curtime\" : current timestamp\n"
-            "  \"mutable\" : list of ways the block template may be changed\n"
-            "  \"noncerange\" : range of valid nonces\n"
-            "  \"sigoplimit\" : limit of sigops in blocks\n"
-            "  \"sizelimit\" : limit of block size\n"
-            "  \"bits\" : compressed target of next block\n"
-            "  \"height\" : height of the next block\n"
+            "getblocktemplate ( \"jsonrequestobject\" )\n"
+            "\nIf the request parameters include a 'mode' key, that is used to explicitly select between the default 'template' request or a 'proposal'.\n"
+            "It returns data needed to construct a block to work on.\n"
+            "See https://en.bitcoin.it/wiki/BIP_0022 for full specification.\n"
+
+            "\nArguments:\n"
+            "1. \"jsonrequestobject\"       (string, optional) A json object in the following spec\n"
+            "     {\n"
+            "       \"mode\":\"template\"    (string, optional) This must be set to \"template\" or omitted\n"
+            "       \"capabilities\":[       (array, optional) A list of strings\n"
+            "           \"support\"           (string) client side supported feature, 'longpoll', 'coinbasetxn', 'coinbasevalue', 'proposal', 'serverlist', 'workid'\n"
+            "           ,...\n"
+            "         ]\n"
+            "     }\n"
+            "\n"
+
+            "\nResult:\n"
+            "{\n"
+            "  \"version\" : n,                    (numeric) The block version\n"
+            "  \"previousblockhash\" : \"xxxx\",    (string) The hash of current highest block\n"
+            "  \"transactions\" : [                (array) contents of non-coinbase transactions that should be included in the next block\n"
+            "      {\n"
+            "         \"data\" : \"xxxx\",          (string) transaction data encoded in hexadecimal (byte-for-byte)\n"
+            "         \"hash\" : \"xxxx\",          (string) hash/id encoded in little-endian hexadecimal\n"
+            "         \"depends\" : [              (array) array of numbers \n"
+            "             n                        (numeric) transactions before this one (by 1-based index in 'transactions' list) that must be present in the final block if this one is\n"
+            "             ,...\n"
+            "         ],\n"
+            "         \"fee\": n,                   (numeric) difference in value between transaction inputs and outputs (in duffs); for coinbase transactions, this is a negative Number of the total collected block fees (ie, not including the block subsidy); if key is not present, fee is unknown and clients MUST NOT assume there isn't one\n"
+            "         \"sigops\" : n,               (numeric) total number of SigOps, as counted for purposes of block limits; if key is not present, sigop count is unknown and clients MUST NOT assume there aren't any\n"
+            "         \"required\" : true|false     (boolean) if provided and true, this transaction must be in the final block\n"
+            "      }\n"
+            "      ,...\n"
+            "  ],\n"
+            "  \"coinbaseaux\" : {                  (json object) data that should be included in the coinbase's scriptSig content\n"
+            "      \"flags\" : \"flags\"            (string) \n"
+            "  },\n"
+            "  \"coinbasevalue\" : n,               (numeric) maximum allowable input to coinbase transaction, including the generation award and transaction fees (in duffs)\n"
+            "  \"coinbasetxn\" : { ... },           (json object) information for coinbase transaction\n"
+            "  \"target\" : \"xxxx\",               (string) The hash target\n"
+            "  \"mintime\" : xxx,                   (numeric) The minimum timestamp appropriate for next block time in seconds since epoch (Jan 1 1970 GMT)\n"
+            "  \"mutable\" : [                      (array of string) list of ways the block template may be changed \n"
+            "     \"value\"                         (string) A way the block template may be changed, e.g. 'time', 'transactions', 'prevblock'\n"
+            "     ,...\n"
+            "  ],\n"
+            "  \"noncerange\" : \"00000000ffffffff\",   (string) A range of valid nonces\n"
+            "  \"sigoplimit\" : n,                 (numeric) limit of sigops in blocks\n"
+            "  \"sizelimit\" : n,                  (numeric) limit of block size\n"
+            "  \"curtime\" : ttt,                  (numeric) current timestamp in seconds since epoch (Jan 1 1970 GMT)\n"
+            "  \"bits\" : \"xxx\",                 (string) compressed target of next block\n"
+            "  \"height\" : n                      (numeric) The height of the next block\n"
             "  \"payee\" : \"xxx\",                (string) required payee for the next block\n"
             "  \"payee_amount\" : n,               (numeric) required amount to pay\n"
             "  \"votes\" : [\n                     (array) show vote candidates\n"
             "        { ... }                       (json object) vote candidate\n"
             "        ,...\n"
             "  ],\n"
-            "  \"masternode_payments\" : true|false,         (boolean) true, if masternode payments are enabled"
-            "  \"enforce_masternode_payments\" : true|false  (boolean) true, if masternode payments are enforced"
-            "See https://en.bitcoin.it/wiki/BIP_0022 for full specification.");
+            "  \"masternode_payments\" : true|false,         (boolean) true, if masternode payments are enabled\n"
+            "  \"enforce_masternode_payments\" : true|false  (boolean) true, if masternode payments are enforced\n"
+            "}\n"
+
+            "\nExamples:\n"
+            + HelpExampleCli("getblocktemplate", "")
+            + HelpExampleRpc("getblocktemplate", "")
+         );
 
     LOCK(cs_main);
 
@@ -719,10 +778,22 @@ Value submitblock(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
-            "submitblock <hex data> [optional-params-obj]\n"
-            "[optional-params-obj] parameter is currently ignored.\n"
-            "Attempts to submit new block to network.\n"
-            "See https://en.bitcoin.it/wiki/BIP_0022 for full specification.");
+            "submitblock \"hexdata\" ( \"jsonparametersobject\" )\n"
+            "\nAttempts to submit new block to network.\n"
+            "The 'jsonparametersobject' parameter is currently ignored.\n"
+            "See https://en.bitcoin.it/wiki/BIP_0022 for full specification.\n"
+
+            "\nArguments\n"
+            "1. \"hexdata\"    (string, required) the hex-encoded block data to submit\n"
+            "2. \"jsonparametersobject\"     (string, optional) object of optional parameters\n"
+            "    {\n"
+            "      \"workid\" : \"id\"    (string, optional) if the server provided a workid, it MUST be included with submissions\n"
+            "    }\n"
+            "\nResult:\n"
+            "\nExamples:\n"
+            + HelpExampleCli("submitblock", "\"mydata\"")
+            + HelpExampleRpc("submitblock", "\"mydata\"")
+        );
 
     vector<unsigned char> blockData(ParseHex(params[0].get_str()));
     CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION);
