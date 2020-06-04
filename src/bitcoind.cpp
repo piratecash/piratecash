@@ -41,35 +41,36 @@ bool AppInit(int argc, char* argv[])
 
     bool fRet = false;
     fHaveGUI = false;
+    //
+    // Parameters
+    //
+    // If Qt is used, parameters/bitcoin.conf are parsed in qt/bitcoin.cpp's main()
+    ParseParameters(argc, argv);
+    if (mapArgs.count("-?") || mapArgs.count("-help"))
+    {
+        // First part of help message is specific to bitcoind / RPC client
+        std::string strUsage = _("Piratecash version") + " " + FormatFullVersion() + "\n\n" +
+            _("Usage:") + "\n" +
+              "  piratecashd [options]                     " + "\n" +
+              "  piratecashd [options] <command> [params]  " + _("Send command to -server or piratecashd") + "\n" +
+              "  piratecashd [options] help                " + _("List commands") + "\n" +
+              "  piratecashd [options] help <command>      " + _("Get help for a command") + "\n";
+
+        strUsage += "\n" + HelpMessage();
+
+        fprintf(stdout, "%s", strUsage.c_str());
+        return false;
+    }
+
     try
     {
-        //
-        // Parameters
-        //
-        // If Qt is used, parameters/bitcoin.conf are parsed in qt/bitcoin.cpp's main()
-        ParseParameters(argc, argv);
         if (!boost::filesystem::is_directory(GetDataDir(false)))
         {
             fprintf(stderr, "Error: Specified directory does not exist\n");
             Shutdown();
         }
+
         ReadConfigFile(mapArgs, mapMultiArgs);
-
-        if (mapArgs.count("-?") || mapArgs.count("--help"))
-        {
-            // First part of help message is specific to bitcoind / RPC client
-            std::string strUsage = _("Piratecash version") + " " + FormatFullVersion() + "\n\n" +
-                _("Usage:") + "\n" +
-                  "  piratecashd [options]                     " + "\n" +
-                  "  piratecashd [options] <command> [params]  " + _("Send command to -server or piratecashd") + "\n" +
-                  "  piratecashd [options] help                " + _("List commands") + "\n" +
-                  "  piratecashd [options] help <command>      " + _("Get help for a command") + "\n";
-
-            strUsage += "\n" + HelpMessage();
-
-            fprintf(stdout, "%s", strUsage.c_str());
-            return false;
-        }
 
         // Command-line RPC
         bool fCommandLine = false;
