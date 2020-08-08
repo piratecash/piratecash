@@ -68,8 +68,6 @@ private slots:
     void showBanTableContextMenu(const QPoint& point);
     /** Hides ban table if no bans are present */
     void showOrHideBanTableIfRequired();
-    /** clear the selected node */
-    void clearSelectedNode();
     /** clear traffic graph */
     void on_btnClearTrafficGraph_clicked();
     /** paste clipboard to line */
@@ -96,7 +94,7 @@ public slots:
     void peerLayoutAboutToChange();
     /** Handle updated peer information */
     void peerLayoutChanged();
-   /** Disconnect a selected node on the Peers tab */
+    /** Disconnect a selected node on the Peers tab */
     void disconnectSelectedNode();
     /** Ban a selected node on the Peers tab */
     void banSelectedNode(int bantime);
@@ -117,6 +115,8 @@ private:
     void setTrafficGraphRange(int mins);
     /** show detailed information on ui about selected node */
     void updateNodeDetail(const CNodeCombinedStats *stats);
+    /** clear the selected node */
+    void clearSelectedNode();
 
     enum ColumnWidths
     {
