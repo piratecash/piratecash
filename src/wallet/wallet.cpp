@@ -1060,6 +1060,53 @@ void CWalletTx::GetAmounts(list<COutputEntry>& listReceived,
         nFee = nDebit - nValueOut;
     }
 
+    // treat coinstake as a single "recieve" entry
+    if (IsCoinStake())
+    {
+        // Remove amount if destination isn't my
+        for (unsigned int i = 0; i < vout.size(); ++i){
+            const CTxOut& txout = vout[i];
+            if (txout.scriptPubKey.empty())
+                continue;
+            isminetype fIsMine = pwallet->IsMine(txout);
+            if (!fIsMine and nFee != 0){
+                nFee += txout.nValue;
+            }
+        }
+        for (unsigned int i = 0; i < vout.size(); ++i)
+        {
+            const CTxOut& txout = vout[i];
+            // Skip special stake out
+            if (txout.scriptPubKey.empty())
+                continue;
+            isminetype fIsMine = pwallet->IsMine(txout);
+
+            // get my vout with positive output
+            if (!(fIsMine & filter) || txout.nValue <= 0)
+                continue;
+            // get address
+            CTxDestination address = CNoDestination();
+            ExtractDestination(txout.scriptPubKey, address);
+
+            // workaround for MN
+            if (nFee == 0){
+                COutputEntry output = {address, txout.nValue, (int)i};
+                listReceived.push_back(output);
+                return;
+            }
+
+            // nfee is negative for coinstake generation, because we are gaining money from it
+            COutputEntry output = {address, -nFee, (int)i};
+            listReceived.push_back(output);
+            nFee = 0;
+            return;
+        }
+        // if we reach here there is probably a mistake
+        COutputEntry output = {CNoDestination(), 0, 0};
+        listReceived.push_back(output);
+        return;
+    }
+
     // Sent/received.
     for (unsigned int i = 0; i < vout.size(); ++i)
     {
