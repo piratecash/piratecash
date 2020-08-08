@@ -207,6 +207,10 @@ private slots:
     void optionsClicked();
     /** Show about dialog */
     void aboutClicked();
+    /** Show debug window */
+    void showDebugWindow();
+    /** Show debug window and set focus to the console */
+    void showDebugWindowActivateConsole();
 	void pioClicked();	
 	void bitcointalkClicked();
 	void chainClicked();
