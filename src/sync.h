@@ -47,8 +47,10 @@ LEAVE_CRITICAL_SECTION(mutex); // no RAII
 //                           //
 ///////////////////////////////
 
-// Template mixin that adds -Wthread-safety locking annotations to a
-// subset of the mutex API.
+/**
+ * Template mixin that adds -Wthread-safety locking
+ * annotations to a subset of the mutex API.
+ */
 template <typename PARENT>
 class LOCKABLE AnnotatedMixin : public PARENT
 {
@@ -73,12 +75,12 @@ public:
 void EnterCritical(const char* pszName, const char* pszFile, int nLine, void* cs, bool fTry = false);
 void LeaveCritical();
 std::string LocksHeld();
-void AssertLockHeldInternal(const char* pszName, const char* pszFile, int nLine, void *cs);
+void AssertLockHeldInternal(const char* pszName, const char* pszFile, int nLine, void* cs);
 void DeleteLock(void* cs);
 #else
 void static inline EnterCritical(const char* pszName, const char* pszFile, int nLine, void* cs, bool fTry = false) {}
 void static inline LeaveCritical() {}
-void static inline AssertLockHeldInternal(const char* pszName, const char* pszFile, int nLine, void *cs) {}
+void static inline AssertLockHeldInternal(const char* pszName, const char* pszFile, int nLine, void* cs) {}
 void static inline DeleteLock(void* cs) {}
 #endif
 #define AssertLockHeld(cs) AssertLockHeldInternal(#cs, __FILE__, __LINE__, &cs)
@@ -117,11 +119,10 @@ private:
     {
         EnterCritical(pszName, pszFile, nLine, (void*)(lock.mutex()));
 #ifdef DEBUG_LOCKCONTENTION
-        if (!lock.try_lock())
-        {
+        if (!lock.try_lock()) {
             PrintLockContention(pszName, pszFile, nLine);
 #endif
-        lock.lock();
+            lock.lock();
 #ifdef DEBUG_LOCKCONTENTION
         }
 #endif
@@ -177,13 +178,13 @@ typedef CMutexLock<CCriticalSection> CCriticalBlock;
 #define ENTER_CRITICAL_SECTION(cs) \
     { \
         EnterCritical(#cs, __FILE__, __LINE__, (void*)(&cs)); \
-        (cs).lock(); \
+        (cs).lock();                                          \
     }
 
 #define LEAVE_CRITICAL_SECTION(cs) \
-    { \
-        (cs).unlock(); \
-        LeaveCritical(); \
+    {                              \
+        (cs).unlock();             \
+        LeaveCritical();           \
     }
 
 class CSemaphore
@@ -196,7 +197,8 @@ private:
 public:
     CSemaphore(int init) : value(init) {}
 
-    void wait() {
+    void wait()
+    {
         boost::unique_lock<boost::mutex> lock(mutex);
         while (value < 1) {
             condition.wait(lock);
@@ -212,7 +214,8 @@ public:
         return true;
     }
 
-    void post() {
+    void post()
+    {
         {
             boost::unique_lock<boost::mutex> lock(mutex);
             value++;
@@ -225,31 +228,35 @@ public:
 class CSemaphoreGrant
 {
 private:
-    CSemaphore *sem;
+    CSemaphore* sem;
     bool fHaveGrant;
 
 public:
-    void Acquire() {
+    void Acquire()
+    {
         if (fHaveGrant)
             return;
         sem->wait();
         fHaveGrant = true;
     }
 
-    void Release() {
+    void Release()
+    {
         if (!fHaveGrant)
             return;
         sem->post();
         fHaveGrant = false;
     }
 
-    bool TryAcquire() {
+    bool TryAcquire()
+    {
         if (!fHaveGrant && sem->try_wait())
             fHaveGrant = true;
         return fHaveGrant;
     }
 
-    void MoveTo(CSemaphoreGrant &grant) {
+    void MoveTo(CSemaphoreGrant& grant)
+    {
         grant.Release();
         grant.sem = sem;
         grant.fHaveGrant = fHaveGrant;
@@ -259,18 +266,21 @@ public:
 
     CSemaphoreGrant() : sem(NULL), fHaveGrant(false) {}
 
-    CSemaphoreGrant(CSemaphore &sema, bool fTry = false) : sem(&sema), fHaveGrant(false) {
+    CSemaphoreGrant(CSemaphore& sema, bool fTry = false) : sem(&sema), fHaveGrant(false)
+    {
         if (fTry)
             TryAcquire();
         else
             Acquire();
     }
 
-    ~CSemaphoreGrant() {
+    ~CSemaphoreGrant()
+    {
         Release();
     }
 
-    operator bool() {
+    operator bool()
+    {
         return fHaveGrant;
     }
 };
