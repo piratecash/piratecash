@@ -1,3 +1,8 @@
+// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2014-2017 The Dash Core developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #include "rpcconsole.h"
 #include "ui_rpcconsole.h"
 
@@ -485,6 +490,7 @@ void RPCConsole::on_lineEdit_returnPressed()
             history.removeFirst();
         // Set pointer to end of history
         historyPtr = history.size();
+
         // Scroll console view to end
         scrollToEnd();
     }
@@ -678,7 +684,6 @@ void RPCConsole::peerLayoutChanged()
 
     if (stats)
         updateNodeDetail(stats);
-
 }
 
 void RPCConsole::updateNodeDetail(const CNodeCombinedStats *stats)
@@ -767,14 +772,6 @@ void RPCConsole::disconnectSelectedNode()
     }
 }
 
-void RPCConsole::clearSelectedNode()
-{
-    ui->peerWidget->selectionModel()->clearSelection();
-    cachedNodeids.clear();
-    ui->detailWidget->hide();
-    ui->peerHeading->setText(tr("Select a peer to view detailed information."));
-}
-
 void RPCConsole::banSelectedNode(int bantime)
 {
     if (!clientModel)
@@ -812,6 +809,13 @@ void RPCConsole::unbanSelectedNode()
     }
 }
 
+void RPCConsole::clearSelectedNode()
+{
+    ui->peerWidget->selectionModel()->clearSelection();
+    cachedNodeids.clear();
+    ui->detailWidget->hide();
+    ui->peerHeading->setText(tr("Select a peer to view detailed information."));
+}
 
 void RPCConsole::showOrHideBanTableIfRequired()
 {
