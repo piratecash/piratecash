@@ -130,7 +130,7 @@ public:
     std::vector<CMasternode> GetFullMasternodeVector() { Check(); return vMasternodes; }
 
     std::vector<pair<int, CMasternode> > GetMasternodeRanks(int64_t nBlockHeight, int minProtocol=0);
-    int GetMasternodeRank(const CTxIn &vin, int64_t nBlockHeight, int minProtocol=0);
+    int GetMasternodeRank(const CTxIn &vin, int64_t nBlockHeight, int minProtocol=0, bool fOnlyActive=true);
     CMasternode* GetMasternodeByRank(int nRank, int64_t nBlockHeight, int minProtocol=0, bool fOnlyActive=true);
 
     void ProcessMasternodeConnections();
@@ -151,6 +151,8 @@ public:
     void RelayMasternodeEntryPing(const CTxIn vin, const std::vector<unsigned char> vchSig, const int64_t nNow, const bool stop);
 
     void Remove(CTxIn vin);
+
+    int CountMasternodesAboveProtocol(int protocolVersion);
 
 };
 

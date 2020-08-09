@@ -33,8 +33,8 @@ static const int64_t TARGET_SPACING_SPEC = 120;
 extern int64_t SPEC_TARGET_FIX;
 
 
-#define INSTANTX_SIGNATURES_REQUIRED           10
-#define INSTANTX_SIGNATURES_TOTAL              15
+#define INSTANTX_SIGNATURES_REQUIRED           15
+#define INSTANTX_SIGNATURES_TOTAL              20
 
 
 class CBlock;

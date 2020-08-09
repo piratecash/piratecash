@@ -44,6 +44,12 @@ void CActiveMasternode::ManageStatus()
         	service = CService(strMasterNodeAddr, true);
         }
 
+        if(!ConnectNode((CAddress)service, service.ToString().c_str())){
+            notCapableReason = "Could not connect to " + service.ToString();
+            status = MASTERNODE_NOT_CAPABLE;
+            LogPrintf("CActiveMasternode::ManageStatus() - not capable: %s\n", notCapableReason.c_str());
+            return;
+        }
 
         if(pwalletMain->IsLocked()){
             notCapableReason = "Wallet is locked.";

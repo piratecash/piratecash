@@ -24,7 +24,6 @@ using namespace boost;
 #define SPORK_3_INSTANTX_BLOCK_FILTERING                      10002
 #define SPORK_4_NOTUSED                                       10003
 #define SPORK_5_MAX_VALUE                                     10004
-#define SPORK_6_REPLAY_BLOCKS                                 10005
 #define SPORK_7_MASTERNODE_SCANNING                           10006
 #define SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT                10007
 #define SPORK_9_MASTERNODE_BUDGET_ENFORCEMENT                 10008
@@ -39,7 +38,6 @@ using namespace boost;
 #define SPORK_3_INSTANTX_BLOCK_FILTERING_DEFAULT              978307200   //2001-1-1 23:59:59 GMT
 #define SPORK_4_RECONVERGE_DEFAULT                            1451606400  //2016-01-01 // NOT USED
 #define SPORK_5_MAX_VALUE_DEFAULT                             500         //500 PIRATE 
-#define SPORK_6_REPLAY_BLOCKS_DEFAULT                         0 		  // NOT USED
 #define SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT_DEFAULT        4070908800   //OFF
 #define SPORK_9_MASTERNODE_BUDGET_ENFORCEMENT_DEFAULT         4070908800   //OFF
 #define SPORK_10_MASTERNODE_PAY_UPDATED_NODES_DEFAULT         4070908800   //OFF

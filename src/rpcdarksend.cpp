@@ -820,6 +820,19 @@ Value masternodelist(const Array& params, bool fHelp)
             if (strMode == "activeseconds") {
                 if(strFilter !="" && strVin.find(strFilter) == string::npos) continue;
                 obj.push_back(Pair(strVin,       (int64_t)(mn.lastTimeSeen - mn.sigTime)));
+            } else if (strMode == "active") {
+                if(strFilter !="" && strFilter != (mn.IsEnabled() ? "true" : "false") &&
+                                mn.addr.ToString().find(strFilter) == string::npos) continue;
+
+                std::string strAddr = mn.addr.ToString().c_str();
+                std::string strStatus = "ACTIVE";
+                //if(mn.activeState == MASTERNODE_ENABLED) strStatus = "ENABLED";
+                //if(mn.activeState == MASTERNODE_EXPIRED) strStatus = "EXPIRED";
+                //if(mn.activeState == MASTERNODE_VIN_SPENT) strStatus = "VIN_SPENT";
+                //if(mn.activeState == MASTERNODE_REMOVE) strStatus = "REMOVE";
+                //if(mn.activeState == MASTERNODE_POS_ERROR) strStatus = "POS_ERROR";
+
+                obj.push_back(Pair(strAddr,       strStatus.c_str()));
             } else if (strMode == "reward") {
                 CTxDestination address1;
                 ExtractDestination(mn.rewardAddress, address1);

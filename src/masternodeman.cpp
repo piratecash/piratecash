@@ -446,7 +446,7 @@ CMasternode* CMasternodeMan::GetCurrentMasterNode(int mod, int64_t nBlockHeight,
     return winner;
 }
 
-int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, int minProtocol)
+int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, int minProtocol, bool fOnlyActive)
 {
     std::vector<pair<unsigned int, CTxIn> > vecMasternodeScores;
 
@@ -460,7 +460,7 @@ int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, in
         mn.Check();
 
         if(mn.protocolVersion < minProtocol) continue;
-        if(!mn.IsEnabled()) {
+        if(fOnlyActive && !mn.IsEnabled()) {
             continue;
         }
 
@@ -964,4 +964,17 @@ std::string CMasternodeMan::ToString() const
             ", nDsqCount: " << (int)nDsqCount;
 
     return info.str();
+}
+
+int CMasternodeMan::CountMasternodesAboveProtocol(int protocolVersion)
+{
+    int i = 0;
+
+    BOOST_FOREACH(CMasternode& mn, vMasternodes) {
+        mn.Check();
+        if(mn.protocolVersion < protocolVersion || !mn.IsEnabled()) continue;
+        i++;
+    }
+
+    return i;
 }
