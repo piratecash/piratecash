@@ -77,8 +77,8 @@ public:
     bool allowFreeTx;
     int protocolVersion;
     int64_t nLastDsq; //the dsq count from the last dsq broadcast of this node
-    CScript rewardAddress;
-    int rewardPercentage;
+    CScript donationAddress;
+    int donationPercentage;
     int nVote;
     int64_t lastVote;
     int nScanningErrorCount;
@@ -87,7 +87,7 @@ public:
 
     CMasternode();
     CMasternode(const CMasternode& other);
-    CMasternode(CService newAddr, CTxIn newVin, CPubKey newPubkey, std::vector<unsigned char> newSig, int64_t newSigTime, CPubKey newPubkey2, int protocolVersionIn, CScript rewardAddress, int rewardPercentage);
+    CMasternode(CService newAddr, CTxIn newVin, CPubKey newPubkey, std::vector<unsigned char> newSig, int64_t newSigTime, CPubKey newPubkey2, int protocolVersionIn, CScript donationAddress, int donationPercentage);
 
 
     void swap(CMasternode& first, CMasternode& second) // nothrow
@@ -112,8 +112,8 @@ public:
         swap(first.allowFreeTx, second.allowFreeTx);
         swap(first.protocolVersion, second.protocolVersion);
         swap(first.nLastDsq, second.nLastDsq);
-        swap(first.rewardAddress, second.rewardAddress);
-        swap(first.rewardPercentage, second.rewardPercentage);
+        swap(first.donationAddress, second.donationAddress);
+        swap(first.donationPercentage, second.donationPercentage);
         swap(first.nVote, second.nVote);
         swap(first.lastVote, second.lastVote);
         swap(first.nScanningErrorCount, second.nScanningErrorCount);
@@ -164,8 +164,8 @@ public:
                 READWRITE(allowFreeTx);
                 READWRITE(protocolVersion);
                 READWRITE(nLastDsq);
-                READWRITE(rewardAddress);
-                READWRITE(rewardPercentage);
+                READWRITE(donationAddress);
+                READWRITE(donationPercentage);
                 READWRITE(nVote);
                 READWRITE(lastVote);
                 READWRITE(nScanningErrorCount);

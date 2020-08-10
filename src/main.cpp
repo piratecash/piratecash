@@ -2498,7 +2498,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                     string targetNode;
                     string targetNode2;
                     CTxIn vin;
-                    CScript payeerewardaddress = CScript();
+                    CScript payeedonationAddress = CScript();
 
                     bool hasPayment = true;
                     bool hasSync = false;
@@ -2509,8 +2509,8 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                         CMasternode* winningNode = mnodeman.GetCurrentMasterNode(1);
                         if (winningNode) {
                             payee = GetScriptForDestination(winningNode->pubkey.GetID());
-                            payeerewardaddress = winningNode->rewardAddress;
-                            payeerewardpercent = winningNode->rewardPercentage;
+                            payeedonationAddress = winningNode->donationAddress;
+                            payeerewardpercent = winningNode->donationPercentage;
 
                             // If reward percent is 0 then send all to masternode address
                             if (hasPayment && payeerewardpercent == 0) {
@@ -2524,7 +2524,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                             // If reward percent is 100 then send all to reward address
                             if (hasPayment && payeerewardpercent == 100) {
                                 CTxDestination address1;
-                                ExtractDestination(payeerewardaddress, address1);
+                                ExtractDestination(payeedonationAddress, address1);
                                 CBitcoinAddress address2(address1);
                                 targetNode = address2.ToString().c_str();
                                 expectedreward = masternodePaymentAmount;
@@ -2537,7 +2537,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                                 CBitcoinAddress address2(address1);
 
                                 CTxDestination address3;
-                                ExtractDestination(payeerewardaddress, address3);
+                                ExtractDestination(payeedonationAddress, address3);
                                 CBitcoinAddress address4(address3);
                                 targetNode = address2.ToString().c_str();
                                 expectedreward = (masternodePaymentAmount / 100) * (100 - payeerewardpercent);
@@ -2561,11 +2561,11 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                         hasSync = true;
                         CMasternode* winningNode = mnodeman.GetCurrentMasterNode(1);
                         if (winningNode) {
-                            payeerewardpercent = winningNode->rewardPercentage;
+                            payeerewardpercent = winningNode->donationPercentage;
                             if (hasPayment && payeerewardpercent > 0 && payeerewardpercent < 100) {
                                 CTxDestination address3;
-                                payeerewardaddress = winningNode->rewardAddress;
-                                ExtractDestination(payeerewardaddress, address3);
+                                payeedonationAddress = winningNode->donationAddress;
+                                ExtractDestination(payeedonationAddress, address3);
                                 CBitcoinAddress address4(address3);
                                 targetNode2 = address4.ToString().c_str();
                                 if(fDebug) {

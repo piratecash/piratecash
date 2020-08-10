@@ -81,8 +81,8 @@ CMasternode::CMasternode()
     allowFreeTx = true;
     protocolVersion = PROTOCOL_VERSION;
     nLastDsq = 0;
-    rewardAddress = CScript();
-    rewardPercentage = 0;
+    donationAddress = CScript();
+    donationPercentage = 0;
     nVote = 0;
     lastVote = 0;
     nScanningErrorCount = 0;
@@ -110,8 +110,8 @@ CMasternode::CMasternode(const CMasternode& other)
     allowFreeTx = other.allowFreeTx;
     protocolVersion = other.protocolVersion;
     nLastDsq = other.nLastDsq;
-    rewardAddress = other.rewardAddress;
-    rewardPercentage = other.rewardPercentage;
+    donationAddress = other.donationAddress;
+    donationPercentage = other.donationPercentage;
     nVote = other.nVote;
     lastVote = other.lastVote;
     nScanningErrorCount = other.nScanningErrorCount;
@@ -119,7 +119,7 @@ CMasternode::CMasternode(const CMasternode& other)
     nLastPaid = other.nLastPaid;
 }
 
-CMasternode::CMasternode(CService newAddr, CTxIn newVin, CPubKey newPubkey, std::vector<unsigned char> newSig, int64_t newSigTime, CPubKey newPubkey2, int protocolVersionIn, CScript newRewardAddress, int newRewardPercentage)
+CMasternode::CMasternode(CService newAddr, CTxIn newVin, CPubKey newPubkey, std::vector<unsigned char> newSig, int64_t newSigTime, CPubKey newPubkey2, int protocolVersionIn, CScript newdonationAddress, int newdonationPercentage)
 {
     LOCK(cs);
     vin = newVin;
@@ -137,8 +137,8 @@ CMasternode::CMasternode(CService newAddr, CTxIn newVin, CPubKey newPubkey, std:
     allowFreeTx = true;
     protocolVersion = protocolVersionIn;
     nLastDsq = 0;
-    rewardAddress = newRewardAddress;
-    rewardPercentage = newRewardPercentage;
+    donationAddress = newdonationAddress;
+    donationPercentage = newdonationPercentage;
     nVote = 0;
     lastVote = 0;
     nScanningErrorCount = 0;

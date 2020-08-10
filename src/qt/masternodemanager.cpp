@@ -91,7 +91,7 @@ void MasternodeManager::on_tableWidget_2_itemSelectionChanged()
     }
 }
 
-void MasternodeManager::updateAdrenalineNode(QString alias, QString addr, QString privkey, QString txHash, QString txIndex, QString rewardAddress, QString rewardPercentage, QString status)
+void MasternodeManager::updateAdrenalineNode(QString alias, QString addr, QString privkey, QString txHash, QString txIndex, QString donationAddress, QString donationPercentage, QString status)
 {
     LOCK(cs_adrenaline);
     bool bFound = false;
@@ -111,14 +111,14 @@ void MasternodeManager::updateAdrenalineNode(QString alias, QString addr, QStrin
 
     QTableWidgetItem *aliasItem = new QTableWidgetItem(alias);
     QTableWidgetItem *addrItem = new QTableWidgetItem(addr);
-    QTableWidgetItem *rewardAddressItem = new QTableWidgetItem(rewardAddress);
-    QTableWidgetItem *rewardPercentageItem = new QTableWidgetItem(rewardPercentage);
+    QTableWidgetItem *donationAddressItem = new QTableWidgetItem(donationAddress);
+    QTableWidgetItem *donationPercentageItem = new QTableWidgetItem(donationPercentage);
     QTableWidgetItem *statusItem = new QTableWidgetItem(status);
 
     ui->tableWidget_2->setItem(nodeRow, 0, aliasItem);
     ui->tableWidget_2->setItem(nodeRow, 1, addrItem);
-    ui->tableWidget_2->setItem(nodeRow, 2, rewardPercentageItem);
-    ui->tableWidget_2->setItem(nodeRow, 3, rewardAddressItem);
+    ui->tableWidget_2->setItem(nodeRow, 2, donationPercentageItem);
+    ui->tableWidget_2->setItem(nodeRow, 3, donationAddressItem);
     ui->tableWidget_2->setItem(nodeRow, 4, statusItem);
 }
 
@@ -247,10 +247,10 @@ void MasternodeManager::on_startButton_clicked()
     BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
         if(mne.getAlias() == sAlias) {
             std::string errorMessage;
-            std::string strRewardAddress = mne.getRewardAddress();
-            std::string strRewardPercentage = mne.getRewardPercentage();
+            std::string strdonationAddress = mne.getdonationAddress();
+            std::string strdonationPercentage = mne.getDonationPercentage();
 
-            bool result = activeMasternode.Register(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strRewardAddress, strRewardPercentage, errorMessage);
+            bool result = activeMasternode.Register(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strdonationAddress, strdonationPercentage, errorMessage);
 
             if(result) {
                 statusObj += "<br>Successfully started masternode." ;
@@ -285,10 +285,10 @@ void MasternodeManager::on_startAllButton_clicked()
         total++;
 
         std::string errorMessage;
-        std::string strRewardAddress = mne.getRewardAddress();
-        std::string strRewardPercentage = mne.getRewardPercentage();
+        std::string strdonationAddress = mne.getdonationAddress();
+        std::string strdonationPercentage = mne.getDonationPercentage();
 
-        bool result = activeMasternode.Register(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strRewardAddress, strRewardPercentage, errorMessage);
+        bool result = activeMasternode.Register(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strdonationAddress, strdonationPercentage, errorMessage);
 
         if(result) {
             successful++;
@@ -315,23 +315,23 @@ void MasternodeManager::on_UpdateButton_clicked()
     ui->tableWidget_2->setSortingEnabled(false);
     BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
         std::string errorMessage;
-        std::string strRewardAddress = mne.getRewardAddress();
-        std::string strRewardPercentage = mne.getRewardPercentage();
+        std::string strdonationAddress = mne.getdonationAddress();
+        std::string strdonationPercentage = mne.getDonationPercentage();
 
         std::vector<CMasternode> vMasternodes = mnodeman.GetFullMasternodeVector();
         if (errorMessage == ""){
             updateAdrenalineNode(QString::fromStdString(mne.getAlias()), QString::fromStdString(mne.getIp()), QString::fromStdString(mne.getPrivKey()), QString::fromStdString(mne.getTxHash()),
-                QString::fromStdString(mne.getOutputIndex()), QString::fromStdString(strRewardAddress), QString::fromStdString(strRewardPercentage), QString::fromStdString("Not in the masternode list."));
+                QString::fromStdString(mne.getOutputIndex()), QString::fromStdString(strdonationAddress), QString::fromStdString(strdonationPercentage), QString::fromStdString("Not in the masternode list."));
         }
         else {
             updateAdrenalineNode(QString::fromStdString(mne.getAlias()), QString::fromStdString(mne.getIp()), QString::fromStdString(mne.getPrivKey()), QString::fromStdString(mne.getTxHash()),
-                QString::fromStdString(mne.getOutputIndex()), QString::fromStdString(strRewardAddress), QString::fromStdString(strRewardPercentage), QString::fromStdString(errorMessage));
+                QString::fromStdString(mne.getOutputIndex()), QString::fromStdString(strdonationAddress), QString::fromStdString(strdonationPercentage), QString::fromStdString(errorMessage));
         }
 
         BOOST_FOREACH(CMasternode& mn, vMasternodes) {
             if (mn.addr.ToString().c_str() == mne.getIp()){
                 updateAdrenalineNode(QString::fromStdString(mne.getAlias()), QString::fromStdString(mne.getIp()), QString::fromStdString(mne.getPrivKey()), QString::fromStdString(mne.getTxHash()),
-                QString::fromStdString(mne.getOutputIndex()), QString::fromStdString(strRewardAddress), QString::fromStdString(strRewardPercentage), QString::fromStdString("Masternode is Running."));
+                QString::fromStdString(mne.getOutputIndex()), QString::fromStdString(strdonationAddress), QString::fromStdString(strdonationPercentage), QString::fromStdString("Masternode is Running."));
             }
         }
     }

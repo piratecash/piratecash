@@ -260,8 +260,8 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
         newWinner.vin = pmn->vin;
         pmn->nLastPaid = GetAdjustedTime();
 
-        if(pmn->rewardPercentage > 0 && (nHash % 100) <= (unsigned int)pmn->rewardPercentage) {
-            newWinner.payee = pmn->rewardAddress;
+        if(pmn->donationPercentage > 0 && (nHash % 100) <= (unsigned int)pmn->donationPercentage) {
+            newWinner.payee = pmn->donationAddress;
         } else {
             newWinner.payee = GetScriptForDestination(pmn->pubkey.GetID());
         }
@@ -287,8 +287,8 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
                 newWinner.vin = pmn->vin;
                 pmn->nLastPaid = GetAdjustedTime();
 
-                if(pmn->rewardPercentage > 0 && (nHash % 100) <= (unsigned int)pmn->rewardPercentage) {
-                    newWinner.payee = pmn->rewardAddress;
+                if(pmn->donationPercentage > 0 && (nHash % 100) <= (unsigned int)pmn->donationPercentage) {
+                    newWinner.payee = pmn->donationAddress;
                 } else {
                     newWinner.payee = GetScriptForDestination(pmn->pubkey.GetID());
                 }

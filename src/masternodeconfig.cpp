@@ -6,8 +6,8 @@
 CMasternodeConfig masternodeConfig;
 
 
-void CMasternodeConfig::add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex, std::string rewardAddress, std::string rewardPercent) {
-    CMasternodeEntry cme(alias, ip, privKey, txHash, outputIndex, rewardAddress, rewardPercent);
+void CMasternodeConfig::add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex, std::string donationAddress, std::string rewardPercent) {
+    CMasternodeEntry cme(alias, ip, privKey, txHash, outputIndex, donationAddress, rewardPercent);
     entries.push_back(cme);
 }
 
@@ -23,9 +23,9 @@ bool CMasternodeConfig::read(boost::filesystem::path path) {
             continue;
         }
         std::istringstream iss(line);
-        std::string alias, ip, privKey, txHash, outputIndex, reward, rewardAddress, rewardPercent;
+        std::string alias, ip, privKey, txHash, outputIndex, reward, donationAddress, rewardPercent;
         if (!(iss >> alias >> ip >> privKey >> txHash >> outputIndex >> reward)) {
-            rewardAddress = "";
+            donationAddress = "";
             rewardPercent = "";
             iss.str(line);
             iss.clear();
@@ -38,12 +38,12 @@ bool CMasternodeConfig::read(boost::filesystem::path path) {
             size_t pos = reward.find_first_of(":");
             if(pos == string::npos) { // no ":" found
                 rewardPercent = "100";
-                rewardAddress = reward;
+                donationAddress = reward;
             } else {
                 rewardPercent = reward.substr(pos + 1);
-                rewardAddress = reward.substr(0, pos);
+                donationAddress = reward.substr(0, pos);
             }
-            CBitcoinAddress address(rewardAddress);
+            CBitcoinAddress address(donationAddress);
             if (!address.IsValid()) {
                 LogPrintf("Invalid PIRATE address in masternode.conf line: %s\n", line.c_str());
                 streamConfig.close();
@@ -51,7 +51,7 @@ bool CMasternodeConfig::read(boost::filesystem::path path) {
             }
         }
 
-        add(alias, ip, privKey, txHash, outputIndex, rewardAddress, rewardPercent);
+        add(alias, ip, privKey, txHash, outputIndex, donationAddress, rewardPercent);
     }
 
     streamConfig.close();

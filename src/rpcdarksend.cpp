@@ -400,10 +400,10 @@ Value masternode(const Array& params, bool fHelp)
     		if(mne.getAlias() == alias) {
     			found = true;
     			std::string errorMessage;
-                std::string strRewardAddress = mne.getRewardAddress();;
-                std::string strRewardPercentage = mne.getRewardPercentage();
+                std::string strdonationAddress = mne.getdonationAddress();;
+                std::string strdonationPercentage = mne.getDonationPercentage();
 
-                bool result = activeMasternode.Register(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strRewardAddress, strRewardPercentage, errorMessage);
+                bool result = activeMasternode.Register(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strdonationAddress, strdonationPercentage, errorMessage);
   
                 statusObj.push_back(Pair("result", result ? "successful" : "failed"));
     			if(!result) {
@@ -454,10 +454,10 @@ Value masternode(const Array& params, bool fHelp)
 			total++;
 
 			std::string errorMessage;
-            std::string strRewardAddress = mne.getRewardAddress();
-            std::string strRewardPercentage = mne.getRewardPercentage();
+            std::string strdonationAddress = mne.getdonationAddress();
+            std::string strdonationPercentage = mne.getDonationPercentage();
 
-            bool result = activeMasternode.Register(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strRewardAddress, strRewardPercentage, errorMessage);
+            bool result = activeMasternode.Register(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strdonationAddress, strdonationPercentage, errorMessage);
 
 			Object statusObj;
 			statusObj.push_back(Pair("alias", mne.getAlias()));
@@ -523,15 +523,15 @@ Value masternode(const Array& params, bool fHelp)
             obj.push_back(Pair("protocol",      (int64_t)winner->protocolVersion));
             obj.push_back(Pair("vin",           winner->vin.prevout.hash.ToString().c_str()));
             obj.push_back(Pair("pubkey",        address2.ToString().c_str()));
-            obj.push_back(Pair("rewardPercent", winner->rewardPercentage));
-            if (winner->rewardPercentage != 0) {
+            obj.push_back(Pair("rewardPercent", winner->donationPercentage));
+            if (winner->donationPercentage != 0) {
                 CTxDestination address3;
-                CScript reward = winner->rewardAddress;
+                CScript reward = winner->donationAddress;
                 ExtractDestination(reward,address3);
                 CBitcoinAddress RewardAddr(address3);
-                obj.push_back(Pair("rewardAddress", RewardAddr.ToString().c_str()));
+                obj.push_back(Pair("donationAddress", RewardAddr.ToString().c_str()));
             }else{
-                obj.push_back(Pair("rewardAddress", ""));
+                obj.push_back(Pair("donationAddress", ""));
             }
             obj.push_back(Pair("height", pindexBest->nHeight+1));
             obj.push_back(Pair("lastseen",      (int64_t)winner->lastTimeSeen));
@@ -620,8 +620,8 @@ Value masternode(const Array& params, bool fHelp)
             mnObj.push_back(Pair("privateKey", mne.getPrivKey()));
             mnObj.push_back(Pair("txHash", mne.getTxHash()));
             mnObj.push_back(Pair("outputIndex", mne.getOutputIndex()));
-            mnObj.push_back(Pair("rewardAddress", mne.getRewardAddress()));
-            mnObj.push_back(Pair("rewardPercentage", mne.getRewardPercentage()));
+            mnObj.push_back(Pair("donationAddress", mne.getdonationAddress()));
+            mnObj.push_back(Pair("donationPercentage", mne.getDonationPercentage()));
             resultObj.push_back(Pair("masternode", mnObj));
     	}
 
@@ -835,7 +835,7 @@ Value masternodelist(const Array& params, bool fHelp)
                 obj.push_back(Pair(strAddr,       strStatus.c_str()));
             } else if (strMode == "reward") {
                 CTxDestination address1;
-                ExtractDestination(mn.rewardAddress, address1);
+                ExtractDestination(mn.donationAddress, address1);
                 CBitcoinAddress address2(address1);
 
                 if(strFilter !="" && address2.ToString().find(strFilter) == string::npos &&
@@ -843,10 +843,10 @@ Value masternodelist(const Array& params, bool fHelp)
 
                 std::string strOut = "";
 
-                if(mn.rewardPercentage != 0){
+                if(mn.donationPercentage != 0){
                     strOut = address2.ToString().c_str();
                     strOut += ":";
-                    strOut += boost::lexical_cast<std::string>(mn.rewardPercentage);
+                    strOut += boost::lexical_cast<std::string>(mn.donationPercentage);
                 }
                 obj.push_back(Pair(strVin,       strOut.c_str()));
             } else if (strMode == "full") {
