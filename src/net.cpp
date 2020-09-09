@@ -700,8 +700,14 @@ void CNode::copyStats(CNodeStats &stats)
 	X(strSubVer);
 	X(fInbound);
 	X(nStartingHeight);
-	X(nSendBytes);
-	X(nRecvBytes);
+    {
+        LOCK(cs_vSend);
+        X(nSendBytes);
+    }
+    {
+        LOCK(cs_vRecv);
+        X(nRecvBytes);
+    }
     X(fWhitelisted);
 	stats.fSyncNode = (this == pnodeSync);
 
@@ -725,9 +731,9 @@ void CNode::copyStats(CNodeStats &stats)
 }
 #undef X
 
-// requires LOCK(cs_vRecvMsg)
 bool CNode::ReceiveMsgBytes(const char *pch, unsigned int nBytes)
 {
+    LOCK(cs_vRecv);
     while (nBytes > 0) {
 
         // get current incomplete message, or create a new one

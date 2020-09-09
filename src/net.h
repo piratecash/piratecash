@@ -305,6 +305,7 @@ public:
     uint64_t nSendBytes;
     std::deque<CSerializeData> vSendMsg;
     CCriticalSection cs_vSend;
+    CCriticalSection cs_vRecv;
 
     std::deque<CInv> vRecvGetData;
     std::deque<CNetMessage> vRecvMsg;
@@ -312,10 +313,10 @@ public:
     uint64_t nRecvBytes;
     int nRecvVersion;
 
-    int64_t nLastSend;
-    int64_t nLastRecv;
+    std::atomic<int64_t> nLastSend;
+    std::atomic<int64_t> nLastRecv;
     int64_t nTimeConnected;
-    int64_t nTimeOffset;
+    std::atomic<int64_t> nTimeOffset;
     CAddress addr;
     std::string addrName;
     CService addrLocal;
@@ -346,7 +347,7 @@ public:
     CSemaphoreGrant grantOutbound;
     CCriticalSection cs_filter;
     CBloomFilter* pfilter;
-    int nRefCount;
+    std::atomic<int> nRefCount;
     NodeId id;
 protected:
 
@@ -389,15 +390,15 @@ public:
 
     // Ping time measurement:
     // The pong reply we're expecting, or 0 if no pong expected.
-    uint64_t nPingNonceSent;
+    std::atomic<uint64_t> nPingNonceSent;
     // Time (in usec) the last ping was sent, or 0 if no ping was ever sent.
-    int64_t nPingUsecStart;
+    std::atomic<int64_t> nPingUsecStart;
     // Last measured round-trip time.
-    int64_t nPingUsecTime;
+    std::atomic<int64_t> nPingUsecTime;
     // Best measured round-trip time.
-    int64_t nMinPingUsecTime;
+    std::atomic<int64_t> nMinPingUsecTime;
     // Whether a ping is requested.
-    bool fPingQueued;
+    std::atomic<bool> fPingQueued;
 
     CNode(SOCKET hSocketIn, CAddress addrIn, std::string addrNameIn = "", bool fInboundIn=false, bool fNetworkNodeIn=false) : ssSend(SER_NETWORK, INIT_PROTO_VERSION), setAddrKnown(5000)
     {
