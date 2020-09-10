@@ -77,6 +77,10 @@ void ProcessMessageMasternodePOS(CNode* pfrom, std::string& strCommand, CDataStr
             return;
         }
 
+        CMasternode* pmnA = mnodeman.Find(mnse.vinMasternodeA);
+        if(pmnA == NULL) return;
+        if(pmnA->protocolVersion < MIN_MASTERNODE_POS_PROTO_VERSION) return;
+
         int nBlockHeight = pindexBest->nHeight;
         if(nBlockHeight - mnse.nBlockHeight > 10){
             LogPrintf("MasternodePOS::mnse - Too old\n");
@@ -87,14 +91,14 @@ void ProcessMessageMasternodePOS(CNode* pfrom, std::string& strCommand, CDataStr
         int a = mnodeman.GetMasternodeRank(mnse.vinMasternodeA, mnse.nBlockHeight, MIN_MASTERNODE_POS_PROTO_VERSION);
         if(a == -1 || a > GetCountScanningPerBlock())
         {
-            LogPrintf("MasternodePOS::mnse - MasternodeA ranking is too high\n");
+            if(a != -1) LogPrintf("MasternodePOS::mnse - MasternodeA ranking is too high\n");
             return;
         }
 
         int b = mnodeman.GetMasternodeRank(mnse.vinMasternodeB, mnse.nBlockHeight, MIN_MASTERNODE_POS_PROTO_VERSION);
         if(b < mnodeman.CountMasternodesAboveProtocol(MIN_MASTERNODE_POS_PROTO_VERSION)-GetCountScanningPerBlock())
         {
-            LogPrintf("MasternodePOS::mnse - MasternodeB ranking is too low\n");
+            if(a != -1) LogPrintf("MasternodePOS::mnse - MasternodeB ranking is too low\n");
             return;
         }
 
@@ -106,7 +110,7 @@ void ProcessMessageMasternodePOS(CNode* pfrom, std::string& strCommand, CDataStr
         CMasternode* pmnB = mnodeman.Find(mnse.vinMasternodeB);
         if(pmnB == NULL) return;
 
-        //if(fDebug) LogPrintf("ProcessMessageMasternodePOS::mnse - nHeight %d MasternodeA %s MasternodeB %s\n", mnse.nBlockHeight, pmnA->addr.ToString().c_str(), pmnB->addr.ToString().c_str());
+        if(fDebug) LogPrintf("ProcessMessageMasternodePOS::mnse - nHeight %d MasternodeA %s MasternodeB %s\n", mnse.nBlockHeight, pmnA->addr.ToString().c_str(), pmnB->addr.ToString().c_str());
 
         pmnB->ApplyScanningError(mnse);
         mnse.Relay();
