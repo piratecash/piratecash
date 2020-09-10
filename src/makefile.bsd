@@ -126,7 +126,6 @@ OBJS= \
     obj/masternodeman.o \
     obj/masternode.o \
     obj/masternode-payments.o \
-    obj/masternode-pos.o \
     obj/rpcdarksend.o \
     obj/spork.o \
     obj/crypto/hmac_sha256.o \
