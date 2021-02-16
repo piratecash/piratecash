@@ -654,7 +654,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     if (fLiteMode)
         fNoSmsg = true;
     else
-        fNoSmsg = GetBoolArg("-nosmsg", false);
+        fNoSmsg = GetBoolArg("-nosmsg", true);
 
 
     // Check for -debugnet (deprecated)
