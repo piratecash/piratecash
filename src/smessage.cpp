@@ -1105,7 +1105,7 @@ bool SecureMsgStart(bool fDontStart, bool fScanChain)
 {
     if (fDontStart)
     {
-        LogPrint("smessage", "Secure messaging not started.\n");
+        LogPrintf("Secure messaging not started.\n");
         return false;
     };
 
