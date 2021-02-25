@@ -35,8 +35,8 @@ win32:BOOST_INCLUDE_PATH=C:/dev/coindeps32/boost_1_57_0
 win32:BOOST_LIB_PATH=C:/dev/coindeps32/boost_1_57_0/stage/lib
 win32:BDB_INCLUDE_PATH=C:/dev/coindeps32/db-4.8.30.NC/build_unix
 win32:BDB_LIB_PATH=C:/dev/coindeps32/db-4.8.30.NC/build_unix
-win32:OPENSSL_INCLUDE_PATH=C:/dev/coindeps32/openssl-1.0.2q/include
-win32:OPENSSL_LIB_PATH=C:/dev/coindeps32/openssl-1.0.2q/
+win32:OPENSSL_INCLUDE_PATH=C:/dev/coindeps32/openssl-1.0.2u/include
+win32:OPENSSL_LIB_PATH=C:/dev/coindeps32/openssl-1.0.2u/
 win32:MINIUPNPC_INCLUDE_PATH=C:/dev/coindeps32
 win32:MINIUPNPC_LIB_PATH=C:/dev/coindeps32/miniupnpc
 win32:LIBPNG_INCLUDE_PATH=C:/dev/coindeps32/libpng-1.6.16/include
@@ -45,6 +45,8 @@ win32:QRENCODE_INCLUDE_PATH=C:/dev/coindeps32/qrencode-3.4.4
 win32:QRENCODE_LIB_PATH=C:/dev/coindeps32/qrencode-3.4.4/.libs
 win32:SECP256K1_LIB_PATH =C:/dev/coindeps32/secp256k1/.libs
 win32:SECP256K1_INCLUDE_PATH =C:/dev/coindeps32/secp256k1/include
+win32:INCLUDEPATH += C:/dev/coindeps32/libevent-2.1.8-stable/include
+win32:LIBS += C:\dev\coindeps32\libevent-2.1.8-stable\.libs\libevent.a
 macx:QMAKE_MAC_SDK = macosx10.15
 macx:LIBS += /opt/local/lib/libevent.a /opt/local/lib/libevent_pthreads.a
 linux:LIBS += -levent -levent_pthreads
@@ -582,12 +584,12 @@ isEmpty(MINIUPNPC_LIB_PATH) {
 
 isEmpty(OPENSSL_INCLUDE_PATH) {
     macx:OPENSSL_INCLUDE_PATH = /opt/local/include/openssl-1.0/
-    windows:OPENSSL_INCLUDE_PATH=C:/dev/coindeps32/openssl-1.0.2q/include
+    windows:OPENSSL_INCLUDE_PATH=C:/dev/coindeps32/openssl-1.0.2u/include
 }
 
 isEmpty(OPENSSL_LIB_PATH) {
     macx:OPENSSL_LIB_PATH = /opt/local/lib/openssl-1.0
-    windows:OPENSSL_LIB_PATH=C:/dev/coindeps32/openssl-1.0.2q/lib
+    windows:OPENSSL_LIB_PATH=C:/dev/coindeps32/openssl-1.0.2u/lib
 }
 
 INCLUDEPATH += $$OPENSSL_INCLUDE_PATH $$BOOST_INCLUDE_PATH
