@@ -11,6 +11,7 @@ CONFIG += static
 #CONFIG += openssl-linked
 CONFIG += openssl
 CONFIG += c++11
+DPHOST = $$PWD/depends/$$system(./depends/config.guess)
 
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
@@ -49,7 +50,7 @@ win32:INCLUDEPATH += C:/dev/coindeps32/libevent-2.1.8-stable/include
 win32:LIBS += C:\dev\coindeps32\libevent-2.1.8-stable\.libs\libevent.a
 macx:QMAKE_MAC_SDK = macosx10.15
 macx:LIBS += /opt/local/lib/libevent.a /opt/local/lib/libevent_pthreads.a
-linux:LIBS += -levent -levent_pthreads
+linux:LIBS += $$DPHOST/lib/libevent.a $$DPHOST/lib/libevent_pthreads.a
 
 OBJECTS_DIR = build
 MOC_DIR = build
@@ -73,6 +74,7 @@ contains(RELEASE, 1) {
 # for extra security against potential buffer overflows: enable GCCs Stack Smashing Protection
 QMAKE_CXXFLAGS *= -fstack-protector-all
 QMAKE_LFLAGS *= -fstack-protector-all
+linux:QMAKE_LFLAGS *= -static-libgcc -static-libstdc++
 # We need to exclude this for Windows cross compile with MinGW 4.2.x, as it will result in a non-working executable!
 # This can be enabled for Windows, when we switch to MinGW >= 4.4.x.
 }
@@ -527,6 +529,7 @@ OTHER_FILES += \
 # platform specific defaults, if not overridden on command line
 isEmpty(BOOST_LIB_SUFFIX) {
     macx:BOOST_LIB_SUFFIX = -mt
+    linux:BOOST_LIB_SUFFIX = -mt
     windows:BOOST_LIB_SUFFIX=-mgw49-mt-s-1_57
 }
 
@@ -538,6 +541,7 @@ isEmpty(BOOST_THREAD_LIB_SUFFIX) {
 
 isEmpty(BDB_LIB_PATH) {
     macx:BDB_LIB_PATH = /opt/local/lib/db48
+    linux:BDB_LIB_PATH = $$DPHOST/lib
     windows:BDB_LIB_PATH=C:/dev/coindeps32/db-4.8.30.NC/build_unix
 }
 
@@ -547,25 +551,30 @@ isEmpty(BDB_LIB_SUFFIX) {
 
 isEmpty(BDB_INCLUDE_PATH) {
     macx:BDB_INCLUDE_PATH = /opt/local/include/db48
+    linux:BDB_INCLUDE_PATH = $$DPHOST/include
     windows:BDB_INCLUDE_PATH=C:/dev/coindeps32/db-4.8.30.NC/build_unix
 }
 
 isEmpty(BOOST_LIB_PATH) {
     macx:BOOST_LIB_PATH = /opt/local/libexec/boost169/lib
+    linux:BOOST_LIB_PATH = $$DPHOST/lib
     windows:BOOST_LIB_PATH=C:/dev/coindeps32/boost_1_57_0/stage/lib
 }
 
 isEmpty(BOOST_INCLUDE_PATH) {
     macx:BOOST_INCLUDE_PATH = /opt/local/libexec/boost169/include
+    linux:BOOST_INCLUDE_PATH = $$DPHOST/include/boost
     windows:BOOST_INCLUDE_PATH=C:/dev/coindeps32/boost_1_57_0
 }
 
 isEmpty(QRENCODE_LIB_PATH) {
     macx:QRENCODE_LIB_PATH = /opt/local/lib
+    linux:QRENCODE_LIB_PATH = $$DPHOST/lib
 }
 
 isEmpty(QRENCODE_INCLUDE_PATH) {
     macx:QRENCODE_INCLUDE_PATH = /opt/local/include
+    linux:QRENCODE_INCLUDE_PATH = $$DPHOST/include
 }
 
 isEmpty(MINIUPNPC_LIB_SUFFIX) {
@@ -574,21 +583,25 @@ isEmpty(MINIUPNPC_LIB_SUFFIX) {
 
 isEmpty(MINIUPNPC_INCLUDE_PATH) {
     macx:MINIUPNPC_INCLUDE_PATH=/opt/local/include
+    linux:MINIUPNPC_INCLUDE_PATH=$$DPHOST/include/miniupnpc
     windows:MINIUPNPC_INCLUDE_PATH=C:/dev/coindeps32\miniupnpc
 }
 
 isEmpty(MINIUPNPC_LIB_PATH) {
     macx:MINIUPNPC_LIB_PATH=/opt/local/lib
+    linux:MINIUPNPC_LIB_PATH=$$DPHOST/lib
     windows:MINIUPNPC_LIB_PATH=C:/dev/coindeps32
 }
 
 isEmpty(OPENSSL_INCLUDE_PATH) {
     macx:OPENSSL_INCLUDE_PATH = /opt/local/include/openssl-1.0/
+    linux:OPENSSL_INCLUDE_PATH = $$DPHOST/include/openssl
     windows:OPENSSL_INCLUDE_PATH=C:/dev/coindeps32/openssl-1.0.2u/include
 }
 
 isEmpty(OPENSSL_LIB_PATH) {
     macx:OPENSSL_LIB_PATH = /opt/local/lib/openssl-1.0
+    linux:OPENSSL_LIB_PATH = $$DPHOST/lib
     windows:OPENSSL_LIB_PATH=C:/dev/coindeps32/openssl-1.0.2u/lib
 }
 
