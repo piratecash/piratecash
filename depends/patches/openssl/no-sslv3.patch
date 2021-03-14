@@ -1,0 +1,50 @@
+Description: Disable SSLv3 without changing ABI
+Author: Marc Deslauriers <marc.deslauriers@canonical.com>
+
+Based on original SSLv2 approach by Kees Cook <kees@ubuntu.com>.
+
+Index: openssl-1.0.2g/ssl/ssl_lib.c
+===================================================================
+--- openssl-1.0.2g.orig/ssl/ssl_lib.c	2016-03-01 14:16:42.529715862 -0500
++++ openssl-1.0.2g/ssl/ssl_lib.c	2016-03-01 14:16:42.525715811 -0500
+@@ -1116,8 +1116,10 @@
+         return 1;
+ 
+     case SSL_CTRL_OPTIONS:
++        larg|=SSL_OP_NO_SSLv3;
+         return (s->options |= larg);
+     case SSL_CTRL_CLEAR_OPTIONS:
++        larg&=~SSL_OP_NO_SSLv3;
+         return (s->options &= ~larg);
+     case SSL_CTRL_MODE:
+         return (s->mode |= larg);
+@@ -1252,8 +1254,10 @@
+     case SSL_CTRL_SESS_CACHE_FULL:
+         return (ctx->stats.sess_cache_full);
+     case SSL_CTRL_OPTIONS:
++        larg|=SSL_OP_NO_SSLv3;
+         return (ctx->options |= larg);
+     case SSL_CTRL_CLEAR_OPTIONS:
++        larg&=~SSL_OP_NO_SSLv3;
+         return (ctx->options &= ~larg);
+     case SSL_CTRL_MODE:
+         return (ctx->mode |= larg);
+@@ -1870,7 +1874,7 @@
+ {
+     SSL_CTX *ret = NULL;
+ 
+-    if (meth == NULL) {
++    if (meth == NULL || meth->version <= SSL3_VERSION) {
+         SSLerr(SSL_F_SSL_CTX_NEW, SSL_R_NULL_SSL_METHOD_PASSED);
+         return (NULL);
+     }
+@@ -2063,6 +2067,9 @@
+      */
+     ret->options |= SSL_OP_NO_SSLv2;
+ 
++    /* Force no SSLv3 for all methods */
++    ret->options |= SSL_OP_NO_SSLv3;
++
+     return (ret);
+  err:
+     SSLerr(SSL_F_SSL_CTX_NEW, ERR_R_MALLOC_FAILURE);

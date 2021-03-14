@@ -1,0 +1,27 @@
+Description: fix IV handling in SHAEXT paths.
+Author: Andy Polyakov <appro@openssl.org>
+Origin: https://github.com/openssl/openssl/commit/08d09628d2c9f3ef599399d8cad021a07ab98347
+Index: openssl-1.0.2g/crypto/aes/asm/aesni-sha1-x86_64.pl
+===================================================================
+--- openssl-1.0.2g.orig/crypto/aes/asm/aesni-sha1-x86_64.pl
++++ openssl-1.0.2g/crypto/aes/asm/aesni-sha1-x86_64.pl
+@@ -1702,6 +1702,7 @@ $code.=<<___;
+ 	mov	240($key),$rounds
+ 	sub	$in0,$out
+ 	movups	($key),$rndkey0			# $key[0]
++	movups	($ivp),$iv			# load IV
+ 	movups	16($key),$rndkey[0]		# forward reference
+ 	lea	112($key),$key			# size optimization
+ 
+Index: openssl-1.0.2g/crypto/aes/asm/aesni-sha256-x86_64.pl
+===================================================================
+--- openssl-1.0.2g.orig/crypto/aes/asm/aesni-sha256-x86_64.pl
++++ openssl-1.0.2g/crypto/aes/asm/aesni-sha256-x86_64.pl
+@@ -1299,6 +1299,7 @@ $code.=<<___;
+ 	mov		240($key),$rounds
+ 	sub		$in0,$out
+ 	movups		($key),$rndkey0		# $key[0]
++	movups		($ivp),$iv		# load IV
+ 	movups		16($key),$rndkey[0]	# forward reference
+ 	lea		112($key),$key		# size optimization
+ 
