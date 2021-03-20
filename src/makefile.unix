@@ -53,7 +53,8 @@ LIBS += \
  $(DEPSDIR)/lib/libgmp.a \
  $(DEPSDIR)/lib/libevent.a \
  $(DEPSDIR)/lib/libevent_pthreads.a \
- $(DEPSDIR)/lib/libcrypto.a
+ $(DEPSDIR)/lib/libcrypto.a \
+ $(DEPSDIR)/lib/libz.a
 
 ifndef USE_UPNP
 	override USE_UPNP = -
@@ -69,7 +70,6 @@ endif
 
 LIBS+= \
  -Wl,-B$(LMODE2) \
-   -l z \
    -l dl \
    -l pthread
 
