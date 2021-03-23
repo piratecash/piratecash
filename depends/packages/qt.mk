@@ -70,6 +70,8 @@ $(package)_config_opts += -silent
 $(package)_config_opts += -v
 $(package)_config_opts += -skip qtvirtualkeyboard
 $(package)_config_opts += -skip qtwebengine
+$(package)_config_opts += -skip qtserialbus
+$(package)_config_opts += -skip qtxmlpatterns
 
 ifneq ($(build_os),darwin)
 $(package)_config_opts_darwin = -xplatform macx-clang-linux
