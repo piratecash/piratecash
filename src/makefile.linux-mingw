@@ -2,62 +2,65 @@
 # Distributed under the MIT/X11 software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-TARGET_PLATFORM:=i686
-#TARGET_PLATFORM:=x86_64
+#TARGET_PLATFORM:=i686-w64-mingw32
+TARGET_PLATFORM:=x86_64-w64-mingw32
+CC:=$(TARGET_PLATFORM)-gcc
+CXX:=$(TARGET_PLATFORM)-g++
+RANLIB:=$(TARGET_PLATFORM)-ranlib
+STRIP:=$(TARGET_PLATFORM)-strip
 
-DEPSDIR:=/usr/$(TARGET_PLATFORM)-w64-mingw32
-CC:=$(TARGET_PLATFORM)-w64-mingw32-gcc
-CXX:=$(TARGET_PLATFORM)-w64-mingw32-g++
-RANLIB=$(TARGET_PLATFORM)-w64-mingw32-ranlib
-STRIP=$(TARGET_PLATFORM)-w64-mingw32-strip
+DEPSDIR:=../depends/$(TARGET_PLATFORM)
 
-USE_UPNP:=0
+USE_UPNP:=1
 USE_WALLET:=1
 USE_LOWMEM:=0
 
 INCLUDEPATHS= \
  -I"$(CURDIR)" \
- -I"$(CURDIR)"/obj \
- -I"$(DEPSDIR)/boost_1_55_0" \
- -I"$(DEPSDIR)/db-6.0.20/build_unix" \
- -I"$(DEPSDIR)/openssl-1.0.1f/include" \
- -I"$(DEPSDIR)"
+ -I"$(DEPSDIR)/include/boost" \
+ -I"$(DEPSDIR)/include/miniupnpc" \
+ -I"$(DEPSDIR)/include" \
+ -I"$(CURDIR)/secp256k1/include" \
+ -I"$(DEPSDIR)/include/openssl"
 
 LIBPATHS= \
- -L"$(DEPSDIR)/boost_1_55_0/stage/lib" \
- -L"$(DEPSDIR)/db-6.0.20/build_unix" \
- -L"$(DEPSDIR)/openssl-1.0.1f"
+ -L"$(DEPSDIR)/lib" \
+ -L"$(CURDIR)/secp256k1/.libs"\
+ -L"$(DEPSDIR)/lib/"
 
 LIBS= \
- -l boost_system-mt \
- -l boost_filesystem-mt \
- -l boost_program_options-mt \
- -l boost_thread_win32-mt \
- -l boost_chrono-mt \
- -l db_cxx \
- -l ssl \
- -l crypto \
- -l z
+ $(DEPSDIR)/lib/libboost_system-mt-s.a \
+ $(DEPSDIR)/lib/libboost_filesystem-mt-s.a \
+ $(DEPSDIR)/lib/libboost_program_options-mt-s.a \
+ $(DEPSDIR)/lib/libboost_thread_win32-mt-s.a \
+ $(DEPSDIR)/lib/libboost_chrono-mt-s.a \
+ $(DEPSDIR)/lib/libdb_cxx-4.8.a \
+ $(DEPSDIR)/lib/libssl.a \
+ $(DEPSDIR)/lib/libgmp.a \
+ $(DEPSDIR)/lib/libevent.a \
+ $(DEPSDIR)/lib/libcrypto.a \
+ $(DEPSDIR)/lib/libz.a
 
 DEFS=-D_MT -DWIN32 -D_WINDOWS -DBOOST_THREAD_USE_LIB -DBOOST_SPIRIT_THREADSAFE
 DEBUGFLAGS=-g
-CFLAGS=-O2 -msse2 -w -Wall -Wextra -Wno-ignored-qualifiers -Wformat -Wformat-security -Wno-unused-parameter $(DEBUGFLAGS) $(DEFS) $(INCLUDEPATHS)
-LDFLAGS=-Wl,--dynamicbase -Wl,--nxcompat -static-libgcc -static-libstdc++
+CFLAGS=-O2 -w -Wall -Wextra -Wno-ignored-qualifiers -Wformat -Wformat-security -Wno-unused-parameter -fpermissive $(DEBUGFLAGS) $(DEFS) $(INCLUDEPATHS)
+LDFLAGS=-Wl,--dynamicbase -Wl,--nxcompat -static
+
+TESTDEFS = -DTEST_DATA_DIR=$(abspath test/data)
 
 ifndef USE_UPNP
-	override USE_UPNP = -
+        override USE_UPNP = -
 endif
 ifneq (${USE_UPNP}, -)
-	LIBPATHS += -L"$(DEPSDIR)/miniupnpc"
-	LIBS += -l miniupnpc -l iphlpapi
-	DEFS += -DSTATICLIB -DUSE_UPNP=$(USE_UPNP)
+ LIBS += -l miniupnpc -l iphlpapi
+ DEFS += -DMINIUPNP_STATICLIB -DUSE_UPNP=$(USE_UPNP)
 endif
 
 ifeq (${USE_LOWMEM}, 1)
     DEFS += -DLOWMEM
 endif
 
-LIBS += -l mingwthrd -l kernel32 -l user32 -l gdi32 -l comdlg32 -l winspool -l winmm -l shell32 -l comctl32 -l ole32 -l oleaut32 -l uuid -l rpcrt4 -l advapi32 -l ws2_32 -l mswsock -l shlwapi
+LIBS += -l mingwthrd -l kernel32 -l user32 -l gdi32 -l comdlg32 -l winspool -l winmm -l shell32 -l comctl32 -l ole32 -l oleaut32 -l uuid -l rpcrt4 -l advapi32 -l ws2_32 -l mswsock
 
 # TODO: make the mingw builds smarter about dependencies, like the linux/osx builds are
 HEADERS = $(wildcard *.h)
@@ -66,15 +69,15 @@ OBJS= \
     obj/alert.o \
     obj/torcontrol.o \
     obj/allocators.o \
+    obj/support/cleanse.o \
+    obj/base58.o \
     obj/validationinterface.o \
     obj/scheduler.o \
     obj/version.o \
-    obj/support/cleanse.o \
     obj/checkpoints.o \
     obj/netbase.o \
     obj/addrdb.o \
     obj/addrman.o \
-    obj/base58.o \
     obj/crypter.o \
     obj/key.o \
     obj/pubkey.o \
@@ -129,6 +132,7 @@ OBJS= \
     obj/crypto/sha256.o \
     obj/crypto/sha512.o \
     obj/smessage.o
+
 ifeq (${USE_WALLET}, 1)
     DEFS += -DENABLE_WALLET
     OBJS += \
@@ -141,27 +145,36 @@ ifeq (${USE_WALLET}, 1)
         obj/wallet/walletdb.o
 endif
 
-all: madcoind.exe
+all: piratecashd.exe
 
-LIBS += $(CURDIR)/leveldb/libleveldb.a $(CURDIR)/leveldb/libmemenv.a
-DEFS += -I"$(CURDIR)/leveldb/include"
-DEFS += -I"$(CURDIR)/leveldb/helpers"
+# build secp256k1
+DEFS += $(addprefix -I,$(CURDIR)/secp256k1/include)
+secp256k1/src/libsecp256k1_la-secp256k1.o:
+	@echo "Building Secp256k1 ..."; cd secp256k1; chmod 755 *; ./autogen.sh; ./configure --host=$(TARGET_PLATFORM) --enable-module-recovery; CC=$(CC) CXX=$(CXX) make; cd ..; 
+piratecashd.exe: secp256k1/src/libsecp256k1_la-secp256k1.o
+
+LIBS += $(CURDIR)/leveldb/libleveldb.a $(CURDIR)/leveldb/libmemenv.a -l shlwapi
+DEFS += $(addprefix -I,$(CURDIR)/leveldb/include)
+DEFS += $(addprefix -I,$(CURDIR)/leveldb/helpers)
 OBJS += obj/txdb.o
 leveldb/libleveldb.a:
-	@echo "Building LevelDB ..." && cd leveldb && CC=$(CC) CXX=$(CXX) TARGET_OS=OS_WINDOWS_CROSSCOMPILE CXXFLAGS="-I$(INCLUDEPATHS)" LDFLAGS="-L$(LIBPATHS)" $(MAKE) libleveldb.a libmemenv.a && $(RANLIB) libleveldb.a && $(RANLIB) libmemenv.a && cd ..
+	@echo "Building LevelDB ..."; cd leveldb; chmod 755 *; CC=$(CC) CXX=$(CXX) TARGET_OS=OS_WINDOWS_CROSSCOMPILE make libleveldb.a libmemenv.a; cd ..;
 obj/txdb.o: leveldb/libleveldb.a
 
 obj/%.o: %.cpp $(HEADERS)
 	$(CXX) -c $(CFLAGS) -o $@ $<
 
-madcoind.exe: $(OBJS:obj/%=obj/%)
-	$(CXX) $(CFLAGS) $(LDFLAGS) -o $@ $(LIBPATHS) $^ $(LIBS) -lshlwapi
-	$(STRIP) madcoind.exe
+obj/%.o: %.c $(HEADERS)
+	$(CXX) -c $(CFLAGS) -fpermissive -o $@ $<
+
+piratecashd.exe: $(OBJS:obj/%=obj/%)
+	$(CXX) $(CFLAGS) $(LDFLAGS) -o $@ $(LIBPATHS) $^ $(LIBS)
+	$(STRIP) piratecashd.exe
 
 clean:
 	-rm -f obj/*.o
-	-rm -f madcoind.exe
+	-rm -f piratecashd.exe
 	-rm -f obj/build.h
-	cd leveldb && TARGET_OS=OS_WINDOWS_CROSSCOMPILE $(MAKE) clean && cd ..
+	cd leveldb && TARGET_OS=NATIVE_WINDOWS $(MAKE) clean && cd ..
 
 FORCE:

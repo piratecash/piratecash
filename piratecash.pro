@@ -11,7 +11,11 @@ CONFIG += static
 #CONFIG += openssl-linked
 CONFIG += openssl
 CONFIG += c++11
+USE_QRCODE = 1
 DPHOST = $$PWD/depends/$$system(./depends/config.guess)
+#HOSTMING = i686-w64-mingw32
+HOSTMING = x86_64-w64-mingw32
+DPHOSTMING = $$PWD/depends/$$HOSTMING
 
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
@@ -31,23 +35,22 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 # workaround for boost 1.58
 DEFINES += BOOST_VARIANT_USE_RELAXED_GET_BY_DEFAULT
 
-win32:BOOST_LIB_SUFFIX=-mgw49-mt-s-1_57
-win32:BOOST_INCLUDE_PATH=C:/dev/coindeps32/boost_1_57_0
-win32:BOOST_LIB_PATH=C:/dev/coindeps32/boost_1_57_0/stage/lib
-win32:BDB_INCLUDE_PATH=C:/dev/coindeps32/db-4.8.30.NC/build_unix
-win32:BDB_LIB_PATH=C:/dev/coindeps32/db-4.8.30.NC/build_unix
-win32:OPENSSL_INCLUDE_PATH=C:/dev/coindeps32/openssl-1.0.2u/include
-win32:OPENSSL_LIB_PATH=C:/dev/coindeps32/openssl-1.0.2u/
-win32:MINIUPNPC_INCLUDE_PATH=C:/dev/coindeps32
-win32:MINIUPNPC_LIB_PATH=C:/dev/coindeps32/miniupnpc
-win32:LIBPNG_INCLUDE_PATH=C:/dev/coindeps32/libpng-1.6.16/include
-win32:LIBPNG_LIB_PATH=C:/dev/coindeps32/libpng-1.6.16/lib
-win32:QRENCODE_INCLUDE_PATH=C:/dev/coindeps32/qrencode-3.4.4
-win32:QRENCODE_LIB_PATH=C:/dev/coindeps32/qrencode-3.4.4/.libs
-win32:SECP256K1_LIB_PATH =C:/dev/coindeps32/secp256k1/.libs
-win32:SECP256K1_INCLUDE_PATH =C:/dev/coindeps32/secp256k1/include
-win32:INCLUDEPATH += C:/dev/coindeps32/libevent-2.1.8-stable/include
-win32:LIBS += C:\dev\coindeps32\libevent-2.1.8-stable\.libs\libevent.a
+win32:BOOST_LIB_SUFFIX=-mt-s
+win32:BOOST_THREAD_LIB_SUFFIX=_win32$$BOOST_LIB_SUFFIX
+win32:BOOST_INCLUDE_PATH=$$DPHOSTMING/include/boost
+win32:BOOST_LIB_PATH=$$DPHOSTMING/lib
+win32:BDB_INCLUDE_PATH=$$DPHOSTMING/include
+win32:BDB_LIB_PATH=$$DPHOSTMING/lib
+win32:OPENSSL_INCLUDE_PATH=$$DPHOSTMING/include/openssl
+win32:OPENSSL_LIB_PATH=$$DPHOSTMING/lib
+win32:MINIUPNPC_INCLUDE_PATH=$$DPHOSTMING/include/miniupnpc
+win32:MINIUPNPC_LIB_PATH=$$DPHOSTMING/lib
+win32:QRENCODE_INCLUDE_PATH=$$DPHOSTMING/include
+win32:QRENCODE_LIB_PATH=$$DPHOSTMING/lib
+win32:SECP256K1_LIB_PATH=$$PWD/src/secp256k1/.libs
+win32:SECP256K1_INCLUDE_PATH=$$PWD/src/secp256k1/include
+win32:INCLUDEPATH +=$$DPHOSTMING/include
+win32:LIBS +=$$DPHOSTMING/lib/libevent.a
 macx:QMAKE_MAC_SDK = macosx10.15
 macx:LIBS += /opt/local/lib/libevent.a /opt/local/lib/libevent_pthreads.a
 linux:LIBS += $$DPHOST/lib/libevent.a $$DPHOST/lib/libevent_pthreads.a
@@ -84,9 +87,10 @@ macx:QMAKE_CXXFLAGS *= -D_FORTIFY_SOURCE=2
 # for extra security on Windows: enable ASLR and DEP via GCC linker flags
 win32:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat
 # on Windows: enable GCC large address aware linker flag
-win32:QMAKE_LFLAGS *= -Wl,--large-address-aware -static
-# i686-w64-mingw32
-win32:QMAKE_LFLAGS *= -static-libgcc -static-libstdc++
+#win32:QMAKE_LFLAGS *= -Wl,--large-address-aware -static
+# *-w64-mingw32
+#win32:QMAKE_LFLAGS *= -static-libgcc -static-libstdc++
+win32:QMAKE_LFLAGS *= -static
 
 # use: qmake "USE_QRCODE=1"
 # libqrencode (http://fukuchi.org/works/qrencode/index.en.html) must be installed for support
@@ -126,7 +130,7 @@ SOURCES += src/txdb.cpp
         QMAKE_RANLIB = $$replace(QMAKE_STRIP, strip, ranlib)
     }
     LIBS += -lshlwapi
-    #genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX TARGET_OS=OS_WINDOWS_CROSSCOMPILE $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libleveldb.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libmemenv.a
+    genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX TARGET_OS=OS_WINDOWS_CROSSCOMPILE $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libleveldb.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libmemenv.a
 }
 genleveldb.target = $$PWD/src/leveldb/libleveldb.a
 genleveldb.depends = FORCE
@@ -149,12 +153,16 @@ LIBS += $$PWD/src/secp256k1/src/libsecp256k1_la-secp256k1.o
     # Gross ugly hack that depends on qmake internals, unfortunately there is no other way to do it.
     QMAKE_CLEAN += $$PWD/src/secp256k1/src/libsecp256k1_la-secp256k1.o; cd $$PWD/src/secp256k1; $(MAKE) clean
 } else {
-    isEmpty(SECP256K1_LIB_PATH) {
-        windows:SECP256K1_LIB_PATH=C:/dev/coindeps32/Secp256k1/.libs
-    }
-    isEmpty(SECP256K1_INCLUDE_PATH) {
-        windows:SECP256K1_INCLUDE_PATH=C:/dev/coindeps32/secp256k1/include
-    }
+INCLUDEPATH += src/secp256k1/include
+LIBS += $$PWD/src/secp256k1/src/libsecp256k1_la-secp256k1.o
+    # we use QMAKE_CXXFLAGS_RELEASE even without RELEASE=1 because we use RELEASE to indicate linking preferences not -O preferences
+    gensecp256k1.commands = cd $$PWD/src/secp256k1 && ./autogen.sh && ./configure --host=$$HOSTMING --enable-module-recovery && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\"
+    gensecp256k1.target = $$PWD/src/secp256k1/src/libsecp256k1_la-secp256k1.o
+    gensecp256k1.depends = FORCE
+    PRE_TARGETDEPS += $$PWD/src/secp256k1/src/libsecp256k1_la-secp256k1.o
+    QMAKE_EXTRA_TARGETS += gensecp256k1
+    # Gross ugly hack that depends on qmake internals, unfortunately there is no other way to do it.
+    QMAKE_CLEAN += $$PWD/src/secp256k1/src/libsecp256k1_la-secp256k1.o; cd $$PWD/src/secp256k1; $(MAKE) clean
 }
 
 # regenerate src/build.h
@@ -510,7 +518,7 @@ CODECFORTR = UTF-8
 TRANSLATIONS = $$files(src/qt/locale/bitcoin_*.ts)
 
 isEmpty(QMAKE_LRELEASE) {
-    win32:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]\\lrelease.exe
+    !win32:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]/lrelease
     else:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]/lrelease
 }
 isEmpty(QM_DIR):QM_DIR = $$PWD/src/qt/locale
@@ -530,19 +538,19 @@ OTHER_FILES += \
 isEmpty(BOOST_LIB_SUFFIX) {
     macx:BOOST_LIB_SUFFIX = -mt
     linux:BOOST_LIB_SUFFIX = -mt
-    windows:BOOST_LIB_SUFFIX=-mgw49-mt-s-1_57
+    windows:BOOST_LIB_SUFFIX=-mt-s
 }
 
 isEmpty(BOOST_THREAD_LIB_SUFFIX) {
     BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
-    #win32:BOOST_THREAD_LIB_SUFFIX = _win32$$BOOST_LIB_SUFFIX
-    #else:BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
+    win32:BOOST_THREAD_LIB_SUFFIX = _win32$$BOOST_LIB_SUFFIX
+    else:BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
 }
 
 isEmpty(BDB_LIB_PATH) {
     macx:BDB_LIB_PATH = /opt/local/lib/db48
     linux:BDB_LIB_PATH = $$DPHOST/lib
-    windows:BDB_LIB_PATH=C:/dev/coindeps32/db-4.8.30.NC/build_unix
+    windows:BDB_LIB_PATH=$$DPHOSTMING/lib
 }
 
 isEmpty(BDB_LIB_SUFFIX) {
@@ -552,57 +560,59 @@ isEmpty(BDB_LIB_SUFFIX) {
 isEmpty(BDB_INCLUDE_PATH) {
     macx:BDB_INCLUDE_PATH = /opt/local/include/db48
     linux:BDB_INCLUDE_PATH = $$DPHOST/include
-    windows:BDB_INCLUDE_PATH=C:/dev/coindeps32/db-4.8.30.NC/build_unix
+    windows:BDB_INCLUDE_PATH=$DPHOSTMING/include
 }
 
 isEmpty(BOOST_LIB_PATH) {
     macx:BOOST_LIB_PATH = /opt/local/libexec/boost169/lib
     linux:BOOST_LIB_PATH = $$DPHOST/lib
-    windows:BOOST_LIB_PATH=C:/dev/coindeps32/boost_1_57_0/stage/lib
+    windows:BOOST_LIB_PATH=$$DPHOSTMING/lib
 }
 
 isEmpty(BOOST_INCLUDE_PATH) {
     macx:BOOST_INCLUDE_PATH = /opt/local/libexec/boost169/include
     linux:BOOST_INCLUDE_PATH = $$DPHOST/include/boost
-    windows:BOOST_INCLUDE_PATH=C:/dev/coindeps32/boost_1_57_0
+    windows:BOOST_INCLUDE_PATH=$$DPHOSTMING/include/boost
 }
 
 isEmpty(QRENCODE_LIB_PATH) {
     macx:QRENCODE_LIB_PATH = /opt/local/lib
     linux:QRENCODE_LIB_PATH = $$DPHOST/lib
+    win32:QRENCODE_LIB_PATH=$$DPHOSTMING/lib
 }
 
 isEmpty(QRENCODE_INCLUDE_PATH) {
     macx:QRENCODE_INCLUDE_PATH = /opt/local/include
     linux:QRENCODE_INCLUDE_PATH = $$DPHOST/include
+    win32:QRENCODE_INCLUDE_PATH=$$DPHOSTMING/include
 }
 
-isEmpty(MINIUPNPC_LIB_SUFFIX) {
-    windows:MINIUPNPC_LIB_SUFFIX=-miniupnpc
-}
+#isEmpty(MINIUPNPC_LIB_SUFFIX) {
+#    windows:MINIUPNPC_LIB_SUFFIX=-miniupnpc
+#}
 
 isEmpty(MINIUPNPC_INCLUDE_PATH) {
     macx:MINIUPNPC_INCLUDE_PATH=/opt/local/include
     linux:MINIUPNPC_INCLUDE_PATH=$$DPHOST/include/miniupnpc
-    windows:MINIUPNPC_INCLUDE_PATH=C:/dev/coindeps32\miniupnpc
+    windows:MINIUPNPC_INCLUDE_PATH=$$DPHOSTMING/include/miniupnpc
 }
 
 isEmpty(MINIUPNPC_LIB_PATH) {
     macx:MINIUPNPC_LIB_PATH=/opt/local/lib
     linux:MINIUPNPC_LIB_PATH=$$DPHOST/lib
-    windows:MINIUPNPC_LIB_PATH=C:/dev/coindeps32
+    windows:MINIUPNPC_LIB_PATH=$$DPHOSTMING/lib
 }
 
 isEmpty(OPENSSL_INCLUDE_PATH) {
     macx:OPENSSL_INCLUDE_PATH = /opt/local/include/openssl-1.0/
     linux:OPENSSL_INCLUDE_PATH = $$DPHOST/include/openssl
-    windows:OPENSSL_INCLUDE_PATH=C:/dev/coindeps32/openssl-1.0.2u/include
+    windows:OPENSSL_INCLUDE_PATH=$$DPHOSTMING/include/openssl
 }
 
 isEmpty(OPENSSL_LIB_PATH) {
     macx:OPENSSL_LIB_PATH = /opt/local/lib/openssl-1.0
     linux:OPENSSL_LIB_PATH = $$DPHOST/lib
-    windows:OPENSSL_LIB_PATH=C:/dev/coindeps32/openssl-1.0.2u/lib
+    windows:OPENSSL_LIB_PATH=$$DPHOSTMING/lib
 }
 
 INCLUDEPATH += $$OPENSSL_INCLUDE_PATH $$BOOST_INCLUDE_PATH
@@ -662,7 +672,8 @@ windows:LIBS += -lws2_32 -lshlwapi -lmswsock -lole32 -loleaut32 -luuid -lgdi32
     INCLUDEPATH += $$SECP256K1_INCLUDE_PATH
     LIBS += $$join(SECP256K1_LIB_PATH,,-L,) -lsecp256k1
 }
-LIBS += -lboost_system$$BOOST_LIB_SUFFIX -lboost_filesystem$$BOOST_LIB_SUFFIX -lboost_program_options$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_THREAD_LIB_SUFFIX -lboost_chrono$$BOOST_THREAD_LIB_SUFFIX
+LIBS += -lboost_system$$BOOST_LIB_SUFFIX -lboost_filesystem$$BOOST_LIB_SUFFIX -lboost_program_options$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_THREAD_LIB_SUFFIX
+linux:LIBS += -lboost_chrono$$BOOST_THREAD_LIB_SUFFIX
 macx:LIBS += -lboost_chrono$$BOOST_LIB_SUFFIX
 windows:LIBS += -lboost_chrono$$BOOST_LIB_SUFFIX
 

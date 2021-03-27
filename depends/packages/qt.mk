@@ -72,6 +72,9 @@ $(package)_config_opts += -skip qtvirtualkeyboard
 $(package)_config_opts += -skip qtwebengine
 $(package)_config_opts += -skip qtserialbus
 $(package)_config_opts += -skip qtxmlpatterns
+$(package)_config_opts += -skip qtactiveqt
+$(package)_config_opts += -skip qtdeclarative
+$(package)_config_opts += -L$(host_prefix)/lib
 
 ifneq ($(build_os),darwin)
 $(package)_config_opts_darwin = -xplatform macx-clang-linux
