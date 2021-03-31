@@ -76,6 +76,7 @@ $(package)_config_opts += -skip qtactiveqt
 $(package)_config_opts += -skip qtdeclarative
 $(package)_config_opts += -L$(host_prefix)/lib
 $(package)_config_opts += -skip qtconnectivity
+$(package)_config_opts += -skip qtx11extras
 
 ifneq ($(build_os),darwin)
 $(package)_config_opts_darwin = -xplatform macx-clang-linux
