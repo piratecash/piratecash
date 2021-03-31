@@ -6,44 +6,47 @@
 # Mac OS X makefile for piratecash
 # Originally by Laszlo Hanyecz (solar@heliacal.net)
 
-CXX=clang++
+USE_UPNP:=1
+USE_WALLET:=1
+USE_LOWMEM:=0
+STATIC:=1
+
 C=clang
-DEPSDIR=/opt/local
+CXX=clang++
+
+DPHOST=$(shell ../depends/config.guess)
+DEPSDIR=../depends/$(DPHOST)
 
 INCLUDEPATHS= \
  -I"$(CURDIR)" \
  -I"$(CURDIR)"/obj \
- -I"$(DEPSDIR)/libexec/boost169/include/" \
- -I"$(DEPSDIR)/include/db48/" \
- -I"$(DEPSDIR)/include/openssl-1.0/" \
- -I"$(DEPSDIR)/include/"
+ -I"$(DEPSDIR)/include" \
+ -I"$(DEPSDIR)/include/boost" \
+ -I"$(DEPSDIR)/include/openssl"
 
 
 LIBPATHS= \
- -L"$(DEPSDIR)/lib/db48/" \
- -L"$(DEPSDIR)/lib/openssl-1.0/" \
- -L"$(DEPSDIR)/libexec/boost169/lib/" \
- -L"$(DEPSDIR)/lib"
-
-USE_UPNP:=1
-USE_WALLET:=1
-USE_LOWMEM:=0
+ -L"$(DEPSDIR)/lib" \
+ -L"$(DEPSDIR)/lib/"
 
 LIBS= -dead_strip
 
 ifdef STATIC
 # Build STATIC if you are redistributing the piratecashd binary
 LIBS += \
- $(DEPSDIR)/lib/db48/libdb_cxx-4.8.a \
- $(DEPSDIR)/libexec/boost169/lib/libboost_system-mt.a \
- $(DEPSDIR)/libexec/boost169/lib/libboost_filesystem-mt.a \
- $(DEPSDIR)/libexec/boost169/lib/libboost_program_options-mt.a \
- $(DEPSDIR)/libexec/boost169/lib/libboost_thread-mt.a \
- $(DEPSDIR)/libexec/boost169/lib/libboost_chrono-mt.a \
+ $(DEPSDIR)/lib/libdb-4.8.a \
+ $(DEPSDIR)/lib/libboost_system-mt.a \
+ $(DEPSDIR)/lib/libboost_filesystem-mt.a \
+ $(DEPSDIR)/lib/libboost_program_options-mt.a \
+ $(DEPSDIR)/lib/libboost_thread-mt.a \
+ $(DEPSDIR)/lib/libboost_chrono-mt.a \
  $(DEPSDIR)/lib/libssl.a \
+ $(DEPSDIR)/lib/libgmp.a \
+ $(DEPSDIR)/lib/libevent.a \
+ $(DEPSDIR)/lib/libevent_pthreads.a \
  $(DEPSDIR)/lib/libcrypto.a \
- -lz
-else
+ $(DEPSDIR)/lib/libz.a
+
 LIBS += \
  -l db_cxx-4.8 \
  -l boost_system-mt \
@@ -206,6 +209,7 @@ obj/%.o: %.c
 
 piratecashd: $(OBJS:obj/%=obj/%)
 	$(CXX) $(CFLAGS) -o $@ $(LIBPATHS) $^ $(LIBS)
+	strip piratecashd
 
 clean:
 	-rm -f piratecashd

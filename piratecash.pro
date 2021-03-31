@@ -52,7 +52,7 @@ win32:SECP256K1_INCLUDE_PATH=$$PWD/src/secp256k1/include
 win32:INCLUDEPATH +=$$DPHOSTMING/include
 win32:LIBS +=$$DPHOSTMING/lib/libevent.a
 macx:QMAKE_MAC_SDK = macosx10.15
-macx:LIBS += /opt/local/lib/libevent.a /opt/local/lib/libevent_pthreads.a
+macx:LIBS += $$DPHOST/lib/libevent.a $$DPHOST/lib/libevent_pthreads.a
 linux:LIBS += $$DPHOST/lib/libevent.a $$DPHOST/lib/libevent_pthreads.a
 
 OBJECTS_DIR = build
@@ -65,7 +65,6 @@ contains(RELEASE, 1) {
     macx:QMAKE_CFLAGS += -arch x86_64 -mmacosx-version-min=10.7 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
     macx:QMAKE_LFLAGS += -arch x86_64 -mmacosx-version-min=10.7 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
     macx:QMAKE_OBJECTIVE_CFLAGS += -arch x86_64 -mmacosx-version-min=10.7 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
-
 
     !windows:!macx {
         # Linux: static link
@@ -548,7 +547,7 @@ isEmpty(BOOST_THREAD_LIB_SUFFIX) {
 }
 
 isEmpty(BDB_LIB_PATH) {
-    macx:BDB_LIB_PATH = /opt/local/lib/db48
+    macx:BDB_LIB_PATH = $$DPHOST/lib
     linux:BDB_LIB_PATH = $$DPHOST/lib
     windows:BDB_LIB_PATH=$$DPHOSTMING/lib
 }
@@ -558,31 +557,31 @@ isEmpty(BDB_LIB_SUFFIX) {
 }
 
 isEmpty(BDB_INCLUDE_PATH) {
-    macx:BDB_INCLUDE_PATH = /opt/local/include/db48
+    macx:BDB_INCLUDE_PATH = $$DPHOST/include
     linux:BDB_INCLUDE_PATH = $$DPHOST/include
     windows:BDB_INCLUDE_PATH=$DPHOSTMING/include
 }
 
 isEmpty(BOOST_LIB_PATH) {
-    macx:BOOST_LIB_PATH = /opt/local/libexec/boost169/lib
+    macx:BOOST_LIB_PATH = $$DPHOST/lib
     linux:BOOST_LIB_PATH = $$DPHOST/lib
     windows:BOOST_LIB_PATH=$$DPHOSTMING/lib
 }
 
 isEmpty(BOOST_INCLUDE_PATH) {
-    macx:BOOST_INCLUDE_PATH = /opt/local/libexec/boost169/include
+    macx:BOOST_INCLUDE_PATH = $$DPHOST/include/boost
     linux:BOOST_INCLUDE_PATH = $$DPHOST/include/boost
     windows:BOOST_INCLUDE_PATH=$$DPHOSTMING/include/boost
 }
 
 isEmpty(QRENCODE_LIB_PATH) {
-    macx:QRENCODE_LIB_PATH = /opt/local/lib
+    macx:QRENCODE_LIB_PATH = $$DPHOST/lib
     linux:QRENCODE_LIB_PATH = $$DPHOST/lib
     win32:QRENCODE_LIB_PATH=$$DPHOSTMING/lib
 }
 
 isEmpty(QRENCODE_INCLUDE_PATH) {
-    macx:QRENCODE_INCLUDE_PATH = /opt/local/include
+    macx:QRENCODE_INCLUDE_PATH = $$DPHOST/lib
     linux:QRENCODE_INCLUDE_PATH = $$DPHOST/include
     win32:QRENCODE_INCLUDE_PATH=$$DPHOSTMING/include
 }
@@ -592,25 +591,25 @@ isEmpty(QRENCODE_INCLUDE_PATH) {
 #}
 
 isEmpty(MINIUPNPC_INCLUDE_PATH) {
-    macx:MINIUPNPC_INCLUDE_PATH=/opt/local/include
+    macx:MINIUPNPC_INCLUDE_PATH=$$DPHOST/include/miniupnpc
     linux:MINIUPNPC_INCLUDE_PATH=$$DPHOST/include/miniupnpc
     windows:MINIUPNPC_INCLUDE_PATH=$$DPHOSTMING/include/miniupnpc
 }
 
 isEmpty(MINIUPNPC_LIB_PATH) {
-    macx:MINIUPNPC_LIB_PATH=/opt/local/lib
+    macx:MINIUPNPC_LIB_PATH=$$DPHOST/lib
     linux:MINIUPNPC_LIB_PATH=$$DPHOST/lib
     windows:MINIUPNPC_LIB_PATH=$$DPHOSTMING/lib
 }
 
 isEmpty(OPENSSL_INCLUDE_PATH) {
-    macx:OPENSSL_INCLUDE_PATH = /opt/local/include/openssl-1.0/
+    macx:OPENSSL_INCLUDE_PATH = $$DPHOST/include/openssl
     linux:OPENSSL_INCLUDE_PATH = $$DPHOST/include/openssl
     windows:OPENSSL_INCLUDE_PATH=$$DPHOSTMING/include/openssl
 }
 
 isEmpty(OPENSSL_LIB_PATH) {
-    macx:OPENSSL_LIB_PATH = /opt/local/lib/openssl-1.0
+    macx:OPENSSL_LIB_PATH = $$DPHOST/lib
     linux:OPENSSL_LIB_PATH = $$DPHOST/lib
     windows:OPENSSL_LIB_PATH=$$DPHOSTMING/lib
 }

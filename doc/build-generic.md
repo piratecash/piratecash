@@ -11,7 +11,7 @@ is supported today.
 Required build tools and environment
 ------------------------------------
 Building the dependencies and PirateCash requires some essential build tools to be installed before. Please see
-[build-unix](build-unix.md) for details.
+[build-unix](build-unix.md), [build-osx](build-osx.md) and [build-cross](build-cross.md) for details.
 
 Building dependencies
 ---------------------

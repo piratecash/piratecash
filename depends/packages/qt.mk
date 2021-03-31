@@ -6,7 +6,7 @@ $(package)_file_name= qt-everywhere-$($(package)_suffix)
 $(package)_sha256_hash=c86684203be61ae7b33a6cf33c23ec377f246d697bd9fb737d16f0ad798f89b7
 $(package)_dependencies=openssl zlib
 $(package)_linux_dependencies=freetype fontconfig libxcb libX11 xproto libXext
-$(package)_patches=mac-qmake.conf mingw-uuidof.patch pidlist_absolute.patch fix-xcb-include-order.patch
+$(package)_patches=mac-qmake.conf mingw-uuidof.patch pidlist_absolute.patch fix-xcb-include-order.patch fix_off_corewlan.patch
 $(package)_patches+=fix_qt_configure.patch fix_qt_pkgconfig.patch fix-cocoahelpers-macos.patch qfixed-coretext.patch
 
 define $(package)_set_vars
@@ -75,6 +75,7 @@ $(package)_config_opts += -skip qtxmlpatterns
 $(package)_config_opts += -skip qtactiveqt
 $(package)_config_opts += -skip qtdeclarative
 $(package)_config_opts += -L$(host_prefix)/lib
+$(package)_config_opts += -skip qtconnectivity
 
 ifneq ($(build_os),darwin)
 $(package)_config_opts_darwin = -xplatform macx-clang-linux
@@ -122,6 +123,7 @@ define $(package)_preprocess_cmds
   cp -f qtbase/mkspecs/macx-clang/Info.plist.app qtbase/mkspecs/macx-clang-linux/ &&\
   cp -f qtbase/mkspecs/macx-clang/qplatformdefs.h qtbase/mkspecs/macx-clang-linux/ &&\
   cp -f $($(package)_patch_dir)/mac-qmake.conf qtbase/mkspecs/macx-clang-linux/qmake.conf && \
+  patch -p1 < $($(package)_patch_dir)/fix_off_corewlan.patch && \
   patch -p1 < $($(package)_patch_dir)/mingw-uuidof.patch && \
   patch -p1 < $($(package)_patch_dir)/pidlist_absolute.patch && \
   patch -p1 < $($(package)_patch_dir)/fix-xcb-include-order.patch && \
