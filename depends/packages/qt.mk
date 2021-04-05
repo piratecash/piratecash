@@ -1,9 +1,9 @@
 PACKAGE=qt
 $(package)_version=5.7.1
 $(package)_download_path=https://download.qt.io/new_archive/qt/5.7/$($(package)_version)/single
-$(package)_suffix=opensource-src-$($(package)_version).tar.gz
+$(package)_suffix=opensource-src-$($(package)_version).tar.xz
 $(package)_file_name= qt-everywhere-$($(package)_suffix)
-$(package)_sha256_hash=c86684203be61ae7b33a6cf33c23ec377f246d697bd9fb737d16f0ad798f89b7
+$(package)_sha256_hash=46ebca977deb629c5e69c2545bc5fe13f7e40012e5e2e451695c583bd33502fa
 $(package)_dependencies=openssl zlib
 $(package)_linux_dependencies=freetype fontconfig libxcb libX11 xproto libXext
 $(package)_patches=mac-qmake.conf mingw-uuidof.patch pidlist_absolute.patch fix-xcb-include-order.patch fix_off_corewlan.patch
@@ -68,15 +68,40 @@ $(package)_config_opts += -reduce-exports
 $(package)_config_opts += -static
 $(package)_config_opts += -silent
 $(package)_config_opts += -v
-$(package)_config_opts += -skip qtvirtualkeyboard
-$(package)_config_opts += -skip qtwebengine
-$(package)_config_opts += -skip qtserialbus
-$(package)_config_opts += -skip qtxmlpatterns
-$(package)_config_opts += -skip qtactiveqt
-$(package)_config_opts += -skip qtdeclarative
 $(package)_config_opts += -L$(host_prefix)/lib
+$(package)_config_opts += -skip qt3d
+$(package)_config_opts += -skip qtactiveqt
+$(package)_config_opts += -skip qtandroidextras
+$(package)_config_opts += -skip qtcanvas3d
+$(package)_config_opts += -skip qtcharts
 $(package)_config_opts += -skip qtconnectivity
+$(package)_config_opts += -skip qtdatavis3d
+$(package)_config_opts += -skip qtdeclarative
+$(package)_config_opts += -skip qtdoc
+$(package)_config_opts += -skip qtgamepad
+$(package)_config_opts += -skip qtgraphicaleffects
+$(package)_config_opts += -skip qtimageformats
+$(package)_config_opts += -skip qtlocation
+$(package)_config_opts += -skip qtmacextras
+$(package)_config_opts += -skip qtmultimedia
+$(package)_config_opts += -skip qtpurchasing
+$(package)_config_opts += -skip qtquickcontrols
+$(package)_config_opts += -skip qtquickcontrols2
+$(package)_config_opts += -skip qtscript
+$(package)_config_opts += -skip qtscxml
+$(package)_config_opts += -skip qtsensors
+$(package)_config_opts += -skip qtserialbus
+$(package)_config_opts += -skip qtserialport
+$(package)_config_opts += -skip qtsvg
+$(package)_config_opts += -skip qtvirtualkeyboard
+$(package)_config_opts += -skip qtwayland
+$(package)_config_opts += -skip qtwebchannel
+$(package)_config_opts += -skip qtwebengine
+$(package)_config_opts += -skip qtwebsockets
+$(package)_config_opts += -skip qtwebview
+$(package)_config_opts += -skip qtwinextras
 $(package)_config_opts += -skip qtx11extras
+$(package)_config_opts += -skip qtxmlpatterns
 
 ifneq ($(build_os),darwin)
 $(package)_config_opts_darwin = -xplatform macx-clang-linux
@@ -158,8 +183,4 @@ define $(package)_stage_cmds
  if `test -f qtbase/src/plugins/platforms/xcb/xcb-static/libxcb-static.a`; then \
     cp qtbase/src/plugins/platforms/xcb/xcb-static/libxcb-static.a $($(package)_staging_prefix_dir)/lib; \
  fi
-endef
-
-define $(package)_postprocess_cmds
-# rm -f lib/lib*.la lib/*.prl plugins/*/*.prl
 endef

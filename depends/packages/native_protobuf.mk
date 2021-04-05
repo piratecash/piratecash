@@ -19,7 +19,3 @@ endef
 define $(package)_stage_cmds
   $(MAKE) -C src DESTDIR=$($(package)_staging_dir) install-strip
 endef
-
-define $(package)_postprocess_cmds
-#  rm -rf lib include
-endef

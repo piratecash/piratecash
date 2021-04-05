@@ -21,7 +21,3 @@ endef
 define $(package)_stage_cmds
   $(MAKE) DESTDIR=$($(package)_staging_dir) -C genisoimage install
 endef
-
-define $(package)_postprocess_cmds
-#  rm bin/isovfy bin/isoinfo bin/isodump bin/isodebug bin/devdump
-endef
