@@ -90,7 +90,6 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, Object& entry)
             if (pindex->IsInMainChain())
             {
                 entry.push_back(Pair("confirmations", 1 + nBestHeight - pindex->nHeight));
-                entry.push_back(Pair("time", (int64_t)pindex->nTime));
                 entry.push_back(Pair("blocktime", (int64_t)pindex->nTime));
             }
             else
