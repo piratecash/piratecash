@@ -616,6 +616,14 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         // 70047 and greater
         vRecv >> vin >> addr >> vchSig >> sigTime >> pubkey >> pubkey2 >> count >> current >> lastUpdated >> protocolVersion >> donationAddress >> donationPercentage;
      
+
+        if (addr.GetPort() != 18888 and !TestNet())
+        {
+            std::string errorMessage = strprintf("Invalid port %u for masternode %s - 18888 is only supported on mainnet.", addr.GetPort(), addr.ToString());
+            LogPrintf("dsee - port %s\n", errorMessage);
+            return;
+        }
+
         // make sure signature isn't in the future (past is OK)
         if (sigTime > GetAdjustedTime() + 60 * 60) {
             LogPrintf("dsee - Signature rejected, too far into the future %s\n", vin.ToString().c_str());
