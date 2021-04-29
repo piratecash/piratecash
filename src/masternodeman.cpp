@@ -616,6 +616,21 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         // 70047 and greater
         vRecv >> vin >> addr >> vchSig >> sigTime >> pubkey >> pubkey2 >> count >> current >> lastUpdated >> protocolVersion >> donationAddress >> donationPercentage;
      
+
+        if (addr.GetPort() != 18888 and !TestNet())
+        {
+            std::string errorMessage = strprintf("Invalid port %u for masternode %s - 18888 is only supported on mainnet.", addr.GetPort(), addr.ToString());
+            LogPrintf("dsee - port %s\n", errorMessage);
+            return;
+        }
+
+        // Reject dublicate masternode addresses
+        if (isDublicate(addr, vin)){
+            std::string errorMessage = strprintf("Invalid masternode adress %s (dublicate).", addr.ToString());
+            LogPrintf("dsee - %s\n", errorMessage);
+            return;
+        }
+
         // make sure signature isn't in the future (past is OK)
         if (sigTime > GetAdjustedTime() + 60 * 60) {
             LogPrintf("dsee - Signature rejected, too far into the future %s\n", vin.ToString().c_str());
@@ -806,6 +821,23 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
         // see if we have this masternode
         CMasternode* pmn = this->Find(vin);
+
+        // Check port 18888 for main network
+        if (pmn != NULL && pmn->addr.GetPort() != 18888 and !TestNet())
+        {
+            std::string errorMessage = strprintf("Invalid port %u for masternode %s - 18888 is only supported on mainnet.", pmn->addr.GetPort(), pmn->addr.ToString());
+            LogPrintf("dseep - Reject %s\n", errorMessage);
+            pmn->Disable();
+            return;
+        }
+
+        // Check dublicates
+        if (pmn != NULL && this->isDublicate(pmn->addr, vin)){
+            LogPrintf("dseep - Reject dublicate masternode address:%s\n", pmn->addr.ToString());
+            pmn->Disable();
+            return;
+        }
+
         if(pmn != NULL && pmn->protocolVersion >= MIN_POOL_PEER_PROTO_VERSION)
         {
             // LogPrintf("dseep - Found corresponding mn for vin: %s\n", vin.ToString().c_str());
@@ -977,4 +1009,16 @@ int CMasternodeMan::CountMasternodesAboveProtocol(int protocolVersion)
     }
 
     return i;
+}
+
+bool CMasternodeMan::isDublicate(const CService &vaddr, const CTxIn &vin)
+{
+    LOCK(cs);
+
+    BOOST_FOREACH(CMasternode& mn, vMasternodes)
+    {
+        if(mn.addr == vaddr && mn.vin.prevout != vin.prevout)
+            return true;
+    }
+    return false;
 }

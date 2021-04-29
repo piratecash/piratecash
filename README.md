@@ -50,11 +50,11 @@ Copyright © 2018-2021	PirateCash Developers
 | Bitcointalk   | [https://bitcointalk.org/index.php?topic=5050988](https://bitcointalk.org/index.php?topic=5050988)       |
 | Website       | [https://piratecash.net](http://piratecash.net) |
 | TOR           | [piratealjlfw7h2d.onion](piratealjlfw7h2d.onion) |
-| Explorer      | [https://block.piratecash.net:3001](http://block.piratecash.net:3001)|
+| Explorer      | [https://piratecash.info](https://piratecash.info)|
 | Telegram	| [https://t.me/joinchat/FtUaLREioKVyF6EPNVtnIQ](https://t.me/joinchat/FtUaLREioKVyF6EPNVtnIQ)|
 | Discord       | [https://discord.gg/cbTdqxx](https://discord.gg/cbTdqxx)|
 | ...           | ... |
-| Test-NET	| [http://block.piratecash.net:3002/](http://block.piratecash.net:3002/)|
+| Test-NET	| [https://testnet.piratecash.info/](https://testnet.piratecash.info)|
 
 License
 -------

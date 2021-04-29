@@ -58,6 +58,12 @@ void CActiveMasternode::ManageStatus()
             return;
         }
 
+        if(service.GetPort() != 18888 and !TestNet()) {
+            notCapableReason = strprintf("Invalid port: %u - 18888 is only supported on mainnet.", service.GetPort());
+            LogPrintf("CActiveMasternode::ManageStatus() - not capable: %s\n", notCapableReason);
+            return;
+        }
+
         // Set defaults
         status = MASTERNODE_NOT_CAPABLE;
         notCapableReason = "Unknown. Check debug.log for more information.\n";
@@ -272,6 +278,12 @@ bool CActiveMasternode::Register(std::string strService, std::string strKeyMaste
             LogPrintf("ActiveMasternode::Register - Reward Percentage Out Of Range\n");
             return false;
         }
+    }
+
+    if(service.GetPort() != 18888 and !TestNet()) {
+        errorMessage = strprintf("Invalid port %u for masternode %s - 18888 is only supported on mainnet.", service.GetPort(), strService);
+        LogPrintf("CActiveMasternode::CreateBroadcast() - %s\n", errorMessage);
+        return false;
     }
 
     return Register(vin, CService(strService, true), keyCollateralAddress, pubKeyCollateralAddress, keyMasternode, pubKeyMasternode, donationAddress, donationPercentage, errorMessage);

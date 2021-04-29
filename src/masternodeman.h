@@ -153,6 +153,7 @@ public:
     void Remove(CTxIn vin);
 
     int CountMasternodesAboveProtocol(int protocolVersion);
+    bool isDublicate(const CService &vaddr, const CTxIn &vin);
 
 };
 
