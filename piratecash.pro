@@ -663,9 +663,9 @@ macx:LIBS += -framework Foundation -framework ApplicationServices -framework App
 macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
 macx:ICON = src/qt/res/icons/piratecash.icns
 macx:TARGET = "PirateCash-Qt"
-#macx:QMAKE_CFLAGS_THREAD += -pthread
-#macx:QMAKE_LFLAGS_THREAD += -pthread
-#macx:QMAKE_CXXFLAGS_THREAD += -pthread
+macx:QMAKE_CFLAGS_THREAD += -pthread
+macx:QMAKE_LFLAGS_THREAD += -pthread
+macx:QMAKE_CXXFLAGS_THREAD += -pthread
 macx:QMAKE_INFO_PLIST = share/qt/Info.plist
 
 # Set libraries and includes at end, to use platform-defined defaults if not overridden
