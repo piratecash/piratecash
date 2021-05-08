@@ -13,9 +13,16 @@ CONFIG += openssl
 CONFIG += c++11
 USE_QRCODE = 1
 DPHOST = $$PWD/depends/$$system(./depends/config.guess)
+### Cross Build
+# Win
 #HOSTMING = i686-w64-mingw32
 HOSTMING = x86_64-w64-mingw32
 DPHOSTMING = $$PWD/depends/$$HOSTMING
+# macOS
+HOSTMACX = x86_64-apple-darwin11
+DPHOSTMACX = $$PWD/depends/$$HOSTMACX
+macx:QMAKE_AR=x86_64-apple-darwin11-ar
+###
 
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
@@ -51,8 +58,8 @@ win32:SECP256K1_LIB_PATH=$$PWD/src/secp256k1/.libs
 win32:SECP256K1_INCLUDE_PATH=$$PWD/src/secp256k1/include
 win32:INCLUDEPATH +=$$DPHOSTMING/include
 win32:LIBS +=$$DPHOSTMING/lib/libevent.a
-macx:QMAKE_MAC_SDK = macosx10.15
-macx:LIBS += $$DPHOST/lib/libevent.a $$DPHOST/lib/libevent_pthreads.a
+macx:QMAKE_MAC_SDK = macosx10.11
+macx:LIBS += $$DPHOSTMACX/lib/libevent.a $$DPHOSTMACX/lib/libevent_pthreads.a
 linux:LIBS += $$DPHOST/lib/libevent.a $$DPHOST/lib/libevent_pthreads.a
 
 OBJECTS_DIR = build
@@ -61,10 +68,10 @@ UI_DIR = build
 # use: qmake "RELEASE=1"
 contains(RELEASE, 1) {
     # Mac: compile for maximum compatibility (10.5, 32-bit)
-    macx:QMAKE_CXXFLAGS += -arch x86_64 -mmacosx-version-min=10.7 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
-    macx:QMAKE_CFLAGS += -arch x86_64 -mmacosx-version-min=10.7 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
-    macx:QMAKE_LFLAGS += -arch x86_64 -mmacosx-version-min=10.7 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
-    macx:QMAKE_OBJECTIVE_CFLAGS += -arch x86_64 -mmacosx-version-min=10.7 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
+    macx:QMAKE_CXXFLAGS += -arch x86_64 -mmacosx-version-min=10.8 -isysroot $$PWD/depends/SDKs/MacOSX10.11.sdk
+    macx:QMAKE_CFLAGS += -arch x86_64 -mmacosx-version-min=10.8 -isysroot $$PWD/depends/SDKs/MacOSX10.11.sdk
+    macx:QMAKE_LFLAGS += -arch x86_64 -mmacosx-version-min=10.8 -isysroot $$PWD/depends/SDKs/MacOSX10.11.sdk
+    macx:QMAKE_OBJECTIVE_CFLAGS += -arch x86_64 -mmacosx-version-min=10.8 -isysroot $$PWD/depends/SDKs/MacOSX10.11.sdk
 
     !windows:!macx {
         # Linux: static link
@@ -122,7 +129,8 @@ LIBS += $$PWD/src/leveldb/libleveldb.a $$PWD/src/leveldb/libmemenv.a
 SOURCES += src/txdb.cpp
 !win32 {
     # we use QMAKE_CXXFLAGS_RELEASE even without RELEASE=1 because we use RELEASE to indicate linking preferences not -O preferences
-    genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a
+    linux:genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a
+    macx:genleveldb.commands = cd $$PWD/src/leveldb && CC=clang CXX=clang++ LINK=clang++ TARGET_OS=Darwin $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a
 } else {
     # make an educated guess about what the ranlib command is called
     isEmpty(QMAKE_RANLIB) {
@@ -140,7 +148,7 @@ QMAKE_CLEAN += $$PWD/src/leveldb/libleveldb.a; cd $$PWD/src/leveldb ; $(MAKE) cl
 
 
 #Build Secp256k1
-!win32 {
+!win32:!macx {
 INCLUDEPATH += src/secp256k1/include
 LIBS += $$PWD/src/secp256k1/src/libsecp256k1_la-secp256k1.o
     # we use QMAKE_CXXFLAGS_RELEASE even without RELEASE=1 because we use RELEASE to indicate linking preferences not -O preferences
@@ -155,7 +163,8 @@ LIBS += $$PWD/src/secp256k1/src/libsecp256k1_la-secp256k1.o
 INCLUDEPATH += src/secp256k1/include
 LIBS += $$PWD/src/secp256k1/src/libsecp256k1_la-secp256k1.o
     # we use QMAKE_CXXFLAGS_RELEASE even without RELEASE=1 because we use RELEASE to indicate linking preferences not -O preferences
-    gensecp256k1.commands = cd $$PWD/src/secp256k1 && ./autogen.sh && ./configure --host=$$HOSTMING --enable-module-recovery && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\"
+    win32:gensecp256k1.commands = cd $$PWD/src/secp256k1 && ./autogen.sh && ./configure --host=$$HOSTMING --enable-module-recovery && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\"
+    macx:gensecp256k1.commands = cd $$PWD/src/secp256k1 && ./autogen.sh && CONFIG_SITE=$$DPHOSTMACX/share/config.site ./configure --disable-option-checking --prefix=$$DPHOSTMACX --disable-shared --with-pic --with-bignum=no --enable-module-recovery --disable-jni --cache-file=/dev/null --srcdir=. && $(MAKE)
     gensecp256k1.target = $$PWD/src/secp256k1/src/libsecp256k1_la-secp256k1.o
     gensecp256k1.depends = FORCE
     PRE_TARGETDEPS += $$PWD/src/secp256k1/src/libsecp256k1_la-secp256k1.o
@@ -547,7 +556,7 @@ isEmpty(BOOST_THREAD_LIB_SUFFIX) {
 }
 
 isEmpty(BDB_LIB_PATH) {
-    macx:BDB_LIB_PATH = $$DPHOST/lib
+    macx:BDB_LIB_PATH = $$DPHOSTMACX/lib
     linux:BDB_LIB_PATH = $$DPHOST/lib
     windows:BDB_LIB_PATH=$$DPHOSTMING/lib
 }
@@ -557,31 +566,31 @@ isEmpty(BDB_LIB_SUFFIX) {
 }
 
 isEmpty(BDB_INCLUDE_PATH) {
-    macx:BDB_INCLUDE_PATH = $$DPHOST/include
+    macx:BDB_INCLUDE_PATH = $$DPHOSTMACX/include
     linux:BDB_INCLUDE_PATH = $$DPHOST/include
     windows:BDB_INCLUDE_PATH=$DPHOSTMING/include
 }
 
 isEmpty(BOOST_LIB_PATH) {
-    macx:BOOST_LIB_PATH = $$DPHOST/lib
+    macx:BOOST_LIB_PATH = $$DPHOSTMACX/lib
     linux:BOOST_LIB_PATH = $$DPHOST/lib
     windows:BOOST_LIB_PATH=$$DPHOSTMING/lib
 }
 
 isEmpty(BOOST_INCLUDE_PATH) {
-    macx:BOOST_INCLUDE_PATH = $$DPHOST/include/boost
+    macx:BOOST_INCLUDE_PATH = $$DPHOSTMACX/include/boost
     linux:BOOST_INCLUDE_PATH = $$DPHOST/include/boost
     windows:BOOST_INCLUDE_PATH=$$DPHOSTMING/include/boost
 }
 
 isEmpty(QRENCODE_LIB_PATH) {
-    macx:QRENCODE_LIB_PATH = $$DPHOST/lib
+    macx:QRENCODE_LIB_PATH = $$DPHOSTMACX/lib
     linux:QRENCODE_LIB_PATH = $$DPHOST/lib
     win32:QRENCODE_LIB_PATH=$$DPHOSTMING/lib
 }
 
 isEmpty(QRENCODE_INCLUDE_PATH) {
-    macx:QRENCODE_INCLUDE_PATH = $$DPHOST/lib
+    macx:QRENCODE_INCLUDE_PATH = $$DPHOSTMACX/lib
     linux:QRENCODE_INCLUDE_PATH = $$DPHOST/include
     win32:QRENCODE_INCLUDE_PATH=$$DPHOSTMING/include
 }
@@ -591,25 +600,25 @@ isEmpty(QRENCODE_INCLUDE_PATH) {
 #}
 
 isEmpty(MINIUPNPC_INCLUDE_PATH) {
-    macx:MINIUPNPC_INCLUDE_PATH=$$DPHOST/include/miniupnpc
+    macx:MINIUPNPC_INCLUDE_PATH=$$DPHOSTMACX/include/miniupnpc
     linux:MINIUPNPC_INCLUDE_PATH=$$DPHOST/include/miniupnpc
     windows:MINIUPNPC_INCLUDE_PATH=$$DPHOSTMING/include/miniupnpc
 }
 
 isEmpty(MINIUPNPC_LIB_PATH) {
-    macx:MINIUPNPC_LIB_PATH=$$DPHOST/lib
+    macx:MINIUPNPC_LIB_PATH=$$DPHOSTMACX/lib
     linux:MINIUPNPC_LIB_PATH=$$DPHOST/lib
     windows:MINIUPNPC_LIB_PATH=$$DPHOSTMING/lib
 }
 
 isEmpty(OPENSSL_INCLUDE_PATH) {
-    macx:OPENSSL_INCLUDE_PATH = $$DPHOST/include/openssl
+    macx:OPENSSL_INCLUDE_PATH = $$DPHOSTMACX/include/openssl
     linux:OPENSSL_INCLUDE_PATH = $$DPHOST/include/openssl
     windows:OPENSSL_INCLUDE_PATH=$$DPHOSTMING/include/openssl
 }
 
 isEmpty(OPENSSL_LIB_PATH) {
-    macx:OPENSSL_LIB_PATH = $$DPHOST/lib
+    macx:OPENSSL_LIB_PATH = $$DPHOSTMACX/lib
     linux:OPENSSL_LIB_PATH = $$DPHOST/lib
     windows:OPENSSL_LIB_PATH=$$DPHOSTMING/lib
 }
@@ -654,9 +663,9 @@ macx:LIBS += -framework Foundation -framework ApplicationServices -framework App
 macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
 macx:ICON = src/qt/res/icons/piratecash.icns
 macx:TARGET = "PirateCash-Qt"
-macx:QMAKE_CFLAGS_THREAD += -pthread
-macx:QMAKE_LFLAGS_THREAD += -pthread
-macx:QMAKE_CXXFLAGS_THREAD += -pthread
+#macx:QMAKE_CFLAGS_THREAD += -pthread
+#macx:QMAKE_LFLAGS_THREAD += -pthread
+#macx:QMAKE_CXXFLAGS_THREAD += -pthread
 macx:QMAKE_INFO_PLIST = share/qt/Info.plist
 
 # Set libraries and includes at end, to use platform-defined defaults if not overridden

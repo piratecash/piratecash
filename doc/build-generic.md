@@ -11,7 +11,7 @@ is supported today.
 Required build tools and environment
 ------------------------------------
 Building the dependencies and PirateCash requires some essential build tools to be installed before. Please see
-[build-unix](build-unix.md), [build-osx](build-osx.md) and [build-cross](build-cross.md) for details.
+[build-unix](build-unix.md) and [build-cross](build-cross.md) for details.
 
 Building dependencies
 ---------------------
@@ -40,12 +40,12 @@ Building PirateCash
 ```bash
 $ # Build CLI
 $ cd src/
-$ make -f makefile.unix
+$ make -f makefile.unix -j4 # Choose a good -j value, depending on the number of CPU cores available
 $ strip piratecashd # optional
 $ # Build QT
 $ cd ..
 $ $PWD/depends/<host>/native/bin/qmake -spec linux-g++ STATIC=1 RELEASE=1 -o Makefile piratecash.pro
-$ make
+$ make -j4 # Choose a good -j value, depending on the number of CPU cores available
 ```
 
 Please replace `<host>` with your local system's `host-platform-triplet`. The following triplets are usually valid:
