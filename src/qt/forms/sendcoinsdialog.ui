@@ -698,6 +698,7 @@ border: 0;</string>
        </property>
        <property name="styleSheet">
         <string notr="true">background-color: rgb(245, 245, 245);
+color: rgb(0,0,0);
 border-radius: 4px;
 border: 1px solid #c4c1bd;
 font-weight: 400;
@@ -726,6 +727,7 @@ padding-right: 10px;</string>
        </property>
        <property name="styleSheet">
         <string notr="true">background-color: rgb(245, 245, 245);
+color: rgb(0,0,0);
 border-radius: 4px;
 border: 1px solid #c4c1bd;
 font-weight: 400;

@@ -14,8 +14,7 @@
    <string>Transaction details</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">font-weight:bold;
-border: 0;</string>
+   <string notr="true">background-color: rgb(255, 255, 255); color: rgb(0,0,0); border: 1px solid #c4c1bd;</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

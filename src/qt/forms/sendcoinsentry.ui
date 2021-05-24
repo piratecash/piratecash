@@ -14,7 +14,7 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">border: 1px solid #c4c1bd;</string>
+   <string notr="true">background-color: rgb(255, 255, 255); color: rgb(0,0,0); border: 1px solid #c4c1bd;</string>
   </property>
   <property name="frameShape">
    <enum>QFrame::StyledPanel</enum>
