@@ -27,6 +27,7 @@
 #include <QLocale>
 #include <QTimer>
 #include <QTranslator>
+#include <QtGlobal>
 #include <QSplashScreen>
 #include <QLibraryInfo>
 
@@ -227,6 +228,14 @@ int main(int argc, char *argv[])
         help.showOrPrint();
         return 1;
     }
+
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 9, 8)) && defined(Q_OS_MAC)
+    const auto os_name = QSysInfo::prettyProductName();
+    if (os_name.startsWith("macOS 11") || os_name.startsWith("macOS 10.16")) {
+        QApplication::setStyle("fusion");
+    }
+
+#endif
 
 #ifdef Q_OS_MAC
     // on mac, also change the icon now because it would look strange to have a testnet splash (green) and a std app icon (orange)

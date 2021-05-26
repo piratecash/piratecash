@@ -473,7 +473,7 @@ static QWidget* makeToolBarSpacer()
     QWidget* spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 #ifdef Q_OS_MAC
-    spacer->setStyleSheet("QWidget { background: none; }");
+    spacer->setStyleSheet("QWidget { background-color: #dedede; }");
 #else
     spacer->setStyleSheet("QWidget { background-color: #dedede; }");
 #endif
@@ -489,10 +489,11 @@ void BitcoinGUI::createToolBars()
     toolbar->setContextMenuPolicy(Qt::PreventContextMenu);
     toolbar->setObjectName("tabs");
 #ifdef Q_OS_MAC
-    toolbar->setStyleSheet("QToolButton { color: #000000; font-weight:bold;} "
+    toolbar->setStyleSheet("QToolButton { color: #000000; font-weight:bold; background-color: #dedede;} "
                            "QToolButton:hover { background-color: #4AC3C3 } "
                            "QToolButton:checked { background-color: #45C1C1 } "
                            "QToolButton:pressed { background-color: #45C1C1 } "
+                           "border: #c4c1bd;"
                            "#tabs { color: #E5DDA7; background-color: qradialgradient(cx: -0.8, cy: 0, fx: -0.8, fy: 0, radius: 0.6, stop: 0 #404040, stop: 1 #101010);  }");
 #else
     toolbar->setStyleSheet("QToolButton { color: #000000; font-weight:bold; background-color: #dedede;} "
@@ -509,7 +510,7 @@ void BitcoinGUI::createToolBars()
     header->setScaledContents(false);
     header->setObjectName("header");
 #ifdef Q_OS_MAC
-    header->setStyleSheet("#header { border: none; }");
+    header->setStyleSheet("#header { border: none; background-color: #dedede; }");
 #else
     header->setStyleSheet("#header { border: none; background-color: #dedede; }");
 #endif
