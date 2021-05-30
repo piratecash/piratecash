@@ -114,6 +114,17 @@ void CActiveMasternode::ManageStatus()
             CScript donationAddress = CScript();
             int donationPercentage = 0;
 
+    	    if(strMasterNodeAddr.empty()) {
+        	if(!GetLocal(service)) {
+            	    notCapableReason = "Can't detect external address. Please use the masternodeaddr configuration option.";
+            	    status = MASTERNODE_NOT_CAPABLE;
+            	    LogPrintf("CActiveMasternode::ManageStatus() - not capable: %s\n", notCapableReason.c_str());
+            	return;
+        	}
+    	    } else {
+    		service = CService(strMasterNodeAddr, true);
+    	    }
+
             if(!Register(vin, service, keyCollateralAddress, pubKeyCollateralAddress, keyMasternode, pubKeyMasternode, donationAddress, donationPercentage, errorMessage)) {
                 LogPrintf("CActiveMasternode::ManageStatus() - Error on Register: %s\n", errorMessage.c_str());
             }
