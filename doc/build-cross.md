@@ -52,7 +52,7 @@ Build PirateCash-Qt:
 
 ```bash
 $ cd ~/piratecash
-$ $PWD/depends/x86_64-apple-darwin11/native/bin/qmake -spec macx-clang-linux STATIC=1 RELEASE=1 -o Makefile piratecash.pro
+$ `pwd`/depends/x86_64-apple-darwin11/native/bin/qmake -spec macx-clang-linux STATIC=1 RELEASE=1 -o Makefile piratecash.pro
 $ make -j4 # Choose a good -j value, depending on the number of CPU cores available
 $ contrib/dmgbuild/dmgbuild # optional, create dmg
 ```
