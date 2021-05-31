@@ -281,16 +281,7 @@ bool CActiveMasternode::Register(std::string strService, std::string strKeyMaste
         }
     }
 
-    if(strMasterNodeAddr.empty()) {
-    	if(!GetLocal(service)) {
-            notCapableReason = "Can't detect external address. Please use the masternodeaddr configuration option.";
-            status = MASTERNODE_NOT_CAPABLE;
-            LogPrintf("CActiveMasternode::ManageStatus() - not capable: %s\n", notCapableReason.c_str());
-            return;
-        }
-    } else {
-    	service = CService(strMasterNodeAddr, true);
-    }
+    CService service = CService(strService);
 
     if(service.GetPort() != 18888 and !TestNet()) {
         errorMessage = strprintf("Invalid port %u for masternode %s - 18888 is only supported on mainnet.", service.GetPort(), strService);
