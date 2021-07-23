@@ -11,26 +11,26 @@ MacOSX Cross-compilation
 Cross-compiling to MacOSX requires a few additional packages to be installed:
 
 ```bash
-$ sudo apt-get install python3-setuptools libcap-dev zlib1g-dev libbz2-dev
+sudo apt-get install python3-setuptools libcap-dev zlib1g-dev libbz2-dev
 ```
 
 Additionally, the Mac OSX SDK must be downloaded and extracted manually:
 
 ```bash
-$ cd ~/
-$ git clone https://github.com/piratecash/piratecash
-$ cd ~/piratecash
-$ mkdir -p depends/sdk-sources
-$ mkdir -p depends/SDKs
-$ curl https://bitcoincore.org/depends-sources/sdks/MacOSX10.11.sdk.tar.gz -o depends/sdk-sources/MacOSX10.11.sdk.tar.gz
-$ tar -C depends/SDKs -xf depends/sdk-sources/MacOSX10.11.sdk.tar.gz
+cd ~/
+git clone https://github.com/piratecash/piratecash
+cd ~/piratecash
+mkdir -p depends/sdk-sources
+mkdir -p depends/SDKs
+curl https://bitcoincore.org/depends-sources/sdks/MacOSX10.11.sdk.tar.gz -o depends/sdk-sources/MacOSX10.11.sdk.tar.gz
+tar -C depends/SDKs -xf depends/sdk-sources/MacOSX10.11.sdk.tar.gz
 ```
 
 Build depends:
 
 ```bash
-$ cd ~/piratecash/depends
-$ make HOST=x86_64-apple-darwin11 -j4 # Choose a good -j value, depending on the number of CPU cores available
+cd ~/piratecash/depends
+make HOST=x86_64-apple-darwin11 -j4 # Choose a good -j value, depending on the number of CPU cores available
 ```
 
 Add the following line to the file .bashrc
@@ -51,64 +51,73 @@ export PYTHONPATH="$HOME/piratecash/depends/x86_64-apple-darwin11/native/lib/pyt
 Build PirateCash-Qt:
 
 ```bash
-$ cd ~/piratecash
-$ `pwd`/depends/x86_64-apple-darwin11/native/bin/qmake -spec macx-clang-linux STATIC=1 RELEASE=1 USE_QRCODE=1 -o Makefile piratecash.pro
-$ make -j4 # Choose a good -j value, depending on the number of CPU cores available
-$ contrib/dmgbuild/dmgbuild # optional, create dmg
+cd ~/piratecash
+$PWD/depends/x86_64-apple-darwin11/native/bin/qmake -spec macx-clang-linux STATIC=1 RELEASE=1 -o Makefile piratecash.pro
+make -j4 # Choose a good -j value, depending on the number of CPU cores available
+contrib/dmgbuild/dmgbuild # optional, create dmg
 ```
 
-Windows 64bit Cross-compilation
+Windows 64bit/32bit Cross-compilation
 -------------------------------
 The steps below can be performed on Debian and Ubuntu (including in a VM) or WSL. The depends system
 will also work on other Linux distributions, however the commands for
 installing the toolchain will be different.
 
 First, install the general dependencies:
-
-    sudo apt update
-    sudo apt upgrade
-    sudo apt install build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git python3 cmake
-
+```bash
+sudo apt update
+sudo apt upgrade
+sudo apt install build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git python3 cmake
+```
 A host toolchain (`build-essential`) is necessary because some dependency
 packages need to build host utilities that are used in the build process.
 
 Acquire the source in the usual way:
+```bash
+git clone https://github.com/piratecash/piratecash
+cd piratecash
+```
+For Windows 64bit, install :
+```bash
+sudo apt-get install g++-mingw-w64-x86-64
+# Required to enable C++ threading libraries (e.g. std::thread)
+sudo update-alternatives --set x86_64-w64-mingw32-g++  /usr/bin/x86_64-w64-mingw32-g++-posix
+sudo update-alternatives --set x86_64-w64-mingw32-gcc  /usr/bin/x86_64-w64-mingw32-gcc-posix
+```
+Build using 64bit:
+```bash
+PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') # strip out problematic Windows %PATH% imported var
+cd depends
+make HOST=x86_64-w64-mingw32 -j4 # Choose a good -j value, depending on the number of CPU cores available
+cd ../src
+make -f makefile.linux-mingw -j4 # Choose a good -j value, depending on the number of CPU cores available
+cd ..
+$PWD/depends/x86_64-w64-mingw32/native/bin/qmake -spec win32-g++ STATIC=1 RELEASE=1 -o Makefile piratecash.pro
+make -j4 # Choose a good -j value, depending on the number of CPU cores available
+```
 
-    git clone https://github.com/piratecash/piratecash
-    cd piratecash
+For Windows 32bit, install:
+```bash
+sudo apt-get install g++-mingw-w64-i686
+# Required to enable C++ threading libraries (e.g. std::thread)
+sudo update-alternatives --set i686-w64-mingw32-gcc /usr/bin/i686-w64-mingw32-gcc-posix
+sudo update-alternatives --set i686-w64-mingw32-g++  /usr/bin/i686-w64-mingw32-g++-posix
+```
 
-### Building for 64-bit Windows
-
-The first step is to install the mingw-w64 cross-compilation tool chain:
-
-    sudo apt install g++-mingw-w64-x86-64
-
-Ubuntu Bionic 18.04 <sup>[1](#footnote1)</sup>:
-
-    sudo update-alternatives --config x86_64-w64-mingw32-g++ # Set the default mingw32 g++ compiler option to posix.
-    sudo update-alternatives --config x86_64-w64-mingw32-gcc # Set the default mingw32 gcc compiler option to posix.
-
-Build using:
-
-    PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') # strip out problematic Windows %PATH% imported var
-    cd depends
-    make HOST=x86_64-w64-mingw32 -j4 # Choose a good -j value, depending on the number of CPU cores available
-    cd ../src
-    make -f makefile.linux-mingw -j4 # Choose a good -j value, depending on the number of CPU cores available
-    cd ..
-    `pwd`/depends/x86_64-w64-mingw32/native/bin/qmake -spec win32-g++ STATIC=1 RELEASE=1 USE_QRCODE=1 -o Makefile piratecash.pro
-    make -j4 # Choose a good -j value, depending on the number of CPU cores available
+Build using 32bit:
+```bash
+PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') # strip out problematic Windows %PATH% imported var
+cd depends
+make HOST=i686-w64-mingw32 -j4 # Choose a good -j value, depending on the number of CPU cores available
+cd ../src
+# In makefile.linux-mingw change TARGET_PLATFORM: = x86_64-w64-mingw32 to TARGET_PLATFORM: = i686-w64-mingw32
+make -f makefile.linux-mingw -j4 # Choose a good -j value, depending on the number of CPU cores available
+cd ..
+# In piratecash.pro change HOSTMING = x86_64-w64-mingw32 to HOSTMING = i686-w64-mingw32
+$PWD/depends/i686-w64-mingw32/native/bin/qmake -spec win32-g++ STATIC=1 RELEASE=1 -o Makefile piratecash.pro
+make -j4 # Choose a good -j value, depending on the number of CPU cores available
+```
 
 ### Depends system
 
 For further documentation on the depends system see [README.md](../depends/README.md) in the depends directory.
-
-Footnotes
----------
-
-<a name="footnote1">1</a>: Starting from Ubuntu Xenial 16.04, both the 32 and 64 bit Mingw-w64 packages install two different
-compiler options to allow a choice between either posix or win32 threads. The default option is win32 threads which is the more
-efficient since it will result in binary code that links directly with the Windows kernel32.lib. Unfortunately, the headers
-required to support win32 threads conflict with some of the classes in the C++11 standard library, in particular std::mutex.
-It's not possible to build the PirateCash code using the win32 version of the Mingw-w64 cross compilers (at least not without
-modifying headers in the PirateCash source code).
