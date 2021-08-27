@@ -52,6 +52,9 @@
 using namespace std;
 using namespace boost;
 
+static const bool DEFAULT_MASTERNODE  = false;
+
+
 #ifdef ENABLE_WALLET
 CWallet* pwalletMain = NULL;
 int nWalletBackups = 10;
@@ -656,6 +659,9 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     else
         fNoSmsg = GetBoolArg("-nosmsg", true);
 
+    // Exit early if -masternode=1 and -listen=0
+    if (GetBoolArg("-masternode", DEFAULT_MASTERNODE) && !GetBoolArg("-listen", DEFAULT_LISTEN))
+        return InitError(strprintf(_("Error: %s must be true if %s is set."), "-listen", "-masternode"));
 
     // Check for -debugnet (deprecated)
     if (GetBoolArg("-debugnet", false))
@@ -1214,6 +1220,10 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         LogPrintf("IS DARKSEND MASTER NODE\n");
         strMasterNodeAddr = GetArg("-masternodeaddr", "");
 
+        if (strMasterNodeAddr.empty()) {
+               return InitError("ERROR: Empty masternodeaddr");
+           }
+
         LogPrintf(" addr %s\n", strMasterNodeAddr.c_str());
 
         if(!strMasterNodeAddr.empty()){
@@ -1222,6 +1232,26 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
                 return InitError("Invalid -masternodeaddr address: " + strMasterNodeAddr);
             }
         }
+
+        // Address parsing.
+        const CChainParams& params = Params();
+        int nPort = 0;
+        int nDefaultPort = params.GetDefaultPort();
+        std::string strHost;
+        SplitHostPort(strMasterNodeAddr, nPort, strHost);
+
+        // Allow for the port number to be omitted here and just double check
+        // that if a port is supplied, it matches the required default port.
+        if (nPort == 0) nPort = nDefaultPort;
+        if (nPort != nDefaultPort) {
+            return InitError(strprintf(_("Invalid -masternodeaddr port %d, only %d is supported."),nPort, nDefaultPort));
+        }
+
+        // Peer port needs to match the masternode public one.
+        if (nPort != GetListenPort()) {
+            return InitError(strprintf(_("Invalid -masternodeaddr port %d, isn't the same as the peer port %d"),
+                                          nPort, GetListenPort()));
+            }
 
         strMasterNodePrivKey = GetArg("-masternodeprivkey", "");
         if(!strMasterNodePrivKey.empty()){
