@@ -411,13 +411,8 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool fCountFailure
         CNode* pnode = FindNode((CService)addrConnect);
         if (pnode)
         {
-            // we have existing connection to this node but it was not a connection to masternode,
-            // change flag and add reference so that we can correctly clear it later
-            if(fConnectToMasternode && !pnode->fMasternode) {
-                pnode->fMasternode = true;
-                pnode->AddRef();
-            }
-
+            pnode->fMasternode = fConnectToMasternode;
+            pnode->AddRef();
             return pnode;
         }
     }
@@ -461,6 +456,7 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool fCountFailure
 
         // Add node
         CNode* pnode = new CNode(hSocket, addrConnect, pszDest ? pszDest : "", false, true);
+        pnode->AddRef();
 
         {
             LOCK(cs_vNodes);
@@ -470,7 +466,6 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool fCountFailure
         pnode->nTimeConnected = GetTime();
         if(fConnectToMasternode) {
             pnode->fMasternode = true;
-            pnode->AddRef();
         }
 
         return pnode;
