@@ -49,7 +49,7 @@ Copyright © 2018-2021	PirateCash Developers
 | ------------- |:------------------|
 | Bitcointalk   | [https://bitcointalk.org/index.php?topic=5050988](https://bitcointalk.org/index.php?topic=5050988)       |
 | Website       | [https://piratecash.net](http://piratecash.net) |
-| TOR           | [piratealjlfw7h2d.onion](piratealjlfw7h2d.onion) |
+| TOR           | [nzcaaryanbre6mdwbxkdonf24b4z6isk2q4qxahno42f4gso3ddjwpad.onion](nzcaaryanbre6mdwbxkdonf24b4z6isk2q4qxahno42f4gso3ddjwpad.onion) |
 | Explorer      | [https://piratecash.info](https://piratecash.info)|
 | Telegram	| [https://t.me/joinchat/FtUaLREioKVyF6EPNVtnIQ](https://t.me/joinchat/FtUaLREioKVyF6EPNVtnIQ)|
 | Discord       | [https://discord.gg/cbTdqxx](https://discord.gg/cbTdqxx)|
