@@ -6,12 +6,14 @@
 #include "masternode.h"
 #include "activemasternode.h"
 #include "darksend.h"
+#include "spork.h"
 #include "primitives/transaction.h"
 #include "util.h"
 #include "addrman.h"
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
 
+#define MN_WINNER_MINIMUM_AGE 86400    // Age in seconds. This should be > MASTERNODE_REMOVAL_SECONDS to avoid misconfigured new nodes in the list.
 
 /** Masternode manager */
 CMasternodeMan mnodeman;
@@ -503,6 +505,12 @@ std::vector<pair<int, CMasternode> > CMasternodeMan::GetMasternodeRanks(int64_t 
             continue;
         }
 
+        if (IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)){
+            if (GetAdjustedTime() - mn.sigTime < MN_WINNER_MINIMUM_AGE){
+                continue;
+            }
+        }
+
         uint256 n = mn.CalculateScore(1, nBlockHeight);
         unsigned int n2 = 0;
         memcpy(&n2, &n, sizeof(n2));
@@ -627,6 +635,13 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         // Reject dublicate masternode addresses
         if (isDublicate(addr, vin)){
             std::string errorMessage = strprintf("Invalid masternode adress %s (dublicate).", addr.ToString());
+            LogPrintf("dsee - %s\n", errorMessage);
+            return;
+        }
+
+        // Reject TORv2 masternode addresses
+        if (addr.IsTor()){
+            std::string errorMessage = strprintf("Invalid masternode adress %s (https://support.torproject.org/onionservices/v2-deprecation/).", addr.ToString());
             LogPrintf("dsee - %s\n", errorMessage);
             return;
         }
@@ -834,6 +849,13 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         // Check dublicates
         if (pmn != NULL && this->isDublicate(pmn->addr, vin)){
             LogPrintf("dseep - Reject dublicate masternode address:%s\n", pmn->addr.ToString());
+            pmn->Disable();
+            return;
+        }
+
+        // Disable TORv2
+        if (pmn != NULL && pmn->addr.IsTor()){
+            LogPrintf("dseep - Reject TORv2 masternode address:%s\n", pmn->addr.ToString());
             pmn->Disable();
             return;
         }

@@ -123,8 +123,7 @@ public:
         vSeeds.push_back(CDNSSeedData("6", "m7.piratecash.net"));
         vSeeds.push_back(CDNSSeedData("7", "m8.piratecash.net"));
         vSeeds.push_back(CDNSSeedData("8", "m9.piratecash.net"));
-        vSeeds.push_back(CDNSSeedData("9", "piratealjlfw7h2d.onion"));
-        
+
         convertSeeds(vFixedSeeds, pnSeed, ARRAYLEN(pnSeed), nDefaultPort);
 
         nPoolMaxTransactions = 3;
