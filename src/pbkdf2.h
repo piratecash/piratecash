@@ -1,4 +1,7 @@
 // Copyright (c) 2013 NovaCoin Developers
+// Copyright (c) 2018-2022 The PirateCash developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef PBKDF2_H
 #define PBKDF2_H

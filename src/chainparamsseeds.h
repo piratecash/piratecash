@@ -1,3 +1,7 @@
+// Copyright (c) 2018-2022 The PirateCash developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef CHAINPARAMSSEEDS_H
 #define CHAINPARAMSSEEDS_H
 // List of fixed seed nodes for the bitcoin network

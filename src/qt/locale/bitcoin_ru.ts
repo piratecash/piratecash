@@ -15,10 +15,10 @@
         <location line="+41"/>
         <source>Copyright © 2009-2014 The Bitcoin developers
 Copyright © 2012-2014 The NovaCoin developers
-Copyright © 2015-2017 The PirateCash developers</source>
+Copyright © 2018-2022 The PirateCash developers</source>
         <translation>Все права защищены © 2009-2014 Разработчики Bitcoin
 Все права защищены © 2012-2014 Разработчики NovaCoin
-Все права защищены © 2015-2017 Разработчики PirateCash</translation>
+Все права защищены © 2018-2022 Разработчики PirateCash</translation>
     </message>
     <message>
         <location line="+15"/>
