@@ -21,7 +21,6 @@
 #include "wallet/wallet.h"
 #include "wallet/walletdb.h" // for BackupWallet
 #include "spork.h"
-#include "smessage.h"
 
 #include <stdint.h>
 
@@ -414,15 +413,6 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(WalletModelTransaction &tran
                         };
 
                         std::vector<unsigned char> vchNarr;
-
-                        SecMsgCrypter crypter;
-                        crypter.SetKey(&secretShared.e[0], &ephem_pubkey[0]);
-
-                        if (!crypter.Encrypt((uint8_t*)&sNarr[0], sNarr.length(), vchNarr))
-                        {
-                            printf("Narration encryption failed.\n");
-                            return Aborted;
-                        };
 
                         if (vchNarr.size() > 48)
                         {

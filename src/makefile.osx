@@ -111,7 +111,6 @@ OBJS= \
     obj/rpcnet.o \
     obj/rpcblockchain.o \
     obj/rpcrawtransaction.o \
-    obj/rpcsmessage.o \
     obj/script.o \
     obj/scrypt.o \
     obj/sync.o \
@@ -144,7 +143,6 @@ OBJS= \
     obj/crypto/sha1.o \
     obj/crypto/sha256.o \
     obj/crypto/sha512.o \
-    obj/smessage.o
 
 ifeq (${USE_WALLET}, 1)
     DEFS += -DENABLE_WALLET

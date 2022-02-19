@@ -28,7 +28,6 @@
 #include "masternodeman.h"
 #include "masternodeconfig.h"
 #include "spork.h"
-#include "smessage.h"
 
 #ifdef ENABLE_WALLET
 #include "wallet/db.h"
@@ -145,7 +144,6 @@ void PrepareShutdown(){
     RenameThread("piratecash-shutoff");
     mempool.AddTransactionsUpdated(1);
     StopRPCThreads();
-    SecureMsgShutdown();
 #ifdef ENABLE_WALLET
     ShutdownRPCMining();
     if (pwalletMain)
@@ -655,10 +653,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     {
         fDebugSmsg = GetBoolArg("-debugsmsg", false);
     }
-    if (fLiteMode)
-        fNoSmsg = true;
-    else
-        fNoSmsg = GetBoolArg("-nosmsg", true);
 
     // Exit early if -masternode=1 and -listen=0
     if (GetBoolArg("-masternode", DEFAULT_MASTERNODE) && !GetBoolArg("-listen", DEFAULT_LISTEN))
@@ -1183,10 +1177,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
             vImportFiles.push_back(strFile);
     }
     threadGroup.create_thread(boost::bind(&ThreadImport, vImportFiles));
-
-    // ********************************************************* Step 9.1: startup secure messaging
-    
-    SecureMsgStart(fNoSmsg, GetBoolArg("-smsgscanchain", false));
 
     // ********************************************************* Step 10: start node
 

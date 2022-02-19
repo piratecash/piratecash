@@ -23,7 +23,6 @@
 #include "masternodeman.h"
 #include "masternode-payments.h"
 #include "spork.h"
-#include "smessage.h"
 #include "util.h"
 #include "validationinterface.h"
 
@@ -4061,8 +4060,6 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         int nDoS;
         if (state.IsInvalid(nDoS))
             Misbehaving(pfrom->GetId(), block.nDoS);
-        if (fSecMsgEnabled)
-            SecureMsgScanBlock(block);
     }
 
     // This asymmetric behavior for inbound and outbound connections was introduced
@@ -4281,9 +4278,6 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
     else
     {
-        if (fSecMsgEnabled)
-            SecureMsgReceiveData(pfrom, strCommand, vRecv);
-
         darkSendPool.ProcessMessageDarksend(pfrom, strCommand, vRecv);
         mnodeman.ProcessMessage(pfrom, strCommand, vRecv);
         ProcessMessageMasternodePayments(pfrom, strCommand, vRecv);
@@ -4632,10 +4626,6 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
         }
         if (!vGetData.empty())
             pto->PushMessage("getdata", vGetData);
-
-        if (fSecMsgEnabled)
-            SecureMsgSendData(pto, fSendTrickle); // should be in cs_main?
-
     }
     return true;
 }

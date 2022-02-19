@@ -23,7 +23,6 @@
 #include "masternodeman.h"
 #include "masternode-payments.h"
 #include "chainparams.h"
-#include "smessage.h"
 
 #include <assert.h>
 
@@ -255,7 +254,6 @@ bool CWallet::Unlock(const SecureString& strWalletPassphrase, bool anonymizeOnly
 
     fWalletUnlockAnonymizeOnly = anonymizeOnly;
     UnlockStealthAddresses(vMasterKey);
-    SecureMsgWalletUnlocked();
     return true;
     }
     return false;
@@ -3158,15 +3156,6 @@ bool CWallet::SendStealthMoneyToDestination(CStealthAddress& sxAddress, int64_t 
     std::vector<unsigned char> vchNarr;
     if (sNarr.length() > 0)
     {
-        SecMsgCrypter crypter;
-        crypter.SetKey(&secretShared.e[0], &ephem_pubkey[0]);
-
-        if (!crypter.Encrypt((uint8_t*)&sNarr[0], sNarr.length(), vchNarr))
-        {
-            sError = "Narration encryption failed.";
-            return false;
-        };
-
         if (vchNarr.size() > 48)
         {
             sError = "Encrypted narration is too long.";
@@ -3389,14 +3378,7 @@ bool CWallet::FindStealthTransactions(const CTransaction& tx, mapValue_t& mapNar
                     && txout.scriptPubKey.GetOp(itTxA, opCode, vchENarr)
                     && vchENarr.size() > 0)
                 {
-                    SecMsgCrypter crypter;
-                    crypter.SetKey(&sShared.e[0], &vchEphemPK[0]);
                     std::vector<uint8_t> vchNarr;
-                    if (!crypter.Decrypt(&vchENarr[0], vchENarr.size(), vchNarr))
-                    {
-                        printf("Decrypt narration failed.\n");
-                        continue;
-                    };
                     std::string sNarr = std::string(vchNarr.begin(), vchNarr.end());
 
                     snprintf(cbuf, sizeof(cbuf), "n_%d", nOutputId);
