@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = piratecash-qt
-VERSION = 0.11.5.13
+VERSION = 0.11.6.1
 INCLUDEPATH += src src/json src/qt src/qt/plugins/mrichtexteditor
 QT += network printsupport
 DEFINES += ENABLE_WALLET

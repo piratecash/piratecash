@@ -4634,7 +4634,15 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
 
 int64_t GetMasternodePayment(int nHeight, int64_t blockValue)
 {
-    int64_t ret = blockValue * 3/5;
+    int64_t ret;
+    if (nHeight < 917000)
+    {
+        // Old scheme with 60% for masternode, it's very expensive for miners just for darksend features.
+        ret = blockValue * 3/5;
+    } else {
+        // We'll increase percent for Masternode owners each time when new service on masternode will be available.
+        ret = blockValue / 1000;
+    }
 
     return ret;
 }
