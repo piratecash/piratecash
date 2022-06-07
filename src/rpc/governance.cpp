@@ -111,8 +111,7 @@ static UniValue gobject_check(const JSONRPCRequest& request)
     if (govobj.GetObjectType() == GOVERNANCE_OBJECT_PROPOSAL) {
         LOCK(cs_main);
         bool fAllowScript = (VersionBitsTipState(Params().GetConsensus(), Consensus::DEPLOYMENT_DIP0024) == ThresholdState::ACTIVE);
-        // Note: we do not allow legacy format in RPC already, no need to reuse DEPLOYMENT_DIP0024
-        CProposalValidator validator(strDataHex, false, fAllowScript);
+        CProposalValidator validator(strDataHex, fAllowScript);
         if (!validator.Validate())  {
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid proposal data, error messages:" + validator.GetErrorMessages());
         }
@@ -189,8 +188,7 @@ static UniValue gobject_prepare(const JSONRPCRequest& request)
     if (govobj.GetObjectType() == GOVERNANCE_OBJECT_PROPOSAL) {
         LOCK(cs_main);
         bool fAllowScript = (VersionBitsTipState(Params().GetConsensus(), Consensus::DEPLOYMENT_DIP0024) == ThresholdState::ACTIVE);
-        // Note: we do not allow legacy format in RPC already, no need to reuse DEPLOYMENT_DIP0024
-        CProposalValidator validator(strDataHex, false, fAllowScript);
+        CProposalValidator validator(strDataHex, fAllowScript);
         if (!validator.Validate()) {
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid proposal data, error messages:" + validator.GetErrorMessages());
         }
@@ -361,8 +359,7 @@ static UniValue gobject_submit(const JSONRPCRequest& request)
     if (govobj.GetObjectType() == GOVERNANCE_OBJECT_PROPOSAL) {
         LOCK(cs_main);
         bool fAllowScript = (VersionBitsTipState(Params().GetConsensus(), Consensus::DEPLOYMENT_DIP0024) == ThresholdState::ACTIVE);
-        // Note: we do not allow legacy format in RPC already, no need to reuse DEPLOYMENT_DIP0024
-        CProposalValidator validator(strDataHex, false, fAllowScript);
+        CProposalValidator validator(strDataHex, fAllowScript);
         if (!validator.Validate()) {
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid proposal data, error messages:" + validator.GetErrorMessages());
         }
