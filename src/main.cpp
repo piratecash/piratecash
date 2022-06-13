@@ -2584,7 +2584,10 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                         CBitcoinAddress address2(address1);
                         if(fDebug) {LogPrintf("CheckBlock() : Payment to %s [%d], size is  %s\n",address2.ToString().c_str(),i,vtx[1].vout[i].nValue);}
                         if(vtx[1].vout[i].nValue == expectedreward )
+                        {
                             foundPaymentAmount = true;
+                            LogPrintf("CheckBlock: Found Expected reward %d for masternode\n", vtx[1].vout[i].nValue);
+                        }
                         if(address2.ToString().c_str() == targetNode ){
                             foundPayee = true;
                         }else if (hasSync and address2.ToString().c_str() == targetNode2){
@@ -2602,10 +2605,15 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
                     bool fIsWalletGracePeriod = IsWalletGracePeriod();
                     // Accept blocks in GracePeriod is payment payee is different
                     if (!foundPaymentAndPayee and fIsWalletGracePeriod) {
-                        foundPaymentAmount = true;
                         foundPayee = true;
                         foundPaymentAndPayee = true;
                         if(fDebug) { LogPrintf("CheckBlock() : Wallet is in GracePeriod, block %d\n", pindexBest->nHeight+1); }
+                    }
+
+                    if (!foundPaymentAmount and IsSporkActive(SPORK_917K))
+                    {
+                        if(fDebug) { LogPrintf("CheckBlock() Couldn't find masternode payment, nHeight %d.\n", pindexBest->nHeight+1); }
+                        return state.DoS(100, error("CheckBlock() Couldn't find masternode payment"));
                     }
 
                     if(!foundPaymentAndPayee) {
