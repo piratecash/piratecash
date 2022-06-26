@@ -191,7 +191,6 @@ public:
     }
 
     std::map<uint256, CWalletTx> mapWallet;
-    std::vector<uint256> vMintingWalletUpdated;
     std::list<CAccountingEntry> laccentries;
 
     typedef std::pair<CWalletTx*, CAccountingEntry*> TxPair;

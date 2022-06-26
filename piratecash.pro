@@ -252,10 +252,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/hash.h \
     src/uint256.h \
     src/kernel.h \
-    src/qt/mintingview.h \
-    src/qt/mintingtablemodel.h \
-    src/qt/mintingfilterproxy.h \
-    src/kernelrecord.h \
     src/pbkdf2.h \
     src/serialize.h \
     src/support/cleanse.h \
@@ -422,7 +418,6 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/rpcmisc.cpp \
     src/rpcnet.cpp \
     src/rpcmining.cpp \
-    src/rpcminting.cpp \
     src/wallet/rpcwallet.cpp \
     src/rpcblockchain.cpp \
     src/rpcrawtransaction.cpp \
@@ -440,10 +435,6 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/rpcconsole.cpp \
     src/noui.cpp \
     src/kernel.cpp \
-    src/qt/mintingview.cpp \
-    src/qt/mintingtablemodel.cpp \
-    src/qt/mintingfilterproxy.cpp \
-    src/kernelrecord.cpp \
     src/pbkdf2.cpp \
     src/support/cleanse.cpp \
     src/stealth.cpp \

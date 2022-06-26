@@ -58,7 +58,6 @@ void OptionsModel::Init()
     if (!settings.contains("nDisplayUnit"))
         settings.setValue("nDisplayUnit", BitcoinUnits::BTC);
     nDisplayUnit = settings.value("nDisplayUnit").toInt();
-    bDisplayAddresses = settings.value("bDisplayAddresses", false).toBool();
     
     fUseBlackTheme = settings.value("fUseBlackTheme", false).toBool();
     
