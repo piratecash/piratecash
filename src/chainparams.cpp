@@ -156,22 +156,23 @@ public:
         // The message start string is designed to be unlikely to occur in normal data.
         // The characters are rarely used upper ASCII, not valid as UTF-8, and produce
         // a large 4-byte int at any alignment.
-        pchMessageStart[0] = 0x41;
-        pchMessageStart[1] = 0x52;
-        pchMessageStart[2] = 0x52;
-        pchMessageStart[3] = 0x52;
+        pchMessageStart[0] = 0x70;
+        pchMessageStart[1] = 0x69;
+        pchMessageStart[2] = 0x72;
+        pchMessageStart[3] = 0x61;
         bnProofOfWorkLimit = CBigNum(~uint256(0) >> 16);
         vAlertPubKey = ParseHex("0469fc77d961509210782f794edfc71d3dd9419d69976bbf01fdea6db81bff8f5c05144ba0420840ab0a8ba8a23ba96811239db4a333c093b0692982c6c564078b");
-        nDefaultPort = 28888;
+        nDefaultPort = 50666;
         nRPCPort = 21888;
         strDataDir = "testnet";
 
         // Modify the testnet genesis block so the timestamp is valid for a later start.
+        genesis.nTime  = 1664641176;
         genesis.nBits  = 0x1f04ade3;
-        genesis.nNonce = 9999;
+        genesis.nNonce = 11974;
         hashGenesisBlock = genesis.GetHash();
 
-        assert(hashGenesisBlock == uint256("0xc00cae22f3bf4a3fe0b3fa0e66628d251f8dab02148cc48ff06d81ae47a1f30d"));
+        assert(hashGenesisBlock == uint256("0xfca431fb03df1f6ca4d270d29ce7c6cc4c7cc0c1328a8d530b54799463e12957"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
