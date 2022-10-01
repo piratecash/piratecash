@@ -93,7 +93,6 @@ OBJS= \
     obj/rpcprotocol.o \
     obj/rpcserver.o \
     obj/rpcmisc.o \
-    obj/kernelrecord.o \
     obj/rpcnet.o \
     obj/rpcblockchain.o \
     obj/rpcrawtransaction.o \

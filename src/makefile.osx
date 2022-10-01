@@ -105,7 +105,6 @@ OBJS= \
     obj/rpcclient.o \
     obj/rpcprotocol.o \
     obj/rpcserver.o \
-    obj/kernelrecord.o \
     obj/rpcmisc.o \
     obj/rpcnet.o \
     obj/rpcblockchain.o \
