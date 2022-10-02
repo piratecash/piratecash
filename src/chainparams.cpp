@@ -167,12 +167,11 @@ public:
         strDataDir = "testnet";
 
         // Modify the testnet genesis block so the timestamp is valid for a later start.
-        genesis.nTime  = 1664641176;
         genesis.nBits  = 0x1f04ade3;
-        genesis.nNonce = 11974;
+        genesis.nNonce = 120253;
         hashGenesisBlock = genesis.GetHash();
 
-        assert(hashGenesisBlock == uint256("0xfca431fb03df1f6ca4d270d29ce7c6cc4c7cc0c1328a8d530b54799463e12957"));
+        assert(hashGenesisBlock == uint256("0x0003481590d02aa006eb6ed3b943001ac0861fa52649bdce0832bcae6b7f895d"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
