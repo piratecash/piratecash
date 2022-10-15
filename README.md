@@ -73,16 +73,18 @@ Copyright © 2018-2022	The PirateCash developers
 
 ## Channels
 
-| Specification | Value             |
-| ------------- |:------------------|
-| Bitcointalk   | [https://bitcointalk.org/index.php?topic=5050988](https://bitcointalk.org/index.php?topic=5050988)       |
-| Website       | [https://piratecash.net](http://piratecash.net) |
-| TOR           | [nzcaaryanbre6mdwbxkdonf24b4z6isk2q4qxahno42f4gso3ddjwpad.onion](nzcaaryanbre6mdwbxkdonf24b4z6isk2q4qxahno42f4gso3ddjwpad.onion) |
-| Explorer      | [https://piratecash.info](https://piratecash.info)|
-| Telegram	| [https://t.me/joinchat/FtUaLREioKVyF6EPNVtnIQ](https://t.me/joinchat/FtUaLREioKVyF6EPNVtnIQ)|
-| Discord       | [https://discord.gg/cbTdqxx](https://discord.gg/cbTdqxx)|
-| ...           | ... |
-| Test-NET	| [https://testnet.piratecash.info/](https://testnet.piratecash.info)|
+| Specification     | Value             |
+| -------------     |:------------------|
+| Bitcointalk       | [https://bitcointalk.org/index.php?topic=5050988](https://bitcointalk.org/index.php?topic=5050988)       |
+| Website           | [https://piratecash.net](http://piratecash.net) |
+| TOR               | [nzcaaryanbre6mdwbxkdonf24b4z6isk2q4qxahno42f4gso3ddjwpad.onion](nzcaaryanbre6mdwbxkdonf24b4z6isk2q4qxahno42f4gso3ddjwpad.onion) |
+| Vanity TOR        | [pirateogjtp5xbzfdmep2iavvc7qwku2reg754eamr7bxnospyqkqoad.onion](pirateogjtp5xbzfdmep2iavvc7qwku2reg754eamr7bxnospyqkqoad.onion) |
+| Explorer          | [https://piratecash.info](https://piratecash.info)|
+| Telegram English  | [https://t.me/PirateCash_ENG](https://t.me/PirateCash_ENG)|
+| Telegram Russian  | [https://t.me/PirateCash_RUS](https://t.me/PirateCash_RUS)|
+| Discord           | [https://discord.gg/cbTdqxx](https://discord.gg/cbTdqxx)|
+| ...               | ... |
+| Test-NET          | [https://testnet.piratecash.info/](https://testnet.piratecash.info)|
 
 License
 -------
