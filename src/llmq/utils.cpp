@@ -247,6 +247,9 @@ std::vector<std::vector<CDeterministicMNCPtr>> CLLMQUtils::BuildNewQuorumQuarter
 
     for (auto i = 0; i < nQuorums; ++i) {
         for (const auto& mn : previousQuarters.quarterHMinusC[i]) {
+            if (!allMns.HasMN(mn->proTxHash)) {
+                continue;
+            }
             if (allMns.IsMNPoSeBanned(mn->proTxHash)) {
                 continue;
             }
@@ -260,6 +263,9 @@ std::vector<std::vector<CDeterministicMNCPtr>> CLLMQUtils::BuildNewQuorumQuarter
             }
         }
         for (const auto& mn : previousQuarters.quarterHMinus2C[i]) {
+            if (!allMns.HasMN(mn->proTxHash)) {
+                continue;
+            }
             if (allMns.IsMNPoSeBanned(mn->proTxHash)) {
                 continue;
             }
@@ -273,6 +279,9 @@ std::vector<std::vector<CDeterministicMNCPtr>> CLLMQUtils::BuildNewQuorumQuarter
             }
         }
         for (const auto& mn : previousQuarters.quarterHMinus3C[i]) {
+            if (!allMns.HasMN(mn->proTxHash)) {
+                continue;
+            }
             if (allMns.IsMNPoSeBanned(mn->proTxHash)) {
                 continue;
             }
@@ -312,7 +321,7 @@ std::vector<std::vector<CDeterministicMNCPtr>> CLLMQUtils::BuildNewQuorumQuarter
             ss << m->proTxHash.ToString().substr(0, 4) << "|";
         }
         ss << "]";
-        LogPrint(BCLog::LLMQ, "BuildNewQuorumQuarterMembers h[%d] sortedCombinedMnsList[%s]\n",
+        LogPrint(BCLog::LLMQ, "BuildNewQuorumQuarterMembers h[%d] sortedCombinedMns[%s]\n",
                  pQuorumBaseBlockIndex->nHeight, ss.str());
     }
 
