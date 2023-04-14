@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2012 The DarkCoin developers
-// Copyright (c) 2018-2022 The PirateCash developers
+// Copyright (c) 2018-2023 The PirateCash developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #ifndef ACTIVEMASTERNODE_H

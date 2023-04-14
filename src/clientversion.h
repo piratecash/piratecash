@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022 The PirateCash developers
+// Copyright (c) 2018-2023 The PirateCash developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,7 +9,7 @@
  * Copyright year (2009-this)
  * Todo: update this when changing our copyright comments in the source
  */
-#define COPYRIGHT_YEAR 2022
+#define COPYRIGHT_YEAR 2023
 
 //
 // client versioning
