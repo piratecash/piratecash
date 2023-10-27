@@ -44,6 +44,7 @@ namespace Checkpoints
         (912219, uint256("0xde67bb79a990b039d3ede324f8a58dc0ea6f1393df8d75fbd72ea581ceb46280"))
         (928967, uint256("0x895992d6f7b73606b7fbef9d155a4ba98911cdf2b73b07a018e6903d08da11c5"))
         (1150400, uint256("0xd5581acb264905c7e2b2a5dffb46213d5b7f3b4a4bbd013f9fd48c9204bb87c0"))
+        (1220666, uint256("0x049259cf20cba1c5ce09bc5c1c40d09fa55648c5b79f571727ed3b1a1fe699de"))
     ;
 
     static ListBannedBlocks listBanned =
