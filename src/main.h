@@ -32,7 +32,8 @@ static const int64_t INIT_POS_REWARD = 50 * COIN; //Inital reward 50 Coins
 static const int64_t TARGET_SPACING = 90;
 static const int64_t TARGET_SPACING_SPEC = 120;
 extern int64_t SPEC_TARGET_FIX;
-
+extern int64_t REWARD_DECREASE_HARDFORK_V18;
+extern int64_t HARDFORK_V18;
 
 #define INSTANTX_SIGNATURES_REQUIRED           15
 #define INSTANTX_SIGNATURES_TOTAL              20

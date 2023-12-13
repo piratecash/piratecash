@@ -537,6 +537,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     if (TestNet())
     {
         SPEC_TARGET_FIX = 104000;
+        REWARD_DECREASE_HARDFORK_V18 = 288882;
+        HARDFORK_V18                 = 288999; // Last block for old PirateCash client in testnet
         SoftSetBoolArg("-irc", true);
     }
 

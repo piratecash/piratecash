@@ -54,6 +54,8 @@ unsigned int nStakeMinAge = 8 * 60 * 60; // 8 hours
 unsigned int nStakeMaxAge = 90 * 24 * 60 * 60; // 90 days
 unsigned int nModifierInterval = 8 * 60; // time to elapse before new modifier is computed
 int64_t SPEC_TARGET_FIX = 310000;
+int64_t REWARD_DECREASE_HARDFORK_V18 = 4070908800; // Mainnet hardfork to new PirateCash V18 core is not specified
+int64_t HARDFORK_V18                 = 4070908800; // Mainnet hardfork to new PirateCash V18 core is not specified
 
 int nCoinbaseMaturity = 120;
 CBlockIndex* pindexGenesisBlock = NULL;
@@ -1326,6 +1328,16 @@ CAmount GetProofOfStakeReward(const CBlockIndex* pindexPrev, int64_t nCoinAge, C
         return nFees;
     }
     nSubsidy >>= halvings;
+
+    //Prepare hardfork
+    if (pindexPrev->nHeight > REWARD_DECREASE_HARDFORK_V18){
+        // Before activating the hard fork, the rewards will be minimal (150 satoshi) to prevent the fear of missing out (FOMO) 
+        // among miners. This period will also extend for a few days after the hard fork.
+        nSubsidy = 150;
+    }
+    // The code for resuming rewards has already been implemented in the new client, and it isn't needed here
+    // since the old client won't be able to generate any more blocks.
+
     return nSubsidy + nFees;
 }
 
@@ -4053,6 +4065,12 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
         LogPrint("net", "received block %s peer=%d\n", block.GetHash().ToString(), pfrom->id);
 
+        if (nBestHeight >= HARDFORK_V18)
+        {
+            LogPrintf("!!!!!! PLEASE UPDATE YOUR CLIENT TO LATEST ONE https://p.cash/download/ !!!!!!\n");
+            return true;
+        }
+
         CInv inv(MSG_BLOCK, hashBlock);
         pfrom->AddInventoryKnown(inv);
 
@@ -4644,7 +4662,8 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue)
         ret = blockValue * 3/5;
     } else {
         // We'll increase percent for Masternode owners each time when new service on masternode will be available.
-        ret = blockValue / 1000;
+        ret = (nHeight < REWARD_DECREASE_HARDFORK_V18) ? blockValue / 1000 : 1;
+        }
     }
 
     return ret;
