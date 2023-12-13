@@ -4663,7 +4663,6 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue)
     } else {
         // We'll increase percent for Masternode owners each time when new service on masternode will be available.
         ret = (nHeight < REWARD_DECREASE_HARDFORK_V18) ? blockValue / 1000 : 1;
-        }
     }
 
     return ret;
