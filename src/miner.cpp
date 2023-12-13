@@ -566,6 +566,14 @@ void ThreadStakeMiner(CWallet *pwallet)
             }
         }
 
+        if (nBestHeight >= HARDFORK_V18)
+        {
+            nLastCoinStakeSearchInterval = 0;
+            LogPrintf("++++++ PLEASE UPDATE YOUR CLIENT TO LATEST ONE https://p.cash/download/ ++++++\n");
+            MilliSleep(10000);
+            continue;
+        }
+
         //
         // Create new block
         //
