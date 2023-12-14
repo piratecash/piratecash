@@ -1,34 +1,46 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2013 The Bitcoin developers
-// Copyright (c) 2018-2023 The PirateCash developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_CHAIN_PARAMS_H
-#define BITCOIN_CHAIN_PARAMS_H
+#ifndef BITCOIN_CHAINPARAMS_H
+#define BITCOIN_CHAINPARAMS_H
 
-#include "bignum.h"
-#include "uint256.h"
-#include "util.h"
+#include <chainparamsbase.h>
+#include <consensus/params.h>
+#include <llmq/params.h>
+#include <primitives/block.h>
+#include <protocol.h>
 
+#include <memory>
 #include <vector>
 
-using namespace std;
+struct SeedSpec6 {
+    uint8_t addr[16];
+    uint16_t port;
+};
 
-#define MESSAGE_START_SIZE 4
-typedef unsigned char MessageStartChars[MESSAGE_START_SIZE];
+typedef std::map<int, uint256> MapCheckpoints;
 
-class CAddress;
-class CBlock;
+struct CCheckpointData {
+    MapCheckpoints mapCheckpoints;
+};
 
-struct CDNSSeedData {
-    string name, host;
-    CDNSSeedData(const string &strName, const string &strHost) : name(strName), host(strHost) {}
+/**
+ * Holds various statistics on transactions within a chain. Used to estimate
+ * verification progress during chain sync.
+ *
+ * See also: CChainParams::TxData, GuessVerificationProgress.
+ */
+struct ChainTxData {
+    int64_t nTime;
+    int64_t nTxCount;
+    double dTxRate;
 };
 
 /**
  * CChainParams defines various tweakable parameters of a given instance of the
- * Bitcoin system. There are three: the main network on which people trade goods
+ * PirateCash system. There are three: the main network on which people trade goods
  * and services, the public test network which gets reset from time to time and
  * a regression test mode which is intended for private networks only. It has
  * minimal difficulty to ensure that blocks can be found instantly.
@@ -36,85 +48,126 @@ struct CDNSSeedData {
 class CChainParams
 {
 public:
-    enum Network {
-        MAIN,
-        TESTNET,
-        REGTEST,
-
-        MAX_NETWORK_TYPES
-    };
-
     enum Base58Type {
         PUBKEY_ADDRESS,
         SCRIPT_ADDRESS,
-        SECRET_KEY,
-        STEALTH_ADDRESS,
-        EXT_PUBLIC_KEY,
-        EXT_SECRET_KEY,
+        SECRET_KEY,     // BIP16
+        EXT_PUBLIC_KEY, // BIP32
+        EXT_SECRET_KEY, // BIP32
 
         MAX_BASE58_TYPES
     };
 
-    const uint256& HashGenesisBlock() const { return hashGenesisBlock; }
-    const MessageStartChars& MessageStart() const { return pchMessageStart; }
-    const vector<unsigned char>& AlertKey() const { return vAlertPubKey; }
+    const Consensus::Params& GetConsensus() const { return consensus; }
+    const CMessageHeader::MessageStartChars& MessageStart() const { return pchMessageStart; }
     int GetDefaultPort() const { return nDefaultPort; }
-    const CBigNum& ProofOfWorkLimit() const { return bnProofOfWorkLimit; }
-    int SubsidyHalvingInterval() const { return nSubsidyHalvingInterval; }
-    virtual const CBlock& GenesisBlock() const = 0;
-    virtual bool RequireRPCPassword() const { return true; }
-    const string& DataDir() const { return strDataDir; }
-    virtual Network NetworkID() const = 0;
-    const vector<CDNSSeedData>& DNSSeeds() const { return vSeeds; }
-    const std::vector<unsigned char> &Base58Prefix(Base58Type type) const { return base58Prefixes[type]; }
-    virtual const vector<CAddress>& FixedSeeds() const = 0;
-    int RPCPort() const { return nRPCPort; }
-    int LastPOWBlock() const { return nLastPOWBlock; }
-    int POSStartBlock() const { return nPOSStartBlock; }
-    int PoolMaxTransactions() const { return nPoolMaxTransactions; }
-    std::string DarksendPoolDummyAddress() const { return strDarksendPoolDummyAddress; }
-    //std::string SporkKey() const { return strSporkKey; }
-    //std::string MasternodePaymentPubKey() const { return strMasternodePaymentsPubKey; }
-protected:
-    CChainParams() {};
 
-    uint256 hashGenesisBlock;
-    MessageStartChars pchMessageStart;
-    // Raw pub key bytes for the broadcast alert signing key.
-    vector<unsigned char> vAlertPubKey;
+    const CBlock& GenesisBlock() const { return genesis; }
+    const CBlock& DevNetGenesisBlock() const { return devnetGenesis; }
+    /** Default value for -checkmempool and -checkblockindex argument */
+    bool DefaultConsistencyChecks() const { return fDefaultConsistencyChecks; }
+    /** Policy: Filter transactions that do not match well-defined patterns */
+    bool RequireStandard() const { return fRequireStandard; }
+    /** Require addresses specified with "-externalip" parameter to be routable */
+    bool RequireRoutableExternalIP() const { return fRequireRoutableExternalIP; }
+    /** If this chain is exclusively used for testing */
+    bool IsTestChain() const { return m_is_test_chain; }
+    uint64_t PruneAfterHeight() const { return nPruneAfterHeight; }
+    /** Minimum free space (in GB) needed for data directory */
+    uint64_t AssumedBlockchainSize() const { return m_assumed_blockchain_size; }
+    /** Minimum free space (in GB) needed for data directory when pruned; Does not include prune target*/
+    uint64_t AssumedChainStateSize() const { return m_assumed_chain_state_size; }
+    /** Whether it is possible to mine blocks on demand (no retargeting) */
+    bool MineBlocksOnDemand() const { return consensus.fPowNoRetargeting; }
+    /** Allow multiple addresses to be selected from the same network group (e.g. 192.168.x.x) */
+    bool AllowMultipleAddressesFromGroup() const { return fAllowMultipleAddressesFromGroup; }
+    /** Allow nodes with the same address and multiple ports */
+    bool AllowMultiplePorts() const { return fAllowMultiplePorts; }
+    /** How long to wait until we allow retrying of a LLMQ connection  */
+    int LLMQConnectionRetryTimeout() const { return nLLMQConnectionRetryTimeout; }
+    /** Return the BIP70 network string (main, test or regtest) */
+    std::string NetworkIDString() const { return strNetworkID; }
+    /** Return the list of hostnames to look up for DNS seeds */
+    const std::vector<std::string>& DNSSeeds() const { return vSeeds; }
+    const std::vector<unsigned char>& Base58Prefix(Base58Type type) const { return base58Prefixes[type]; }
+    int ExtCoinType() const { return nExtCoinType; }
+    const std::vector<SeedSpec6>& FixedSeeds() const { return vFixedSeeds; }
+    const CCheckpointData& Checkpoints() const { return checkpointData; }
+    const ChainTxData& TxData() const { return chainTxData; }
+    void UpdateDIP3Parameters(int nActivationHeight, int nEnforcementHeight);
+    void UpdateDIP8Parameters(int nActivationHeight);
+    void UpdateBudgetParameters(int nMasternodePaymentsStartBlock, int nBudgetPaymentsStartBlock, int nSuperblockStartBlock);
+    void UpdateSubsidyAndDiffParams(int nMinimumDifficultyBlocks, int nHighSubsidyBlocks, int nHighSubsidyFactor);
+    void UpdateLLMQChainLocks(Consensus::LLMQType llmqType);
+    void UpdateLLMQInstantSend(Consensus::LLMQType llmqType);
+    void UpdateLLMQTestParams(int size, int threshold);
+    void UpdateLLMQDevnetParams(int size, int threshold);
+    int PoolMinParticipants() const { return nPoolMinParticipants; }
+    int PoolMaxParticipants() const { return nPoolMaxParticipants; }
+    int FulfilledRequestExpireTime() const { return nFulfilledRequestExpireTime; }
+    const std::vector<std::string>& SporkAddresses() const { return vSporkAddresses; }
+    int MinSporkKeys() const { return nMinSporkKeys; }
+    bool BIP9CheckMasternodesUpgraded() const { return fBIP9CheckMasternodesUpgraded; }
+    int64_t MinStakeAge() const { return nStakeMinAge; }
+    uint32_t FirstPoSv2Block() const { return nFirstPoSv2Block; }
+    const Consensus::LLMQParams& GetLLMQ(Consensus::LLMQType llmqType) const;
+    bool HasLLMQ(Consensus::LLMQType llmqType) const;
+
+protected:
+    CChainParams() {}
+
+    Consensus::Params consensus;
+    CMessageHeader::MessageStartChars pchMessageStart;
     int nDefaultPort;
-    int nRPCPort;
-    CBigNum bnProofOfWorkLimit;
-    int nSubsidyHalvingInterval;
-    string strDataDir;
-    vector<CDNSSeedData> vSeeds;
+    uint64_t nPruneAfterHeight;
+    uint64_t m_assumed_blockchain_size;
+    uint64_t m_assumed_chain_state_size;
+    std::vector<std::string> vSeeds;
     std::vector<unsigned char> base58Prefixes[MAX_BASE58_TYPES];
-    int nLastPOWBlock;
-    int nPOSStartBlock;
-    int nPoolMaxTransactions;
-    std::string strDarksendPoolDummyAddress;
-    //std::string strSporkKey;
-    //std::string strMasternodePaymentsPubKey;
+    int nExtCoinType;
+    std::string strNetworkID;
+    CBlock genesis;
+    CBlock devnetGenesis;
+    std::vector<SeedSpec6> vFixedSeeds;
+    bool fDefaultConsistencyChecks;
+    bool fRequireStandard;
+    bool fRequireRoutableExternalIP;
+    bool m_is_test_chain;
+    bool fAllowMultipleAddressesFromGroup;
+    bool fAllowMultiplePorts;
+    int nLLMQConnectionRetryTimeout;
+    CCheckpointData checkpointData;
+    ChainTxData chainTxData;
+    int nPoolMinParticipants;
+    int nPoolMaxParticipants;
+    int nFulfilledRequestExpireTime;
+    std::vector<std::string> vSporkAddresses;
+    int nMinSporkKeys;
+    bool fBIP9CheckMasternodesUpgraded;
+    int64_t nStakeMinAge;
+    // POS V2
+    uint32_t nFirstPoSv2Block;
+
+    void AddLLMQ(Consensus::LLMQType llmqType);
 };
 
 /**
- * Return the currently selected parameters. This won't change after app startup
- * outside of the unit tests.
+ * Creates and returns a std::unique_ptr<CChainParams> of the chosen chain.
+ * @returns a CChainParams* of the chosen chain.
+ * @throws a std::runtime_error if the chain is not supported.
+ */
+std::unique_ptr<const CChainParams> CreateChainParams(const std::string& chain);
+
+/**
+ * Return the currently selected parameters. This won't change after app
+ * startup, except for unit tests.
  */
 const CChainParams &Params();
 
-/** Sets the params returned by Params() to those for the given network. */
-void SelectParams(CChainParams::Network network);
-
 /**
- * Looks for -regtest or -testnet and then calls SelectParams as appropriate.
- * Returns false if an invalid combination is given.
+ * Sets the params returned by Params() to those for the given BIP70 chain name.
+ * @throws std::runtime_error when the chain is not supported.
  */
-bool SelectParamsFromCommandLine();
+void SelectParams(const std::string& chain);
 
-inline bool TestNet() {
-    // Note: it's deliberate that this returns "false" for regression test mode.
-    return Params().NetworkID() == CChainParams::TESTNET;
-}
-
-#endif
+#endif // BITCOIN_CHAINPARAMS_H

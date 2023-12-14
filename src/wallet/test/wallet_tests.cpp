@@ -1,295 +1,970 @@
+// Copyright (c) 2012-2015 The Bitcoin Core developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#include <wallet/wallet.h>
+
+#include <iostream>
+#include <memory>
+#include <stdint.h>
+#include <vector>
+
+#include <interfaces/chain.h>
+#include <key_io.h>
+#include <policy/policy.h>
+#include <rpc/server.h>
+#include <test/util/setup_common.h>
+#include <util/translation.h>
+#include <validation.h>
+#include <wallet/coincontrol.h>
+#include <wallet/test/wallet_test_fixture.h>
+
 #include <boost/test/unit_test.hpp>
+#include <univalue.h>
 
-#include "main.h"
-#include "wallet.h"
+extern UniValue importmulti(const JSONRPCRequest& request);
+extern UniValue dumpwallet(const JSONRPCRequest& request);
+extern UniValue importwallet(const JSONRPCRequest& request);
+extern UniValue getnewaddress(const JSONRPCRequest& request);
 
-// how many times to run all the tests to have a chance to catch errors that only show up with particular random shuffles
-#define RUN_TESTS 100
+BOOST_FIXTURE_TEST_SUITE(wallet_tests, WalletTestingSetup)
 
-// some tests fail 1% of the time due to bad luck.
-// we repeat those tests this many times and only complain if all iterations of the test fail
-#define RANDOM_REPEATS 5
-
-using namespace std;
-
-typedef set<pair<const CWalletTx*,unsigned int> > CoinSet;
-
-BOOST_AUTO_TEST_SUITE(wallet_tests)
-
-static CWallet wallet;
-static vector<COutput> vCoins;
-
-static void add_coin(int64 nValue, int nAge = 6*24, bool fIsFromMe = false, int nInput=0)
+static void AddKey(CWallet& wallet, const CKey& key)
 {
-    static int i;
-    CTransaction* tx = new CTransaction;
-    tx->nLockTime = i++;        // so all transactions get different hashes
-    tx->vout.resize(nInput+1);
-    tx->vout[nInput].nValue = nValue;
-    CWalletTx* wtx = new CWalletTx(&wallet, *tx);
-    delete tx;
-    if (fIsFromMe)
+    LOCK(wallet.cs_wallet);
+    wallet.AddKeyPubKey(key, key.GetPubKey());
+}
+
+BOOST_FIXTURE_TEST_CASE(scan_for_wallet_transactions, TestChain100Setup)
+{
+    // Cap last block file size, and mine new block in a new block file.
+    CBlockIndex* oldTip = ::ChainActive().Tip();
+    GetBlockFileInfo(oldTip->GetBlockPos().nFile)->nSize = MAX_BLOCKFILE_SIZE;
+    CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey()));
+    CBlockIndex* newTip = ::ChainActive().Tip();
+
+    auto chain = interfaces::MakeChain();
+    auto locked_chain = chain->lock();
+    LockAnnotation lock(::cs_main);
+
+    // Verify ScanForWalletTransactions accommodates a null start block.
     {
-        // IsFromMe() returns (GetDebit() > 0), and GetDebit() is 0 if vin.empty(),
-        // so stop vin being empty, and cache a non-zero Debit to fake out IsFromMe()
-        wtx->vin.resize(1);
-        wtx->fDebitCached = true;
-        wtx->nDebitCached = 1;
+        CWallet wallet(*chain, WalletLocation(), CreateDummyWalletDatabase());
+        AddKey(wallet, coinbaseKey);
+        WalletRescanReserver reserver(&wallet);
+        reserver.reserve();
+        CWallet::ScanResult result = wallet.ScanForWalletTransactions({} /* start_block */, {} /* stop_block */, reserver, false /* update */);
+        BOOST_CHECK_EQUAL(result.status, CWallet::ScanResult::SUCCESS);
+        BOOST_CHECK(result.last_failed_block.IsNull());
+        BOOST_CHECK(result.last_scanned_block.IsNull());
+        BOOST_CHECK(!result.last_scanned_height);
+        BOOST_CHECK_EQUAL(wallet.GetBalance().m_mine_immature, 0);
     }
-    COutput output(wtx, nInput, nAge);
-    vCoins.push_back(output);
-}
 
-static void empty_wallet(void)
-{
-    BOOST_FOREACH(COutput output, vCoins)
-        delete output.tx;
-    vCoins.clear();
-}
-
-static bool equal_sets(CoinSet a, CoinSet b)
-{
-    pair<CoinSet::iterator, CoinSet::iterator> ret = mismatch(a.begin(), a.end(), b.begin());
-    return ret.first == a.end() && ret.second == b.end();
-}
-
-BOOST_AUTO_TEST_CASE(coin_selection_tests)
-{
-    static CoinSet setCoinsRet, setCoinsRet2;
-    static int64 nValueRet;
-
-    // test multiple times to allow for differences in the shuffle order
-    for (int i = 0; i < RUN_TESTS; i++)
+    // Verify ScanForWalletTransactions picks up transactions in both the old
+    // and new block files.
     {
-        empty_wallet();
+        CWallet wallet(*chain, WalletLocation(), CreateDummyWalletDatabase());
+        AddKey(wallet, coinbaseKey);
+        WalletRescanReserver reserver(&wallet);
+        reserver.reserve();
+        CWallet::ScanResult result = wallet.ScanForWalletTransactions(oldTip->GetBlockHash(), {} /* stop_block */, reserver, false /* update */);
+        BOOST_CHECK_EQUAL(result.status, CWallet::ScanResult::SUCCESS);
+        BOOST_CHECK(result.last_failed_block.IsNull());
+        BOOST_CHECK_EQUAL(result.last_scanned_block, newTip->GetBlockHash());
+        BOOST_CHECK_EQUAL(*result.last_scanned_height, newTip->nHeight);
+        BOOST_CHECK_EQUAL(wallet.GetBalance().m_mine_immature, 1000 * COIN);
+    }
 
-        // with an empty wallet we can't even pay one cent
-        BOOST_CHECK(!wallet.SelectCoinsMinConf( 1 * CENT, 1, 6, vCoins, setCoinsRet, nValueRet));
+    // Prune the older block file.
+    PruneOneBlockFile(oldTip->GetBlockPos().nFile);
+    UnlinkPrunedFiles({oldTip->GetBlockPos().nFile});
 
-        add_coin(1*CENT, 4);        // add a new 1 cent coin
+    // Verify ScanForWalletTransactions only picks transactions in the new block
+    // file.
+    {
+        CWallet wallet(*chain, WalletLocation(), CreateDummyWalletDatabase());
+        AddKey(wallet, coinbaseKey);
+        WalletRescanReserver reserver(&wallet);
+        reserver.reserve();
+        CWallet::ScanResult result = wallet.ScanForWalletTransactions(oldTip->GetBlockHash(), {} /* stop_block */, reserver, false /* update */);
+        BOOST_CHECK_EQUAL(result.status, CWallet::ScanResult::FAILURE);
+        BOOST_CHECK_EQUAL(result.last_failed_block, oldTip->GetBlockHash());
+        BOOST_CHECK_EQUAL(result.last_scanned_block, newTip->GetBlockHash());
+        BOOST_CHECK_EQUAL(*result.last_scanned_height, newTip->nHeight);
+        BOOST_CHECK_EQUAL(wallet.GetBalance().m_mine_immature, 500 * COIN);
+    }
 
-        // with a new 1 cent coin, we still can't find a mature 1 cent
-        BOOST_CHECK(!wallet.SelectCoinsMinConf( 1 * CENT, 1, 6, vCoins, setCoinsRet, nValueRet));
+    // Prune the remaining block file.
+    PruneOneBlockFile(newTip->GetBlockPos().nFile);
+    UnlinkPrunedFiles({newTip->GetBlockPos().nFile});
 
-        // but we can find a new 1 cent
-        BOOST_CHECK( wallet.SelectCoinsMinConf( 1 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 1 * CENT);
+    // Verify ScanForWalletTransactions scans no blocks.
+    {
+        CWallet wallet(*chain, WalletLocation(), CreateDummyWalletDatabase());
+        AddKey(wallet, coinbaseKey);
+        WalletRescanReserver reserver(&wallet);
+        reserver.reserve();
+        CWallet::ScanResult result = wallet.ScanForWalletTransactions(oldTip->GetBlockHash(), {} /* stop_block */, reserver, false /* update */);
+        BOOST_CHECK_EQUAL(result.status, CWallet::ScanResult::FAILURE);
+        BOOST_CHECK_EQUAL(result.last_failed_block, newTip->GetBlockHash());
+        BOOST_CHECK(result.last_scanned_block.IsNull());
+        BOOST_CHECK(!result.last_scanned_height);
+        BOOST_CHECK_EQUAL(wallet.GetBalance().m_mine_immature, 0);
+    }
+}
 
-        add_coin(2*CENT);           // add a mature 2 cent coin
+BOOST_FIXTURE_TEST_CASE(importmulti_rescan, TestChain100Setup)
+{
+    // Cap last block file size, and mine new block in a new block file.
+    CBlockIndex* oldTip = ::ChainActive().Tip();
+    GetBlockFileInfo(oldTip->GetBlockPos().nFile)->nSize = MAX_BLOCKFILE_SIZE;
+    CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey()));
+    CBlockIndex* newTip = ::ChainActive().Tip();
 
-        // we can't make 3 cents of mature coins
-        BOOST_CHECK(!wallet.SelectCoinsMinConf( 3 * CENT, 1, 6, vCoins, setCoinsRet, nValueRet));
+    auto chain = interfaces::MakeChain();
+    auto locked_chain = chain->lock();
+    LockAnnotation lock(::cs_main);
 
-        // we can make 3 cents of new  coins
-        BOOST_CHECK( wallet.SelectCoinsMinConf( 3 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 3 * CENT);
+    // Prune the older block file.
+    PruneOneBlockFile(oldTip->GetBlockPos().nFile);
+    UnlinkPrunedFiles({oldTip->GetBlockPos().nFile});
 
-        add_coin(5*CENT);           // add a mature 5 cent coin,
-        add_coin(10*CENT, 3, true); // a new 10 cent coin sent from one of our own addresses
-        add_coin(20*CENT);          // and a mature 20 cent coin
+    // Verify importmulti RPC returns failure for a key whose creation time is
+    // before the missing block, and success for a key whose creation time is
+    // after.
+    {
+        std::shared_ptr<CWallet> wallet = std::make_shared<CWallet>(*chain, WalletLocation(), CreateDummyWalletDatabase());
+        AddWallet(wallet);
+        UniValue keys;
+        keys.setArray();
+        UniValue key;
+        key.setObject();
+        key.pushKV("scriptPubKey", HexStr(GetScriptForRawPubKey(coinbaseKey.GetPubKey())));
+        key.pushKV("timestamp", 0);
+        key.pushKV("internal", UniValue(true));
+        keys.push_back(key);
+        key.clear();
+        key.setObject();
+        CKey futureKey;
+        futureKey.MakeNewKey(true);
+        key.pushKV("scriptPubKey", HexStr(GetScriptForRawPubKey(futureKey.GetPubKey())));
+        key.pushKV("timestamp", newTip->GetBlockTimeMax() + TIMESTAMP_WINDOW + 1);
+        key.pushKV("internal", UniValue(true));
+        keys.push_back(key);
+        JSONRPCRequest request;
+        request.params.setArray();
+        request.params.push_back(keys);
 
-        // now we have new: 1+10=11 (of which 10 was self-sent), and mature: 2+5+20=27.  total = 38
+        UniValue response = importmulti(request);
+        BOOST_CHECK_EQUAL(response.write(),
+            strprintf("[{\"success\":false,\"error\":{\"code\":-1,\"message\":\"Rescan failed for key with creation "
+                      "timestamp %d. There was an error reading a block from time %d, which is after or within %d "
+                      "seconds of key creation, and could contain transactions pertaining to the key. As a result, "
+                      "transactions and coins using this key may not appear in the wallet. This error could be caused "
+                      "by pruning or data corruption (see piratecashd log for details) and could be dealt with by "
+                      "downloading and rescanning the relevant blocks (see -reindex and -rescan "
+                      "options).\"}},{\"success\":true}]",
+                              0, oldTip->GetBlockTimeMax(), TIMESTAMP_WINDOW));
+        RemoveWallet(wallet);
+    }
+}
 
-        // we can't make 38 cents only if we disallow new coins:
-        BOOST_CHECK(!wallet.SelectCoinsMinConf(38 * CENT, 1, 6, vCoins, setCoinsRet, nValueRet));
-        // we can't even make 37 cents if we don't allow new coins even if they're from us
-        BOOST_CHECK(!wallet.SelectCoinsMinConf(38 * CENT, 6, 6, vCoins, setCoinsRet, nValueRet));
-        // but we can make 37 cents if we accept new coins from ourself
-        BOOST_CHECK( wallet.SelectCoinsMinConf(37 * CENT, 1, 6, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 37 * CENT);
-        // and we can make 38 cents if we accept all new coins
-        BOOST_CHECK( wallet.SelectCoinsMinConf(38 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 38 * CENT);
+// Verify importwallet RPC starts rescan at earliest block with timestamp
+// greater or equal than key birthday. Previously there was a bug where
+// importwallet RPC would start the scan at the latest block with timestamp less
+// than or equal to key birthday.
+BOOST_FIXTURE_TEST_CASE(importwallet_rescan, TestChain100Setup)
+{
+    // Create two blocks with same timestamp to verify that importwallet rescan
+    // will pick up both blocks, not just the first.
+    const int64_t BLOCK_TIME = ::ChainActive().Tip()->GetBlockTimeMax() + 5;
+    SetMockTime(BLOCK_TIME);
+    m_coinbase_txns.emplace_back(CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey())).vtx[0]);
+    m_coinbase_txns.emplace_back(CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey())).vtx[0]);
 
-        // try making 34 cents from 1,2,5,10,20 - we can't do it exactly
-        BOOST_CHECK( wallet.SelectCoinsMinConf(34 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_GT(nValueRet, 34 * CENT);         // but should get more than 34 cents
-        BOOST_CHECK_EQUAL(setCoinsRet.size(), 3);     // the best should be 20+10+5.  it's incredibly unlikely the 1 or 2 got included (but possible)
+    // Set key birthday to block time increased by the timestamp window, so
+    // rescan will start at the block time.
+    const int64_t KEY_TIME = BLOCK_TIME + 7200;
+    SetMockTime(KEY_TIME);
+    m_coinbase_txns.emplace_back(CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey())).vtx[0]);
 
-        // when we try making 7 cents, the smaller coins (1,2,5) are enough.  We should see just 2+5
-        BOOST_CHECK( wallet.SelectCoinsMinConf( 7 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 7 * CENT);
-        BOOST_CHECK_EQUAL(setCoinsRet.size(), 2);
+    auto chain = interfaces::MakeChain();
+    auto locked_chain = chain->lock();
+    LockAnnotation lock(::cs_main);
 
-        // when we try making 8 cents, the smaller coins (1,2,5) are exactly enough.
-        BOOST_CHECK( wallet.SelectCoinsMinConf( 8 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK(nValueRet == 8 * CENT);
-        BOOST_CHECK_EQUAL(setCoinsRet.size(), 3);
+    std::string backup_file = (GetDataDir() / "wallet.backup").string();
 
-        // when we try making 9 cents, no subset of smaller coins is enough, and we get the next bigger coin (10)
-        BOOST_CHECK( wallet.SelectCoinsMinConf( 9 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 10 * CENT);
-        BOOST_CHECK_EQUAL(setCoinsRet.size(), 1);
+    // Import key into wallet and call dumpwallet to create backup file.
+    {
+        std::shared_ptr<CWallet> wallet = std::make_shared<CWallet>(*chain, WalletLocation(), CreateDummyWalletDatabase());
+        LOCK(wallet->cs_wallet);
+        wallet->mapKeyMetadata[coinbaseKey.GetPubKey().GetID()].nCreateTime = KEY_TIME;
+        wallet->AddKeyPubKey(coinbaseKey, coinbaseKey.GetPubKey());
 
-        // now clear out the wallet and start again to test choosing between subsets of smaller coins and the next biggest coin
-        empty_wallet();
+        JSONRPCRequest request;
+        request.params.setArray();
+        request.params.push_back(backup_file);
+        AddWallet(wallet);
+        ::dumpwallet(request);
+        RemoveWallet(wallet);
+    }
 
-        add_coin( 6*CENT);
-        add_coin( 7*CENT);
-        add_coin( 8*CENT);
-        add_coin(20*CENT);
-        add_coin(30*CENT); // now we have 6+7+8+20+30 = 71 cents total
+    // Call importwallet RPC and verify all blocks with timestamps >= BLOCK_TIME
+    // were scanned, and no prior blocks were scanned.
+    {
+        std::shared_ptr<CWallet> wallet = std::make_shared<CWallet>(*chain, WalletLocation(), CreateDummyWalletDatabase());
 
-        // check that we have 71 and not 72
-        BOOST_CHECK( wallet.SelectCoinsMinConf(71 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK(!wallet.SelectCoinsMinConf(72 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
+        JSONRPCRequest request;
+        request.params.setArray();
+        request.params.push_back(backup_file);
+        AddWallet(wallet);
+        ::importwallet(request);
+        RemoveWallet(wallet);
 
-        // now try making 16 cents.  the best smaller coins can do is 6+7+8 = 21; not as good at the next biggest coin, 20
-        BOOST_CHECK( wallet.SelectCoinsMinConf(16 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 20 * CENT); // we should get 20 in one coin
-        BOOST_CHECK_EQUAL(setCoinsRet.size(), 1);
-
-        add_coin( 5*CENT); // now we have 5+6+7+8+20+30 = 75 cents total
-
-        // now if we try making 16 cents again, the smaller coins can make 5+6+7 = 18 cents, better than the next biggest coin, 20
-        BOOST_CHECK( wallet.SelectCoinsMinConf(16 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 18 * CENT); // we should get 18 in 3 coins
-        BOOST_CHECK_EQUAL(setCoinsRet.size(), 3);
-
-        add_coin( 18*CENT); // now we have 5+6+7+8+18+20+30
-
-        // and now if we try making 16 cents again, the smaller coins can make 5+6+7 = 18 cents, the same as the next biggest coin, 18
-        BOOST_CHECK( wallet.SelectCoinsMinConf(16 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 18 * CENT);  // we should get 18 in 1 coin
-        BOOST_CHECK_EQUAL(setCoinsRet.size(), 1); // because in the event of a tie, the biggest coin wins
-
-        // now try making 11 cents.  we should get 5+6
-        BOOST_CHECK( wallet.SelectCoinsMinConf(11 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 11 * CENT);
-        BOOST_CHECK_EQUAL(setCoinsRet.size(), 2);
-
-        // check that the smallest bigger coin is used
-        add_coin( 1*COIN);
-        add_coin( 2*COIN);
-        add_coin( 3*COIN);
-        add_coin( 4*COIN); // now we have 5+6+7+8+18+20+30+100+200+300+400 = 1094 cents
-        BOOST_CHECK( wallet.SelectCoinsMinConf(95 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 1 * COIN);  // we should get 1 BTC in 1 coin
-        BOOST_CHECK_EQUAL(setCoinsRet.size(), 1);
-
-        BOOST_CHECK( wallet.SelectCoinsMinConf(195 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 2 * COIN);  // we should get 2 BTC in 1 coin
-        BOOST_CHECK_EQUAL(setCoinsRet.size(), 1);
-
-        // empty the wallet and start again, now with fractions of a cent, to test sub-cent change avoidance
-        empty_wallet();
-        add_coin(0.1*CENT);
-        add_coin(0.2*CENT);
-        add_coin(0.3*CENT);
-        add_coin(0.4*CENT);
-        add_coin(0.5*CENT);
-
-        // try making 1 cent from 0.1 + 0.2 + 0.3 + 0.4 + 0.5 = 1.5 cents
-        // we'll get sub-cent change whatever happens, so can expect 1.0 exactly
-        BOOST_CHECK( wallet.SelectCoinsMinConf(1 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 1 * CENT);
-
-        // but if we add a bigger coin, making it possible to avoid sub-cent change, things change:
-        add_coin(1111*CENT);
-
-        // try making 1 cent from 0.1 + 0.2 + 0.3 + 0.4 + 0.5 + 1111 = 1112.5 cents
-        BOOST_CHECK( wallet.SelectCoinsMinConf(1 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 1 * CENT); // we should get the exact amount
-
-        // if we add more sub-cent coins:
-        add_coin(0.6*CENT);
-        add_coin(0.7*CENT);
-
-        // and try again to make 1.0 cents, we can still make 1.0 cents
-        BOOST_CHECK( wallet.SelectCoinsMinConf(1 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 1 * CENT); // we should get the exact amount
-
-        // run the 'mtgox' test (see http://blockexplorer.com/tx/29a3efd3ef04f9153d47a990bd7b048a4b2d213daaa5fb8ed670fb85f13bdbcf)
-        // they tried to consolidate 10 50k coins into one 500k coin, and ended up with 50k in change
-        empty_wallet();
-        for (int i = 0; i < 20; i++)
-            add_coin(10000 * COIN);
-
-        BOOST_CHECK( wallet.SelectCoinsMinConf(500000 * COIN, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 500000 * COIN); // we should get the exact amount
-        BOOST_CHECK_EQUAL(setCoinsRet.size(), 10); // in ten coins
-
-        // if there's not enough in the smaller coins to make at least 1 cent change (0.5+0.6+0.7 < 1.0+1.0),
-        // we need to try finding an exact subset anyway
-
-        // sometimes it will fail, and so we use the next biggest coin:
-        empty_wallet();
-        add_coin(0.5 * CENT);
-        add_coin(0.6 * CENT);
-        add_coin(0.7 * CENT);
-        add_coin(1111 * CENT);
-        BOOST_CHECK( wallet.SelectCoinsMinConf(1 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 1111 * CENT); // we get the bigger coin
-        BOOST_CHECK_EQUAL(setCoinsRet.size(), 1);
-
-        // but sometimes it's possible, and we use an exact subset (0.4 + 0.6 = 1.0)
-        empty_wallet();
-        add_coin(0.4 * CENT);
-        add_coin(0.6 * CENT);
-        add_coin(0.8 * CENT);
-        add_coin(1111 * CENT);
-        BOOST_CHECK( wallet.SelectCoinsMinConf(1 * CENT, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 1 * CENT);   // we should get the exact amount
-        BOOST_CHECK_EQUAL(setCoinsRet.size(), 2); // in two coins 0.4+0.6
-
-        // test avoiding sub-cent change
-        empty_wallet();
-        add_coin(0.0005 * COIN);
-        add_coin(0.01 * COIN);
-        add_coin(1 * COIN);
-
-        // trying to make 1.0001 from these three coins
-        BOOST_CHECK( wallet.SelectCoinsMinConf(1.0001 * COIN, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 1.0105 * COIN);   // we should get all coins
-        BOOST_CHECK_EQUAL(setCoinsRet.size(), 3);
-
-        // but if we try to make 0.999, we should take the bigger of the two small coins to avoid sub-cent change
-        BOOST_CHECK( wallet.SelectCoinsMinConf(0.999 * COIN, 1, 1, vCoins, setCoinsRet, nValueRet));
-        BOOST_CHECK_EQUAL(nValueRet, 1.01 * COIN);   // we should get 1 + 0.01
-        BOOST_CHECK_EQUAL(setCoinsRet.size(), 2);
-
-        // test randomness
-        {
-            empty_wallet();
-            for (int i2 = 0; i2 < 100; i2++)
-                add_coin(COIN);
-
-            // picking 50 from 100 coins doesn't depend on the shuffle,
-            // but does depend on randomness in the stochastic approximation code
-            BOOST_CHECK(wallet.SelectCoinsMinConf(50 * COIN, 1, 6, vCoins, setCoinsRet , nValueRet));
-            BOOST_CHECK(wallet.SelectCoinsMinConf(50 * COIN, 1, 6, vCoins, setCoinsRet2, nValueRet));
-            BOOST_CHECK(!equal_sets(setCoinsRet, setCoinsRet2));
-
-            int fails = 0;
-            for (int i = 0; i < RANDOM_REPEATS; i++)
-            {
-                // selecting 1 from 100 identical coins depends on the shuffle; this test will fail 1% of the time
-                // run the test RANDOM_REPEATS times and only complain if all of them fail
-                BOOST_CHECK(wallet.SelectCoinsMinConf(COIN, 1, 6, vCoins, setCoinsRet , nValueRet));
-                BOOST_CHECK(wallet.SelectCoinsMinConf(COIN, 1, 6, vCoins, setCoinsRet2, nValueRet));
-                if (equal_sets(setCoinsRet, setCoinsRet2))
-                    fails++;
-            }
-            BOOST_CHECK_NE(fails, RANDOM_REPEATS);
-
-            // add 75 cents in small change.  not enough to make 90 cents,
-            // then try making 90 cents.  there are multiple competing "smallest bigger" coins,
-            // one of which should be picked at random
-            add_coin( 5*CENT); add_coin(10*CENT); add_coin(15*CENT); add_coin(20*CENT); add_coin(25*CENT);
-
-            fails = 0;
-            for (int i = 0; i < RANDOM_REPEATS; i++)
-            {
-                // selecting 1 from 100 identical coins depends on the shuffle; this test will fail 1% of the time
-                // run the test RANDOM_REPEATS times and only complain if all of them fail
-                BOOST_CHECK(wallet.SelectCoinsMinConf(90*CENT, 1, 6, vCoins, setCoinsRet , nValueRet));
-                BOOST_CHECK(wallet.SelectCoinsMinConf(90*CENT, 1, 6, vCoins, setCoinsRet2, nValueRet));
-                if (equal_sets(setCoinsRet, setCoinsRet2))
-                    fails++;
-            }
-            BOOST_CHECK_NE(fails, RANDOM_REPEATS);
+        LOCK(wallet->cs_wallet);
+        BOOST_CHECK_EQUAL(wallet->mapWallet.size(), 3U);
+        BOOST_CHECK_EQUAL(m_coinbase_txns.size(), 103U);
+        for (size_t i = 0; i < m_coinbase_txns.size(); ++i) {
+            bool found = wallet->GetWalletTx(m_coinbase_txns[i]->GetHash());
+            bool expected = i >= 100;
+            BOOST_CHECK_EQUAL(found, expected);
         }
     }
+
+    SetMockTime(0);
+}
+
+// Check that GetImmatureCredit() returns a newly calculated value instead of
+// the cached value after a MarkDirty() call.
+//
+// This is a regression test written to verify a bugfix for the immature credit
+// function. Similar tests probably should be written for the other credit and
+// debit functions.
+BOOST_FIXTURE_TEST_CASE(coin_mark_dirty_immature_credit, TestChain100Setup)
+{
+    auto chain = interfaces::MakeChain();
+
+    CWallet wallet(*chain, WalletLocation(), CreateDummyWalletDatabase());
+    CWalletTx wtx(&wallet, m_coinbase_txns.back());
+
+    auto locked_chain = chain->lock();
+    LockAnnotation lock(::cs_main);
+    LOCK(wallet.cs_wallet);
+
+    wtx.hashBlock = ::ChainActive().Tip()->GetBlockHash();
+    wtx.nIndex = 0;
+
+    // Call GetImmatureCredit() once before adding the key to the wallet to
+    // cache the current immature credit amount, which is 0.
+    BOOST_CHECK_EQUAL(wtx.GetImmatureCredit(*locked_chain), 0);
+
+    // Invalidate the cached value, add the key, and make sure a new immature
+    // credit amount is calculated.
+    wtx.MarkDirty();
+    wallet.AddKeyPubKey(coinbaseKey, coinbaseKey.GetPubKey());
+    BOOST_CHECK_EQUAL(wtx.GetImmatureCredit(*locked_chain), 500*COIN);
+}
+
+static int64_t AddTx(CWallet& wallet, uint32_t lockTime, int64_t mockTime, int64_t blockTime)
+{
+    CMutableTransaction tx;
+    tx.nLockTime = lockTime;
+    SetMockTime(mockTime);
+    CBlockIndex* block = nullptr;
+    if (blockTime > 0) {
+        LockAnnotation lock(::cs_main); // for mapBlockIndex
+        auto locked_chain = wallet.chain().lock();
+        auto inserted = ::BlockIndex().emplace(GetRandHash(), new CBlockIndex);
+        assert(inserted.second);
+        const uint256& hash = inserted.first->first;
+        block = inserted.first->second;
+        block->nTime = blockTime;
+        block->phashBlock = &hash;
+    }
+
+    CWalletTx wtx(&wallet, MakeTransactionRef(tx));
+    if (block) {
+        wtx.SetMerkleBranch(block->GetBlockHash(), 0);
+    }
+    {
+        LOCK(cs_main);
+        wallet.AddToWallet(wtx);
+    }
+    LOCK(wallet.cs_wallet);
+    return wallet.mapWallet.at(wtx.GetHash()).nTimeSmart;
+}
+
+// Simple test to verify assignment of CWalletTx::nSmartTime value. Could be
+// expanded to cover more corner cases of smart time logic.
+BOOST_AUTO_TEST_CASE(ComputeTimeSmart)
+{
+    // New transaction should use clock time if lower than block time.
+    BOOST_CHECK_EQUAL(AddTx(m_wallet, 1, 100, 120), 100);
+
+    // Test that updating existing transaction does not change smart time.
+    BOOST_CHECK_EQUAL(AddTx(m_wallet, 1, 200, 220), 100);
+
+    // New transaction should use clock time if there's no block time.
+    BOOST_CHECK_EQUAL(AddTx(m_wallet, 2, 300, 0), 300);
+
+    // New transaction should use block time if lower than clock time.
+    BOOST_CHECK_EQUAL(AddTx(m_wallet, 3, 420, 400), 400);
+
+    // New transaction should use latest entry time if higher than
+    // min(block time, clock time).
+    BOOST_CHECK_EQUAL(AddTx(m_wallet, 4, 500, 390), 400);
+
+    // If there are future entries, new transaction should use time of the
+    // newest entry that is no more than 300 seconds ahead of the clock time.
+    BOOST_CHECK_EQUAL(AddTx(m_wallet, 5, 50, 600), 300);
+
+    // Reset mock time for other tests.
+    SetMockTime(0);
+}
+
+BOOST_AUTO_TEST_CASE(LoadReceiveRequests)
+{
+    CTxDestination dest = CKeyID();
+    LOCK(m_wallet.cs_wallet);
+    m_wallet.AddDestData(dest, "misc", "val_misc");
+    m_wallet.AddDestData(dest, "rr0", "val_rr0");
+    m_wallet.AddDestData(dest, "rr1", "val_rr1");
+
+    auto values = m_wallet.GetDestValues("rr");
+    BOOST_CHECK_EQUAL(values.size(), 2U);
+    BOOST_CHECK_EQUAL(values[0], "val_rr0");
+    BOOST_CHECK_EQUAL(values[1], "val_rr1");
+}
+
+class ListCoinsTestingSetup : public TestChain100Setup
+{
+public:
+    ListCoinsTestingSetup()
+    {
+        CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey()));
+        wallet = MakeUnique<CWallet>(*m_chain, WalletLocation(), CreateMockWalletDatabase());
+        bool firstRun;
+        wallet->LoadWallet(firstRun);
+        AddKey(*wallet, coinbaseKey);
+        WalletRescanReserver reserver(wallet.get());
+        reserver.reserve();
+        CWallet::ScanResult result = wallet->ScanForWalletTransactions(::ChainActive().Genesis()->GetBlockHash(), {} /* stop_block */, reserver, false /* update */);
+        BOOST_CHECK_EQUAL(result.status, CWallet::ScanResult::SUCCESS);
+        BOOST_CHECK_EQUAL(result.last_scanned_block, ::ChainActive().Tip()->GetBlockHash());
+        BOOST_CHECK_EQUAL(*result.last_scanned_height, ::ChainActive().Height());
+        BOOST_CHECK(result.last_failed_block.IsNull());
+    }
+
+    ~ListCoinsTestingSetup()
+    {
+        wallet.reset();
+    }
+
+    CWalletTx& AddTx(CRecipient recipient)
+    {
+        CTransactionRef tx;
+        CAmount fee;
+        int changePos = -1;
+        bilingual_str error;
+        CCoinControl dummy;
+        {
+            auto locked_chain = m_chain->lock();
+            BOOST_CHECK(wallet->CreateTransaction(*locked_chain, {recipient}, tx, fee, changePos, error, dummy));
+        }
+        wallet->CommitTransaction(tx, {}, {});
+        CMutableTransaction blocktx;
+        {
+            LOCK(wallet->cs_wallet);
+            blocktx = CMutableTransaction(*wallet->mapWallet.at(tx->GetHash()).tx);
+        }
+        CreateAndProcessBlock({CMutableTransaction(blocktx)}, GetScriptForRawPubKey(coinbaseKey.GetPubKey()));
+
+        LOCK(cs_main);
+        LOCK(wallet->cs_wallet);
+        auto it = wallet->mapWallet.find(tx->GetHash());
+        BOOST_CHECK(it != wallet->mapWallet.end());
+        it->second.SetMerkleBranch(::ChainActive().Tip()->GetBlockHash(), 1);
+        return it->second;
+    }
+
+    std::unique_ptr<interfaces::Chain> m_chain = interfaces::MakeChain();
+    std::unique_ptr<CWallet> wallet;
+};
+
+BOOST_FIXTURE_TEST_CASE(ListCoins, ListCoinsTestingSetup)
+{
+    std::string coinbaseAddress = coinbaseKey.GetPubKey().GetID().ToString();
+
+    // Confirm ListCoins initially returns 1 coin grouped under coinbaseKey
+    // address.
+    std::map<CTxDestination, std::vector<COutput>> list;
+    {
+        auto locked_chain = m_chain->lock();
+        LOCK(wallet->cs_wallet);
+        list = wallet->ListCoins(*locked_chain);
+    }
+    BOOST_CHECK_EQUAL(list.size(), 1U);
+    BOOST_CHECK_EQUAL(boost::get<CKeyID>(list.begin()->first).ToString(), coinbaseAddress);
+    BOOST_CHECK_EQUAL(list.begin()->second.size(), 1U);
+
+    // Check initial balance from one mature coinbase transaction.
+    BOOST_CHECK_EQUAL(500 * COIN, wallet->GetAvailableBalance());
+
+    // Add a transaction creating a change address, and confirm ListCoins still
+    // returns the coin associated with the change address underneath the
+    // coinbaseKey pubkey, even though the change address has a different
+    // pubkey.
+    AddTx(CRecipient{GetScriptForRawPubKey({}), 1 * COIN, false /* subtract fee */});
+    {
+        auto locked_chain = m_chain->lock();
+        LOCK(wallet->cs_wallet);
+        list = wallet->ListCoins(*locked_chain);
+    }
+    BOOST_CHECK_EQUAL(list.size(), 1U);
+    BOOST_CHECK_EQUAL(boost::get<CKeyID>(list.begin()->first).ToString(), coinbaseAddress);
+    BOOST_CHECK_EQUAL(list.begin()->second.size(), 2U);
+
+    // Lock both coins. Confirm number of available coins drops to 0.
+    {
+        auto locked_chain = m_chain->lock();
+        LOCK(wallet->cs_wallet);
+        std::vector<COutput> available;
+        wallet->AvailableCoins(*locked_chain, available);
+        BOOST_CHECK_EQUAL(available.size(), 2U);
+    }
+    for (const auto& group : list) {
+        for (const auto& coin : group.second) {
+            LOCK(wallet->cs_wallet);
+            wallet->LockCoin(COutPoint(coin.tx->GetHash(), coin.i));
+        }
+    }
+    {
+        auto locked_chain = m_chain->lock();
+        LOCK(wallet->cs_wallet);
+        std::vector<COutput> available;
+        wallet->AvailableCoins(*locked_chain, available);
+        BOOST_CHECK_EQUAL(available.size(), 0U);
+    }
+    // Confirm ListCoins still returns same result as before, despite coins
+    // being locked.
+    {
+        auto locked_chain = m_chain->lock();
+        LOCK(wallet->cs_wallet);
+        list = wallet->ListCoins(*locked_chain);
+    }
+    BOOST_CHECK_EQUAL(list.size(), 1U);
+    BOOST_CHECK_EQUAL(boost::get<CKeyID>(list.begin()->first).ToString(), coinbaseAddress);
+    BOOST_CHECK_EQUAL(list.begin()->second.size(), 2U);
+}
+
+class CreateTransactionTestSetup : public TestChain100Setup
+{
+public:
+    enum ChangeTest {
+        Skip,
+        NoChangeExpected,
+        ChangeExpected,
+    };
+
+    // Result strings to test
+    const std::string strInsufficientFunds = "Insufficient funds.";
+    const std::string strAmountNotNegative = "Transaction amounts must not be negative";
+    const std::string strAtLeastOneRecipient = "Transaction must have at least one recipient";
+    const std::string strTooSmallToPayFee = "The transaction amount is too small to pay the fee";
+    const std::string strTooSmallAfterFee = "The transaction amount is too small to send after the fee has been deducted";
+    const std::string strTooSmall = "Transaction amount too small";
+    const std::string strUnableToLocateCoinJoin1 = "Unable to locate enough non-denominated funds for this transaction.";
+    const std::string strUnableToLocateCoinJoin2 = "Unable to locate enough mixed funds for this transaction. CoinJoin uses exact denominated amounts to send funds, you might simply need to mix some more coins.";
+    const std::string strTransactionTooLarge = "Transaction too large";
+    const std::string strTransactionTooLargeForFeePolicy = "Transaction too large for fee policy";
+    const std::string strChangeIndexOutOfRange = "Change index out of range";
+    const std::string strExceededMaxTries = "Exceeded max tries.";
+
+    CreateTransactionTestSetup()
+    {
+        CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey()));
+        wallet = MakeUnique<CWallet>(*m_chain, WalletLocation(), CreateMockWalletDatabase());
+        bool firstRun;
+        wallet->LoadWallet(firstRun);
+        AddWallet(wallet);
+        AddKey(*wallet, coinbaseKey);
+        WalletRescanReserver reserver(wallet.get());
+        reserver.reserve();
+        CWallet::ScanResult result = wallet->ScanForWalletTransactions(::ChainActive().Genesis()->GetBlockHash() /* start_block */, {} /* stop_block */, reserver, false /* update */);
+        BOOST_CHECK_EQUAL(result.status, CWallet::ScanResult::SUCCESS);
+    }
+
+    std::unique_ptr<interfaces::Chain> m_chain = interfaces::MakeChain();
+
+    ~CreateTransactionTestSetup()
+    {
+        RemoveWallet(wallet);
+    }
+
+    std::shared_ptr<CWallet> wallet;
+    CCoinControl coinControl;
+
+    template <typename T>
+    bool CheckEqual(const T expected, const T actual)
+    {
+        BOOST_CHECK_EQUAL(expected, actual);
+        return expected == actual;
+    }
+
+    bool CreateTransaction(const std::vector<std::pair<CAmount, bool>>& vecEntries, bool fCreateShouldSucceed = true, ChangeTest changeTest = ChangeTest::Skip)
+    {
+        return CreateTransaction(vecEntries, {}, -1, fCreateShouldSucceed, changeTest);
+    }
+    bool CreateTransaction(const std::vector<std::pair<CAmount, bool>>& vecEntries, std::string strErrorExpected, bool fCreateShouldSucceed = true, ChangeTest changeTest = ChangeTest::Skip)
+    {
+        return CreateTransaction(vecEntries, strErrorExpected, -1, fCreateShouldSucceed, changeTest);
+    }
+
+    bool CreateTransaction(const std::vector<std::pair<CAmount, bool>>& vecEntries, std::string strErrorExpected, int nChangePosRequest = -1, bool fCreateShouldSucceed = true, ChangeTest changeTest = ChangeTest::Skip)
+    {
+        CTransactionRef tx;
+        CAmount nFeeRet;
+        int nChangePos = nChangePosRequest;
+        bilingual_str strError;
+
+        auto locked_chain = wallet->chain().lock();
+        bool fCreationSucceeded = wallet->CreateTransaction(*locked_chain, GetRecipients(vecEntries), tx, nFeeRet, nChangePos, strError, coinControl);
+        bool fHitMaxTries = strError.original == strExceededMaxTries;
+        // This should never happen.
+        if (fHitMaxTries) {
+            BOOST_CHECK(!fHitMaxTries);
+            return false;
+        }
+        // Verify the creation succeeds if expected and fails if not.
+        if (!CheckEqual(fCreateShouldSucceed, fCreationSucceeded)) {
+            return false;
+        }
+        //  Verify the expected error string if there is one provided
+        if (strErrorExpected.size() && !CheckEqual(strErrorExpected, strError.original)) {
+            return false;
+        }
+        if (!fCreateShouldSucceed) {
+            // No need to evaluate the following if the creation should have failed.
+            return true;
+        }
+        // Verify there is no change output if there wasn't any expected
+        bool fChangeTestPassed = changeTest == ChangeTest::Skip ||
+                                 (changeTest == ChangeTest::ChangeExpected && nChangePos != -1) ||
+                                 (changeTest == ChangeTest::NoChangeExpected && nChangePos == -1);
+        BOOST_CHECK(fChangeTestPassed);
+        if (!fChangeTestPassed) {
+            return false;
+        }
+        // Verify the change is at the requested position if there was a request
+        if (nChangePosRequest != -1 && !CheckEqual(nChangePosRequest, nChangePos)) {
+            return false;
+        }
+        // Verify the number of requested outputs does match the resulting outputs
+        return CheckEqual(vecEntries.size(), tx->vout.size() - (nChangePos != -1 ? 1 : 0));
+    }
+
+    std::vector<CRecipient> GetRecipients(const std::vector<std::pair<CAmount, bool>>& vecEntries)
+    {
+        std::vector<CRecipient> vecRecipients;
+        for (auto entry : vecEntries) {
+            vecRecipients.push_back({GetScriptForDestination(DecodeDestination(getnewaddress(JSONRPCRequest()).get_str())), entry.first, entry.second});
+        }
+        return vecRecipients;
+    }
+
+    std::vector<COutPoint> GetCoins(const std::vector<std::pair<CAmount, bool>>& vecEntries)
+    {
+        CTransactionRef tx;
+        CAmount nFeeRet;
+        int nChangePosRet = -1;
+        bilingual_str strError;
+        CCoinControl coinControl;
+        BOOST_CHECK(wallet->CreateTransaction(*wallet->chain().lock(), GetRecipients(vecEntries), tx, nFeeRet, nChangePosRet, strError, coinControl));
+        wallet->CommitTransaction(tx, {}, {});
+        CMutableTransaction blocktx;
+        {
+            LOCK(wallet->cs_wallet);
+            blocktx = CMutableTransaction(*tx);
+        }
+        CreateAndProcessBlock({CMutableTransaction(blocktx)}, GetScriptForRawPubKey(coinbaseKey.GetPubKey()));
+        LOCK2(cs_main, wallet->cs_wallet);
+        auto it = wallet->mapWallet.find(tx->GetHash());
+        BOOST_CHECK(it != wallet->mapWallet.end());
+        it->second.SetMerkleBranch(::ChainActive().Tip()->GetBlockHash(), 1);
+
+        std::vector<COutPoint> vecOutpoints;
+        size_t n;
+        for (n = 0; n < tx->vout.size(); ++n) {
+            if (nChangePosRet != -1 && int(n) == nChangePosRet) {
+                // Skip the change output to only return the requested coins
+                continue;
+            }
+            vecOutpoints.push_back(COutPoint(tx->GetHash(), n));
+        }
+        assert(vecOutpoints.size() == vecEntries.size());
+        return vecOutpoints;
+    }
+};
+
+BOOST_FIXTURE_TEST_CASE(CreateTransactionTest, CreateTransactionTestSetup)
+{
+    minRelayTxFee = CFeeRate(DEFAULT_MIN_RELAY_TX_FEE);
+
+    auto runTest = [&](const int nTestId, const CAmount nFeeRate, const std::map<int, std::pair<bool, ChangeTest>>& mapExpected) {
+        coinControl.m_feerate = CFeeRate(nFeeRate);
+        const std::map<int, std::vector<std::pair<CAmount, bool>>> mapTestCases{
+            {0, {{1000, false}}},
+            {1, {{1000, true}}},
+            {2, {{10000, false}}},
+            {3, {{10000, true}}},
+            {4, {{34000, false}, {40000, false}}},
+            {5, {{37000, false}, {40000, false}}},
+            {6, {{50000, false}, {50000, false}}},
+            {7, {{50000, true}, {50000, false}}},
+            {8, {{50000, false}, {50001, false}}},
+            {9, {{50000, true}, {50001, true}}},
+            {10, {{100000, false}}},
+            {11, {{100000, true}}},
+            {12, {{100001, false}}},
+            {13, {{100001, true}}}
+        };
+        assert(mapTestCases.size() == mapExpected.size());
+        for (size_t i = 0; i < mapTestCases.size(); ++i) {
+            if (!CreateTransaction(mapTestCases.at(i), mapExpected.at(i).first, mapExpected.at(i).second)) {
+                std::cout << strprintf("CreateTransactionTest failed at: %d - %d\n", nTestId, i) << std::endl;
+            }
+        }
+    };
+
+    // First run the tests with only one input containing 100k duffs
+    {
+        coinControl.SetNull();
+        coinControl.Select(GetCoins({{100000, false}})[0]);
+
+        // Start with fallback feerate
+        runTest(1, DEFAULT_FALLBACK_FEE, {
+            {0, {true, ChangeTest::ChangeExpected}},
+            {1, {true, ChangeTest::ChangeExpected}},
+            {2, {true, ChangeTest::ChangeExpected}},
+            {3, {true, ChangeTest::ChangeExpected}},
+            {4, {true, ChangeTest::ChangeExpected}},
+            {5, {true, ChangeTest::ChangeExpected}},
+            {6, {false, ChangeTest::Skip}},
+            {7, {true, ChangeTest::NoChangeExpected}},
+            {8, {false, ChangeTest::Skip}},
+            {9, {false, ChangeTest::Skip}},
+            {10, {false, ChangeTest::Skip}},
+            {11, {true, ChangeTest::NoChangeExpected}},
+            {12, {false, ChangeTest::Skip}},
+            {13, {false, ChangeTest::Skip}}
+        });
+        // Now with 100x fallback feerate
+        runTest(2, DEFAULT_FALLBACK_FEE * 100, {
+            {0, {true, ChangeTest::ChangeExpected}},
+            {1, {false, ChangeTest::Skip}},
+            {2, {true, ChangeTest::ChangeExpected}},
+            {3, {false, ChangeTest::Skip}},
+            {4, {true, ChangeTest::NoChangeExpected}},
+            {5, {false, ChangeTest::Skip}},
+            {6, {false, ChangeTest::Skip}},
+            {7, {true, ChangeTest::NoChangeExpected}},
+            {8, {false, ChangeTest::Skip}},
+            {9, {false, ChangeTest::Skip}},
+            {10, {false, ChangeTest::Skip}},
+            {11, {true, ChangeTest::NoChangeExpected}},
+            {12, {false, ChangeTest::Skip}},
+            {13, {false, ChangeTest::Skip}}
+        });
+    }
+    // Now use 4 different inputs with a total of 100k duff
+    {
+        coinControl.SetNull();
+        auto setCoins = GetCoins({{1000, false}, {5000, false}, {10000, false}, {84000, false}});
+        for (auto coin : setCoins) {
+            coinControl.Select(coin);
+        }
+
+        // Start with fallback feerate
+        runTest(3, DEFAULT_FALLBACK_FEE, {
+            {0, {true, ChangeTest::ChangeExpected}},
+            {1, {false, ChangeTest::Skip}},
+            {2, {true, ChangeTest::ChangeExpected}},
+            {3, {true, ChangeTest::ChangeExpected}},
+            {4, {true, ChangeTest::ChangeExpected}},
+            {5, {true, ChangeTest::ChangeExpected}},
+            {6, {false, ChangeTest::Skip}},
+            {7, {true, ChangeTest::NoChangeExpected}},
+            {8, {false, ChangeTest::Skip}},
+            {9, {false, ChangeTest::Skip}},
+            {10, {false, ChangeTest::Skip}},
+            {11, {true, ChangeTest::NoChangeExpected}},
+            {12, {false, ChangeTest::Skip}},
+            {13, {false, ChangeTest::Skip}}
+        });
+        // Now with 100x fallback feerate
+        runTest(4, DEFAULT_FALLBACK_FEE * 100, {
+            {0, {true, ChangeTest::ChangeExpected}},
+            {1, {false, ChangeTest::Skip}},
+            {2, {true, ChangeTest::ChangeExpected}},
+            {3, {false, ChangeTest::Skip}},
+            {4, {false, ChangeTest::Skip}},
+            {5, {false, ChangeTest::Skip}},
+            {6, {false, ChangeTest::Skip}},
+            {7, {false, ChangeTest::Skip}},
+            {8, {false, ChangeTest::Skip}},
+            {9, {false, ChangeTest::Skip}},
+            {10, {false, ChangeTest::Skip}},
+            {11, {true, ChangeTest::NoChangeExpected}},
+            {12, {false, ChangeTest::Skip}},
+            {13, {false, ChangeTest::Skip}}
+        });
+    }
+
+    // Last use 10 equal inputs with a total of 100k duff
+    {
+        coinControl.SetNull();
+        auto setCoins = GetCoins({{10000, false}, {10000, false}, {10000, false}, {10000, false}, {10000, false},
+                                  {10000, false}, {10000, false}, {10000, false}, {10000, false}, {10000, false}});
+
+        for (auto coin : setCoins) {
+            coinControl.Select(coin);
+        }
+
+        // Start with fallback feerate
+        runTest(5, DEFAULT_FALLBACK_FEE, {
+            {0, {true, ChangeTest::ChangeExpected}},
+            {1, {false, ChangeTest::Skip}},
+            {2, {true, ChangeTest::ChangeExpected}},
+            {3, {true, ChangeTest::ChangeExpected}},
+            {4, {true, ChangeTest::ChangeExpected}},
+            {5, {true, ChangeTest::ChangeExpected}},
+            {6, {false, ChangeTest::Skip}},
+            {7, {true, ChangeTest::NoChangeExpected}},
+            {8, {false, ChangeTest::Skip}},
+            {9, {false, ChangeTest::Skip}},
+            {10, {false, ChangeTest::Skip}},
+            {11, {true, ChangeTest::NoChangeExpected}},
+            {12, {false, ChangeTest::Skip}},
+            {13, {false, ChangeTest::Skip}}
+        });
+        // Now with 100x fallback feerate
+        runTest(6, DEFAULT_FALLBACK_FEE * 100, {
+            {0, {false, ChangeTest::Skip}},
+            {1, {false, ChangeTest::Skip}},
+            {2, {false, ChangeTest::Skip}},
+            {3, {false, ChangeTest::Skip}},
+            {4, {false, ChangeTest::Skip}},
+            {5, {false, ChangeTest::Skip}},
+            {6, {false, ChangeTest::Skip}},
+            {7, {false, ChangeTest::Skip}},
+            {8, {false, ChangeTest::Skip}},
+            {9, {false, ChangeTest::Skip}},
+            {10, {false, ChangeTest::Skip}},
+            {11, {false, ChangeTest::Skip}},
+            {12, {false, ChangeTest::Skip}},
+            {13, {false, ChangeTest::Skip}}
+        });
+    }
+    // Some tests without selected coins in coinControl, let the wallet decide
+    // which inputs to use
+    {
+        coinControl.SetNull();
+        auto setCoins = GetCoins({{1000, false}, {1000, false}, {1000, false}, {1000, false}, {1000, false},
+                                  {1100, false}, {1200, false}, {1300, false}, {1400, false}, {1500, false},
+                                  {3000, false}, {3000, false}, {2000, false}, {2000, false}, {1000, false}});
+        // Lock all other coins which were already in the wallet
+        std::vector<COutput> vecAvailable;
+        {
+            auto locked_chain = wallet->chain().lock();
+            LOCK(wallet->cs_wallet);
+            wallet->AvailableCoins(*locked_chain, vecAvailable);
+            for (auto coin : vecAvailable) {
+                auto out = COutPoint(coin.tx->GetHash(), coin.i);
+                if (std::find(setCoins.begin(), setCoins.end(), out) == setCoins.end()) {
+                    wallet->LockCoin(out);
+                }
+            }
+        }
+
+        BOOST_CHECK(CreateTransaction({{100, false}}, false));
+        BOOST_CHECK(CreateTransaction({{1000, true}}, true));
+        BOOST_CHECK(CreateTransaction({{1100, false}}, true));
+        BOOST_CHECK(CreateTransaction({{1100, true}}, true));
+        BOOST_CHECK(CreateTransaction({{2200, false}}, true));
+        BOOST_CHECK(CreateTransaction({{3300, false}}, true));
+        BOOST_CHECK(CreateTransaction({{4400, false}}, true));
+        BOOST_CHECK(CreateTransaction({{5500, false}}, true));
+        BOOST_CHECK(CreateTransaction({{5500, true}}, true));
+        BOOST_CHECK(CreateTransaction({{6600, false}}, true));
+        BOOST_CHECK(CreateTransaction({{7700, false}}, true));
+        BOOST_CHECK(CreateTransaction({{8800, false}}, true));
+        BOOST_CHECK(CreateTransaction({{9900, false}}, true));
+        BOOST_CHECK(CreateTransaction({{9900, true}}, true));
+        BOOST_CHECK(CreateTransaction({{10000, false}}, true));
+        BOOST_CHECK(CreateTransaction({{10000, false}, {10000, false}}, false));
+        BOOST_CHECK(CreateTransaction({{10000, false}, {12500, true}}, true));
+        BOOST_CHECK(CreateTransaction({{10000, true}, {10000, true}}, true));
+        BOOST_CHECK(CreateTransaction({{1000, false}, {2000, false}, {3000, false}, {4000, false}}, true));
+        BOOST_CHECK(CreateTransaction({{1234, false}}, true));
+        BOOST_CHECK(CreateTransaction({{1234, false}, {4321, false}}, true));
+        BOOST_CHECK(CreateTransaction({{1234, false}, {4321, false}, {5678, false}}, true));
+        BOOST_CHECK(CreateTransaction({{1234, false}, {4321, false}, {5678, false}, {8765, false}}, false));
+        BOOST_CHECK(CreateTransaction({{1234, false}, {4321, false}, {5678, false}, {8765, true}}, true));
+        BOOST_CHECK(CreateTransaction({{1000000, false}}, false));
+
+        LOCK(wallet->cs_wallet);
+        wallet->UnlockAllCoins();
+    }
+    // Test if the change output ends up at the requested position
+    {
+        coinControl.SetNull();
+        coinControl.Select(GetCoins({{100000, false}})[0]);
+
+        BOOST_CHECK(CreateTransaction({{25000, false}, {25000, false}, {25000, false}}, {}, 0, true, ChangeTest::ChangeExpected));
+        BOOST_CHECK(CreateTransaction({{25000, false}, {25000, false}, {25000, false}}, {}, 1, true, ChangeTest::ChangeExpected));
+        BOOST_CHECK(CreateTransaction({{25000, false}, {25000, false}, {25000, false}}, {}, 2, true, ChangeTest::ChangeExpected));
+        BOOST_CHECK(CreateTransaction({{25000, false}, {25000, false}, {25000, false}}, {}, 3, true, ChangeTest::ChangeExpected));
+    }
+    // Test error cases
+    {
+        coinControl.SetNull();
+        // First try to send something without any coins available
+        {
+            // Lock all other coins
+            std::vector<COutput> vecAvailable;
+            {
+                auto locked_chain = wallet->chain().lock();
+                LOCK(wallet->cs_wallet);
+                wallet->AvailableCoins(*locked_chain, vecAvailable);
+                for (auto coin : vecAvailable) {
+                    wallet->LockCoin(COutPoint(coin.tx->GetHash(), coin.i));
+                }
+            }
+
+            BOOST_CHECK(CreateTransaction({{1000, false}}, strInsufficientFunds, false));
+            BOOST_CHECK(CreateTransaction({{1000, true}}, strInsufficientFunds, false));
+            coinControl.nCoinType = CoinType::ONLY_NONDENOMINATED;
+            BOOST_CHECK(CreateTransaction({{1000, true}}, strUnableToLocateCoinJoin1, false));
+            coinControl.nCoinType = CoinType::ONLY_FULLY_MIXED;
+            BOOST_CHECK(CreateTransaction({{1000, true}}, strUnableToLocateCoinJoin2, false));
+
+            LOCK(wallet->cs_wallet);
+            wallet->UnlockAllCoins();
+        }
+
+        // Just to create nCount output recipes to use in tests below
+        std::vector<std::pair<CAmount, bool>> vecOutputEntries{{5000, false}};
+        auto createOutputEntries = [&](int nCount) {
+            while (vecOutputEntries.size() <= size_t(nCount)) {
+                vecOutputEntries.push_back(vecOutputEntries.back());
+            }
+            if (vecOutputEntries.size() > size_t(nCount)) {
+                int nDiff = vecOutputEntries.size() - nCount;
+                vecOutputEntries.erase(vecOutputEntries.begin(), vecOutputEntries.begin() + nDiff);
+            }
+        };
+
+        coinControl.SetNull();
+        coinControl.Select(GetCoins({{100 * COIN, false}})[0]);
+
+        BOOST_CHECK(CreateTransaction({{-5000, false}}, strAmountNotNegative, false));
+        BOOST_CHECK(CreateTransaction({}, strAtLeastOneRecipient, false));
+        BOOST_CHECK(CreateTransaction({{545, false}}, strTooSmall, false));
+        BOOST_CHECK(CreateTransaction({{545, true}}, strTooSmall, false));
+        BOOST_CHECK(CreateTransaction({{546, true}}, strTooSmallAfterFee, false));
+
+        createOutputEntries(100);
+        vecOutputEntries.push_back({600, true});
+        BOOST_CHECK(CreateTransaction(vecOutputEntries, strTooSmallToPayFee, false));
+        vecOutputEntries.pop_back();
+
+        createOutputEntries(2934);
+        BOOST_CHECK(CreateTransaction(vecOutputEntries, {}, true));
+        createOutputEntries(2935);
+        BOOST_CHECK(CreateTransaction(vecOutputEntries, strTransactionTooLarge, false));
+
+        auto prevRate = minRelayTxFee;
+        coinControl.m_feerate = prevRate;
+        coinControl.fOverrideFeeRate = true;
+        minRelayTxFee = CFeeRate(prevRate.GetFeePerK() * 10);
+        BOOST_CHECK(CreateTransaction({{5000, false}}, strTransactionTooLargeForFeePolicy, false));
+        coinControl.m_feerate.reset();
+        minRelayTxFee = prevRate;
+
+        BOOST_CHECK(CreateTransaction({{5000, false}, {5000, false}, {5000, false}}, strChangeIndexOutOfRange, 4, false));
+    }
+}
+
+// Check SelectCoinsGroupedByAddresses() behaviour
+BOOST_FIXTURE_TEST_CASE(select_coins_grouped_by_addresses, ListCoinsTestingSetup)
+{
+    // Check initial balance from one mature coinbase transaction.
+    BOOST_CHECK_EQUAL(wallet->GetAvailableBalance(), 500 * COIN);
+
+    {
+        std::vector<CompactTallyItem> vecTally = wallet->SelectCoinsGroupedByAddresses(/*fSkipDenominated=*/false,
+                /*fAnonymizable=*/false,
+                /*fSkipUnconfirmed=*/false,
+                /*nMaxOupointsPerAddress=*/100);
+        BOOST_CHECK_EQUAL(vecTally.size(), 1);
+        BOOST_CHECK_EQUAL(vecTally.at(0).nAmount, 500 * COIN);
+        BOOST_CHECK_EQUAL(vecTally.at(0).vecInputCoins.size(), 1);
+    }
+
+    // Create two conflicting transactions, add one to the wallet and mine the other one.
+    CTransactionRef tx1;
+    CTransactionRef tx2;
+    CAmount fee;
+    int changePos = -1;
+    bilingual_str error;
+    CCoinControl dummy;
+    {
+        auto locked_chain = wallet->chain().lock();
+        BOOST_CHECK(wallet->CreateTransaction(*locked_chain, {CRecipient{GetScriptForRawPubKey({}), 2 * COIN, true /* subtract fee */}},
+                                            tx1, fee, changePos, error, dummy));
+        BOOST_CHECK(wallet->CreateTransaction(*locked_chain, {CRecipient{GetScriptForRawPubKey({}), 1 * COIN, true /* subtract fee */}},
+                                            tx2, fee, changePos, error, dummy));
+    }
+    wallet->CommitTransaction(tx1, {}, {});
+    BOOST_CHECK_EQUAL(wallet->GetAvailableBalance(), 0);
+    CreateAndProcessBlock({CMutableTransaction(*tx2)}, GetScriptForRawPubKey({}));
+
+    // Reveal the mined tx, it should conflict with the one we have in the wallet already.
+    WalletRescanReserver reserver(wallet.get());
+    reserver.reserve();
+    auto result = wallet->ScanForWalletTransactions(::ChainActive().Genesis()->GetBlockHash(), {}, reserver, false);
+    BOOST_CHECK_EQUAL(result.status, CWallet::ScanResult::SUCCESS);
+    {
+        LOCK(wallet->cs_wallet);
+        const auto& conflicts = wallet->GetConflicts(tx2->GetHash());
+        BOOST_CHECK_EQUAL(conflicts.size(), 2);
+        BOOST_CHECK_EQUAL(conflicts.count(tx1->GetHash()), 1);
+        BOOST_CHECK_EQUAL(conflicts.count(tx2->GetHash()), 1);
+    }
+
+    // Committed tx is the one that should be marked as "conflicting".
+    // Make sure that available balance and SelectCoinsGroupedByAddresses results match.
+    const auto vecTally = wallet->SelectCoinsGroupedByAddresses(/*fSkipDenominated=*/false,
+            /*fAnonymizable=*/false,
+            /*fSkipUnconfirmed=*/false,
+            /*nMaxOupointsPerAddress=*/100);
+    BOOST_CHECK_EQUAL(vecTally.size(), 2);
+    BOOST_CHECK_EQUAL(vecTally.at(0).vecInputCoins.size(), 1);
+    BOOST_CHECK_EQUAL(vecTally.at(1).vecInputCoins.size(), 1);
+    BOOST_CHECK_EQUAL(vecTally.at(0).nAmount + vecTally.at(1).nAmount, (500 + 499) * COIN);
+    BOOST_CHECK_EQUAL(wallet->GetAvailableBalance(), (500 + 499) * COIN);
+}
+
+BOOST_FIXTURE_TEST_CASE(wallet_disableprivkeys, TestChain100Setup)
+{
+    auto chain = interfaces::MakeChain();
+    std::shared_ptr<CWallet> wallet = std::make_shared<CWallet>(*chain, WalletLocation(), CreateDummyWalletDatabase());
+    wallet->SetMinVersion(FEATURE_LATEST);
+    wallet->SetWalletFlag(WALLET_FLAG_DISABLE_PRIVATE_KEYS);
+    BOOST_CHECK(!wallet->TopUpKeyPool(1000));
+    CPubKey pubkey;
+    BOOST_CHECK(!wallet->GetKeyFromPool(pubkey, false));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

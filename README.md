@@ -1,20 +1,20 @@
-                  
-PirateCash [PIRATE] Source Code
-================================
+PirateCash Core staging tree 18.0
+===========================
 
-https://www.piratecash.net
+https://p.cash/ https://pirate.cash/ https://piratecash.net/
 
 
-Copyright © 2009-2023	The Bitcoin Core developers
+What is PirateCash?
+-------------
 
-Copyright © 2014-2023	The Dash Core developers
+PirateCash is an experimental digital ecosystem for provide services B2B, private
+payments to anyone, anywhere in the world. PirateCash uses peer-to-peer technology
+to operate with no central authority: managing transactions and issuing money
+are carried out collectively by the network. PirateCash Core is the name of the open
+source software which enables the use of this currency.
 
-Copyright © 2014-2023	The PivX developers
-
-Copyright © 2012-2023	The NovaCoin developers
-
-Copyright © 2018-2023	The PirateCash developers
-
+For more information, as well as an immediately useable, binary version of
+the PirateCash Core software, see https://p.cash/.
 
 ## Specifications
 
@@ -29,7 +29,7 @@ Copyright © 2018-2023	The PirateCash developers
 | Required Coins for masternode | 10 000 PIRATE       |
 
 
-## PoS Rewards Breakdown
+## Pow / PoS Rewards Breakdown
 
 | Block                 | Reward            | Masternodes | Stakers    |
 |---------------------- |:----------------- |:----------- |:---------- |
@@ -69,8 +69,6 @@ Copyright © 2018-2023	The PirateCash developers
 | 33554433 (0x2000001)  | 0.00000001 PIRATE | 0.1%        | 99.9%      |
 | 34603009 (0x2100001)  | 0 + fees   PIRATE | 0.1%        | 99.9%      |
 
-
-
 ## Channels
 
 | Specification | Value             |
@@ -85,46 +83,61 @@ Copyright © 2018-2023	The PirateCash developers
 | ...           | ... |
 | Test-NET	| [https://testnet.piratecash.info/](https://testnet.piratecash.info)|
 
+For more information, as well as an immediately usable, binary version of
+the PirateCash Core software, see https://p.cash/en/download/.
+
 License
 -------
 
-PirateCash is released under the terms of the MIT license. See `COPYING` for more
-information or see http://opensource.org/licenses/MIT.
+PirateCash Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
+information or see https://opensource.org/licenses/MIT.
 
-Development process
+Development Process
 -------------------
 
-Developers work in their own trees, then submit pull requests when they think
-their feature or bug fix is ready.
+The `master` branch is meant to be stable. Development is normally done in separate branches.
+[Tags](https://github.com/piratecash/piratecash/tags) are created to indicate new official,
+stable release versions of PirateCash Core.
 
-If it is a simple/trivial/non-controversial change, then one of the PirateCash
-development team members simply pulls it.
+The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
 
-If it is a *more complicated or potentially controversial* change, then the patch
-submitter will be asked to start a discussion with the devs and community.
+Testing
+-------
 
-The patch will be accepted if there is broad consensus that it is a good thing.
-Developers should expect to rework and resubmit patches if the code doesn't
-match the project's coding conventions (see `doc/coding.txt`) or are
-controversial.
+Testing and code review is the bottleneck for development; we get more pull
+requests than we can review and test on short notice. Please be patient and help out by testing
+other people's pull requests, and remember this is a security-critical project where any mistake might cost people
+lots of money.
 
-The `master` branch is regularly built and tested, but is not guaranteed to be
-completely stable. [Tags](https://github.com/piratecash/piratecash/tags) are created
-regularly to indicate new official, stable release versions of PirateCash.
+### Automated Testing
 
+Developers are strongly encouraged to write [unit tests](src/test/README.md) for new code, and to
+submit new unit tests for old code. Unit tests can be compiled and run
+(assuming they weren't disabled in configure) with: `make check`. Further details on running
+and extending unit tests can be found in [/src/test/README.md](/src/test/README.md).
 
-**Compiling for debugging**
+There are also [regression and integration tests](/test), written
+in Python, that are run automatically on the build server.
+These tests can be run (if the [test dependencies](/test) are installed) with: `test/functional/test_runner.py`
 
-Run configure with the --enable-debug option, then make. Or run configure with
-CXXFLAGS="-g -ggdb -O0" or whatever debug flags you need.
+The Travis CI system makes sure that every pull request is built for Windows, Linux, and macOS, and that unit/sanity tests are run automatically.
 
-**Debug.log**
+### Manual Quality Assurance (QA) Testing
 
-If the code is behaving strangely, take a look in the debug.log file in the data directory;
-error and debugging messages are written there.
+Changes should be tested by somebody other than the developer who wrote the
+code. This is especially important for large or high-risk changes. It is useful
+to add a test plan to the pull request description if testing the changes is
+not straightforward.
 
-The -debug=... command-line option controls debugging; running with just -debug will turn
-on all categories (and give you a very large debug.log file).
+Translations
+------------
 
-The Qt code routes qDebug() output to debug.log under category "qt": run with -debug=qt
-to see it.
+Changes to translations as well as new translations can be submitted to
+[PirateCash Core's Transifex page](https://www.transifex.com/projects/p/piratecash/).
+
+Translations are periodically pulled from Transifex and merged into the git repository. See the
+[translation process](doc/translation_process.md) for details on how this works.
+
+**Important**: We do not accept translation changes as GitHub pull requests because the next
+pull from Transifex would automatically overwrite them again.
+
