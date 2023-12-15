@@ -54,8 +54,8 @@ unsigned int nStakeMinAge = 8 * 60 * 60; // 8 hours
 unsigned int nStakeMaxAge = 90 * 24 * 60 * 60; // 90 days
 unsigned int nModifierInterval = 8 * 60; // time to elapse before new modifier is computed
 int64_t SPEC_TARGET_FIX = 310000;
-int64_t REWARD_DECREASE_HARDFORK_V18 = 4070908800; // Mainnet hardfork to new PirateCash V18 core is not specified
-int64_t HARDFORK_V18                 = 4070908800; // Mainnet hardfork to new PirateCash V18 core is not specified
+int64_t REWARD_DECREASE_HARDFORK_V18 = 1265000; // 2024-01-08, the block reward will decreased to 150 sat
+int64_t HARDFORK_V18                 = 1265799; // 2024-01-09, this code will not produce any blocks
 
 int nCoinbaseMaturity = 120;
 CBlockIndex* pindexGenesisBlock = NULL;
