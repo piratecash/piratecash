@@ -213,89 +213,89 @@ class CMainParams : public CChainParams {
 public:
     CMainParams() {
         strNetworkID = "main";
-        consensus.nSubsidyHalvingInterval = 2102400; // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
-        consensus.nMasternodePaymentsStartBlock = 7000000; // not true, but it's ok as long as it's less then nMasternodePaymentsIncreaseBlock
+        consensus.nSubsidyHalvingInterval = 1266000; // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
+        consensus.nMasternodePaymentsStartBlock = 1266000; // not true, but it's ok as long as it's less then nMasternodePaymentsIncreaseBlock
         consensus.nInstantSendConfirmationsRequired = 6;
         consensus.nInstantSendKeepLock = 24;
-        consensus.nBudgetPaymentsStartBlock = 7000000; // actual historical value
+        consensus.nBudgetPaymentsStartBlock = 1266000; // actual historical value
         consensus.nBudgetPaymentsCycleBlocks = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nBudgetPaymentsWindowBlocks = 100;
-        consensus.nSuperblockStartBlock = 7100000; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
+        consensus.nSuperblockStartBlock = 1266000; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
         consensus.nSuperblockStartHash = uint256(); // do not check this //uint256S("0000000000020cb27c7ef164d21003d5d20cdca2f54dd9a9ca6d45f4d47f8aa3");
         consensus.nSuperblockCycle = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nGovernanceMinQuorum = 10;
         consensus.nGovernanceFilterElements = 20000;
         consensus.nMasternodeMinimumConfirmations = 15;
-        consensus.BIP34Height = 7600000;
+        consensus.BIP34Height = 1266010;
         consensus.BIP34Hash = uint256(); //uint256S("0x000001f35e70f7c5705f64c6c5cc3dea9449e74d5b5c7cf74dad1bcca14a8012");
-        consensus.BIP65Height = 2431000; // 00000000000076d8fcea02ec0963de4abfd01e771fec0863f960c2c64fe6f357
-        consensus.BIP66Height = 2075000; // 00000000000b1fa2dfa312863570e13fae9ca7b5566cb27e55422620b469aefa
-        consensus.DIP0001Height = 5500000;
-        consensus.DIP0003Height = 7000000;
-        consensus.DIP0003EnforcementHeight = 7300000;
+        consensus.BIP65Height = 1266020; // 00000000000076d8fcea02ec0963de4abfd01e771fec0863f960c2c64fe6f357
+        consensus.BIP66Height = 1266030; // 00000000000b1fa2dfa312863570e13fae9ca7b5566cb27e55422620b469aefa
+        consensus.DIP0001Height = 1266040;
+        consensus.DIP0003Height = 1266050;
+        consensus.DIP0003EnforcementHeight = 1266060;
         consensus.DIP0003EnforcementHash = uint256(); //uint256S("000000000000002d1734087b4c5afc3133e4e1c3e1a89218f62bcd9bb3d17f81");
-        consensus.DIP0008Height = 3000000; // 00000000000000112e41e4b3afda8b233b8cc07c532d2eac5de097b68358c43e
+        consensus.DIP0008Height = 1266070; // 00000000000000112e41e4b3afda8b233b8cc07c532d2eac5de097b68358c43e
         consensus.powLimit = uint256S("0x0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 16
         consensus.posLimit = uint256S("0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 20
-        consensus.BRRHeight = 700100; // 000000000000000c5a124f3eccfbe6e17876dca79cec9e63dfa70d269113c926
+        consensus.BRRHeight = 1266080; // 000000000000000c5a124f3eccfbe6e17876dca79cec9e63dfa70d269113c926
         consensus.MinBIP9WarningHeight = consensus.DIP0008Height + consensus.nMinerConfirmationWindow;
-        consensus.nPowTargetTimespan = 24 * 60 * 60; // PirateCash: 1 day
+        consensus.nPowTargetTimespan = 8 * 60 * 60; // PirateCash: 8 hours
         consensus.nPowTargetSpacing = 2 * 60; // PirateCash: 120 sec
         consensus.nPosTargetSpacingV1 = 90;
         consensus.nPosTargetSpacingV2 = 120;
         consensus.nSpecTargetFix = 310000;
-        consensus.nRewForkDecreaseV18 = 4070908800;
-        consensus.nForkHeight = 4070908800;  // Block Height when we'll use new codebase
-        consensus.nRestoreRewardV18 = 4070908800;
-        consensus.nSkipTimeUntil = 1705276800; //2024-01-01
+        consensus.nRewForkDecreaseV18 = 1265000; // 2024-01-08
+        consensus.nForkHeight = 1265800;         // 2024-01-09 Block Height when we'll use new codebase
+        consensus.nRestoreRewardV18 = 1268999;   // 2024-01-13
+        consensus.nSkipTimeUntil = 1705104000;   // 2024-01-13
         consensus.nLastPowBlock = 100000;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
-        consensus.nPowKGWHeight = 3000000;
-        consensus.nPowDGWHeight = 4000000;
+        consensus.nPowKGWHeight = 1266090;
+        consensus.nPowDGWHeight = 1266100;
         consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
         consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = VERSIONBITS_NUM_BITS - 1;
-        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1704067200; // 2024-01-01
-        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1735689600; // 2025-01-01
+        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1705104000; // 2024-01-13
+        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1736726400; // 2025-01-13
 
         // Deployment of BIP68, BIP112, and BIP113.
         consensus.vDeployments[Consensus::DEPLOYMENT_CSV].bit = 0;
-        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nStartTime = 1704067200; // 2024-01-01
-        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nTimeout = 1735689600; // 2025-01-01
+        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nStartTime = 1705104000; // 2024-01-13
+        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nTimeout = 1736726400; // 2025-01-13
 
         // Deployment of DIP0001
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].bit = 1;
-        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nStartTime = 1704067200; // 2024-01-01
-        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nTimeout = 1735689600; // 2025-01-01
+        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nStartTime = 1705104000; // 2024-01-13
+        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nTimeout = 1736726400; // 2025-01-13
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nWindowSize = 100;
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nThresholdStart = 50; // 50% of 100
 
         // Deployment of BIP147
         consensus.vDeployments[Consensus::DEPLOYMENT_BIP147].bit = 2;
-        consensus.vDeployments[Consensus::DEPLOYMENT_BIP147].nStartTime = 1704067200; // 2024-01-01
-        consensus.vDeployments[Consensus::DEPLOYMENT_BIP147].nTimeout = 1735689600; // 2025-01-01
+        consensus.vDeployments[Consensus::DEPLOYMENT_BIP147].nStartTime = 1705104000; // 2024-01-13
+        consensus.vDeployments[Consensus::DEPLOYMENT_BIP147].nTimeout = 1736726400; // 2025-01-13
         consensus.vDeployments[Consensus::DEPLOYMENT_BIP147].nWindowSize = 100;
         consensus.vDeployments[Consensus::DEPLOYMENT_BIP147].nThresholdStart = 50; // 50% of 100
 
         // Deployment of DIP0003
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0003].bit = 3;
-        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0003].nStartTime = 1704067200; // 2024-01-01
-        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0003].nTimeout = 1735689600; // 2025-01-01
+        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0003].nStartTime = 1705104000; // 2024-01-13
+        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0003].nTimeout = 1736726400; // 2025-01-13
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0003].nWindowSize = 4032;
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0003].nThresholdStart = 3226; // 80% of 4032
 
         // Deployment of DIP0008
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0008].bit = 4;
-        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0008].nStartTime = 1704067200; // 2024-01-01
-        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0008].nTimeout = 1735689600; // 2025-01-01
+        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0008].nStartTime = 1705104000; // 2024-01-13
+        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0008].nTimeout = 1736726400; // 2025-01-13
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0008].nWindowSize = 100;
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0008].nThresholdStart = 50; // 50% of 100
 
         // Deployment of Block Reward Reallocation
         consensus.vDeployments[Consensus::DEPLOYMENT_REALLOC].bit = 5;
-        consensus.vDeployments[Consensus::DEPLOYMENT_REALLOC].nStartTime = 1704067200; // 2024-01-01
-        consensus.vDeployments[Consensus::DEPLOYMENT_REALLOC].nTimeout = 1735689600; // 2025-01-01
+        consensus.vDeployments[Consensus::DEPLOYMENT_REALLOC].nStartTime = 1705104000; // 2024-01-13
+        consensus.vDeployments[Consensus::DEPLOYMENT_REALLOC].nTimeout = 1736726400; // 2025-01-13
         consensus.vDeployments[Consensus::DEPLOYMENT_REALLOC].nWindowSize = 4032;
         consensus.vDeployments[Consensus::DEPLOYMENT_REALLOC].nThresholdStart = 3226; // 80% of 4032
         consensus.vDeployments[Consensus::DEPLOYMENT_REALLOC].nThresholdMin = 2420; // 60% of 4032
@@ -303,8 +303,8 @@ public:
 
         // Deployment of DIP0020, DIP0021 and LLMQ_100_67 quorums
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0020].bit = 6;
-        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0020].nStartTime = 1704067200; // 2024-01-01
-        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0020].nTimeout = 1735689600; // 2025-01-01
+        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0020].nStartTime = 1705104000; // 2024-01-13
+        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0020].nTimeout = 1736726400; // 2025-01-13
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0020].nWindowSize = 4032;
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0020].nThresholdStart = 3226; // 80% of 4032
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0020].nThresholdMin = 2420; // 60% of 4032
