@@ -3766,7 +3766,8 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
                 headers[n].nFlags |= CBlockIndex::BLOCK_PROOF_OF_STAKE;
             }
             ReadCompactSize(vRecv); // ignore tx count; assume it is 0.
-            ReadCompactSize(vRecv); // needed for vchBlockSig.
+            if (!headers[n].IsProofOfStakeV2())
+                ReadCompactSize(vRecv); // needed for vchBlockSig.
         }
         }
 

@@ -142,7 +142,7 @@ public:
     std::vector<CTransactionRef> vtx;
 
     // PirateCash: block signature - signed by coin base txout[0]'s owner
-    std::vector<unsigned char> vchBlockSig;
+    std::vector<unsigned char> oldVchBlockSig;
 
     // memory only
     mutable bool fChecked;
@@ -162,7 +162,8 @@ public:
     {
         READWRITEAS(CBlockHeader, obj);
         READWRITE(obj.vtx);
-        READWRITE(obj.vchBlockSig);
+        if (!obj.IsProofOfStakeV2())
+            READWRITE(obj.oldVchBlockSig);
     }
 
     void SetNull()
@@ -170,7 +171,7 @@ public:
         CBlockHeader::SetNull();
         vtx.clear();
         fChecked = false;
-        vchBlockSig.clear();
+        oldVchBlockSig.clear();
     }
 
     CBlockHeader GetBlockHeader() const
