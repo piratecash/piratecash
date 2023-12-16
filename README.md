@@ -1,6 +1,44 @@
-                  
 PirateCash [PIRATE] Source Code
 ================================
+
+# Mandatory Update
+
+http://p.cash/hardfork
+
+We have released a major update PirateCash Core v18.
+
+To use it, you need to perform the following steps.
+
+## Update the client version to 11.7.0 (protocol version 60029)
+
+At block 1265001 (approximately January 8, 2024), the block reward will be reduced to 150 satoshis. This is done so that miners with outdated clients cannot generate new blocks. We have also sent an alert to all users with a protocol version below 60029 about the need to update the client to avoid FOMO among those who have not updated.
+
+For services using PirateCash (exchanges, exchange services, staking pools, and others), we recommend temporarily suspending deposits and withdrawals from January 7 to 8, 2024 (before block 1265001).
+
+At block 1265799 (approximately January 9, 2024), the old client will create the last block and then stop generating and accepting new blocks. Additionally, information will be recorded in debug.log about the need to update the client to the latest version.
+
+## Download the new 0.18.0.0 version of the client
+
+The new version of PirateCash 0.18.0.0 will available approx January 2-5 2024 and right now 0.18.0.0-rc2 is available.
+
+Until block 1265800, you can run both clients simultaneously because the directories with working files are different: .piratecash for the old and .piratecore for the new client. You can also copy the wallet.dat file to the new client directory, export and import private keys, or transfer funds from the old wallet to the new one (you need to generate an address on the new client). Note: the new client before block 1265800 downloads blocks and displays incoming transactions, but sending will only be possible after the hard fork is activated.
+
+At block 1265800 (approximately January 9, 2024), the new client will start creating new blocks.
+
+After block 1268999 (approximately January 13, 2024), block rewards will be restored. It is recommended for services that accept and send Pirate to restore wallet functionality!.
+
+Please note that the RPC command signrawtransaction has been replaced with signrawtransactionwithwallet (our code is fully compatible with RPC commands from DashCore 0.18.2).
+
+## An alternative option is available for users.
+
+Transfer your Pirate to our service [@piratecash_bot](http://t.me/piratecash_bot), where you can mine them in the bot or exchange them for tokens.
+
+It is important to note that temporarily you will not be able to deposit or withdraw PirateCash from the @piratecash_bot service during maintenance in the main blockchain. However, you can freely use tokens without any restrictions.
+
+Starting from block 1265001, payouts for staking and referral rewards will be temporarily paused and will resume after block 1268999 (January 13, 2024).
+
+
+## About Souces
 
 https://www.piratecash.net
 
