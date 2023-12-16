@@ -1,0 +1,25 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource prefix="/translations">
+        <file alias="ar">locale/piratecash_ar.qm</file>
+        <file alias="bg">locale/piratecash_bg.qm</file>
+        <file alias="de">locale/piratecash_de.qm</file>
+        <file alias="en">locale/piratecash_en.qm</file>
+        <file alias="es">locale/piratecash_es.qm</file>
+        <file alias="fi">locale/piratecash_fi.qm</file>
+        <file alias="fr">locale/piratecash_fr.qm</file>
+        <file alias="it">locale/piratecash_it.qm</file>
+        <file alias="ja">locale/piratecash_ja.qm</file>
+        <file alias="ko">locale/piratecash_ko.qm</file>
+        <file alias="nl">locale/piratecash_nl.qm</file>
+        <file alias="pl">locale/piratecash_pl.qm</file>
+        <file alias="pt">locale/piratecash_pt.qm</file>
+        <file alias="ro">locale/piratecash_ro.qm</file>
+        <file alias="ru">locale/piratecash_ru.qm</file>
+        <file alias="sk">locale/piratecash_sk.qm</file>
+        <file alias="th">locale/piratecash_th.qm</file>
+        <file alias="tr">locale/piratecash_tr.qm</file>
+        <file alias="vi">locale/piratecash_vi.qm</file>
+        <file alias="zh_CN">locale/piratecash_zh_CN.qm</file>
+        <file alias="zh_TW">locale/piratecash_zh_TW.qm</file>
+    </qresource>
+</RCC>

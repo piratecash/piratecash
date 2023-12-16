@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>960</width>
-    <height>686</height>
+    <height>585</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -19,17 +19,11 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">background-color: rgb(255, 255, 255); color: rgb(0,0,0);</string>
-  </property>
   <layout class="QVBoxLayout" name="topLayout">
    <item>
     <widget class="QLabel" name="labelAlerts">
      <property name="visible">
       <bool>false</bool>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0, stop:0 #F0D0A0, stop:1 #F8D488); color:#000000;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -37,17 +31,33 @@
      <property name="margin">
       <number>3</number>
      </property>
+     <property name="textInteractionFlags">
+      <set>Qt::TextSelectableByMouse</set>
+     </property>
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,1,0,1">
+     <item>
+      <spacer name="horizontalSpacerLeft">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Preferred</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>10</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QFrame" name="frame">
-         <property name="styleSheet">
-          <string notr="true">border:0</string>
-         </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -56,100 +66,49 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>Balances</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelWalletStatus">
+              <property name="toolTip">
+               <string>The displayed information may be out of date. Your wallet automatically synchronizes with the Cosanta network after a connection is established, but this process has not completed yet.</string>
+              </property>
+              <property name="text">
+               <string notr="true">(out of sync)</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
            <layout class="QGridLayout" name="gridLayout">
             <property name="spacing">
              <number>12</number>
             </property>
-            <item row="5" column="0">
-             <widget class="QLabel" name="labelTotalText">
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(245, 245, 245);
-color: rgb(0, 0, 0);
- font-weight: 900;
-padding: 10px;</string>
-              </property>
-              <property name="text">
-               <string>Total:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="2">
-             <widget class="QLabel" name="labelWatchAvailable">
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="cursor">
-               <cursorShape>IBeamCursor</cursorShape>
-              </property>
-              <property name="toolTip">
-               <string>Your current balance in watch-only addresses</string>
-              </property>
-              <property name="text">
-               <string notr="true">0.000 000 00 PIRATE</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="labelPendingText">
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(245, 245, 245);
-color: rgb(0, 0, 0);
- font-weight: 900;
-padding: 10px;</string>
-              </property>
-              <property name="text">
-               <string>Pending:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="2">
-             <widget class="QLabel" name="labelWatchImmature">
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="cursor">
-               <cursorShape>IBeamCursor</cursorShape>
-              </property>
-              <property name="toolTip">
-               <string>Mined balance in watch-only addresses that has not yet matured</string>
-              </property>
-              <property name="text">
-               <string notr="true">0.000 000 00 PIRATE</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="2">
+            <item row="2" column="2">
              <widget class="QLabel" name="labelWatchPending">
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
               <property name="cursor">
                <cursorShape>IBeamCursor</cursorShape>
               </property>
@@ -157,76 +116,10 @@ padding: 10px;</string>
                <string>Unconfirmed transactions to watch-only addresses</string>
               </property>
               <property name="text">
-               <string notr="true">0.000 000 00 PIRATE</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QLabel" name="labelUnconfirmed">
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="cursor">
-               <cursorShape>IBeamCursor</cursorShape>
-              </property>
-              <property name="toolTip">
-               <string>Total of transactions that have yet to be confirmed, and do not yet count toward the spendable balance</string>
-              </property>
-              <property name="text">
-               <string notr="true">0.000 000 00 PIRATE</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="labelImmatureText">
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(245, 245, 245);
-color: rgb(0, 0, 0);
- font-weight: 900;
-padding: 10px;</string>
-              </property>
-              <property name="text">
-               <string>Immature:</string>
+               <string notr="true">0.000 000 00 BTC</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="2">
-             <widget class="QLabel" name="labelWatchStake">
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="cursor">
-               <cursorShape>IBeamCursor</cursorShape>
-              </property>
-              <property name="toolTip">
-               <string>Total of coins that was staked in watch-only addresses, and do not yet count toward the current watch-only balance</string>
-              </property>
-              <property name="text">
-               <string notr="true">0.000 000 00 PIRATE</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
               </property>
               <property name="textInteractionFlags">
                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -234,63 +127,78 @@ padding: 10px;</string>
              </widget>
             </item>
             <item row="2" column="1">
-             <widget class="QLabel" name="labelStake">
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
+             <widget class="QLabel" name="labelUnconfirmed">
               <property name="cursor">
                <cursorShape>IBeamCursor</cursorShape>
               </property>
               <property name="toolTip">
-               <string>Total of coins that was staked, and do not yet count toward the current balance</string>
+               <string>Total of transactions that have yet to be confirmed, and do not yet count toward the spendable balance</string>
               </property>
               <property name="text">
-               <string notr="true">0.000 000 00 PIRATE</string>
+               <string notr="true">0.000 000 00 BTC</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
               <property name="textInteractionFlags">
                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
               </property>
              </widget>
             </item>
-            <item row="5" column="1">
-             <widget class="QLabel" name="labelTotal">
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
+            <item row="3" column="2">
+             <widget class="QLabel" name="labelWatchImmature">
               <property name="cursor">
                <cursorShape>IBeamCursor</cursorShape>
               </property>
               <property name="toolTip">
-               <string>Your current total balance</string>
+               <string>Mined balance in watch-only addresses that has not yet matured</string>
               </property>
               <property name="text">
-               <string notr="true">0.000 000 00 PIRATE</string>
+               <string notr="true">0.000 000 00 BTC</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
               <property name="textInteractionFlags">
                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
+            <item row="4" column="0" colspan="2">
+             <widget class="Line" name="lineSpendableBalance">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="2">
+             <widget class="Line" name="lineWatchBalance">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>140</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="labelTotalText">
+              <property name="text">
+               <string>Total:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
              <widget class="QLabel" name="labelImmature">
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
               <property name="cursor">
                <cursorShape>IBeamCursor</cursorShape>
               </property>
@@ -298,75 +206,57 @@ padding: 10px;</string>
                <string>Mined balance that has not yet matured</string>
               </property>
               <property name="text">
-               <string notr="true">0.000 000 00 PIRATE</string>
+               <string notr="true">0.000 000 00 BTC</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
               <property name="textInteractionFlags">
                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="labelSpendable">
-              <property name="text">
-               <string>Spendable:</string>
+            <item row="2" column="3">
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="labelImmatureText">
+              <property name="text">
+               <string>Immature:</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
-             <widget class="QLabel" name="labelBalance">
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
+            <item row="5" column="1">
+             <widget class="QLabel" name="labelTotal">
               <property name="cursor">
                <cursorShape>IBeamCursor</cursorShape>
               </property>
               <property name="toolTip">
-               <string>Your current spendable balance</string>
+               <string>Your current total balance</string>
               </property>
               <property name="text">
-               <string notr="true">0.000 000 00 PIRATE</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_10">
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(245, 245, 245);
-color: rgb(0, 0, 0);
- font-weight: 900;
-padding: 10px;</string>
-              </property>
-              <property name="text">
-               <string>Stake:</string>
+               <string notr="true">0.000 000 00 BTC</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
               </property>
              </widget>
             </item>
             <item row="5" column="2">
              <widget class="QLabel" name="labelWatchTotal">
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
               <property name="cursor">
                <cursorShape>IBeamCursor</cursorShape>
               </property>
@@ -374,10 +264,10 @@ padding: 10px;</string>
                <string>Current total balance in watch-only addresses</string>
               </property>
               <property name="text">
-               <string notr="true">0.000 000 00 PIRATE</string>
+               <string notr="true">0.000 000 00 BTC</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
               <property name="textInteractionFlags">
                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -396,30 +286,63 @@ padding: 10px;</string>
             </item>
             <item row="1" column="0">
              <widget class="QLabel" name="labelBalanceText">
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="autoFillBackground">
-               <bool>false</bool>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(74, 195, 195);
-color: rgb(0,0,0);
- font-weight: 900;
-padding: 10px;
-</string>
-              </property>
               <property name="text">
                <string>Available:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="labelBalance">
+              <property name="cursor">
+               <cursorShape>IBeamCursor</cursorShape>
+              </property>
+              <property name="toolTip">
+               <string>Your current spendable balance</string>
+              </property>
+              <property name="text">
+               <string notr="true">0.000 000 00 BTC</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
-              <property name="margin">
-               <number>0</number>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
               </property>
-              <property name="indent">
-               <number>-1</number>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QLabel" name="labelWatchAvailable">
+              <property name="cursor">
+               <cursorShape>IBeamCursor</cursorShape>
+              </property>
+              <property name="toolTip">
+               <string>Your current balance in watch-only addresses</string>
+              </property>
+              <property name="text">
+               <string notr="true">0.000 000 00 BTC</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="labelPendingText">
+              <property name="text">
+               <string>Pending:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="labelSpendable">
+              <property name="text">
+               <string>Spendable:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>
@@ -429,24 +352,9 @@ padding: 10px;
         </widget>
        </item>
        <item>
-        <widget class="QFrame" name="frameDarksend">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>350</height>
-          </size>
-         </property>
+        <widget class="QFrame" name="frameCoinJoin">
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border:0</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
@@ -454,29 +362,20 @@ padding: 10px;
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_5">
+         <layout class="QVBoxLayout" name="VerticalLayout_PS1">
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_5">
             <item>
-             <widget class="QLabel" name="label_2">
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
+             <widget class="QLabel" name="labelCoinJoinHeader">
               <property name="text">
-               <string>Darksend</string>
+               <string notr="true">CoinJoin</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="labelDarksendSyncStatus">
+             <widget class="QLabel" name="labelCoinJoinSyncStatus">
               <property name="toolTip">
-               <string>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</string>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">QLabel { color: red; }</string>
+               <string>The displayed information may be out of date. Your wallet automatically synchronizes with the Cosanta network after a connection is established, but this process has not completed yet.</string>
               </property>
               <property name="text">
                <string notr="true">(out of sync)</string>
@@ -502,438 +401,7 @@ padding: 10px;
            </layout>
           </item>
           <item>
-           <widget class="QPushButton" name="runAutoDenom">
-            <property name="palette">
-             <palette>
-              <active>
-               <colorrole role="WindowText">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>0</red>
-                  <green>0</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Button">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Light">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Midlight">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>247</red>
-                  <green>246</green>
-                  <blue>246</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Dark">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>119</red>
-                  <green>119</green>
-                  <blue>119</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Mid">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>159</red>
-                  <green>159</green>
-                  <blue>159</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Text">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>0</red>
-                  <green>0</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="BrightText">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="ButtonText">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>0</red>
-                  <green>0</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Base">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Window">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Shadow">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>0</red>
-                  <green>0</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="AlternateBase">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>247</red>
-                  <green>246</green>
-                  <blue>246</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="ToolTipBase">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>220</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="ToolTipText">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>0</red>
-                  <green>0</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </colorrole>
-              </active>
-              <inactive>
-               <colorrole role="WindowText">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>0</red>
-                  <green>0</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Button">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Light">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Midlight">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>247</red>
-                  <green>246</green>
-                  <blue>246</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Dark">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>119</red>
-                  <green>119</green>
-                  <blue>119</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Mid">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>159</red>
-                  <green>159</green>
-                  <blue>159</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Text">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>0</red>
-                  <green>0</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="BrightText">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="ButtonText">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>0</red>
-                  <green>0</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Base">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Window">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Shadow">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>0</red>
-                  <green>0</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="AlternateBase">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>247</red>
-                  <green>246</green>
-                  <blue>246</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="ToolTipBase">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>220</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="ToolTipText">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>0</red>
-                  <green>0</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </colorrole>
-              </inactive>
-              <disabled>
-               <colorrole role="WindowText">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>119</red>
-                  <green>119</green>
-                  <blue>119</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Button">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Light">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Midlight">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>247</red>
-                  <green>246</green>
-                  <blue>246</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Dark">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>119</red>
-                  <green>119</green>
-                  <blue>119</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Mid">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>159</red>
-                  <green>159</green>
-                  <blue>159</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Text">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>119</red>
-                  <green>119</green>
-                  <blue>119</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="BrightText">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="ButtonText">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>119</red>
-                  <green>119</green>
-                  <blue>119</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Base">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Window">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="Shadow">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>0</red>
-                  <green>0</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="AlternateBase">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>239</red>
-                  <green>238</green>
-                  <blue>238</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="ToolTipBase">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>220</blue>
-                 </color>
-                </brush>
-               </colorrole>
-               <colorrole role="ToolTipText">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>0</red>
-                  <green>0</green>
-                  <blue>0</blue>
-                 </color>
-                </brush>
-               </colorrole>
-              </disabled>
-             </palette>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
-            </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QFormLayout" name="formLayout">
+           <layout class="QFormLayout" name="coinJoinFormLayout">
             <property name="fieldGrowthPolicy">
              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
             </property>
@@ -944,21 +412,28 @@ padding: 10px;
              <number>12</number>
             </property>
             <item row="0" column="0">
-             <widget class="QLabel" name="label_6">
+             <widget class="QLabel" name="labelCoinJoinEnabledText">
               <property name="text">
                <string>Status:</string>
               </property>
              </widget>
             </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="labelCoinJoinEnabled">
+              <property name="text">
+               <string>Enabled/Disabled</string>
+              </property>
+             </widget>
+            </item>
             <item row="1" column="0">
-             <widget class="QLabel" name="label_7">
+             <widget class="QLabel" name="labelCompletitionText">
               <property name="text">
                <string>Completion:</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QProgressBar" name="darksendProgress">
+             <widget class="QProgressBar" name="coinJoinProgress">
               <property name="maximumSize">
                <size>
                 <width>154</width>
@@ -970,48 +445,42 @@ padding: 10px;
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
+            <item row="2" column="0">
              <widget class="QLabel" name="labelAnonymizedText">
               <property name="text">
-               <string>Darksend Balance:</string>
+               <string notr="true">CoinJoin Balance:</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
+            <item row="2" column="1">
              <widget class="QLabel" name="labelAnonymized">
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
               <property name="text">
                <string notr="true">0 PIRATE</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_8">
+            <item row="3" column="0">
+             <widget class="QLabel" name="labelAmountAndRoundsText">
               <property name="text">
                <string>Amount and Rounds:</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
+            <item row="3" column="1">
              <widget class="QLabel" name="labelAmountRounds">
               <property name="text">
                <string>0 PIRATE / 0 Rounds</string>
               </property>
              </widget>
             </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="label_9">
+            <item row="4" column="0">
+             <widget class="QLabel" name="labelSubmittedDenomText">
               <property name="text">
                <string>Submitted Denom:</string>
               </property>
              </widget>
             </item>
-            <item row="5" column="1">
+            <item row="4" column="1">
              <widget class="QLabel" name="labelSubmittedDenom">
               <property name="toolTip">
                <string>The denominations you submitted to the Masternode.&lt;br&gt;To mix, other users must submit the exact same denominations.</string>
@@ -1019,120 +488,75 @@ padding: 10px;
               <property name="text">
                <string>n/a</string>
               </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="darksendEnabled">
-              <property name="text">
-               <string>Enabled/Disabled</string>
+              <property name="wordWrap">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
            </layout>
           </item>
           <item>
-           <widget class="Line" name="lineLastMessage">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="darksendStatus">
-            <property name="minimumSize">
-             <size>
-              <width>288</width>
-              <height>43</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="darksendAuto">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="toolTip">
-             <string>Try to manually submit a Darksend request.</string>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(74, 195, 195);
-color: rgb(0,0,0);
-border-radius: 4px;
-border-color:  rgb(74, 195, 195);
-font-weight: 600;
-padding: 4px;
-padding-left: 10px;
-padding-right: 10px;</string>
-            </property>
-            <property name="text">
-             <string>Try Mix</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="toggleDarksend">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(74, 195, 195);
-color: rgb(0,0,0);
-border-radius: 4px;
-border-color:  rgb(74, 195, 195);
-font-weight: 600;
-padding: 4px;
-padding-left: 10px;
-padding-right: 10px;</string>
-            </property>
-            <property name="text">
-             <string>Start/Stop Mixing</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="darksendReset">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="toolTip">
-             <string>Reset the current status of Darksend (can interrupt Darksend if it's in the process of Mixing, which can cost you money!)</string>
-            </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(74, 195, 195);
-color: rgb(0,0,0);
-border-radius: 4px;
-border-color:  rgb(74, 195, 195);
-font-weight: 600;
-padding: 4px;
-padding-left: 10px;
-padding-right: 10px;</string>
-            </property>
-            <property name="text">
-             <string>Reset</string>
-            </property>
-           </widget>
+           <layout class="QVBoxLayout" name="VerticalLayout_PS">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <spacer name="horizontalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="toggleCoinJoin">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Start/Stop Mixing</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_6">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -1153,12 +577,22 @@ padding-right: 10px;</string>
       </layout>
      </item>
      <item>
+      <spacer name="horizontalSpacerCenter">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>10</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <widget class="QFrame" name="frame_2">
-         <property name="styleSheet">
-          <string notr="true">border:0</string>
-         </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -1170,16 +604,6 @@ padding-right: 10px;</string>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
              <widget class="QLabel" name="label_4">
-              <property name="font">
-               <font>
-                <weight>99</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">color: rgb(0, 0, 0);
- font-weight: 900;</string>
-              </property>
               <property name="text">
                <string>Recent transactions</string>
               </property>
@@ -1187,20 +611,14 @@ padding-right: 10px;</string>
             </item>
             <item>
              <widget class="QLabel" name="labelTransactionsStatus">
-              <property name="cursor">
-               <cursorShape>WhatsThisCursor</cursorShape>
-              </property>
               <property name="toolTip">
-               <string>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</string>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">QLabel { color: red; }</string>
+               <string>The displayed information may be out of date. Your wallet automatically synchronizes with the Cosanta network after a connection is established, but this process has not completed yet.</string>
               </property>
               <property name="text">
                <string notr="true">(out of sync)</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>
@@ -1221,9 +639,6 @@ padding-right: 10px;</string>
           </item>
           <item>
            <widget class="QListView" name="listTransactions">
-            <property name="styleSheet">
-             <string notr="true">QListView { background: transparent; }</string>
-            </property>
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -1242,6 +657,22 @@ padding-right: 10px;</string>
         </widget>
        </item>
       </layout>
+     </item>
+     <item>
+      <spacer name="horizontalSpacerRight">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Preferred</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>10</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>

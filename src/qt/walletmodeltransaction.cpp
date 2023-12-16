@@ -1,43 +1,37 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
-// Copyright (c) 2018-2023 The PirateCash developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "walletmodeltransaction.h"
+#ifdef HAVE_CONFIG_H
+#include <config/piratecash-config.h>
+#endif
 
-#include "wallet/wallet.h"
+#include <qt/walletmodeltransaction.h>
 
-WalletModelTransaction::WalletModelTransaction(const QList<SendCoinsRecipient> &recipients) :
-    recipients(recipients),
-    walletTransaction(0),
-    keyChange(0),
+#include <key_io.h>
+
+WalletModelTransaction::WalletModelTransaction(const QList<SendCoinsRecipient> &_recipients) :
+    recipients(_recipients),
     fee(0)
 {
-    walletTransaction = new CWalletTx();
 }
 
-WalletModelTransaction::~WalletModelTransaction()
-{
-    delete keyChange;
-    delete walletTransaction;
-}
-
-QList<SendCoinsRecipient> WalletModelTransaction::getRecipients()
+QList<SendCoinsRecipient> WalletModelTransaction::getRecipients() const
 {
     return recipients;
 }
 
-CWalletTx *WalletModelTransaction::getTransaction()
+CTransactionRef& WalletModelTransaction::getWtx()
 {
-    return walletTransaction;
+    return wtx;
 }
 
 unsigned int WalletModelTransaction::getTransactionSize()
 {
-    return (!walletTransaction ? 0 : (::GetSerializeSize(*(CTransaction*)walletTransaction, SER_NETWORK, PROTOCOL_VERSION)));
+    return wtx != nullptr ? ::GetSerializeSize(*wtx, SER_NETWORK, PROTOCOL_VERSION) : 0;
 }
 
-CAmount WalletModelTransaction::getTransactionFee()
+CAmount WalletModelTransaction::getTransactionFee() const
 {
     return fee;
 }
@@ -47,22 +41,30 @@ void WalletModelTransaction::setTransactionFee(const CAmount& newFee)
     fee = newFee;
 }
 
-CAmount WalletModelTransaction::getTotalTransactionAmount()
+void WalletModelTransaction::reassignAmounts()
+{
+    // For each recipient look for a matching CTxOut in walletTransaction and reassign amounts
+    for (QList<SendCoinsRecipient>::iterator it = recipients.begin(); it != recipients.end(); ++it)
+    {
+        SendCoinsRecipient& rcp = (*it);
+        {
+            for (const auto& txout : wtx.get()->vout) {
+                CScript scriptPubKey = GetScriptForDestination(DecodeDestination(rcp.address.toStdString()));
+                if (txout.scriptPubKey == scriptPubKey) {
+                    rcp.amount = txout.nValue;
+                    break;
+                }
+            }
+        }
+    }
+}
+
+CAmount WalletModelTransaction::getTotalTransactionAmount() const
 {
     CAmount totalTransactionAmount = 0;
-    foreach(const SendCoinsRecipient &rcp, recipients)
+    for (const SendCoinsRecipient &rcp : recipients)
     {
         totalTransactionAmount += rcp.amount;
     }
     return totalTransactionAmount;
-}
-
-void WalletModelTransaction::newPossibleKeyChange(CWallet *wallet)
-{
-    keyChange = new CReserveKey(wallet);
-}
-
-CReserveKey *WalletModelTransaction::getPossibleKeyChange()
-{
-    return keyChange;
 }

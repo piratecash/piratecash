@@ -1,20 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2018-2023 The PirateCash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "keystore.h"
+#include <keystore.h>
 
-#include "key.h"
-#include "pubkey.h"
-#include "util.h"
-
-#include <boost/foreach.hpp>
-
-bool CKeyStore::AddKey(const CKey &key) {
-    return AddKeyPubKey(key, key.GetPubKey());
-}
+#include <util/system.h>
 
 bool CBasicKeyStore::GetPubKey(const CKeyID &address, CPubKey &vchPubKeyOut) const
 {
@@ -39,13 +30,40 @@ bool CBasicKeyStore::AddKeyPubKey(const CKey& key, const CPubKey &pubkey)
     return true;
 }
 
+bool CBasicKeyStore::HaveKey(const CKeyID &address) const
+{
+    LOCK(cs_KeyStore);
+    return mapKeys.count(address) > 0;
+}
+
+std::set<CKeyID> CBasicKeyStore::GetKeys() const
+{
+    LOCK(cs_KeyStore);
+    std::set<CKeyID> set_address;
+    for (const auto& mi : mapKeys) {
+        set_address.insert(mi.first);
+    }
+    return set_address;
+}
+
+bool CBasicKeyStore::GetKey(const CKeyID &address, CKey &keyOut) const
+{
+    LOCK(cs_KeyStore);
+    KeyMap::const_iterator mi = mapKeys.find(address);
+    if (mi != mapKeys.end()) {
+        keyOut = mi->second;
+        return true;
+    }
+    return false;
+}
+
 bool CBasicKeyStore::AddCScript(const CScript& redeemScript)
 {
     if (redeemScript.size() > MAX_SCRIPT_ELEMENT_SIZE)
         return error("CBasicKeyStore::AddCScript(): redeemScripts > %i bytes are invalid", MAX_SCRIPT_ELEMENT_SIZE);
 
     LOCK(cs_KeyStore);
-    mapScripts[redeemScript.GetID()] = redeemScript;
+    mapScripts[CScriptID(redeemScript)] = redeemScript;
     return true;
 }
 
@@ -53,6 +71,16 @@ bool CBasicKeyStore::HaveCScript(const CScriptID& hash) const
 {
     LOCK(cs_KeyStore);
     return mapScripts.count(hash) > 0;
+}
+
+std::set<CScriptID> CBasicKeyStore::GetCScripts() const
+{
+    LOCK(cs_KeyStore);
+    std::set<CScriptID> set_script;
+    for (const auto& mi : mapScripts) {
+        set_script.insert(mi.first);
+    }
+    return set_script;
 }
 
 bool CBasicKeyStore::GetCScript(const CScriptID &hash, CScript& redeemScriptOut) const
@@ -69,18 +97,9 @@ bool CBasicKeyStore::GetCScript(const CScriptID &hash, CScript& redeemScriptOut)
 
 static bool ExtractPubKey(const CScript &dest, CPubKey& pubKeyOut)
 {
-    //TODO: Use Solver to extract this?
-    CScript::const_iterator pc = dest.begin();
-    opcodetype opcode;
-    std::vector<unsigned char> vch;
-    if (!dest.GetOp(pc, opcode, vch) || vch.size() < 33 || vch.size() > 65)
-        return false;
-    pubKeyOut = CPubKey(vch);
-    if (!pubKeyOut.IsFullyValid())
-        return false;
-    if (!dest.GetOp(pc, opcode, vch) || opcode != OP_CHECKSIG || dest.GetOp(pc, opcode, vch))
-        return false;
-    return true;
+    std::vector<std::vector<unsigned char>> solutions;
+    return Solver(dest, solutions) == TX_PUBKEY &&
+        (pubKeyOut = CPubKey(solutions[0])).IsFullyValid();
 }
 
 bool CBasicKeyStore::AddWatchOnly(const CScript &dest)
@@ -115,3 +134,9 @@ bool CBasicKeyStore::HaveWatchOnly() const
     return (!setWatchOnly.empty());
 }
 
+bool CBasicKeyStore::GetHDChain(CHDChain& hdChainRet) const
+{
+    LOCK(cs_KeyStore);
+    hdChainRet = hdChain;
+    return !hdChain.IsNull();
+}

@@ -6,16 +6,46 @@ reset-files.bash
 *.tar.gz
 
 *.exe
-src/madcoin
+src/piratecash
+src/piratecashd
+src/piratecash-cli
+src/piratecash-tx
+src/piratecash-wallet
+src/test/fuzz
+!src/test/fuzz/*.*
+src/test/test_piratecash
+src/qt/test/test_piratecash-qt
+src/qt/res/css/colors/*
+src/bench/bench_piratecash
 
 # autoreconf
 Makefile.in
 aclocal.m4
 autom4te.cache/
+build-aux/config.guess
+build-aux/config.sub
+build-aux/depcomp
+build-aux/install-sh
+build-aux/ltmain.sh
+build-aux/m4/libtool.m4
+build-aux/m4/lt~obsolete.m4
+build-aux/m4/ltoptions.m4
+build-aux/m4/ltsugar.m4
+build-aux/m4/ltversion.m4
+build-aux/missing
+build-aux/compile
+build-aux/test-driver
 config.log
 config.status
 configure
 libtool
+src/config/piratecash-config.h
+src/config/piratecash-config.h.in
+src/config/stamp-h1
+share/setup.nsi
+share/qt/Info.plist
+
+src/univalue/gen
 
 src/qt/*.moc
 src/qt/moc_*.cpp
@@ -23,22 +53,6 @@ src/qt/forms/ui_*.h
 
 src/qt/test/moc*.cpp
 libconftest.dylib*
-
-madcoin.pro.user
-
-src/secp256k1/build-aux/compile
-src/secp256k1/build-aux/config.guess
-src/secp256k1/build-aux/config.sub
-src/secp256k1/build-aux/depcomp
-src/secp256k1/build-aux/install-sh
-src/secp256k1/build-aux/ltmain.sh
-src/secp256k1/build-aux/m4/libtool.m4
-src/secp256k1/build-aux/m4/ltoptions.m4
-src/secp256k1/build-aux/m4/ltsugar.m4
-src/secp256k1/build-aux/m4/ltversion.m4
-src/secp256k1/build-aux/m4/lt~obsolete.m4
-src/secp256k1/build-aux/missing
-src/secp256k1/build-aux/test-driver
 
 .deps
 .dirstamp
@@ -51,25 +65,88 @@ src/secp256k1/build-aux/test-driver
 *.pyc
 *.o
 *.o-*
-*.patch
 *.a
 *.pb.cc
 *.pb.h
+*.dat
 
 *.log
 *.trs
 *.dmg
+*.iso
 
 *.json.h
 *.raw.h
+
+# Only ignore unexpected patches
+*.patch
+!depends/patches/**/*.patch
 
 #libtool object files
 *.lo
 *.la
 
+# Compilation and Qt preprocessor part
+*.qm
+Makefile
+piratecash-qt
+piratecash-Qt.app
+!/depends/Makefile
+
+# Unit-tests
+Makefile.test
+piratecash-qt_test
+
+# Resources cpp
+qrc_*.cpp
+
 # Mac specific
 .DS_Store
 build
+*.dSYM
 
-# Compilation and Qt preprocessor part
-*.qm
+#lcov
+*.gcno
+*.gcda
+/*.info
+test_piratecash.coverage/
+total.coverage/
+coverage_percent.txt
+
+#build tests
+linux-coverage-build
+linux-build
+win32-build
+test/config.ini
+test/cache/*
+
+!src/leveldb*/Makefile
+
+.cproject
+.project
+.autotools
+/doc/doxygen/
+
+libpiratecashconsensus.pc
+contrib/devtools/split-debug.sh
+src/qt/piratecash-qt.bash
+qa/pull-tester/tests-config.sh
+
+#development symlinks
+piratecash-cli
+piratecashd
+piratecash-qt
+make
+
+/docker/bin
+
+# CLion
+.idea
+cmake-build-debug
+
+# clang-check
+*.plist
+
+osx_volname
+dist/
+*.background.tiff

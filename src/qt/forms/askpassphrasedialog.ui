@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>598</width>
-    <height>198</height>
+    <height>222</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,12 +25,15 @@
   <property name="windowTitle">
    <string>Passphrase Dialog</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">background-color: rgb(255, 255, 255); color: rgb(0,0,0);</string>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinimumSize</enum>
+   </property>
    <item>
     <widget class="QLabel" name="warningLabel">
+     <property name="text">
+      <string notr="true">Placeholder text</string>
+     </property>
      <property name="textFormat">
       <enum>Qt::RichText</enum>
      </property>
@@ -41,6 +44,9 @@
    </item>
    <item>
     <layout class="QFormLayout" name="formLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMinimumSize</enum>
+     </property>
      <property name="fieldGrowthPolicy">
       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
      </property>
@@ -87,13 +93,14 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QLabel" name="capsLabel">
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
+      <widget class="QCheckBox" name="toggleShowPasswordButton">
+       <property name="text">
+        <string>Show passphrase</string>
        </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLabel" name="capsLabel">
        <property name="text">
         <string/>
        </property>
@@ -102,36 +109,10 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
-      <widget class="QCheckBox" name="stakingCheckBox">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="visible">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>Serves to disable the trivial sendmoney when OS account compromised. Provides no real security.</string>
-       </property>
-       <property name="text">
-        <string>For staking only</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(245, 245, 245);
-border-radius: 4px;
-border: 1px solid #c4c1bd;
-font-weight: 400;
-padding: 4px;
-padding-left: 10px;
-padding-right: 12px;
-icon-size: 0;</string>
-     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -151,12 +132,12 @@ icon-size: 0;</string>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>20</x>
+     <y>20</y>
     </hint>
     <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
+     <x>20</x>
+     <y>20</y>
     </hint>
    </hints>
   </connection>
@@ -167,12 +148,12 @@ icon-size: 0;</string>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>20</x>
+     <y>20</y>
     </hint>
     <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
+     <x>20</x>
+     <y>20</y>
     </hint>
    </hints>
   </connection>

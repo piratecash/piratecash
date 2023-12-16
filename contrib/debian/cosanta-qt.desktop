@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Cosanta Core
+Comment=Cosanta P2P Cryptocurrency
+Comment[de]=Verbinde mit dem Cosanta peer-to-peer Netzwerk
+Comment[fr]=Cosanta, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Cosanta, eşten eşe kriptografik sanal para birimi
+Exec=cosanta-qt %u
+Terminal=false
+Type=Application
+Icon=cosanta128
+MimeType=x-scheme-handler/cosanta;
+Categories=Office;Finance;

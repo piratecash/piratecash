@@ -1,8 +1,8 @@
-Cross-compiliation of PirateCash
+Cross-compiliation of PirateCash Core
 ===============================
 
-PirateCash can be cross-compiled on Linux to all other supported host systems. This is done by changing
-the `HOST` parameter when building the dependencies and then specifying another directory when building PirateCash.
+PirateCash Core can be cross-compiled on Linux to all other supported host systems. This is done by changing
+the `HOST` parameter when building the dependencies and then specifying another `--prefix` directory when building Dash.
 
 The following instructions are only tested on Debian Stretch and Ubuntu Bionic.
 
@@ -11,113 +11,113 @@ MacOSX Cross-compilation
 Cross-compiling to MacOSX requires a few additional packages to be installed:
 
 ```bash
-sudo apt-get install python3-setuptools libcap-dev zlib1g-dev libbz2-dev
+$ sudo apt-get install python3-setuptools libcap-dev zlib1g-dev libbz2-dev cmake
 ```
 
 Additionally, the Mac OSX SDK must be downloaded and extracted manually:
 
 ```bash
-cd ~/
-git clone https://github.com/piratecash/piratecash
-cd ~/piratecash
-mkdir -p depends/sdk-sources
-mkdir -p depends/SDKs
-curl https://bitcoincore.org/depends-sources/sdks/MacOSX10.11.sdk.tar.gz -o depends/sdk-sources/MacOSX10.11.sdk.tar.gz
-tar -C depends/SDKs -xf depends/sdk-sources/MacOSX10.11.sdk.tar.gz
+$ mkdir -p depends/sdk-sources
+$ mkdir -p depends/SDKs
+$ curl https://bitcoincore.org/depends-sources/sdks/Xcode-12.1-12A7403-extracted-SDK-with-libcxx-headers.tar.gz -o depends/sdk-sources/Xcode-12.1-12A7403-extracted-SDK-with-libcxx-headers.tar.gz
+$ tar -C depends/SDKs -xf depends/sdk-sources/Xcode-12.1-12A7403-extracted-SDK-with-libcxx-headers.tar.gz
 ```
 
-Build depends:
+When building the dependencies, as described in [build-generic](build-generic.md), use
 
 ```bash
-cd ~/piratecash/depends
-make HOST=x86_64-apple-darwin11 -j4 # Choose a good -j value, depending on the number of CPU cores available
+$ make HOST=x86_64-apple-darwin19 -j4
 ```
 
-Add the following line to the file .bashrc
+When building PirateCash Core, use
 
 ```bash
-export PATH="$HOME/piratecash/depends/x86_64-apple-darwin11/native/bin:$PATH"
-export AR="$HOME/piratecash/depends/x86_64-apple-darwin11/native/bin/x86_64-apple-darwin11-ar"
-export AS="$HOME/piratecash/depends/x86_64-apple-darwin11/native/bin/x86_64-apple-darwin11-as"
-export CC="$HOME/piratecash/depends/x86_64-apple-darwin11/native/bin/clang"
-export CXX="$HOME/piratecash/depends/x86_64-apple-darwin11/native/bin/clang++"
-export LD="$HOME/piratecash/depends/x86_64-apple-darwin11/native/bin/x86_64-apple-darwin11-ld"
-export RANLIB="$HOME/piratecash/depends/x86_64-apple-darwin11/native/bin/x86_64-apple-darwin11-ranlib"
-export STRIP="$HOME/piratecash/depends/x86_64-apple-darwin11/native/bin/x86_64-apple-darwin11-strip"
-export DMG="$HOME/piratecash/depends/x86_64-apple-darwin11/native/bin/dmg"
-export OTOOL="$HOME/piratecash/depends/x86_64-apple-darwin11/native/bin/x86_64-apple-darwin11-otool"
-export PYTHONPATH="$HOME/piratecash/depends/x86_64-apple-darwin11/native/lib/python/dist-packages:$PYTHONPATH"
-```
-Build PirateCash-Qt:
-
-```bash
-cd ~/piratecash
-$PWD/depends/x86_64-apple-darwin11/native/bin/qmake -spec macx-clang-linux STATIC=1 RELEASE=1 -o Makefile piratecash.pro
-make -j4 # Choose a good -j value, depending on the number of CPU cores available
-contrib/dmgbuild/dmgbuild # optional, create dmg
+$ ./configure --prefix=`pwd`/depends/x86_64-apple-darwin19
 ```
 
-Windows 64bit/32bit Cross-compilation
+Windows 64bit Cross-compilation
 -------------------------------
-The steps below can be performed on Debian and Ubuntu (including in a VM) or WSL. The depends system
+The steps below can be performed on Ubuntu (including in a VM) or WSL. The depends system
 will also work on other Linux distributions, however the commands for
 installing the toolchain will be different.
 
 First, install the general dependencies:
-```bash
-sudo apt update
-sudo apt upgrade
-sudo apt install build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git python3 cmake
-```
+
+    sudo apt update
+    sudo apt upgrade
+    sudo apt install build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git python3
+
 A host toolchain (`build-essential`) is necessary because some dependency
 packages need to build host utilities that are used in the build process.
 
+See [dependencies.md](dependencies.md) for a complete overview.
+
+If you want to build the windows installer with `make deploy` you need [NSIS](https://nsis.sourceforge.io/Main_Page):
+
+    sudo apt install nsis
+
 Acquire the source in the usual way:
-```bash
-git clone https://github.com/piratecash/piratecash
-cd piratecash
-```
-For Windows 64bit, install :
-```bash
-sudo apt-get install g++-mingw-w64-x86-64
-# Required to enable C++ threading libraries (e.g. std::thread)
-sudo update-alternatives --set x86_64-w64-mingw32-g++  /usr/bin/x86_64-w64-mingw32-g++-posix
-sudo update-alternatives --set x86_64-w64-mingw32-gcc  /usr/bin/x86_64-w64-mingw32-gcc-posix
-```
-Build using 64bit:
-```bash
-PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') # strip out problematic Windows %PATH% imported var
-cd depends
-make HOST=x86_64-w64-mingw32 -j4 # Choose a good -j value, depending on the number of CPU cores available
-cd ../src
-make -f makefile.linux-mingw -j4 # Choose a good -j value, depending on the number of CPU cores available
-cd ..
-$PWD/depends/x86_64-w64-mingw32/native/bin/qmake -spec win32-g++ STATIC=1 RELEASE=1 -o Makefile piratecash.pro
-make -j4 # Choose a good -j value, depending on the number of CPU cores available
-```
 
-For Windows 32bit, install:
-```bash
-sudo apt-get install g++-mingw-w64-i686
-# Required to enable C++ threading libraries (e.g. std::thread)
-sudo update-alternatives --set i686-w64-mingw32-gcc /usr/bin/i686-w64-mingw32-gcc-posix
-sudo update-alternatives --set i686-w64-mingw32-g++  /usr/bin/i686-w64-mingw32-g++-posix
-```
+    git clone https://github.com/piratecash/piratecash-core.git
+    cd piratecash-core
 
-Build using 32bit:
-```bash
-PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') # strip out problematic Windows %PATH% imported var
-cd depends
-make HOST=i686-w64-mingw32 -j4 # Choose a good -j value, depending on the number of CPU cores available
-cd ../src
-# In makefile.linux-mingw change TARGET_PLATFORM: = x86_64-w64-mingw32 to TARGET_PLATFORM: = i686-w64-mingw32
-make -f makefile.linux-mingw -j4 # Choose a good -j value, depending on the number of CPU cores available
-cd ..
-# In piratecash.pro change HOSTMING = x86_64-w64-mingw32 to HOSTMING = i686-w64-mingw32
-$PWD/depends/i686-w64-mingw32/native/bin/qmake -spec win32-g++ STATIC=1 RELEASE=1 -o Makefile piratecash.pro
-make -j4 # Choose a good -j value, depending on the number of CPU cores available
-```
+### Building for 64-bit Windows
+
+The first step is to install the mingw-w64 cross-compilation tool chain:
+
+    sudo apt install g++-mingw-w64-x86-64
+
+Ubuntu Bionic 18.04 <sup>[1](#footnote1)</sup>:
+
+    sudo update-alternatives --config x86_64-w64-mingw32-g++ # Set the default mingw32 g++ compiler option to posix.
+    sudo update-alternatives --config x86_64-w64-mingw32-gcc # Set the default mingw32 g++ compiler option to posix.
+
+Once the toolchain is installed the build steps are common:
+
+Note that for WSL the PirateCash Core source path MUST be somewhere in the default mount file system, for
+example /usr/src/dash, AND not under /mnt/d/. If this is not the case the dependency autoconf scripts will fail.
+This means you cannot use a directory that is located directly on the host Windows file system to perform the build.
+
+Build using:
+
+    PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') # strip out problematic Windows %PATH% imported var
+    cd depends
+    make HOST=x86_64-w64-mingw32
+    cd ..
+    ./autogen.sh # not required when building from tarball
+    CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/
+    make
 
 ### Depends system
 
 For further documentation on the depends system see [README.md](../depends/README.md) in the depends directory.
+
+ARM-Linux Cross-compilation
+-------------------
+Cross-compiling to ARM-Linux requires a few additional packages to be installed:
+
+```bash
+$ sudo apt-get install g++-arm-linux-gnueabihf
+```
+
+When building the dependencies, as described in [build-generic](build-generic.md), use
+
+```bash
+$ make HOST=arm-linux-gnueabihf -j4
+```
+
+When building PirateCash Core, use
+
+```bash
+$ ./configure --prefix=`pwd`/depends/arm-linux-gnueabihf
+```
+
+Footnotes
+---------
+
+<a name="footnote1">1</a>: Starting from Ubuntu Xenial 16.04, both the 32 and 64 bit Mingw-w64 packages install two different
+compiler options to allow a choice between either posix or win32 threads. The default option is win32 threads which is the more
+efficient since it will result in binary code that links directly with the Windows kernel32.lib. Unfortunately, the headers
+required to support win32 threads conflict with some of the classes in the C++11 standard library, in particular std::mutex.
+It's not possible to build the PirateCash Core code using the win32 version of the Mingw-w64 cross compilers (at least not without
+modifying headers in the PirateCash Core source code).

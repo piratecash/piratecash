@@ -1,18 +1,20 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
-// Copyright (c) 2018-2023 The PirateCash developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef OPTIONSMODEL_H
-#define OPTIONSMODEL_H
+#ifndef BITCOIN_QT_OPTIONSMODEL_H
+#define BITCOIN_QT_OPTIONSMODEL_H
+
+#include <amount.h>
 
 #include <QAbstractListModel>
 
-extern bool fUseBlackTheme;
+namespace interfaces {
+class Node;
+}
 
-QT_BEGIN_NAMESPACE
-class QNetworkProxy;
-QT_END_NAMESPACE
+extern const char *DEFAULT_GUI_PROXY_HOST;
+static constexpr unsigned short DEFAULT_GUI_PROXY_PORT = 9050;
 
 /** Interface from Qt to configuration data structure for Bitcoin client.
    To Qt, the options are presented as a list with the different options
@@ -25,67 +27,103 @@ class OptionsModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-    explicit OptionsModel(QObject *parent = 0);
+    explicit OptionsModel(interfaces::Node& node, QObject *parent = nullptr, bool resetSettings = false);
 
     enum OptionID {
-        StartAtStartup,         // bool
-        MinimizeToTray,         // bool
-        MapPortUPnP,            // bool
-        MinimizeOnClose,        // bool
-        ProxyUse,               // bool
-        ProxyIP,                // QString
-        ProxyPort,              // int
-        ProxySocksVersion,      // int
-        Fee,                    // qint64
-        ReserveBalance,         // qint64
-        DisplayUnit,            // BitcoinUnits::Unit
-        Language,               // QString
-        CoinControlFeatures,    // bool
-        UseBlackTheme,     // bool
-        DarksendRounds,    // int
-        AnonymizepiratecashAmount, //int
+        StartAtStartup,       // bool
+        HideTrayIcon,         // bool
+        MinimizeToTray,       // bool
+        MapPortUPnP,          // bool
+        MapPortNatpmp,        // bool
+        MinimizeOnClose,      // bool
+        ProxyUse,             // bool
+        ProxyIP,              // QString
+        ProxyPort,            // int
+        ProxyUseTor,          // bool
+        ProxyIPTor,           // QString
+        ProxyPortTor,         // int
+        DisplayUnit,          // BitcoinUnits::Unit
+        ThirdPartyTxUrls,     // QString
+        Digits,               // QString
+        Theme,                // QString
+        FontFamily,           // int
+        FontScale,            // int
+        FontWeightNormal,     // int
+        FontWeightBold,       // int
+        Language,             // QString
+        CoinControlFeatures,  // bool
+        ThreadsScriptVerif,   // int
+        Prune,                // bool
+        PruneSize,            // int
+        DatabaseCache,        // int
+        SpendZeroConfChange,  // bool
+        ShowMasternodesTab,   // bool
+        ShowGovernanceTab,    // bool
+        CoinJoinEnabled,      // bool
+        ShowAdvancedCJUI,     // bool
+        ShowCoinJoinPopups,   // bool
+        LowKeysWarning,       // bool
+        CoinJoinRounds,       // int
+        CoinJoinAmount,       // int
+        CoinJoinMultiSession, // bool
+        Listen,               // bool
         OptionIDRowCount,
     };
 
-    void Init();
+    void Init(bool resetSettings = false);
     void Reset();
 
-    int rowCount(const QModelIndex & parent = QModelIndex()) const;
-    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
-    bool setData(const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
+    int rowCount(const QModelIndex & parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const override;
+    bool setData(const QModelIndex & index, const QVariant & value, int role = Qt::EditRole) override;
+    /** Updates current unit in memory, settings and emits displayUnitChanged(newUnit) signal */
+    void setDisplayUnit(const QVariant &value);
 
     /* Explicit getters */
-    qint64 getReserveBalance();
-    bool getMinimizeToTray() { return fMinimizeToTray; }
-    bool getMinimizeOnClose() { return fMinimizeOnClose; }
-    int getDisplayUnit() { return nDisplayUnit; }
-    bool getProxySettings(QNetworkProxy& proxy) const;
-    bool getCoinControlFeatures() { return fCoinControlFeatures; }
+    bool getHideTrayIcon() const { return fHideTrayIcon; }
+    bool getMinimizeToTray() const { return fMinimizeToTray; }
+    bool getMinimizeOnClose() const { return fMinimizeOnClose; }
+    int getDisplayUnit() const { return nDisplayUnit; }
+    QString getThirdPartyTxUrls() const { return strThirdPartyTxUrls; }
+    bool getCoinControlFeatures() const { return fCoinControlFeatures; }
+    bool getShowAdvancedCJUI() { return fShowAdvancedCJUI; }
     const QString& getOverriddenByCommandLine() { return strOverriddenByCommandLine; }
+    void emitCoinJoinEnabledChanged();
 
     /* Restart flag helper */
     void setRestartRequired(bool fRequired);
-    bool isRestartRequired();
+    bool isRestartRequired() const;
+    bool resetSettingsOnShutdown{false};
+
+    interfaces::Node& node() const { return m_node; }
+
 private:
+    interfaces::Node& m_node;
     /* Qt-only settings */
+    bool fHideTrayIcon;
     bool fMinimizeToTray;
     bool fMinimizeOnClose;
     QString language;
     int nDisplayUnit;
+    QString strThirdPartyTxUrls;
     bool fCoinControlFeatures;
-    /* settings that were overriden by command-line */
+    bool fShowAdvancedCJUI;
+    /* settings that were overridden by command-line */
     QString strOverriddenByCommandLine;
 
-    /// Add option to list of GUI options overridden through command line/config file
+    // Add option to list of GUI options overridden through command line/config file
     void addOverriddenOption(const std::string &option);
 
-signals:
+    // Check settings version and upgrade default values if required
+    void checkAndMigrate();
+Q_SIGNALS:
     void displayUnitChanged(int unit);
-    void transactionFeeChanged(qint64);
-    void reserveBalanceChanged(qint64);
+    void coinJoinEnabledChanged();
+    void coinJoinRoundsChanged();
+    void coinJoinAmountChanged();
+    void AdvancedCJUIChanged(bool);
     void coinControlFeaturesChanged(bool);
-    void darksendRoundsChanged(int);
-    void AnonymizepiratecashAmountChanged(int);
+    void hideTrayIconChanged(bool);
 };
 
-#endif // OPTIONSMODEL_H
+#endif // BITCOIN_QT_OPTIONSMODEL_H
