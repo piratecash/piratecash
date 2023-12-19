@@ -2236,7 +2236,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
         {
             // Workaround for old PirateCash TXes
             bool CheckTxActive = pindex->nHeight >= chainparams.GetConsensus().nForkHeight;
-            if (false){
+            if (CheckTxActive){
                 std::vector<CScriptCheck> vChecks;
                 bool fCacheResults = fJustCheck; /* Don't cache results if we're actually connecting blocks (still consult the cache, though) */
                 if (fScriptChecks && !CheckInputs(tx, state, view, fScriptChecks, flags, fCacheResults, fCacheResults, txsdata[i], g_parallel_script_checks ? &vChecks : nullptr)) {
