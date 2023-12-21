@@ -823,7 +823,6 @@ bool LoadMempool(CTxMemPool& pool);
 /** Check if Proof-of-Stake is required for particular height **/
 bool IsPoSEnforcedHeight(int nBlockHeight);
 bool IsPoSV2EnforcedHeight(int nFirstPoSv2Block);
-bool IsPowActiveHeight(int nBlockHeight);
 
 bool CheckProof(CValidationState& state, const CBlockIndex &pindex, const Consensus::Params& params);
 bool CheckProof(CValidationState& state, const CBlockHeader &block, const Consensus::Params& params);
