@@ -1602,6 +1602,24 @@ void CWallet::BlockDisconnected(const CBlock& block) {
     for (const CTransactionRef& ptx : block.vtx) {
         // NOTE: do NOT pass pindex here
         SyncTransaction(ptx, {} /* block hash */, 0 /* position in block */);
+        if (ptx->IsCoinStake()){
+            const CTransaction& tx = *ptx;
+            if (IsMine(tx) || IsFromMe(tx)){
+                const uint256 txHash = ptx->GetHash();
+                WalletLogPrintf("Abandoning staking tx %s\n", txHash.ToString());
+                AbandonTransaction(*locked_chain, txHash);
+                // Deep scan other orphans
+                for (std::pair<const uint256, CWalletTx>& item : mapWallet) {
+                    const uint256& wtxid = item.first;
+                    CWalletTx& wtx = item.second;
+                    int nDepth = wtx.GetDepthInMainChain(*locked_chain);
+                    if (nDepth == 0 && !wtx.IsLockedByInstantSend() && !wtx.isAbandoned() && wtx.IsCoinStake()) {
+                        WalletLogPrintf("Abandoning orphan tx %s\n", wtx.GetHash().ToString());
+                        AbandonTransaction(*locked_chain, wtxid);
+                    }
+                }
+            }
+        }
     }
 
     // reset cache to make sure no longer mature coins are excluded
@@ -2528,8 +2546,13 @@ void CWallet::ReacceptWalletTransactions(interfaces::Chain::Lock& locked_chain)
 
         int nDepth = wtx.GetDepthInMainChain(locked_chain);
 
-        if (!wtx.IsCoinBase() && !wtx.IsCoinStake() && (nDepth == 0 && !wtx.IsLockedByInstantSend() && !wtx.isAbandoned())) {
-            mapSorted.insert(std::make_pair(wtx.nOrderPos, &wtx));
+        if (nDepth == 0 && !wtx.IsLockedByInstantSend() && !wtx.isAbandoned()) {
+            if (wtx.IsCoinBase() || wtx.IsCoinStake()) {
+                WalletLogPrintf("Abandoning tx %s\n", wtx.GetHash().ToString());
+                AbandonTransaction(locked_chain, wtxid);
+                }
+            else
+                mapSorted.insert(std::make_pair(wtx.nOrderPos, &wtx));
         }
     }
 
