@@ -1,9 +1,8 @@
 // Copyright (c) 2014 The Bitcoin Core developers
-// Copyright (c) 2018-2023 The PirateCash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "hmac_sha512.h"
+#include <crypto/hmac_sha512.h>
 
 #include <string.h>
 

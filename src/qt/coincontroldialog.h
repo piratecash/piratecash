@@ -1,12 +1,11 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
-// Copyright (c) 2018-2023 The PirateCash developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_QT_COINCONTROLDIALOG_H
 #define BITCOIN_QT_COINCONTROLDIALOG_H
 
-#include "amount.h"
+#include <amount.h>
 
 #include <QAbstractButton>
 #include <QAction>
@@ -25,25 +24,35 @@ namespace Ui {
     class CoinControlDialog;
 }
 
+#define ASYMP_UTF8 "\xE2\x89\x88"
+
+class CCoinControlWidgetItem : public QTreeWidgetItem
+{
+public:
+    explicit CCoinControlWidgetItem(QTreeWidget *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
+    explicit CCoinControlWidgetItem(QTreeWidgetItem *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
+
+    bool operator<(const QTreeWidgetItem &other) const override;
+};
+
+
 class CoinControlDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit CoinControlDialog(QWidget *parent = 0);
+    explicit CoinControlDialog(CCoinControl& coin_control, WalletModel* model, QWidget *parent = nullptr);
     ~CoinControlDialog();
 
-    void setModel(WalletModel *model);
-
     // static because also called from sendcoinsdialog
-    static void updateLabels(WalletModel*, QDialog*);
-    static QString getPriorityLabel(double);
+    static void updateLabels(CCoinControl& m_coin_control, WalletModel*, QDialog*);
 
     static QList<CAmount> payAmounts;
-    static CCoinControl *coinControl;
+    static bool fSubtractFeeFromAmount;
 
 private:
     Ui::CoinControlDialog *ui;
+    CCoinControl& m_coin_control;
     WalletModel *model;
     int sortColumn;
     Qt::SortOrder sortOrder;
@@ -54,53 +63,31 @@ private:
     QAction *lockAction;
     QAction *unlockAction;
 
-    QString strPad(QString, int, QString);
+    bool fHideAdditional{true};
+
     void sortView(int, Qt::SortOrder);
     void updateView();
 
     enum
     {
-        COLUMN_CHECKBOX,
+        COLUMN_CHECKBOX = 0,
         COLUMN_AMOUNT,
         COLUMN_LABEL,
         COLUMN_ADDRESS,
-        COLUMN_DARKSEND_ROUNDS,
+        COLUMN_COINJOIN_ROUNDS,
         COLUMN_DATE,
         COLUMN_CONFIRMATIONS,
-        COLUMN_PRIORITY,
-        COLUMN_TXHASH,
-        COLUMN_VOUT_INDEX,
-        COLUMN_AMOUNT_INT64,
-        COLUMN_PRIORITY_INT64,
-        COLUMN_DATE_INT64
     };
 
-    // some columns have a hidden column containing the value used for sorting
-    int getMappedColumn(int column, bool fVisibleColumn = true)
+    enum
     {
-        if (fVisibleColumn)
-        {
-            if (column == COLUMN_AMOUNT_INT64)
-                return COLUMN_AMOUNT;
-            else if (column == COLUMN_PRIORITY_INT64)
-                return COLUMN_PRIORITY;
-            else if (column == COLUMN_DATE_INT64)
-                return COLUMN_DATE;
-        }
-        else
-        {
-            if (column == COLUMN_AMOUNT)
-                return COLUMN_AMOUNT_INT64;
-            else if (column == COLUMN_PRIORITY)
-                return COLUMN_PRIORITY_INT64;
-            else if (column == COLUMN_DATE)
-                return COLUMN_DATE_INT64;
-        }
+        TxHashRole = Qt::UserRole,
+        VOutRole
+    };
 
-        return column;
-    }
+    friend class CCoinControlWidgetItem;
 
-private slots:
+private Q_SLOTS:
     void showMenu(const QPoint &);
     void copyAmount();
     void copyLabel();
@@ -113,7 +100,6 @@ private slots:
     void clipboardFee();
     void clipboardAfterFee();
     void clipboardBytes();
-    void clipboardPriority();
     void clipboardLowOutput();
     void clipboardChange();
     void radioTreeMode(bool);
@@ -124,6 +110,7 @@ private slots:
     void buttonSelectAllClicked();
     void buttonToggleLockClicked();
     void updateLabelLocked();
+    void on_hideButton_clicked();
 };
 
 #endif // BITCOIN_QT_COINCONTROLDIALOG_H

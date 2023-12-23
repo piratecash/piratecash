@@ -1,52 +1,198 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
-// Copyright (c) 2018-2023 The PirateCash developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "protocol.h"
-#include "util.h"
-#include "netbase.h"
+#include <protocol.h>
+
+#include <util/strencodings.h>
+#include <util/system.h>
 
 #ifndef WIN32
 # include <arpa/inet.h>
 #endif
 
-static const char* ppszTypeName[] =
-{
-    "ERROR",
-    "tx",
-    "dstx",
-    "block",
-    "filtered block",
-    "tx lock request",
-    "tx lock vote",
-    "spork",
-    "masternode winner",
-    "unknown",
-    "unknown",
-    "unknown",
-    "unknown",
-    "unknown",
-    "unknown"
-};
+static std::atomic<bool> g_initial_block_download_completed(false);
 
-CMessageHeader::CMessageHeader()
+#define MAKE_MSG(var_name, p2p_name_str)   \
+        const char* var_name=p2p_name_str; \
+        static_assert(std::size(p2p_name_str) <= CMessageHeader::COMMAND_SIZE + 1, "p2p_name_str cannot be greater than COMMAND_SIZE"); // Includes +1 for null termination character.
+
+namespace NetMsgType {
+MAKE_MSG(VERSION, "version");
+MAKE_MSG(VERACK, "verack");
+MAKE_MSG(ADDR, "addr");
+MAKE_MSG(ADDRV2, "addrv2");
+MAKE_MSG(SENDADDRV2, "sendaddrv2");
+MAKE_MSG(INV, "inv");
+MAKE_MSG(GETDATA, "getdata");
+MAKE_MSG(MERKLEBLOCK, "merkleblock");
+MAKE_MSG(GETBLOCKS, "getblocks");
+MAKE_MSG(GETHEADERS, "getheaders");
+MAKE_MSG(TX, "tx");
+MAKE_MSG(HEADERS, "headers");
+MAKE_MSG(BLOCK, "block");
+MAKE_MSG(GETADDR, "getaddr");
+MAKE_MSG(MEMPOOL, "mempool");
+MAKE_MSG(PING, "ping");
+MAKE_MSG(PONG, "pong");
+MAKE_MSG(NOTFOUND, "notfound");
+MAKE_MSG(FILTERLOAD, "filterload");
+MAKE_MSG(FILTERADD, "filteradd");
+MAKE_MSG(FILTERCLEAR, "filterclear");
+MAKE_MSG(REJECT, "reject");
+MAKE_MSG(SENDHEADERS, "sendheaders");
+MAKE_MSG(SENDCMPCT, "sendcmpct");
+MAKE_MSG(CMPCTBLOCK, "cmpctblock");
+MAKE_MSG(GETBLOCKTXN, "getblocktxn");
+MAKE_MSG(BLOCKTXN, "blocktxn");
+MAKE_MSG(GETCFILTERS, "getcfilters");
+MAKE_MSG(CFILTER, "cfilter");
+MAKE_MSG(GETCFHEADERS, "getcfheaders");
+MAKE_MSG(CFHEADERS, "cfheaders");
+MAKE_MSG(GETCFCHECKPT, "getcfcheckpt");
+MAKE_MSG(CFCHECKPT, "cfcheckpt");
+// Dash message types
+MAKE_MSG(LEGACYTXLOCKREQUEST, "ix");
+MAKE_MSG(SPORK, "spork");
+MAKE_MSG(GETSPORKS, "getsporks");
+MAKE_MSG(DSACCEPT, "dsa");
+MAKE_MSG(DSVIN, "dsi");
+MAKE_MSG(DSFINALTX, "dsf");
+MAKE_MSG(DSSIGNFINALTX, "dss");
+MAKE_MSG(DSCOMPLETE, "dsc");
+MAKE_MSG(DSSTATUSUPDATE, "dssu");
+MAKE_MSG(DSTX, "dstx");
+MAKE_MSG(DSQUEUE, "dsq");
+MAKE_MSG(SENDDSQUEUE, "senddsq");
+MAKE_MSG(SYNCSTATUSCOUNT, "ssc");
+MAKE_MSG(MNGOVERNANCESYNC, "govsync");
+MAKE_MSG(MNGOVERNANCEOBJECT, "govobj");
+MAKE_MSG(MNGOVERNANCEOBJECTVOTE, "govobjvote");
+MAKE_MSG(GETMNLISTDIFF, "getmnlistd");
+MAKE_MSG(MNLISTDIFF, "mnlistdiff");
+MAKE_MSG(QSENDRECSIGS, "qsendrecsigs");
+MAKE_MSG(QFCOMMITMENT, "qfcommit");
+MAKE_MSG(QCONTRIB, "qcontrib");
+MAKE_MSG(QCOMPLAINT, "qcomplaint");
+MAKE_MSG(QJUSTIFICATION, "qjustify");
+MAKE_MSG(QPCOMMITMENT, "qpcommit");
+MAKE_MSG(QWATCH, "qwatch");
+MAKE_MSG(QSIGSESANN, "qsigsesann");
+MAKE_MSG(QSIGSHARESINV, "qsigsinv");
+MAKE_MSG(QGETSIGSHARES, "qgetsigs");
+MAKE_MSG(QBSIGSHARES, "qbsigs");
+MAKE_MSG(QSIGREC, "qsigrec");
+MAKE_MSG(QSIGSHARE, "qsigshare");
+MAKE_MSG(QGETDATA, "qgetdata");
+MAKE_MSG(QDATA, "qdata");
+MAKE_MSG(CLSIG, "clsig");
+MAKE_MSG(ISLOCK, "islock");
+MAKE_MSG(ISDLOCK, "isdlock");
+MAKE_MSG(MNAUTH, "mnauth");
+MAKE_MSG(GETQUORUMROTATIONINFO, "getqrinfo");
+MAKE_MSG(QUORUMROTATIONINFO, "qrinfo");
+}; // namespace NetMsgType
+
+/** All known message types. Keep this in the same order as the list of
+ * messages above and in protocol.h.
+ */
+const static std::string allNetMessageTypes[] = {
+    NetMsgType::VERSION,
+    NetMsgType::VERACK,
+    NetMsgType::ADDR,
+    NetMsgType::ADDRV2,
+    NetMsgType::SENDADDRV2,
+    NetMsgType::INV,
+    NetMsgType::GETDATA,
+    NetMsgType::MERKLEBLOCK,
+    NetMsgType::GETBLOCKS,
+    NetMsgType::GETHEADERS,
+    NetMsgType::TX,
+    NetMsgType::HEADERS,
+    NetMsgType::BLOCK,
+    NetMsgType::GETADDR,
+    NetMsgType::MEMPOOL,
+    NetMsgType::PING,
+    NetMsgType::PONG,
+    NetMsgType::NOTFOUND,
+    NetMsgType::FILTERLOAD,
+    NetMsgType::FILTERADD,
+    NetMsgType::FILTERCLEAR,
+    NetMsgType::REJECT,
+    NetMsgType::SENDHEADERS,
+    NetMsgType::SENDCMPCT,
+    NetMsgType::CMPCTBLOCK,
+    NetMsgType::GETBLOCKTXN,
+    NetMsgType::BLOCKTXN,
+    NetMsgType::GETCFILTERS,
+    NetMsgType::CFILTER,
+    NetMsgType::GETCFHEADERS,
+    NetMsgType::CFHEADERS,
+    NetMsgType::GETCFCHECKPT,
+    NetMsgType::CFCHECKPT,
+    // Dash message types
+    // NOTE: do NOT include non-implmented here, we want them to be "Unknown command" in ProcessMessage()
+    NetMsgType::LEGACYTXLOCKREQUEST,
+    NetMsgType::SPORK,
+    NetMsgType::GETSPORKS,
+    NetMsgType::SENDDSQUEUE,
+    NetMsgType::DSACCEPT,
+    NetMsgType::DSVIN,
+    NetMsgType::DSFINALTX,
+    NetMsgType::DSSIGNFINALTX,
+    NetMsgType::DSCOMPLETE,
+    NetMsgType::DSSTATUSUPDATE,
+    NetMsgType::DSTX,
+    NetMsgType::DSQUEUE,
+    NetMsgType::SYNCSTATUSCOUNT,
+    NetMsgType::MNGOVERNANCESYNC,
+    NetMsgType::MNGOVERNANCEOBJECT,
+    NetMsgType::MNGOVERNANCEOBJECTVOTE,
+    NetMsgType::GETMNLISTDIFF,
+    NetMsgType::MNLISTDIFF,
+    NetMsgType::QSENDRECSIGS,
+    NetMsgType::QFCOMMITMENT,
+    NetMsgType::QCONTRIB,
+    NetMsgType::QCOMPLAINT,
+    NetMsgType::QJUSTIFICATION,
+    NetMsgType::QPCOMMITMENT,
+    NetMsgType::QWATCH,
+    NetMsgType::QSIGSESANN,
+    NetMsgType::QSIGSHARESINV,
+    NetMsgType::QGETSIGSHARES,
+    NetMsgType::QBSIGSHARES,
+    NetMsgType::QSIGREC,
+    NetMsgType::QSIGSHARE,
+    NetMsgType::QGETDATA,
+    NetMsgType::QDATA,
+    NetMsgType::CLSIG,
+    NetMsgType::ISLOCK,
+    NetMsgType::ISDLOCK,
+    NetMsgType::MNAUTH,
+};
+const static std::vector<std::string> allNetMessageTypesVec(allNetMessageTypes, allNetMessageTypes+ARRAYLEN(allNetMessageTypes));
+
+CMessageHeader::CMessageHeader(const MessageStartChars& pchMessageStartIn)
 {
-    memcpy(pchMessageStart, Params().MessageStart(), MESSAGE_START_SIZE);
+    memcpy(pchMessageStart, pchMessageStartIn, MESSAGE_START_SIZE);
     memset(pchCommand, 0, sizeof(pchCommand));
-    pchCommand[1] = 1;
     nMessageSize = -1;
-    nChecksum = 0;
+    memset(pchChecksum, 0, CHECKSUM_SIZE);
 }
 
-CMessageHeader::CMessageHeader(const char* pszCommand, unsigned int nMessageSizeIn)
+CMessageHeader::CMessageHeader(const MessageStartChars& pchMessageStartIn, const char* pszCommand, unsigned int nMessageSizeIn)
 {
-    memcpy(pchMessageStart, Params().MessageStart(), MESSAGE_START_SIZE);
-    memset(pchCommand, 0, sizeof(pchCommand));
-    strncpy(pchCommand, pszCommand, COMMAND_SIZE);
+    memcpy(pchMessageStart, pchMessageStartIn, MESSAGE_START_SIZE);
+
+    // Copy the command name, zero-padding to COMMAND_SIZE bytes
+    size_t i = 0;
+    for (; i < COMMAND_SIZE && pszCommand[i] != 0; ++i) pchCommand[i] = pszCommand[i];
+    assert(pszCommand[i] == 0); // Assert that the command name passed in is not longer than COMMAND_SIZE
+    for (; i < COMMAND_SIZE; ++i) pchCommand[i] = 0;
+
     nMessageSize = nMessageSizeIn;
-    nChecksum = 0;
+    memset(pchChecksum, 0, CHECKSUM_SIZE);
 }
 
 std::string CMessageHeader::GetCommand() const
@@ -54,10 +200,10 @@ std::string CMessageHeader::GetCommand() const
     return std::string(pchCommand, pchCommand + strnlen(pchCommand, COMMAND_SIZE));
 }
 
-bool CMessageHeader::IsValid() const
+bool CMessageHeader::IsValid(const MessageStartChars& pchMessageStartIn) const
 {
     // Check start string
-    if (memcmp(pchMessageStart, Params().MessageStart(), MESSAGE_START_SIZE) != 0)
+    if (memcmp(pchMessageStart, pchMessageStartIn, MESSAGE_START_SIZE) != 0)
         return false;
 
     // Check the command string for errors
@@ -77,7 +223,7 @@ bool CMessageHeader::IsValid() const
     // Message size
     if (nMessageSize > MAX_SIZE)
     {
-        LogPrintf("CMessageHeader::IsValid() : (%s, %u bytes) nMessageSize > MAX_SIZE\n", GetCommand(), nMessageSize);
+        LogPrintf("CMessageHeader::IsValid(): (%s, %u bytes) nMessageSize > MAX_SIZE\n", GetCommand(), nMessageSize);
         return false;
     }
 
@@ -85,51 +231,49 @@ bool CMessageHeader::IsValid() const
 }
 
 
+ServiceFlags GetDesirableServiceFlags(ServiceFlags services) {
+    if ((services & NODE_NETWORK_LIMITED) && g_initial_block_download_completed) {
+        return ServiceFlags(NODE_NETWORK_LIMITED);
+    }
+    return ServiceFlags(NODE_NETWORK);
+}
+
+void SetServiceFlagsIBDCache(bool state) {
+    g_initial_block_download_completed = state;
+}
+
 
 CAddress::CAddress() : CService()
 {
     Init();
 }
 
-CAddress::CAddress(CService ipIn, uint64_t nServicesIn) : CService(ipIn)
+CAddress::CAddress(CService ipIn, ServiceFlags nServicesIn) : CService(ipIn)
 {
     Init();
     nServices = nServicesIn;
 }
 
+CAddress::CAddress(CService ipIn, ServiceFlags nServicesIn, uint32_t nTimeIn) : CService(ipIn)
+{
+    Init();
+    nServices = nServicesIn;
+    nTime = nTimeIn;
+}
+
 void CAddress::Init()
 {
-    nServices = NODE_NETWORK;
+    nServices = NODE_NONE;
     nTime = 100000000;
 }
 
 CInv::CInv()
 {
     type = 0;
-    hash = 0;
+    hash.SetNull();
 }
 
-CInv::CInv(int typeIn, const uint256& hashIn)
-{
-    type = typeIn;
-    hash = hashIn;
-}
-
-CInv::CInv(const std::string& strType, const uint256& hashIn)
-{
-    unsigned int i;
-    for (i = 1; i < ARRAYLEN(ppszTypeName); i++)
-    {
-        if (strType == ppszTypeName[i])
-        {
-            type = i;
-            break;
-        }
-    }
-    if (i == ARRAYLEN(ppszTypeName))
-        throw std::out_of_range(strprintf("CInv::CInv(string, uint256) : unknown type '%s'", strType));
-    hash = hashIn;
-}
+CInv::CInv(int typeIn, const uint256& hashIn) : type(typeIn), hash(hashIn) {}
 
 bool operator<(const CInv& a, const CInv& b)
 {
@@ -138,17 +282,96 @@ bool operator<(const CInv& a, const CInv& b)
 
 bool CInv::IsKnownType() const
 {
-    return (type >= 1 && type < (int)ARRAYLEN(ppszTypeName));
+    return GetCommandInternal() != nullptr;
 }
 
-const char* CInv::GetCommand() const
+const char* CInv::GetCommandInternal() const
 {
-    if (!IsKnownType())
-        throw std::out_of_range(strprintf("CInv::GetCommand() : type=%d unknown type", type));
-    return ppszTypeName[type];
+    switch (type)
+    {
+        case MSG_TX:                            return NetMsgType::TX;
+        case MSG_BLOCK:                         return NetMsgType::BLOCK;
+        case MSG_FILTERED_BLOCK:                return NetMsgType::MERKLEBLOCK;
+        case MSG_LEGACY_TXLOCK_REQUEST:         return NetMsgType::LEGACYTXLOCKREQUEST;
+        case MSG_CMPCT_BLOCK:                   return NetMsgType::CMPCTBLOCK;
+        case MSG_SPORK:                         return NetMsgType::SPORK;
+        case MSG_DSTX:                          return NetMsgType::DSTX;
+        case MSG_GOVERNANCE_OBJECT:             return NetMsgType::MNGOVERNANCEOBJECT;
+        case MSG_GOVERNANCE_OBJECT_VOTE:        return NetMsgType::MNGOVERNANCEOBJECTVOTE;
+        case MSG_QUORUM_FINAL_COMMITMENT:       return NetMsgType::QFCOMMITMENT;
+        case MSG_QUORUM_CONTRIB:                return NetMsgType::QCONTRIB;
+        case MSG_QUORUM_COMPLAINT:              return NetMsgType::QCOMPLAINT;
+        case MSG_QUORUM_JUSTIFICATION:          return NetMsgType::QJUSTIFICATION;
+        case MSG_QUORUM_PREMATURE_COMMITMENT:   return NetMsgType::QPCOMMITMENT;
+        case MSG_QUORUM_RECOVERED_SIG:          return NetMsgType::QSIGREC;
+        case MSG_CLSIG:                         return NetMsgType::CLSIG;
+        case MSG_ISLOCK:                        return NetMsgType::ISLOCK;
+        case MSG_ISDLOCK:                       return NetMsgType::ISDLOCK;
+        default:
+            return nullptr;
+    }
+}
+
+std::string CInv::GetCommand() const
+{
+    auto cmd = GetCommandInternal();
+    if (cmd == nullptr) {
+        throw std::out_of_range(strprintf("CInv::GetCommand(): type=%d unknown type", type));
+    }
+    return cmd;
 }
 
 std::string CInv::ToString() const
 {
-    return strprintf("%s %s", GetCommand(), hash.ToString());
+    auto cmd = GetCommandInternal();
+    if (!cmd) {
+        return strprintf("0x%08x %s", type, hash.ToString());
+    } else {
+        return strprintf("%s %s", cmd, hash.ToString());
+    }
+}
+
+const std::vector<std::string> &getAllNetMessageTypes()
+{
+    return allNetMessageTypesVec;
+}
+
+/**
+ * Convert a service flag (NODE_*) to a human readable string.
+ * It supports unknown service flags which will be returned as "UNKNOWN[...]".
+ * @param[in] bit the service flag is calculated as (1 << bit)
+ */
+static std::string serviceFlagToStr(size_t bit)
+{
+    const uint64_t service_flag = 1ULL << bit;
+    switch ((ServiceFlags)service_flag) {
+    case NODE_NONE: abort();  // impossible
+    case NODE_NETWORK:         return "NETWORK";
+    case NODE_GETUTXO:         return "GETUTXO";
+    case NODE_BLOOM:           return "BLOOM";
+    case NODE_XTHIN:           return "XTHIN";
+    case NODE_COMPACT_FILTERS: return "COMPACT_FILTERS";
+    case NODE_NETWORK_LIMITED: return "NETWORK_LIMITED";
+    // Not using default, so we get warned when a case is missing
+    }
+
+    std::ostringstream stream;
+    stream.imbue(std::locale::classic());
+    stream << "UNKNOWN[";
+    stream << "2^" << bit;
+    stream << "]";
+    return stream.str();
+}
+
+std::vector<std::string> serviceFlagsToStr(uint64_t flags)
+{
+    std::vector<std::string> str_flags;
+
+    for (size_t i = 0; i < sizeof(flags) * 8; ++i) {
+        if (flags & (1ULL << i)) {
+            str_flags.emplace_back(serviceFlagToStr(i));
+        }
+    }
+
+    return str_flags;
 }

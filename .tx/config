@@ -1,0 +1,7 @@
+[main]
+host = https://www.transifex.com
+
+[cosanta.qt-translation-018x]
+file_filter = src/qt/locale/cosanta_<lang>.ts
+source_file = src/qt/locale/cosanta_en.xlf
+source_lang = en

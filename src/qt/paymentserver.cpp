@@ -1,30 +1,45 @@
-// Copyright (c) 2009-2012 The Bitcoin developers
-// Copyright (c) 2018-2023 The PirateCash developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2014-2022 The Dash Core developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#if defined(HAVE_CONFIG_H)
+#include <config/piratecash-config.h>
+#endif
+
+#include <qt/paymentserver.h>
+
+#include <qt/bitcoinunits.h>
+#include <qt/guiutil.h>
+#include <qt/optionsmodel.h>
+
+#include <chainparams.h>
+#include <clientversion.h>
+#include <interfaces/node.h>
+#include <policy/policy.h>
+#include <key_io.h>
+#include <ui_interface.h>
+#include <util/system.h>
+
+#include <cstdlib>
+#include <memory>
+
 #include <QApplication>
-
-#include "paymentserver.h"
-
-#include "guiconstants.h"
-#include "ui_interface.h"
-#include "util.h"
-
 #include <QByteArray>
 #include <QDataStream>
+#include <QDateTime>
 #include <QDebug>
+#include <QFile>
 #include <QFileOpenEvent>
 #include <QHash>
+#include <QList>
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QStringList>
-#include <QUrl>
-
-using namespace boost;
+#include <QUrlQuery>
 
 const int BITCOIN_IPC_CONNECT_TIMEOUT = 1000; // milliseconds
-const QString BITCOIN_IPC_PREFIX("piratecash:");
+const QString BITCOIN_IPC_PREFIX("cosa:");
 
 //
 // Create a name that is unique for:
@@ -33,23 +48,67 @@ const QString BITCOIN_IPC_PREFIX("piratecash:");
 //
 static QString ipcServerName()
 {
-    QString name("piratecashQt");
+    QString name("PirateCashQt");
 
     // Append a simple hash of the datadir
     // Note that GetDataDir(true) returns a different path
     // for -testnet versus main net
-    QString ddir(GetDataDir(true).string().c_str());
+    QString ddir(GUIUtil::boostPathToQString(GetDataDir(true)));
     name.append(QString::number(qHash(ddir)));
 
     return name;
 }
 
 //
-// This stores payment requests received before
+// We store payment URIs and requests received before
 // the main GUI window is up and ready to ask the user
 // to send payment.
+
+static QSet<QString> savedPaymentRequests;
+
 //
-static QStringList savedPaymentRequests;
+// Sending to the server is done synchronously, at startup.
+// If the server isn't already running, startup continues,
+// and the items in savedPaymentRequest will be handled
+// when uiReady() is called.
+//
+// Warning: ipcSendCommandLine() is called early in init,
+// so don't use "Q_EMIT message()", but "QMessageBox::"!
+//
+void PaymentServer::ipcParseCommandLine(interfaces::Node& node, int argc, char* argv[])
+{
+    for (int i = 1; i < argc; i++)
+    {
+        QString arg(argv[i]);
+        if (arg.startsWith("-"))
+            continue;
+
+        // If the pirate: URI contains a payment request, we are not able to detect the
+        // network as that would require fetching and parsing the payment request.
+        // That means clicking such an URI which contains a testnet payment request
+        // will start a mainnet instance and throw a "wrong network" error.
+        if (arg.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // pirate: URI
+        {
+            if (savedPaymentRequests.contains(arg)) continue;
+            savedPaymentRequests.insert(arg);
+
+            SendCoinsRecipient r;
+            if (GUIUtil::parseBitcoinURI(arg, &r) && !r.address.isEmpty())
+            {
+                auto tempChainParams = CreateChainParams(CBaseChainParams::MAIN);
+
+                if (IsValidDestinationString(r.address.toStdString(), *tempChainParams)) {
+                    node.selectParams(CBaseChainParams::MAIN);
+                } else {
+                    tempChainParams = CreateChainParams(CBaseChainParams::TESTNET);
+                    if (IsValidDestinationString(r.address.toStdString(), *tempChainParams)) {
+                        node.selectParams(CBaseChainParams::TESTNET);
+                    }
+                }
+            }
+        }
+    }
+}
 
 //
 // Sending to the server is done synchronously, at startup.
@@ -60,80 +119,151 @@ static QStringList savedPaymentRequests;
 bool PaymentServer::ipcSendCommandLine()
 {
     bool fResult = false;
-
-    const QStringList& args = qApp->arguments();
-    for (int i = 1; i < args.size(); i++)
-    {
-        if (!args[i].startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive))
-            continue;
-        savedPaymentRequests.append(args[i]);
-    }
-
-    foreach (const QString& arg, savedPaymentRequests)
+    for (const QString& r : savedPaymentRequests)
     {
         QLocalSocket* socket = new QLocalSocket();
         socket->connectToServer(ipcServerName(), QIODevice::WriteOnly);
         if (!socket->waitForConnected(BITCOIN_IPC_CONNECT_TIMEOUT))
+        {
+            delete socket;
+            socket = nullptr;
             return false;
+        }
 
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_4_0);
-        out << arg;
+        out << r;
         out.device()->seek(0);
+
         socket->write(block);
         socket->flush();
-
         socket->waitForBytesWritten(BITCOIN_IPC_CONNECT_TIMEOUT);
         socket->disconnectFromServer();
+
         delete socket;
+        socket = nullptr;
         fResult = true;
     }
+
     return fResult;
 }
 
-PaymentServer::PaymentServer(QApplication* parent) : QObject(parent), saveURIs(true)
+PaymentServer::PaymentServer(QObject* parent, bool startLocalServer) :
+    QObject(parent),
+    saveURIs(true),
+    uriServer(nullptr),
+    optionsModel(nullptr)
 {
-    // Install global event filter to catch QFileOpenEvents on the mac (sent when you click bitcoin: links)
-    parent->installEventFilter(this);
+    // Install global event filter to catch QFileOpenEvents
+    // on Mac: sent when you click pirate: links
+    // other OSes: helpful when dealing with payment request files
+    if (parent)
+        parent->installEventFilter(this);
 
     QString name = ipcServerName();
 
     // Clean up old socket leftover from a crash:
     QLocalServer::removeServer(name);
 
-    uriServer = new QLocalServer(this);
-
-    if (!uriServer->listen(name))
-        qDebug() << tr("Cannot start piratecash: click-to-pay handler");
-    else
-        connect(uriServer, SIGNAL(newConnection()), this, SLOT(handleURIConnection()));
-}
-
-bool PaymentServer::eventFilter(QObject *object, QEvent *event)
-{
-    // clicking on bitcoin: URLs creates FileOpen events on the Mac:
-    if (event->type() == QEvent::FileOpen)
+    if (startLocalServer)
     {
-        QFileOpenEvent* fileEvent = static_cast<QFileOpenEvent*>(event);
-        if (!fileEvent->url().isEmpty())
-        {
-            if (saveURIs) // Before main window is ready:
-                savedPaymentRequests.append(fileEvent->url().toString());
-            else
-                emit receivedURI(fileEvent->url().toString());
-            return true;
+        uriServer = new QLocalServer(this);
+
+        if (!uriServer->listen(name)) {
+            // constructor is called early in init, so don't use "Q_EMIT message()" here
+            QMessageBox::critical(nullptr, tr("Payment request error"),
+                tr("Cannot start pirate: click-to-pay handler"));
+        }
+        else {
+            connect(uriServer, &QLocalServer::newConnection, this, &PaymentServer::handleURIConnection);
         }
     }
-    return false;
+}
+
+PaymentServer::~PaymentServer()
+{
+}
+
+//
+// OSX-specific way of handling cosa: URIs
+//
+bool PaymentServer::eventFilter(QObject *object, QEvent *event)
+{
+    if (event->type() == QEvent::FileOpen) {
+        QFileOpenEvent *fileEvent = static_cast<QFileOpenEvent*>(event);
+        if (!fileEvent->file().isEmpty())
+            handleURIOrFile(fileEvent->file());
+        else if (!fileEvent->url().isEmpty())
+            handleURIOrFile(fileEvent->url().toString());
+
+        return true;
+    }
+
+    return QObject::eventFilter(object, event);
 }
 
 void PaymentServer::uiReady()
 {
     saveURIs = false;
-    foreach (const QString& s, savedPaymentRequests)
-        emit receivedURI(s);
+    for (const QString& s : savedPaymentRequests)
+    {
+        handleURIOrFile(s);
+    }
     savedPaymentRequests.clear();
+}
+
+void PaymentServer::handleURIOrFile(const QString& s)
+{
+    if (saveURIs)
+    {
+        savedPaymentRequests.insert(s);
+        return;
+    }
+
+    if (s.startsWith("pirate://", Qt::CaseInsensitive))
+    {
+        Q_EMIT message(tr("URI handling"), tr("'pirate://' is not a valid URI. Use 'pirate:' instead."),
+            CClientUIInterface::MSG_ERROR);
+    }
+    else if (s.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // dash: URI
+    {
+        QUrlQuery uri((QUrl(s)));
+        // normal URI
+        {
+            SendCoinsRecipient recipient;
+            if (GUIUtil::parseBitcoinURI(s, &recipient))
+            {
+                if (!IsValidDestinationString(recipient.address.toStdString())) {
+                    if (uri.hasQueryItem("r")) {  // payment request
+                        Q_EMIT message(tr("URI handling"),
+                            tr("Cannot process payment request as BIP70 is no longer supported.")+
+                            tr("Due to discontinued support, you should request the merchant to provide you with a BIP21 compatible URI or use a wallet that does continue to support BIP70."),
+                            CClientUIInterface::ICON_WARNING);
+                    } else {
+                        Q_EMIT message(tr("URI handling"), tr("Invalid payment address %1").arg(recipient.address),
+                            CClientUIInterface::MSG_ERROR);
+                    }
+                }
+                else
+                    Q_EMIT receivedPaymentRequest(recipient);
+            }
+            else
+                Q_EMIT message(tr("URI handling"),
+                    tr("URI cannot be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters."),
+                    CClientUIInterface::ICON_WARNING);
+
+            return;
+        }
+    }
+
+    if (QFile::exists(s)) // payment request file
+    {
+        Q_EMIT message(tr("Payment request file handling"),
+            tr("Cannot process payment request as BIP70 is no longer supported.")+
+            tr("Due to discontinued support, you should request the merchant to provide you with a BIP21 compatible URI or use a wallet that does continue to support BIP70."),
+            CClientUIInterface::ICON_WARNING);
+    }
 }
 
 void PaymentServer::handleURIConnection()
@@ -143,24 +273,20 @@ void PaymentServer::handleURIConnection()
     while (clientConnection->bytesAvailable() < (int)sizeof(quint32))
         clientConnection->waitForReadyRead();
 
-    connect(clientConnection, SIGNAL(disconnected()),
-            clientConnection, SLOT(deleteLater()));
+    connect(clientConnection, &QLocalSocket::disconnected, clientConnection, &QLocalSocket::deleteLater);
 
     QDataStream in(clientConnection);
     in.setVersion(QDataStream::Qt_4_0);
     if (clientConnection->bytesAvailable() < (int)sizeof(quint16)) {
         return;
     }
-    QString message;
-    in >> message;
+    QString msg;
+    in >> msg;
 
-    if (saveURIs)
-        savedPaymentRequests.append(message);
-    else
-        emit receivedURI(message);
+    handleURIOrFile(msg);
 }
 
-void PaymentServer::setOptionsModel(OptionsModel *optionsModel)
+void PaymentServer::setOptionsModel(OptionsModel *_optionsModel)
 {
-    this->optionsModel = optionsModel;
+    this->optionsModel = _optionsModel;
 }

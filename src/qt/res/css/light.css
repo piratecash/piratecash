@@ -1,0 +1,1067 @@
+/**
+Copyright (c) 2020 The Dash Core developers
+Distributed under the MIT/X11 software license, see the accompanying
+file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+---------------------------------------------------------------------
+
+This file contains color changes for the dash theme "Light".
+
+NOTE: This file gets appended to the general.css while its
+getting loaded in GUIUtil::loadStyleSheet(). Thus changes made in
+general.css may become overwritten by changes in this file.
+
+Loaded in GUIUtil::loadStyleSheet() in guitil.cpp.
+**/
+
+/* do not modify! section updated by update-css-files.py
+<colors>
+
+# Used colors in light.css for commit 44de8a93f2
+
+#00000000
+#555
+#008de4
+#0f75b5
+#a7a7a7
+#c7c7c7
+#d2d2d2
+#dcdcdc
+#e0e0e0
+#eaeaec
+#f2f2f4
+#ccfafafa
+
+</colors>
+*/
+
+/******************************************************
+Common stuff
+******************************************************/
+
+QDialog,
+QMainWindow,
+QMessageBox
+WalletFrame {
+    background-color: #f2f2f4;
+}
+
+QWidget { /* override text selection background color for all text widgets */
+    selection-color: #eaeaec;
+    selection-background-color: #555;
+}
+
+QCheckBox,
+QLabel,
+QListView,
+QRadioButton,
+QTreeWidget {
+    color: #555;
+}
+
+QCheckBox:disabled,
+QLabel:disabled,
+QListView:disabled,
+QRadioButton:disabled {
+    color: #c7c7c7;
+}
+
+/******************************************************
+User-input widget style
+******************************************************/
+
+BitcoinAmountField,
+QAbstractSpinBox,
+QComboBox,
+QPlainTextEdit,
+QLineEdit {
+    background-color: #eaeaec;
+    border-color: #008de4;
+    color: #555;
+}
+
+BitcoinAmountField:hover:!focus,
+QAbstractSpinBox:hover:!focus,
+QComboBox:hover:!focus,
+QPlainTextEdit:hover:!focus,
+QLineEdit:hover:!focus {
+    background-color: #eaeaec;
+    border-color: #0f75b5;
+}
+
+
+BitcoinAmountField:focus,
+QAbstractSpinBox:focus,
+QComboBox:checked,
+QComboBox:focus,
+QPlainTextEdit:focus,
+QLineEdit:focus {
+    background-color: #d2d2d2;
+    border-color: #0f75b5;
+}
+
+BitcoinAmountField:disabled,
+QAbstractSpinBox:disabled,
+QComboBox:disabled,
+QPlainTextEdit:disabled,
+QLineEdit:disabled {
+    background-color: #eaeaec;
+    border-color: #d2d2d2;
+    color: #c7c7c7;
+}
+
+/******************************************************
+QAbstractSpinBox
+******************************************************/
+
+QAbstractSpinBox::up-arrow {
+    image: url(':/images/arrow_up_light');
+}
+QAbstractSpinBox::up-arrow:hover {
+    image: url(':/images/arrow_up_dark');
+}
+QAbstractSpinBox::up-arrow:pressed {
+    image: url(':/images/arrow_up_light');
+}
+QAbstractSpinBox::up-arrow:disabled {
+    image: url(':/images/arrow_light_up_normal');
+}
+QAbstractSpinBox::down-arrow {
+    image: url(':/images/arrow_down_light');
+}
+QAbstractSpinBox::down-arrow:hover {
+    image: url(':/images/arrow_down_dark');
+}
+QAbstractSpinBox::down-arrow:pressed {
+    image: url(':/images/arrow_down_light');
+}
+QAbstractSpinBox::down-arrow:disabled {
+    image: url(':/images/arrow_light_down_normal');
+}
+
+/******************************************************
+QCalendarWidget
+******************************************************/
+
+QCalendarWidget,
+#qt_calendar_calendarview,
+#qt_calendar_navigationbar,
+#qt_calendar_prevmonth,
+#qt_calendar_nextmonth,
+#qt_calendar_monthbutton,
+#qt_calendar_yearbutton {
+    background-color: #eaeaec;
+}
+
+#qt_calendar_calendarview,
+#qt_calendar_navigationbar,
+#qt_calendar_prevmonth,
+#qt_calendar_nextmonth,
+#qt_calendar_monthbutton,
+#qt_calendar_yearbutton {
+    border-color: #dcdcdc;
+}
+
+#qt_calendar_prevmonth:hover,
+#qt_calendar_nextmonth:hover,
+#qt_calendar_monthbutton:hover,
+#qt_calendar_yearbutton:hover {
+    background-color: #d2d2d2;
+}
+
+#qt_calendar_prevmonth {
+    qproperty-icon: url(':/images/arrow_left_light');
+}
+#qt_calendar_nextmonth {
+    qproperty-icon: url(':/images/arrow_right_light');
+}
+
+QCalendarWidget QToolButton {
+    color: #555;
+}
+
+QCalendarWidget QWidget {
+    alternate-background-color: #c7c7c7;
+}
+
+QCalendarWidget QAbstractItemView:enabled {
+    color: #555;
+    selection-background-color: #d2d2d2;
+    selection-color: #555;
+}
+
+QCalendarWidget QAbstractItemView:disabled {
+    color: #a7a7a7;
+}
+
+/******************************************************
+QCheckBox
+******************************************************/
+
+QCheckBox::indicator:unchecked,
+QCheckBox::indicator:unchecked:pressed {
+    image: url(':/images/checkbox_normal_light');
+}
+QCheckBox::indicator:checked,
+QCheckBox::indicator:checked:pressed {
+    image: url(':/images/checkbox_checked_light');
+}
+QCheckBox::indicator:indeterminate,
+QCheckBox::indicator:indeterminate:pressed {
+    image: url(':/images/checkbox_partly_checked_light');
+}
+QCheckBox::indicator:hover:!pressed:unchecked {
+    image: url(':/images/checkbox_normal_hover_light');
+}
+QCheckBox::indicator:unchecked:disabled {
+    image: url(':/images/checkbox_normal_disabled_light');
+}
+QCheckBox::indicator:checked:!pressed:hover {
+    image: url(':/images/checkbox_checked_hover_light');
+}
+QCheckBox::indicator:checked:disabled {
+    image: url(':/images/checkbox_checked_disabled_light');
+}
+QCheckBox::indicator:indeterminate:hover {
+    image: url(':/images/checkbox_partly_checked_hover_light');
+}
+QCheckBox::indicator:indeterminate:disabled {
+    image: url(':/images/checkbox_partly_checked_disabled_light');
+}
+
+/******************************************************
+QComboBox
+******************************************************/
+
+QComboBox QListView {
+    background-color: #f2f2f4;
+    color: #555;
+}
+
+QComboBox::item {
+    color: #555;
+}
+
+QComboBox::item:alternate {
+    background-color: #f2f2f4;
+}
+
+QComboBox::item:selected {
+    background-color: #d2d2d2;
+}
+
+QComboBox::down-arrow {
+    image: url(':/images/arrow_down_light') 0 0 0 0 stretch stretch;
+}
+QComboBox::down-arrow:hover {
+    image: url(':/images/arrow_down_dark') 0 0 0 0 stretch stretch;
+}
+QComboBox::down-arrow:pressed {
+    image: url(':/images/arrow_down_light') 0 0 0 0 stretch stretch;
+}
+QComboBox::down-arrow:disabled {
+    image: url(':/images/arrow_light_down_normal') 0 0 0 0 stretch stretch;
+}
+
+/******************************************************
+QGroupBox
+******************************************************/
+
+QGroupBox {
+    background-color: #f2f2f4;
+    color: #555;
+}
+
+/******************************************************
+QHeaderView
+******************************************************/
+
+QHeaderView::section { /* Table Header Sections */
+    background-color: #008de4;
+    border-color: #f2f2f4;
+    color: #f2f2f4;
+}
+
+QHeaderView::section:hover { /* Table Header Sections */
+    background-color: #0f75b5;
+    color: #f2f2f4;
+}
+
+/******************************************************
+QLineEdit / QValidatedLineEdit / QPlainTextEdit
+******************************************************/
+
+/***** No light.css specific coloring here yet *****/
+
+/******************************************************
+QMenu
+******************************************************/
+
+QMenu {
+    background-color: #eaeaec;
+    border-color: #dcdcdc;
+}
+
+QMenu::item {
+    color: #555;
+}
+
+QMenu::item:selected:!disabled {
+    background-color: #d2d2d2;
+}
+
+QMenu::item:disabled {
+    color: #a7a7a7;
+}
+
+QMenu::separator {
+    background-color: #c7c7c7;
+}
+
+/******************************************************
+QMenuBar
+******************************************************/
+
+QMenuBar {
+    background-color: #f2f2f4;
+}
+
+/******************************************************
+QProgressBar
+******************************************************/
+
+QProgressBar {
+    background-color: #c7c7c7;
+    border-color: #00000000;
+    color: #00000000;
+}
+
+QProgressBar::chunk {
+    background-color: #008de4;
+}
+
+/******************************************************
+QProgressDialog
+******************************************************/
+
+.QProgressDialog {
+    background-color: #f2f2f4;
+}
+
+/******************************************************
+QPushButton
+******************************************************/
+
+QPushButton {
+    background-color: #008de4;
+    color: #f2f2f4;
+}
+
+QPushButton:hover {
+    background-color: #0f75b5;
+}
+
+QPushButton:pressed {
+    background-color: #008de4;
+}
+
+QPushButton:disabled {
+    background-color: #eaeaec;
+    border-color: #d2d2d2;
+    color: #d2d2d2;
+}
+
+/******************************************************
+QPushButton - Special case, light buttons
+******************************************************/
+
+QWidget#AddressBookPage QPushButton#newAddress,
+QWidget#AddressBookPage QPushButton#copyAddress,
+QWidget#AddressBookPage QPushButton#showAddressQRCode,
+QWidget#AddressBookPage QPushButton#deleteAddress,
+QDialog#OpenURIDialog QPushButton#selectFileButton,
+QDialog#OptionsDialog QPushButton#resetButton,
+QDialog#SendCoinsDialog .QPushButton#addButton,
+QDialog#SendCoinsDialog .QPushButton#clearButton,
+QWidget#ReceiveCoinsDialog .QFrame#frame QPushButton#removeRequestButton,
+QWidget#ReceiveCoinsDialog .QFrame#frame2 QPushButton#clearButton,
+QWidget#ReceiveCoinsDialog .QFrame#frame QPushButton#showRequestButton,
+QDialog#SignVerifyMessageDialog QPushButton#clearButton_SM,
+QDialog#SignVerifyMessageDialog QPushButton#clearButton_VM {
+    background-color: #c7c7c7;
+    color: #555;
+}
+
+QWidget#AddressBookPage QPushButton#newAddress:hover,
+QWidget#AddressBookPage QPushButton#copyAddress:hover,
+QWidget#AddressBookPage QPushButton#showAddressQRCode:hover,
+QWidget#AddressBookPage QPushButton#deleteAddress:hover,
+QDialog#OpenURIDialog QPushButton#selectFileButton:hover,
+QDialog#OptionsDialog QPushButton#resetButton:hover,
+QDialog#SendCoinsDialog .QPushButton#addButton:hover,
+QDialog#SendCoinsDialog .QPushButton#clearButton:hover,
+QWidget#ReceiveCoinsDialog .QFrame#frame QPushButton#removeRequestButton:hover,
+QWidget#ReceiveCoinsDialog .QFrame#frame2 QPushButton#clearButton:hover,
+QWidget#ReceiveCoinsDialog .QFrame#frame QPushButton#showRequestButton:hover,
+QDialog#SignVerifyMessageDialog QPushButton#clearButton_SM:hover,
+QDialog#SignVerifyMessageDialog QPushButton#clearButton_VM:hover {
+    background-color: #a7a7a7;
+    color: #555;
+}
+
+QWidget#AddressBookPage QPushButton#newAddress:pressed,
+QWidget#AddressBookPage QPushButton#copyAddress:pressed,
+QWidget#AddressBookPage QPushButton#showAddressQRCode:pressed,
+QWidget#AddressBookPage QPushButton#deleteAddress:pressed,
+QDialog#OpenURIDialog QPushButton#selectFileButton:pressed,
+QDialog#OptionsDialog QPushButton#resetButton:pressed,
+QDialog#SendCoinsDialog .QPushButton#addButton:pressed,
+QDialog#SendCoinsDialog .QPushButton#clearButton:pressed,
+QWidget#ReceiveCoinsDialog .QFrame#frame QPushButton#removeRequestButton:pressed,
+QWidget#ReceiveCoinsDialog .QFrame#frame2 QPushButton#clearButton:pressed,
+QWidget#ReceiveCoinsDialog .QFrame#frame QPushButton#showRequestButton:pressed,
+QDialog#SignVerifyMessageDialog QPushButton#clearButton_SM:pressed,
+QDialog#SignVerifyMessageDialog QPushButton#clearButton_VM:pressed {
+    background-color: #c7c7c7;
+    color: #555;
+}
+
+QWidget#AddressBookPage QPushButton#newAddress:disabled,
+QWidget#AddressBookPage QPushButton#copyAddress:disabled,
+QWidget#AddressBookPage QPushButton#showAddressQRCode:disabled,
+QWidget#AddressBookPage QPushButton#deleteAddress:disabled,
+QDialog#OpenURIDialog QPushButton#selectFileButton:disabled,
+QDialog#OptionsDialog QPushButton#resetButton:disabled,
+QDialog#SendCoinsDialog .QPushButton#addButton:disabled,
+QDialog#SendCoinsDialog .QPushButton#clearButton:disabled,
+QWidget#ReceiveCoinsDialog .QFrame#frame QPushButton#removeRequestButton:disabled,
+QWidget#ReceiveCoinsDialog .QFrame#frame2 QPushButton#clearButton:disabled,
+QWidget#ReceiveCoinsDialog .QFrame#frame QPushButton#showRequestButton:disabled,
+QDialog#SignVerifyMessageDialog QPushButton#clearButton_SM:disabled,
+QDialog#SignVerifyMessageDialog QPushButton#clearButton_VM:disabled {
+    background-color: #eaeaec;
+    border-color: #d2d2d2;
+    color: #d2d2d2;
+}
+
+/******************************************************
+QPushButton - Special case, tabbar replacement buttons
+******************************************************/
+
+/* Debug window buttons */
+#btnInfo,
+#btnConsole,
+#btnNetTraffic,
+#btnPeers,
+#btnRepair,
+/* Options dialog buttons */
+#btnMain,
+#btnWallet,
+#btnCoinJoin,
+#btnNetwork,
+#btnDisplay,
+#btnAppearance,
+/* Sign/Verify dialog buttons */
+#btnSignMessage,
+#btnVerifyMessage {
+    border-color: #008de4;
+    color: #a7a7a7;
+}
+
+/* Debug window buttons */
+#btnInfo:hover:checked,
+#btnConsole:hover:checked,
+#btnNetTraffic:hover:checked,
+#btnPeers:hover:checked,
+#btnRepair:hover:checked,
+/* Options dialog buttons */
+#btnMain:hover:checked,
+#btnWallet:hover:checked,
+#btnCoinJoin:hover:checked,
+#btnNetwork:hover:checked,
+#btnDisplay:hover:checked,
+#btnAppearance:hover:checked,
+/* Sign/Verify dialog buttons */
+#btnSignMessage:hover:checked,
+#btnVerifyMessage:hover:checked {
+    border-color: #555;
+    color: #555;
+}
+
+/* Debug window buttons */
+#btnInfo:hover:!checked,
+#btnConsole:hover:!checked,
+#btnNetTraffic:hover:!checked,
+#btnPeers:hover:!checked,
+#btnRepair:hover:!checked,
+/* Options dialog buttons */
+#btnMain:hover:!checked,
+#btnWallet:hover:!checked,
+#btnCoinJoin:hover:!checked,
+#btnNetwork:hover:!checked,
+#btnDisplay:hover:!checked,
+#btnAppearance:hover:!checked,
+/* Sign/Verify dialog buttons */
+#btnSignMessage:hover:!checked,
+#btnVerifyMessage:hover:!checked {
+    border-color: #0f75b5;
+    color: #555;
+}
+
+/* Debug window buttons */
+#btnInfo:checked,
+#btnConsole:checked,
+#btnNetTraffic:checked,
+#btnPeers:checked,
+#btnRepair:checked,
+/* Options dialog buttons */
+#btnMain:checked,
+#btnWallet:checked,
+#btnCoinJoin:checked,
+#btnNetwork:checked,
+#btnDisplay:checked,
+#btnAppearance:checked,
+/* Sign/Verify dialog buttons */
+#btnSignMessage:checked,
+#btnVerifyMessage:checked {
+    border-color: #555;
+    color: #555;
+}
+
+/******************************************************
+QRadioButton
+******************************************************/
+
+QRadioButton::indicator:unchecked,
+QRadioButton::indicator:unchecked:pressed {
+    image: url(':/images/radio_normal_light');
+}
+QRadioButton::indicator:checked,
+QRadioButton::indicator:checked:pressed {
+    image: url(':/images/radio_checked_light');
+}
+QRadioButton::indicator:hover:unchecked:!pressed {
+    image: url(':/images/radio_normal_hover_light');
+}
+QRadioButton::indicator:checked:hover:!pressed {
+    image: url(':/images/radio_checked_hover_light');
+}
+QRadioButton::indicator:checked:disabled {
+    image: url(':/images/radio_checked_disabled_light');
+}
+QRadioButton::indicator:unchecked:disabled {
+    image: url(':/images/radio_normal_disabled_light');
+}
+
+
+/******************************************************
+QScrollArea
+******************************************************/
+
+/***** No light.css specific coloring here yet *****/
+
+/******************************************************
+QScrollBar
+******************************************************/
+
+/* Do NOT apply any styles to QScrollBar here,
+* it's OS dependent and should be handled via platform specific code at the
+* end of the file.
+*/
+
+/******************************************************
+QSlider
+******************************************************/
+
+QSlider::handle:horizontal {
+	background-color: #008de4;
+}
+QSlider::handle:horizontal:hover {
+	background-color: #0f75b5;
+}
+QSlider::sub-page:horizontal {
+	background-color: #c7c7c7;
+}
+QSlider::add-page:horizontal {
+	background-color: #c7c7c7;
+}
+
+/******************************************************
+QStatusBar
+******************************************************/
+
+QStatusBar {
+    background-color: #f2f2f4;
+    color: #555;
+}
+
+/******************************************************
+QTableView
+******************************************************/
+
+.QTableView { /* Table - has to be selected as a class otherwise it throws off QCalendarWidget */
+    background-color: #eaeaec;
+    border-color: #dcdcdc;
+}
+
+QTableView::item { /* Table Item */
+    background-color: #eaeaec;
+    border-color: #c7c7c7;
+}
+
+QTableView::item:selected { /* Table Item Selected */
+    background-color: #d2d2d2;
+    border-color: #d2d2d2;
+    color: #555;
+}
+
+/******************************************************
+QTableWidget
+******************************************************/
+
+.QTableWidget {
+    background-color: #eaeaec;
+    border-color: #dcdcdc;
+    color: #555;
+}
+
+/******************************************************
+QTabWidget
+******************************************************/
+
+/***** No light.css specific coloring here yet *****/
+
+/******************************************************
+QTextEdit
+******************************************************/
+
+QTextEdit {
+    background-color: #eaeaec;
+    border-color: #dcdcdc;
+    color: #555;
+}
+
+
+/******************************************************
+QToolBar / QToolButton
+******************************************************/
+
+QToolBar {
+    background-color: #008de4;
+}
+
+QToolBar > QToolButton {
+    background-color: #00000000;
+    color: #f2f2f4;
+}
+
+QToolBar > QToolButton:hover:!checked {
+    background-color: #0f75b5;
+    color: #dcdcdc;
+}
+
+QToolBar > QToolButton:checked {
+    background-color: #f2f2f4;
+    color: #555;
+}
+
+QToolBar > QToolButton:disabled {
+    color: #a7a7a7;
+}
+
+/******************************************************
+QToolTip
+******************************************************/
+
+QToolTip {
+    background-color: #eaeaec;
+    border-color: #555;
+    color: #555;
+}
+
+/******************************************************
+QTreeWidget
+******************************************************/
+
+QTreeWidget {
+    alternate-background-color: #eaeaec;
+    background-color: #eaeaec;
+    border-color: #dcdcdc;
+}
+QTreeWidget::branch::closed:has-children {
+    image: url(':/images/arrow_right_light');
+}
+QTreeWidget::branch::closed:has-children:hover {
+    image: url(':/images/arrow_right_dark');
+}
+QTreeWidget::branch::open {
+    image: url(':/images/arrow_down_light');
+}
+QTreeWidget::branch::open:hover {
+    image: url(':/images/arrow_down_dark');
+}
+QTreeWidget::indicator:unchecked,
+QTreeWidget::indicator:unchecked:pressed {
+    image: url(':/images/checkbox_normal_light');
+}
+QTreeWidget::indicator:checked,
+QTreeWidget::indicator:checked:pressed {
+    image: url(':/images/checkbox_checked_light');
+}
+QTreeWidget::indicator:indeterminate,
+QTreeWidget::indicator:indeterminate:pressed {
+    image: url(':/images/checkbox_partly_checked_light');
+}
+QTreeWidget::indicator:hover:unchecked {
+    image: url(':/images/checkbox_normal_hover_light');
+}
+QTreeWidget::indicator:unchecked:disabled {
+    image: url(':/images/checkbox_normal_disabled_light');
+}
+QTreeWidget::indicator:checked:hover {
+    image: url(':/images/checkbox_checked_hover_light');
+}
+QTreeWidget::indicator:checked:disabled {
+    image: url(':/images/checkbox_checked_disabled_light');
+}
+QTreeWidget::indicator:indeterminate:!pressed:hover {
+    image: url(':/images/checkbox_partly_checked_hover_light');
+}
+QTreeWidget::indicator:indeterminate:disabled {
+    image: url(':/images/checkbox_partly_checked_disabled_light');
+}
+
+/******************************************************
+QWidget
+******************************************************/
+
+/***** No light.css specific coloring here yet *****/
+
+
+/******************************************************
+*******************************************************
+STYLING OF SPECIFIC CUSTOM UI PARTS
+
+Below each section should be for a specific UI class/file
+not only Qt standard elements
+*******************************************************
+******************************************************/
+
+/******************************************************
+AboutDialog
+******************************************************/
+
+/***** No light.css specific coloring here yet *****/
+
+/******************************************************
+AddressBookPage
+******************************************************/
+
+AddressBookPage QTableView {
+    color: #555;
+}
+
+/******************************************************
+AppearanceSetup
+******************************************************/
+
+QDialog#AppearanceSetup > QFrame {
+    border-color: #dcdcdc;
+}
+
+/******************************************************
+AppearanceWidget
+******************************************************/
+
+/***** No light.css specific coloring here yet *****/
+
+/******************************************************
+AskPassphraseDialog
+******************************************************/
+
+/***** No light.css specific coloring here yet *****/
+
+/******************************************************
+CoinControlDialog
+******************************************************/
+
+QDialog#CoinControlDialog .CoinControlTreeWidget#treeWidget::item {
+    border-color: #c7c7c7;
+}
+
+QDialog#CoinControlDialog .CoinControlTreeWidget#treeWidget::item:selected,
+QDialog#CoinControlDialog .CoinControlTreeWidget#treeWidget::item:checked,
+QDialog#CoinControlDialog .CoinControlTreeWidget#treeWidget::branch:selected,
+QDialog#CoinControlDialog .CoinControlTreeWidget#treeWidget::branch:checked  {
+    background-color: #d2d2d2;
+    color: #555;
+}
+
+/******************************************************
+EditAddressDialog
+******************************************************/
+
+/***** No light.css specific coloring here yet *****/
+
+/******************************************************
+GovernanceList
+******************************************************/
+
+GovernanceList QTableView {
+    color: #555;
+}
+
+/******************************************************
+HelpMessageDialog
+******************************************************/
+
+HelpMessageDialog QWidget#scrollAreaWidgetContents {
+    background-color: #eaeaec;
+    border-color: #dcdcdc;
+}
+
+/******************************************************
+MasternodeList
+******************************************************/
+
+/***** No light.css specific coloring here yet *****/
+
+/******************************************************
+ModalOverlay
+******************************************************/
+
+QWidget#bgWidget { /* The frame overlaying the overview-page */
+    background-color: #ccfafafa;
+}
+
+QWidget#contentWidget { /* The actual content with the text/buttons/etc... */
+    background-color: #f2f2f4;
+    border-color: #c7c7c7;
+}
+
+/******************************************************
+OpenURIDialog
+******************************************************/
+
+/***** No light.css specific coloring here yet *****/
+
+/******************************************************
+OptionsDialog
+******************************************************/
+
+QDialog#OptionsDialog #line,
+QDialog#OptionsDialog #frame {
+    border-color: #dcdcdc;
+}
+
+/******************************************************
+OverviewPage Balances
+******************************************************/
+
+/***** No light.css specific coloring here yet *****/
+
+/******************************************************
+OverviewPage CoinJoin
+******************************************************/
+
+/***** No light.css specific coloring here yet *****/
+
+/******************************************************
+OverviewPage RecentTransactions
+******************************************************/
+
+/***** No light.css specific coloring here yet *****/
+
+/******************************************************
+ReceiveCoinsDialog
+******************************************************/
+
+ReceiveCoinsDialog QTableView {
+    color: #555;
+}
+
+/******************************************************
+RPCConsole
+******************************************************/
+
+QWidget#RPCConsole { /* RPC Console Dialog Box */
+    background-color: #f2f2f4;
+}
+
+RPCConsole QTableView {
+    color: #555;
+}
+
+RPCConsole QWidget#detailWidget {
+    background-color: #f2f2f4;
+}
+
+#rpcAutoCompleter {
+    background-color: #eaeaec;
+    border-color: #dcdcdc;
+}
+
+#rpcAutoCompleter::item {
+    color: #555;
+}
+
+#rpcAutoCompleter::item:selected {
+    background-color: #d2d2d2;
+    color: #555;
+}
+
+/******************************************************
+SendCoinsDialog
+******************************************************/
+
+QDialog#SendCoinsDialog .QFrame#frameCoinControl,
+QDialog#SendCoinsDialog #scrollArea {
+    border-color: #dcdcdc;
+}
+
+/******************************************************
+SendCoinsEntry
+******************************************************/
+
+/***** No light.css specific coloring here yet *****/
+
+/******************************************************
+SignVerifyMessageDialog
+******************************************************/
+
+/***** No light.css specific coloring here yet *****/
+
+/******************************************************
+ShutdownWindow
+******************************************************/
+
+QWidget#ShutdownWindow {
+    background-color: #f2f2f4;
+}
+
+/******************************************************
+TransactionView
+******************************************************/
+
+/***** No light.css specific coloring here yet *****/
+
+
+/******************************************************
+*******************************************************
+STYLING OF OS SPECIFIC UI PARTS
+
+NOTE: GUIUtil::loadStyleSheet treats css code between <os="<os_list>"> and </os>
+different. It will only become added for operating systems provided in the list
+of the sections start tag.
+
+There may be multiple entries per section. Possible entries:
+
+- macosx
+- windows
+- other
+
+<os_list> must be a combination of the three options above separated by
+comma like in "windows,macosx".
+
+Its ok to have multiple <os="...">...</os> sections in a file with
+arbitrary OS combinations. They will all become added to the end of the
+file though. Means even putting an <os> section in the top of the file
+would become appended to the end of the file during loading which should
+be kept in mind when adding sections to avoid unexpected overwriting.
+*******************************************************
+******************************************************/
+
+<os="windows,other">
+
+/******************************************************
+QScrollBar
+******************************************************/
+
+QScrollBar::add-page,
+QScrollBar::sub-page {
+    background-color: #f2f2f4;
+}
+QScrollBar::handle:vertical,
+QScrollBar::handle:horizontal {
+    background-color: #dcdcdc;
+}
+QScrollBar:handle:horizontal:hover,
+QScrollBar:handle:vertical:hover {
+    background-color: #d2d2d2;
+}
+QScrollBar:handle:horizontal:pressed,
+QScrollBar:handle:vertical:pressed {
+    background-color: #c7c7c7;
+}
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical,
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    background-color: #dcdcdc;
+}
+QScrollBar::add-line:vertical:hover,
+QScrollBar::sub-line:vertical:hover,
+QScrollBar::add-line:horizontal:hover,
+QScrollBar::sub-line:horizontal:hover {
+    background-color: #d2d2d2;
+}
+QScrollBar::add-line:vertical:pressed,
+QScrollBar::sub-line:vertical:pressed,
+QScrollBar::add-line:horizontal:pressed,
+QScrollBar::sub-line:horizontal:pressed {
+    background-color: #e0e0e0;
+}
+
+QScrollBar:up-arrow {
+    image: url(':/images/arrow_up_light');
+}
+QScrollBar:up-arrow:hover {
+    image: url(':/images/arrow_up_dark');
+}
+QScrollBar:up-arrow:pressed {
+    image: url(':/images/arrow_up_light');
+}
+QScrollBar:up-arrow:disabled {
+    image: url(':/images/arrow_light_up_normal');
+}
+
+QScrollBar:down-arrow {
+    image: url(':/images/arrow_down_light');
+}
+QScrollBar:down-arrow:hover {
+    image: url(':/images/arrow_down_dark');
+}
+QScrollBar:down-arrow:pressed {
+    image: url(':/images/arrow_down_light');
+}
+QScrollBar:down-arrow:disabled {
+    image: url(':/images/arrow_light_down_normal');
+}
+
+QScrollBar:left-arrow {
+    image: url(':/images/arrow_left_light');
+}
+QScrollBar:left-arrow:hover {
+    image: url(':/images/arrow_left_dark');
+}
+QScrollBar:left-arrow:pressed {
+    image: url(':/images/arrow_left_light');
+}
+QScrollBar:left-arrow:disabled {
+    image: url(':/images/arrow_light_left_normal');
+}
+
+QScrollBar:right-arrow {
+    image: url(':/images/arrow_right_light');
+}
+QScrollBar:right-arrow:hover {
+    image: url(':/images/arrow_right_dark');
+}
+QScrollBar:right-arrow:pressed {
+    image: url(':/images/arrow_right_light');
+}
+QScrollBar:right-arrow:disabled {
+    image: url(':/images/arrow_light_right_normal');
+}
+
+</os>

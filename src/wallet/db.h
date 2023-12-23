@@ -1,313 +1,198 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
-// Copyright (c) 2018-2023 The PirateCash developers
-// Distributed under the MIT/X11 software license, see the accompanying
+// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_DB_H
-#define BITCOIN_DB_H
+#ifndef BITCOIN_WALLET_DB_H
+#define BITCOIN_WALLET_DB_H
 
-#include "serialize.h"
-#include "sync.h"
-#include "version.h"
+#include <clientversion.h>
+#include <fs.h>
+#include <streams.h>
+#include <util/memory.h>
 
-#include <map>
+#include <atomic>
+#include <memory>
 #include <string>
-#include <vector>
 
-#include <boost/filesystem/path.hpp>
-#include <db_cxx.h>
+struct bilingual_str;
 
-class CAddrMan;
-class CBlockLocator;
-class CDiskBlockIndex;
-class CDiskTxPos;
-class COutPoint;
-class CTxIndex;
+/** Given a wallet directory path or legacy file path, return path to main data file in the wallet database. */
+fs::path WalletDataFilePath(const fs::path& wallet_path);
+void SplitWalletPath(const fs::path& wallet_path, fs::path& env_directory, std::string& database_filename);
 
-extern unsigned int nWalletDBUpdated;
-
-void ThreadFlushWalletDB(const std::string& strWalletFile);
-
-
-class CDBEnv
+/** RAII class that provides access to a WalletDatabase */
+class DatabaseBatch
 {
 private:
-    bool fDbEnvInit;
-    bool fMockDb;
-    boost::filesystem::path pathEnv;
-    boost::filesystem::path path;
-
-    void EnvShutdown();
+    virtual bool ReadKey(CDataStream&& key, CDataStream& value) = 0;
+    virtual bool WriteKey(CDataStream&& key, CDataStream&& value, bool overwrite=true) = 0;
+    virtual bool EraseKey(CDataStream&& key) = 0;
+    virtual bool HasKey(CDataStream&& key) = 0;
 
 public:
-    mutable CCriticalSection cs_db;
-    DbEnv dbenv;
-    std::map<std::string, int> mapFileUseCount;
-    std::map<std::string, Db*> mapDb;
+    explicit DatabaseBatch() {}
+    virtual ~DatabaseBatch() {}
 
-    CDBEnv();
-    ~CDBEnv();
-    void MakeMock();
-    bool IsMock() { return fMockDb; };
+    DatabaseBatch(const DatabaseBatch&) = delete;
+    DatabaseBatch& operator=(const DatabaseBatch&) = delete;
 
-    /*
-     * Verify that database file strFile is OK. If it is not,
-     * call the callback to try to recover.
-     * This must be called BEFORE strFile is opened.
-     * Returns true if strFile is OK.
-     */
-    enum VerifyResult { VERIFY_OK, RECOVER_OK, RECOVER_FAIL };
-    VerifyResult Verify(std::string strFile, bool (*recoverFunc)(CDBEnv& dbenv, std::string strFile));
-    /*
-     * Salvage data from a file that Verify says is bad.
-     * fAggressive sets the DB_AGGRESSIVE flag (see berkeley DB->verify() method documentation).
-     * Appends binary key/value pairs to vResult, returns true if successful.
-     * NOTE: reads the entire database into memory, so cannot be used
-     * for huge databases.
-     */
-    typedef std::pair<std::vector<unsigned char>, std::vector<unsigned char> > KeyValPair;
-    bool Salvage(std::string strFile, bool fAggressive, std::vector<KeyValPair>& vResult);
+    virtual void Flush() = 0;
+    virtual void Close() = 0;
 
-    bool Open(boost::filesystem::path pathEnv_);
-    void Close();
-    void Flush(bool fShutdown);
-    void CheckpointLSN(const std::string& strFile);
-
-    void CloseDb(const std::string& strFile);
-    bool RemoveDb(const std::string& strFile);
-
-    DbTxn *TxnBegin(int flags=DB_TXN_WRITE_NOSYNC)
-    {
-        DbTxn* ptxn = NULL;
-        int ret = dbenv.txn_begin(NULL, &ptxn, flags);
-        if (!ptxn || ret != 0)
-            return NULL;
-        return ptxn;
-    }
-};
-
-extern CDBEnv bitdb;
-
-
-/** RAII class that provides access to a Berkeley database */
-class CDB
-{
-protected:
-    Db* pdb;
-    std::string strFile;
-    DbTxn *activeTxn;
-    bool fReadOnly;
-
-    explicit CDB(const std::string& strFilename, const char* pszMode="r+");
-    ~CDB() { Close(); }
-
-public:
-    void Close();
-
-private:
-    CDB(const CDB&);
-    void operator=(const CDB&);
-
-protected:
-    template<typename K, typename T>
+    template <typename K, typename T>
     bool Read(const K& key, T& value)
     {
-        if (!pdb)
-            return false;
-
-        // Key
         CDataStream ssKey(SER_DISK, CLIENT_VERSION);
         ssKey.reserve(1000);
         ssKey << key;
-        Dbt datKey(&ssKey[0], ssKey.size());
 
-        // Read
-        Dbt datValue;
-        datValue.set_flags(DB_DBT_MALLOC);
-        int ret = pdb->get(activeTxn, &datKey, &datValue, 0);
-        memset(datKey.get_data(), 0, datKey.get_size());
-        if (datValue.get_data() == NULL)
-            return false;
-
-        // Unserialize value
+        CDataStream ssValue(SER_DISK, CLIENT_VERSION);
+        if (!ReadKey(std::move(ssKey), ssValue)) return false;
         try {
-            CDataStream ssValue((char*)datValue.get_data(), (char*)datValue.get_data() + datValue.get_size(), SER_DISK, CLIENT_VERSION);
             ssValue >> value;
-        }
-        catch (std::exception &e) {
+            return true;
+        } catch (const std::exception&) {
             return false;
         }
-
-        // Clear and free memory
-        memset(datValue.get_data(), 0, datValue.get_size());
-        free(datValue.get_data());
-        return (ret == 0);
     }
 
-    template<typename K, typename T>
-    bool Write(const K& key, const T& value, bool fOverwrite=true)
+    template <typename K, typename T>
+    bool Write(const K& key, const T& value, bool fOverwrite = true)
     {
-        if (!pdb)
-            return false;
-        if (fReadOnly)
-            assert(!"Write called on database in read-only mode");
-
-        // Key
         CDataStream ssKey(SER_DISK, CLIENT_VERSION);
         ssKey.reserve(1000);
         ssKey << key;
-        Dbt datKey(&ssKey[0], ssKey.size());
 
-        // Value
         CDataStream ssValue(SER_DISK, CLIENT_VERSION);
         ssValue.reserve(10000);
         ssValue << value;
-        Dbt datValue(&ssValue[0], ssValue.size());
 
-        // Write
-        int ret = pdb->put(activeTxn, &datKey, &datValue, (fOverwrite ? 0 : DB_NOOVERWRITE));
-
-        // Clear memory in case it was a private key
-        memset(datKey.get_data(), 0, datKey.get_size());
-        memset(datValue.get_data(), 0, datValue.get_size());
-        return (ret == 0);
+        return WriteKey(std::move(ssKey), std::move(ssValue), fOverwrite);
     }
 
-    template<typename K>
+    template <typename K>
     bool Erase(const K& key)
     {
-        if (!pdb)
-            return false;
-        if (fReadOnly)
-            assert(!"Erase called on database in read-only mode");
-
-        // Key
         CDataStream ssKey(SER_DISK, CLIENT_VERSION);
         ssKey.reserve(1000);
         ssKey << key;
-        Dbt datKey(&ssKey[0], ssKey.size());
 
-        // Erase
-        int ret = pdb->del(activeTxn, &datKey, 0);
-
-        // Clear memory
-        memset(datKey.get_data(), 0, datKey.get_size());
-        return (ret == 0 || ret == DB_NOTFOUND);
+        return EraseKey(std::move(ssKey));
     }
 
-    template<typename K>
+    template <typename K>
     bool Exists(const K& key)
     {
-        if (!pdb)
-            return false;
-
-        // Key
         CDataStream ssKey(SER_DISK, CLIENT_VERSION);
         ssKey.reserve(1000);
         ssKey << key;
-        Dbt datKey(&ssKey[0], ssKey.size());
 
-        // Exists
-        int ret = pdb->exists(activeTxn, &datKey, 0);
-
-        // Clear memory
-        memset(datKey.get_data(), 0, datKey.get_size());
-        return (ret == 0);
+        return HasKey(std::move(ssKey));
     }
 
-    Dbc* GetCursor()
-    {
-        if (!pdb)
-            return NULL;
-        Dbc* pcursor = NULL;
-        int ret = pdb->cursor(NULL, &pcursor, 0);
-        if (ret != 0)
-            return NULL;
-        return pcursor;
-    }
-
-    int ReadAtCursor(Dbc* pcursor, CDataStream& ssKey, CDataStream& ssValue, unsigned int fFlags=DB_NEXT)
-    {
-        // Read at cursor
-        Dbt datKey;
-        if (fFlags == DB_SET || fFlags == DB_SET_RANGE || fFlags == DB_GET_BOTH || fFlags == DB_GET_BOTH_RANGE)
-        {
-            datKey.set_data(&ssKey[0]);
-            datKey.set_size(ssKey.size());
-        }
-        Dbt datValue;
-        if (fFlags == DB_GET_BOTH || fFlags == DB_GET_BOTH_RANGE)
-        {
-            datValue.set_data(&ssValue[0]);
-            datValue.set_size(ssValue.size());
-        }
-        datKey.set_flags(DB_DBT_MALLOC);
-        datValue.set_flags(DB_DBT_MALLOC);
-        int ret = pcursor->get(&datKey, &datValue, fFlags);
-        if (ret != 0)
-            return ret;
-        else if (datKey.get_data() == NULL || datValue.get_data() == NULL)
-            return 99999;
-
-        // Convert to streams
-        ssKey.SetType(SER_DISK);
-        ssKey.clear();
-        ssKey.write((char*)datKey.get_data(), datKey.get_size());
-        ssValue.SetType(SER_DISK);
-        ssValue.clear();
-        ssValue.write((char*)datValue.get_data(), datValue.get_size());
-
-        // Clear and free memory
-        memset(datKey.get_data(), 0, datKey.get_size());
-        memset(datValue.get_data(), 0, datValue.get_size());
-        free(datKey.get_data());
-        free(datValue.get_data());
-        return 0;
-    }
-
-public:
-    bool TxnBegin()
-    {
-        if (!pdb || activeTxn)
-            return false;
-        DbTxn* ptxn = bitdb.TxnBegin();
-        if (!ptxn)
-            return false;
-        activeTxn = ptxn;
-        return true;
-    }
-
-    bool TxnCommit()
-    {
-        if (!pdb || !activeTxn)
-            return false;
-        int ret = activeTxn->commit(0);
-        activeTxn = NULL;
-        return (ret == 0);
-    }
-
-    bool TxnAbort()
-    {
-        if (!pdb || !activeTxn)
-            return false;
-        int ret = activeTxn->abort();
-        activeTxn = NULL;
-        return (ret == 0);
-    }
-
-    bool ReadVersion(int& nVersion)
-    {
-        nVersion = 0;
-        return Read(std::string("version"), nVersion);
-    }
-
-    bool WriteVersion(int nVersion)
-    {
-        return Write(std::string("version"), nVersion);
-    }
-
-    bool static Rewrite(const std::string& strFile, const char* pszSkip = NULL);
+    virtual bool StartCursor() = 0;
+    virtual bool ReadAtCursor(CDataStream& ssKey, CDataStream& ssValue, bool& complete) = 0;
+    virtual void CloseCursor() = 0;
+    virtual bool TxnBegin() = 0;
+    virtual bool TxnCommit() = 0;
+    virtual bool TxnAbort() = 0;
 };
 
-#endif // BITCOIN_DB_H
+/** An instance of this class represents one database.
+ **/
+class WalletDatabase
+{
+public:
+    /** Create dummy DB handle */
+    WalletDatabase() : nUpdateCounter(0), nLastSeen(0), nLastFlushed(0), nLastWalletUpdate(0) {}
+    virtual ~WalletDatabase() {};
+
+    /** Open the database if it is not already opened. */
+    virtual void Open(const char* mode) = 0;
+
+    //! Counts the number of active database users to be sure that the database is not closed while someone is using it
+    std::atomic<int> m_refcount{0};
+    /** Indicate the a new database user has began using the database. Increments m_refcount */
+    virtual void AddRef() = 0;
+    /** Indicate that database user has stopped using the database and that it could be flushed or closed. Decrement m_refcount */
+    virtual void RemoveRef() = 0;
+
+    /** Rewrite the entire database on disk, with the exception of key pszSkip if non-zero
+     */
+    virtual bool Rewrite(const char* pszSkip=nullptr) = 0;
+
+    /** Back up the entire database to a file.
+     */
+    virtual bool Backup(const std::string& strDest) const = 0;
+
+    /** Make sure all changes are flushed to database file.
+     */
+    virtual void Flush() = 0;
+    /** Flush to the database file and close the database.
+     *  Also close the environment if no other databases are open in it.
+     */
+    virtual void Close() = 0;
+    /* flush the wallet passively (TRY_LOCK)
+       ideal to be called periodically */
+    virtual bool PeriodicFlush() = 0;
+
+    virtual void IncrementUpdateCounter() = 0;
+
+    virtual void ReloadDbEnv() = 0;
+
+    std::atomic<unsigned int> nUpdateCounter;
+    unsigned int nLastSeen;
+    unsigned int nLastFlushed;
+    int64_t nLastWalletUpdate;
+
+    /** Verifies the environment and database file */
+    virtual bool Verify(bilingual_str& error) = 0;
+
+    std::string m_file_path;
+
+    /** Make a DatabaseBatch connected to this database */
+    virtual std::unique_ptr<DatabaseBatch> MakeBatch(const char* mode = "r+", bool flush_on_close = true) = 0;
+};
+
+/** RAII class that provides access to a DummyDatabase. Never fails. */
+class DummyBatch : public DatabaseBatch
+{
+private:
+    bool ReadKey(CDataStream&& key, CDataStream& value) override { return true; }
+    bool WriteKey(CDataStream&& key, CDataStream&& value, bool overwrite=true) override { return true; }
+    bool EraseKey(CDataStream&& key) override { return true; }
+    bool HasKey(CDataStream&& key) override { return true; }
+
+public:
+    void Flush() override {}
+    void Close() override {}
+
+    bool StartCursor() override { return true; }
+    bool ReadAtCursor(CDataStream& ssKey, CDataStream& ssValue, bool& complete) override { return true; }
+    void CloseCursor() override {}
+    bool TxnBegin() override { return true; }
+    bool TxnCommit() override { return true; }
+    bool TxnAbort() override { return true; }
+};
+
+/** A dummy WalletDatabase that does nothing and never fails. Only used by unit tests.
+ **/
+class DummyDatabase : public WalletDatabase
+{
+public:
+    void Open(const char* mode) override {};
+    void AddRef() override {}
+    void RemoveRef() override {}
+    bool Rewrite(const char* pszSkip=nullptr) override { return true; }
+    bool Backup(const std::string& strDest) const override { return true; }
+    void Close() override {}
+    void Flush() override {}
+    bool PeriodicFlush() override { return true; }
+    void IncrementUpdateCounter() override { ++nUpdateCounter; }
+    void ReloadDbEnv() override {}
+    bool Verify(bilingual_str& errorStr) override { return true; }
+    std::unique_ptr<DatabaseBatch> MakeBatch(const char* mode = "r+", bool flush_on_close = true) override { return MakeUnique<DummyBatch>(); }
+};
+
+#endif // BITCOIN_WALLET_DB_H
