@@ -334,7 +334,7 @@ public:
         pchMessageStart[1] = 0x75;
         pchMessageStart[2] = 0x6d;
         pchMessageStart[3] = 0x70;
-        nDefaultPort = 56565;
+        nDefaultPort = 63636;
         nPruneAfterHeight = 100000;
         m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 1;
@@ -405,19 +405,24 @@ public:
         vSporkAddresses = {"PPenwMMT56eW136UUyC96opfJDPsAnENaa"};
         nMinSporkKeys = 1;
         fBIP9CheckMasternodesUpgraded = true;
-
         nStakeMinAge = 8 * 60 * 60; // 8 hours
         nFirstPoSv2Block = 1ULL;
 
         checkpointData = {
             {
                 {0, uint256S("0x33422d3f8e94bae7cd2544e737d64ff8ec3ee140cc3fdc4db3d14656f9a60912")},
+                {100000, uint256S("0x78c5303c6954d8211c8606ce1d8beb621d5ffc4d6e12379df062d31f060d1d13")},
+                {250000, uint256S("0xae5198a669004068cdea4097e9b9d54bdde3bf00ef628b1c8caa92cdaad13fce")},
+                {500000, uint256S("0x7e174b175e341f36ad9bc16ab49653e644d88bc90ed35b7efba8b9684edc80bd")},
+                {750000, uint256S("0xa91eb567ffa121ec57e6097169778d75f17f2dbfc925b2ac03659d5a142c2a3c")},
+                {1000000, uint256S("0x4d4e0e17b5d20ae8df12a7258bd22c2175b1f6c53c3c639d807ce0554b3c0099")},
+                {1255000, uint256S("0x3223e976d16f9910ca9618d62d12a359ea46e97487becfa4ea5efd6034fec770m")},
             }
         };
 
         chainTxData = ChainTxData{
-            1626636432, // * UNIX timestamp of last known number of transactions (Block 689)
-            704,   // * total number of transactions between genesis and that timestamp
+            1626636432, // * UNIX timestamp of last known number of transactions (Block 666)
+            762,   // * total number of transactions between genesis and that timestamp
                         //   (the tx=... number in the ChainStateFlushed debug.log lines)
             0.2         // * estimated number of transactions per second after that timestamp
         };
@@ -624,12 +629,14 @@ public:
         checkpointData = {
             {
                 {0, uint256S("0x0003481590d02aa006eb6ed3b943001ac0861fa52649bdce0832bcae6b7f895d")},
+                {100000, uint256S("0x5418c2f7ce1530a2a8c65ee776a4fa6b5075bfa885a1be4a3819b1e458f14ea4")},
+                {296000, uint256S("0x2c82dc360562cfc958d04d449894931217badbd2fea20114a1283ed2c3675cf7m")},
             }
         };
 
         chainTxData = ChainTxData{
-            1626622319, // * UNIX timestamp of last known number of transactions (Block 263)
-            264,    	// * total number of transactions between genesis and that timestamp
+            1703369871, // * UNIX timestamp of last known number of transactions (Block 296186)
+            591796,    	// * total number of transactions between genesis and that timestamp
                         //   (the tx=... number in the ChainStateFlushed debug.log lines)
             0.01        // * estimated number of transactions per second after that timestamp
         };
