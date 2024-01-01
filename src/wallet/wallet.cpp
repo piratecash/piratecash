@@ -980,7 +980,8 @@ bool CWallet::IsSpent(interfaces::Chain::Lock& locked_chain, const uint256& hash
 void CWallet::AddToSpends(const COutPoint& outpoint, const uint256& wtxid)
 {
     mapTxSpends.insert(std::make_pair(outpoint, wtxid));
-    setWalletUTXO.erase(outpoint);
+    // Disabled by PirateCash (fix orphans)
+    //setWalletUTXO.erase(outpoint);
 
     setLockedCoins.erase(outpoint);
 
