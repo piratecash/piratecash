@@ -1376,6 +1376,14 @@ static void ListTransactions(interfaces::Chain::Lock& locked_chain, CWallet* con
                 else
                     entry.pushKV("category", "generate");
             }
+            else if (wtx.IsCoinStake()){
+                if (wtx.GetDepthInMainChain(locked_chain) < 1)
+                    entry.pushKV("category", "stake-orphan");
+                else if (wtx.GetBlocksToMaturity(locked_chain) > 0)
+                    entry.pushKV("category", "stake");
+                else
+                    entry.pushKV("category", "stake-mint");
+            }
             else
             {
                 entry.pushKV("category", "receive");

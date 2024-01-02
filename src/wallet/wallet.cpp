@@ -980,7 +980,8 @@ bool CWallet::IsSpent(interfaces::Chain::Lock& locked_chain, const uint256& hash
 void CWallet::AddToSpends(const COutPoint& outpoint, const uint256& wtxid)
 {
     mapTxSpends.insert(std::make_pair(outpoint, wtxid));
-    setWalletUTXO.erase(outpoint);
+    // Disabled by PirateCash (fix orphans)
+    //setWalletUTXO.erase(outpoint);
 
     setLockedCoins.erase(outpoint);
 
@@ -2334,6 +2335,35 @@ void CWalletTx::GetAmounts(std::list<COutputEntry>& listReceived,
         nFee = nDebit - nValueOut;
     }
 
+    // treat coinstake as a single "recieve" entry
+    if (IsCoinStake())
+    {
+        for (unsigned int i = 0; i < tx->vout.size(); ++i)
+        {
+            const CTxOut& txout = tx->vout[i];
+            isminetype fIsMine = pwallet->IsMine(txout);
+
+            // get my vout with positive output
+            if (!(fIsMine & filter) || txout.nValue <= 0)
+                        continue;
+
+            // get address
+            CTxDestination address = CNoDestination();
+            ExtractDestination(txout.scriptPubKey, address);
+
+            // nfee is negative for coinstake generation, because we are gaining money from it
+            COutputEntry output = {address, -nFee, (int)i};
+            listReceived.push_back(output);
+            nFee = 0;
+            return;
+        }
+
+        // if we reach here there is probably a mistake
+        COutputEntry output = {CNoDestination(), 0, 0};
+        listReceived.push_back(output);
+        return;
+    }
+
     // Sent/received.
     for (unsigned int i = 0; i < tx->vout.size(); ++i)
     {
@@ -3667,7 +3697,7 @@ bool CWallet::SelectStakeCoins(StakeCandidates& setCoins, CAmount nTargetAmount)
         }
 
         // Do not touch collaterals
-        if (out_value == MASTERNODE_COLLATERAL_AMOUNT) {
+        if (inputStakeProtect && out_value == MASTERNODE_COLLATERAL_AMOUNT) {
             continue;
         }
 
@@ -3718,7 +3748,7 @@ bool CWallet::MintableCoins()
 
         CAmount out_value = out.tx->tx->vout[out.i].nValue;
 
-        if (out_value == MASTERNODE_COLLATERAL_AMOUNT) continue;
+        if (inputStakeProtect && out_value == MASTERNODE_COLLATERAL_AMOUNT) continue;
 
         if (out_value < MIN_STAKE_AMOUNT)
             continue;

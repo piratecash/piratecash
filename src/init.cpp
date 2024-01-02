@@ -751,6 +751,7 @@ void SetupServerArgs()
     gArgs.AddArg("-stakesplitthreshold=<n>", strprintf("Splits stake reward by threshold (default: %d)", DEFAULT_STAKE_SPLIT_THRESHOLD), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
     gArgs.AddArg("-stakemaxsplit=<n>", strprintf("Sets the number of max inputs & outputs of a stake (default: %d)", DEFAULT_STAKE_MAX_SPLIT), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
     gArgs.AddArg("-stakeautocombine=<n>", strprintf("Autocombine feature: 0 - disable, 1 - same account, 2 - any account (default: %d)", DEFAULT_STAKE_AUTOCOMBINE), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+    gArgs.AddArg("-inputstakeprotect=<n>", strprintf("Don't use masternode collateral and denominated amounts for staking (0-1, default: %u)", 1), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
     gArgs.AddArg("-printcoinstake", "", ArgsManager::ALLOW_ANY, OptionsCategory::HIDDEN);
     gArgs.AddArg("-poshashinterval", "", ArgsManager::ALLOW_ANY, OptionsCategory::HIDDEN);
 #endif

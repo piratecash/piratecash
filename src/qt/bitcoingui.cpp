@@ -1770,7 +1770,7 @@ void BitcoinGUI::setStakingStatus()
         GUIUtil::ThemedColor color = GUIUtil::ThemedColor::ORANGE;
         labelStakingIcon->show();
         labelStakingIcon->setPixmap(GUIUtil::getIcon("staking_inactive", color).pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
-        labelStakingIcon->setToolTip(tr("Staking is <b>disabled</b>"));
+        labelStakingIcon->setToolTip(tr("Staking is <b>disabled</b> %1").arg(QString::fromStdString(getMiningStatus())));
     }
 }
 #ifdef ENABLE_WALLET
