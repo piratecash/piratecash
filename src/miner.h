@@ -207,6 +207,7 @@ void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev);
 void PoSMiner(std::shared_ptr<CWallet> pwallet, CThreadInterrupt &interrupt);
 bool IsStakingActive();
+std::string getMiningStatus();
 void SetThreadPriority(int nPriority);
 
 #endif // BITCOIN_MINER_H

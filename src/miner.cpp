@@ -48,6 +48,7 @@
 #include <boost/thread.hpp>
 
 int64_t nLastCoinStakeSearchTime = 0;
+std::string miningStatus;
 
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev)
 {
@@ -615,24 +616,27 @@ void PoSMiner(std::shared_ptr<CWallet> pwallet, CThreadInterrupt &interrupt)
             
             if (!pindexPrev) {
                 interrupt.sleep_for(std::chrono::seconds(1));
-                LogPrint(BCLog::STAKING, "%s : no active blocks \n", __func__);
+                miningStatus = ":<br>- no active blocks";
+                LogPrint(BCLog::STAKING, "%s : %s \n", __func__, miningStatus);
                 continue;
             }
 
             if (!IsPoSEnforcedHeight(pindexPrev->nHeight + 1) && !IsPoSV2EnforcedHeight(pindexPrev->nHeight + 1) && !pindexPrev->IsProofOfStake()) {
                 interrupt.sleep_for(std::chrono::seconds(hash_interval));
-                LogPrint(BCLog::STAKING, "%s : PoS is not enabled at height %d \n",
-                         __func__, (pindexPrev->nHeight + 1) );
+                miningStatus = ":<br>- PoS is not enabled at height " + std::to_string(pindexPrev->nHeight + 1);
+                LogPrint(BCLog::STAKING, "%s :  \n", __func__, miningStatus);
                 continue;
             }
 
             if (pindexPrev->nHeight + 1  < chainparams.GetConsensus().nForkHeight) {
                 interrupt.sleep_for(std::chrono::seconds(hash_interval));
-                LogPrint(BCLog::STAKING, "%s : PoSv2 is not enabled at height %d \n",
-                    __func__, (pindexPrev->nHeight + 1) );
+                miningStatus = ":<br>- PoSv2 is not enabled at height <b>" + std::to_string(pindexPrev->nHeight + 1) + "</b>";
+                LogPrint(BCLog::STAKING, "%s :  %ы \n", __func__, miningStatus);
                 continue;
             }
         }
+
+        miningStatus = "";
 
         if (pwallet->IsLocked(true) ||
             !fMintableCoins ||
@@ -640,6 +644,22 @@ void PoSMiner(std::shared_ptr<CWallet> pwallet, CThreadInterrupt &interrupt)
             !masternodeSync.IsSynced() ||
             (g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL) == 0)
         ) {
+            miningStatus += ":";
+            if (pwallet->IsLocked(true)){
+                miningStatus += "<br>- wallet is currently <b>locked</b>";
+            }
+            if (nReserveBalance >= pwallet->GetBalance().m_mine_trusted){
+                miningStatus += "<br>- your balance is less than the reserved amount";
+            }
+            if (!masternodeSync.IsSynced()){
+                miningStatus += "<br>- masternode list isn't synced";
+            }
+            if ((g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL) == 0)){
+                miningStatus += "<br>- no connections with network";
+            }
+            if (!fMintableCoins){
+                miningStatus += "<br>- no mature or available coins for staking";
+            }
             nLastCoinStakeSearchTime = 0;
             interrupt.sleep_for(std::chrono::seconds(hash_interval));
             LogPrint(BCLog::STAKING, "%s : not ready to mine locked=%d coins=%d reserve=%d mnsync=%d peers=%d\n",
@@ -707,6 +727,10 @@ void PoSMiner(std::shared_ptr<CWallet> pwallet, CThreadInterrupt &interrupt)
 
 bool IsStakingActive() {
     return (GetAdjustedTime() - nLastCoinStakeSearchTime) < 60;
+}
+
+std::string getMiningStatus() {
+    return miningStatus;
 }
 
 void SetThreadPriority(int nPriority)
