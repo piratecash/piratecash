@@ -802,6 +802,7 @@ public:
     using StakeCandidates = std::vector<StakeCandidate>;
     StakeCandidates setStakeCoins;
     int nLastStakeSetUpdate;
+    bool inputStakeProtect;
 
     /** Construct wallet with specified name and database implementation. */
     CWallet(interfaces::Chain& chain, const WalletLocation& location, std::unique_ptr<WalletDatabase> database)
@@ -828,6 +829,7 @@ public:
         nStakeMaxSplit = gArgs.GetArg("-stakemaxsplit", DEFAULT_STAKE_MAX_SPLIT);
         fAutocombine = gArgs.GetArg("-stakeautocombine", DEFAULT_STAKE_AUTOCOMBINE);
         nHashInterval = gArgs.GetArg("-poshashinterval", 16);
+        inputStakeProtect = gArgs.GetBoolArg("-inputstakeprotect", true);
         nStakeSetUpdateTime = 300; // 5 minutes
         setStakeCoins.clear();
         nLastStakeSetUpdate = 0;

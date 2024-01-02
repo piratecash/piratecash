@@ -3697,7 +3697,7 @@ bool CWallet::SelectStakeCoins(StakeCandidates& setCoins, CAmount nTargetAmount)
         }
 
         // Do not touch collaterals
-        if (out_value == MASTERNODE_COLLATERAL_AMOUNT) {
+        if (inputStakeProtect && out_value == MASTERNODE_COLLATERAL_AMOUNT) {
             continue;
         }
 
@@ -3748,7 +3748,7 @@ bool CWallet::MintableCoins()
 
         CAmount out_value = out.tx->tx->vout[out.i].nValue;
 
-        if (out_value == MASTERNODE_COLLATERAL_AMOUNT) continue;
+        if (inputStakeProtect && out_value == MASTERNODE_COLLATERAL_AMOUNT) continue;
 
         if (out_value < MIN_STAKE_AMOUNT)
             continue;
