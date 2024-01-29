@@ -4170,7 +4170,7 @@ bool CWallet::CreateTransaction(interfaces::Chain::Lock& locked_chain, const std
                         nAmountToSelectAdditional += abs(getChange());
                     } else if (nAmountToSelectAdditional > 0 && nValueToSelect == nAmountAvailable) {
                         // We tried selecting more and failed. We have no extra funds left,
-                        // so just add 1 duff to fail in the next loop step with a correct reason
+                        // so just add 1 corsar to fail in the next loop step with a correct reason
                         nAmountToSelectAdditional += 1;
                     }
                     continue;

@@ -44,7 +44,7 @@ public:
         PIRATECASH,
         mPIRATECASH,
         uPIRATECASH,
-        duffs
+        corsars
     };
 
     enum SeparatorStyle

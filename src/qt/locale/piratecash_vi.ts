@@ -885,8 +885,8 @@
         <translation>Nhãn này sẽ chuyển sang đỏ nếu có địa chỉ nào nhận được một khoản nhỏ hơn ngưỡng nhỏ nhất định được gọi là bụi.</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 duff(s) per input.</source>
-        <translation>Có thể thay đổi +/- %1 duff(s) cho mỗi đầu vào.</translation>
+        <source>Can vary +/- %1 corsar(s) per input.</source>
+        <translation>Có thể thay đổi +/- %1 corsar(s) cho mỗi đầu vào.</translation>
     </message>
     <message>
         <source>Some coins were unselected because they were spent.</source>
@@ -2814,8 +2814,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Thời gian xác nhận đối tượng:</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
-        <translation>Nếu mức phí tuỳ chỉnh được đặt là 1000 duff và giao dịch chỉ có 250 byte, thì "theo kilobyte" chỉ trả 250 duff cho phí,&lt;br /&gt;trong khi "ít nhất" phải trả 1000 duff. Cho các giao dịch lớn hơn 1 kilobyte thì cả hai đều trả theo kilobyte.</translation>
+        <source>If the custom fee is set to 1000 corsars and the transaction is only 250 bytes, then "per kilobyte" only pays 250 corsars in fee,&lt;br /&gt;while "at least" pays 1000 corsars. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <translation>Nếu mức phí tuỳ chỉnh được đặt là 1000 corsar và giao dịch chỉ có 250 byte, thì "theo kilobyte" chỉ trả 250 corsar cho phí,&lt;br /&gt;trong khi "ít nhất" phải trả 1000 corsar. Cho các giao dịch lớn hơn 1 kilobyte thì cả hai đều trả theo kilobyte.</translation>
     </message>
     <message>
         <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>

@@ -1356,8 +1356,8 @@
         <context-group purpose="location"><context context-type="linenumber">617</context></context-group>
       </trans-unit>
       <trans-unit id="_msg253" approved="yes">
-        <source xml:space="preserve">Can vary +/- %1 duff(s) per input.</source>
-        <target xml:space="preserve">Can vary +/- %1 duff(s) per input.</target>
+        <source xml:space="preserve">Can vary +/- %1 corsar(s) per input.</source>
+        <target xml:space="preserve">Can vary +/- %1 corsar(s) per input.</target>
         <context-group purpose="location"><context context-type="linenumber">622</context></context-group>
       </trans-unit>
       <trans-unit id="_msg254" approved="yes">
@@ -4070,8 +4070,8 @@ https://www.transifex.com/projects/p/piratecash/</target>
         <context-group purpose="location"><context context-type="linenumber">968</context></context-group>
       </trans-unit>
       <trans-unit id="_msg739" approved="yes">
-        <source xml:space="preserve">If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then &quot;per kilobyte&quot; only pays 250 duffs in fee,&lt;br /&gt;while &quot;at least&quot; pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
-        <target xml:space="preserve">If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then &quot;per kilobyte&quot; only pays 250 duffs in fee,&lt;br /&gt;while &quot;at least&quot; pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</target>
+        <source xml:space="preserve">If the custom fee is set to 1000 corsars and the transaction is only 250 bytes, then &quot;per kilobyte&quot; only pays 250 corsars in fee,&lt;br /&gt;while &quot;at least&quot; pays 1000 corsars. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <target xml:space="preserve">If the custom fee is set to 1000 corsars and the transaction is only 250 bytes, then &quot;per kilobyte&quot; only pays 250 corsars in fee,&lt;br /&gt;while &quot;at least&quot; pays 1000 corsars. For transactions bigger than a kilobyte both pay by kilobyte.</target>
         <context-group purpose="location"><context context-type="linenumber">789</context></context-group>
       </trans-unit>
       <trans-unit id="_msg740" approved="yes">

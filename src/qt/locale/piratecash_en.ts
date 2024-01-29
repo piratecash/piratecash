@@ -1189,8 +1189,8 @@
     </message>
     <message>
         <location line="+5"/>
-        <source>Can vary +/- %1 duff(s) per input.</source>
-        <translation>Can vary +/- %1 duff(s) per input.</translation>
+        <source>Can vary +/- %1 corsar(s) per input.</source>
+        <translation>Can vary +/- %1 corsar(s) per input.</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -3879,8 +3879,8 @@ https://www.transifex.com/projects/p/cosa/</translation>
     </message>
     <message>
         <location line="-179"/>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then &quot;per kilobyte&quot; only pays 250 duffs in fee,&lt;br /&gt;while &quot;at least&quot; pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
-        <translation>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then &quot;per kilobyte&quot; only pays 250 duffs in fee,&lt;br /&gt;while &quot;at least&quot; pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</translation>
+        <source>If the custom fee is set to 1000 corsars and the transaction is only 250 bytes, then &quot;per kilobyte&quot; only pays 250 corsars in fee,&lt;br /&gt;while &quot;at least&quot; pays 1000 corsars. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <translation>If the custom fee is set to 1000 corsars and the transaction is only 250 bytes, then &quot;per kilobyte&quot; only pays 250 corsars in fee,&lt;br /&gt;while &quot;at least&quot; pays 1000 corsars. For transactions bigger than a kilobyte both pay by kilobyte.</translation>
     </message>
     <message>
         <location line="+3"/>

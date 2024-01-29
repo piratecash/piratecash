@@ -879,8 +879,8 @@
         <translation>如果任何一個收款人收到的金額比當前零散錢的閾值還小的話，這個標籤將變為紅色。</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 duff(s) per input.</source>
-        <translation>每組輸入可能有 +/- %1 個 duff(s) 的誤差。</translation>
+        <source>Can vary +/- %1 corsar(s) per input.</source>
+        <translation>每組輸入可能有 +/- %1 個 corsar(s) 的誤差。</translation>
     </message>
     <message>
         <source>Some coins were unselected because they were spent.</source>
@@ -2716,8 +2716,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>目標確認時間:</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
-        <translation>如果自訂手續費設定為 1000 duffs ，而交易資料大小只有 250 個位元組的話，那麽選擇「每千位元組」就只會付 250 duffs 的手續費，&lt;br /&gt;而「至少」會支付 1000 duffs。但是如果交易資料大小超過一千個位元組，那麽兩者都是每千位元組的費用。</translation>
+        <source>If the custom fee is set to 1000 corsars and the transaction is only 250 bytes, then "per kilobyte" only pays 250 corsars in fee,&lt;br /&gt;while "at least" pays 1000 corsars. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <translation>如果自訂手續費設定為 1000 corsars ，而交易資料大小只有 250 個位元組的話，那麽選擇「每千位元組」就只會付 250 corsars 的手續費，&lt;br /&gt;而「至少」會支付 1000 corsars。但是如果交易資料大小超過一千個位元組，那麽兩者都是每千位元組的費用。</translation>
     </message>
     <message>
         <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
