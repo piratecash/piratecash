@@ -325,7 +325,7 @@ void setupAppearance(QWidget* parent, OptionsModel* model)
 
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
-    // return if URI is not valid or is no pirate: URI
+    // return if URI is not valid or is no piratecash: URI
     if(!uri.isValid() || uri.scheme() != QString("piratecash"))
         return false;
 
@@ -400,7 +400,7 @@ bool validateBitcoinURI(const QString& uri)
 
 QString formatBitcoinURI(const SendCoinsRecipient &info)
 {
-    QString ret = QString("pirate:%1").arg(info.address);
+    QString ret = QString("piratecash:%1").arg(info.address);
     int paramCount = 0;
 
     if (info.amount)

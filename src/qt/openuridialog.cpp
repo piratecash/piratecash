@@ -18,7 +18,7 @@ OpenURIDialog::OpenURIDialog(QWidget *parent) :
     ui->setupUi(this);
     GUIUtil::updateFonts();
     GUIUtil::disableMacFocusRect(this);
-    ui->uriEdit->setPlaceholderText("pirate:");
+    ui->uriEdit->setPlaceholderText("piratecash:");
 }
 
 OpenURIDialog::~OpenURIDialog()
