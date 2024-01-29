@@ -1,0 +1,6 @@
+usr/local/bin/piratecash-qt usr/bin
+share/pixmaps/piratecash32.xpm usr/share/pixmaps
+share/pixmaps/piratecash16.xpm usr/share/pixmaps
+share/pixmaps/piratecash128.png usr/share/pixmaps
+debian/piratecash-qt.desktop usr/share/applications
+debian/piratecash-qt.protocol usr/share/kde4/services/

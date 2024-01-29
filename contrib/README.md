@@ -12,7 +12,7 @@ Tool to verify that every merge commit was signed by a developer using the above
 Construct a linear, no-fork, best version of the blockchain.
 
 ### [Qos](/contrib/qos) ###
-A Linux bash script that will set up traffic control (tc) to limit the outgoing bandwidth for connections to the PirateCash network. This means one can have an always-on cosantad instance running, and another local cosantad/cosanta-qt instance which connects to this node and receives blocks from it.
+A Linux bash script that will set up traffic control (tc) to limit the outgoing bandwidth for connections to the PirateCash network. This means one can have an always-on piratecashd instance running, and another local piratecashd/piratecash-qt instance which connects to this node and receives blocks from it.
 
 ### [Seeds](/contrib/seeds) ###
 Utility to generate the pnSeed[] array that is compiled into the client.
@@ -21,8 +21,8 @@ Build Tools and Keys
 ---------------------
 
 ### [Debian](/contrib/debian) ###
-Contains files used to package cosantad/cosanta-qt
-for Debian-based Linux systems. If you compile cosantad/cosanta-qt yourself, there are some useful files here.
+Contains files used to package piratecashd/piratecash-qt
+for Debian-based Linux systems. If you compile piratecashd/piratecash-qt yourself, there are some useful files here.
 
 ### [Gitian-descriptors](/contrib/gitian-descriptors) ###
 Notes on getting Gitian builds up and running using KVM.

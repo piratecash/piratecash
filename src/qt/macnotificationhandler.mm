@@ -13,7 +13,7 @@
 - (NSString *)__bundleIdentifier
 {
     if (self == [NSBundle mainBundle]) {
-        return @"org.cosanta.Cosanta-Qt";
+        return @"cash.p.PirateCash-Qt";
     } else {
         return [self __bundleIdentifier];
     }

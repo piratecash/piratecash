@@ -28,7 +28,7 @@ Homepage: https://www.dash.org/
 Vcs-Git: git://github.com/dashpay/dash.git
 Vcs-Browser: https://github.com/dashpay/dash
 
-Package: cosantad
+Package: piratecashd
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - daemon
@@ -38,10 +38,10 @@ Description: peer-to-peer network based digital currency - daemon
  and issuing money are carried out collectively by the network. Cosanta Core
  is the name of the open source software which enables the use of this currency.
  .
- This package provides the daemon, cosantad, and the CLI tool
- cosanta-cli to interact with the daemon.
+ This package provides the daemon, piratecashd, and the CLI tool
+ piratecash-cli to interact with the daemon.
 
-Package: cosanta-qt
+Package: piratecash-qt
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - Qt GUI
@@ -53,7 +53,7 @@ Description: peer-to-peer network based digital currency - Qt GUI
  .
  This package provides Cosanta-Qt, a GUI for Cosanta based on Qt.
 
-Package: cosanta-tx
+Package: piratecash-tx
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer digital currency - standalone transaction tool
@@ -63,6 +63,6 @@ Description: peer-to-peer digital currency - standalone transaction tool
  and issuing money are carried out collectively by the network. Cosanta Core
  is the name of the open source software which enables the use of this currency.
  .
- This package provides cosanta-tx, a command-line transaction creation
+ This package provides piratecash-tx, a command-line transaction creation
  tool which can be used without a dash daemon.  Some means of
  exchanging minimal transaction data with peers is still required.

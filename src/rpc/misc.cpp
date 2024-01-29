@@ -44,7 +44,7 @@ static UniValue debug(const JSONRPCRequest& request)
                 "libevent logging is configured on startup and cannot be modified by this RPC during runtime.\n"
                 "There are also a few meta-categories:\n"
                 " - \"all\", \"1\" and \"\" activate all categories at once;\n"
-                " - \"pirate\" activates all Cosanta-specific categories at once;\n"
+                " - \"pirate\" activates all PirateCash-specific categories at once;\n"
                 " - \"none\" (or \"0\") deactivates all categories at once.\n"
                 "Note: If specified category doesn't match any of the above, no error is thrown.\n",
                 {
