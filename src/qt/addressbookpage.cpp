@@ -247,7 +247,7 @@ void AddressBookPage::on_showAddressQRCode_clicked()
     QRDialog* dialog = new QRDialog(this);
 
     dialog->setAttribute(Qt::WA_DeleteOnClose);
-    dialog->setInfo(tr("QR code"), "pirate:"+strAddress, "", strAddress);
+    dialog->setInfo(tr("QR code"), "piratecash:"+strAddress, "", strAddress);
     dialog->show();
 }
 

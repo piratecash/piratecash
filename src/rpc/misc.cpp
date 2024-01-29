@@ -44,7 +44,7 @@ static UniValue debug(const JSONRPCRequest& request)
                 "libevent logging is configured on startup and cannot be modified by this RPC during runtime.\n"
                 "There are also a few meta-categories:\n"
                 " - \"all\", \"1\" and \"\" activate all categories at once;\n"
-                " - \"pirate\" activates all Cosanta-specific categories at once;\n"
+                " - \"pirate\" activates all PirateCash-specific categories at once;\n"
                 " - \"none\" (or \"0\") deactivates all categories at once.\n"
                 "Note: If specified category doesn't match any of the above, no error is thrown.\n",
                 {
@@ -678,7 +678,7 @@ static UniValue getaddressmempool(const JSONRPCRequest& request)
             "    \"address\"  (string) The base58check encoded address\n"
             "    \"txid\"  (string) The related txid\n"
             "    \"index\"  (number) The related input or output index\n"
-            "    \"satoshis\"  (number) The difference of duffs\n"
+            "    \"satoshis\"  (number) The difference of corsars\n"
             "    \"timestamp\"  (number) The time the transaction entered the mempool (seconds)\n"
             "    \"prevtxid\"  (string) The previous txid (if spending)\n"
             "    \"prevout\"  (string) The previous transaction output index (if spending)\n"
@@ -751,7 +751,7 @@ static UniValue getaddressutxos(const JSONRPCRequest& request)
             "    \"txid\"  (string) The output txid\n"
             "    \"outputIndex\"  (number) The output index\n"
             "    \"script\"  (string) The script hex-encoded\n"
-            "    \"satoshis\"  (number) The number of duffs of the output\n"
+            "    \"satoshis\"  (number) The number of corsars of the output\n"
             "    \"height\"  (number) The block height\n"
             "  }\n"
             "]\n"
@@ -815,7 +815,7 @@ static UniValue getaddressdeltas(const JSONRPCRequest& request)
                 RPCResult{
             "[\n"
             "  {\n"
-            "    \"satoshis\"  (number) The difference of duffs\n"
+            "    \"satoshis\"  (number) The difference of corsars\n"
             "    \"txid\"  (string) The related txid\n"
             "    \"index\"  (number) The related input or output index\n"
             "    \"blockindex\"  (number) The related block index\n"
@@ -901,10 +901,10 @@ static UniValue getaddressbalance(const JSONRPCRequest& request)
                 },
                 RPCResult{
             "{\n"
-            "  \"balance\" : xxxxx,              (numeric) The current total balance in duffs\n"
-            "  \"balance_immature\" : xxxxx,     (numeric) The current immature balance in duffs\n"
-            "  \"balance_spendable\" : xxxxx,    (numeric) The current spendable balance in duffs\n"
-            "  \"received\" : xxxxx              (numeric) The total number of duffs received (including change)\n"
+            "  \"balance\" : xxxxx,              (numeric) The current total balance in corsars\n"
+            "  \"balance_immature\" : xxxxx,     (numeric) The current immature balance in corsars\n"
+            "  \"balance_spendable\" : xxxxx,    (numeric) The current spendable balance in corsars\n"
+            "  \"received\" : xxxxx              (numeric) The total number of corsars received (including change)\n"
             "}\n"
                 },
                 RPCExamples{

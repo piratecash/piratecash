@@ -237,16 +237,16 @@ public:
         consensus.DIP0008Height = 1275300; // 00000000000000112e41e4b3afda8b233b8cc07c532d2eac5de097b68358c43e
         consensus.powLimit = uint256S("0x0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 16
         consensus.posLimit = uint256S("0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 20
-        consensus.BRRHeight = 1266080; // 000000000000000c5a124f3eccfbe6e17876dca79cec9e63dfa70d269113c926
+        consensus.BRRHeight = 1279432; // 000000000000000c5a124f3eccfbe6e17876dca79cec9e63dfa70d269113c926
         consensus.MinBIP9WarningHeight = consensus.DIP0008Height + consensus.nMinerConfirmationWindow;
         consensus.nPowTargetTimespan = 8 * 60 * 60; // PirateCash: 8 hours
         consensus.nPowTargetSpacing = 2 * 60; // PirateCash: 120 sec
         consensus.nPosTargetSpacingV1 = 90;
         consensus.nPosTargetSpacingV2 = 120;
         consensus.nSpecTargetFix = 310000;
-        consensus.nRewForkDecreaseV18 = 1265000; // 2024-01-08
-        consensus.nForkHeight = 1265800;         // 2024-01-09 Block Height when we'll use new codebase
-        consensus.nRestoreRewardV18 = 1268999;   // 2024-01-13
+        consensus.nRewForkDecreaseV18 = 1265000; // 8th Jan 2024 05:19:12
+        consensus.nForkHeight = 1265800;         // 9th Jan 2024 12:52:40 Block Height when we'll use new codebase
+        consensus.nRestoreRewardV18 = 1268999;   // 14th Jan 2024 23:17:44
         consensus.nSkipTimeUntil = 1705104000;   // 2024-01-13
         consensus.nLastPowBlock = 100000;
         consensus.fPowAllowMinDifficultyBlocks = false;
@@ -320,7 +320,7 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0024].nFalloffCoeff = 5;      // this corresponds to 10 periods
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000038dd5c0fb6b81856720");
+        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000003a0a5ccb31c2727ae55");
 
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x000000000000000000000000000000000000000000000000000000000000000");
@@ -416,7 +416,8 @@ public:
                 {500000, uint256S("0x7e174b175e341f36ad9bc16ab49653e644d88bc90ed35b7efba8b9684edc80bd")},
                 {750000, uint256S("0xa91eb567ffa121ec57e6097169778d75f17f2dbfc925b2ac03659d5a142c2a3c")},
                 {1000000, uint256S("0x4d4e0e17b5d20ae8df12a7258bd22c2175b1f6c53c3c639d807ce0554b3c0099")},
-                {1255000, uint256S("0x3223e976d16f9910ca9618d62d12a359ea46e97487becfa4ea5efd6034fec770m")},
+                {1255000, uint256S("0x3223e976d16f9910ca9618d62d12a359ea46e97487becfa4ea5efd6034fec770")},
+                {1279000, uint256S("0xbb3d641afa4b1d99da250a5ea6cae79af1c6c5d8f8e80dd63c6fa85fc9375b16")},
             }
         };
 
@@ -460,16 +461,16 @@ public:
         consensus.DIP0008Height = 290300; // 000000000e9329d964d80e7dab2e704b43b6bd2b91fea1e9315d38932e55fb55
         consensus.powLimit = uint256S("0x0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 16
         consensus.posLimit = uint256S("0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 20
-        consensus.BRRHeight = 300000; // 0000001537dbfd09dea69f61c1f8b2afa27c8dc91c934e144797761c9f10367b
+        consensus.BRRHeight = 330330; // 0000001537dbfd09dea69f61c1f8b2afa27c8dc91c934e144797761c9f10367b
         consensus.MinBIP9WarningHeight = consensus.DIP0008Height + consensus.nMinerConfirmationWindow;
         consensus.nPowTargetTimespan = 8 * 60 * 60; // PirateCash: 8 hours
         consensus.nPowTargetSpacing = 2 * 60; // PirateCash: 120 sec
         consensus.nPosTargetSpacingV1 = 90;
         consensus.nPosTargetSpacingV2 = 120;
         consensus.nSpecTargetFix = 104000;
-        consensus.nRewForkDecreaseV18 = 288882;
-        consensus.nForkHeight = 289000;  // Block Height when we'll use new codebase
-        consensus.nRestoreRewardV18 = 290000;
+        consensus.nRewForkDecreaseV18 = 288882;     // 16th Dec 2023 09:14:24
+        consensus.nForkHeight = 289000;             // 16th Dec 2023 13:53:32 Block Height when we'll use new codebase
+        consensus.nRestoreRewardV18 = 290000;       // 17th Dec 2023 09:41:59
         consensus.nSkipTimeUntil = 1705276800; //2024-01-01
         consensus.nLastPowBlock = 3000;
         consensus.fPowAllowMinDifficultyBlocks = true;

@@ -1,6 +1,0 @@
-usr/local/bin/cosanta-qt usr/bin
-share/pixmaps/cosanta32.xpm usr/share/pixmaps
-share/pixmaps/cosanta16.xpm usr/share/pixmaps
-share/pixmaps/cosanta128.png usr/share/pixmaps
-debian/cosanta-qt.desktop usr/share/applications
-debian/cosanta-qt.protocol usr/share/kde4/services/

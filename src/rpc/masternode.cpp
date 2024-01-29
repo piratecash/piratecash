@@ -38,13 +38,13 @@ static void masternode_list_help(const JSONRPCRequest& request)
         "  json           - Print info in JSON format (can be additionally filtered, partial match)\n"
         "  lastpaidblock  - Print the last block height a node was paid on the network\n"
         "  lastpaidtime   - Print the last time a node was paid on the network\n"
-        "  owneraddress   - Print the masternode owner Cosanta address\n"
-        "  payee          - Print the masternode payout Cosanta address (can be additionally filtered,\n"
+        "  owneraddress   - Print the masternode owner PirateCash address\n"
+        "  payee          - Print the masternode payout PirateCash address (can be additionally filtered,\n"
         "                   partial match)\n"
         "  pubKeyOperator - Print the masternode operator public key\n"
         "  status         - Print masternode status: ENABLED / POSE_BANNED\n"
         "                   (can be additionally filtered, partial match)\n"
-        "  votingaddress  - Print the masternode voting Cosanta address\n",
+        "  votingaddress  - Print the masternode voting PirateCash address\n",
         {
             {"mode", RPCArg::Type::STR, /* default */ "json", "The mode to run list in"},
             {"filter", RPCArg::Type::STR, /* default */ "", "Filter results. Partial match by outpoint by default in all modes, additional matches in some modes are also available"},

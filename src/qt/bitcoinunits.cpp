@@ -22,7 +22,7 @@ QList<BitcoinUnits::Unit> BitcoinUnits::availableUnits()
     unitlist.append(PIRATECASH);
     unitlist.append(mPIRATECASH);
     unitlist.append(uPIRATECASH);
-    unitlist.append(duffs);
+    unitlist.append(corsars);
     return unitlist;
 }
 
@@ -33,7 +33,7 @@ bool BitcoinUnits::valid(int unit)
     case PIRATECASH:
     case mPIRATECASH:
     case uPIRATECASH:
-    case duffs:
+    case corsars:
         return true;
     default:
         return false;
@@ -49,7 +49,7 @@ QString BitcoinUnits::name(int unit)
             case PIRATECASH: return QString("PIRATE");
             case mPIRATECASH: return QString("mPIRATE");
             case uPIRATECASH: return QString::fromUtf8("μPIRATE");
-            case duffs: return QString("duffs");
+            case corsars: return QString("corsars");
             default: return QString("???");
         }
     }
@@ -60,7 +60,7 @@ QString BitcoinUnits::name(int unit)
             case PIRATECASH: return QString("tPIRATE");
             case mPIRATECASH: return QString("mtPIRATE");
             case uPIRATECASH: return QString::fromUtf8("μtPIRATE");
-            case duffs: return QString("tduffs");
+            case corsars: return QString("tcorsars");
             default: return QString("???");
         }
     }
@@ -75,7 +75,7 @@ QString BitcoinUnits::description(int unit)
             case PIRATECASH: return QString("PirateCash");
             case mPIRATECASH: return QString("Milli-PirateCash (1 / 1" THIN_SP_UTF8 "000)");
             case uPIRATECASH: return QString("Micro-PirateCash (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case duffs: return QString("Ten Nano-PirateCash (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case corsars: return QString("Ten Nano-PirateCash (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -86,7 +86,7 @@ QString BitcoinUnits::description(int unit)
             case PIRATECASH: return QString("TestPirateCashs");
             case mPIRATECASH: return QString("Milli-TestPirateCash (1 / 1" THIN_SP_UTF8 "000)");
             case uPIRATECASH: return QString("Micro-TestPirateCash (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case duffs: return QString("Ten Nano-TestPirateCash (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case corsars: return QString("Ten Nano-TestPirateCash (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -99,7 +99,7 @@ qint64 BitcoinUnits::factor(int unit)
     case PIRATECASH:  return 100000000;
     case mPIRATECASH: return 100000;
     case uPIRATECASH: return 100;
-    case duffs: return 1;
+    case corsars: return 1;
     default:   return 100000000;
     }
 }
@@ -111,7 +111,7 @@ int BitcoinUnits::decimals(int unit)
     case PIRATECASH: return 8;
     case mPIRATECASH: return 5;
     case uPIRATECASH: return 2;
-    case duffs: return 0;
+    case corsars: return 0;
     default: return 0;
     }
 }
