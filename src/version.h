@@ -11,7 +11,6 @@
  */
 //! accept spork messages only from new clients
 static const int MIN_SPORK_PROTO_VERSION = 70223;
-static const int NO_HEADERS_NODE         = 61000;
 
 static const int PROTOCOL_VERSION = 70226;
 

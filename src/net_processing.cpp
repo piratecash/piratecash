@@ -2765,12 +2765,8 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         return false;
     }
 
-     // PirateCash: set/unset network serialization mode for new clients
-    if (pfrom->nVersion <= NO_HEADERS_NODE){
-        vRecv.SetType(vRecv.GetType() & ~SER_POSMARKER);
-    }else{
-        vRecv.SetType(vRecv.GetType() | SER_POSMARKER);
-    }
+    // set deserialization mode to read PoS flag in headers
+    vRecv.SetType(vRecv.GetType() | SER_POSMARKER);
 
     // At this point, the outgoing message serialization version can't change.
     const CNetMsgMaker msgMaker(pfrom->GetSendVersion());
@@ -2965,7 +2961,6 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         LOCK(cs_main);
 
         const auto current_time = GetTime<std::chrono::microseconds>();
-        std::vector<CInv> vToFetch;
 
         for (CInv &inv : vInv)
         {
@@ -2991,12 +2986,6 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
                 CNodeState *state = State(pfrom->GetId());
                 if (!state) {
                     continue;
-                }
-                //Download blocks from old client
-                if (pfrom->nVersion <= NO_HEADERS_NODE){
-                    // Add this to the list of blocks to request
-                    vToFetch.push_back(inv);
-                    LogPrint(BCLog::NET, "getblocks (%d) %s to peer=%d\n", pindexBestHeader->nHeight, inv.hash.ToString(), pfrom->GetId());
                 }
 
                 // Download if this is a nice peer, or we have no nice peers and this one might do.
@@ -3034,8 +3023,6 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
                 }
             }
         }
-        if (!vToFetch.empty())
-            connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETDATA, vToFetch));
         return true;
     }
 
@@ -3252,11 +3239,6 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         if (!g_relay_txes && !pfrom->HasPermission(PF_RELAY))
         {
             LogPrint(BCLog::NET, "transaction sent in violation of protocol peer=%d\n", pfrom->GetId());
-            return true;
-        }
-
-        if (pfrom->nVersion <= NO_HEADERS_NODE){
-            LogPrint(BCLog::NET, "transaction sent from old peer=%d\n", pfrom->GetId());
             return true;
         }
 
@@ -3761,10 +3743,6 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         headers.resize(nCount);
         for (unsigned int n = 0; n < nCount; n++) {
             vRecv >> headers[n];
-            // TODO: Update PoS flags for old peers becasue all blocks are PoS after 100 000 (it's not needed after hard fork)
-            if (pfrom->nVersion <= NO_HEADERS_NODE && headers[n].nTime > 1675190512){
-                headers[n].nFlags |= CBlockIndex::BLOCK_PROOF_OF_STAKE;
-            }
             ReadCompactSize(vRecv); // ignore tx count; assume it is 0.
             if (!headers[n].IsProofOfStakeV2())
                 ReadCompactSize(vRecv); // needed for vchBlockSig.
@@ -3791,44 +3769,27 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         vRecv >> *pblock;
         if (pblock->IsProofOfStakeTX())
             pblock->nFlags |= CBlockIndex::BLOCK_PROOF_OF_STAKE;
-        const uint256& hashBlock = pblock->GetHash();
 
         LogPrint(BCLog::NET, "received block %s peer=%d\n", pblock->GetHash().ToString(), pfrom->GetId());
 
-        // sometimes we will be sent their most recent block and its not the one we want, in that case tell where we are
-        if (!::BlockIndex().count(pblock->hashPrevBlock)) {
-            CBlockLocator locator = WITH_LOCK(cs_main, return ::ChainActive().GetLocator(););
-            if (find(pfrom->vBlockRequested.begin(), pfrom->vBlockRequested.end(), hashBlock) != pfrom->vBlockRequested.end()) {
-                // we already asked for this block, so lets work backwards and ask for the previous block
-                connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETBLOCKS, locator, pblock->hashPrevBlock));
-                pfrom->vBlockRequested.emplace_back(pblock->hashPrevBlock);
-            }else{
-                // ask to sync to this block
-                connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETBLOCKS, locator, hashBlock));
-                pfrom->vBlockRequested.emplace_back(hashBlock);
-            }
-
+        bool forceProcessing = false;
+        const uint256 hash(pblock->GetHash());
+        {
+            LOCK(cs_main);
+            // Also always process if we requested the block explicitly, as we may
+            // need it even though it is not a candidate for a new best tip.
+            forceProcessing |= MarkBlockAsReceived(hash);
+            // mapBlockSource is only used for sending reject messages and DoS scores,
+            // so the race between here and cs_main in ProcessNewBlock is fine.
+            mapBlockSource.emplace(hash, std::make_pair(pfrom->GetId(), true));
+        }
+        bool fNewBlock = false;
+        ProcessNewBlock(chainparams, pblock, forceProcessing, &fNewBlock);
+        if (fNewBlock) {
+            pfrom->nLastBlockTime = GetTime();
         } else {
-
-            bool forceProcessing = false;
-            const uint256 hash(pblock->GetHash());
-            {
-                LOCK(cs_main);
-                // Also always process if we requested the block explicitly, as we may
-                // need it even though it is not a candidate for a new best tip.
-                forceProcessing |= MarkBlockAsReceived(hash);
-                // mapBlockSource is only used for sending reject messages and DoS scores,
-                // so the race between here and cs_main in ProcessNewBlock is fine.
-                mapBlockSource.emplace(hash, std::make_pair(pfrom->GetId(), true));
-            }
-            bool fNewBlock = false;
-            ProcessNewBlock(chainparams, pblock, forceProcessing, &fNewBlock);
-            if (fNewBlock) {
-                pfrom->nLastBlockTime = GetTime();
-            } else {
-                LOCK(cs_main);
-                mapBlockSource.erase(pblock->GetHash());
-            }
+            LOCK(cs_main);
+            mapBlockSource.erase(pblock->GetHash());
         }
         return true;
     }
@@ -4589,11 +4550,7 @@ bool PeerLogicValidation::SendMessages(CNode* pto)
                 if (pindexStart->pprev)
                     pindexStart = pindexStart->pprev;
                 LogPrint(BCLog::NET, "initial getheaders (%d) to peer=%d (startheight:%d)\n", pindexStart->nHeight, pto->GetId(), pto->nStartingHeight);
-                if (pto->nVersion <= NO_HEADERS_NODE){
-                    connman->PushMessage(pto, msgMaker.Make(NetMsgType::GETBLOCKS, ::ChainActive().GetLocator(pindexStart), uint256()));
-                } else {
-                    connman->PushMessage(pto, msgMaker.Make(NetMsgType::GETHEADERS, ::ChainActive().GetLocator(pindexStart), uint256()));
-                }
+                connman->PushMessage(pto, msgMaker.Make(NetMsgType::GETHEADERS, ::ChainActive().GetLocator(pindexStart), uint256()));
             }
         }
 
