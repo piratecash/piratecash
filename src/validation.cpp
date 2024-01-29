@@ -1080,7 +1080,58 @@ CAmount GetMasternodePayment(int nHeight, CAmount blockValue, int nReallocActiva
         ret = blockValue / 1000;
     }
 
-    return ret;
+    if (nHeight < nReallocActivationHeight) {
+        // Block Reward Realocation is not activated yet, nothing to do
+        return ret;
+    }
+
+    int nSuperblockCycle = Params().GetConsensus().nSuperblockCycle;
+    // Actual realocation starts in the cycle next to one activation happens in
+    int nReallocStart = nReallocActivationHeight - nReallocActivationHeight % nSuperblockCycle + nSuperblockCycle;
+
+    if (nHeight < nReallocStart) {
+        // Activated but we have to wait for the next cycle to start realocation, nothing to do
+        return ret;
+    }
+
+    // Periods used to reallocate the masternode reward from 0.1% to 60%
+    static std::vector<int> vecPeriods{
+            10,  // Period 1:   1.0%
+            50,  // Period 2:   5.0%
+            100, // Period 3:  10.0%
+            150, // Period 4:  15.0%
+            200, // Period 5:  20.0%
+            250, // Period 6:  25.0%
+            300, // Period 7:  30.0%
+            350, // Period 8:  35.0%
+            400, // Period 9:  40.0%
+            450, // Period 10: 45.0%
+            500, // Period 11: 50.0%
+            513, // Period 12: 51.3%
+            526, // Period 13: 52.6%
+            533, // Period 14: 53.3%
+            540, // Period 15: 54.0%
+            546, // Period 16: 54.6%
+            552, // Period 17: 55.2%
+            557, // Period 18: 55.7%
+            562, // Period 19: 56.2%
+            567, // Period 20: 56.7%
+            572, // Period 21: 57.2%
+            577, // Period 22: 57.7%
+            582, // Period 23: 58.2%
+            585, // Period 24: 58.5%
+            588, // Period 25: 58.8%
+            591, // Period 26: 59.1%
+            594, // Period 27: 59.4%
+            597, // Period 28: 59.7%
+            599, // Period 29: 59.9%
+            600  // Period 30: 60.0%
+        };
+
+    int nReallocCycle = nSuperblockCycle * 3;
+    int nCurrentPeriod = std::min<int>((nHeight - nReallocStart) / nReallocCycle, vecPeriods.size() - 1);
+
+    return static_cast<CAmount>(blockValue * vecPeriods[nCurrentPeriod] / 1000);
 }
 
 CoinsViews::CoinsViews(

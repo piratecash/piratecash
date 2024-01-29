@@ -237,7 +237,7 @@ public:
         consensus.DIP0008Height = 1275300; // 00000000000000112e41e4b3afda8b233b8cc07c532d2eac5de097b68358c43e
         consensus.powLimit = uint256S("0x0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 16
         consensus.posLimit = uint256S("0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 20
-        consensus.BRRHeight = 1266080; // 000000000000000c5a124f3eccfbe6e17876dca79cec9e63dfa70d269113c926
+        consensus.BRRHeight = 1279432; // 000000000000000c5a124f3eccfbe6e17876dca79cec9e63dfa70d269113c926
         consensus.MinBIP9WarningHeight = consensus.DIP0008Height + consensus.nMinerConfirmationWindow;
         consensus.nPowTargetTimespan = 8 * 60 * 60; // PirateCash: 8 hours
         consensus.nPowTargetSpacing = 2 * 60; // PirateCash: 120 sec
@@ -460,7 +460,7 @@ public:
         consensus.DIP0008Height = 290300; // 000000000e9329d964d80e7dab2e704b43b6bd2b91fea1e9315d38932e55fb55
         consensus.powLimit = uint256S("0x0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 16
         consensus.posLimit = uint256S("0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 20
-        consensus.BRRHeight = 300000; // 0000001537dbfd09dea69f61c1f8b2afa27c8dc91c934e144797761c9f10367b
+        consensus.BRRHeight = 330330; // 0000001537dbfd09dea69f61c1f8b2afa27c8dc91c934e144797761c9f10367b
         consensus.MinBIP9WarningHeight = consensus.DIP0008Height + consensus.nMinerConfirmationWindow;
         consensus.nPowTargetTimespan = 8 * 60 * 60; // PirateCash: 8 hours
         consensus.nPowTargetSpacing = 2 * 60; // PirateCash: 120 sec
