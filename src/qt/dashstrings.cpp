@@ -11,7 +11,7 @@
 static const char UNUSED *dash_strings[] = {
 QT_TRANSLATE_NOOP("piratecash-core", "The %s developers"),
 QT_TRANSLATE_NOOP("piratecash-core", ""
-"%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a "
+"%s corrupt. Try using the wallet tool piratecash-wallet to salvage or restoring a "
 "backup."),
 QT_TRANSLATE_NOOP("piratecash-core", ""
 "%s file contains all private keys from this wallet. Do not share it with "
