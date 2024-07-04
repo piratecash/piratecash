@@ -583,21 +583,17 @@ public:
     }
 };
 
-// TODO: Back compatibility for PirateCash wallet (need remove after fork 1f61b27399c815ea89ebc7b379283921815a800c )
-class CWalletKey
-{
-public:
+/** Private key that was serialized by an old wallet (only used for deserialization) */
+struct OldKey {
     CPrivKey vchPrivKey;
-    int64_t nTimeCreated;
-    int64_t nTimeExpires;
-    std::string strComment;
-    // todo: add something to note what created it (user, getnewaddress, change)
-    //   maybe should have a map<string, string> property map
-
-    explicit CWalletKey(int64_t nExpires=0);
 
     SERIALIZE_METHODS(CWalletKey, obj)
     {
+        // no longer used by the wallet, thus dropped after deserialization:
+        int64_t nTimeCreated;
+        int64_t nTimeExpires;
+        std::string strComment;
+
         int nVersion = s.GetVersion();
         if (!(s.GetType() & SER_GETHASH))
             READWRITE(nVersion);
