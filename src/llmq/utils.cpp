@@ -639,6 +639,9 @@ std::set<uint256> CLLMQUtils::GetQuorumRelayMembers(const Consensus::LLMQParams&
 
     if (sporkManager.IsSporkActive(SPORK_21_QUORUM_ALL_CONNECTED)) {
         for (auto& dmn : mns) {
+            if (dmn->proTxHash == forMember) {
+                continue;
+            }
             // this will cause deterministic behaviour between incoming and outgoing connections.
             // Each member needs a connection to all other members, so we have each member paired. The below check
             // will be true on one side and false on the other side of the pairing, so we avoid having both members
