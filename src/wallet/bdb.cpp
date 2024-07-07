@@ -296,7 +296,7 @@ bool BerkeleyDatabase::Verify(bilingual_str& errorStr)
     if (fs::exists(file_path))
     {
         if (!env->Verify(strFile)) {
-            errorStr = strprintf(_("%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup."), file_path);
+            errorStr = strprintf(_("%s corrupt. Try using the wallet tool piratecash-wallet to salvage or restoring a backup."), file_path);
             return false;
         }
     }

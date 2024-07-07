@@ -637,21 +637,6 @@ std::set<uint256> CLLMQUtils::GetQuorumRelayMembers(const Consensus::LLMQParams&
     auto mns = GetAllQuorumMembers(llmqParams.type, pQuorumBaseBlockIndex);
     std::set<uint256> result;
 
-    if (sporkManager.IsSporkActive(SPORK_21_QUORUM_ALL_CONNECTED)) {
-        for (auto& dmn : mns) {
-            // this will cause deterministic behaviour between incoming and outgoing connections.
-            // Each member needs a connection to all other members, so we have each member paired. The below check
-            // will be true on one side and false on the other side of the pairing, so we avoid having both members
-            // initiating the connection.
-            if (dmn->proTxHash < forMember) {
-                result.emplace(dmn->proTxHash);
-            }
-        }
-        return result;
-    }
-
-    // TODO remove this after activation of SPORK_21_QUORUM_ALL_CONNECTED
-
     auto calcOutbound = [&](size_t i, const uint256& proTxHash) {
         if (mns.size() == 1) {
             // No outbound connections are needed when there is one MN only.

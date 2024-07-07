@@ -583,28 +583,6 @@ public:
     }
 };
 
-// TODO: Back compatibility for PirateCash wallet (need remove after fork 1f61b27399c815ea89ebc7b379283921815a800c )
-class CWalletKey
-{
-public:
-    CPrivKey vchPrivKey;
-    int64_t nTimeCreated;
-    int64_t nTimeExpires;
-    std::string strComment;
-    // todo: add something to note what created it (user, getnewaddress, change)
-    //   maybe should have a map<string, string> property map
-
-    explicit CWalletKey(int64_t nExpires=0);
-
-    SERIALIZE_METHODS(CWalletKey, obj)
-    {
-        int nVersion = s.GetVersion();
-        if (!(s.GetType() & SER_GETHASH))
-            READWRITE(nVersion);
-        READWRITE(obj.vchPrivKey, obj.nTimeCreated, obj.nTimeExpires, LIMITED_STRING(obj.strComment, 65536));
-    }
-};
-
 struct CoinSelectionParams
 {
     bool use_bnb = true;
