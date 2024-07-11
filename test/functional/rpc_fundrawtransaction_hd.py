@@ -420,7 +420,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         mSigObj = self.nodes[2].addmultisigaddress(2, [addr1Obj['pubkey'], addr2Obj['pubkey']])['address']
 
 
-        # send 12 COSANTA to msig addr
+        # send 12 PIRATE to msig addr
         txId = self.nodes[0].sendtoaddress(mSigObj, 12)
         self.sync_all()
         self.nodes[1].generate(1)
