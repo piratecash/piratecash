@@ -11,7 +11,7 @@
  */
 
 
-static const int PROTOCOL_VERSION = 70226;
+static const int PROTOCOL_VERSION = 70227;
 
 //! initial proto version, to be increased after version/verack negotiation
 static const int INIT_PROTO_VERSION = 209;
@@ -37,6 +37,9 @@ static const int ISDLOCK_PROTO_VERSION = 70223;
 
 //! GOVSCRIPT was activated in this version
 static const int GOVSCRIPT_PROTO_VERSION = 70225;
+
+//! CCoinJoinStatusUpdate bug fix was introduced in this version
+static const int COINJOIN_SU_PROTO_VERSION = 70227;
 
 // Make sure that none of the values above collide with `ADDRV2_FORMAT`.
 
