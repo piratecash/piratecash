@@ -361,6 +361,7 @@ public:
         // release ASAP to avoid it where possible.
         vSeeds.emplace_back("dns1.piratecash.net");
         vSeeds.emplace_back("dns2.piratecash.net");
+        vSeeds.emplace_back("dns.p.cash");
 
         // PirateCash addresses start with 'P'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,55);
