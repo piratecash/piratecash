@@ -320,7 +320,7 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0024].nFalloffCoeff = 5;      // this corresponds to 10 periods
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000003a0a5ccb31c2727ae55");
+        consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000042b7f28d083e2ad166f");
 
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x000000000000000000000000000000000000000000000000000000000000000");
@@ -420,6 +420,7 @@ public:
                 {1255000, uint256S("0x3223e976d16f9910ca9618d62d12a359ea46e97487becfa4ea5efd6034fec770")},
                 {1279000, uint256S("0xbb3d641afa4b1d99da250a5ea6cae79af1c6c5d8f8e80dd63c6fa85fc9375b16")},
                 {1388000, uint256S("0xbc53539cc6426b02f99ebd16125d5770c1d9d4ae5dbc4f9a495cc33cea987dae")},
+                {1594666, uint256S("0x61b904215b6bbf1c9aa13c5652d066eeb134b076339acf19dd7a22c63b63a180")},
             }
         };
 
