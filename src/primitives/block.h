@@ -184,6 +184,8 @@ public:
         block.nBits          = nBits;
         block.nNonce         = nNonce;
         block.nFlags         = nFlags;
+        block.posStakeHash   = posStakeHash;
+        block.posStakeN      = posStakeN;
         return block;
     }
 
