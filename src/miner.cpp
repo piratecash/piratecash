@@ -625,7 +625,7 @@ void PoSMiner(std::shared_ptr<CWallet> pwallet, CThreadInterrupt &interrupt)
             if (!IsPoSEnforcedHeight(pindexPrev->nHeight + 1) && !IsPoSV2EnforcedHeight(pindexPrev->nHeight + 1) && !pindexPrev->IsProofOfStake()) {
                 interrupt.sleep_for(std::chrono::seconds(hash_interval));
                 miningStatus = ":<br>- PoS is not enabled at height " + std::to_string(pindexPrev->nHeight + 1);
-                LogPrint(BCLog::STAKING, "%s :  \n", __func__, miningStatus);
+                LogPrint(BCLog::STAKING, "%s : %s \n", __func__, miningStatus);
                 continue;
             }
 
