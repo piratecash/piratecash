@@ -307,6 +307,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(
 
         if (!TestBlockValidity(state, chainparams, *pblock, pindexPrev, false, false)) {
             error("%s: TestBlockValidity failed: %s", __func__, FormatStateMessage(state));
+            return nullptr;
         }
     }
 
