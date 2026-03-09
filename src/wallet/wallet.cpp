@@ -4333,6 +4333,14 @@ bool CWallet::CreateCoinStake(const CBlockIndex *pindex_prev, CBlock &curr_block
         LogPrint(BCLog::STAKING, "%s : trying tx=%s n=%u\n", __func__,
                  __func__, pWalletTxIn->hashBlock.ToString().c_str());
 
+        // `setStakeCoins` is a cache; this outpoint might have been spent
+        // by a block received after the cache was built.
+        if (!ChainstateActive().CoinsTip().HaveCoin(prevoutStake)) {
+            LogPrint(BCLog::STAKING, "%s : skipping stale stake input tx=%s n=%u (already spent)\n",
+                     __func__, prevoutStake.hash.ToString().c_str(), prevoutStake.n);
+            continue;
+        }
+
         // Read block header
         BlockMap::iterator it = ::BlockIndex().find(pWalletTxIn->hashBlock);
         if (it != ::BlockIndex().end())
