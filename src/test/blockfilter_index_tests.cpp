@@ -84,11 +84,11 @@ static bool BuildChain(const CBlockIndex* pindex, const CScript& coinbase_script
     chain.resize(length);
     for (auto& block : chain) {
         block = std::make_shared<CBlock>(CreateBlock(pindex, no_txns, coinbase_script_pub_key));
-        std::deque<CBlockHeader> header;
+        std::vector<CBlockHeader> header;
         header.push_back(block->GetBlockHeader());
 
         CValidationState state;
-        if (!ProcessNewBlockHeaders({header}, state, Params(), &pindex, nullptr)) {
+        if (!ProcessNewBlockHeaders(header, state, Params(), &pindex, nullptr)) {
             return false;
         }
     }

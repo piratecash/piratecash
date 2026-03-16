@@ -66,8 +66,6 @@
 # error "PirateCash Core cannot be compiled without assertions."
 #endif
 
-static std::deque<const CBlockIndex*> vToFetchCache GUARDED_BY(cs_main);
-
 /** Maximum number of in-flight objects from a peer */
 static constexpr int32_t MAX_PEER_OBJECT_IN_FLIGHT = 100;
 /** Maximum number of announced objects from a peer */
@@ -139,6 +137,10 @@ static const int64_t BLOCK_DOWNLOAD_TIMEOUT_PER_PEER = 500000;
 static const unsigned int MAX_BLOCKS_TO_ANNOUNCE = 8;
 /** Maximum number of unconnecting headers announcements before DoS score */
 static const int MAX_UNCONNECTING_HEADERS = 10;
+/** Number of consecutive PoS-heavy headers tolerated from a single peer. */
+static constexpr int32_t MAX_CONSECUTIVE_POS_HEADERS = 1000;
+/** How much a PoW header cools the PoS header temperature. */
+static constexpr int32_t POW_HEADER_COOLING = 70;
 /** Minimum blocks required to signal NODE_NETWORK_LIMITED */
 static const unsigned int NODE_NETWORK_LIMITED_MIN_BLOCKS = 288;
 
@@ -172,6 +174,7 @@ std::map<uint256, COrphanTx> mapOrphanTransactions GUARDED_BY(g_cs_orphans);
 
 size_t nMapOrphanTransactionsSize = 0;
 void EraseOrphansFor(NodeId peer);
+void Misbehaving(NodeId pnode, int howmuch, const std::string& message) EXCLUSIVE_LOCKS_REQUIRED(cs_main);
 
 
 // Internal stuff
@@ -291,6 +294,10 @@ struct CNodeState {
     const CBlockIndex *pindexBestHeaderSent;
     //! Length of current-streak of unconnecting headers announcements
     int nUnconnectingHeaders;
+    //! PoS-heavy header streak tracker used to rate-limit pathological peers.
+    int32_t nPoSHeaderTemperature;
+    //! Last header we accepted from this peer, used to avoid fork-based cooling.
+    uint256 hashLastAcceptedHeader;
     //! Whether we've started headers synchronization with this peer.
     bool fSyncStarted;
     //! When to potentially disconnect peer for stalling headers download
@@ -315,9 +322,6 @@ struct CNodeState {
      * otherwise: whether this peer sends non-last version in cmpctblocks/blocktxns.
      */
     bool fSupportsDesiredCmpctVersion;
-
-    //! Headers from the last message
-    std::deque<CBlockHeader> vPostponedHeaders;
 
     /** State used to enforce CHAIN_SYNC_TIMEOUT
       * Only in effect for outbound, non-manual connections, with
@@ -421,6 +425,8 @@ struct CNodeState {
         pindexLastCommonBlock = nullptr;
         pindexBestHeaderSent = nullptr;
         nUnconnectingHeaders = 0;
+        nPoSHeaderTemperature = MAX_CONSECUTIVE_POS_HEADERS / 4;
+        hashLastAcceptedHeader.SetNull();
         fSyncStarted = false;
         nHeadersSyncTimeout = 0;
         nStallingSince = 0;
@@ -656,76 +662,79 @@ static bool PeerHasHeader(CNodeState *state, const CBlockIndex *pindex) EXCLUSIV
     return false;
 }
 
+static int32_t CalculatePoSHeaderTemperature(int32_t current_temperature, const uint256& last_accepted_header, const std::vector<CBlockHeader>& headers, bool accepted) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
+{
+    AssertLockHeld(cs_main);
+    if (headers.empty()) {
+        return std::max<int32_t>(current_temperature, 0);
+    }
+
+    int32_t cooling = POW_HEADER_COOLING;
+    if (!last_accepted_header.IsNull() && headers[0].hashPrevBlock != last_accepted_header) {
+        current_temperature += (18 + headers.size()) / 10;
+        cooling = 0;
+    }
+
+    for (const CBlockHeader& header : headers) {
+        if (header.IsProofOfStake()) {
+            current_temperature++;
+        } else {
+            current_temperature = std::max<int32_t>(current_temperature - cooling, 0);
+        }
+    }
+
+    if (!accepted) {
+        current_temperature += POW_HEADER_COOLING;
+    }
+
+    return std::max<int32_t>(current_temperature, 0);
+}
+
+static bool MaybePunishForPoSHeaderSpam(CNodeState& nodestate, NodeId nodeid, const std::vector<CBlockHeader>& headers) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
+{
+    AssertLockHeld(cs_main);
+    const auto preview_temperature = CalculatePoSHeaderTemperature(nodestate.nPoSHeaderTemperature, nodestate.hashLastAcceptedHeader, headers, /*accepted=*/true);
+    if (preview_temperature < MAX_CONSECUTIVE_POS_HEADERS) {
+        return false;
+    }
+
+    nodestate.nPoSHeaderTemperature = (MAX_CONSECUTIVE_POS_HEADERS * 3) / 4;
+    if (Params().NetworkIDString() != "test") {
+        Misbehaving(nodeid, 100, "too many consecutive pos headers");
+        return true;
+    }
+
+    return false;
+}
+
+static void UpdatePoSHeaderStateOnSuccess(CNodeState& nodestate, const std::vector<CBlockHeader>& headers, const CBlockIndex* pindexLast) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
+{
+    AssertLockHeld(cs_main);
+    nodestate.nPoSHeaderTemperature = CalculatePoSHeaderTemperature(nodestate.nPoSHeaderTemperature, nodestate.hashLastAcceptedHeader, headers, /*accepted=*/true);
+    if (pindexLast != nullptr) {
+        nodestate.hashLastAcceptedHeader = pindexLast->GetBlockHash();
+    }
+}
+
+static void UpdatePoSHeaderStateOnFailure(CNodeState& nodestate, const std::vector<CBlockHeader>& headers) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
+{
+    AssertLockHeld(cs_main);
+    nodestate.nPoSHeaderTemperature = CalculatePoSHeaderTemperature(nodestate.nPoSHeaderTemperature, nodestate.hashLastAcceptedHeader, headers, /*accepted=*/false);
+}
+
 /** Update pindexLastCommonBlock and add not-in-flight missing successors to vBlocks, until it has
  *  at most count entries. */
-static void FindNextBlocksToDownload(CNode* pnode, unsigned int count, std::vector<const CBlockIndex*>& vBlocks, NodeId& nodeStaller, const Consensus::Params& consensusParams) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
+static void FindNextBlocksToDownload(NodeId nodeid, unsigned int count, std::vector<const CBlockIndex*>& vBlocks, NodeId& nodeStaller, const Consensus::Params& consensusParams) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
 {
     if (count == 0)
         return;
 
-    auto nodeid = pnode->GetId();
     vBlocks.reserve(vBlocks.size() + count);
     CNodeState *state = State(nodeid);
     assert(state != nullptr);
 
     // Make sure pindexBestKnownBlock is up to date, we'll need it.
     ProcessBlockAvailability(nodeid);
-
-    // A special case to to do parallel initial download
-    if (((state->pindexBestKnownBlock == nullptr) || state->fSyncStarted) &&
-        ::ChainstateActive().IsInitialBlockDownload() &&
-        (pindexBestHeader != nullptr)
-    ) {
-        // Minimize the work done on walk till the oldest not fetched blocks.
-        auto max_height = std::min<int>(
-            pindexBestHeader->nHeight,
-            ::ChainActive().Height() + MAX_HEADERS_RESULTS
-        );
-
-        if (vToFetchCache.size() < count) {
-            vToFetchCache.clear();
-            auto pIndexWalk = pindexBestHeader;
-
-            for (; pIndexWalk != nullptr; pIndexWalk = pIndexWalk->pprev) {
-                if (pIndexWalk->nHeight > max_height) {
-                    // optimize skip
-                    continue;
-                }
-
-                if (::ChainActive().Contains(pIndexWalk)) {
-                    break;
-                }
-
-                if (!pIndexWalk->IsValid(BLOCK_VALID_TREE)) {
-                    // This should never happen by fact
-                    break;
-                }
-
-                if (!(pIndexWalk->nStatus & BLOCK_HAVE_DATA) &&
-                    (mapBlocksInFlight.find(pIndexWalk->GetBlockHash()) == mapBlocksInFlight.end())
-                ) {
-                    vToFetchCache.push_front(pIndexWalk);
-                }
-            }
-        }
-
-        auto begin = vToFetchCache.begin();
-        auto curr = begin;
-
-        while ((curr != vToFetchCache.end()) && (vBlocks.size() < count)) {
-            // Opportunistic assumption of block availability
-            if ((*curr)->nHeight > pnode->nStartingHeight) {
-                break;
-            }
-
-            vBlocks.push_back(*curr);
-            ++curr;
-        }
-
-        vToFetchCache.erase(begin, curr);
-
-        return;
-    }
 
     if (state->pindexBestKnownBlock == nullptr || state->pindexBestKnownBlock->nChainWork < ::ChainActive().Tip()->nChainWork || state->pindexBestKnownBlock->nChainWork < nMinimumChainWork) {
         // This peer has nothing interesting.
@@ -1908,32 +1917,21 @@ inline void static SendBlockTransactions(const CBlock& block, const BlockTransac
     connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::BLOCKTXN, resp));
 }
 
-bool static ProcessHeadersMessage(CNode *pfrom, CConnman *connman, std::deque<CBlockHeader>& headers, const CChainParams& chainparams, bool punish_duplicate_invalid)
+bool static ProcessHeadersMessage(CNode *pfrom, CConnman *connman, const std::vector<CBlockHeader>& headers, const CChainParams& chainparams, bool punish_duplicate_invalid)
 {
     const CNetMsgMaker msgMaker(pfrom->GetSendVersion());
     size_t nCount = headers.size();
 
+    if (nCount == 0) {
+        // Nothing interesting. Stop asking this peers for more headers.
+        return true;
+    }
+
     bool received_new_header = false;
     const CBlockIndex *pindexLast = nullptr;
-    const CBlockIndex *pindexPrev = NULL;
-    bool get_more_headers = headers.size() == MAX_HEADERS_RESULTS;
     {
         LOCK(cs_main);
         CNodeState *nodestate = State(pfrom->GetId());
-
-        if (!nodestate->vPostponedHeaders.empty()) {
-            if (headers.size() != 0) {
-                LogPrint(BCLog::NET, "New headers while having postponed headers from %d\n", pfrom->GetId());
-            }
-            nodestate->vPostponedHeaders.swap(headers);
-            get_more_headers = true; // force any way
-        } else if (headers.size() == 0) {
-            // Nothing interesting. Stop asking this peers for more headers.
-            return true;
-        }
-
-        auto prev_iter = ::BlockIndex().find(headers[0].hashPrevBlock);
-        pindexPrev = (prev_iter == ::BlockIndex().end()) ? nullptr : prev_iter->second;
 
         // If this looks like it could be a block announcement (nCount <
         // MAX_BLOCKS_TO_ANNOUNCE), use special logic for handling headers that
@@ -1944,11 +1942,7 @@ bool static ProcessHeadersMessage(CNode *pfrom, CConnman *connman, std::deque<CB
         // - Once a headers message is received that is valid and does connect,
         //   nUnconnectingHeaders gets reset back to 0.
 
-	// FIXED: syncing of PoS blocks - PirateCash
-        //if (!LookupBlockIndex(headers[0].hashPrevBlock) && nCount < MAX_BLOCKS_TO_ANNOUNCE) {
-        if ((pindexPrev == nullptr) &&
-                (headers.size() <= MAX_BLOCKS_TO_ANNOUNCE)
-                ) {
+        if (!LookupBlockIndex(headers[0].hashPrevBlock) && nCount < MAX_BLOCKS_TO_ANNOUNCE) {
             nodestate->nUnconnectingHeaders++;
             connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETHEADERS, ::ChainActive().GetLocator(pindexBestHeader), uint256()));
             LogPrint(BCLog::NET, "received header %s: missing prev block %s, sending getheaders (%d) to end (peer=%d, nUnconnectingHeaders=%d)\n",
@@ -1981,14 +1975,22 @@ bool static ProcessHeadersMessage(CNode *pfrom, CConnman *connman, std::deque<CB
         if (!LookupBlockIndex(hashLastBlock)) {
             received_new_header = true;
         }
+
+        if (MaybePunishForPoSHeaderSpam(*nodestate, pfrom->GetId(), headers)) {
+            return true;
+        }
     }
 
     CValidationState state;
     CBlockHeader first_invalid_header;
-    if (!ProcessNewBlockHeaders(headers, state, chainparams, &pindexLast, &first_invalid_header, MAX_NEW_HEADER_BURST)) {
+    if (!ProcessNewBlockHeaders(headers, state, chainparams, &pindexLast, &first_invalid_header)) {
         int nDoS;
+        LOCK(cs_main);
+        CNodeState* nodestate = State(pfrom->GetId());
+        if (nodestate != nullptr) {
+            UpdatePoSHeaderStateOnFailure(*nodestate, headers);
+        }
         if (state.IsInvalid(nDoS)) {
-            LOCK(cs_main);
             if (nDoS > 0) {
                 Misbehaving(pfrom->GetId(), nDoS, "invalid header received");
             } else {
@@ -2032,10 +2034,7 @@ bool static ProcessHeadersMessage(CNode *pfrom, CConnman *connman, std::deque<CB
         }
         if (state.IsTransientError()) {
             LogPrint(BCLog::NET, "peer %d sent us header which we are unable to process yet \n", pfrom->GetId());
-            if (pindexLast == nullptr) {
-                // edge case of the first header error
-                pindexLast = pindexPrev;
-            }
+            return true;
         }
         if (pindexLast == nullptr) {
             // This situation should not happen in normal operation, just some safety measurements.
@@ -2055,9 +2054,8 @@ bool static ProcessHeadersMessage(CNode *pfrom, CConnman *connman, std::deque<CB
         nodestate->nUnconnectingHeaders = 0;
 
         assert(pindexLast);
+        UpdatePoSHeaderStateOnSuccess(*nodestate, headers, pindexLast);
         UpdateBlockAvailability(pfrom->GetId(), pindexLast->GetBlockHash());
-
-        bool fCanDirectFetch = CanDirectFetch(chainparams.GetConsensus());
 
         // From here, pindexBestKnownBlock should be guaranteed to be non-null,
         // because it is set in UpdateBlockAvailability. Some nullptr checks
@@ -2067,15 +2065,7 @@ bool static ProcessHeadersMessage(CNode *pfrom, CConnman *connman, std::deque<CB
             nodestate->m_last_block_announcement = GetTime();
         }
 
-        if (!nodestate->vPostponedHeaders.empty()) {
-            // Just in case. It should not really happen
-            LogPrint(BCLog::NET, "peer %d sent us more headers while we were processing current postponed \n", pfrom->GetId());
-        } else if (!headers.empty()) {
-            nodestate->vPostponedHeaders.swap(headers);
-            LogPrint(BCLog::NET, "saving postponed headers for peer %d \n", pfrom->GetId());
-        } else if (get_more_headers) {
-            // If nCount=0 - then we are in postponed headers situation, try to get more.
-
+        if (nCount == MAX_HEADERS_RESULTS) {
             // Headers message had its maximum size; the peer may have more headers.
             // TODO: optimize: if pindexLast is an ancestor of ::ChainActive().Tip or pindexBestHeader, continue
             // from there instead.
@@ -2085,8 +2075,9 @@ bool static ProcessHeadersMessage(CNode *pfrom, CConnman *connman, std::deque<CB
 
         // If this set of headers is valid and ends in a block with at least as
         // much work as our tip, download as much as possible.
+        bool fCanDirectFetch = CanDirectFetch(chainparams.GetConsensus());
         if (fCanDirectFetch && pindexLast->IsValid(BLOCK_VALID_TREE) && ::ChainActive().Tip()->nChainWork <= pindexLast->nChainWork) {
-            std::deque<const CBlockIndex*> vToFetch;
+            std::vector<const CBlockIndex*> vToFetch;
             const CBlockIndex *pindexWalk = pindexLast;
             // Calculate all the blocks we'd need to switch to pindexLast, up to a limit.
             while (pindexWalk && !::ChainActive().Contains(pindexWalk) && vToFetch.size() <= MAX_BLOCKS_IN_TRANSIT_PER_PEER) {
@@ -2115,8 +2106,8 @@ bool static ProcessHeadersMessage(CNode *pfrom, CConnman *connman, std::deque<CB
                     }
                     vGetData.push_back(CInv(MSG_BLOCK, pindex->GetBlockHash()));
                     MarkBlockAsInFlight(pfrom->GetId(), pindex->GetBlockHash(), pindex);
-                    LogPrint(BCLog::NET, "Requesting block %s (%d) from  peer=%d\n",
-                            pindex->GetBlockHash().ToString(), pindex->nHeight, pfrom->GetId());
+                    LogPrint(BCLog::NET, "Requesting block %s from  peer=%d\n",
+                            pindex->GetBlockHash().ToString(), pfrom->GetId());
                 }
                 if (vGetData.size() > 1) {
                     LogPrint(BCLog::NET, "Downloading blocks toward %s (%d) via headers direct fetch\n",
@@ -3430,7 +3421,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
 
         if (!LookupBlockIndex(cmpctblock.header.hashPrevBlock)) {
             // Doesn't connect (or is genesis), instead of DoSing in AcceptBlockHeader, request deeper headers
-            if (!::ChainstateActive().IsInitialBlockDownload() && State(pfrom->GetId())->vPostponedHeaders.empty())
+            if (!::ChainstateActive().IsInitialBlockDownload())
                 connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETHEADERS, ::ChainActive().GetLocator(pindexBestHeader), uint256()));
             return true;
         }
@@ -3438,17 +3429,31 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         if (!LookupBlockIndex(cmpctblock.header.GetHash())) {
             received_new_header = true;
         }
+
         }
 
         const CBlockIndex *pindex = nullptr;
         CValidationState state;
-        std::deque<CBlockHeader> headers{cmpctblock.header};
+        std::vector<CBlockHeader> headers{cmpctblock.header};
+
+        {
+            LOCK(cs_main);
+            CNodeState* nodestate = State(pfrom->GetId());
+            assert(nodestate != nullptr);
+            if (MaybePunishForPoSHeaderSpam(*nodestate, pfrom->GetId(), headers)) {
+                return true;
+            }
+        }
 
         if (!ProcessNewBlockHeaders(headers, state, chainparams, &pindex)) {
             int nDoS;
+            LOCK(cs_main);
+            CNodeState* nodestate = State(pfrom->GetId());
+            if (nodestate != nullptr) {
+                UpdatePoSHeaderStateOnFailure(*nodestate, headers);
+            }
             if (state.IsInvalid(nDoS)) {
                 if (nDoS > 0) {
-                    LOCK(cs_main);
                     Misbehaving(pfrom->GetId(), nDoS, strprintf("Peer %d sent us invalid header via cmpctblock", pfrom->GetId()));
                 } else {
                     LogPrint(BCLog::NET, "Peer %d sent us invalid header via cmpctblock\n", pfrom->GetId());
@@ -3484,6 +3489,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         UpdateBlockAvailability(pfrom->GetId(), pindex->GetBlockHash());
 
         CNodeState *nodestate = State(pfrom->GetId());
+        UpdatePoSHeaderStateOnSuccess(*nodestate, headers, pindex);
 
         // If this was a new header with more work than our tip, update the
         // peer's last block announcement time
@@ -3584,7 +3590,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
                 vInv[0] = CInv(MSG_BLOCK, cmpctblock.header.GetHash());
                 connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETDATA, vInv));
                 return true;
-            } else if (nodestate->vPostponedHeaders.empty()) {
+            } else {
                 // If this was an announce-cmpctblock, we want the same treatment as a header message
                 fRevertToHeaderProcessing = true;
             }
@@ -3600,8 +3606,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             // the peer if the header turns out to be for an invalid block.
             // Note that if a peer tries to build on an invalid chain, that
             // will be detected and the peer will be banned.
-            std::deque<CBlockHeader> headers;
-            headers = {cmpctblock.header};
+            std::vector<CBlockHeader> headers{cmpctblock.header};
             return ProcessHeadersMessage(pfrom, connman, headers, chainparams, /*punish_duplicate_invalid=*/false);
         }
 
@@ -3730,10 +3735,8 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             return true;
         }
 
-        std::deque<CBlockHeader> headers;
-
-        {
         // Bypass the normal CBlock deserialization, as we don't want to risk deserializing 2000 full blocks.
+        std::vector<CBlockHeader> headers;
         unsigned int nCount = ReadCompactSize(vRecv);
         if (nCount > MAX_HEADERS_RESULTS) {
             LOCK(cs_main);
@@ -3746,7 +3749,6 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             ReadCompactSize(vRecv); // ignore tx count; assume it is 0.
             if (!headers[n].IsProofOfStakeV2())
                 ReadCompactSize(vRecv); // needed for vchBlockSig.
-        }
         }
 
         // Headers received via a HEADERS message should be valid, and reflect
@@ -4152,29 +4154,6 @@ bool PeerLogicValidation::ProcessMessages(CNode* pfrom, std::atomic<bool>& inter
     //  (x) data
     //
     bool fMoreWork = false;
-
-    // Continue processing after burst limit got reached
-    {
-        LOCK(cs_main);
-        auto state = State(pfrom->GetId());
-
-        if ((state->nBlocksInFlight == 0) && !state->vPostponedHeaders.empty()) {
-            bool have_headers = false;
-
-            {
-                LOCK(cs_main);
-                have_headers = !State(pfrom->GetId())->vPostponedHeaders.empty();
-            }
-
-            if (have_headers) {
-                LogPrint(BCLog::NET, "Retrying postponed headers for peer %d", pfrom->GetId());
-                CDataStream vHeadersMsg(SER_NETWORK, PROTOCOL_VERSION);
-                vHeadersMsg << std::vector<CBlock>();
-                ProcessMessage(pfrom, NetMsgType::HEADERS, vHeadersMsg, GetAdjustedTime(), chainparams, connman, interruptMsgProc, m_enable_bip61);
-            }
-            fMoreWork = true;
-        }
-    }
 
     if (!pfrom->vRecvGetData.empty())
         ProcessGetData(pfrom, chainparams, connman, interruptMsgProc);
@@ -4919,12 +4898,12 @@ bool PeerLogicValidation::SendMessages(CNode* pto)
         if (!pto->fClient && pto->CanRelay() && ((fFetch && !pto->m_limited_node) || !::ChainstateActive().IsInitialBlockDownload()) && state.nBlocksInFlight < MAX_BLOCKS_IN_TRANSIT_PER_PEER) {
             std::vector<const CBlockIndex*> vToDownload;
             NodeId staller = -1;
-            FindNextBlocksToDownload(pto, MAX_BLOCKS_IN_TRANSIT_PER_PEER - state.nBlocksInFlight, vToDownload, staller, consensusParams);
+            FindNextBlocksToDownload(pto->GetId(), MAX_BLOCKS_IN_TRANSIT_PER_PEER - state.nBlocksInFlight, vToDownload, staller, consensusParams);
             for (const CBlockIndex *pindex : vToDownload) {
                 vGetData.push_back(CInv(MSG_BLOCK, pindex->GetBlockHash()));
                 MarkBlockAsInFlight(pto->GetId(), pindex->GetBlockHash(), pindex);
-                LogPrint(BCLog::NET, "Requesting block %s (%d) peer=%d\n", pindex->GetBlockHash().ToString(),
-                    pindex->nHeight, pto->GetId());
+                LogPrint(BCLog::NET, "Requesting block %s peer=%d\n", pindex->GetBlockHash().ToString(),
+                    pto->GetId());
             }
             if (state.nBlocksInFlight == 0 && staller != -1) {
                 if (State(staller)->nStallingSince == 0) {
