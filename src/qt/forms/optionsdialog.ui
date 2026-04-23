@@ -130,11 +130,41 @@
         </spacer>
        </item>
        <item>
+        <widget class="QCheckBox" name="hideTrayIcon">
+         <property name="toolTip">
+          <string>Hide the icon from the system tray.</string>
+         </property>
+         <property name="text">
+          <string>&amp;Hide tray icon</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="minimizeToTray">
+         <property name="toolTip">
+          <string>Show only a tray icon after minimizing the window.</string>
+         </property>
+         <property name="text">
+          <string>&amp;Minimize to the tray instead of the taskbar</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="minimizeOnClose">
+         <property name="toolTip">
+          <string>Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Exit in the menu.</string>
+         </property>
+         <property name="text">
+          <string>M&amp;inimize on close</string>
+         </property>
+        </widget>
+       </item>
+       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_Main_Prune">
         <item>
          <widget class="QCheckBox" name="prune">
           <property name="toolTip">
-           <string>Disables some advanced features but all blocks will still be fully validated. Reverting this setting requires re-downloading the entire blockchain. Actual disk usage may be somewhat higher.</string>
+           <string>Enabling pruning significantly reduces the disk space required to store transactions. All blocks are still fully validated. Reverting this setting requires re-downloading the entire blockchain.</string>
           </property>
           <property name="text">
            <string>Prune &amp;block storage to</string>
@@ -176,36 +206,6 @@
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="hideTrayIcon">
-         <property name="toolTip">
-          <string>Hide the icon from the system tray.</string>
-         </property>
-         <property name="text">
-          <string>&amp;Hide tray icon</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="minimizeToTray">
-         <property name="toolTip">
-          <string>Show only a tray icon after minimizing the window.</string>
-         </property>
-         <property name="text">
-          <string>&amp;Minimize to the tray instead of the taskbar</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="minimizeOnClose">
-         <property name="toolTip">
-          <string>Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Exit in the menu.</string>
-         </property>
-         <property name="text">
-          <string>M&amp;inimize on close</string>
          </property>
         </widget>
        </item>
@@ -315,6 +315,16 @@
             </property>
             <property name="text">
              <string>Enable coin &amp;control features</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="keepChangeAddress">
+            <property name="toolTip">
+             <string>Whether to keep the specified custom change address or not.</string>
+            </property>
+            <property name="text">
+             <string>Keep custom change &amp;address</string>
             </property>
            </widget>
           </item>
@@ -516,7 +526,7 @@
        <item>
         <widget class="QCheckBox" name="mapPortNatpmp">
          <property name="toolTip">
-          <string>Automatically open the Bitcoin client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</string>
+          <string>Automatically open the PirateCash Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</string>
          </property>
          <property name="text">
           <string>Map port using NA&amp;T-PMP</string>
@@ -916,6 +926,9 @@ https://www.transifex.com/projects/p/piratecash/</string>
            <property name="toolTip">
             <string>Third party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items.&lt;br/&gt;%s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</string>
            </property>
+           <property name="placeholderText">
+            <string notr="true">https://example.com/tx/%s</string>
+           </property>
           </widget>
          </item>
         </layout>
@@ -965,7 +978,7 @@ https://www.transifex.com/projects/p/piratecash/</string>
         <item>
          <widget class="QLabel" name="overriddenByCommandLineInfoLabel">
           <property name="text">
-           <string>Active command-line options that override above options:</string>
+           <string>Options set in this dialog are overridden by the command line or in the configuration file:</string>
           </property>
           <property name="textFormat">
            <enum>Qt::PlainText</enum>

@@ -732,7 +732,7 @@
           <item>
            <widget class="QPushButton" name="buttonMinimizeFee">
             <property name="toolTip">
-             <string>collapse fee-settings</string>
+             <string>Hide transaction fee settings</string>
             </property>
             <property name="text">
              <string>Hide</string>
@@ -832,10 +832,7 @@
                     <string>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for piratecash transactions than the network can process.</string>
                    </property>
                    <property name="text">
-                    <string>(read the tooltip)</string>
-                   </property>
-                   <property name="margin">
-                    <number>5</number>
+                    <string>A too low fee might result in a never confirming transaction (read the tooltip)</string>
                    </property>
                   </widget>
                  </item>
@@ -940,9 +937,6 @@
                    <property name="text">
                     <string/>
                    </property>
-                   <property name="margin">
-                    <number>2</number>
-                   </property>
                   </widget>
                  </item>
                  <item>
@@ -956,9 +950,6 @@
                   <widget class="QLabel" name="labelSmartFee2">
                    <property name="text">
                     <string>(Smart fee not initialized yet. This usually takes a few blocks...)</string>
-                   </property>
-                   <property name="margin">
-                    <number>2</number>
                    </property>
                   </widget>
                  </item>
@@ -985,9 +976,6 @@
                     <widget class="QLabel" name="labelSmartFee3">
                      <property name="text">
                       <string>Confirmation time target:</string>
-                     </property>
-                     <property name="margin">
-                      <number>2</number>
                      </property>
                     </widget>
                    </item>

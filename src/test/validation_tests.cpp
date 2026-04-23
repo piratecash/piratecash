@@ -3,7 +3,6 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <net.h>
-#include <validation.h>
 
 #include <test/util/setup_common.h>
 

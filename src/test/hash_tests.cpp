@@ -107,14 +107,14 @@ BOOST_AUTO_TEST_CASE(siphash)
 
     // Check test vectors from spec, one byte at a time
     CSipHasher hasher2(0x0706050403020100ULL, 0x0F0E0D0C0B0A0908ULL);
-    for (uint8_t x=0; x<ARRAYLEN(siphash_4_2_testvec); ++x)
+    for (uint8_t x=0; x<std::size(siphash_4_2_testvec); ++x)
     {
         BOOST_CHECK_EQUAL(hasher2.Finalize(), siphash_4_2_testvec[x]);
         hasher2.Write(&x, 1);
     }
     // Check test vectors from spec, eight bytes at a time
     CSipHasher hasher3(0x0706050403020100ULL, 0x0F0E0D0C0B0A0908ULL);
-    for (uint8_t x=0; x<ARRAYLEN(siphash_4_2_testvec); x+=8)
+    for (uint8_t x=0; x<std::size(siphash_4_2_testvec); x+=8)
     {
         BOOST_CHECK_EQUAL(hasher3.Finalize(), siphash_4_2_testvec[x]);
         hasher3.Write(uint64_t(x)|(uint64_t(x+1)<<8)|(uint64_t(x+2)<<16)|(uint64_t(x+3)<<24)|
@@ -129,8 +129,7 @@ BOOST_AUTO_TEST_CASE(siphash)
     ss << tx;
 
     // Check consistency between CSipHasher and SipHashUint256[Extra].
-    // TODO reenable when backporting Bitcoin #10321
-    /*FastRandomContext ctx;
+    FastRandomContext ctx;
     for (int i = 0; i < 16; ++i) {
         uint64_t k1 = ctx.rand64();
         uint64_t k2 = ctx.rand64();
@@ -144,7 +143,7 @@ BOOST_AUTO_TEST_CASE(siphash)
         sip288.Write(nb, 4);
         BOOST_CHECK_EQUAL(SipHashUint256(k1, k2, x), sip256.Finalize());
         BOOST_CHECK_EQUAL(SipHashUint256Extra(k1, k2, x, n), sip288.Finalize());
-    }*/
+    }
 
     BOOST_CHECK_EQUAL(SipHashUint256(1, 2, ss.GetHash()), 0x79751e980c2a0a35ULL);
 }

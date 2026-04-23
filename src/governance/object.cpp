@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2022 The Dash Core developers
+// Copyright (c) 2014-2023 The Dash Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,6 +10,7 @@
 #include <evo/deterministicmns.h>
 #include <governance/governance.h>
 #include <governance/validators.h>
+#include <llmq/utils.h>
 #include <masternode/meta.h>
 #include <masternode/sync.h>
 #include <messagesigner.h>
@@ -168,7 +169,7 @@ bool CGovernanceObject::ProcessVote(const CGovernanceVote& vote, CGovernanceExce
 
     int64_t nNow = GetAdjustedTime();
     int64_t nVoteTimeUpdate = voteInstanceRef.nTime;
-    if (governance.AreRateChecksEnabled()) {
+    if (governance->AreRateChecksEnabled()) {
         int64_t nTimeDelta = nNow - voteInstanceRef.nTime;
         if (nTimeDelta < GOVERNANCE_UPDATE_MIN) {
             std::ostringstream ostr;
@@ -194,7 +195,7 @@ bool CGovernanceObject::ProcessVote(const CGovernanceVote& vote, CGovernanceExce
              << ", vote hash = " << vote.GetHash().ToString();
         LogPrintf("%s\n", ostr.str());
         exception = CGovernanceException(ostr.str(), GOVERNANCE_EXCEPTION_PERMANENT_ERROR, 20);
-        governance.AddInvalidVote(vote);
+        governance->AddInvalidVote(vote);
         return false;
     }
 
@@ -264,7 +265,7 @@ std::set<uint256> CGovernanceObject::RemoveInvalidVotes(const COutPoint& mnOutpo
     }
 
     std::string removedStr;
-    for (auto& h : removedVotes) {
+    for (const auto& h : removedVotes) {
         removedStr += strprintf("  %s\n", h.ToString());
     }
     LogPrintf("CGovernanceObject::%s -- Removed %d invalid votes for %s from MN %s:\n%s", __func__, removedVotes.size(), nParentHash.ToString(), mnOutpoint.ToString(), removedStr); /* Continued */
@@ -313,7 +314,11 @@ bool CGovernanceObject::Sign(const CBLSSecretKey& key)
 
 bool CGovernanceObject::CheckSignature(const CBLSPublicKey& pubKey) const
 {
-    if (!CBLSSignature(vchSig).VerifyInsecure(pubKey, GetSignatureHash())) {
+    CBLSSignature sig;
+    const auto pindex = llmq::utils::V19ActivationIndex(::ChainActive().Tip());
+    bool is_bls_legacy_scheme = pindex == nullptr || nTime < pindex->pprev->nTime;
+    sig.SetByteVector(vchSig, is_bls_legacy_scheme);
+    if (!sig.VerifyInsecure(pubKey, GetSignatureHash(), is_bls_legacy_scheme)) {
         LogPrintf("CGovernanceObject::CheckSignature -- VerifyInsecure() failed\n");
         return false;
     }
@@ -496,7 +501,7 @@ bool CGovernanceObject::IsValidLocally(std::string& strError, bool& fMissingConf
 
         // Check that we have a valid MN signature
         if (!CheckSignature(dmn->pdmnState->pubKeyOperator.Get())) {
-            strError = "Invalid masternode signature for: " + strOutpoint + ", pubkey = " + dmn->pdmnState->pubKeyOperator.Get().ToString();
+            strError = "Invalid masternode signature for: " + strOutpoint + ", pubkey = " + dmn->pdmnState->pubKeyOperator.ToString();
             return false;
         }
 
@@ -526,18 +531,15 @@ CAmount CGovernanceObject::GetMinCollateralFee(bool fork_active) const
 bool CGovernanceObject::IsCollateralValid(std::string& strError, bool& fMissingConfirmations) const
 {
     AssertLockHeld(cs_main);
-    AssertLockHeld(::mempool.cs); // because of GetTransaction
 
     strError = "";
     fMissingConfirmations = false;
     uint256 nExpectedHash = GetHash();
 
-    CTransactionRef txCollateral;
-    uint256 nBlockHash;
-
     // RETRIEVE TRANSACTION IN QUESTION
-
-    if (!GetTransaction(nCollateralHash, txCollateral, Params().GetConsensus(), nBlockHash)) {
+    uint256 nBlockHash;
+    CTransactionRef txCollateral = GetTransaction(/* block_index */ nullptr, /* mempool */ nullptr, nCollateralHash, Params().GetConsensus(), nBlockHash);
+    if (!txCollateral) {
         strError = strprintf("Can't find collateral tx %s", nCollateralHash.ToString());
         LogPrintf("CGovernanceObject::IsCollateralValid -- %s\n", strError);
         return false;
@@ -617,6 +619,8 @@ bool CGovernanceObject::IsCollateralValid(std::string& strError, bool& fMissingC
 
 int CGovernanceObject::CountMatchingVotes(vote_signal_enum_t eVoteSignalIn, vote_outcome_enum_t eVoteOutcomeIn) const
 {
+    auto mnList = deterministicMNManager->GetListAtChainTip();
+
     LOCK(cs);
 
     int nCount = 0;
@@ -624,7 +628,10 @@ int CGovernanceObject::CountMatchingVotes(vote_signal_enum_t eVoteSignalIn, vote
         const vote_rec_t& recVote = votepair.second;
         auto it2 = recVote.mapInstances.find(eVoteSignalIn);
         if (it2 != recVote.mapInstances.end() && it2->second.eOutcome == eVoteOutcomeIn) {
-            ++nCount;
+            // 4x times weight vote for HPMN owners.
+            // No need to check if v19 is active since no HPMN are allowed to register before v19s
+            auto dmn = mnList.GetMNByCollateral(votepair.first);
+            if (dmn != nullptr) nCount += GetMnType(dmn->nType).voting_weight;
         }
     }
     return nCount;
@@ -674,7 +681,7 @@ bool CGovernanceObject::GetCurrentMNVotes(const COutPoint& mnCollateralOutpoint,
 void CGovernanceObject::Relay(CConnman& connman) const
 {
     // Do not relay until fully synced
-    if (!masternodeSync.IsSynced()) {
+    if (!::masternodeSync->IsSynced()) {
         LogPrint(BCLog::GOBJECT, "CGovernanceObject::Relay -- won't relay until fully synced\n");
         return;
     }
@@ -704,13 +711,13 @@ void CGovernanceObject::UpdateSentinelVariables()
 {
     // CALCULATE MINIMUM SUPPORT LEVELS REQUIRED
 
-    int nMnCount = (int)deterministicMNManager->GetListAtChainTip().GetValidMNsCount();
-    if (nMnCount == 0) return;
+    int nWeightedMnCount = (int)deterministicMNManager->GetListAtChainTip().GetValidWeightedMNsCount();
+    if (nWeightedMnCount == 0) return;
 
     // CALCULATE THE MINIMUM VOTE COUNT REQUIRED FOR FULL SIGNAL
 
-    int nAbsVoteReq = std::max(Params().GetConsensus().nGovernanceMinQuorum, nMnCount / 10);
-    int nAbsDeleteReq = std::max(Params().GetConsensus().nGovernanceMinQuorum, (2 * nMnCount) / 3);
+    int nAbsVoteReq = std::max(Params().GetConsensus().nGovernanceMinQuorum, nWeightedMnCount / 10);
+    int nAbsDeleteReq = std::max(Params().GetConsensus().nGovernanceMinQuorum, (2 * nWeightedMnCount) / 3);
 
     // SET SENTINEL FLAGS TO FALSE
 

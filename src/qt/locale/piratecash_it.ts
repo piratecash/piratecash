@@ -348,8 +348,8 @@
         <translation>&amp;Ricevi</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
-        <translation>Richieste di pagamenti (genera codici QR e dash: URLs)</translation>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
+        <translation>Richieste di pagamenti (genera codici QR e piratecash: URLs)</translation>
     </message>
     <message>
         <source>&amp;Transactions</source>
@@ -540,8 +540,8 @@
         <translation>Apri &amp;URI...</translation>
     </message>
     <message>
-        <source>Open a dash: URI or payment request</source>
-        <translation>Apri un dash: URI o una richiesta di pagamento</translation>
+        <source>Open a piratecash: URI or payment request</source>
+        <translation>Apri un piratecash: URI o una richiesta di pagamento</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -1839,16 +1839,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Errore di richiesta di pagamento</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
-        <translation>Impossibile avviare dash: gestore click-to-pay</translation>
+        <source>Cannot start piratecash: click-to-pay handler</source>
+        <translation>Impossibile avviare piratecash: gestore click-to-pay</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>Gestione URI</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>"dash: //" non è un URI valido. Utilizza  "dash:".</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>"piratecash: //" non è un URI valido. Utilizza  "piratecash:".</translation>
     </message>
     <message>
         <source>Payment request fetch URL is invalid: %1</source>
@@ -2868,7 +2868,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Se la tariffa personalizzata è impostata su 1000 corsar e la transazione è di soli 250 byte, paga solo 250 corsar "per kilobyte" di Fee, &lt;br /&gt;mentre paga "almeno"  1000 corsar. Per le transazioni più grandi di un kilobyte pagate entrambi per kilobyte.</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>Pagare solo la commissione minima va bene finché il volume di transazioni è minore rispetto allo spazio nei blocchi. &lt;br /&gt;Ma sii consapevole che questo potrebbe risultare in una transazione non confermata, una volta che ci fosse più richiesta di transazioni di PirateCash di quanto la rete possa elaborare.</translation>
     </message>
     <message>
@@ -3159,7 +3159,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Messaggio:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
         <translation>Un messaggio allegato con l'URI dash che verrà memorizzato nella transazione per il tuo referente. Nota: questo messaggio non verrà inviato attraverso il network PirateCash.</translation>
     </message>
     <message>

@@ -235,8 +235,8 @@
         <translation>Vahvista lompakon salaus</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COSA&lt;/b&gt;!</source>
-        <translation>Varoitus: Jos salaat lompakon ja unohdat salasanan, &lt;b&gt;MENETÄT KAIKKI COSAisi&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATE&lt;/b&gt;!</source>
+        <translation>Varoitus: Jos salaat lompakon ja unohdat salasanan, &lt;b&gt;MENETÄT KAIKKI PIRATEisi&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -348,7 +348,7 @@
         <translation>&amp;Vastaanota</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and cosa: URIs)</source>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
         <translation>Pyydä maksuja (Luo QR koodit ja PirateCash: URIt)</translation>
     </message>
     <message>
@@ -540,7 +540,7 @@
         <translation>Avaa &amp;URI...</translation>
     </message>
     <message>
-        <source>Open a cosa: URI or payment request</source>
+        <source>Open a piratecash: URI or payment request</source>
         <translation>Avaa PirateCash: URI tai maksupyyntö</translation>
     </message>
     <message>
@@ -1040,8 +1040,8 @@
         <translation>%1 Tietoja</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 COSA, 0.01 COSA, 0.1 COSA, 1 COSA and 10 COSA -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;%1 Perusteet&lt;/h3&gt; %1 tarjoaa yksityisyyden hämärtämällä kolikoiden alkuperäisen osoitteen. Kaikki PirateCash:it lompakossasi muodostuvat erillisistä "syötteistä", joita voit ajatella erillisinä kolikkoina.&lt;br&gt; %1 käyttää innovatiivista prosessia sekoittaakseen lompakkosi syötteet kahden muun ihmisen syötteisiin, siirtämättä kolikoita pois lompakostasi. Kolikoiden kontrolli pysyy aina sinulla.&lt;hr&gt; &lt;b&gt; %1 prosessi toimii seuraavasti:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 aloittaa pilkkomalla siirtotapahtumiesi syötteet pienemmiksi standardi arvoiksi. Nämä arvot ovat 0.001 COSA, 0.01 COSA, 0.1 COSA, 1 COSA ja 10 COSA.&lt;/li&gt; &lt;li&gt;Sitten lompakkosi lähettää pyynnön verkon palvelimille, joita kutsutaan "masternode:iksi". Masternodet saavat tiedon että haluat sekoittaa pilkottuja standardi arvoja. Mitään tunnistetietoja ei lähetetä masternode:ille, ne eivät koskaan tiedä "kuka" olet.&lt;/li&gt; &lt;li&gt;Kun 2 tai enemmän käyttäjää ilmoittaa että he haluavat myös sekoittaa kolikoita, alkaa sekoitus-sessio. Masternodet sekoittavat standardi arvot ja ilmoittavat kaikille 3:lle käyttäjän lompakoille että maksavat sekoitetut arvot takaisin itselleen. Lompakkosi maksaa nuo sekoitetut arvot suoraan itselleen, mutta eri osoitteeseen (vaihto-osoite).&lt;/li&gt; &lt;li&gt;Jotta kolikoiden alkuperäinen lähde hämärretään, lompakkosi suorittaa tämän prosessin useita kertoja kaikilla standardi arvoilla. Aina kun prosessi on valmis, sitä kutsutaan "kierrokseksi". Jokainen %1 kierros tekee eksponentiaalisesti vaikeammaksi löytää kolikoiden alkuperäinen osoitte.&lt;/li&gt; &lt;li&gt;Tämä sekoitusprosessi tapahtuu taustalla ilman käyttäjän toimenpiteitä. Kun haluat myöhemmin tehdä kolikoiden siirron, on ne valmiiksi sekoitettu. Erillistä sekoitusta/odotusta ei tarvita.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;TÄRKEÄÄ:&lt;/b&gt; Lompakkosi sisältää vain 1000 "vaihto-osoitetta". Aina kun sekoitustapahtuma tehdään, max 9 osoitetta käytetään. Tämä tarkoittaa sitä että nuo 1000 osoitetta kestää noin 100 sekoitustapahtumaa. Kun 900 osoitetta on käytetty, lompakkosi täytyy tehdä lisää osoitteita. Se voi tehdä niitä vain jos automaattinen varmistus on käytössä.&lt;br&gt; Tästä seuraa että jos varmistus ei ole käytössä, myös %1 on pois käytöstä. &lt;hr&gt;Katso lisätietoja &lt;a style="%2" href="%3"&gt;%1 dokumentaatiosta&lt;/a&gt;.</translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE and 10 PIRATE -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;%1 Perusteet&lt;/h3&gt; %1 tarjoaa yksityisyyden hämärtämällä kolikoiden alkuperäisen osoitteen. Kaikki PirateCash:it lompakossasi muodostuvat erillisistä "syötteistä", joita voit ajatella erillisinä kolikkoina.&lt;br&gt; %1 käyttää innovatiivista prosessia sekoittaakseen lompakkosi syötteet kahden muun ihmisen syötteisiin, siirtämättä kolikoita pois lompakostasi. Kolikoiden kontrolli pysyy aina sinulla.&lt;hr&gt; &lt;b&gt; %1 prosessi toimii seuraavasti:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 aloittaa pilkkomalla siirtotapahtumiesi syötteet pienemmiksi standardi arvoiksi. Nämä arvot ovat 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE ja 10 PIRATE.&lt;/li&gt; &lt;li&gt;Sitten lompakkosi lähettää pyynnön verkon palvelimille, joita kutsutaan "masternode:iksi". Masternodet saavat tiedon että haluat sekoittaa pilkottuja standardi arvoja. Mitään tunnistetietoja ei lähetetä masternode:ille, ne eivät koskaan tiedä "kuka" olet.&lt;/li&gt; &lt;li&gt;Kun 2 tai enemmän käyttäjää ilmoittaa että he haluavat myös sekoittaa kolikoita, alkaa sekoitus-sessio. Masternodet sekoittavat standardi arvot ja ilmoittavat kaikille 3:lle käyttäjän lompakoille että maksavat sekoitetut arvot takaisin itselleen. Lompakkosi maksaa nuo sekoitetut arvot suoraan itselleen, mutta eri osoitteeseen (vaihto-osoite).&lt;/li&gt; &lt;li&gt;Jotta kolikoiden alkuperäinen lähde hämärretään, lompakkosi suorittaa tämän prosessin useita kertoja kaikilla standardi arvoilla. Aina kun prosessi on valmis, sitä kutsutaan "kierrokseksi". Jokainen %1 kierros tekee eksponentiaalisesti vaikeammaksi löytää kolikoiden alkuperäinen osoitte.&lt;/li&gt; &lt;li&gt;Tämä sekoitusprosessi tapahtuu taustalla ilman käyttäjän toimenpiteitä. Kun haluat myöhemmin tehdä kolikoiden siirron, on ne valmiiksi sekoitettu. Erillistä sekoitusta/odotusta ei tarvita.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;TÄRKEÄÄ:&lt;/b&gt; Lompakkosi sisältää vain 1000 "vaihto-osoitetta". Aina kun sekoitustapahtuma tehdään, max 9 osoitetta käytetään. Tämä tarkoittaa sitä että nuo 1000 osoitetta kestää noin 100 sekoitustapahtumaa. Kun 900 osoitetta on käytetty, lompakkosi täytyy tehdä lisää osoitteita. Se voi tehdä niitä vain jos automaattinen varmistus on käytössä.&lt;br&gt; Tästä seuraa että jos varmistus ei ole käytössä, myös %1 on pois käytöstä. &lt;hr&gt;Katso lisätietoja &lt;a style="%2" href="%3"&gt;%1 dokumentaatiosta&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -1564,9 +1564,9 @@
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/projects/p/cosa/</source>
+https://www.transifex.com/projects/p/piratecash/</source>
         <translation>Puuttuuko sopiva kieli tai käännös on kesken? Auta käännöstyössä täällä:
-https://www.transifex.com/projects/p/cosa/</translation>
+https://www.transifex.com/projects/p/piratecash/</translation>
     </message>
     <message>
         <source>&amp;Unit to show amounts in:</source>
@@ -1716,8 +1716,8 @@ https://www.transifex.com/projects/p/cosa/</translation>
         <translation>Määrä ja Kierrokset:</translation>
     </message>
     <message>
-        <source>0 COSA / 0 Rounds</source>
-        <translation>0 COSA / 0 Kierrosta</translation>
+        <source>0 PIRATE / 0 Rounds</source>
+        <translation>0 PIRATE / 0 Kierrosta</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -1859,7 +1859,7 @@ https://www.transifex.com/projects/p/cosa/</translation>
         <translation>Maksupyyntövirhe</translation>
     </message>
     <message>
-        <source>Cannot start cosa: click-to-pay handler</source>
+        <source>Cannot start piratecash: click-to-pay handler</source>
         <translation>Ei voi käynnistää PirateCashia: click-to-pay handler</translation>
     </message>
     <message>
@@ -1867,8 +1867,8 @@ https://www.transifex.com/projects/p/cosa/</translation>
         <translation>URI käsittely</translation>
     </message>
     <message>
-        <source>'cosa://' is not a valid URI. Use 'cosa:' instead.</source>
-        <translation>'cosa://' ei ole validi URI. Käytä sen sijaan 'cosa:'.</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>'piratecash://' ei ole validi URI. Käytä sen sijaan 'piratecash:'.</translation>
     </message>
     <message>
         <source>Payment request fetch URL is invalid: %1</source>
@@ -2896,7 +2896,7 @@ Näillä toiminnoilla voit korjata korruptoituneen lohkoketjun tai puuttuvat/van
         <translation>Jos mukautettu siirtomaksu on asetettu 1000 corsar ja siirtotapahtuma on vain 250 tavua,&lt;br /&gt;tällöin "per kilotavu" maksaa vain 250 corsars siirtomaksun, kun taas "vähintään" maksaa 1000 corsars.&lt;br /&gt;Siirtotapahtumat jotka ovat isompia kuin kilotavu, molemmat maksaa "per kilotavu".</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for cosa transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>Minimi siirtomaksun maksaminen on ok niin kauan kun siirtotapahtumien määrä on pienempi kuin tila lohkoissa.&lt;br /&gt;Mutta ota huomioon että tämä voi johtaa siirtotapahtumaan jota ei vahvisteta koskaan, jos siirtotapahtumia on enemmän kuin verkko voi käsitellä.</translation>
     </message>
     <message>
@@ -3187,7 +3187,7 @@ Näillä toiminnoilla voit korjata korruptoituneen lohkoketjun tai puuttuvat/van
         <translation>Viesti:</translation>
     </message>
     <message>
-        <source>A message that was attached to the cosa: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
         <translation>Viesti joka liitettiin PirateCash: URI joka tallenetaan siirtotapahtuman kanssa viitteeksi sinulle. Huomio: Tätä viestiä ei lähetetä PirateCash verkkoon.</translation>
     </message>
     <message>

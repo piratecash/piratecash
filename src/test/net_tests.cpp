@@ -2,25 +2,29 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <test/util/setup_common.h>
+
 #include <addrdb.h>
 #include <addrman.h>
 #include <clientversion.h>
-#include <test/util/setup_common.h>
-#include <string>
-#include <boost/test/unit_test.hpp>
+#include <netaddress.h>
 #include <serialize.h>
 #include <span.h>
 #include <streams.h>
 #include <net.h>
 #include <netbase.h>
 #include <chainparams.h>
-#include <util/memory.h>
 #include <util/system.h>
+#include <util/string.h>
 #include <util/strencodings.h>
 #include <version.h>
 
+#include <cstdint>
 #include <ios>
 #include <memory>
+#include <string>
+
+#include <boost/test/unit_test.hpp>
 
 class CAddrManSerializationMock : public CAddrMan
 {
@@ -70,7 +74,7 @@ public:
     }
 };
 
-static CDataStream AddrmanToStream(CAddrManSerializationMock& _addrman)
+static CDataStream AddrmanToStream(const CAddrManSerializationMock& _addrman)
 {
     CDataStream ssPeersIn(SER_DISK, CLIENT_VERSION);
     ssPeersIn << Params().MessageStart();
@@ -85,11 +89,11 @@ BOOST_FIXTURE_TEST_SUITE(net_tests, BasicTestingSetup)
 BOOST_AUTO_TEST_CASE(cnode_listen_port)
 {
     // test default
-    unsigned short port = GetListenPort();
+    uint16_t port{GetListenPort()};
     BOOST_CHECK(port == Params().GetDefaultPort());
     // test set port
-    unsigned short altPort = 12345;
-    BOOST_CHECK(gArgs.SoftSetArg("-port", std::to_string(altPort)));
+    uint16_t altPort = 12345;
+    BOOST_CHECK(gArgs.SoftSetArg("-port", ToString(altPort)));
     port = GetListenPort();
     BOOST_CHECK(port == altPort);
 }
@@ -103,6 +107,8 @@ BOOST_AUTO_TEST_CASE(caddrdb_read)
     BOOST_CHECK(Lookup("250.7.1.1", addr1, 8333, false));
     BOOST_CHECK(Lookup("250.7.2.2", addr2, 9999, false));
     BOOST_CHECK(Lookup("250.7.3.3", addr3, 9999, false));
+    BOOST_CHECK(Lookup(std::string("250.7.3.3", 9), addr3, 9999, false));
+    BOOST_CHECK(!Lookup(std::string("250.7.3.3\0example.com", 21), addr3, 9999, false));
 
     // Add three addresses to new table.
     CService source;
@@ -132,9 +138,8 @@ BOOST_AUTO_TEST_CASE(caddrdb_read)
     CDataStream ssPeers2 = AddrmanToStream(addrmanUncorrupted);
 
     CAddrMan addrman2;
-    CAddrDB adb;
     BOOST_CHECK(addrman2.size() == 0);
-    BOOST_CHECK(adb.Read(addrman2, ssPeers2));
+    BOOST_CHECK(CAddrDB::Read(addrman2, ssPeers2));
     BOOST_CHECK(addrman2.size() == 3);
 }
 
@@ -164,9 +169,8 @@ BOOST_AUTO_TEST_CASE(caddrdb_read_corrupted)
     CDataStream ssPeers2 = AddrmanToStream(addrmanCorrupted);
 
     CAddrMan addrman2;
-    CAddrDB adb;
     BOOST_CHECK(addrman2.size() == 0);
-    BOOST_CHECK(!adb.Read(addrman2, ssPeers2));
+    BOOST_CHECK(!CAddrDB::Read(addrman2, ssPeers2));
     BOOST_CHECK(addrman2.size() == 0);
 }
 
@@ -184,12 +188,12 @@ BOOST_AUTO_TEST_CASE(cnode_simple_test)
     bool fInboundIn = false;
 
     // Test that fFeeler is false by default.
-    std::unique_ptr<CNode> pnode1 = MakeUnique<CNode>(id++, NODE_NETWORK, height, hSocket, addr, 0, 0, CAddress(), pszDest, fInboundIn);
+    std::unique_ptr<CNode> pnode1 = std::make_unique<CNode>(id++, NODE_NETWORK, height, hSocket, addr, 0, 0, CAddress(), pszDest, fInboundIn);
     BOOST_CHECK(pnode1->fInbound == false);
     BOOST_CHECK(pnode1->fFeeler == false);
 
     fInboundIn = true;
-    std::unique_ptr<CNode> pnode2 = MakeUnique<CNode>(id++, NODE_NETWORK, height, hSocket, addr, 1, 1, CAddress(), pszDest, fInboundIn);
+    std::unique_ptr<CNode> pnode2 = std::make_unique<CNode>(id++, NODE_NETWORK, height, hSocket, addr, 1, 1, CAddress(), pszDest, fInboundIn);
     BOOST_CHECK(pnode2->fInbound == true);
     BOOST_CHECK(pnode2->fFeeler == false);
 }
@@ -620,7 +624,7 @@ BOOST_AUTO_TEST_CASE(ipv4_peer_with_ipv6_addrMe_test)
     in_addr ipv4AddrPeer;
     ipv4AddrPeer.s_addr = 0xa0b0c001;
     CAddress addr = CAddress(CService(ipv4AddrPeer, 7777), NODE_NETWORK);
-    std::unique_ptr<CNode> pnode = MakeUnique<CNode>(0, NODE_NETWORK, 0, INVALID_SOCKET, addr, 0, 0, CAddress{}, std::string{}, false);
+    std::unique_ptr<CNode> pnode = std::make_unique<CNode>(0, NODE_NETWORK, 0, INVALID_SOCKET, addr, 0, 0, CAddress{}, std::string{}, false);
     pnode->fSuccessfullyConnected.store(true);
 
     // the peer claims to be reaching us via IPv6

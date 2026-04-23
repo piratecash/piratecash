@@ -6,6 +6,7 @@
 #include <fs.h>
 #include <streams.h>
 #include <util/translation.h>
+#include <wallet/bdb.h>
 #include <wallet/salvage.h>
 #include <wallet/wallet.h>
 #include <wallet/walletdb.h>
@@ -23,8 +24,17 @@ static bool KeyFilter(const std::string& type)
 
 bool RecoverDatabaseFile(const fs::path& file_path, bilingual_str& error, std::vector<bilingual_str>& warnings)
 {
-    std::string filename;
-    std::shared_ptr<BerkeleyEnvironment> env = GetWalletEnv(file_path, filename);
+    DatabaseOptions options;
+    DatabaseStatus status;
+    options.require_existing = true;
+    options.verify = false;
+    options.require_format = DatabaseFormat::BERKELEY;
+    std::unique_ptr<WalletDatabase> database = MakeDatabase(file_path, options, status, error);
+    if (!database) return false;
+
+    BerkeleyDatabase& berkeley_database = static_cast<BerkeleyDatabase&>(*database);
+    std::string filename = berkeley_database.Filename();
+    std::shared_ptr<BerkeleyEnvironment> env = berkeley_database.env;
 
     if (!env->Open(error)) {
         return false;
@@ -109,7 +119,7 @@ bool RecoverDatabaseFile(const fs::path& file_path, bilingual_str& error, std::v
         return false;
     }
 
-    std::unique_ptr<Db> pdbCopy = MakeUnique<Db>(env->dbenv.get(), 0);
+    std::unique_ptr<Db> pdbCopy = std::make_unique<Db>(env->dbenv.get(), 0);
     int ret = pdbCopy->open(nullptr,               // Txn pointer
                             filename.c_str(),   // Filename
                             "main",             // Logical db name
@@ -122,9 +132,8 @@ bool RecoverDatabaseFile(const fs::path& file_path, bilingual_str& error, std::v
         return false;
     }
 
-    auto chain = interfaces::MakeChain();
     DbTxn* ptxn = env->TxnBegin();
-    CWallet dummyWallet(*chain, WalletLocation(), CreateDummyWalletDatabase());
+    CWallet dummyWallet(nullptr, "", CreateDummyWalletDatabase());
     for (KeyValPair& row : salvagedData)
     {
         /* Filter for only private key type KV pairs to be added to the salvaged wallet */

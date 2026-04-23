@@ -8,6 +8,7 @@
 
 #include <atomic>
 #include <map>
+#include <optional>
 #include <set>
 #include <string>
 #include <utility>
@@ -16,10 +17,10 @@
 #include <addressindex.h>
 #include <spentindex.h>
 #include <amount.h>
+#include <bls/bls.h>
 #include <coins.h>
 #include <crypto/siphash.h>
 #include <indirectmap.h>
-#include <optional.h>
 #include <policy/feerate.h>
 #include <primitives/transaction.h>
 #include <sync.h>
@@ -27,13 +28,11 @@
 #include <netaddress.h>
 #include <pubkey.h>
 
+#include <boost/optional.hpp>
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index/sequenced_index.hpp>
-#include <boost/signals2/signal.hpp>
-
-class CBLSPublicKey;
 
 class CBlockIndex;
 extern CCriticalSection cs_main;
@@ -105,7 +104,7 @@ public:
     CTransactionRef GetSharedTx() const { return this->tx; }
     const CAmount& GetFee() const { return nFee; }
     size_t GetTxSize() const;
-    int64_t GetTime() const { return nTime; }
+    std::chrono::seconds GetTime() const { return std::chrono::seconds{nTime}; }
     unsigned int GetHeight() const { return entryHeight; }
     unsigned int GetSigOpCount() const { return sigOpCount; }
     int64_t GetModifiedFee() const { return nFee + feeDelta; }
@@ -340,7 +339,7 @@ struct TxMempoolInfo
     CTransactionRef tx;
 
     /** Time the transaction entered the mempool. */
-    int64_t nTime;
+    std::chrono::seconds m_time;
 
     /** Feerate of the transaction. */
     CFeeRate feeRate;
@@ -568,10 +567,13 @@ private:
     std::map<uint256, uint256> mapProTxBlsPubKeyHashes;
     std::map<COutPoint, uint256> mapProTxCollaterals;
 
-    void UpdateParent(txiter entry, txiter parent, bool add);
-    void UpdateChild(txiter entry, txiter child, bool add);
+    void UpdateParent(txiter entry, txiter parent, bool add) EXCLUSIVE_LOCKS_REQUIRED(cs);
+    void UpdateChild(txiter entry, txiter child, bool add) EXCLUSIVE_LOCKS_REQUIRED(cs);
 
     std::vector<indexed_transaction_set::const_iterator> GetSortedDepthAndScore() const EXCLUSIVE_LOCKS_REQUIRED(cs);
+
+    /** track locally submitted transactions to periodically retry initial broadcast */
+    std::set<uint256> m_unbroadcast_txids GUARDED_BY(cs);
 
 public:
     indirectmap<COutPoint, const CTransaction*> mapNextTx GUARDED_BY(cs);
@@ -613,7 +615,7 @@ public:
     void removeForReorg(const CCoinsViewCache* pcoins, unsigned int nMemPoolHeight, int flags) EXCLUSIVE_LOCKS_REQUIRED(cs, cs_main);
     void removeConflicts(const CTransaction& tx) EXCLUSIVE_LOCKS_REQUIRED(cs);
     void removeProTxPubKeyConflicts(const CTransaction &tx, const CKeyID &keyId) EXCLUSIVE_LOCKS_REQUIRED(cs);
-    void removeProTxPubKeyConflicts(const CTransaction &tx, const CBLSPublicKey &pubKey) EXCLUSIVE_LOCKS_REQUIRED(cs);
+    void removeProTxPubKeyConflicts(const CTransaction &tx, const CBLSLazyPublicKey &pubKey) EXCLUSIVE_LOCKS_REQUIRED(cs);
     void removeProTxCollateralConflicts(const CTransaction &tx, const COutPoint &collateralOutpoint) EXCLUSIVE_LOCKS_REQUIRED(cs);
     void removeProTxSpentCollateralConflicts(const CTransaction &tx) EXCLUSIVE_LOCKS_REQUIRED(cs);
     void removeProTxKeyChangedConflicts(const CTransaction &tx, const uint256& proTxHash, const uint256& newKeyHash) EXCLUSIVE_LOCKS_REQUIRED(cs);
@@ -635,14 +637,14 @@ public:
 
     /** Affect CreateNewBlock prioritisation of transactions */
     void PrioritiseTransaction(const uint256& hash, const CAmount& nFeeDelta);
-    void ApplyDelta(const uint256 hash, CAmount &nFeeDelta) const;
-    void ClearPrioritisation(const uint256 hash);
+    void ApplyDelta(const uint256& hash, CAmount &nFeeDelta) const EXCLUSIVE_LOCKS_REQUIRED(cs);
+    void ClearPrioritisation(const uint256& hash) EXCLUSIVE_LOCKS_REQUIRED(cs);
 
     /** Get the transaction in the pool that spends the same prevout */
     const CTransaction* GetConflictTx(const COutPoint& prevout) const EXCLUSIVE_LOCKS_REQUIRED(cs);
 
     /** Returns an iterator to the given hash, if found */
-    Optional<txiter> GetIter(const uint256& txid) const EXCLUSIVE_LOCKS_REQUIRED(cs);
+    std::optional<txiter> GetIter(const uint256& txid) const EXCLUSIVE_LOCKS_REQUIRED(cs);
 
     /** Translate a set of hashes into a set of pool iterators to avoid repeated lookups */
     setEntries GetIterSet(const std::set<uint256>& hashes) const EXCLUSIVE_LOCKS_REQUIRED(cs);
@@ -699,7 +701,7 @@ public:
     void TrimToSize(size_t sizelimit, std::vector<COutPoint>* pvNoSpendsRemaining = nullptr) EXCLUSIVE_LOCKS_REQUIRED(cs);
 
     /** Expire all transaction (and their dependencies) in the mempool older than time. Return the number of removed transactions. */
-    int Expire(int64_t time) EXCLUSIVE_LOCKS_REQUIRED(cs);
+    int Expire(std::chrono::seconds time) EXCLUSIVE_LOCKS_REQUIRED(cs);
 
     /**
      * Calculate the ancestor and descendant count for the given transaction.
@@ -719,9 +721,9 @@ public:
         return mapTx.size();
     }
 
-    uint64_t GetTotalTxSize() const
+    uint64_t GetTotalTxSize() const EXCLUSIVE_LOCKS_REQUIRED(cs)
     {
-        LOCK(cs);
+        AssertLockHeld(cs);
         return totalTxSize;
     }
 
@@ -739,8 +741,20 @@ public:
 
     size_t DynamicMemoryUsage() const;
 
-    boost::signals2::signal<void (CTransactionRef)> NotifyEntryAdded;
-    boost::signals2::signal<void (CTransactionRef, MemPoolRemovalReason)> NotifyEntryRemoved;
+    /** Adds a transaction to the unbroadcast set */
+    void AddUnbroadcastTx(const uint256& txid) {
+        LOCK(cs);
+        m_unbroadcast_txids.insert(txid);
+    }
+
+    /** Removes a transaction from the unbroadcast set */
+    void RemoveUnbroadcastTx(const uint256& txid, const bool unchecked = false);
+
+    /** Returns transactions in unbroadcast set */
+    const std::set<uint256> GetUnbroadcastTxs() const {
+        LOCK(cs);
+        return m_unbroadcast_txids;
+    }
 
 private:
     /** UpdateForDescendants is used by UpdateTransactionsFromBlock to update

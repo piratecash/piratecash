@@ -6,6 +6,7 @@
 #define BITCOIN_QT_WALLETFRAME_H
 
 #include <QFrame>
+#include <QGroupBox>
 #include <QMap>
 
 class BitcoinGUI;
@@ -55,6 +56,7 @@ private:
     BitcoinGUI *gui;
     ClientModel *clientModel;
     QMap<WalletModel*, WalletView*> mapWalletViews;
+    QGroupBox* no_wallet_group;
     MasternodeList* masternodeListPage;
     GovernanceList* governanceListPage;
 
@@ -93,10 +95,10 @@ public Q_SLOTS:
     void changePassphrase();
     /** Ask for passphrase to unlock wallet temporarily */
     void unlockWallet();
+    /** Ask for passphrase to unlock wallet for mixing and staking only */
+    void unlockWalletForMixingOnly();
     /** Lock wallet */
     void lockWallet();
-    /** Ask for passphrase to unlock wallet temporarily for mixing and staking only */
-    void unlockWalletForMixingOnly();
 
     /** Show used sending addresses */
     void usedSendingAddresses();

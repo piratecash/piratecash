@@ -300,8 +300,8 @@
         <translation>受取 (&amp;R)</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
-        <translation>送金を要求 (QRコードとdash:URIを生成)</translation>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
+        <translation>送金を要求 (QRコードとpiratecash:URIを生成)</translation>
     </message>
     <message>
         <source>&amp;Transactions</source>
@@ -488,8 +488,8 @@
         <translation>URIを開く… (&amp;U)</translation>
     </message>
     <message>
-        <source>Open a dash: URI or payment request</source>
-        <translation>dash: URIまたは送金リクエストを開く</translation>
+        <source>Open a piratecash: URI or payment request</source>
+        <translation>piratecash: URIまたは送金リクエストを開く</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -1670,7 +1670,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>支払いリクエストのエラー</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
+        <source>Cannot start piratecash: click-to-pay handler</source>
         <translation>PirateCash を起動できません: click-to-pay ハンドラー</translation>
     </message>
     <message>
@@ -2523,7 +2523,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>カスタマイズされた手数料が1000corsarsに設定され、トランザクションが250 bytesしかなかった場合、キロバイトあたりでは250 corsarsしか手数料を支払いませんが&lt;br /&gt;最低でも1000 corsars支払います。1キロバイト以上のトランザクションに対しては、1キロバイトあたり1000corsars支払います。</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>最低限の手数料しか支払わなくても、トランザクション量以上のスペースが対象ブロックにあれば問題ありません。&lt;br /&gt;しかし、ネットワークが処理できる以上のPirateCashのトランザクション需要があれば、処理されないトランザクションになり得ることに注意してください。</translation>
     </message>
     <message>
@@ -2774,7 +2774,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>メッセージ：</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
         <translation>PirateCash: URIに添付されていたメッセージです。これは参照用としてトランザクションとともに保存されます。注意：このメッセージはPirateCashネットワークを経由して送信されるわけではありません。</translation>
     </message>
     <message>

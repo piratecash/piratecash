@@ -3,7 +3,6 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <wallet/coincontrol.h>
-#include <wallet/wallet.h>
 
 #include <util/system.h>
 
@@ -13,6 +12,7 @@ void CCoinControl::SetNull(bool fResetCoinType)
     fAllowOtherInputs = false;
     fAllowWatchOnly = false;
     m_avoid_partial_spends = gArgs.GetBoolArg("-avoidpartialspends", DEFAULT_AVOIDPARTIALSPENDS);
+    m_avoid_address_reuse = false;
     setSelected.clear();
     m_feerate.reset();
     fOverrideFeeRate = false;

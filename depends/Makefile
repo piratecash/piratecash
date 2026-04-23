@@ -2,7 +2,7 @@
 
 # Pattern rule to print variables, e.g. make print-top_srcdir
 print-%:
-	@echo '$*' = '$($*)'
+	@echo $* = $($*)
 
 # When invoking a sub-make, keep only the command line variable definitions
 # matching the pattern in the filter function.
@@ -33,20 +33,21 @@ WORK_PATH = $(BASEDIR)/work
 BASE_CACHE ?= $(BASEDIR)/built
 SDK_PATH ?= $(BASEDIR)/SDKs
 NO_QT ?=
-NO_OPENSSL ?=
 NO_QR ?=
 NO_WALLET ?=
 NO_ZMQ ?=
 NO_UPNP ?=
 NO_NATPMP ?=
 FALLBACK_DOWNLOAD_PATH ?= https://bitcoincore.org/depends-sources
+C_STANDARD ?= c11
+CXX_STANDARD ?= c++20
 
 BUILD = $(shell ./config.guess)
 HOST ?= $(BUILD)
 PATCHES_PATH = $(BASEDIR)/patches
 BASEDIR = $(CURDIR)
 HASH_LENGTH:=11
-DOWNLOAD_CONNECT_TIMEOUT:=10
+DOWNLOAD_CONNECT_TIMEOUT:=30
 HOST_ID_SALT ?= salt
 BUILD_ID_SALT ?= salt
 
@@ -111,27 +112,19 @@ include builders/$(build_os).mk
 include builders/default.mk
 include packages/packages.mk
 
-full_env=$(shell printenv)
-
 build_id_string:=$(BUILD_ID_SALT)
-
-# GCC only prints COLLECT_LTO_WRAPPER when invoked with just "-v", but we want
-# the information from "-v -E -" as well, so just include both.
-#
-# '3>&1 1>&2 2>&3 > /dev/null' is supposed to swap stdin and stdout and silence
-# stdin, since we only want the stderr output
-build_id_string+=$(shell $(build_CC) -v < /dev/null 3>&1 1>&2 2>&3 > /dev/null) $(shell $(build_CC) -v -E - < /dev/null 3>&1 1>&2 2>&3 > /dev/null)
-build_id_string+=$(shell $(build_AR) --version 2>/dev/null) $(filter AR_%,$(full_env)) ZERO_AR_DATE=$(ZERO_AR_DATE)
-build_id_string+=$(shell $(build_CXX) -v < /dev/null 3>&1 1>&2 2>&3 > /dev/null) $(shell $(build_CXX) -v -E - < /dev/null 3>&1 1>&2 2>&3 > /dev/null)
-build_id_string+=$(shell $(build_RANLIB) --version 2>/dev/null) $(filter RANLIB_%,$(full_env))
-build_id_string+=$(shell $(build_STRIP) --version 2>/dev/null) $(filter STRIP_%,$(full_env))
+build_id_string+=$(shell $(build_CC) --version 2>/dev/null)
+build_id_string+=$(shell $(build_AR) --version 2>/dev/null)
+build_id_string+=$(shell $(build_CXX) --version 2>/dev/null)
+build_id_string+=$(shell $(build_RANLIB) --version 2>/dev/null)
+build_id_string+=$(shell $(build_STRIP) --version 2>/dev/null)
 
 $(host_arch)_$(host_os)_id_string:=$(HOST_ID_SALT)
-$(host_arch)_$(host_os)_id_string+=$(shell $(host_CC) -v < /dev/null 3>&1 1>&2 2>&3 > /dev/null) $(shell $(host_CC) -v -E - < /dev/null 3>&1 1>&2 2>&3 > /dev/null)
-$(host_arch)_$(host_os)_id_string+=$(shell $(host_AR) --version 2>/dev/null) $(filter AR_%,$(full_env)) ZERO_AR_DATE=$(ZERO_AR_DATE)
-$(host_arch)_$(host_os)_id_string+=$(shell $(host_CXX) -v < /dev/null 3>&1 1>&2 2>&3 > /dev/null) $(shell $(host_CXX) -v -E - < /dev/null 3>&1 1>&2 2>&3 > /dev/null)
-$(host_arch)_$(host_os)_id_string+=$(shell $(host_RANLIB) --version 2>/dev/null) $(filter RANLIB_%,$(full_env))
-$(host_arch)_$(host_os)_id_string+=$(shell $(host_STRIP) --version 2>/dev/null) $(filter STRIP_%,$(full_env))
+$(host_arch)_$(host_os)_id_string+=$(shell $(host_CC) --version 2>/dev/null)
+$(host_arch)_$(host_os)_id_string+=$(shell $(host_AR) --version 2>/dev/null)
+$(host_arch)_$(host_os)_id_string+=$(shell $(host_CXX) --version 2>/dev/null)
+$(host_arch)_$(host_os)_id_string+=$(shell $(host_RANLIB) --version 2>/dev/null)
+$(host_arch)_$(host_os)_id_string+=$(shell $(host_STRIP) --version 2>/dev/null)
 
 ifneq ($(strip $(FORCE_USE_SYSTEM_CLANG)),)
 # Make sure that cache is invalidated when switching between system and
@@ -140,14 +133,14 @@ build_id_string+=system_clang
 $(host_arch)_$(host_os)_id_string+=system_clang
 endif
 
-build_id_string+=GUIX_ENVIRONMENT=$(realpath $(GUIX_ENVIRONMENT))
-$(host_arch)_$(host_os)_id_string+=GUIX_ENVIRONMENT=$(realpath $(GUIX_ENVIRONMENT))
-
 qrencode_packages_$(NO_QR) = $(qrencode_$(host_os)_packages)
 
 qt_packages_$(NO_QT) = $(qt_packages) $(qt_$(host_os)_packages) $(qt_$(host_arch)_$(host_os)_packages) $(qrencode_packages_)
 
-wallet_packages_$(NO_WALLET) = $(wallet_packages)
+bdb_packages_$(NO_BDB) = $(bdb_packages)
+sqlite_packages_$(NO_SQLITE) = $(sqlite_packages)
+wallet_packages_$(NO_WALLET) = $(bdb_packages_) $(sqlite_packages_)
+
 upnp_packages_$(NO_UPNP) = $(upnp_packages)
 natpmp_packages_$(NO_NATPMP) = $(natpmp_packages)
 
@@ -258,7 +251,7 @@ $(host_prefix)/share/config.site: check-packages
 check-packages: check-sources
 
 clean-all: clean
-	@rm -rf $(SOURCES_PATH) x86_64* i686* mips* arm* aarch64* powerpc* riscv32* riscv64* s390x*
+	@rm -rf $(SOURCES_PATH) x86_64* i686* mips* arm* aarch64* riscv32* riscv64*
 
 clean:
 	@rm -rf $(WORK_PATH) $(BASE_CACHE) $(BUILD)

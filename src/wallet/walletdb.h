@@ -8,7 +8,6 @@
 
 #include <amount.h>
 #include <script/sign.h>
-#include <wallet/bdb.h>
 #include <wallet/db.h>
 #include <key.h>
 
@@ -92,7 +91,7 @@ public:
     int nVersion;
     int64_t nCreateTime; // 0 means unknown
     KeyOriginInfo key_origin; // Key origin info with path and fingerprint
-    bool has_key_origin = false; //< Whether the key_origin is useful
+    bool has_key_origin = false; //!< Whether the key_origin is useful
 
     CKeyMetadata()
     {
@@ -158,8 +157,8 @@ private:
     }
 
 public:
-    explicit WalletBatch(WalletDatabase& database, const char* pszMode = "r+", bool _fFlushOnClose = true) :
-        m_batch(database.MakeBatch(pszMode, _fFlushOnClose)),
+    explicit WalletBatch(WalletDatabase &database, bool _fFlushOnClose = true) :
+        m_batch(database.MakeBatch(_fFlushOnClose)),
         m_database(database)
     {
     }
@@ -209,7 +208,6 @@ public:
 
     DBErrors LoadWallet(CWallet* pwallet);
     DBErrors FindWalletTx(std::vector<uint256>& vTxHash, std::vector<CWalletTx>& vWtx);
-    DBErrors ZapWalletTx(std::vector<CWalletTx>& vWtx);
     DBErrors ZapSelectTx(std::vector<uint256>& vHashIn, std::vector<uint256>& vHashOut);
     /* Function to determine if a certain KV/key-type is a key (cryptographical key) type */
     static bool IsKeyType(const std::string& strType);
@@ -239,12 +237,6 @@ using KeyFilterFn = std::function<bool(const std::string&)>;
 
 //! Unserialize a given Key-Value pair and load it into the wallet
 bool ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue, std::string& strType, std::string& strErr, const KeyFilterFn& filter_fn = nullptr);
-
-/** Return whether a wallet database is currently loaded. */
-bool IsWalletLoaded(const fs::path& wallet_path);
-
-/** Return object for accessing database at specified path. */
-std::unique_ptr<WalletDatabase> CreateWalletDatabase(const fs::path& path);
 
 /** Return object for accessing dummy database with no read/write capabilities. */
 std::unique_ptr<WalletDatabase> CreateDummyWalletDatabase();

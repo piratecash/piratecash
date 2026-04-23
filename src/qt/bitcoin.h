@@ -2,15 +2,17 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_DASH_H
-#define BITCOIN_QT_DASH_H
+#ifndef BITCOIN_QT_BITCOIN_H
+#define BITCOIN_QT_BITCOIN_H
 
 #if defined(HAVE_CONFIG_H)
-#include <config/piratecash-config.h>
+#include <config/bitcoin-config.h>
 #endif
 
 #include <QApplication>
 #include <memory>
+
+#include <interfaces/node.h>
 
 class BitcoinGUI;
 class ClientModel;
@@ -20,10 +22,6 @@ class PaymentServer;
 class WalletController;
 class WalletModel;
 
-namespace interfaces {
-class Handler;
-class Node;
-} // namespace interfaces
 
 /** Class encapsulating Bitcoin Core startup and shutdown.
  * Allows running startup and shutdown in a different thread from the UI thread.
@@ -40,7 +38,7 @@ public Q_SLOTS:
     void restart(QStringList args);
 
 Q_SIGNALS:
-    void initializeResult(bool success);
+    void initializeResult(bool success, interfaces::BlockAndHeaderTipInfo tip_info);
     void shutdownResult();
     void runawayException(const QString &message);
 
@@ -86,7 +84,7 @@ public:
     WId getMainWinId() const;
 
 public Q_SLOTS:
-    void initializeResult(bool success);
+    void initializeResult(bool success, interfaces::BlockAndHeaderTipInfo tip_info);
     void shutdownResult();
     /// Handle runaway exceptions. Shows a message box with the problem and quits the program.
     void handleRunawayException(const QString &message);
@@ -117,4 +115,4 @@ private:
 
 int GuiMain(int argc, char* argv[]);
 
-#endif // BITCOIN_QT_DASH_H
+#endif // BITCOIN_QT_BITCOIN_H

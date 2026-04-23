@@ -9,13 +9,14 @@
 #include <addrdb.h>
 #include <addrman.h>
 #include <bloom.h>
+#include <chainparams.h>
 #include <compat.h>
 #include <fs.h>
 #include <crypto/siphash.h>
 #include <hash.h>
 #include <limitedmap.h>
-#include <netaddress.h>
 #include <net_permissions.h>
+#include <netaddress.h>
 #include <policy/feerate.h>
 #include <protocol.h>
 #include <random.h>
@@ -28,12 +29,13 @@
 #include <consensus/params.h>
 
 #include <atomic>
+#include <cstdint>
 #include <deque>
-#include <stdint.h>
 #include <thread>
 #include <memory>
 #include <condition_variable>
 #include <unordered_set>
+#include <optional>
 #include <queue>
 
 #ifndef WIN32
@@ -53,7 +55,7 @@ struct bilingual_str;
 /** Default for -whitelistrelay. */
 static const bool DEFAULT_WHITELISTRELAY = true;
 /** Default for -whitelistforcerelay. */
-static const bool DEFAULT_WHITELISTFORCERELAY = true;
+static const bool DEFAULT_WHITELISTFORCERELAY = false;
 
 /** Time after which to disconnect, after waiting for a ping response (or inactivity). */
 static const int TIMEOUT_INTERVAL = 20 * 60;
@@ -69,12 +71,16 @@ static const unsigned int MAX_ADDR_TO_SEND = 1000;
 static const unsigned int MAX_PROTOCOL_MESSAGE_LENGTH = 3 * 1024 * 1024;
 /** Maximum length of the user agent string in `version` message */
 static const unsigned int MAX_SUBVERSION_LENGTH = 256;
-/** Maximum number of automatic outgoing nodes */
-static const int MAX_OUTBOUND_CONNECTIONS = 8;
+/** Maximum number of automatic outgoing nodes over which we'll relay everything (blocks, tx, addrs, etc) */
+static const int MAX_OUTBOUND_FULL_RELAY_CONNECTIONS = 8;
 /** Maximum number of addnode outgoing nodes */
 static const int MAX_ADDNODE_CONNECTIONS = 8;
 /** Eviction protection time for incoming connections  */
 static const int INBOUND_EVICTION_PROTECTION_TIME = 1;
+/** Maximum number of block-relay-only outgoing connections */
+static const int MAX_BLOCK_RELAY_ONLY_CONNECTIONS = 2;
+/** Maximum number of feeler connections */
+static const int MAX_FEELER_CONNECTIONS = 1;
 /** -listen default */
 static const bool DEFAULT_LISTEN = true;
 /** The maximum number of peer connections to maintain.
@@ -82,9 +88,7 @@ static const bool DEFAULT_LISTEN = true;
  */
 static const unsigned int DEFAULT_MAX_PEER_CONNECTIONS = 125;
 /** The default for -maxuploadtarget. 0 = Unlimited */
-static const uint64_t DEFAULT_MAX_UPLOAD_TARGET = 0;
-/** The default timeframe for -maxuploadtarget. 1 day. */
-static const uint64_t MAX_UPLOAD_TIMEFRAME = 60 * 60 * 24;
+static constexpr uint64_t DEFAULT_MAX_UPLOAD_TARGET = 0;
 /** Default for blocks only*/
 static const bool DEFAULT_BLOCKSONLY = false;
 /** -peertimeout default */
@@ -158,7 +162,8 @@ public:
     {
         ServiceFlags nLocalServices = NODE_NONE;
         int nMaxConnections = 0;
-        int nMaxOutbound = 0;
+        int m_max_outbound_full_relay = 0;
+        int m_max_outbound_block_relay = 0;
         int nMaxAddnode = 0;
         int nMaxFeeler = 0;
         int nBestHeight = 0;
@@ -167,7 +172,6 @@ public:
         BanMan* m_banman = nullptr;
         unsigned int nSendBufferMaxSize = 0;
         unsigned int nReceiveFloodSize = 0;
-        uint64_t nMaxOutboundTimeframe = 0;
         uint64_t nMaxOutboundLimit = 0;
         int64_t m_peer_connect_timeout = DEFAULT_PEER_CONNECT_TIMEOUT;
         std::vector<std::string> vSeedNodes;
@@ -184,10 +188,12 @@ public:
     void Init(const Options& connOptions) {
         nLocalServices = connOptions.nLocalServices;
         nMaxConnections = connOptions.nMaxConnections;
-        nMaxOutbound = std::min(connOptions.nMaxOutbound, connOptions.nMaxConnections);
+        m_max_outbound_full_relay = std::min(connOptions.m_max_outbound_full_relay, connOptions.nMaxConnections);
+        m_max_outbound_block_relay = connOptions.m_max_outbound_block_relay;
         m_use_addrman_outgoing = connOptions.m_use_addrman_outgoing;
         nMaxAddnode = connOptions.nMaxAddnode;
         nMaxFeeler = connOptions.nMaxFeeler;
+        m_max_outbound = m_max_outbound_full_relay + m_max_outbound_block_relay + nMaxFeeler;
         nBestHeight = connOptions.nBestHeight;
         clientInterface = connOptions.uiInterface;
         m_banman = connOptions.m_banman;
@@ -197,7 +203,6 @@ public:
         m_peer_connect_timeout = connOptions.m_peer_connect_timeout;
         {
             LOCK(cs_totalBytesSent);
-            nMaxOutboundTimeframe = connOptions.nMaxOutboundTimeframe;
             nMaxOutboundLimit = connOptions.nMaxOutboundLimit;
         }
         vWhitelistedRange = connOptions.vWhitelistedRange;
@@ -228,8 +233,19 @@ public:
     bool GetUseAddrmanOutgoing() const { return m_use_addrman_outgoing; };
     void SetNetworkActive(bool active);
     SocketEventsMode GetSocketEventsMode() const { return socketEventsMode; }
-    void OpenNetworkConnection(const CAddress& addrConnect, bool fCountFailure, CSemaphoreGrant *grantOutbound = nullptr, const char *strDest = nullptr, bool fOneShot = false, bool fFeeler = false, bool manual_connection = false, bool masternode_connection = false, bool masternode_probe_connection = false);
-    void OpenMasternodeConnection(const CAddress& addrConnect, bool probe = false);
+
+    enum class MasternodeConn {
+        IsNotConnection,
+        IsConnection,
+    };
+
+    enum class MasternodeProbeConn {
+        IsNotConnection,
+        IsConnection,
+    };
+
+    void OpenNetworkConnection(const CAddress& addrConnect, bool fCountFailure, CSemaphoreGrant *grantOutbound = nullptr, const char *strDest = nullptr, bool fOneShot = false, bool fFeeler = false, bool manual_connection = false, bool block_relay_only = false, MasternodeConn masternode_connection = MasternodeConn::IsNotConnection, MasternodeProbeConn masternode_probe_connection = MasternodeProbeConn::IsNotConnection);
+    void OpenMasternodeConnection(const CAddress& addrConnect, MasternodeProbeConn probe = MasternodeProbeConn::IsConnection);
     bool CheckIncomingNonce(uint64_t nonce);
 
     struct CFullyConnectedOnly {
@@ -389,7 +405,7 @@ public:
     void AddNewAddresses(const std::vector<CAddress>& vAddr, const CAddress& addrFrom, int64_t nTimePenalty = 0);
     std::vector<CAddress> GetAddresses();
 
-    // This allows temporarily exceeding nMaxOutbound, with the goal of finding
+    // This allows temporarily exceeding m_max_outbound_full_relay, with the goal of finding
     // a peer that is better than all our current peers.
     void SetTryNewOutboundPeer(bool flag);
     bool GetTryNewOutboundPeer();
@@ -434,13 +450,8 @@ public:
     //! that peer during `net_processing.cpp:PushNodeVersion()`.
     ServiceFlags GetLocalServices() const;
 
-    //!set the max outbound target in bytes
-    void SetMaxOutboundTarget(uint64_t limit);
     uint64_t GetMaxOutboundTarget();
-
-    //!set the timeframe for the max outbound target
-    void SetMaxOutboundTimeframe(uint64_t timeframe);
-    uint64_t GetMaxOutboundTimeframe();
+    std::chrono::seconds GetMaxOutboundTimeframe();
 
     //! check if the outbound target is reached
     //! if param historicalBlockServingLimit is set true, the function will
@@ -451,9 +462,9 @@ public:
     //! in case of no limit, it will always response 0
     uint64_t GetOutboundTargetBytesLeft();
 
-    //! response the time in second left in the current max outbound cycle
-    //! in case of no limit, it will always response 0
-    uint64_t GetMaxOutboundTimeLeftInCycle();
+    //! returns the time left in the current max outbound cycle
+    //! in case of no limit, it will always return 0
+    std::chrono::seconds GetMaxOutboundTimeLeftInCycle();
 
     uint64_t GetTotalBytesRecv();
     uint64_t GetTotalBytesSent();
@@ -516,7 +527,6 @@ private:
     void ThreadSocketHandler();
     void ThreadDNSAddressSeed();
     void ThreadOpenMasternodeConnections();
-    void ThreadStakeMinter();
 
     uint64_t CalculateKeyedNetGroup(const CAddress& ad) const;
 
@@ -526,7 +536,7 @@ private:
     CNode* FindNode(const CService& addr, bool fExcludeDisconnecting = true);
 
     bool AttemptToEvictConnection();
-    CNode* ConnectNode(CAddress addrConnect, const char *pszDest = nullptr, bool fCountFailure = false, bool manual_connection = false);
+    CNode* ConnectNode(CAddress addrConnect, const char *pszDest = nullptr, bool fCountFailure = false, bool manual_connection = false, bool block_relay_only = false);
     void AddWhitelistPermissionFlags(NetPermissionFlags& flags, const CNetAddr &addr) const;
 
     void DeleteNode(CNode* pnode);
@@ -555,9 +565,8 @@ private:
 
     // outbound limit & stats
     uint64_t nMaxOutboundTotalBytesSentInCycle GUARDED_BY(cs_totalBytesSent);
-    uint64_t nMaxOutboundCycleStartTime GUARDED_BY(cs_totalBytesSent);
+    std::chrono::seconds nMaxOutboundCycleStartTime GUARDED_BY(cs_totalBytesSent);
     uint64_t nMaxOutboundLimit GUARDED_BY(cs_totalBytesSent);
-    uint64_t nMaxOutboundTimeframe GUARDED_BY(cs_totalBytesSent);
 
     // P2P timeout in seconds
     int64_t m_peer_connect_timeout;
@@ -606,9 +615,17 @@ private:
     std::unique_ptr<CSemaphore> semOutbound;
     std::unique_ptr<CSemaphore> semAddnode;
     int nMaxConnections;
-    int nMaxOutbound;
+
+    // How many full-relay (tx, block, addr) outbound peers we want
+    int m_max_outbound_full_relay;
+
+    // How many block-relay only outbound peers we want
+    // We do not relay tx or addr messages with these peers
+    int m_max_outbound_block_relay;
+
     int nMaxAddnode;
     int nMaxFeeler;
+    int m_max_outbound;
     bool m_use_addrman_outgoing;
     std::atomic<int> nBestHeight;
     CClientUIInterface* clientInterface;
@@ -654,21 +671,19 @@ private:
     std::thread threadOpenConnections;
     std::thread threadOpenMasternodeConnections;
     std::thread threadMessageHandler;
-    std::thread threadStakeMint;
 
     /** flag for deciding to connect to an extra outbound peer,
-     *  in excess of nMaxOutbound
+     *  in excess of m_max_outbound_full_relay
      *  This takes the place of a feeler connection */
     std::atomic_bool m_try_another_outbound_peer;
 
     std::atomic<int64_t> m_next_send_inv_to_incoming{0};
 
     friend struct CConnmanTest;
+    friend struct ConnmanTestMsg;
 };
-extern std::unique_ptr<CConnman> g_connman;
-extern std::unique_ptr<BanMan> g_banman;
 void Discover();
-unsigned short GetListenPort();
+uint16_t GetListenPort();
 
 struct CombinerAll
 {
@@ -746,7 +761,7 @@ extern std::string strSubVersion;
 
 struct LocalServiceInfo {
     int nScore;
-    int nPort;
+    uint16_t nPort;
 };
 
 extern CCriticalSection cs_mapLocalHost;
@@ -804,9 +819,6 @@ class CNetMessage {
 public:
     CDataStream m_recv;                  // received message data
     int64_t m_time = 0;                  // time (in microseconds) of message receipt.
-    bool m_valid_netmagic = false;
-    bool m_valid_header = false;
-    bool m_valid_checksum = false;
     uint32_t m_message_size = 0;         // size of the payload
     uint32_t m_raw_message_size = 0;     // used wire size of the message (including header/checksum)
     std::string m_command;
@@ -832,13 +844,15 @@ public:
     // read and deserialize data
     virtual int Read(const char *data, unsigned int bytes) = 0;
     // decomposes a message from the context
-    virtual CNetMessage GetMessage(const CMessageHeader::MessageStartChars& message_start, int64_t time) = 0;
+    virtual std::optional<CNetMessage> GetMessage(int64_t time, uint32_t& out_err) = 0;
     virtual ~TransportDeserializer() {}
 };
 
 class V1TransportDeserializer final : public TransportDeserializer
 {
 private:
+    const CChainParams& m_chain_params;
+    const NodeId m_node_id; // Only for logging
     mutable CHash256 hasher;
     mutable uint256 data_hash;
     bool in_data;                   // parsing header (false) or data (true)
@@ -864,8 +878,12 @@ private:
     }
 
 public:
-
-    V1TransportDeserializer(const CMessageHeader::MessageStartChars& pchMessageStartIn, int nTypeIn, int nVersionIn) : hdrbuf(nTypeIn, nVersionIn), hdr(pchMessageStartIn), vRecv(nTypeIn, nVersionIn) {
+    V1TransportDeserializer(const CChainParams& chain_params, const NodeId node_id, int nTypeIn, int nVersionIn)
+        : m_chain_params(chain_params),
+          m_node_id(node_id),
+          hdrbuf(nTypeIn, nVersionIn),
+          vRecv(nTypeIn, nVersionIn)
+    {
         Reset();
     }
 
@@ -885,7 +903,7 @@ public:
         if (ret < 0) Reset();
         return ret;
     }
-    CNetMessage GetMessage(const CMessageHeader::MessageStartChars& message_start, int64_t time) override;
+    std::optional<CNetMessage> GetMessage(int64_t time, uint32_t& out_err_raw_size) override;
 };
 
 /** The TransportSerializer prepares messages for the network transport
@@ -906,6 +924,8 @@ public:
 class CNode
 {
     friend class CConnman;
+    friend struct ConnmanTestMsg;
+
 public:
     std::unique_ptr<TransportDeserializer> m_deserializer;
     std::unique_ptr<TransportSerializer> m_serializer;
@@ -970,15 +990,12 @@ public:
      */
     std::atomic_bool m_wants_addrv2{false};
     std::atomic_bool fSuccessfullyConnected{false};
+    // Setting fDisconnect to true will cause the node to be disconnected the
+    // next time DisconnectNodes() runs
     std::atomic_bool fDisconnect{false};
     std::atomic<int64_t> nDisconnectLingerTime{0};
     std::atomic_bool fSocketShutdown{false};
     std::atomic_bool fOtherSideDisconnected { false };
-    // We use fRelayTxes for two purposes -
-    // a) it allows us to not relay tx invs before receiving the peer's version message
-    // b) the peer may tell us in its version message that we should not relay tx invs
-    //    unless it loads a bloom filter.
-    bool fRelayTxes GUARDED_BY(cs_filter){false};
     bool fSentAddr{false};
     // If 'true' this node will be disconnected on CMasternodeMan::ProcessMasternodeConnections()
     std::atomic<bool> m_masternode_connection{false};
@@ -987,8 +1004,6 @@ public:
     // If 'true', we identified it as an intra-quorum relay connection
     std::atomic<bool> m_masternode_iqr_connection{false};
     CSemaphoreGrant grantOutbound;
-    mutable CCriticalSection cs_filter;
-    std::unique_ptr<CBloomFilter> pfilter PT_GUARDED_BY(cs_filter){nullptr};
     std::atomic<int> nRefCount{0};
 
     const uint64_t nKeyedNetGroup;
@@ -1011,26 +1026,31 @@ public:
     std::vector<CAddress> vAddrToSend;
     CRollingBloomFilter addrKnown;
     bool fGetAddr{false};
-    std::set<uint256> setKnown;
     int64_t nNextAddrSend GUARDED_BY(cs_sendProcessing){0};
     int64_t nNextLocalAddrSend GUARDED_BY(cs_sendProcessing){0};
 
-    // inventory based relay
-    CRollingBloomFilter filterInventoryKnown GUARDED_BY(cs_inventory);
-    // Set of transaction ids we still have to announce.
-    // They are sorted by the mempool before relay, so the order is not important.
-    std::set<uint256> setInventoryTxToSend;
+    const bool m_block_relay_only_peer;
+
+    // Don't relay addr messages to peers that we connect to as block-relay-only
+    // peers (to prevent adversaries from inferring these links from addr
+    // traffic).
+    bool IsAddrRelayPeer() const { return !m_block_relay_only_peer; }
+
+    bool IsBlockRelayOnly() const
+    {
+        // Stop processing non-block data early if
+        // 1) We are in blocks only mode and peer has no relay permission
+        // 2) This peer is a block-relay-only peer
+        return (!g_relay_txes && !HasPermission(PF_RELAY)) || m_block_relay_only_peer;
+    }
+
     // List of block ids we still have announce.
     // There is no final sorting before sending, as they are always sent immediately
     // and in the order requested.
     std::vector<uint256> vInventoryBlockToSend GUARDED_BY(cs_inventory);
-    // List of non-tx/non-block inventory items
-    std::vector<CInv> vInventoryOtherToSend;
     CCriticalSection cs_inventory;
     std::vector<uint256> vBlockRequested;
     std::chrono::microseconds nNextInvSend{0};
-    // Used for headers announcements - unfiltered blocks to relay
-    std::vector<uint256> vBlockHashesToAnnounce GUARDED_BY(cs_inventory);
     // Used for BIP35 mempool sending, also protected by cs_inventory
     bool fSendMempool GUARDED_BY(cs_inventory){false};
 
@@ -1047,8 +1067,38 @@ public:
      * in CConnman::AttemptToEvictConnection. */
     std::atomic<int64_t> nLastTXTime{0};
 
-    // Last time a "MEMPOOL" request was serviced.
-    std::atomic<int64_t> timeLastMempoolReq{0};
+    struct TxRelay {
+        TxRelay() { }
+        mutable CCriticalSection cs_filter;
+        // We use fRelayTxes for two purposes -
+        // a) it allows us to not relay tx invs before receiving the peer's version message
+        // b) the peer may tell us in its version message that we should not relay tx invs
+        //    unless it loads a bloom filter.
+        bool fRelayTxes GUARDED_BY(cs_filter){false};
+        std::unique_ptr<CBloomFilter> pfilter PT_GUARDED_BY(cs_filter) GUARDED_BY(cs_filter){nullptr};
+
+        mutable CCriticalSection cs_tx_inventory;
+        // inventory based relay
+        CRollingBloomFilter filterInventoryKnown GUARDED_BY(cs_tx_inventory){50000, 0.000001};
+        // Set of transaction ids we still have to announce.
+        // They are sorted by the mempool before relay, so the order is not important.
+        std::set<uint256> setInventoryTxToSend GUARDED_BY(cs_tx_inventory);
+        // List of non-tx/non-block inventory items
+        std::vector<CInv> vInventoryOtherToSend GUARDED_BY(cs_tx_inventory);
+        // Used for BIP35 mempool sending, also protected by cs_tx_inventory
+        bool fSendMempool GUARDED_BY(cs_tx_inventory){false};
+        // Last time a "MEMPOOL" request was serviced.
+        std::atomic<std::chrono::seconds> m_last_mempool_req{0s};
+        std::chrono::microseconds nNextInvSend{0};
+    };
+
+    // in bitcoin: m_tx_relay == nullptr if we're not relaying transactions with this peer
+    // in dash: m_tx_relay should never be nullptr, use m_block_relay_only_peer == true instead
+    std::unique_ptr<TxRelay> m_tx_relay;
+
+    // Used for headers announcements - unfiltered blocks to relay
+    std::vector<uint256> vBlockHashesToAnnounce GUARDED_BY(cs_inventory);
+
     // Ping time measurement:
     // The pong reply we're expecting, or 0 if no pong expected.
     std::atomic<uint64_t> nPingNonceSent{0};
@@ -1071,7 +1121,7 @@ public:
 
     std::set<uint256> orphan_work_set;
 
-    CNode(NodeId id, ServiceFlags nLocalServicesIn, int nMyStartingHeightIn, SOCKET hSocketIn, const CAddress &addrIn, uint64_t nKeyedNetGroupIn, uint64_t nLocalHostNonceIn, const CAddress &addrBindIn, const std::string &addrNameIn = "", bool fInboundIn = false);
+    CNode(NodeId id, ServiceFlags nLocalServicesIn, int nMyStartingHeightIn, SOCKET hSocketIn, const CAddress &addrIn, uint64_t nKeyedNetGroupIn, uint64_t nLocalHostNonceIn, const CAddress &addrBindIn, const std::string &addrNameIn = "", bool fInboundIn = false, bool block_relay_only = false);
     ~CNode();
     CNode(const CNode&) = delete;
     CNode& operator=(const CNode&) = delete;
@@ -1203,33 +1253,29 @@ public:
 
     void AddInventoryKnown(const uint256& hash)
     {
-        {
-            LOCK(cs_inventory);
-            filterInventoryKnown.insert(hash);
-        }
+        LOCK(m_tx_relay->cs_tx_inventory);
+        m_tx_relay->filterInventoryKnown.insert(hash);
     }
 
     void PushInventory(const CInv& inv)
     {
-        LOCK(cs_inventory);
-        if (inv.type == MSG_TX || inv.type == MSG_DSTX) {
-            if (!filterInventoryKnown.contains(inv.hash)) {
-                LogPrint(BCLog::NET, "%s -- adding new inv: %s peer=%d\n", __func__, inv.ToString(), id);
-                setInventoryTxToSend.insert(inv.hash);
-            } else {
-                LogPrint(BCLog::NET, "%s -- skipping known inv: %s peer=%d\n", __func__, inv.ToString(), id);
-            }
-        } else if (inv.type == MSG_BLOCK) {
+        if (inv.type == MSG_BLOCK) {
             LogPrint(BCLog::NET, "%s -- adding new inv: %s peer=%d\n", __func__, inv.ToString(), id);
+            LOCK(cs_inventory);
             vInventoryBlockToSend.push_back(inv.hash);
-        } else {
-            if (!filterInventoryKnown.contains(inv.hash)) {
-                LogPrint(BCLog::NET, "%s -- adding new inv: %s peer=%d\n", __func__, inv.ToString(), id);
-                vInventoryOtherToSend.push_back(inv);
-            } else {
-                LogPrint(BCLog::NET, "%s -- skipping known inv: %s peer=%d\n", __func__, inv.ToString(), id);
-            }
+            return;
         }
+        LOCK(m_tx_relay->cs_tx_inventory);
+        if (m_tx_relay->filterInventoryKnown.contains(inv.hash)) {
+            LogPrint(BCLog::NET, "%s -- skipping known inv: %s peer=%d\n", __func__, inv.ToString(), id);
+            return;
+        }
+        LogPrint(BCLog::NET, "%s -- adding new inv: %s peer=%d\n", __func__, inv.ToString(), id);
+        if (inv.type == MSG_TX || inv.type == MSG_DSTX) {
+            m_tx_relay->setInventoryTxToSend.insert(inv.hash);
+            return;
+        }
+        m_tx_relay->vInventoryOtherToSend.push_back(inv);
     }
 
     void PushBlockHash(const uint256 &hash)

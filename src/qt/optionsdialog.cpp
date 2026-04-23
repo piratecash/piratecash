@@ -3,7 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include <config/piratecash-config.h>
+#include <config/bitcoin-config.h>
 #endif
 
 #include <qt/optionsdialog.h>
@@ -20,6 +20,7 @@
 #include <validation.h> // for DEFAULT_SCRIPTCHECK_THREADS and MAX_SCRIPTCHECK_THREADS
 #include <netbase.h>
 #include <txdb.h> // for -dbcache defaults
+#include <util/underlying.h>
 
 #include <QButtonGroup>
 #include <QDataWidgetMapper>
@@ -37,7 +38,8 @@ OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
     ui(new Ui::OptionsDialog),
     model(nullptr),
     mapper(nullptr),
-    pageButtons(nullptr)
+    pageButtons(nullptr),
+    m_enable_wallet(enableWallet)
 {
     ui->setupUi(this);
 
@@ -60,7 +62,7 @@ OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
     ui->threadsScriptVerif->setMinimum(-GetNumCores());
     ui->threadsScriptVerif->setMaximum(MAX_SCRIPTCHECK_THREADS);
     ui->pruneWarning->setVisible(false);
-    ui->pruneWarning->setStyleSheet("QLabel { color: red; }");
+    ui->pruneWarning->setStyleSheet(QString("QLabel { %1 }").arg(GUIUtil::getThemedStyleQString(GUIUtil::ThemedStyle::TS_ERROR)));
 
     ui->pruneSize->setEnabled(false);
     connect(ui->prune, &QPushButton::toggled, ui->pruneSize, &QWidget::setEnabled);
@@ -106,12 +108,14 @@ OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
 
     pageButtons = new QButtonGroup(this);
     pageButtons->addButton(ui->btnMain, pageButtons->buttons().size());
-    /* Remove Wallet/CoinJoin tabs in case of -disablewallet */
-    if (!enableWallet) {
+    /* Remove Wallet/CoinJoin tabs and 3rd party-URL textbox in case of -disablewallet */
+    if (!m_enable_wallet) {
         ui->stackedWidgetOptions->removeWidget(ui->pageWallet);
         ui->btnWallet->hide();
         ui->stackedWidgetOptions->removeWidget(ui->pageCoinJoin);
         ui->btnCoinJoin->hide();
+        ui->thirdPartyTxUrlsLabel->setVisible(false);
+        ui->thirdPartyTxUrls->setVisible(false);
     } else {
         ui->btnCoinJoin->setText(QString::fromStdString(gCoinJoinName));
         pageButtons->addButton(ui->btnWallet, pageButtons->buttons().size());
@@ -158,8 +162,6 @@ OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
             ui->lang->addItem(locale.nativeLanguageName() + QString(" (") + langStr + QString(")"), QVariant(langStr));
         }
     }
-    ui->thirdPartyTxUrls->setPlaceholderText("https://example.com/tx/%s");
-
     ui->unit->setModel(new BitcoinUnits(this));
 
     /* Widget-to-option mapper */
@@ -289,6 +291,11 @@ void OptionsDialog::setModel(OptionsModel *_model)
 #endif
 }
 
+void OptionsDialog::setCurrentTab(OptionsDialog::Tab tab)
+{
+    showPage(ToUnderlying(tab));
+}
+
 void OptionsDialog::setMapper()
 {
     /* Main */
@@ -308,6 +315,7 @@ void OptionsDialog::setMapper()
 
     /* Wallet */
     mapper->addMapping(ui->coinControlFeatures, OptionsModel::CoinControlFeatures);
+    mapper->addMapping(ui->keepChangeAddress, OptionsModel::KeepChangeAddress);
     mapper->addMapping(ui->showMasternodesTab, OptionsModel::ShowMasternodesTab);
     mapper->addMapping(ui->showGovernanceTab, OptionsModel::ShowGovernanceTab);
     mapper->addMapping(ui->showAdvancedCJUI, OptionsModel::ShowAdvancedCJUI);
@@ -389,9 +397,11 @@ void OptionsDialog::on_okButton_clicked()
     mapper->submit();
     appearance->accept();
 #ifdef ENABLE_WALLET
-    for (auto& wallet : model->node().getWallets()) {
-        wallet->coinJoin().resetCachedBlocks();
-        wallet->markDirty();
+    if (m_enable_wallet) {
+        for (auto& wallet : model->node().walletClient().getWallets()) {
+            wallet->coinJoin().resetCachedBlocks();
+            wallet->markDirty();
+        }
     }
 #endif // ENABLE_WALLET
     accept();
@@ -532,7 +542,7 @@ QValidator::State ProxyAddressValidator::validate(QString &input, int &pos) cons
 {
     Q_UNUSED(pos);
     // Validate the proxy
-    CService serv(LookupNumeric(input.toStdString().c_str(), DEFAULT_GUI_PROXY_PORT));
+    CService serv(LookupNumeric(input.toStdString(), DEFAULT_GUI_PROXY_PORT));
     proxyType addrProxy = proxyType(serv, true);
     if (addrProxy.IsValid())
         return QValidator::Acceptable;

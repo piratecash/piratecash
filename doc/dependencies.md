@@ -9,23 +9,23 @@ These are the dependencies currently used by Dash Core. You can find instruction
 | Boost | [1.73.0](https://www.boost.org/users/download/) | [1.64.0](https://github.com/bitcoin/bitcoin/pull/22320) | No |  |  |
 | Clang<sup>[ \* ](#note1)</sup> |  | [5.0+](https://releases.llvm.org/download.html) (C++17 support) |  |  |  |
 | fontconfig | [2.12.1](https://www.freedesktop.org/software/fontconfig/release/) |  | No | Yes |  |
-| FreeType | [2.11.0](https://download.savannah.gnu.org/releases/freetype) |  | No |  | [Yes](https://github.com/dashpay/dash/blob/develop/depends/packages/qt.mk) (Android only) |
+| FreeType | [2.11.0](https://download.savannah.gnu.org/releases/freetype) |  | No |  | [Yes](https://github.com/cosanta/cosanta-core/blob/develop/depends/packages/qt.mk) (Android only) |
 | GCC |  | [7+](https://gcc.gnu.org/) (C++17 support) |  |  |  |
 | glibc | | [2.18](https://www.gnu.org/software/libc/) |  |  |  |  |
-| HarfBuzz-NG |  |  |  |  | [Yes](https://github.com/dashpay/dash/blob/develop/depends/packages/qt.mk) |
+| HarfBuzz-NG |  |  |  |  | [Yes](https://github.com/cosanta/cosanta-core/blob/develop/depends/packages/qt.mk) |
 | libevent | [2.1.11-stable](https://github.com/libevent/libevent/releases) | [2.0.21](https://github.com/bitcoin/bitcoin/pull/18676) | No |  |  |
 | libnatpmp | git commit [4536032...](https://github.com/miniupnp/libnatpmp/tree/4536032ae32268a45c073a4d5e91bbab4534773a) |  | No |  |  |
-| libpng |  |  |  |  | [Yes](https://github.com/dashpay/dash/blob/develop/depends/packages/qt.mk) |
+| libpng |  |  |  |  | [Yes](https://github.com/cosanta/cosanta-core/blob/develop/depends/packages/qt.mk) |
 | librsvg | |  |  |  |  |
 | MiniUPnPc | [2.2.2](https://miniupnp.tuxfamily.org/files) |  | No |  |  |
-| PCRE |  |  |  |  | [Yes](https://github.com/dashpay/dash/blob/develop/depends/packages/qt.mk) |
+| PCRE |  |  |  |  | [Yes](https://github.com/cosanta/cosanta-core/blob/develop/depends/packages/qt.mk) |
 | Python (tests) |  | [3.5](https://www.python.org/downloads) |  |  |  |
 | qrencode | [3.4.4](https://fukuchi.org/works/qrencode) |  | No |  |  |
 | Qt | [5.15.5](https://download.qt.io/official_releases/qt/) | [5.11.3](https://github.com/bitcoin/bitcoin/pull/24132) | No |  |  |
-| XCB |  |  |  |  | [Yes](https://github.com/dashpay/dash/blob/develop/depends/packages/qt.mk) (Linux only) |
-| xkbcommon |  |  |  |  | [Yes](https://github.com/dashpay/dash/blob/develop/depends/packages/qt.mk) (Linux only) |
+| XCB |  |  |  |  | [Yes](https://github.com/cosanta/cosanta-core/blob/develop/depends/packages/qt.mk) (Linux only) |
+| xkbcommon |  |  |  |  | [Yes](https://github.com/cosanta/cosanta-core/blob/develop/depends/packages/qt.mk) (Linux only) |
 | ZeroMQ | [4.3.1](https://github.com/zeromq/libzmq/releases) | 4.0.0 | No |  |  |
-| zlib |  |  |  |  | [Yes](https://github.com/dashpay/dash/blob/develop/depends/packages/qt.mk) |
+| zlib |  |  |  |  | [Yes](https://github.com/cosanta/cosanta-core/blob/develop/depends/packages/qt.mk) |
 
 <a name="note1">Note \*</a> : When compiling with `-stdlib=libc++`, the minimum supported libc++ version is 7.0.
 

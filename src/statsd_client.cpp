@@ -57,7 +57,7 @@ inline bool should_send(float sample_rate)
         return true;
     }
 
-    float p = ((float)insecure_rand(std::numeric_limits<int>::max()) / std::numeric_limits<int>::max());
+    float p = float(insecure_rand(std::numeric_limits<uint32_t>::max())) / float(std::numeric_limits<uint32_t>::max());
     return sample_rate > p;
 }
 
@@ -116,7 +116,7 @@ int StatsdClient::init()
     d->server.sin_port = htons(d->port);
 
     CNetAddr netaddr(d->server.sin_addr);
-    if (!LookupHost(d->host.c_str(), netaddr, true) || !netaddr.GetInAddr(&d->server.sin_addr)) {
+    if (!LookupHost(d->host, netaddr, true) || !netaddr.GetInAddr(&d->server.sin_addr)) {
         snprintf(d->errmsg, sizeof(d->errmsg), "LookupHost or GetInAddr failed");
         return -2;
     }

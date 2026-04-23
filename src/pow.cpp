@@ -7,7 +7,6 @@
 
 #include <arith_uint256.h>
 #include <chain.h>
-#include <chainparams.h>
 #include <primitives/block.h>
 #include <uint256.h>
 
@@ -124,20 +123,14 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const Conse
     return bnNew.GetCompact();
 }
 
-unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params) {
+unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const arith_uint256& bnPowLimit, const Consensus::Params& params) {
     /* current difficulty formula, dash - DarkGravity v3, written by Evan Duffield - evan@dash.org */
-    const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
-
     int64_t nPastBlocks = 24;
-    int64_t nTargetSpacing = params.nPowTargetSpacing;
-    // NOTE: is this accurate? nActualTimespan counts it for (nPastBlocks - 1) blocks only...
-    int64_t nTargetTimespan = nPastBlocks * nTargetSpacing;
 
     // make sure we have at least (nPastBlocks + 1) blocks, otherwise just return powLimit
     if (!pindexLast || pindexLast->nHeight < nPastBlocks) {
         return bnPowLimit.GetCompact();
     }
-
 
     const CBlockIndex *pindex = pindexLast;
     arith_uint256 bnPastTargetAvg;
@@ -160,6 +153,8 @@ unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const CBlockH
     arith_uint256 bnNew(bnPastTargetAvg);
 
     int64_t nActualTimespan = pindexLast->GetBlockTime() - pindex->GetBlockTime();
+    // NOTE: is this accurate? nActualTimespan counts it for (nPastBlocks - 1) blocks only...
+    int64_t nTargetTimespan = nPastBlocks * params.nPowTargetSpacing;
 
     if (nActualTimespan < nTargetTimespan/3)
         nActualTimespan = nTargetTimespan/3;
@@ -217,7 +212,9 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 {
     assert(pindexLast != nullptr);
     assert(pblock != nullptr);
-    const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
+    const arith_uint256 bnPowLimit = pblock->IsProofOfStake()
+        ? UintToArith256(params.posLimit)
+        : UintToArith256(params.powLimit);
 
     // this is only active on devnets
     if (pindexLast->nHeight < params.nMinimumDifficultyBlocks) {
@@ -230,6 +227,10 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 
     // Note: GetNextWorkRequiredBTC has it's own special difficulty rule,
     // so we only apply this to post-BTC algos.
+    if (params.fPowNoRetargeting) {
+        return bnPowLimit.GetCompact();
+    }
+
     if (params.fPowAllowMinDifficultyBlocks) {
         // recent block is more than 2 hours old
         if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + 2 * 60 * 60) {
@@ -249,7 +250,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         return KimotoGravityWell(pindexLast, params);
     }
 
-    return DarkGravityWave(pindexLast, pblock, params);
+    return DarkGravityWave(pindexLast, bnPowLimit, params);
 }
 
 // for DIFF_BTC only!

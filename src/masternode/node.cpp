@@ -16,7 +16,7 @@
 // Keep track of the active Masternode
 CCriticalSection activeMasternodeInfoCs;
 CActiveMasternodeInfo activeMasternodeInfo GUARDED_BY(activeMasternodeInfoCs);
-CActiveMasternodeManager* activeMasternodeManager;
+std::unique_ptr<CActiveMasternodeManager> activeMasternodeManager;
 
 std::string CActiveMasternodeManager::GetStateString() const
 {
@@ -112,15 +112,15 @@ void CActiveMasternodeManager::Init(const CBlockIndex* pindex)
 
     // Check socket connectivity
     LogPrintf("CActiveMasternodeManager::Init -- Checking inbound connection to '%s'\n", activeMasternodeInfo.service.ToString());
-    SOCKET hSocket = CreateSocket(activeMasternodeInfo.service);
-    if (hSocket == INVALID_SOCKET) {
+    std::unique_ptr<Sock> sock = CreateSock(activeMasternodeInfo.service);
+    if (!sock) {
         state = MASTERNODE_ERROR;
         strError = "Could not create socket to connect to " + activeMasternodeInfo.service.ToString();
         LogPrintf("CActiveMasternodeManager::Init -- ERROR: %s\n", strError);
         return;
     }
-    bool fConnected = ConnectSocketDirectly(activeMasternodeInfo.service, hSocket, nConnectTimeout, true) && IsSelectableSocket(hSocket);
-    CloseSocket(hSocket);
+    bool fConnected = ConnectSocketDirectly(activeMasternodeInfo.service, sock->Get(), nConnectTimeout, true) && IsSelectableSocket(sock->Get());
+    sock->Reset();
 
     if (!fConnected && Params().RequireRoutableExternalIP()) {
         state = MASTERNODE_ERROR;
@@ -131,6 +131,7 @@ void CActiveMasternodeManager::Init(const CBlockIndex* pindex)
 
     activeMasternodeInfo.proTxHash = dmn->proTxHash;
     activeMasternodeInfo.outpoint = dmn->collateralOutpoint;
+    activeMasternodeInfo.legacy = dmn->pdmnState->nVersion == CProRegTx::LEGACY_BLS_VERSION;
     state = MASTERNODE_READY;
 }
 
@@ -202,7 +203,7 @@ bool CActiveMasternodeManager::GetLocalAddress(CService& addrRet)
         bool empty = true;
         // If we have some peers, let's try to find our local address from one of them
         auto service = WITH_LOCK(activeMasternodeInfoCs, return activeMasternodeInfo.service);
-        g_connman->ForEachNodeContinueIf(CConnman::AllNodes, [&](CNode* pnode) {
+        connman.ForEachNodeContinueIf(CConnman::AllNodes, [&](CNode* pnode) {
             empty = false;
             if (pnode->addr.IsIPv4())
                 fFoundLocal = GetLocal(service, &pnode->addr) && IsValidNetAddr(service);

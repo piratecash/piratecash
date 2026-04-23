@@ -10,6 +10,7 @@
 #include <qt/trafficgraphdata.h>
 
 #include <net.h>
+#include <uint256.h>
 
 #include <QWidget>
 #include <QCompleter>
@@ -47,7 +48,7 @@ public:
         return RPCParseCommandLine(&node, strResult, strCommand, true, pstrFilteredOut, wallet_model);
     }
 
-    void setClientModel(ClientModel *model);
+    void setClientModel(ClientModel *model = nullptr, int bestblock_height = 0, int64_t bestblock_date = 0, uint256 bestblock_hash = uint256(), double verification_progress = 0.0);
     void addWallet(WalletModel * const walletModel);
     void removeWallet(WalletModel* const walletModel);
 
@@ -107,9 +108,6 @@ public Q_SLOTS:
     /** Wallet repair options */
     void walletRescan1();
     void walletRescan2();
-    void walletZaptxes1();
-    void walletZaptxes2();
-    void walletUpgrade();
     void walletReindex();
 
     /** Append the message to the message widget */

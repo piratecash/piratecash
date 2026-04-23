@@ -2,10 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <attributes.h>
 #include <clientversion.h>
 #include <coins.h>
-#include <consensus/validation.h>
 #include <script/standard.h>
 #include <streams.h>
 #include <test/util/setup_common.h>
@@ -13,7 +11,6 @@
 #include <uint256.h>
 #include <undo.h>
 #include <util/strencodings.h>
-#include <validation.h>
 
 #include <map>
 #include <vector>
@@ -395,7 +392,7 @@ BOOST_AUTO_TEST_CASE(updatecoins_simulation_test)
             // Update the expected result to know about the new output coins
             assert(tx.vout.size() == 1);
             const COutPoint outpoint(tx.GetHash(), 0);
-            result[outpoint] = Coin(tx.vout[0], height, CTransaction(tx).IsCoinBase(),false);
+            result[outpoint] = Coin(tx.vout[0], height, CTransaction(tx).IsCoinBase());
 
             // Call UpdateCoins on the top cache
             CTxUndo undo;
@@ -507,7 +504,7 @@ BOOST_AUTO_TEST_CASE(ccoins_serialization)
     BOOST_CHECK_EQUAL(cc1.fCoinBase, false);
     BOOST_CHECK_EQUAL(cc1.nHeight, 203998U);
     BOOST_CHECK_EQUAL(cc1.out.nValue, CAmount{60000000000});
-    BOOST_CHECK_EQUAL(HexStr(cc1.out.scriptPubKey), HexStr(GetScriptForDestination(CKeyID(uint160(ParseHex("816115944e077fe7c803cfa57f29b36bf87c1d35"))))));
+    BOOST_CHECK_EQUAL(HexStr(cc1.out.scriptPubKey), HexStr(GetScriptForDestination(PKHash(uint160(ParseHex("816115944e077fe7c803cfa57f29b36bf87c1d35"))))));
 
     // Good example
     CDataStream ss2(ParseHex("8ddf77bbd123008c988f1a4a4de2161e0f50aac7f17e7f9555caa4"), SER_DISK, CLIENT_VERSION);
@@ -516,7 +513,7 @@ BOOST_AUTO_TEST_CASE(ccoins_serialization)
     BOOST_CHECK_EQUAL(cc2.fCoinBase, true);
     BOOST_CHECK_EQUAL(cc2.nHeight, 120891U);
     BOOST_CHECK_EQUAL(cc2.out.nValue, 110397);
-    BOOST_CHECK_EQUAL(HexStr(cc2.out.scriptPubKey), HexStr(GetScriptForDestination(CKeyID(uint160(ParseHex("8c988f1a4a4de2161e0f50aac7f17e7f9555caa4"))))));
+    BOOST_CHECK_EQUAL(HexStr(cc2.out.scriptPubKey), HexStr(GetScriptForDestination(PKHash(uint160(ParseHex("8c988f1a4a4de2161e0f50aac7f17e7f9555caa4"))))));
 
     // Smallest possible example
     CDataStream ss3(ParseHex("000006"), SER_DISK, CLIENT_VERSION);
@@ -741,7 +738,7 @@ static void CheckAddCoinBase(CAmount base_value, CAmount cache_value, CAmount mo
     try {
         CTxOut output;
         output.nValue = modify_value;
-        test.cache.AddCoin(OUTPOINT, Coin(std::move(output), 1, coinbase, false), coinbase);
+        test.cache.AddCoin(OUTPOINT, Coin(std::move(output), 1, coinbase), coinbase);
         test.cache.SelfTest();
         GetCoinsMapEntry(test.cache.map(), result_value, result_flags);
     } catch (std::logic_error&) {

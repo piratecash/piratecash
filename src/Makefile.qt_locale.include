@@ -1,0 +1,23 @@
+QT_TS = \
+  qt/locale/piratecash_ar.ts \
+  qt/locale/piratecash_bg.ts \
+  qt/locale/piratecash_de.ts \
+  qt/locale/piratecash_en.ts \
+  qt/locale/piratecash_es.ts \
+  qt/locale/piratecash_fi.ts \
+  qt/locale/piratecash_fr.ts \
+  qt/locale/piratecash_it.ts \
+  qt/locale/piratecash_ja.ts \
+  qt/locale/piratecash_ko.ts \
+  qt/locale/piratecash_ml.ts \
+  qt/locale/piratecash_nl.ts \
+  qt/locale/piratecash_pl.ts \
+  qt/locale/piratecash_pt.ts \
+  qt/locale/piratecash_ro.ts \
+  qt/locale/piratecash_ru.ts \
+  qt/locale/piratecash_sk.ts \
+  qt/locale/piratecash_th.ts \
+  qt/locale/piratecash_tr.ts \
+  qt/locale/piratecash_vi.ts \
+  qt/locale/piratecash_zh_CN.ts \
+  qt/locale/piratecash_zh_TW.ts

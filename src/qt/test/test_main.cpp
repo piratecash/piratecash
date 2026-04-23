@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include <config/piratecash-config.h>
+#include <config/bitcoin-config.h>
 #endif
 
 #include <interfaces/node.h>
@@ -25,10 +25,6 @@
 #include <QObject>
 #include <QTest>
 
-#if USE_OPENSSL
-#include <openssl/ssl.h>
-#endif
-
 #if defined(QT_STATICPLUGIN)
 #include <QtPlugin>
 #if defined(QT_QPA_PLATFORM_MINIMAL)
@@ -46,7 +42,7 @@ Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin);
 const std::function<void(const std::string&)> G_TEST_LOG_FUN{};
 
 // This is all you need to run all the tests
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     // Initialize persistent globals with the testing setup state for sanity.
     // E.g. -datadir in gArgs is set to a temp directory dummy value (instead
@@ -58,7 +54,8 @@ int main(int argc, char *argv[])
         BasicTestingSetup dummy{CBaseChainParams::REGTEST};
     }
 
-    auto node = interfaces::MakeNode();
+    NodeContext node_context;
+    std::unique_ptr<interfaces::Node> node = interfaces::MakeNode(&node_context);
 
     bool fInvalid = false;
 
@@ -76,6 +73,8 @@ int main(int argc, char *argv[])
     BitcoinApplication app(*node);
     app.setApplicationName("PirateCash-Qt-test");
 
+    node->setupServerArgs();            // Make gArgs available in the NodeContext
+    node->context()->args->ClearArgs(); // Clear added args again
     AppTests app_tests(app);
     if (QTest::qExec(&app_tests) != 0) {
         fInvalid = true;
@@ -84,7 +83,7 @@ int main(int argc, char *argv[])
     if (QTest::qExec(&test1) != 0) {
         fInvalid = true;
     }
-    RPCNestedTests test3;
+    RPCNestedTests test3(*node);
     if (QTest::qExec(&test3) != 0) {
         fInvalid = true;
     }
@@ -93,11 +92,11 @@ int main(int argc, char *argv[])
         fInvalid = true;
     }
 #ifdef ENABLE_WALLET
-    WalletTests test5;
+    WalletTests test5(*node);
     if (QTest::qExec(&test5) != 0) {
         fInvalid = true;
     }
-    AddressBookTests test6;
+    AddressBookTests test6(*node);
     if (QTest::qExec(&test6) != 0) {
         fInvalid = true;
     }

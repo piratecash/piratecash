@@ -1,10 +1,10 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2019 The Dash Core developers
+// Copyright (c) 2014-2022 The Dash Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include <config/piratecash-config.h>
+#include <config/bitcoin-config.h>
 #endif
 
 #include <qt/bitcoin.h>
@@ -31,18 +31,12 @@
 
 #include <interfaces/handler.h>
 #include <interfaces/node.h>
+#include <node/context.h>
 #include <noui.h>
-#include <rpc/server.h>
 #include <stacktraces.h>
 #include <ui_interface.h>
 #include <uint256.h>
 #include <util/system.h>
-#include <warnings.h>
-
-#ifdef ENABLE_WALLET
-#include <wallet/wallet.h>
-#endif
-#include <walletinitinterface.h>
 #include <util/translation.h>
 
 #include <memory>
@@ -147,7 +141,7 @@ BitcoinCore::BitcoinCore(interfaces::Node& node) :
 void BitcoinCore::handleRunawayException(const std::exception_ptr e)
 {
     PrintExceptionContinue(e, "Runaway exception");
-    Q_EMIT runawayException(QString::fromStdString(m_node.getWarnings("gui")));
+    Q_EMIT runawayException(QString::fromStdString(m_node.getWarnings()));
 }
 
 void BitcoinCore::initialize()
@@ -156,8 +150,9 @@ void BitcoinCore::initialize()
     {
         qDebug() << __func__ << ": Running initialization in thread";
         util::ThreadRename("qt-init");
-        bool rv = m_node.appInitMain();
-        Q_EMIT initializeResult(rv);
+        interfaces::BlockAndHeaderTipInfo tip_info;
+        bool rv = m_node.appInitMain(&tip_info);
+        Q_EMIT initializeResult(rv, tip_info);
     } catch (...) {
         handleRunawayException(std::current_exception());
     }
@@ -261,6 +256,7 @@ void BitcoinApplication::createSplashScreen(const NetworkStyle *networkStyle)
     // We don't hold a direct pointer to the splash screen after creation, but the splash
     // screen will take care of deleting itself when finish() happens.
     splash->show();
+    connect(this, &BitcoinApplication::requestedInitialize, splash, &SplashScreen::handleLoadWallet);
     connect(this, &BitcoinApplication::splashFinished, splash, &SplashScreen::finish);
     connect(this, &BitcoinApplication::requestedShutdown, splash, &QWidget::close);
 }
@@ -336,7 +332,7 @@ void BitcoinApplication::requestShutdown()
     Q_EMIT requestedShutdown();
 }
 
-void BitcoinApplication::initializeResult(bool success)
+void BitcoinApplication::initializeResult(bool success, interfaces::BlockAndHeaderTipInfo tip_info)
 {
     qDebug() << __func__ << ": Initialization result: " << success;
     // Set exit result.
@@ -346,7 +342,7 @@ void BitcoinApplication::initializeResult(bool success)
         // Log this only after AppInitMain finishes, as then logging setup is guaranteed complete
         qInfo() << "Platform customization:" << gArgs.GetArg("-uiplatform", BitcoinGUI::DEFAULT_UIPLATFORM).c_str();
         clientModel = new ClientModel(m_node, optionsModel);
-        window->setClientModel(clientModel);
+        window->setClientModel(clientModel, &tip_info);
 #ifdef ENABLE_WALLET
         if (WalletModel::isWalletEnabled()) {
             m_wallet_controller = new WalletController(m_node, optionsModel, this);
@@ -409,21 +405,21 @@ WId BitcoinApplication::getMainWinId() const
     return window->winId();
 }
 
-static void SetupUIArgs()
+static void SetupUIArgs(ArgsManager& argsman)
 {
-    gArgs.AddArg("-choosedatadir", strprintf(QObject::tr("Choose data directory on startup (default: %u)").toStdString(), DEFAULT_CHOOSE_DATADIR), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
-    gArgs.AddArg("-custom-css-dir", "Set a directory which contains custom css files. Those will be used as stylesheets for the UI.", ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
-    gArgs.AddArg("-font-family", QObject::tr("Set the font family. Possible values: %1. (default: %2)").arg("SystemDefault, Montserrat").arg(GUIUtil::fontFamilyToString(GUIUtil::getFontFamilyDefault())).toStdString(), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
-    gArgs.AddArg("-font-scale", QObject::tr("Set a scale factor which gets applied to the base font size. Possible range %1 (smallest fonts) to %2 (largest fonts). (default: %3)").arg(-100).arg(100).arg(GUIUtil::getFontScaleDefault()).toStdString(), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
-    gArgs.AddArg("-font-weight-bold", QObject::tr("Set the font weight for bold texts. Possible range %1 to %2 (default: %3)").arg(0).arg(8).arg(GUIUtil::weightToArg(GUIUtil::getFontWeightBoldDefault())).toStdString(), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
-    gArgs.AddArg("-font-weight-normal", QObject::tr("Set the font weight for normal texts. Possible range %1 to %2 (default: %3)").arg(0).arg(8).arg(GUIUtil::weightToArg(GUIUtil::getFontWeightNormalDefault())).toStdString(), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
-    gArgs.AddArg("-lang=<lang>", QObject::tr("Set language, for example \"de_DE\" (default: system locale)").toStdString(), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
-    gArgs.AddArg("-min", QObject::tr("Start minimized").toStdString(), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
-    gArgs.AddArg("-resetguisettings", QObject::tr("Reset all settings changed in the GUI").toStdString(), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
-    gArgs.AddArg("-splash", strprintf(QObject::tr("Show splash screen on startup (default: %u)").toStdString(), DEFAULT_SPLASHSCREEN), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
-    gArgs.AddArg("-uiplatform", strprintf("Select platform to customize UI for (one of windows, macosx, other; default: %s)", BitcoinGUI::DEFAULT_UIPLATFORM), ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::GUI);
-    gArgs.AddArg("-debug-ui", "Updates the UI's stylesheets in realtime with changes made to the css files in -custom-css-dir and forces some widgets to show up which are usually only visible under certain circumstances. (default: 0)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::GUI);
-    gArgs.AddArg("-windowtitle=<name>", _("Sets a window title which is appended to \"Dash Core - \"").translated, ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
+    argsman.AddArg("-choosedatadir", strprintf(QObject::tr("Choose data directory on startup (default: %u)").toStdString(), DEFAULT_CHOOSE_DATADIR), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
+    argsman.AddArg("-custom-css-dir", "Set a directory which contains custom css files. Those will be used as stylesheets for the UI.", ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
+    argsman.AddArg("-font-family", QObject::tr("Set the font family. Possible values: %1. (default: %2)").arg("SystemDefault, Montserrat").arg(GUIUtil::fontFamilyToString(GUIUtil::getFontFamilyDefault())).toStdString(), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
+    argsman.AddArg("-font-scale", QObject::tr("Set a scale factor which gets applied to the base font size. Possible range %1 (smallest fonts) to %2 (largest fonts). (default: %3)").arg(-100).arg(100).arg(GUIUtil::getFontScaleDefault()).toStdString(), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
+    argsman.AddArg("-font-weight-bold", QObject::tr("Set the font weight for bold texts. Possible range %1 to %2 (default: %3)").arg(0).arg(8).arg(GUIUtil::weightToArg(GUIUtil::getFontWeightBoldDefault())).toStdString(), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
+    argsman.AddArg("-font-weight-normal", QObject::tr("Set the font weight for normal texts. Possible range %1 to %2 (default: %3)").arg(0).arg(8).arg(GUIUtil::weightToArg(GUIUtil::getFontWeightNormalDefault())).toStdString(), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
+    argsman.AddArg("-lang=<lang>", QObject::tr("Set language, for example \"de_DE\" (default: system locale)").toStdString(), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
+    argsman.AddArg("-min", QObject::tr("Start minimized").toStdString(), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
+    argsman.AddArg("-resetguisettings", QObject::tr("Reset all settings changed in the GUI").toStdString(), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
+    argsman.AddArg("-splash", strprintf(QObject::tr("Show splash screen on startup (default: %u)").toStdString(), DEFAULT_SPLASHSCREEN), ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
+    argsman.AddArg("-uiplatform", strprintf("Select platform to customize UI for (one of windows, macosx, other; default: %s)", BitcoinGUI::DEFAULT_UIPLATFORM), ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::GUI);
+    argsman.AddArg("-debug-ui", "Updates the UI's stylesheets in realtime with changes made to the css files in -custom-css-dir and forces some widgets to show up which are usually only visible under certain circumstances. (default: 0)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::GUI);
+    argsman.AddArg("-windowtitle=<name>", _("Sets a window title which is appended to \"PirateCash Core - \"").translated, ArgsManager::ALLOW_ANY, OptionsCategory::GUI);
 }
 
 int GuiMain(int argc, char* argv[])
@@ -438,7 +434,8 @@ int GuiMain(int argc, char* argv[])
     SetupEnvironment();
     util::ThreadSetInternalName("main");
 
-    std::unique_ptr<interfaces::Node> node = interfaces::MakeNode();
+    NodeContext node_context;
+    std::unique_ptr<interfaces::Node> node = interfaces::MakeNode(&node_context);
 
     // Subscribe to global signals from core
     std::unique_ptr<interfaces::Handler> handler_message_box = node->handleMessageBox(noui_ThreadSafeMessageBox);
@@ -471,11 +468,12 @@ int GuiMain(int argc, char* argv[])
 
     qRegisterMetaType<std::function<void()>>("std::function<void()>");
     qRegisterMetaType<QMessageBox::Icon>("QMessageBox::Icon");
+    qRegisterMetaType<interfaces::BlockAndHeaderTipInfo>("interfaces::BlockAndHeaderTipInfo");
 
     /// 2. Parse command-line options. We do this after qt in order to show an error if there are problems parsing these
     // Command-line options take precedence:
     node->setupServerArgs();
-    SetupUIArgs();
+    SetupUIArgs(gArgs);
     std::string error;
     if (!node->parseParameters(argc, argv, error)) {
         node->initError(strprintf(Untranslated("Error parsing command line arguments: %s\n"), error));
@@ -523,8 +521,7 @@ int GuiMain(int argc, char* argv[])
 
     /// 6. Determine availability of data and blocks directory and parse piratecash.conf
     /// - Do not call GetDataDir(true) before this step finishes
-    if (!fs::is_directory(GetDataDir(false)))
-    {
+    if (!CheckDataDirOption()) {
         node->initError(strprintf(Untranslated("Specified data directory \"%s\" does not exist.\n"), gArgs.GetArg("-datadir", "")));
         QMessageBox::critical(nullptr, PACKAGE_NAME,
             QObject::tr("Error: Specified data directory \"%1\" does not exist.").arg(QString::fromStdString(gArgs.GetArg("-datadir", ""))));
@@ -555,6 +552,11 @@ int GuiMain(int argc, char* argv[])
     // Parse URIs on command line -- this can affect Params()
     PaymentServer::ipcParseCommandLine(*node, argc, argv);
 #endif
+    if (!node->initSettings(error)) {
+        node->initError(Untranslated(error));
+        QMessageBox::critical(nullptr, PACKAGE_NAME, QObject::tr("Error initializing settings: %1").arg(QString::fromStdString(error)));
+        return EXIT_FAILURE;
+    }
 
     QScopedPointer<const NetworkStyle> networkStyle(NetworkStyle::instantiate(QString::fromStdString(Params().NetworkIDString())));
     assert(!networkStyle.isNull());
@@ -710,7 +712,7 @@ int GuiMain(int argc, char* argv[])
         }
     } catch (...) {
         PrintExceptionContinue(std::current_exception(), "Runaway exception");
-        app.handleRunawayException(QString::fromStdString(node->getWarnings("gui")));
+        app.handleRunawayException(QString::fromStdString(node->getWarnings()));
     }
     return rv;
 }

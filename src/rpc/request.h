@@ -6,6 +6,8 @@
 #ifndef BITCOIN_RPC_REQUEST_H
 #define BITCOIN_RPC_REQUEST_H
 
+#include <context.h>
+
 #include <string>
 
 #include <univalue.h>
@@ -34,9 +36,22 @@ public:
     std::string URI;
     std::string authUser;
     std::string peerAddr;
+    const CoreContext& context;
 
-    JSONRPCRequest() : id(NullUniValue), params(NullUniValue), fHelp(false) {}
+    JSONRPCRequest(const CoreContext& context) : id(NullUniValue), params(NullUniValue), fHelp(false), context(context) {}
+
+    //! Initializes request information from another request object and the
+    //! given context. The implementation should be updated if any members are
+    //! added or removed above.
+    JSONRPCRequest(const JSONRPCRequest& other, const CoreContext& context)
+        : id(other.id), strMethod(other.strMethod), params(other.params), fHelp(other.fHelp), URI(other.URI),
+          authUser(other.authUser), peerAddr(other.peerAddr), context(context)
+    {
+    }
+
     void parse(const UniValue& valRequest);
+    // Returns new JSONRPCRequest with the first param "squashed' into strMethod
+    const JSONRPCRequest squashed() const;
 };
 
 #endif // BITCOIN_RPC_REQUEST_H

@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2020 The Dash Core developers
+// Copyright (c) 2018-2022 The Dash Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,6 +14,8 @@ BOOST_FIXTURE_TEST_SUITE(evo_simplifiedmns_tests, BasicTestingSetup)
 
 BOOST_AUTO_TEST_CASE(simplifiedmns_merkleroots)
 {
+    //TODO: Provide raw data for basic scheme as well
+    bls::bls_legacy_scheme.store(true);
     std::vector<CSimplifiedMNListEntry> entries;
     for (size_t i = 0; i < 15; i++) {
         CSimplifiedMNListEntry smle;
@@ -26,7 +28,7 @@ BOOST_AUTO_TEST_CASE(simplifiedmns_merkleroots)
         std::vector<unsigned char> vecBytes{static_cast<unsigned char>(i)};
         vecBytes.resize(CBLSSecretKey::SerSize);
 
-        smle.pubKeyOperator.Set(CBLSSecretKey(vecBytes).GetPublicKey());
+        smle.pubKeyOperator.Set(CBLSSecretKey(vecBytes).GetPublicKey(), bls::bls_legacy_scheme.load());
         smle.keyIDVoting.SetHex(strprintf("%040x", i));
         smle.isValid = true;
 

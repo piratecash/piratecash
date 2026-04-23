@@ -408,7 +408,7 @@ public:
         if (nReadPosNext > vch.size()) {
             throw std::ios_base::failure("CDataStream::read(): end of data");
         }
-        memcpy(pch, &vch[nReadPos], nSize);        
+        memcpy(pch, &vch[nReadPos], nSize);
         if (nReadPosNext == vch.size())
         {
             nReadPos = 0;
@@ -816,18 +816,6 @@ public:
             return false;
         }
         nReadPos = nPos;
-        return true;
-    }
-
-    bool Seek(uint64_t nPos) {
-        long nLongPos = nPos;
-        if (nPos != (uint64_t)nLongPos)
-            return false;
-        if (fseek(src, nLongPos, SEEK_SET))
-            return false;
-        nLongPos = ftell(src);
-        nSrcPos = nLongPos;
-        nReadPos = nLongPos;
         return true;
     }
 

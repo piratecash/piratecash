@@ -53,19 +53,11 @@ Paths
 
 All three configurations assume several paths that might need to be adjusted.
 
-<<<<<<< HEAD
 Binary:              `/usr/bin/piratecashd`  
 Configuration file:  `/etc/piratecashcore/piratecash.conf`  
 Data directory:      `/var/lib/piratecashd`  
 PID file:            `/var/run/piratecashd/piratecashd.pid` (OpenRC and Upstart) or `/var/lib/piratecashd/piratecashd.pid` (systemd)  
 Lock file:           `/var/lock/subsys/piratecashd` (CentOS)  
-=======
-Binary:              `/usr/bin/dashd`
-Configuration file:  `/etc/dashcore/dash.conf`
-Data directory:      `/var/lib/dashd`
-PID file:            `/var/run/dashd/dashd.pid` (OpenRC and Upstart) or `/run/dashd/dashd.pid` (systemd)
-Lock file:           `/var/lock/subsys/dashd` (CentOS)
->>>>>>> 950976893 (Merge #16812: doc: Fix whitespace errs in .md files, bitcoin.conf, and Info.plist.in)
 
 The configuration file, PID directory (if applicable) and data directory
 should all be owned by the piratecashcore user and group.  It is advised for security

@@ -46,7 +46,7 @@ class DIP3Test(BitcoinTestFramework):
 
     def run_test(self):
         self.log.info("funding controller node")
-        while self.nodes[0].getbalance() < (self.num_initial_mn + 3) * 1000:
+        while self.nodes[0].getbalance() < (self.num_initial_mn + 3) * 10000:
             self.nodes[0].generate(10) # generate enough for collaterals
         self.log.info("controller node has {} cosanta".format(self.nodes[0].getbalance()))
 
@@ -225,20 +225,20 @@ class DIP3Test(BitcoinTestFramework):
 
     def create_mn_collateral(self, node, mn):
         mn.collateral_address = node.getnewaddress()
-        mn.collateral_txid = node.sendtoaddress(mn.collateral_address, 1000)
+        mn.collateral_txid = node.sendtoaddress(mn.collateral_address, 10000)
         mn.collateral_vout = -1
         node.generate(1)
 
         rawtx = node.getrawtransaction(mn.collateral_txid, 1)
         for txout in rawtx['vout']:
-            if txout['value'] == Decimal(1000):
+            if txout['value'] == Decimal(10000):
                 mn.collateral_vout = txout['n']
                 break
         assert mn.collateral_vout != -1
 
     # register a protx MN and also fund it (using collateral inside ProRegTx)
     def register_fund_mn(self, node, mn):
-        node.sendtoaddress(mn.fundsAddr, 1000.001)
+        node.sendtoaddress(mn.fundsAddr, 10000.001)
         mn.collateral_address = node.getnewaddress()
         mn.rewards_address = node.getnewaddress()
 
@@ -248,7 +248,7 @@ class DIP3Test(BitcoinTestFramework):
 
         rawtx = node.getrawtransaction(mn.collateral_txid, 1)
         for txout in rawtx['vout']:
-            if txout['value'] == Decimal(1000):
+            if txout['value'] == Decimal(10000):
                 mn.collateral_vout = txout['n']
                 break
         assert mn.collateral_vout != -1
@@ -272,7 +272,7 @@ class DIP3Test(BitcoinTestFramework):
         self.sync_all()
 
     def spend_mn_collateral(self, mn, with_dummy_input_output=False):
-        return self.spend_input(mn.collateral_txid, mn.collateral_vout, 1000, with_dummy_input_output)
+        return self.spend_input(mn.collateral_txid, mn.collateral_vout, 10000, with_dummy_input_output)
 
     def update_mn_payee(self, mn, payee):
         self.nodes[0].sendtoaddress(mn.fundsAddr, 0.001)

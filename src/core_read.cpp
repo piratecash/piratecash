@@ -4,7 +4,6 @@
 
 #include <core_io.h>
 
-#include <psbt.h>
 #include <primitives/block.h>
 #include <primitives/transaction.h>
 #include <script/script.h>
@@ -12,11 +11,9 @@
 #include <serialize.h>
 #include <streams.h>
 #include <univalue.h>
+#include <util/string.h>
 #include <util/strencodings.h>
 #include <version.h>
-
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/split.hpp>
 
 #include <algorithm>
 
@@ -46,20 +43,27 @@ CScript ParseScript(const std::string& s)
         }
     }
 
-    std::vector<std::string> words;
-    boost::algorithm::split(words, s, boost::algorithm::is_any_of(" \t\n"), boost::algorithm::token_compress_on);
+    std::vector<std::string> words = SplitString(s, " \t\n");
 
     for (std::vector<std::string>::const_iterator w = words.begin(); w != words.end(); ++w)
     {
         if (w->empty())
         {
-            // Empty string, ignore. (boost::split given '' will return one word)
+            // Empty string, ignore. (SplitString doesn't combine multiple separators)
         }
         else if (std::all_of(w->begin(), w->end(), ::IsDigit) ||
             (w->front() == '-' && w->size() > 1 && std::all_of(w->begin()+1, w->end(), ::IsDigit)))
         {
             // Number
-            int64_t n = atoi64(*w);
+            int64_t n = LocaleIndependentAtoi<int64_t>(*w);
+
+            //limit the range of numbers ParseScript accepts in decimal
+            //since numbers outside -0xFFFFFFFF...0xFFFFFFFF are illegal in scripts
+            if (n > int64_t{0xffffffff} || n < -1 * int64_t{0xffffffff}) {
+                throw std::runtime_error("script parse error: decimal numeric value only allowed in the "
+                                         "range -0xFFFFFFFF...0xFFFFFFFF");
+            }
+
             result << n;
         }
         else if (w->substr(0,2) == "0x" && w->size() > 2 && IsHex(std::string(w->begin()+2, w->end())))
@@ -136,33 +140,6 @@ bool DecodeHexBlk(CBlock& block, const std::string& strHexBlk)
         return false;
     }
 
-    return true;
-}
-
-bool DecodeBase64PSBT(PartiallySignedTransaction& psbt, const std::string& base64_tx, std::string& error)
-{
-    bool invalid;
-    std::string tx_data = DecodeBase64(base64_tx, &invalid);
-    if (invalid) {
-        error = "invalid base64";
-        return false;
-    }
-    return DecodeRawPSBT(psbt, tx_data, error);
-}
-
-bool DecodeRawPSBT(PartiallySignedTransaction& psbt, const std::string& tx_data, std::string& error)
-{
-    CDataStream ss_data(tx_data.data(), tx_data.data() + tx_data.size(), SER_NETWORK, PROTOCOL_VERSION);
-    try {
-        ss_data >> psbt;
-        if (!ss_data.empty()) {
-            error = "extra data after PSBT";
-            return false;
-        }
-    } catch (const std::exception& e) {
-        error = e.what();
-        return false;
-    }
     return true;
 }
 

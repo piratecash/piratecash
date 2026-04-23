@@ -5,15 +5,29 @@
 #ifndef BITCOIN_UTIL_STRING_H
 #define BITCOIN_UTIL_STRING_H
 
-#include <attributes.h>
+#include <util/spanparsing.h>
 
 #include <algorithm>
 #include <array>
+#include <cstdint>
 #include <cstring>
 #include <locale>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <vector>
+
+void ReplaceAll(std::string& in_out, std::string_view search, std::string_view substitute);
+
+[[nodiscard]] inline std::vector<std::string> SplitString(std::string_view str, char sep)
+{
+    return spanparsing::Split<std::string>(str, sep);
+}
+
+[[nodiscard]] inline std::vector<std::string> SplitString(std::string_view str, std::string_view separators)
+{
+    return spanparsing::Split<std::string>(str, separators);
+}
 
 [[nodiscard]] inline std::string TrimString(const std::string& str, const std::string& pattern = " \f\n\r\t\v")
 {
@@ -73,6 +87,18 @@ template <typename T1, size_t PREFIX_LEN>
 {
     return obj.size() >= PREFIX_LEN &&
            std::equal(std::begin(prefix), std::end(prefix), std::begin(obj));
+}
+
+/**
+ * Locale-independent version of std::to_string
+ */
+template <typename T>
+std::string ToString(const T& t)
+{
+    std::ostringstream oss;
+    oss.imbue(std::locale::classic());
+    oss << t;
+    return oss.str();
 }
 
 #endif // BITCOIN_UTIL_STRING_H

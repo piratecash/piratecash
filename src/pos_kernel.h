@@ -5,8 +5,18 @@
 #ifndef BITCOIN_KERNEL_H
 #define BITCOIN_KERNEL_H
 
-#include "streams.h"
-#include "validation.h"
+#include <amount.h>
+#include <primitives/transaction.h>
+#include <streams.h>
+#include <uint256.h>
+
+class CBlockHeader;
+class CBlockIndex;
+class CTxMemPool;
+class CValidationState;
+namespace Consensus {
+struct Params;
+}
 
 
 static constexpr CAmount MIN_STAKE_AMOUNT = COIN;
@@ -33,6 +43,6 @@ bool CheckStakeKernelHash(
 
 // Check kernel hash target and coinstake signature
 // Sets hashProofOfStake on success return
-bool CheckProofOfStake(CValidationState &state, const CBlockHeader &block, uint256& hashProofOfStake, const Consensus::Params& consensus);
+bool CheckProofOfStake(CValidationState &state, const CBlockHeader &block, uint256& hashProofOfStake, const Consensus::Params& consensus, const CTxMemPool* mempool = nullptr);
 
 #endif // BITCOIN_KERNEL_H

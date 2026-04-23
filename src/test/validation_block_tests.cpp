@@ -8,10 +8,17 @@
 #include <consensus/consensus.h>
 #include <consensus/merkle.h>
 #include <consensus/validation.h>
+#include <governance/governance.h>
+#include <llmq/blockprocessor.h>
+#include <llmq/chainlocks.h>
+#include <llmq/context.h>
+#include <llmq/instantsend.h>
+#include <evo/evodb.h>
 #include <miner.h>
 #include <pow.h>
 #include <random.h>
 #include <script/standard.h>
+#include <spork.h>
 #include <test/util/setup_common.h>
 #include <util/time.h>
 #include <validation.h>
@@ -19,9 +26,19 @@
 
 #include <thread>
 
+namespace validation_block_tests {
+struct MinerTestingSetup : public RegTestingSetup {
+    std::shared_ptr<CBlock> Block(const uint256& prev_hash);
+    std::shared_ptr<const CBlock> GoodBlock(const uint256& prev_hash);
+    std::shared_ptr<const CBlock> BadBlock(const uint256& prev_hash);
+    std::shared_ptr<CBlock> FinalizeBlock(std::shared_ptr<CBlock> pblock);
+    void BuildChain(const uint256& root, int height, const unsigned int invalid_rate, const unsigned int branch_rate, const unsigned int max_size, std::vector<std::shared_ptr<const CBlock>>& blocks);
+};
+} // namespace validation_block_tests
+
 static const std::vector<unsigned char> V_OP_TRUE{OP_TRUE};
 
-BOOST_FIXTURE_TEST_SUITE(validation_block_tests, RegTestingSetup)
+BOOST_FIXTURE_TEST_SUITE(validation_block_tests, MinerTestingSetup)
 
 struct TestSubscriber : public CValidationInterface {
     uint256 m_expected_tip;
@@ -33,7 +50,7 @@ struct TestSubscriber : public CValidationInterface {
         BOOST_CHECK_EQUAL(m_expected_tip, pindexNew->GetBlockHash());
     }
 
-    void BlockConnected(const std::shared_ptr<const CBlock>& block, const CBlockIndex* pindex, const std::vector<CTransactionRef>& txnConflicted) override
+    void BlockConnected(const std::shared_ptr<const CBlock>& block, const CBlockIndex* pindex) override
     {
         BOOST_CHECK_EQUAL(m_expected_tip, block->hashPrevBlock);
         BOOST_CHECK_EQUAL(m_expected_tip, pindex->pprev->GetBlockHash());
@@ -41,16 +58,16 @@ struct TestSubscriber : public CValidationInterface {
         m_expected_tip = block->GetHash();
     }
 
-    void BlockDisconnected(const std::shared_ptr<const CBlock>& block, const CBlockIndex* pindexDisconnected) override
+    void BlockDisconnected(const std::shared_ptr<const CBlock>& block, const CBlockIndex* pindex) override
     {
         BOOST_CHECK_EQUAL(m_expected_tip, block->GetHash());
-        BOOST_CHECK_EQUAL(m_expected_tip, pindexDisconnected->GetBlockHash());
+        BOOST_CHECK_EQUAL(m_expected_tip, pindex->GetBlockHash());
 
         m_expected_tip = block->hashPrevBlock;
     }
 };
 
-std::shared_ptr<CBlock> Block(const uint256& prev_hash)
+std::shared_ptr<CBlock> MinerTestingSetup::Block(const uint256& prev_hash)
 {
     static int i = 0;
     static uint64_t time = Params().GenesisBlock().nTime;
@@ -58,7 +75,7 @@ std::shared_ptr<CBlock> Block(const uint256& prev_hash)
     CScript pubKey;
     pubKey << i++ << OP_TRUE;
 
-    auto ptemplate = BlockAssembler(Params()).CreateNewBlock(pubKey, GetWallets()[0]);
+    auto ptemplate = BlockAssembler(*sporkManager, *governance, *m_node.llmq_ctx->quorum_block_processor, *m_node.llmq_ctx->clhandler,  *m_node.llmq_ctx->isman, *m_node.evodb, *m_node.mempool, Params()).CreateNewBlock(pubKey, nullptr);
     auto pblock = std::make_shared<CBlock>(*ptemplate->block);
     pblock->hashPrevBlock = prev_hash;
     pblock->nTime = ++time;
@@ -83,7 +100,7 @@ std::shared_ptr<CBlock> Block(const uint256& prev_hash)
     return pblock;
 }
 
-std::shared_ptr<CBlock> FinalizeBlock(std::shared_ptr<CBlock> pblock)
+std::shared_ptr<CBlock> MinerTestingSetup::FinalizeBlock(std::shared_ptr<CBlock> pblock)
 {
     pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
 
@@ -95,13 +112,13 @@ std::shared_ptr<CBlock> FinalizeBlock(std::shared_ptr<CBlock> pblock)
 }
 
 // construct a valid block
-std::shared_ptr<const CBlock> GoodBlock(const uint256& prev_hash)
+std::shared_ptr<const CBlock> MinerTestingSetup::GoodBlock(const uint256& prev_hash)
 {
     return FinalizeBlock(Block(prev_hash));
 }
 
 // construct an invalid block (but with a valid header)
-std::shared_ptr<const CBlock> BadBlock(const uint256& prev_hash)
+std::shared_ptr<const CBlock> MinerTestingSetup::BadBlock(const uint256& prev_hash)
 {
     auto pblock = Block(prev_hash);
 
@@ -116,7 +133,7 @@ std::shared_ptr<const CBlock> BadBlock(const uint256& prev_hash)
     return ret;
 }
 
-void BuildChain(const uint256& root, int height, const unsigned int invalid_rate, const unsigned int branch_rate, const unsigned int max_size, std::vector<std::shared_ptr<const CBlock>>& blocks)
+void MinerTestingSetup::BuildChain(const uint256& root, int height, const unsigned int invalid_rate, const unsigned int branch_rate, const unsigned int max_size, std::vector<std::shared_ptr<const CBlock>>& blocks)
 {
     if (height <= 0 || blocks.size() >= max_size) return;
 
@@ -146,14 +163,14 @@ BOOST_AUTO_TEST_CASE(processnewblock_signals_ordering)
 
     bool ignored;
     CValidationState state;
-    std::deque<CBlockHeader> headers;
+    std::vector<CBlockHeader> headers;
     std::transform(blocks.begin(), blocks.end(), std::back_inserter(headers), [](std::shared_ptr<const CBlock> b) { return b->GetBlockHeader(); });
 
     // Process all the headers so we understand the toplogy of the chain
-    BOOST_CHECK(ProcessNewBlockHeaders(headers, state, Params()));
+    BOOST_CHECK(Assert(m_node.chainman)->ProcessNewBlockHeaders(headers, state, Params()));
 
     // Connect the genesis block and drain any outstanding events
-    BOOST_CHECK(ProcessNewBlock(Params(), std::make_shared<CBlock>(Params().GenesisBlock()), true, &ignored));
+    BOOST_CHECK(Assert(m_node.chainman)->ProcessNewBlock(Params(), std::make_shared<CBlock>(Params().GenesisBlock()), true, &ignored));
     SyncWithValidationInterfaceQueue();
 
     // subscribe to events (this subscriber will validate event ordering)
@@ -170,18 +187,18 @@ BOOST_AUTO_TEST_CASE(processnewblock_signals_ordering)
     // will subscribe to events generated during block validation and assert on ordering invariance
     std::vector<std::thread> threads;
     for (int i = 0; i < 10; i++) {
-        threads.emplace_back([&blocks]() {
+        threads.emplace_back([&]() {
             bool ignored;
             FastRandomContext insecure;
             for (int i = 0; i < 1000; i++) {
                 auto block = blocks[insecure.randrange(blocks.size() - 1)];
-                ProcessNewBlock(Params(), block, true, &ignored);
+                Assert(m_node.chainman)->ProcessNewBlock(Params(), block, true, &ignored);
             }
 
             // to make sure that eventually we process the full chain - do it here
             for (auto block : blocks) {
                 if (block->vtx.size() == 1) {
-                    bool processed = ProcessNewBlock(Params(), block, true, &ignored);
+                    bool processed = Assert(m_node.chainman)->ProcessNewBlock(Params(), block, true, &ignored);
                     assert(processed);
                 }
             }
@@ -221,8 +238,8 @@ BOOST_AUTO_TEST_CASE(processnewblock_signals_ordering)
 BOOST_AUTO_TEST_CASE(mempool_locks_reorg)
 {
     bool ignored;
-    auto ProcessBlock = [&ignored](std::shared_ptr<const CBlock> block) -> bool {
-        return ProcessNewBlock(Params(), block, /* fForceProcessing */ true, /* fNewBlock */ &ignored);
+    auto ProcessBlock = [&](std::shared_ptr<const CBlock> block) -> bool {
+        return Assert(m_node.chainman)->ProcessNewBlock(Params(), block, /* fForceProcessing */ true, /* fNewBlock */ &ignored);
     };
 
     // Process all mined blocks
@@ -282,7 +299,7 @@ BOOST_AUTO_TEST_CASE(mempool_locks_reorg)
             CValidationState state;
             for (const auto& tx : txs) {
                 BOOST_REQUIRE(AcceptToMemoryPool(
-                    ::mempool,
+                    *m_node.mempool,
                     state,
                     tx,
                     /* pfMissingInputs */ &ignored,
@@ -293,8 +310,8 @@ BOOST_AUTO_TEST_CASE(mempool_locks_reorg)
 
         // Check that all txs are in the pool
         {
-            LOCK(::mempool.cs);
-            BOOST_CHECK_EQUAL(::mempool.mapTx.size(), txs.size());
+            LOCK(m_node.mempool->cs);
+            BOOST_CHECK_EQUAL(m_node.mempool->mapTx.size(), txs.size());
         }
 
         // Run a thread that simulates an RPC caller that is polling while
@@ -304,8 +321,8 @@ BOOST_AUTO_TEST_CASE(mempool_locks_reorg)
             // the transactions invalidated by the reorg, or none of them, and
             // not some intermediate amount.
             while (true) {
-                LOCK(::mempool.cs);
-                if (::mempool.mapTx.size() == 0) {
+                LOCK(m_node.mempool->cs);
+                if (m_node.mempool->mapTx.size() == 0) {
                     // We are done with the reorg
                     break;
                 }
@@ -314,7 +331,7 @@ BOOST_AUTO_TEST_CASE(mempool_locks_reorg)
                 // be atomic. So the caller assumes that the returned mempool
                 // is consistent. That is, it has all txs that were there
                 // before the reorg.
-                assert(::mempool.mapTx.size() == txs.size());
+                assert(m_node.mempool->mapTx.size() == txs.size());
                 continue;
             }
             LOCK(cs_main);

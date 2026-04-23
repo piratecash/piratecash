@@ -2,8 +2,6 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <util/memory.h>
-#include <util/system.h>
 
 #include <test/util/setup_common.h>
 
@@ -144,7 +142,7 @@ public:
                 *lockingSuccess = true;
             }
 
-            return reinterpret_cast<void*>(0x08000000 + (count<<24)); // Fake address, do not actually use this memory
+            return reinterpret_cast<void*>(uint64_t{static_cast<uint64_t>(0x08000000) + (count << 24)}); // Fake address, do not actually use this memory
         }
         return nullptr;
     }
@@ -163,7 +161,7 @@ private:
 BOOST_AUTO_TEST_CASE(lockedpool_tests_mock)
 {
     // Test over three virtual arenas, of which one will succeed being locked
-    std::unique_ptr<LockedPageAllocator> x = MakeUnique<TestLockedPageAllocator>(3, 1);
+    std::unique_ptr<LockedPageAllocator> x = std::make_unique<TestLockedPageAllocator>(3, 1);
     LockedPool pool(std::move(x));
     BOOST_CHECK(pool.stats().total == 0);
     BOOST_CHECK(pool.stats().locked == 0);

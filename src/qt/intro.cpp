@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include <config/piratecash-config.h>
+#include <config/bitcoin-config.h>
 #endif
 
 #include <fs.h>
@@ -206,7 +206,7 @@ bool Intro::pickDataDirectory(interfaces::Node& node)
         }
 
         /* Let the user choose one */
-        Intro intro(0, node.getAssumedChainStateSize(), node.getAssumedChainStateSize());
+        Intro intro(0, node.getAssumedBlockchainSize(), node.getAssumedChainStateSize());
         GUIUtil::disableMacFocusRect(&intro);
         GUIUtil::loadStyleSheet(true);
         intro.setDataDirectory(dataDirDefaultCurrent);

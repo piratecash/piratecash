@@ -1,5 +1,5 @@
 ---
-name: "dash-linux-18.0"
+name: "cosanta-linux-18.0"
 enable_cache: true
 suites:
 - "bionic"

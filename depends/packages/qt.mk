@@ -1,47 +1,51 @@
 package=qt
-$(package)_version=5.15.5
-$(package)_download_path=https://download.qt.io/official_releases/qt/5.15/$($(package)_version)/submodules
+$(package)_version=5.15.18
+$(package)_download_path=https://download.qt.io/archive/qt/5.15/$($(package)_version)/submodules
 $(package)_suffix=everywhere-opensource-src-$($(package)_version).tar.xz
 $(package)_file_name=qtbase-$($(package)_suffix)
-$(package)_sha256_hash=0c42c799aa7c89e479a07c451bf5a301e291266ba789e81afc18f95049524edc
-$(package)_linux_dependencies=freetype fontconfig libxcb libxkbcommon libxcb_util libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
+$(package)_sha256_hash=7b632550ea1048fc10c741e46e2e3b093e5ca94dfa6209e9e0848800e247023b
+$(package)_linux_dependencies := freetype fontconfig libxcb libxkbcommon libxcb_util libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
+$(package)_freebsd_dependencies := $($(package)_linux_dependencies)
 $(package)_qt_libs=corelib network widgets gui plugins testlib
 $(package)_linguist_tools = lrelease lupdate lconvert
 $(package)_patches = qt.pro
 $(package)_patches += qttools_src.pro
 $(package)_patches += mac-qmake.conf
 $(package)_patches += fix_qt_pkgconfig.patch
-$(package)_patches += fix_qt_placeholders.patch
 $(package)_patches += no-xlib.patch
-$(package)_patches += dont_hardcode_x86_64.patch
-$(package)_patches += fix_montery_include.patch
 $(package)_patches += fix_android_jni_static.patch
 $(package)_patches += dont_hardcode_pwd.patch
 $(package)_patches += qtbase-moc-ignore-gcc-macro.patch
-$(package)_patches += use_android_ndk23.patch
+$(package)_patches += no_warnings_for_symbols.patch
 $(package)_patches += rcc_hardcode_timestamp.patch
 $(package)_patches += duplicate_lcqpafonts.patch
 $(package)_patches += guix_cross_lib_path.patch
-$(package)_patches += fast_fixed_dtoa_no_optimize.patch
-$(package)_patches += fix-macos-linker.patch
 $(package)_patches += memory_resource.patch
+$(package)_patches += qfontdatabase-cxx20-operators.patch
+$(package)_patches += utc_from_string_no_optimize.patch
+$(package)_patches += windows_lto.patch
+$(package)_patches += darwin_no_libm.patch
+$(package)_patches += CVE-2025-4211-qtbase-5.15.patch
+$(package)_patches += CVE-2025-5455-qtbase-5.15.patch
+$(package)_patches += CVE-2025-30348-qtbase-5.15.patch
 
 $(package)_qttranslations_file_name=qttranslations-$($(package)_suffix)
-$(package)_qttranslations_sha256_hash=c92af4171397a0ed272330b4fa0669790fcac8d050b07c8b8cc565ebeba6735e
+$(package)_qttranslations_sha256_hash=e5625757913caf66a9d702ba102ae92cb165d8dde17759b6de9fdea84a1f857f
 
 $(package)_qttools_file_name=qttools-$($(package)_suffix)
-$(package)_qttools_sha256_hash=6d0778b71b2742cb527561791d1d3d255366163d54a10f78c683a398f09ffc6c
+$(package)_qttools_sha256_hash=931e0969d9f9d8f233e5e9bf9db0cea9ce9914d49982f1795fe6191010113568
 
 $(package)_extra_sources  = $($(package)_qttranslations_file_name)
 $(package)_extra_sources += $($(package)_qttools_file_name)
 
 define $(package)_set_vars
+$(package)_config_env = QT_MAC_SDK_NO_VERSION_CHECK=1
 $(package)_config_opts_release = -release
 $(package)_config_opts_release += -silent
 $(package)_config_opts_debug = -debug
 $(package)_config_opts_debug += -optimized-tools
 $(package)_config_opts += -bindir $(build_prefix)/bin
-$(package)_config_opts += -c++std c++17
+$(package)_config_opts += -c++std c++2a
 $(package)_config_opts += -confirm-license
 $(package)_config_opts += -hostprefix $(build_prefix)
 $(package)_config_opts += -no-compile-examples
@@ -159,18 +163,17 @@ $(package)_config_opts_linux += -dbus-runtime
 ifneq ($(LTO),)
 $(package)_config_opts_linux += -ltcg
 endif
-$(package)_config_opts_arm_linux += -platform linux-g++ -xplatform bitcoin-linux-g++
-$(package)_config_opts_i686_linux  = -xplatform linux-g++-32
-ifneq (,$(findstring -stdlib=libc++,$($(1)_cxx)))
-$(package)_config_opts_x86_64_linux = -xplatform linux-clang-libc++
+$(package)_config_opts_freebsd := $$($(package)_config_opts_linux)
+
+ifneq (,$(findstring clang,$($(package)_cxx)))
+  ifneq (,$(findstring -stdlib=libc++,$($(package)_cxx)))
+    $(package)_config_opts_linux += -platform linux-clang-libc++ -xplatform linux-clang-libc++
+  else
+    $(package)_config_opts_linux += -platform linux-clang -xplatform linux-clang
+  endif
 else
-$(package)_config_opts_x86_64_linux = -xplatform linux-g++-64
+  $(package)_config_opts_linux += -platform linux-g++ -xplatform bitcoin-linux-g++
 endif
-$(package)_config_opts_aarch64_linux = -xplatform linux-aarch64-gnu-g++
-$(package)_config_opts_powerpc64_linux = -platform linux-g++ -xplatform bitcoin-linux-g++
-$(package)_config_opts_powerpc64le_linux = -platform linux-g++ -xplatform bitcoin-linux-g++
-$(package)_config_opts_riscv64_linux = -platform linux-g++ -xplatform bitcoin-linux-g++
-$(package)_config_opts_s390x_linux = -platform linux-g++ -xplatform bitcoin-linux-g++
 
 $(package)_config_opts_mingw32 = -no-opengl
 $(package)_config_opts_mingw32 += -no-dbus
@@ -179,18 +182,20 @@ $(package)_config_opts_mingw32 += -xplatform win32-g++
 $(package)_config_opts_mingw32 += "QMAKE_CFLAGS = '$($(package)_cflags) $($(package)_cppflags)'"
 $(package)_config_opts_mingw32 += "QMAKE_CXX = '$($(package)_cxx)'"
 $(package)_config_opts_mingw32 += "QMAKE_CXXFLAGS = '$($(package)_cxxflags) $($(package)_cppflags)'"
+$(package)_config_opts_mingw32 += "QMAKE_LINK = '$($(package)_cxx)'"
 $(package)_config_opts_mingw32 += "QMAKE_LFLAGS = '$($(package)_ldflags)'"
 $(package)_config_opts_mingw32 += "QMAKE_LIB = '$($(package)_ar) rc'"
 $(package)_config_opts_mingw32 += -device-option CROSS_COMPILE="$(host)-"
 $(package)_config_opts_mingw32 += -pch
+ifneq ($(LTO),)
+$(package)_config_opts_mingw32 += -ltcg
+endif
 
 $(package)_config_opts_android = -xplatform android-clang
 $(package)_config_opts_android += -android-sdk $(ANDROID_SDK)
 $(package)_config_opts_android += -android-ndk $(ANDROID_NDK)
 $(package)_config_opts_android += -android-ndk-platform android-$(ANDROID_API_LEVEL)
-$(package)_config_opts_android += -device-option CROSS_COMPILE="$(host)-"
 $(package)_config_opts_android += -egl
-$(package)_config_opts_android += -qpa xcb
 $(package)_config_opts_android += -no-dbus
 $(package)_config_opts_android += -opengl es2
 $(package)_config_opts_android += -qt-freetype
@@ -232,41 +237,41 @@ endef
 # 2. Create a macOS-Clang-Linux mkspec using our mac-qmake.conf.
 #
 # 3. After making a copy of the mkspec for the linux-arm-gnueabi host, named
-# bitcoin-linux-g++, replace instances of linux-arm-gnueabi with $(host). This
-# way we can generically support hosts like riscv64-linux-gnu, which Qt doesn't
-# ship a mkspec for. See it's usage in config_opts_* above.
+#    bitcoin-linux-g++, replace tool names with $($($(package)_type)_TOOL).
 #
 # 4. Put our C, CXX and LD FLAGS into gcc-base.conf. Only used for non-host builds.
 #
-# 5. Do similar for the win32-g++ mkspec.
-#
-# 6. In clang.conf, swap out clang & clang++, for our compiler + flags. See #17466.
-#
-# 7. Adjust a regex in toolchain.prf, to accommodate Guix's usage of
-# CROSS_LIBRARY_PATH. See #15277.
+# 5. In clang.conf, swap out clang & clang++, for our compiler + flags. See #17466.
 define $(package)_preprocess_cmds
   cp $($(package)_patch_dir)/qt.pro qt.pro && \
   cp $($(package)_patch_dir)/qttools_src.pro qttools/src/src.pro && \
-  patch -p1 -i $($(package)_patch_dir)/fix-macos-linker.patch && \
   patch -p1 -i $($(package)_patch_dir)/dont_hardcode_pwd.patch && \
   patch -p1 -i $($(package)_patch_dir)/fix_qt_pkgconfig.patch && \
-  patch -p1 -i $($(package)_patch_dir)/fix_qt_placeholders.patch && \
   patch -p1 -i $($(package)_patch_dir)/fix_android_jni_static.patch && \
   patch -p1 -i $($(package)_patch_dir)/no-xlib.patch && \
-  patch -p1 -i $($(package)_patch_dir)/dont_hardcode_x86_64.patch && \
-  patch -p1 -i $($(package)_patch_dir)/fix_montery_include.patch && \
-  patch -p1 -i $($(package)_patch_dir)/use_android_ndk23.patch && \
+  patch -p1 -i $($(package)_patch_dir)/qtbase-moc-ignore-gcc-macro.patch && \
   patch -p1 -i $($(package)_patch_dir)/memory_resource.patch && \
+  patch -p1 -i $($(package)_patch_dir)/no_warnings_for_symbols.patch && \
   patch -p1 -i $($(package)_patch_dir)/rcc_hardcode_timestamp.patch && \
   patch -p1 -i $($(package)_patch_dir)/duplicate_lcqpafonts.patch && \
-  patch -p1 -i $($(package)_patch_dir)/qtbase-moc-ignore-gcc-macro.patch && \
-  patch -p1 -i $($(package)_patch_dir)/fast_fixed_dtoa_no_optimize.patch && \
+  patch -p1 -i $($(package)_patch_dir)/utc_from_string_no_optimize.patch && \
   patch -p1 -i $($(package)_patch_dir)/guix_cross_lib_path.patch && \
+  patch -p1 -i $($(package)_patch_dir)/windows_lto.patch && \
+  patch -p1 -i $($(package)_patch_dir)/qfontdatabase-cxx20-operators.patch && \
+  patch -p1 -i $($(package)_patch_dir)/darwin_no_libm.patch && \
+  patch -p1 -i $($(package)_patch_dir)/CVE-2025-4211-qtbase-5.15.patch && \
+  patch -p1 -i $($(package)_patch_dir)/CVE-2025-5455-qtbase-5.15.patch && \
+  patch -p1 -i $($(package)_patch_dir)/CVE-2025-30348-qtbase-5.15.patch && \
   mkdir -p qtbase/mkspecs/macx-clang-linux &&\
   cp -f qtbase/mkspecs/macx-clang/qplatformdefs.h qtbase/mkspecs/macx-clang-linux/ &&\
   cp -f $($(package)_patch_dir)/mac-qmake.conf qtbase/mkspecs/macx-clang-linux/qmake.conf && \
   cp -r qtbase/mkspecs/linux-arm-gnueabi-g++ qtbase/mkspecs/bitcoin-linux-g++ && \
-  sed -i.old "s/arm-linux-gnueabi-/$(host)-/g" qtbase/mkspecs/bitcoin-linux-g++/qmake.conf && \
+  sed -i.old "s|arm-linux-gnueabi-gcc|$($($(package)_type)_CC)|" qtbase/mkspecs/bitcoin-linux-g++/qmake.conf && \
+  sed -i.old "s|arm-linux-gnueabi-g++|$($($(package)_type)_CXX)|" qtbase/mkspecs/bitcoin-linux-g++/qmake.conf && \
+  sed -i.old "s|arm-linux-gnueabi-ar|$($($(package)_type)_AR)|" qtbase/mkspecs/bitcoin-linux-g++/qmake.conf && \
+  sed -i.old "s|arm-linux-gnueabi-objcopy|$($($(package)_type)_OBJCOPY)|" qtbase/mkspecs/bitcoin-linux-g++/qmake.conf && \
+  sed -i.old "s|arm-linux-gnueabi-nm|$($($(package)_type)_NM)|" qtbase/mkspecs/bitcoin-linux-g++/qmake.conf && \
+  sed -i.old "s|arm-linux-gnueabi-strip|$($($(package)_type)_STRIP)|" qtbase/mkspecs/bitcoin-linux-g++/qmake.conf && \
   echo "!host_build: QMAKE_CFLAGS     += $($(package)_cflags) $($(package)_cppflags)" >> qtbase/mkspecs/common/gcc-base.conf && \
   echo "!host_build: QMAKE_CXXFLAGS   += $($(package)_cxxflags) $($(package)_cppflags)" >> qtbase/mkspecs/common/gcc-base.conf && \
   echo "!host_build: QMAKE_LFLAGS     += $($(package)_ldflags)" >> qtbase/mkspecs/common/gcc-base.conf && \
@@ -275,21 +280,18 @@ define $(package)_preprocess_cmds
 endef
 
 define $(package)_config_cmds
-  export PKG_CONFIG_SYSROOT_DIR=/ && \
-  export PKG_CONFIG_LIBDIR=$(host_prefix)/lib/pkgconfig && \
-  export QT_MAC_SDK_NO_VERSION_CHECK=1 && \
   cd qtbase && \
   ./configure -top-level $($(package)_config_opts)
 endef
 
 define $(package)_build_cmds
-  $(MAKE)
+  $(MAKE) -j1
 endef
 
 define $(package)_stage_cmds
-  $(MAKE) -C qtbase/src INSTALL_ROOT=$($(package)_staging_dir) $(addsuffix -install_subtargets,$(addprefix sub-,$($(package)_qt_libs))) && \
-  $(MAKE) -C qttools/src/linguist INSTALL_ROOT=$($(package)_staging_dir) $(addsuffix -install_subtargets,$(addprefix sub-,$($(package)_linguist_tools))) && \
-  $(MAKE) -C qttranslations INSTALL_ROOT=$($(package)_staging_dir) install_subtargets
+  $(MAKE) -j1 -C qtbase/src INSTALL_ROOT=$($(package)_staging_dir) $(addsuffix -install_subtargets,$(addprefix sub-,$($(package)_qt_libs))) && \
+  $(MAKE) -j1 -C qttools/src/linguist INSTALL_ROOT=$($(package)_staging_dir) $(addsuffix -install_subtargets,$(addprefix sub-,$($(package)_linguist_tools))) && \
+  $(MAKE) -j1 -C qttranslations INSTALL_ROOT=$($(package)_staging_dir) install_subtargets
 endef
 
 define $(package)_postprocess_cmds

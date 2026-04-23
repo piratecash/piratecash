@@ -12,11 +12,8 @@
 
 #include <core_io.h>
 #include <interfaces/handler.h>
-#include <interfaces/node.h>
-#include <sync.h>
 #include <uint256.h>
 #include <util/system.h>
-#include <validation.h>
 
 #include <algorithm>
 
@@ -25,6 +22,7 @@
 #include <QDebug>
 #include <QIcon>
 #include <QList>
+#include <QMessageBox>
 
 
 // Amount column is right-aligned it contains numbers
@@ -76,14 +74,18 @@ public:
     void refreshWallet(interfaces::Wallet& wallet)
     {
         qDebug() << "TransactionTablePriv::refreshWallet";
-        cachedWallet.clear();
-        {
+        parent->beginResetModel();
+        try {
+            cachedWallet.clear();
             for (const auto& wtx : wallet.getWalletTxs()) {
                 if (TransactionRecord::showTransaction()) {
                     cachedWallet.append(TransactionRecord::decomposeTransaction(wallet, wtx));
                 }
             }
+        } catch(const std::exception& e) {
+            QMessageBox::critical(nullptr, PACKAGE_NAME, QString("Failed to refresh wallet table: ") + QString::fromStdString(e.what()));
         }
+        parent->endResetModel();
     }
 
     /* Update our model of the wallet incrementally, to synchronize our model of the wallet
@@ -243,6 +245,11 @@ TransactionTableModel::~TransactionTableModel()
 {
     unsubscribeFromCoreSignals();
     delete priv;
+}
+
+void TransactionTableModel::refreshWallet()
+{
+    priv->refreshWallet(walletModel->wallet());
 }
 
 /** Updates the column title to "Amount (DisplayUnit)" and emits headerDataChanged() signal for table headers to react. */
@@ -436,6 +443,7 @@ QString TransactionTableModel::formatTxToAddress(const TransactionRecord *wtx, b
     case TransactionRecord::SendToOther:
         return QString::fromStdString(wtx->strAddress) + watchAddress;
     case TransactionRecord::SendToSelf:
+        return formatAddressLabel(wtx->strAddress, wtx->label, tooltip) + watchAddress;
     default:
         return tr("(n/a)") + watchAddress;
     }
@@ -804,18 +812,24 @@ static void ShowProgress(TransactionTableModel *ttm, const std::string &title, i
     if (nProgress == 100)
     {
         fQueueNotifications = false;
-        if (vQueueNotifications.size() > 10) { // prevent balloon spam, show maximum 10 balloons
-            bool invoked = QMetaObject::invokeMethod(ttm, "setProcessingQueuedTransactions", Qt::QueuedConnection, Q_ARG(bool, true));
-            assert(invoked);
-        }
-        for (unsigned int i = 0; i < vQueueNotifications.size(); ++i)
-        {
-            if (vQueueNotifications.size() - i <= 10) {
-                bool invoked = QMetaObject::invokeMethod(ttm, "setProcessingQueuedTransactions", Qt::QueuedConnection, Q_ARG(bool, false));
+        if (vQueueNotifications.size() < 10000) {
+            if (vQueueNotifications.size() > 10) { // prevent balloon spam, show maximum 10 balloons
+                bool invoked = QMetaObject::invokeMethod(ttm, "setProcessingQueuedTransactions", Qt::QueuedConnection, Q_ARG(bool, true));
                 assert(invoked);
             }
+            for (unsigned int i = 0; i < vQueueNotifications.size(); ++i)
+            {
+                if (vQueueNotifications.size() - i <= 10) {
+                    bool invoked = QMetaObject::invokeMethod(ttm, "setProcessingQueuedTransactions", Qt::QueuedConnection, Q_ARG(bool, false));
+                    assert(invoked);
+                }
 
-            vQueueNotifications[i].invoke(ttm);
+                vQueueNotifications[i].invoke(ttm);
+            }
+        } else {
+            // it's much faster to just refresh the whole thing instead
+            bool invoked = QMetaObject::invokeMethod(ttm, "refreshWallet", Qt::QueuedConnection);
+            assert(invoked);
         }
         std::vector<TransactionNotification >().swap(vQueueNotifications); // clear
     }

@@ -348,7 +348,7 @@
         <translation>&amp;Ontvangen</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
         <translation>Vraag betaling aan (genereert QR-codes en PirateCash: URI's)</translation>
     </message>
     <message>
@@ -540,8 +540,8 @@
         <translation>Open &amp;URI</translation>
     </message>
     <message>
-        <source>Open a dash: URI or payment request</source>
-        <translation>Open een dash: URI of betalingsaanvraag</translation>
+        <source>Open a piratecash: URI or payment request</source>
+        <translation>Open een piratecash: URI of betalingsaanvraag</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -1840,7 +1840,7 @@ Om te mixen moeten andere gebruikers exact dezelfde denominaties inbrengen.</tra
         <translation>Fout bij betalingsverzoek</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
+        <source>Cannot start piratecash: click-to-pay handler</source>
         <translation>Kan PirateCash niet starten: click-to-pay handler</translation>
     </message>
     <message>
@@ -1848,8 +1848,8 @@ Om te mixen moeten andere gebruikers exact dezelfde denominaties inbrengen.</tra
         <translation>URI-afhandeling</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash://' is geen geldige URI. Gebruik in plaats daarvan 'dash:'.</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>'piratecash://' is geen geldige URI. Gebruik in plaats daarvan 'piratecash:'.</translation>
     </message>
     <message>
         <source>Payment request fetch URL is invalid: %1</source>
@@ -2870,7 +2870,7 @@ Nota: Het bericht zal niet verzonden worden met de betaling over het PirateCash 
         <translation>Als de aangepaste vergoeding is ingesteld op 1000 corsars en de transactie is maar 250 bytes, dan wordt bij "per kilobyte" 250 corsars aan toeslag berekend, &lt;br /&gt;terwijl er bij "tenminste" 1000 corsars worden berekend. Voor transacties die groter zijn dan een kilobyte, wordt in beide gevallen per kilobyte de toeslag berekend.</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>Het betalen van de minimale vergoeding is prima zo lang er minder transactie volume is dan ruimte in de blocks. &lt;br /&gt;Maar houd er rekening mee dat dit kan eindigen in een nooit bevestigde transactie zodra er meer vraag is voor PirateCash transacties fdan het netwerk kan verwerken.</translation>
     </message>
     <message>
@@ -3161,8 +3161,8 @@ Nota: Het bericht zal niet verzonden worden met de betaling over het PirateCash 
         <translation>Bericht:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
-        <translation>Een boodschap die was bijgevoegd aan de dash: URI die met de transactie voor uw referentie wordt opgeslagen. Opmerking: Dit bericht zal niet over het PirateCash netwerk worden verzonden.</translation>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <translation>Een boodschap die was bijgevoegd aan de piratecash: URI die met de transactie voor uw referentie wordt opgeslagen. Opmerking: Dit bericht zal niet over het PirateCash netwerk worden verzonden.</translation>
     </message>
     <message>
         <source>This is an unauthenticated payment request.</source>

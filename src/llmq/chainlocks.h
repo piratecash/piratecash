@@ -1,4 +1,4 @@
-// Copyright (c) 2019-2022 The Dash Core developers
+// Copyright (c) 2019-2023 The Dash Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -19,11 +19,18 @@
 #include <atomic>
 #include <unordered_set>
 
+class CConnman;
 class CBlockIndex;
 class CScheduler;
+class CTxMemPool;
+class CSporkManager;
+class CMasternodeSync;
 
 namespace llmq
 {
+class CInstantSendManager;
+class CSigningManager;
+class CSigSharesManager;
 
 class CChainLocksHandler : public CRecoveredSigsListener
 {
@@ -34,6 +41,12 @@ class CChainLocksHandler : public CRecoveredSigsListener
     static constexpr int64_t WAIT_FOR_ISLOCK_TIMEOUT = 10 * 60;
 
 private:
+    CConnman& connman;
+    CTxMemPool& mempool;
+    CSporkManager& spork_manager;
+    CSigningManager& sigman;
+    CSigSharesManager& shareman;
+    const std::unique_ptr<CMasternodeSync>& m_mn_sync;
     std::unique_ptr<CScheduler> scheduler;
     std::unique_ptr<std::thread> scheduler_thread;
     mutable CCriticalSection cs;
@@ -66,7 +79,7 @@ private:
     int64_t lastCleanupTime GUARDED_BY(cs) {0};
 
 public:
-    explicit CChainLocksHandler();
+    explicit CChainLocksHandler(CTxMemPool& _mempool, CConnman& _connman, CSporkManager& sporkManager, CSigningManager& _sigman, CSigSharesManager& _shareman, const std::unique_ptr<CMasternodeSync>& mn_sync);
     ~CChainLocksHandler();
 
     void Start();
@@ -76,12 +89,12 @@ public:
     bool GetChainLockByHash(const uint256& hash, CChainLockSig& ret) const;
     CChainLockSig GetBestChainLock() const;
 
-    void ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv);
+    void ProcessMessage(const CNode& pfrom, const std::string& msg_type, CDataStream& vRecv);
     void ProcessNewChainLock(NodeId from, const CChainLockSig& clsig, const uint256& hash);
     void AcceptedBlockHeader(const CBlockIndex* pindexNew);
     void UpdatedBlockTip();
     void TransactionAddedToMempool(const CTransactionRef& tx, int64_t nAcceptTime);
-    void BlockConnected(const std::shared_ptr<const CBlock>& pblock, const CBlockIndex* pindex, const std::vector<CTransactionRef>& vtxConflicted);
+    void BlockConnected(const std::shared_ptr<const CBlock>& pblock, const CBlockIndex* pindex);
     void BlockDisconnected(const std::shared_ptr<const CBlock>& pblock, const CBlockIndex* pindexDisconnected);
     void CheckActiveState();
     void TrySignChainTip();
@@ -91,7 +104,7 @@ public:
     bool HasChainLock(int nHeight, const uint256& blockHash) const;
     bool HasConflictingChainLock(int nHeight, const uint256& blockHash) const;
 
-    bool IsTxSafeForMining(const uint256& txid) const;
+    bool IsTxSafeForMining(const CInstantSendManager& isman, const uint256& txid) const;
 
 private:
     // these require locks to be held already
@@ -103,9 +116,10 @@ private:
     void Cleanup();
 };
 
-extern CChainLocksHandler* chainLocksHandler;
+extern std::unique_ptr<CChainLocksHandler> chainLocksHandler;
 
-bool AreChainLocksEnabled();
+bool AreChainLocksEnabled(const CSporkManager& sporkManager);
+bool ChainLocksSigningEnabled(const CSporkManager& sporkManager);
 
 } // namespace llmq
 

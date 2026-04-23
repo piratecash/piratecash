@@ -4,9 +4,10 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include <config/piratecash-config.h>
+#include <config/bitcoin-config.h>
 #endif
 
+#include <compat.h>
 #include <util/time.h>
 
 #include <atomic>
@@ -77,10 +78,12 @@ std::string FormatISO8601DateTime(int64_t nTime) {
     struct tm ts;
     time_t time_val = nTime;
 #ifdef HAVE_GMTIME_R
-    gmtime_r(&time_val, &ts);
+    if (gmtime_r(&time_val, &ts) == nullptr) {
 #else
-    gmtime_s(&ts, &time_val);
+    if (gmtime_s(&ts, &time_val) != 0) {
 #endif
+        return {};
+    }
     return strprintf("%04i-%02i-%02iT%02i:%02i:%02iZ", ts.tm_year + 1900, ts.tm_mon + 1, ts.tm_mday, ts.tm_hour, ts.tm_min, ts.tm_sec);
 }
 
@@ -88,10 +91,12 @@ std::string FormatISO8601Date(int64_t nTime) {
     struct tm ts;
     time_t time_val = nTime;
 #ifdef HAVE_GMTIME_R
-    gmtime_r(&time_val, &ts);
+    if (gmtime_r(&time_val, &ts) == nullptr) {
 #else
-    gmtime_s(&ts, &time_val);
+    if (gmtime_s(&ts, &time_val) != 0) {
 #endif
+        return {};
+    }
     return strprintf("%04i-%02i-%02i", ts.tm_year + 1900, ts.tm_mon + 1, ts.tm_mday);
 }
 
@@ -118,4 +123,17 @@ int64_t ParseISO8601DateTime(const std::string& str)
     if (ptime.is_not_a_date_time() || epoch > ptime)
         return 0;
     return (ptime - epoch).total_seconds();
+}
+
+struct timeval MillisToTimeval(int64_t nTimeout)
+{
+    struct timeval timeout;
+    timeout.tv_sec  = nTimeout / 1000;
+    timeout.tv_usec = (nTimeout % 1000) * 1000;
+    return timeout;
+}
+
+struct timeval MillisToTimeval(std::chrono::milliseconds ms)
+{
+    return MillisToTimeval(count_milliseconds(ms));
 }

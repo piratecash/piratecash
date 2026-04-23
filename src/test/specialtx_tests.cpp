@@ -1,4 +1,4 @@
-// Copyright (c) 2021 The Dash Core developers
+// Copyright (c) 2021-2023 The Dash Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,6 +8,7 @@
 #include <evo/specialtx.h>
 #include <primitives/transaction.h>
 #include <uint256.h>
+#include <util/string.h>
 #include <util/strencodings.h>
 
 #include <boost/test/unit_test.hpp>
@@ -21,11 +22,11 @@ bool VerifyMNHFTx(const CTransaction& tx, CValidationState& state)
 {
     MNHFTxPayload mnhfTx;
     if (!GetTxPayload(tx, mnhfTx)) {
-        return state.DoS(100, false, REJECT_INVALID, "bad-mnhf-payload");
+        return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-mnhf-payload");
     }
 
     if (mnhfTx.nVersion == 0 || mnhfTx.nVersion > MNHFTxPayload::CURRENT_VERSION) {
-        return state.DoS(100, false, REJECT_INVALID, "bad-mnhf-version");
+        return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-mnhf-version");
     }
 
     return true;
@@ -72,7 +73,7 @@ BOOST_AUTO_TEST_CASE(verify_mnhf_specialtx_tests)
     BOOST_CHECK(ag_sk.IsValid());
     BOOST_CHECK(ag_pk.IsValid());
 
-    uint256 verHash = uint256S(itostr(ver));
+    uint256 verHash = uint256S(ToString(ver));
     auto sig = ag_sk.Sign(verHash);
     BOOST_CHECK(sig.VerifyInsecure(ag_pk, verHash));
 

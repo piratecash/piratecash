@@ -6,11 +6,8 @@
 #include <qt/transactionrecord.h>
 
 #include <chain.h>
-#include <consensus/consensus.h>
 #include <interfaces/wallet.h>
 #include <interfaces/node.h>
-#include <timedata.h>
-#include <validation.h>
 
 #include <wallet/ismine.h>
 
@@ -118,6 +115,10 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(interfaces::Wal
             // Payment to self by default
             sub.type = TransactionRecord::SendToSelf;
             sub.strAddress = "";
+            for (auto it = wtx.txout_address.begin(); it != wtx.txout_address.end(); ++it) {
+                if (it != wtx.txout_address.begin()) sub.strAddress += ", ";
+                sub.strAddress += EncodeDestination(*it);
+            }
 
             if(mapValue["DS"] == "1")
             {
@@ -215,7 +216,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(interfaces::Wal
                     continue;
                 }
 
-                if (!boost::get<CNoDestination>(&wtx.txout_address[nOut]))
+                if (!std::get_if<CNoDestination>(&wtx.txout_address[nOut]))
                 {
                     // Sent to PirateCash Address
                     sub.type = TransactionRecord::SendToAddress;

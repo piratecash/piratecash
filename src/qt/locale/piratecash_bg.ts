@@ -188,8 +188,8 @@
         <translation>Потвърдете на шифрирането на портфейла</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
-        <translation>Внимание: Ако шифрирате вашия портфейл и загубите паролата си,  &lt;b&gt;ЩЕ ЗАГУБИТЕ ВСИЧКИ DASH МОНЕТИ!&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATE&lt;/b&gt;!</source>
+        <translation>Внимание: Ако шифрирате вашия портфейл и загубите паролата си,  &lt;b&gt;ЩЕ ЗАГУБИТЕ ВСИЧКИ PIRATE МОНЕТИ!&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -294,7 +294,7 @@
         <translation>&amp;Получаване</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
         <translation>Заявка за плащане (генерира QR кодове и PirateCash: URI)</translation>
     </message>
     <message>
@@ -482,7 +482,7 @@
         <translation>Отвори &amp;URI...</translation>
     </message>
     <message>
-        <source>Open a dash: URI or payment request</source>
+        <source>Open a piratecash: URI or payment request</source>
         <translation>Отвори PirateCash: URI или заявка за плащане</translation>
     </message>
     <message>
@@ -1648,8 +1648,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Количество и цикли:</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
-        <translation>0 DASH / 0 Цикъла</translation>
+        <source>0 PIRATE / 0 Rounds</source>
+        <translation>0 PIRATE / 0 Цикъла</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -1801,8 +1801,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Грешка в заявката за плащане</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
-        <translation>Не може да стартира dash: кликни за плащане на притежателя</translation>
+        <source>Cannot start piratecash: click-to-pay handler</source>
+        <translation>Не може да стартира piratecash: кликни за плащане на притежателя</translation>
     </message>
     <message>
         <source>URI handling</source>
@@ -2690,7 +2690,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Ако променената такса е 1000 corsars и транзакцията е само 250 байта, тогава "за килобайт" само плаща такса 250 corsars,,&lt;br /&gt; тогава"за последно" заплаща 1000 corsars. За транзакции по-големи от килобайт едновременно се заплащат от килобайт.</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>Разплащането само минималната такса ще продължи толкова дълго,докато транзакцията заема по-малък обем в блоковото пространство.&lt;br /&gt; Но имайте предвид, че транзакцията може да се окаже без първоначално потвърждение ако се появи голямо търсене на dash транзакции отколкото мрежата може да обработи.</translation>
     </message>
     <message>
@@ -2965,8 +2965,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Съобщение:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
-        <translation>Съобщението което беше прикрепено към dash: URI ще бъде запазено с транзакцията за ваше сведение. Забележка: Това съобщение няма да бъде изпратено през PirateCash мрежата.</translation>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <translation>Съобщението което беше прикрепено към piratecash: URI ще бъде запазено с транзакцията за ваше сведение. Забележка: Това съобщение няма да бъде изпратено през PirateCash мрежата.</translation>
     </message>
     <message>
         <source>This is an unauthenticated payment request.</source>
@@ -4095,8 +4095,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Невалиден минимален брой ауторизатори на spork определен с -minsporkkeys</translation>
     </message>
     <message>
-        <source>Keep N DASH mixed (%u-%u, default: %u)</source>
-        <translation>Дръж N DASH миксирани (%u-%u, default: %u)</translation>
+        <source>Keep N PIRATE mixed (%u-%u, default: %u)</source>
+        <translation>Дръж N PIRATE миксирани (%u-%u, default: %u)</translation>
     </message>
     <message>
         <source>Keep at most &lt;n&gt; unconnectable transactions in memory (default: %u)</source>

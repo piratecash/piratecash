@@ -298,8 +298,8 @@
         <context-group purpose="location"><context context-type="linenumber">131</context></context-group>
       </trans-unit>
       <trans-unit id="_msg55" approved="yes">
-        <source xml:space="preserve">Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COSA&lt;/b&gt;!</source>
-        <target xml:space="preserve">Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COSA&lt;/b&gt;!</target>
+        <source xml:space="preserve">Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATE&lt;/b&gt;!</source>
+        <target xml:space="preserve">Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATE&lt;/b&gt;!</target>
         <context-group purpose="location"><context context-type="linenumber">132</context></context-group>
       </trans-unit>
       <trans-unit id="_msg56" approved="yes">
@@ -567,8 +567,8 @@
         <context-group purpose="location"><context context-type="linenumber">354</context></context-group>
       </trans-unit>
       <trans-unit id="_msg103" approved="yes">
-        <source xml:space="preserve">Request payments (generates QR codes and cosa: URIs)</source>
-        <target xml:space="preserve">Request payments (generates QR codes and cosa: URIs)</target>
+        <source xml:space="preserve">Request payments (generates QR codes and piratecash: URIs)</source>
+        <target xml:space="preserve">Request payments (generates QR codes and piratecash: URIs)</target>
         <context-group purpose="location"><context context-type="linenumber">355</context></context-group>
       </trans-unit>
       <trans-unit id="_msg104" approved="yes">
@@ -889,7 +889,7 @@
         <context-group purpose="location"><context context-type="linenumber">374</context></context-group>
       </trans-unit>
       <trans-unit id="_msg167">
-        <source xml:space="preserve">Open a cosa: URI</source>
+        <source xml:space="preserve">Open a piratecash: URI</source>
         <target xml:space="preserve"></target>
         <context-group purpose="location"><context context-type="linenumber">431</context></context-group>
       </trans-unit>
@@ -1788,8 +1788,8 @@
         <context-group purpose="location"><context context-type="linenumber">111</context></context-group>
       </trans-unit>
       <trans-unit id="_msg330" approved="yes">
-        <source xml:space="preserve">&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different &quot;inputs&quot; which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type=&quot;1&quot;&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 COSA, 0.01 COSA, 0.1 COSA, 1 COSA and 10 COSA -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called &quot;masternodes.&quot; These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know &quot;who&quot; you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users&apos; wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it&apos;s called a &quot;round.&quot; Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these &quot;change addresses.&quot; Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style=&quot;%2&quot; href=&quot;%3&quot;&gt;%1 documentation&lt;/a&gt;.</source>
-        <target xml:space="preserve">&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different &quot;inputs&quot; which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type=&quot;1&quot;&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 COSA, 0.01 COSA, 0.1 COSA, 1 COSA and 10 COSA -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called &quot;masternodes.&quot; These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know &quot;who&quot; you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users&apos; wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it&apos;s called a &quot;round.&quot; Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these &quot;change addresses.&quot; Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style=&quot;%2&quot; href=&quot;%3&quot;&gt;%1 documentation&lt;/a&gt;.</target>
+        <source xml:space="preserve">&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different &quot;inputs&quot; which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type=&quot;1&quot;&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE and 10 PIRATE -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called &quot;masternodes.&quot; These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know &quot;who&quot; you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users&apos; wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it&apos;s called a &quot;round.&quot; Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these &quot;change addresses.&quot; Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style=&quot;%2&quot; href=&quot;%3&quot;&gt;%1 documentation&lt;/a&gt;.</source>
+        <target xml:space="preserve">&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different &quot;inputs&quot; which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type=&quot;1&quot;&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE and 10 PIRATE -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called &quot;masternodes.&quot; These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know &quot;who&quot; you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users&apos; wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it&apos;s called a &quot;round.&quot; Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these &quot;change addresses.&quot; Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style=&quot;%2&quot; href=&quot;%3&quot;&gt;%1 documentation&lt;/a&gt;.</target>
         <context-group purpose="location"><context context-type="linenumber">115</context></context-group>
       </trans-unit>
     </group>
@@ -2651,8 +2651,8 @@ https://www.transifex.com/projects/p/piratecash/</target>
         <context-group purpose="location"><context context-type="linenumber">465</context></context-group>
       </trans-unit>
       <trans-unit id="_msg491" approved="yes">
-        <source xml:space="preserve">0 COSA / 0 Rounds</source>
-        <target xml:space="preserve">0 COSA / 0 Rounds</target>
+        <source xml:space="preserve">0 PIRATE / 0 Rounds</source>
+        <target xml:space="preserve">0 PIRATE / 0 Rounds</target>
         <context-group purpose="location"><context context-type="linenumber">472</context></context-group>
       </trans-unit>
       <trans-unit id="_msg492" approved="yes">
@@ -2857,8 +2857,8 @@ https://www.transifex.com/projects/p/piratecash/</target>
         <context-group purpose="location"><context context-type="linenumber">175</context></context-group>
       </trans-unit>
       <trans-unit id="_msg526" approved="yes">
-        <source xml:space="preserve">Cannot start cosa: click-to-pay handler</source>
-        <target xml:space="preserve">Cannot start cosa: click-to-pay handler</target>
+        <source xml:space="preserve">Cannot start piratecash: click-to-pay handler</source>
+        <target xml:space="preserve">Cannot start piratecash: click-to-pay handler</target>
         <context-group purpose="location"><context context-type="linenumber">176</context></context-group>
       </trans-unit>
       <trans-unit id="_msg527" approved="yes">
@@ -2870,8 +2870,8 @@ https://www.transifex.com/projects/p/piratecash/</target>
         <context-group purpose="location"><context context-type="linenumber">252</context></context-group>
       </trans-unit>
       <trans-unit id="_msg528" approved="yes">
-        <source xml:space="preserve">&apos;cosa://&apos; is not a valid URI. Use &apos;cosa:&apos; instead.</source>
-        <target xml:space="preserve">&apos;cosa://&apos; is not a valid URI. Use &apos;cosa:&apos; instead.</target>
+        <source xml:space="preserve">&apos;piratecash://&apos; is not a valid URI. Use &apos;piratecash:&apos; instead.</source>
+        <target xml:space="preserve">&apos;piratecash://&apos; is not a valid URI. Use &apos;piratecash:&apos; instead.</target>
         <context-group purpose="location"><context context-type="linenumber">226</context></context-group>
       </trans-unit>
       <trans-unit id="_msg529">
@@ -4055,7 +4055,7 @@ https://www.transifex.com/projects/p/piratecash/</target>
         <context-group purpose="location"><context context-type="linenumber">672</context></context-group>
       </trans-unit>
       <trans-unit id="_msg736">
-        <source xml:space="preserve">When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for cosa transactions than the network can process.</source>
+        <source xml:space="preserve">When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <target xml:space="preserve"></target>
         <context-group purpose="location"><context context-type="linenumber">822</context></context-group>
       </trans-unit>
@@ -4467,8 +4467,8 @@ https://www.transifex.com/projects/p/piratecash/</target>
         <context-group purpose="location"><context context-type="linenumber">184</context></context-group>
       </trans-unit>
       <trans-unit id="_msg812" approved="yes">
-        <source xml:space="preserve">A message that was attached to the cosa: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
-        <target xml:space="preserve">A message that was attached to the cosa: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</target>
+        <source xml:space="preserve">A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <target xml:space="preserve">A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</target>
         <context-group purpose="location"><context context-type="linenumber">194</context></context-group>
       </trans-unit>
       <trans-unit id="_msg813" approved="yes">

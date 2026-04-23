@@ -26,4 +26,4 @@ services:
       - type: bind
 #        source: /host/$PWD # Workaround needed on non-Linux hosts
         source: ../../..
-        target: /dash-src
+        target: /cosanta-src

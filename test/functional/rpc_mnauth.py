@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2021 The Dash Core developers
+# Copyright (c) 2021-2022 The Dash Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -25,6 +25,7 @@ class FakeMNAUTHTest(DashTestFramework):
         masternode.node.add_p2p_connection(P2PInterface())
 
         protx_hash = masternode.proTxHash
+        #TODO: Fix that with basic BLS
         public_key = masternode.pubKeyOperator
 
         # The peerinfo should not yet contain verified_proregtx_hash/verified_pubkey_hash

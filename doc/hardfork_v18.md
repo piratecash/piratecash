@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 PirateCash [PIRATE] Source Code
 ================================
 
@@ -42,12 +41,6 @@ Starting from block 1265001, payouts for staking and referral rewards will be te
 ## About Souces
 
 https://www.piratecash.net
-=======
-PirateCash Core staging tree 18.0
-===========================
-
-https://p.cash/ https://pirate.cash/ https://piratecash.net/
->>>>>>> v18
 
 
 What is PirateCash?
@@ -186,4 +179,3 @@ Translations are periodically pulled from Transifex and merged into the git repo
 
 **Important**: We do not accept translation changes as GitHub pull requests because the next
 pull from Transifex would automatically overwrite them again.
-

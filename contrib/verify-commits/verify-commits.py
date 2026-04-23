@@ -5,6 +5,7 @@
 """Verify commits against a trusted keys list."""
 import argparse
 import hashlib
+import logging
 import os
 import subprocess
 import sys

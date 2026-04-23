@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include <config/piratecash-config.h>
+#include <config/bitcoin-config.h>
 #endif
 
 #include <qt/walletmodel.h>
@@ -19,6 +19,7 @@
 #include <interfaces/handler.h>
 #include <interfaces/node.h>
 #include <key_io.h>
+#include <psbt.h>
 #include <ui_interface.h>
 #include <util/system.h> // for GetBoolArg
 #include <util/translation.h>
@@ -229,10 +230,10 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
     int nChangePosRet = -1;
 
     auto& newTx = transaction.getWtx();
-    newTx = m_wallet->createTransaction(vecSend, coinControl, true /* sign */, nChangePosRet, nFeeRequired, error);
+    newTx = m_wallet->createTransaction(vecSend, coinControl, !privateKeysDisabled() /* sign */, nChangePosRet, nFeeRequired, error);
     transaction.setTransactionFee(nFeeRequired);
     if (fSubtractFeeFromAmount && newTx)
-        transaction.reassignAmounts();
+        transaction.reassignAmounts(nChangePosRet);
 
     if(!newTx)
     {
@@ -263,7 +264,7 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(WalletModelTransaction &tran
         std::vector<std::pair<std::string, std::string>> vOrderForm;
         for (const SendCoinsRecipient &rcp : transaction.getRecipients())
         {
-            if (!rcp.message.isEmpty()) // Message from normal cosa:URI (cosa:XyZ...?message=example)
+            if (!rcp.message.isEmpty()) // Message from normal piratecash:URI (piratecash:XyZ...?message=example)
                 vOrderForm.emplace_back("Message", rcp.message.toStdString());
         }
 
@@ -605,5 +606,5 @@ QString WalletModel::getDisplayName() const
 
 bool WalletModel::isMultiwallet()
 {
-    return m_node.getWallets().size() > 1;
+    return m_node.walletClient().getWallets().size() > 1;
 }

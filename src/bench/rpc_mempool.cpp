@@ -3,14 +3,11 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <bench/bench.h>
-#include <policy/policy.h>
 #include <rpc/blockchain.h>
 #include <txmempool.h>
 
 #include <univalue.h>
 
-#include <list>
-#include <vector>
 
 static void AddTx(const CTransactionRef& tx, const CAmount& fee, CTxMemPool& pool) EXCLUSIVE_LOCKS_REQUIRED(cs_main, pool.cs)
 {
@@ -35,7 +32,7 @@ static void RpcMempool(benchmark::Bench& bench)
     }
 
     bench.minEpochIterations(40).run([&] {
-        (void)MempoolToJSON(pool, /*verbose*/ true);
+        (void)MempoolToJSON(pool, nullptr, /*verbose*/ true);
     });
 }
 

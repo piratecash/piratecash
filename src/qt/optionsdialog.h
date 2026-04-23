@@ -42,8 +42,18 @@ public:
     explicit OptionsDialog(QWidget *parent, bool enableWallet);
     ~OptionsDialog();
 
+    enum Tab {
+        TAB_MAIN,
+        TAB_WALLET,
+        TAB_COINJOIN,
+        TAB_NETWORK,
+        TAB_DISPLAY,
+        TAB_APPEARANCE,
+    };
+
     void setModel(OptionsModel *model);
     void setMapper();
+    void setCurrentTab(OptionsDialog::Tab tab);
 
 private Q_SLOTS:
     /** custom tab buttons clicked */
@@ -69,7 +79,7 @@ private Q_SLOTS:
 
 Q_SIGNALS:
     void appearanceChanged();
-    void proxyIpChecks(QValidatedLineEdit *pUiProxyIp, int nProxyPort);
+    void proxyIpChecks(QValidatedLineEdit *pUiProxyIp, uint16_t nProxyPort);
 
 private:
     Ui::OptionsDialog *ui;
@@ -79,6 +89,7 @@ private:
     QString previousTheme;
     AppearanceWidget* appearance;
     bool fCoinJoinEnabledPrev{false};
+    bool m_enable_wallet{false};
 
     void showEvent(QShowEvent* event) override;
 };

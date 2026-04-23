@@ -7,7 +7,6 @@
 #include <script/standard.h>
 #include <test/util/setup_common.h>
 #include <util/time.h>
-#include <validation.h>
 
 #include <boost/test/unit_test.hpp>
 
@@ -55,7 +54,7 @@ BOOST_FIXTURE_TEST_CASE(txindex_initial_sync, TestChain100Setup)
 
     // Check that new transactions in new blocks make it into the index.
     for (int i = 0; i < 10; i++) {
-        CScript coinbase_script_pub_key = GetScriptForDestination(coinbaseKey.GetPubKey().GetID());
+        CScript coinbase_script_pub_key = GetScriptForDestination(PKHash(coinbaseKey.GetPubKey()));
         std::vector<CMutableTransaction> no_txns;
         const CBlock& block = CreateAndProcessBlock(no_txns, coinbase_script_pub_key);
         const CTransaction& txn = *block.vtx[0];
@@ -71,12 +70,8 @@ BOOST_FIXTURE_TEST_CASE(txindex_initial_sync, TestChain100Setup)
     // shutdown sequence (c.f. Shutdown() in init.cpp)
     txindex.Stop();
 
-    // txindex job may be scheduled, so stop scheduler before destructing
-    scheduler.stop();
-    threadGroup.interrupt_all();
-    threadGroup.join_all();
-
-    // Rest of shutdown sequence and destructors happen in ~TestingSetup()
+    // Let scheduler events finish running to avoid accessing any memory related to txindex after it is destructed
+    SyncWithValidationInterfaceQueue();
 }
 
 BOOST_AUTO_TEST_SUITE_END()

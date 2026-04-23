@@ -10,8 +10,6 @@
 #include <util/translation.h>
 #include <validation.h>
 
-#include <boost/thread.hpp>
-
 constexpr char DB_BEST_BLOCK = 'B';
 constexpr char DB_TXINDEX = 't';
 constexpr char DB_TXINDEX_BLOCK = 'T';
@@ -122,7 +120,6 @@ bool TxIndex::DB::MigrateData(CBlockTreeDB& block_tree_db, const CBlockLocator& 
     bool interrupted = false;
     std::unique_ptr<CDBIterator> cursor(block_tree_db.NewIterator());
     for (cursor->Seek(begin_key); cursor->Valid(); cursor->Next()) {
-        boost::this_thread::interruption_point();
         if (ShutdownRequested()) {
             interrupted = true;
             break;
@@ -195,7 +192,7 @@ bool TxIndex::DB::MigrateData(CBlockTreeDB& block_tree_db, const CBlockLocator& 
 }
 
 TxIndex::TxIndex(size_t n_cache_size, bool f_memory, bool f_wipe)
-    : m_db(MakeUnique<TxIndex::DB>(n_cache_size, f_memory, f_wipe))
+    : m_db(std::make_unique<TxIndex::DB>(n_cache_size, f_memory, f_wipe))
 {}
 
 TxIndex::~TxIndex() {}
@@ -224,7 +221,7 @@ bool TxIndex::WriteBlock(const CBlock& block, const CBlockIndex* pindex)
     vPos.reserve(block.vtx.size());
     for (const auto& tx : block.vtx) {
         vPos.emplace_back(tx->GetHash(), pos);
-        pos.nTxOffset += ::GetSerializeSize(*tx, SER_DISK, CLIENT_VERSION);
+        pos.nTxOffset += ::GetSerializeSize(*tx, CLIENT_VERSION);
     }
     return m_db->WriteTxs(vPos);
 }

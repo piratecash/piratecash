@@ -1,4 +1,4 @@
-// Copyright (c) 2021 The Dash Core developers
+// Copyright (c) 2021-2022 The Dash Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -19,19 +19,22 @@ enum class LLMQType : uint8_t {
     LLMQ_400_85 = 3, // 400 members, 340 (85%) threshold, one every 24 hours
     LLMQ_100_67 = 4, // 100 members, 67 (67%) threshold, one per hour
     LLMQ_60_75 = 5,  // 60 members, 45 (75%) threshold, one every 12 hours
+    LLMQ_25_67 = 6, // 25 members, 67 (67%) threshold, one per hour
 
     // for testing only
     LLMQ_TEST = 100, // 3 members, 2 (66%) threshold, one per hour. Params might differ when -llmqtestparams is used
 
     // for devnets only
     LLMQ_DEVNET = 101, // 12 members, 6 (50%) threshold, one per hour. Params might differ when -llmqdevnetparams is used
+    LLMQ_DEVNET_PLATFORM = 107, // 12 members, 8 (67%) threshold, one per hour.
 
     // for testing activation of new quorums only
     LLMQ_TEST_V17 = 102, // 3 members, 2 (66%) threshold, one per hour. Params might differ when -llmqtestparams is used
 
     // for testing only
-    LLMQ_TEST_DIP0024 = 103, // 4 members, 2 (66%) threshold, one per hour. Params might differ when -llmqtestparams is used
+    LLMQ_TEST_DIP0024 = 103,     // 4 members, 2 (66%) threshold, one per hour. Params might differ when -llmqtestparams is used
     LLMQ_TEST_INSTANTSEND = 104, // 3 members, 2 (66%) threshold, one per hour. Params might differ when -llmqtestinstantsendparams is used
+    LLMQ_TEST_PLATFORM = 106,    // 3 members, 2 (66%) threshold, one per hour.
 
     // for devnets only. rotated version (v2) for devnets
     LLMQ_DEVNET_DIP0024 = 105 // 8 members, 4 (50%) threshold, one per hour. Params might differ when -llmqdevnetparams is used
@@ -105,8 +108,13 @@ struct LLMQParams {
     int recoveryMembers;
 };
 
+//static_assert(std::is_trivial_v<Consensus::LLMQParams>, "LLMQParams is not a trivial type");
+static_assert(std::is_trivially_copyable_v<Consensus::LLMQParams>, "LLMQParams is not trivially copyable");
+//static_assert(std::is_trivially_default_constructible_v<Consensus::LLMQParams>, "LLMQParams is not trivially default constructible");
+static_assert(std::is_trivially_assignable_v<Consensus::LLMQParams, Consensus::LLMQParams>, "LLMQParams is not trivially assignable");
 
-static constexpr std::array<LLMQParams, 11> available_llmqs = {
+
+static constexpr std::array<LLMQParams, 14> available_llmqs = {
 
     /**
      * llmq_test
@@ -193,13 +201,38 @@ static constexpr std::array<LLMQParams, 11> available_llmqs = {
         .name = "llmq_test_dip0024",
         .useRotation = true,
         .size = 4,
-        .minSize = 3,
+        .minSize = 4,
         .threshold = 2,
 
         .dkgInterval = 24, // DKG cycle
         .dkgPhaseBlocks = 2,
         .dkgMiningWindowStart = 12, // signingActiveQuorumCount + dkgPhaseBlocks * 5 = after finalization
         .dkgMiningWindowEnd = 20,
+        .dkgBadVotesThreshold = 2,
+
+        .signingActiveQuorumCount = 2, // just a few ones to allow easier testing
+
+        .keepOldConnections = 4,
+        .recoveryMembers = 3,
+    },
+
+    /**
+     * llmq_test_platform
+     * This quorum is only used for testing
+     *
+     */
+    LLMQParams{
+        .type = LLMQType::LLMQ_TEST_PLATFORM,
+        .name = "llmq_test_platform",
+        .useRotation = false,
+        .size = 3,
+        .minSize = 2,
+        .threshold = 2,
+
+        .dkgInterval = 24, // DKG cycle
+        .dkgPhaseBlocks = 2,
+        .dkgMiningWindowStart = 10, // signingActiveQuorumCount + dkgPhaseBlocks * 5 = after finalization
+        .dkgMiningWindowEnd = 18,
         .dkgBadVotesThreshold = 2,
 
         .signingActiveQuorumCount = 2, // just a few ones to allow easier testing
@@ -256,6 +289,31 @@ static constexpr std::array<LLMQParams, 11> available_llmqs = {
 
         .keepOldConnections = 4,
         .recoveryMembers = 4,
+    },
+
+    /**
+     * llmq_devnet_platform
+     * This quorum is only used for testing on devnets
+     *
+     */
+    LLMQParams{
+        .type = LLMQType::LLMQ_DEVNET_PLATFORM,
+        .name = "llmq_devnet_platform",
+        .useRotation = false,
+        .size = 12,
+        .minSize = 9,
+        .threshold = 8,
+
+        .dkgInterval = 24, // one DKG per hour
+        .dkgPhaseBlocks = 2,
+        .dkgMiningWindowStart = 10, // dkgPhaseBlocks * 5 = after finalization
+        .dkgMiningWindowEnd = 18,
+        .dkgBadVotesThreshold = 7,
+
+        .signingActiveQuorumCount = 4, // just a few ones to allow easier testing
+
+        .keepOldConnections = 5,
+        .recoveryMembers = 6,
     },
 
     /**
@@ -386,6 +444,33 @@ static constexpr std::array<LLMQParams, 11> available_llmqs = {
 
         .keepOldConnections = 25,
         .recoveryMembers = 50,
+    },
+
+    /**
+     * llmq_25_67
+     * This quorum is deployed on Testnet and requires
+     * 25 participants
+     *
+     * Used by Dash Platform
+     */
+    LLMQParams{
+        .type = LLMQType::LLMQ_25_67,
+        .name = "llmq_25_67",
+        .useRotation = false,
+        .size = 25,
+        .minSize = 22,
+        .threshold = 17,
+
+        .dkgInterval = 24, // one DKG per hour
+        .dkgPhaseBlocks = 2,
+        .dkgMiningWindowStart = 10, // dkgPhaseBlocks * 5 = after finalization
+        .dkgMiningWindowEnd = 18,
+        .dkgBadVotesThreshold = 22,
+
+        .signingActiveQuorumCount = 24, // a full day worth of LLMQs
+
+        .keepOldConnections = 25,
+        .recoveryMembers = 12,
     },
 
 }; // available_llmqs

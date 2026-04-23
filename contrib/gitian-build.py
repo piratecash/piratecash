@@ -23,13 +23,13 @@ def setup():
             exit(1)
     subprocess.check_call(['sudo', 'apt-get', 'install', '-qq'] + programs)
     if not os.path.isdir('gitian.sigs'):
-        subprocess.check_call(['git', 'clone', 'https://github.com/dashpay/gitian.sigs.git'])
-    if not os.path.isdir('dash-detached-sigs'):
-        subprocess.check_call(['git', 'clone', 'https://github.com/dashpay/dash-detached-sigs.git'])
+        subprocess.check_call(['git', 'clone', 'https://github.com/piratecash/gitian.sigs.git'])
+    if not os.path.isdir('piratecash-detached-sigs'):
+        subprocess.check_call(['git', 'clone', 'https://github.com/piratecash/piratecash-detached-sigs.git'])
     if not os.path.isdir('gitian-builder'):
         subprocess.check_call(['git', 'clone', 'https://github.com/devrandom/gitian-builder.git'])
-    if not os.path.isdir('dash'):
-        subprocess.check_call(['git', 'clone', 'https://github.com/dashpay/dash.git'])
+    if not os.path.isdir('piratecash'):
+        subprocess.check_call(['git', 'clone', 'https://github.com/piratecash/piratecash.git'])
     os.chdir('gitian-builder')
     make_image_prog = ['bin/make-base-vm', '--suite', 'bionic', '--arch', 'amd64']
     if args.docker:
@@ -53,7 +53,7 @@ def build():
 
     subprocess.check_call(['wget', '-O', 'inputs/osslsigncode-2.0.tar.gz', 'https://github.com/mtrojnar/osslsigncode/archive/2.0.tar.gz'])
     subprocess.check_call(["echo '5a60e0a4b3e0b4d655317b2f12a810211c50242138322b16e7e01c6fbb89d92f inputs/osslsigncode-2.0.tar.gz' | sha256sum -c"], shell=True)
-    subprocess.check_call(['make', '-C', '../dash/depends', 'download', 'SOURCES_PATH=' + os.getcwd() + '/cache/common'])
+    subprocess.check_call(['make', '-C', '../piratecash/depends', 'download', 'SOURCES_PATH=' + os.getcwd() + '/cache/common'])
 
     if args.linux:
         print('\nCompiling ' + args.version + ' Linux')
@@ -119,15 +119,15 @@ def verify():
     os.chdir('gitian-builder')
 
     print('\nVerifying v'+args.version+' Linux\n')
-    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-linux', '../dash/contrib/gitian-descriptors/gitian-linux.yml'])
+    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-linux', '../piratecash/contrib/gitian-descriptors/gitian-linux.yml'])
     print('\nVerifying v'+args.version+' Windows\n')
-    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-win-unsigned', '../dash/contrib/gitian-descriptors/gitian-win.yml'])
+    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-win-unsigned', '../piratecash/contrib/gitian-descriptors/gitian-win.yml'])
     print('\nVerifying v'+args.version+' MacOS\n')
-    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-osx-unsigned', '../dash/contrib/gitian-descriptors/gitian-osx.yml'])
+    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-osx-unsigned', '../piratecash/contrib/gitian-descriptors/gitian-osx.yml'])
     print('\nVerifying v'+args.version+' Signed Windows\n')
-    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-win-signed', '../dash/contrib/gitian-descriptors/gitian-win-signer.yml'])
+    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-win-signed', '../piratecash/contrib/gitian-descriptors/gitian-win-signer.yml'])
     print('\nVerifying v'+args.version+' Signed MacOS\n')
-    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-osx-signed', '../dash/contrib/gitian-descriptors/gitian-osx-signer.yml'])
+    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-osx-signed', '../piratecash/contrib/gitian-descriptors/gitian-osx-signer.yml'])
 
     os.chdir(workdir)
 
@@ -137,7 +137,7 @@ def main():
     parser = argparse.ArgumentParser(usage='%(prog)s [options] signer version')
     parser.add_argument('-c', '--commit', action='store_true', dest='commit', help='Indicate that the version argument is for a commit or branch')
     parser.add_argument('-p', '--pull', action='store_true', dest='pull', help='Indicate that the version argument is the number of a github repository pull request')
-    parser.add_argument('-u', '--url', dest='url', default='https://github.com/dashpay/dash', help='Specify the URL of the repository. Default is %(default)s')
+    parser.add_argument('-u', '--url', dest='url', default='https://github.com/piratecash/piratecash', help='Specify the URL of the repository. Default is %(default)s')
     parser.add_argument('-v', '--verify', action='store_true', dest='verify', help='Verify the Gitian build')
     parser.add_argument('-b', '--build', action='store_true', dest='build', help='Do a Gitian build')
     parser.add_argument('-s', '--sign', action='store_true', dest='sign', help='Make signed binaries for Windows and MacOS')
@@ -229,10 +229,10 @@ def main():
     if not args.build and not args.sign and not args.verify:
         exit(0)
 
-    os.chdir('dash')
+    os.chdir('piratecash')
     if args.pull:
         subprocess.check_call(['git', 'fetch', args.url, 'refs/pull/'+args.version+'/merge'])
-        os.chdir('../gitian-builder/inputs/dash')
+        os.chdir('../gitian-builder/inputs/piratecash')
         subprocess.check_call(['git', 'fetch', args.url, 'refs/pull/'+args.version+'/merge'])
         args.commit = subprocess.check_output(['git', 'show', '-s', '--format=%H', 'FETCH_HEAD'], universal_newlines=True, encoding='utf8').strip()
         args.version = 'pull-' + args.version

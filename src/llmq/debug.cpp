@@ -10,16 +10,16 @@
 
 #include <evo/deterministicmns.h>
 #include <llmq/utils.h>
+#include <util/irange.h>
+#include <util/underlying.h>
 
 namespace llmq
 {
-CDKGDebugManager* quorumDKGDebugManager;
-
 UniValue CDKGDebugSessionStatus::ToJson(int quorumIndex, int detailLevel) const
 {
     UniValue ret(UniValue::VOBJ);
 
-    if (!Params().HasLLMQ(llmqType) || quorumHash.IsNull()) {
+    if (!GetLLMQParams(llmqType).has_value() || quorumHash.IsNull()) {
         return ret;
     }
 
@@ -27,14 +27,14 @@ UniValue CDKGDebugSessionStatus::ToJson(int quorumIndex, int detailLevel) const
     if (detailLevel == 2) {
         const CBlockIndex* pindex = WITH_LOCK(cs_main, return LookupBlockIndex(quorumHash));
         if (pindex != nullptr) {
-            dmnMembers = CLLMQUtils::GetAllQuorumMembers(llmqType, pindex);
+            dmnMembers = utils::GetAllQuorumMembers(llmqType, pindex);
         }
     }
 
-    ret.pushKV("llmqType", static_cast<uint8_t>(llmqType));
+    ret.pushKV("llmqType", ToUnderlying(llmqType));
     ret.pushKV("quorumHash", quorumHash.ToString());
     ret.pushKV("quorumHeight", (int)quorumHeight);
-    ret.pushKV("phase", (int)phase);
+    ret.pushKV("phase", ToUnderlying(phase));
 
     ret.pushKV("sentContributions", sentContributions);
     ret.pushKV("sentComplaint", sentComplaint);
@@ -79,7 +79,7 @@ UniValue CDKGDebugSessionStatus::ToJson(int quorumIndex, int detailLevel) const
         }
     };
 
-    for (size_t i = 0; i < members.size(); i++) {
+    for (const auto i : irange::range(members.size())) {
         const auto& m = members[i];
         add(badMembers, i, m.bad);
         add(weComplain, i, m.weComplain);
@@ -118,11 +118,12 @@ UniValue CDKGDebugStatus::ToJson(int detailLevel) const
     // TODO Support array of sessions
     UniValue sessionsArrJson(UniValue::VARR);
     for (const auto& p : sessions) {
-        if (!Params().HasLLMQ(p.first.first)) {
+        const auto& llmq_params_opt = GetLLMQParams(p.first.first);
+        if (!llmq_params_opt.has_value()) {
             continue;
         }
         UniValue s(UniValue::VOBJ);
-        s.pushKV("llmqType", std::string(GetLLMQParams(p.first.first).name));
+        s.pushKV("llmqType", std::string(llmq_params_opt->name));
         s.pushKV("quorumIndex", p.first.second);
         s.pushKV("status", p.second.ToJson(p.first.second, detailLevel));
 
@@ -165,7 +166,7 @@ void CDKGDebugManager::InitLocalSessionStatus(const Consensus::LLMQParams& llmqP
     session.llmqType = llmqParams.type;
     session.quorumHash = quorumHash;
     session.quorumHeight = (uint32_t)quorumHeight;
-    session.phase = 0;
+    session.phase = QuorumPhase{0};
     session.statusBitset = 0;
     session.members.clear();
     session.members.resize((size_t)llmqParams.size);

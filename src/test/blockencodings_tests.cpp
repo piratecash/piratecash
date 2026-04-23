@@ -2,9 +2,6 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <consensus/validation.h>
-#include <validation.h>
-
 #include <blockencodings.h>
 #include <chainparams.h>
 #include <consensus/merkle.h>
@@ -278,15 +275,7 @@ BOOST_AUTO_TEST_CASE(EmptyBlockRoundTripTest)
     bool mutated;
     block.hashMerkleRoot = BlockMerkleRoot(block, &mutated);
     assert(!mutated);
-    CValidationState state;
-    while (!CheckProof(state, block, Params().GetConsensus())) {
-        ++block.nNonce;
-        assert(state.IsInvalid());
-        state = CValidationState();
-    }
-    assert(state.IsValid());
-
-
+    while (!CheckProofOfWork(block.GetHash(), block.nBits, Params().GetConsensus())) ++block.nNonce;
 
     // Test simple header round-trip with only coinbase
     {
@@ -376,6 +365,7 @@ BOOST_AUTO_TEST_CASE(TransactionsRequestDeserializationOverflowTest) {
         BOOST_CHECK(0);
     } catch(std::ios_base::failure &) {
         // deserialize should fail
+        BOOST_CHECK(true); // Needed to suppress "Test case [...] did not check any assertions"
     }
 }
 

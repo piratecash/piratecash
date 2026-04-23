@@ -149,11 +149,11 @@ void ScriptToUniv(const CScript& script, UniValue& out, bool include_address)
     out.pushKV("hex", HexStr(script));
 
     std::vector<std::vector<unsigned char>> solns;
-    txnouttype type = Solver(script, solns);
+    TxoutType type = Solver(script, solns);
     out.pushKV("type", GetTxnOutputType(type));
 
     CTxDestination address;
-    if (include_address && ExtractDestination(script, address) && type != TX_PUBKEY) {
+    if (include_address && ExtractDestination(script, address) && type != TxoutType::PUBKEY) {
         out.pushKV("address", EncodeDestination(address));
     }
 }
@@ -161,7 +161,7 @@ void ScriptToUniv(const CScript& script, UniValue& out, bool include_address)
 void ScriptPubKeyToUniv(const CScript& scriptPubKey,
                         UniValue& out, bool fIncludeHex)
 {
-    txnouttype type;
+    TxoutType type;
     std::vector<CTxDestination> addresses;
     int nRequired;
 
@@ -169,7 +169,7 @@ void ScriptPubKeyToUniv(const CScript& scriptPubKey,
     if (fIncludeHex)
         out.pushKV("hex", HexStr(scriptPubKey));
 
-    if (!ExtractDestinations(scriptPubKey, type, addresses, nRequired)) {
+    if (!ExtractDestinations(scriptPubKey, type, addresses, nRequired) || type == TxoutType::PUBKEY) {
         out.pushKV("type", GetTxnOutputType(type));
         return;
     }
@@ -190,7 +190,7 @@ void TxToUniv(const CTransaction& tx, const uint256& hashBlock, UniValue& entry,
     entry.pushKV("txid", txid.GetHex());
     entry.pushKV("version", tx.nVersion);
     entry.pushKV("type", tx.nType);
-    entry.pushKV("size", (int)::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION));
+    entry.pushKV("size", (int)::GetSerializeSize(tx, PROTOCOL_VERSION));
     entry.pushKV("locktime", (int64_t)tx.nLockTime);
 
     UniValue vin(UniValue::VARR);
@@ -215,9 +215,9 @@ void TxToUniv(const CTransaction& tx, const uint256& hashBlock, UniValue& entry,
                     in.pushKV("value", ValueFromAmount(spentInfo.satoshis));
                     in.pushKV("valueSat", spentInfo.satoshis);
                     if (spentInfo.addressType == 1) {
-                        in.pushKV("address", EncodeDestination(CKeyID(spentInfo.addressHash)));
+                        in.pushKV("address", EncodeDestination(PKHash(spentInfo.addressHash)));
                     } else if (spentInfo.addressType == 2) {
-                        in.pushKV("address", EncodeDestination(CScriptID(spentInfo.addressHash)));
+                        in.pushKV("address", EncodeDestination(ScriptHash(spentInfo.addressHash)));
                     }
                 }
             }

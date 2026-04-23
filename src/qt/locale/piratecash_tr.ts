@@ -348,7 +348,7 @@
         <translation>&amp;Al</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
         <translation>Ödeme talep et (QR kodu ve PirateCash URI'si oluşturur)</translation>
     </message>
     <message>
@@ -540,7 +540,7 @@
         <translation>&amp;URI Aç...</translation>
     </message>
     <message>
-        <source>Open a dash: URI or payment request</source>
+        <source>Open a piratecash: URI or payment request</source>
         <translation>Bir PirateCash: bağlantısı ya da ödeme talebi aç</translation>
     </message>
     <message>
@@ -1839,7 +1839,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Ödeme talebi hatası</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
+        <source>Cannot start piratecash: click-to-pay handler</source>
         <translation>PirateCash başlatılamadı: tıkla-ve-öde yöneticisi</translation>
     </message>
     <message>
@@ -1847,8 +1847,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>URI yönetimi</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash://' geçerli bir URI değil. Bunun yerine 'dash:' kullanın.</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>'piratecash://' geçerli bir URI değil. Bunun yerine 'piratecash:' kullanın.</translation>
     </message>
     <message>
         <source>Payment request fetch URL is invalid: %1</source>
@@ -2868,7 +2868,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Eğer özel ücret 1000 corsar olarak belirlendiyse ve işlem sadece 250 bayt ise "kilobayt başına" ücret olarak sadece 250 corsar ödersiniz,&lt;br /&gt;bu da "en az" 1000 corsar öder. Bir kilobayttan büyük işlemler için ikisi de kilobayt başına ödeme yapar.</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>Bloklardaki alandan daha düşük işlem hacmi var olduğu sürece sadece minimum ücreti ödemek yeterli olur.&lt;br /&gt;Ama ağın işleyebileceğinden daha fazla dash işlemi talebi olursa, bunun işlemlerin asla teyit edilememesi gibi bir sonucu olabileceğini unutmayın.</translation>
     </message>
     <message>
@@ -3159,7 +3159,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Mesaj:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
         <translation>Referans için PirateCash: URI'siyle iliştirilmiş işlemle birlikte depolanacak bir ileti. Not: Bu mesaj PirateCash ağı üzerinden gönderilmeyecektir.</translation>
     </message>
     <message>

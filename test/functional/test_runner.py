@@ -92,14 +92,17 @@ BASE_SCRIPTS = [
     'wallet_labels.py',
     'p2p_timeouts.py',
     'feature_bip68_sequence.py',
+    'mempool_updatefromblock.py',
     'wallet_dump.py',
     'wallet_listtransactions.py',
     'feature_multikeysporks.py',
+    'feature_dip3_v19.py',
     'feature_llmq_signing.py', # NOTE: needs dash_hash to pass
     'feature_llmq_signing.py --spork21', # NOTE: needs dash_hash to pass
     'feature_llmq_chainlocks.py', # NOTE: needs dash_hash to pass
     'feature_llmq_rotation.py', # NOTE: needs dash_hash to pass
     'feature_llmq_connections.py', # NOTE: needs dash_hash to pass
+    'feature_llmq_hpmn.py', # NOTE: needs dash_hash to pass
     'feature_llmq_simplepose.py', # NOTE: needs dash_hash to pass
     'feature_llmq_is_cl_conflicts.py', # NOTE: needs dash_hash to pass
     'feature_llmq_is_migration.py', # NOTE: needs dash_hash to pass
@@ -152,6 +155,7 @@ BASE_SCRIPTS = [
     'rpc_blockchain.py',
     'rpc_deprecated.py',
     'wallet_disable.py',
+    'p2p_getdata.py',
     'rpc_net.py',
     'wallet_keypool.py',
     'wallet_keypool_hd.py',
@@ -215,6 +219,7 @@ BASE_SCRIPTS = [
     'wallet_create_tx.py',
     'p2p_fingerprint.py',
     'rpc_platform_filter.py',
+    'rpc_wipewallettxes.py',
     'feature_dip0020_activation.py',
     'feature_uacomment.py',
     'feature_filelock.py',

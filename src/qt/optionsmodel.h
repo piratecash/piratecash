@@ -7,6 +7,8 @@
 
 #include <amount.h>
 
+#include <cstdint>
+
 #include <QAbstractListModel>
 
 namespace interfaces {
@@ -14,7 +16,7 @@ class Node;
 }
 
 extern const char *DEFAULT_GUI_PROXY_HOST;
-static constexpr unsigned short DEFAULT_GUI_PROXY_PORT = 9050;
+static constexpr uint16_t DEFAULT_GUI_PROXY_PORT = 9050;
 
 /** Interface from Qt to configuration data structure for Bitcoin client.
    To Qt, the options are presented as a list with the different options
@@ -52,6 +54,7 @@ public:
         FontWeightBold,       // int
         Language,             // QString
         CoinControlFeatures,  // bool
+        KeepChangeAddress,    // bool
         ThreadsScriptVerif,   // int
         Prune,                // bool
         PruneSize,            // int
@@ -86,6 +89,7 @@ public:
     int getDisplayUnit() const { return nDisplayUnit; }
     QString getThirdPartyTxUrls() const { return strThirdPartyTxUrls; }
     bool getCoinControlFeatures() const { return fCoinControlFeatures; }
+    bool getKeepChangeAddress() const { return fKeepChangeAddress; }
     bool getShowAdvancedCJUI() { return fShowAdvancedCJUI; }
     const QString& getOverriddenByCommandLine() { return strOverriddenByCommandLine; }
     void emitCoinJoinEnabledChanged();
@@ -107,6 +111,7 @@ private:
     int nDisplayUnit;
     QString strThirdPartyTxUrls;
     bool fCoinControlFeatures;
+    bool fKeepChangeAddress;
     bool fShowAdvancedCJUI;
     /* settings that were overridden by command-line */
     QString strOverriddenByCommandLine;
@@ -123,6 +128,7 @@ Q_SIGNALS:
     void coinJoinAmountChanged();
     void AdvancedCJUIChanged(bool);
     void coinControlFeaturesChanged(bool);
+    void keepChangeAddressChanged(bool);
     void hideTrayIconChanged(bool);
 };
 

@@ -348,7 +348,7 @@
         <translation>&amp;Receber</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
         <translation>Solicitações de pagamentos (gera códigos QR e PirateCash: URIs)</translation>
     </message>
     <message>
@@ -540,7 +540,7 @@
         <translation>Abrir &amp;URI...</translation>
     </message>
     <message>
-        <source>Open a dash: URI or payment request</source>
+        <source>Open a piratecash: URI or payment request</source>
         <translation>Abrir um PirateCash: URI ou cobrança</translation>
     </message>
     <message>
@@ -1839,7 +1839,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Erro no pedido de pagamento</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
+        <source>Cannot start piratecash: click-to-pay handler</source>
         <translation>Não foi possível iniciar PirateCash: manipulador click-to-pay</translation>
     </message>
     <message>
@@ -1847,8 +1847,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Manipulação de URI</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash://' não é uma URL válida. Use 'dash:' como alternativa.</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>'piratecash://' não é uma URL válida. Use 'piratecash:' como alternativa.</translation>
     </message>
     <message>
         <source>Payment request fetch URL is invalid: %1</source>
@@ -2868,7 +2868,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Se a taxa por defeito está definida em 1000 corsars e a transação é apenas 250 bytes, então "per kilobyte" paga apenas 250 corsars de taxa,&lt;br /&gt;enquanto "no mínimo" paga 1000 corsars. Para transações maiores que um kilobyte, ambas pagam por kilobyte.</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>Não há problema em pagar apenas a taxa mínima desde que exista um volume transacional inferior ao espaço nos blocos.&lt;br /&gt;Mas tenha em conta que pode ocorrer uma transação que nunca será confirmada devido a existir uma maior procura para transações em dash, do que a rede tem capacidade para processar.</translation>
     </message>
     <message>
@@ -3159,7 +3159,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Mensagem:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
         <translation>A mensagem que foi anexada ao PirateCash: URI na qual será gravada na transação para sua referência. Nota: Essa mensagem não será gravada publicamente na rede PirateCash.</translation>
     </message>
     <message>

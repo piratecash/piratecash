@@ -21,6 +21,7 @@
 #include <univalue.h>
 #include <validation.h>
 #include <key_io.h>
+#include <util/underlying.h>
 
 CSimplifiedMNListEntry::CSimplifiedMNListEntry(const CDeterministicMN& dmn) :
     proRegTxHash(dmn.proTxHash),
@@ -28,7 +29,13 @@ CSimplifiedMNListEntry::CSimplifiedMNListEntry(const CDeterministicMN& dmn) :
     service(dmn.pdmnState->addr),
     pubKeyOperator(dmn.pdmnState->pubKeyOperator),
     keyIDVoting(dmn.pdmnState->keyIDVoting),
-    isValid(!dmn.pdmnState->IsBanned())
+    isValid(!dmn.pdmnState->IsBanned()),
+    scriptPayout(dmn.pdmnState->scriptPayout),
+    scriptOperatorPayout(dmn.pdmnState->scriptOperatorPayout),
+    nVersion(dmn.pdmnState->nVersion == CProRegTx::LEGACY_BLS_VERSION ? LEGACY_BLS_VERSION : BASIC_BLS_VERSION),
+    nType(dmn.nType),
+    platformHTTPPort(dmn.pdmnState->platformHTTPPort),
+    platformNodeID(dmn.pdmnState->platformNodeID)
 {
 }
 
@@ -41,22 +48,49 @@ uint256 CSimplifiedMNListEntry::CalcHash() const
 
 std::string CSimplifiedMNListEntry::ToString() const
 {
-    return strprintf("CSimplifiedMNListEntry(proRegTxHash=%s, confirmedHash=%s, service=%s, pubKeyOperator=%s, votingAddress=%s, isValid=%d)",
-        proRegTxHash.ToString(), confirmedHash.ToString(), service.ToString(false), pubKeyOperator.Get().ToString(), EncodeDestination(keyIDVoting), isValid);
+    CTxDestination dest;
+    std::string payoutAddress = "unknown";
+    std::string operatorPayoutAddress = "none";
+    if (ExtractDestination(scriptPayout, dest)) {
+        payoutAddress = EncodeDestination(dest);
+    }
+    if (ExtractDestination(scriptOperatorPayout, dest)) {
+        operatorPayoutAddress = EncodeDestination(dest);
+    }
+
+    return strprintf("CSimplifiedMNListEntry(nVersion=%d, nType=%d, proRegTxHash=%s, confirmedHash=%s, service=%s, pubKeyOperator=%s, votingAddress=%s, isValid=%d, payoutAddress=%s, operatorPayoutAddress=%s, platformHTTPPort=%d, platformNodeID=%s)",
+                     nVersion, ToUnderlying(nType), proRegTxHash.ToString(), confirmedHash.ToString(), service.ToString(false), pubKeyOperator.ToString(), EncodeDestination(PKHash(keyIDVoting)), isValid, payoutAddress, operatorPayoutAddress, platformHTTPPort, platformNodeID.ToString());
 }
 
-void CSimplifiedMNListEntry::ToJson(UniValue& obj) const
+void CSimplifiedMNListEntry::ToJson(UniValue& obj, bool extended) const
 {
     obj.clear();
     obj.setObject();
+    obj.pushKV("nVersion", nVersion);
+    obj.pushKV("nType", ToUnderlying(nType));
     obj.pushKV("proRegTxHash", proRegTxHash.ToString());
     obj.pushKV("confirmedHash", confirmedHash.ToString());
     obj.pushKV("service", service.ToString(false));
-    obj.pushKV("pubKeyOperator", pubKeyOperator.Get().ToString());
-    obj.pushKV("votingAddress", EncodeDestination(keyIDVoting));
+    obj.pushKV("pubKeyOperator", pubKeyOperator.ToString());
+    obj.pushKV("votingAddress", EncodeDestination(PKHash(keyIDVoting)));
     obj.pushKV("isValid", isValid);
+    if (nType == MnType::HighPerformance) {
+        obj.pushKV("platformHTTPPort", platformHTTPPort);
+        obj.pushKV("platformNodeID", platformNodeID.ToString());
+    }
+
+    if (!extended) return;
+
+    CTxDestination dest;
+    if (ExtractDestination(scriptPayout, dest)) {
+        obj.pushKV("payoutAddress", EncodeDestination(dest));
+    }
+    if (ExtractDestination(scriptOperatorPayout, dest)) {
+        obj.pushKV("operatorPayoutAddress", EncodeDestination(dest));
+    }
 }
 
+// TODO: Invistigate if we can delete this constructor
 CSimplifiedMNList::CSimplifiedMNList(const std::vector<CSimplifiedMNListEntry>& smlEntries)
 {
     mnList.resize(smlEntries.size());
@@ -108,33 +142,35 @@ CSimplifiedMNListDiff::CSimplifiedMNListDiff() = default;
 
 CSimplifiedMNListDiff::~CSimplifiedMNListDiff() = default;
 
-bool CSimplifiedMNListDiff::BuildQuorumsDiff(const CBlockIndex* baseBlockIndex, const CBlockIndex* blockIndex)
+bool CSimplifiedMNListDiff::BuildQuorumsDiff(const CBlockIndex* baseBlockIndex, const CBlockIndex* blockIndex,
+                                             const llmq::CQuorumBlockProcessor& quorum_block_processor)
 {
-    auto baseQuorums = llmq::quorumBlockProcessor->GetMinedAndActiveCommitmentsUntilBlock(baseBlockIndex);
-    auto quorums = llmq::quorumBlockProcessor->GetMinedAndActiveCommitmentsUntilBlock(blockIndex);
+    auto baseQuorums = quorum_block_processor.GetMinedAndActiveCommitmentsUntilBlock(baseBlockIndex);
+    auto quorums = quorum_block_processor.GetMinedAndActiveCommitmentsUntilBlock(blockIndex);
 
     std::set<std::pair<Consensus::LLMQType, uint256>> baseQuorumHashes;
     std::set<std::pair<Consensus::LLMQType, uint256>> quorumHashes;
-    for (const auto& p : baseQuorums) {
-        for (const auto& p2 : p.second) {
-            baseQuorumHashes.emplace(p.first, p2->GetBlockHash());
+    for (const auto& [llmqType, vecBlockIndex] : baseQuorums) {
+        for (const auto& blockindex : vecBlockIndex) {
+            baseQuorumHashes.emplace(llmqType, blockindex->GetBlockHash());
         }
     }
-    for (const auto& p : quorums) {
-        for (const auto& p2 : p.second) {
-            quorumHashes.emplace(p.first, p2->GetBlockHash());
+    for (const auto& [llmqType, vecBlockIndex] : quorums) {
+        for (const auto& blockindex : vecBlockIndex) {
+            quorumHashes.emplace(llmqType, blockindex->GetBlockHash());
         }
     }
 
-    for (auto& p : baseQuorumHashes) {
+    for (const auto& p : baseQuorumHashes) {
         if (!quorumHashes.count(p)) {
             deletedQuorums.emplace_back((uint8_t)p.first, p.second);
         }
     }
-    for (auto& p : quorumHashes) {
+    for (const auto& p : quorumHashes) {
+        const auto& [llmqType, hash] = p;
         if (!baseQuorumHashes.count(p)) {
             uint256 minedBlockHash;
-            llmq::CFinalCommitmentPtr qc = llmq::quorumBlockProcessor->GetMinedCommitment(p.first, p.second, minedBlockHash);
+            llmq::CFinalCommitmentPtr qc = quorum_block_processor.GetMinedCommitment(llmqType, hash, minedBlockHash);
             if (qc == nullptr) {
                 return false;
             }
@@ -144,10 +180,11 @@ bool CSimplifiedMNListDiff::BuildQuorumsDiff(const CBlockIndex* baseBlockIndex, 
     return true;
 }
 
-void CSimplifiedMNListDiff::ToJson(UniValue& obj) const
+void CSimplifiedMNListDiff::ToJson(UniValue& obj, bool extended) const
 {
     obj.setObject();
 
+    obj.pushKV("nVersion", nVersion);
     obj.pushKV("baseBlockHash", baseBlockHash.ToString());
     obj.pushKV("blockHash", blockHash.ToString());
 
@@ -166,7 +203,7 @@ void CSimplifiedMNListDiff::ToJson(UniValue& obj) const
     UniValue mnListArr(UniValue::VARR);
     for (const auto& e : mnList) {
         UniValue eObj;
-        e.ToJson(eObj);
+        e.ToJson(eObj, extended);
         mnListArr.push_back(eObj);
     }
     obj.pushKV("mnList", mnListArr);
@@ -197,7 +234,8 @@ void CSimplifiedMNListDiff::ToJson(UniValue& obj) const
     }
 }
 
-bool BuildSimplifiedMNListDiff(const uint256& baseBlockHash, const uint256& blockHash, CSimplifiedMNListDiff& mnListDiffRet, std::string& errorRet)
+bool BuildSimplifiedMNListDiff(const uint256& baseBlockHash, const uint256& blockHash, CSimplifiedMNListDiff& mnListDiffRet,
+                               const llmq::CQuorumBlockProcessor& quorum_block_processor, std::string& errorRet, bool extended)
 {
     AssertLockHeld(cs_main);
     mnListDiffRet = CSimplifiedMNListDiff();
@@ -230,14 +268,14 @@ bool BuildSimplifiedMNListDiff(const uint256& baseBlockHash, const uint256& bloc
 
     auto baseDmnList = deterministicMNManager->GetListForBlock(baseBlockIndex);
     auto dmnList = deterministicMNManager->GetListForBlock(blockIndex);
-    mnListDiffRet = baseDmnList.BuildSimplifiedDiff(dmnList);
+    mnListDiffRet = baseDmnList.BuildSimplifiedDiff(dmnList, extended);
 
     // We need to return the value that was provided by the other peer as it otherwise won't be able to recognize the
     // response. This will usually be identical to the block found in baseBlockIndex. The only difference is when a
     // null block hash was provided to get the diff from the genesis block.
     mnListDiffRet.baseBlockHash = baseBlockHash;
 
-    if (!mnListDiffRet.BuildQuorumsDiff(baseBlockIndex, blockIndex)) {
+    if (!mnListDiffRet.BuildQuorumsDiff(baseBlockIndex, blockIndex, quorum_block_processor)) {
         errorRet = strprintf("failed to build quorums diff");
         return false;
     }

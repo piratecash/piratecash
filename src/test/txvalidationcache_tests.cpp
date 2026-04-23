@@ -3,30 +3,18 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <consensus/validation.h>
-#include <key.h>
 #include <validation.h>
 #include <txmempool.h>
 #include <script/standard.h>
 #include <script/sign.h>
+#include <script/signingprovider.h>
 #include <test/util/setup_common.h>
-#include <keystore.h>
-#include <policy/policy.h>
 
 #include <boost/test/unit_test.hpp>
 
 bool CheckInputs(const CTransaction& tx, CValidationState &state, const CCoinsViewCache &inputs, bool fScriptChecks, unsigned int flags, bool cacheSigStore, bool cacheFullScriptStore, PrecomputedTransactionData& txdata, std::vector<CScriptCheck> *pvChecks);
 
-BOOST_AUTO_TEST_SUITE(tx_validationcache_tests)
-
-static bool
-ToMemPool(const CMutableTransaction& tx)
-{
-    LOCK(cs_main);
-
-    CValidationState state;
-    return AcceptToMemoryPool(mempool, state, MakeTransactionRef(tx), nullptr /* pfMissingInputs */,
-                              true /* bypass_limits */, 0 /* nAbsurdFee */);
-}
+BOOST_AUTO_TEST_SUITE(txvalidationcache_tests)
 
 BOOST_FIXTURE_TEST_CASE(tx_mempool_block_doublespend, TestChain100Setup)
 {
@@ -35,6 +23,14 @@ BOOST_FIXTURE_TEST_CASE(tx_mempool_block_doublespend, TestChain100Setup)
     // double-spends in blocks to pass validation when they should not.
 
     CScript scriptPubKey = CScript() <<  ToByteVector(coinbaseKey.GetPubKey()) << OP_CHECKSIG;
+
+    const auto ToMemPool = [this](const CMutableTransaction& tx) {
+        LOCK(cs_main);
+
+        CValidationState state;
+        return AcceptToMemoryPool(*m_node.mempool, state, MakeTransactionRef(tx), nullptr /* pfMissingInputs */,
+                                true /* bypass_limits */, 0 /* nAbsurdFee */);
+    };
 
     // Create a double-spend of mature coinbase txn:
     std::vector<CMutableTransaction> spends;
@@ -73,7 +69,7 @@ BOOST_FIXTURE_TEST_CASE(tx_mempool_block_doublespend, TestChain100Setup)
         LOCK(cs_main);
         BOOST_CHECK(::ChainActive().Tip()->GetBlockHash() != block.GetHash());
     }
-    mempool.clear();
+    m_node.mempool->clear();
 
     // Test 3: ... and should be rejected if spend2 is in the memory pool
     BOOST_CHECK(ToMemPool(spends[1]));
@@ -82,9 +78,9 @@ BOOST_FIXTURE_TEST_CASE(tx_mempool_block_doublespend, TestChain100Setup)
         LOCK(cs_main);
         BOOST_CHECK(::ChainActive().Tip()->GetBlockHash() != block.GetHash());
     }
-    mempool.clear();
+    m_node.mempool->clear();
 
-    // Final sanity test: first spend in mempool, second in block, that's OK:
+    // Final sanity test: first spend in *m_node.mempool, second in block, that's OK:
     std::vector<CMutableTransaction> oneSpend;
     oneSpend.push_back(spends[0]);
     BOOST_CHECK(ToMemPool(spends[1]));
@@ -95,7 +91,7 @@ BOOST_FIXTURE_TEST_CASE(tx_mempool_block_doublespend, TestChain100Setup)
     }
     // spends[1] should have been removed from the mempool when the
     // block with spends[0] is accepted:
-    BOOST_CHECK_EQUAL(mempool.size(), 0U);
+    BOOST_CHECK_EQUAL(m_node.mempool->size(), 0U);
 }
 
 // Run CheckInputs (using CoinsTip()) on the given transaction, for all script
@@ -111,7 +107,7 @@ BOOST_FIXTURE_TEST_CASE(tx_mempool_block_doublespend, TestChain100Setup)
 // any script flag that is implemented as an upgraded NOP code.
 static void ValidateCheckInputsForAllFlags(const CTransaction &tx, uint32_t failing_flags, bool add_to_cache) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
 {
-    PrecomputedTransactionData txdata(tx);
+    PrecomputedTransactionData txdata;
     // If we add many more flags, this loop can get too expensive, but we can
     // rewrite in the future to randomly pick a set of flags to evaluate.
     for (uint32_t test_flags=0; test_flags < (1U << 16); test_flags += 1) {
@@ -154,10 +150,10 @@ BOOST_FIXTURE_TEST_CASE(checkinputs_test, TestChain100Setup)
     }
 
     CScript p2pk_scriptPubKey = CScript() << ToByteVector(coinbaseKey.GetPubKey()) << OP_CHECKSIG;
-    CScript p2sh_scriptPubKey = GetScriptForDestination(CScriptID(p2pk_scriptPubKey));
-    CScript p2pkh_scriptPubKey = GetScriptForDestination(coinbaseKey.GetPubKey().GetID());
+    CScript p2sh_scriptPubKey = GetScriptForDestination(ScriptHash(p2pk_scriptPubKey));
+    CScript p2pkh_scriptPubKey = GetScriptForDestination(PKHash(coinbaseKey.GetPubKey()));
 
-    CBasicKeyStore keystore;
+    FillableSigningProvider keystore;
     BOOST_CHECK(keystore.AddKey(coinbaseKey));
     BOOST_CHECK(keystore.AddCScript(p2pk_scriptPubKey));
 
@@ -198,7 +194,7 @@ BOOST_FIXTURE_TEST_CASE(checkinputs_test, TestChain100Setup)
         LOCK(cs_main);
 
         CValidationState state;
-        PrecomputedTransactionData ptd_spend_tx(spend_tx);
+        PrecomputedTransactionData ptd_spend_tx;
 
         BOOST_CHECK(!CheckInputs(CTransaction(spend_tx), state, &::ChainstateActive().CoinsTip(), true, SCRIPT_VERIFY_P2SH | SCRIPT_VERIFY_DERSIG, true, true, ptd_spend_tx, nullptr));
 
@@ -267,7 +263,7 @@ BOOST_FIXTURE_TEST_CASE(checkinputs_test, TestChain100Setup)
         // Make it valid, and check again
         invalid_with_cltv_tx.vin[0].scriptSig = CScript() << vchSig << 100;
         CValidationState state;
-        PrecomputedTransactionData txdata(invalid_with_cltv_tx);
+        PrecomputedTransactionData txdata;
         BOOST_CHECK(CheckInputs(CTransaction(invalid_with_cltv_tx), state, &::ChainstateActive().CoinsTip(), true, SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY, true, true, txdata, nullptr));
     }
 
@@ -295,7 +291,7 @@ BOOST_FIXTURE_TEST_CASE(checkinputs_test, TestChain100Setup)
         // Make it valid, and check again
         invalid_with_csv_tx.vin[0].scriptSig = CScript() << vchSig << 100;
         CValidationState state;
-        PrecomputedTransactionData txdata(invalid_with_csv_tx);
+        PrecomputedTransactionData txdata;
         BOOST_CHECK(CheckInputs(CTransaction(invalid_with_csv_tx), state, &::ChainstateActive().CoinsTip(), true, SCRIPT_VERIFY_CHECKSEQUENCEVERIFY, true, true, txdata, nullptr));
     }
 

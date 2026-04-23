@@ -1,10 +1,8 @@
-// Copyright (c) 2018-2021 The Dash Core developers
+// Copyright (c) 2018-2022 The Dash Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <evo/evodb.h>
-
-std::unique_ptr<CEvoDB> evoDb;
 
 CEvoDBScopedCommitter::CEvoDBScopedCommitter(CEvoDB &_evoDB) :
     evoDB(_evoDB)

@@ -5,58 +5,52 @@ Release is now available from:
 
   <https://p.cash/en/download/>
 
-This is a new major version release, bringing new features, various bugfixes
-and other improvements.
+This is a new minor version release, bringing various bugfixes and other
+improvements.
 
-This release is mandatory for all nodes.
+This release is optional for all nodes.
 
 Please report bugs using the issue tracker at github:
 
   <https://github.com/piratecash/piratecash-core/issues>
 
 
-Upgrading and downgrading
-=========================
+# Upgrading and downgrading
 
-How to Upgrade
---------------
+## How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), then run the
 installer (on Windows) or just copy over /Applications/PirateCash-Qt (on Mac) or
 piratecashd/piratecash-qt (on Linux). If you upgrade after DIP0003 activation and you were
 using version < 0.13 you will have to reindex (start with -reindex-chainstate
-or -reindex) to make sure your wallet has all the new data synced. Upgrading from
-version 0.13 should not require any additional actions.
+or -reindex) to make sure your wallet has all the new data synced. Upgrading
+from version 0.13 should not require any additional actions.
 
 When upgrading from a version prior to 0.14.0.3, the
 first startup of PirateCash Core will run a migration process which can take a few minutes
 to finish. After the migration, a downgrade to an older version is only possible with
 a reindex (or reindex-chainstate).
 
-Downgrade warning
------------------
+### Downgrade to a version < v19.2.0
 
-### Downgrade to a version < v18.0.0
+Downgrading to a version older than v19.2.0 is not supported due to changes
+in the evodb database. If you need to use an older version, you must either
+reindex or re-sync the whole chain.
 
-Downgrading to a version older than v18.0.0 is not supported due to changes in
-the indexes database folder. If you need to use an older version, you must
-either reindex or re-sync the whole chain.
+# Notable changes
 
-### Downgrade of masternodes to < v18.0.0
+## CoinJoin improvements
 
-Starting with the 0.16 release, masternodes verify the protocol version of other
-masternodes. This results in PoSe punishment/banning for outdated masternodes,
-so downgrading even prior to the activation of the introduced hard-fork changes
-is not recommended.
+This release fixes a couple of issues with mixing on nodes that start with no
+wallet loaded initially.
 
-Notable changes
-===============
+## Wallet GUI improvements
 
-Quorum rotation
---------------
-InstantSend quorums will now use a new quorum type and a new algorithm for
-establishing quorums. The upcoming DIP-0024 will provide comprehensive details.
+Wallets with 100k+ txes should now be able to rescan without hanging forever
+while processing notifications for every tx. Running `keypoolrefill` with a
+large number of keys will no longer lockup the GUI and can be interrupted.
+Running `upgradetohd` can also be interrupted now.
 
 Quorum rotation is activated via a BIP9 style hard fork that will begin
 signalling on August 15, 2022 using bit 7. New quorums will start forming in
@@ -72,19 +66,18 @@ design was sufficient for core chain payments, the platform chain will benefit
 from this enhanced verification capability. Details about deterministic
 InstantSend are provided in [DIP-0022](https://github.com/dashpay/dips/blob/master/dip-0022.md).
 
-Deterministic InstantSend will be activated with the DIP0024 hard fork.
+## Other changes
 
 Governance
 ----------
 Several improvements have been made to PirateCash’s DAO governance system.
-The governance proposal fee has been reduced from 5 COSA to 1 COSA following
+The governance proposal fee has been reduced from 5 PIRATE to 1 PIRATE following
 a vote by masternode owners to do so. For improved security and flexibility,
 proposal payouts to pay-to-script-hash (P2SH) addresses are now supported.
 
-These changes will be activated with the DIP0024 hard fork.
+# v19.3.0 Change log
 
-Governance proposals can now be viewed in GUI Governance tab (must be enabled
-in Preferences first).
+See detailed [set of changes](https://github.com/dashpay/dash/compare/v19.2.0...dashpay:v19.3.0).
 
 Initial Enhanced Hard Fork support
 ----------------------------------
@@ -174,7 +167,7 @@ now returns the current network name as defined in BIP70 (main, test, regtest).
 - In `getmempoolancestors`, `getmempooldescendants`, `getmempoolentry` and
 `getrawmempool` RPCs, to be consistent with the returned value and other RPCs
 such as `getrawtransaction`, `vsize` has been added and `size` is now
-deprecated. `size` will only be returned if `cosatnad` is started with
+deprecated. `size` will only be returned if `piratecashd` is started with
 `-deprecatedrpc=size`.
 - Added `loaded` in mempool related RPCs indicates whether the mempool is fully
 loaded or not
@@ -264,37 +257,13 @@ Credits
 
 Thanks to everyone who directly contributed to this release:
 
-- AJ ONeal (coolaj86)
-- Christian Fifi Culp (christiancfifi)
-- dustinface (xdustinface)
-- gabriel-bjg
-- Holger Schinzel (schinzelh)
-- humbleDasher
-- Kittywhiskers Van Gogh (kittywhiskers)
-- Konstantin Akimov (knst)
-- ktechmidas
-- linuxsh2
-- Munkybooty
-- Nathan Marley (nmarley)
 - Odysseas Gabrielides (ogabrielides)
 - PastaPastaPasta
-- pravblockc
-- rkarthik2k21
-- Stefan (5tefan)
-- strophy
-- TheLazieR Yip (thelazier)
-- thephez
 - UdjinM6
-- Vijay (vijaydasmp)
-- Vlad K (dzutto)
 
-As well as everyone that submitted issues, reviewed pull requests, helped debug the release candidates, and write DIPs that were implemented in this release. Notable mentions include:
+As well as everyone that submitted issues, reviewed pull requests and helped
+debug the release candidates.
 
-- Samuel Westrich (quantumexplorer)
-- Virgile Bartolo
-- xkcd
-
-Older releases
-==============
+# Older releases
 
 PirateCash was forked from Dash Core.

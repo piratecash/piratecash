@@ -6,11 +6,14 @@
 #ifndef BITCOIN_NET_PROCESSING_H
 #define BITCOIN_NET_PROCESSING_H
 
-#include <net.h>
-#include <validation.h>
-#include <validationinterface.h>
 #include <consensus/params.h>
+#include <net.h>
 #include <sync.h>
+#include <validationinterface.h>
+
+class CTxMemPool;
+class ChainstateManager;
+struct LLMQContext;
 
 extern CCriticalSection cs_main;
 
@@ -18,24 +21,28 @@ extern CCriticalSection cs_main;
 static const unsigned int DEFAULT_MAX_ORPHAN_TRANSACTIONS_SIZE = 10; // this allows around 100 TXs of max size (and many more of normal size)
 /** Default number of orphan+recently-replaced txn to keep around for block reconstruction */
 static const unsigned int DEFAULT_BLOCK_RECONSTRUCTION_EXTRA_TXN = 100;
-/** Default for BIP61 (sending reject messages) */
-static constexpr bool DEFAULT_ENABLE_BIP61 = true;
 static const bool DEFAULT_PEERBLOOMFILTERS = true;
 static const bool DEFAULT_PEERBLOCKFILTERS = false;
 
 class PeerLogicValidation final : public CValidationInterface, public NetEventsInterface {
 private:
-    CConnman* const connman;
+    CConnman& m_connman;
     BanMan* const m_banman;
+    ChainstateManager& m_chainman;
+    CTxMemPool& m_mempool;
+    std::unique_ptr<LLMQContext>& m_llmq_ctx;
 
-    bool SendRejectsAndCheckIfBanned(CNode* pnode, bool enable_bip61) EXCLUSIVE_LOCKS_REQUIRED(cs_main);
+    bool MaybeDiscourageAndDisconnect(CNode& pnode);
+
 public:
-    PeerLogicValidation(CConnman* connmanIn, BanMan* banman, CScheduler &scheduler, bool enable_bip61);
+    PeerLogicValidation(CConnman& connman, BanMan* banman, CScheduler &scheduler, ChainstateManager& chainman, CTxMemPool& pool,
+                        std::unique_ptr<LLMQContext>& llmq_ctx);
 
     /**
      * Overridden from CValidationInterface.
      */
-    void BlockConnected(const std::shared_ptr<const CBlock>& pblock, const CBlockIndex* pindexConnected, const std::vector<CTransactionRef>& vtxConflicted) override;
+    void BlockConnected(const std::shared_ptr<const CBlock>& pblock, const CBlockIndex* pindexConnected) override;
+    void BlockDisconnected(const std::shared_ptr<const CBlock> &block, const CBlockIndex* pindex) override;
     /**
      * Overridden from CValidationInterface.
      */
@@ -69,17 +76,18 @@ public:
     bool SendMessages(CNode* pto) override EXCLUSIVE_LOCKS_REQUIRED(pto->cs_sendProcessing);
 
     /** Consider evicting an outbound peer based on the amount of time they've been behind our tip */
-    void ConsiderEviction(CNode *pto, int64_t time_in_seconds) EXCLUSIVE_LOCKS_REQUIRED(cs_main);
+    void ConsiderEviction(CNode& pto, int64_t time_in_seconds) EXCLUSIVE_LOCKS_REQUIRED(cs_main);
     /** Evict extra outbound peers. If we think our tip may be stale, connect to an extra outbound */
     void CheckForStaleTipAndEvictPeers(const Consensus::Params &consensusParams);
     /** If we have extra outbound peers, try to disconnect the one with the oldest block announcement */
     void EvictExtraOutboundPeers(int64_t time_in_seconds) EXCLUSIVE_LOCKS_REQUIRED(cs_main);
+    /** Retrieve unbroadcast transactions from the mempool and reattempt sending to peers */
+    void ReattemptInitialBroadcast(CScheduler& scheduler) const;
+    /** Process a single message from a peer. Public for fuzz testing */
+    void ProcessMessage(CNode& pfrom, const std::string& msg_type, CDataStream& vRecv, int64_t nTimeReceived, const CChainParams& chainparams, const std::atomic<bool>& interruptMsgProc);
 
 private:
     int64_t m_stale_tip_check_time; //!< Next time to check for stale tip
-
-    /** Enable BIP61 (sending reject messages) */
-    const bool m_enable_bip61;
 };
 
 struct CNodeStateStats {

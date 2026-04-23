@@ -17,8 +17,9 @@ class CGovernanceManager;
 class CGovernanceTriggerManager;
 class CGovernanceObject;
 class CGovernanceVote;
+class CSporkManager;
 
-extern CGovernanceManager governance;
+extern std::unique_ptr<CGovernanceManager> governance;
 
 static constexpr int RATE_BUFFER_SIZE = 5;
 
@@ -229,10 +230,10 @@ public:
      */
     bool ConfirmInventoryRequest(const CInv& inv);
 
-    void SyncSingleObjVotes(CNode* pnode, const uint256& nProp, const CBloomFilter& filter, CConnman& connman);
-    void SyncObjects(CNode* pnode, CConnman& connman) const;
+    void SyncSingleObjVotes(CNode& peer, const uint256& nProp, const CBloomFilter& filter, CConnman& connman);
+    void SyncObjects(CNode& peer, CConnman& connman) const;
 
-    void ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv, CConnman& connman, bool enable_bip61);
+    void ProcessMessage(CNode& peer, CConnman& connman, std::string_view msg_type, CDataStream& vRecv);
 
     void DoMaintenance(CConnman& connman);
 
@@ -240,7 +241,7 @@ public:
 
     // These commands are only used in RPC
     std::vector<CGovernanceVote> GetCurrentVotes(const uint256& nParentHash, const COutPoint& mnCollateralOutpointFilter) const;
-    std::vector<CGovernanceObject> GetAllNewerThan(int64_t nMoreThanTime) const;
+    void GetAllNewerThan(std::vector<CGovernanceObject>& objs, int64_t nMoreThanTime) const;
 
     void AddGovernanceObject(CGovernanceObject& govobj, CConnman& connman, const CNode* pfrom = nullptr);
 
@@ -345,7 +346,7 @@ public:
 
     void InitOnLoad();
 
-    int RequestGovernanceObjectVotes(CNode* pnode, CConnman& connman);
+    int RequestGovernanceObjectVotes(CNode& peer, CConnman& connman);
     int RequestGovernanceObjectVotes(const std::vector<CNode*>& vNodesCopy, CConnman& connman);
 
 private:
@@ -380,6 +381,6 @@ private:
 
 };
 
-bool AreSuperblocksEnabled();
+bool AreSuperblocksEnabled(const CSporkManager& sporkManager);
 
 #endif // BITCOIN_GOVERNANCE_GOVERNANCE_H

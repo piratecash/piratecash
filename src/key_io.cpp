@@ -8,15 +8,12 @@
 #include <bech32.h>
 #include <chainparams.h>
 
-#include <boost/variant/apply_visitor.hpp>
-#include <boost/variant/static_visitor.hpp>
-
+#include <algorithm>
 #include <assert.h>
 #include <string.h>
 
-namespace
-{
-class DestinationEncoder : public boost::static_visitor<std::string>
+namespace {
+class DestinationEncoder
 {
 private:
     const CChainParams& m_params;
@@ -24,14 +21,14 @@ private:
 public:
     explicit DestinationEncoder(const CChainParams& params) : m_params(params) {}
 
-    std::string operator()(const CKeyID& id) const
+    std::string operator()(const PKHash& id) const
     {
         std::vector<unsigned char> data = m_params.Base58Prefix(CChainParams::PUBKEY_ADDRESS);
         data.insert(data.end(), id.begin(), id.end());
         return EncodeBase58Check(data);
     }
 
-    std::string operator()(const CScriptID& id) const
+    std::string operator()(const ScriptHash& id) const
     {
         std::vector<unsigned char> data = m_params.Base58Prefix(CChainParams::SCRIPT_ADDRESS);
         data.insert(data.end(), id.begin(), id.end());
@@ -46,20 +43,20 @@ CTxDestination DecodeDestination(const std::string& str, const CChainParams& par
     std::vector<unsigned char> data;
     uint160 hash;
     if (DecodeBase58Check(str, data, 21)) {
-        // base58-encoded Dash addresses.
+        // base58-encoded PirateCash addresses.
         // Public-key-hash-addresses have version 76 (or 140 testnet).
         // The data vector contains RIPEMD160(SHA256(pubkey)), where pubkey is the serialized public key.
         const std::vector<unsigned char>& pubkey_prefix = params.Base58Prefix(CChainParams::PUBKEY_ADDRESS);
         if (data.size() == hash.size() + pubkey_prefix.size() && std::equal(pubkey_prefix.begin(), pubkey_prefix.end(), data.begin())) {
             std::copy(data.begin() + pubkey_prefix.size(), data.end(), hash.begin());
-            return CKeyID(hash);
+            return PKHash(hash);
         }
         // Script-hash-addresses have version 16 (or 19 testnet).
         // The data vector contains RIPEMD160(SHA256(cscript)), where cscript is the serialized redemption script.
         const std::vector<unsigned char>& script_prefix = params.Base58Prefix(CChainParams::SCRIPT_ADDRESS);
         if (data.size() == hash.size() + script_prefix.size() && std::equal(script_prefix.begin(), script_prefix.end(), data.begin())) {
             std::copy(data.begin() + script_prefix.size(), data.end(), hash.begin());
-            return CScriptID(hash);
+            return ScriptHash(hash);
         }
     }
     return CNoDestination();
@@ -148,7 +145,7 @@ std::string EncodeExtKey(const CExtKey& key)
 
 std::string EncodeDestination(const CTxDestination& dest)
 {
-    return boost::apply_visitor(DestinationEncoder(Params()), dest);
+    return std::visit(DestinationEncoder(Params()), dest);
 }
 
 CTxDestination DecodeDestination(const std::string& str)

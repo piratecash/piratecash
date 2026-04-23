@@ -12,14 +12,12 @@
 class CBLSPublicKey;
 class CBLSSecretKey;
 
-static const CAmount MASTERNODE_COLLATERAL_AMOUNT       = 10000 * COIN;
-
 struct CActiveMasternodeInfo;
 class CActiveMasternodeManager;
 
 extern CActiveMasternodeInfo activeMasternodeInfo;
 extern CCriticalSection activeMasternodeInfoCs;
-extern CActiveMasternodeManager* activeMasternodeManager;
+extern std::unique_ptr<CActiveMasternodeManager> activeMasternodeManager;
 
 struct CActiveMasternodeInfo {
     // Keys for the active Masternode
@@ -30,10 +28,11 @@ struct CActiveMasternodeInfo {
     uint256 proTxHash;
     COutPoint outpoint;
     CService service;
+    bool legacy{true};
 };
 
 
-class CActiveMasternodeManager : public CValidationInterface
+class CActiveMasternodeManager final : public CValidationInterface
 {
 public:
     enum masternode_state_t {
@@ -49,8 +48,12 @@ public:
 private:
     masternode_state_t state{MASTERNODE_WAITING_FOR_PROTX};
     std::string strError;
+    CConnman& connman;
 
 public:
+    explicit CActiveMasternodeManager(CConnman& _connman) : connman(_connman) {};
+    ~CActiveMasternodeManager() = default;
+
     void UpdatedBlockTip(const CBlockIndex* pindexNew, const CBlockIndex* pindexFork, bool fInitialDownload) override;
 
     void Init(const CBlockIndex* pindex);

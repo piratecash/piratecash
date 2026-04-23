@@ -25,7 +25,7 @@
  *
  * Serialized format:
  * - VARINT((coinbase ? 1 : 0) | (height << 1))
- * - the non-spent CTxOut (via CTxOutCompressor)
+ * - the non-spent CTxOut (via TxOutCompression)
  */
 class Coin
 {
@@ -41,8 +41,8 @@ public:
     uint32_t nHeight : 31;
 
     //! construct a Coin from a CTxOut and height/coinbase information.
-    Coin(CTxOut&& outIn, int nHeightIn, bool fCoinBaseIn, bool fCoinStakeIn) : out(std::move(outIn)), fCoinBase(fCoinBaseIn), fCoinStake(fCoinStakeIn), nHeight(nHeightIn) {}
-    Coin(const CTxOut& outIn, int nHeightIn, bool fCoinBaseIn, bool fCoinStakeIn) : out(outIn), fCoinBase(fCoinBaseIn),fCoinStake(fCoinStakeIn),nHeight(nHeightIn) {}
+    Coin(CTxOut&& outIn, int nHeightIn, bool fCoinBaseIn, bool fCoinStakeIn = false) : out(std::move(outIn)), fCoinBase(fCoinBaseIn), fCoinStake(fCoinStakeIn), nHeight(nHeightIn) {}
+    Coin(const CTxOut& outIn, int nHeightIn, bool fCoinBaseIn, bool fCoinStakeIn = false) : out(outIn), fCoinBase(fCoinBaseIn), fCoinStake(fCoinStakeIn), nHeight(nHeightIn) {}
 
     void Clear() {
         out.SetNull();
@@ -80,6 +80,9 @@ public:
         ::Unserialize(s, Using<TxOutCompression>(out));
     }
 
+    /** Either this coin never existed (see e.g. coinEmpty in coins.cpp), or it
+      * did exist and has been spent.
+      */
     bool IsSpent() const {
         return out.IsNull();
     }
@@ -334,6 +337,13 @@ public:
 
     //! Check whether all prevouts of the transaction are present in the UTXO set represented by this view
     bool HaveInputs(const CTransaction& tx) const;
+
+    //! Force a reallocation of the cache map. This is required when downsizing
+    //! the cache because the map's allocator may be hanging onto a lot of
+    //! memory despite having called .clear().
+    //!
+    //! See: https://stackoverflow.com/questions/42114044/how-to-release-unordered-map-memory
+    void ReallocateCache();
 
 private:
     /**

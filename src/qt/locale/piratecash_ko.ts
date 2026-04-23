@@ -348,7 +348,7 @@
         <translation>받기(&amp;R)</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
         <translation>지불 요청하기 (QR코드와 대시 URI가 생성됩니다.)</translation>
     </message>
     <message>
@@ -536,7 +536,7 @@
         <translation>URI 열기(&amp;U)...</translation>
     </message>
     <message>
-        <source>Open a dash: URI or payment request</source>
+        <source>Open a piratecash: URI or payment request</source>
         <translation>PirateCash: URI 또는 지불 요청을 엽니다.</translation>
     </message>
     <message>
@@ -1723,7 +1723,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>지불 요청 오류</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
+        <source>Cannot start piratecash: click-to-pay handler</source>
         <translation>대시를 시작할 수 없습니다: 원클릭 지불 핸들러</translation>
     </message>
     <message>
@@ -2716,7 +2716,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>만일 사용자 지정 수수료가 1000 더프로 설정되어 있으나 거래는 250바이트에 불과한 경우, 'KB 당'은 오직 250 더프를 수수료로 지불하는 한편 &lt;br /&gt;'최소'는 1000더프를 지불합니다. 1 KB보다 큰 거래를 진행하는 경우 두 옵션 모두 KB 당으로 지불합니다.</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>최소한의 수수료만 지불하기는 블록체인 내의 공간보다 적은 거래가 진행 중인 경우에만 제대로 작동합니다.&lt;br /&gt;이 옵션을 선택하면 대시 네트워크가 처리할 수 있는 것 보다 많은 거래가 진행되는 경우 거래 확인이 이루어지지 않을 수도 있다는 점을 주의하세요.</translation>
     </message>
     <message>
@@ -2987,7 +2987,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>메시지:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
         <translation>대시: URI에 첨부된 메시지는 거래와 함께 참고용으로 저장됩니다. 주의: 이 메시지는 대시 네트워크로 전송되지 않습니다.</translation>
     </message>
     <message>

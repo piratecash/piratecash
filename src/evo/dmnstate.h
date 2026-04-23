@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021 The Dash Core developers
+// Copyright (c) 2018-2023 The Dash Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -25,6 +25,109 @@ namespace llmq
     class CFinalCommitment;
 } // namespace llmq
 
+// TODO: To remove this in the future
+class CDeterministicMNState_Oldformat
+{
+private:
+    int nPoSeBanHeight{-1};
+
+    friend class CDeterministicMNStateDiff;
+    friend class CDeterministicMNState;
+
+public:
+    int nRegisteredHeight{-1};
+    int nLastPaidHeight{0};
+    int nPoSePenalty{0};
+    int nPoSeRevivedHeight{-1};
+    uint16_t nRevocationReason{CProUpRevTx::REASON_NOT_SPECIFIED};
+    uint256 confirmedHash;
+    uint256 confirmedHashWithProRegTxHash;
+    CKeyID keyIDOwner;
+    CBLSLazyPublicKey pubKeyOperator;
+    CKeyID keyIDVoting;
+    CService addr;
+    CScript scriptPayout;
+    CScript scriptOperatorPayout;
+
+public:
+    CDeterministicMNState_Oldformat() = default;
+
+    SERIALIZE_METHODS(CDeterministicMNState_Oldformat, obj)
+    {
+        READWRITE(
+            obj.nRegisteredHeight,
+            obj.nLastPaidHeight,
+            obj.nPoSePenalty,
+            obj.nPoSeRevivedHeight,
+            obj.nPoSeBanHeight,
+            obj.nRevocationReason,
+            obj.confirmedHash,
+            obj.confirmedHashWithProRegTxHash,
+            obj.keyIDOwner,
+            obj.pubKeyOperator,
+            obj.keyIDVoting,
+            obj.addr,
+            obj.scriptPayout,
+            obj.scriptOperatorPayout);
+    }
+};
+
+// TODO: To remove this in the future
+class CDeterministicMNState_mntype_format
+{
+private:
+    int nPoSeBanHeight{-1};
+
+    friend class CDeterministicMNStateDiff;
+    friend class CDeterministicMNState;
+
+public:
+    int nRegisteredHeight{-1};
+    int nLastPaidHeight{0};
+    int nConsecutivePayments{0};
+    int nPoSePenalty{0};
+    int nPoSeRevivedHeight{-1};
+    uint16_t nRevocationReason{CProUpRevTx::REASON_NOT_SPECIFIED};
+    uint256 confirmedHash;
+    uint256 confirmedHashWithProRegTxHash;
+    CKeyID keyIDOwner;
+    CBLSLazyPublicKey pubKeyOperator;
+    CKeyID keyIDVoting;
+    CService addr;
+    CScript scriptPayout;
+    CScript scriptOperatorPayout;
+
+    uint160 platformNodeID{};
+    uint16_t platformP2PPort{0};
+    uint16_t platformHTTPPort{0};
+
+public:
+    CDeterministicMNState_mntype_format() = default;
+
+    SERIALIZE_METHODS(CDeterministicMNState_mntype_format, obj)
+    {
+        READWRITE(
+            obj.nRegisteredHeight,
+            obj.nLastPaidHeight,
+            obj.nConsecutivePayments,
+            obj.nPoSePenalty,
+            obj.nPoSeRevivedHeight,
+            obj.nPoSeBanHeight,
+            obj.nRevocationReason,
+            obj.confirmedHash,
+            obj.confirmedHashWithProRegTxHash,
+            obj.keyIDOwner,
+            obj.pubKeyOperator,
+            obj.keyIDVoting,
+            obj.addr,
+            obj.scriptPayout,
+            obj.scriptOperatorPayout,
+            obj.platformNodeID,
+            obj.platformP2PPort,
+            obj.platformHTTPPort);
+    }
+};
+
 class CDeterministicMNState
 {
 private:
@@ -33,8 +136,11 @@ private:
     friend class CDeterministicMNStateDiff;
 
 public:
+    int nVersion{CProRegTx::LEGACY_BLS_VERSION};
+
     int nRegisteredHeight{-1};
     int nLastPaidHeight{0};
+    int nConsecutivePayments{0};
     int nPoSePenalty{0};
     int nPoSeRevivedHeight{-1};
     uint16_t nRevocationReason{CProUpRevTx::REASON_NOT_SPECIFIED};
@@ -52,16 +158,60 @@ public:
     CScript scriptPayout;
     CScript scriptOperatorPayout;
 
+    uint160 platformNodeID{};
+    uint16_t platformP2PPort{0};
+    uint16_t platformHTTPPort{0};
+
 public:
     CDeterministicMNState() = default;
     explicit CDeterministicMNState(const CProRegTx& proTx) :
-            keyIDOwner(proTx.keyIDOwner),
-            keyIDVoting(proTx.keyIDVoting),
-            addr(proTx.addr),
-            scriptPayout(proTx.scriptPayout)
+        nVersion(proTx.nVersion),
+        keyIDOwner(proTx.keyIDOwner),
+        pubKeyOperator(proTx.pubKeyOperator),
+        keyIDVoting(proTx.keyIDVoting),
+        addr(proTx.addr),
+        scriptPayout(proTx.scriptPayout),
+        platformNodeID(proTx.platformNodeID),
+        platformP2PPort(proTx.platformP2PPort),
+        platformHTTPPort(proTx.platformHTTPPort)
     {
-        pubKeyOperator.Set(proTx.pubKeyOperator);
     }
+    explicit CDeterministicMNState(const CDeterministicMNState_Oldformat& s) :
+        nPoSeBanHeight(s.nPoSeBanHeight),
+        nRegisteredHeight(s.nRegisteredHeight),
+        nLastPaidHeight(s.nLastPaidHeight),
+        nPoSePenalty(s.nPoSePenalty),
+        nPoSeRevivedHeight(s.nPoSeRevivedHeight),
+        nRevocationReason(s.nRevocationReason),
+        confirmedHash(s.confirmedHash),
+        confirmedHashWithProRegTxHash(s.confirmedHashWithProRegTxHash),
+        keyIDOwner(s.keyIDOwner),
+        pubKeyOperator(s.pubKeyOperator),
+        keyIDVoting(s.keyIDVoting),
+        addr(s.addr),
+        scriptPayout(s.scriptPayout),
+        scriptOperatorPayout(s.scriptOperatorPayout) {}
+
+    explicit CDeterministicMNState(const CDeterministicMNState_mntype_format& s) :
+        nPoSeBanHeight(s.nPoSeBanHeight),
+        nRegisteredHeight(s.nRegisteredHeight),
+        nLastPaidHeight(s.nLastPaidHeight),
+        nConsecutivePayments(s.nConsecutivePayments),
+        nPoSePenalty(s.nPoSePenalty),
+        nPoSeRevivedHeight(s.nPoSeRevivedHeight),
+        nRevocationReason(s.nRevocationReason),
+        confirmedHash(s.confirmedHash),
+        confirmedHashWithProRegTxHash(s.confirmedHashWithProRegTxHash),
+        keyIDOwner(s.keyIDOwner),
+        pubKeyOperator(s.pubKeyOperator),
+        keyIDVoting(s.keyIDVoting),
+        addr(s.addr),
+        scriptPayout(s.scriptPayout),
+        scriptOperatorPayout(s.scriptOperatorPayout),
+        platformNodeID(s.platformNodeID),
+        platformP2PPort(s.platformP2PPort),
+        platformHTTPPort(s.platformHTTPPort) {}
+
     template <typename Stream>
     CDeterministicMNState(deserialize_type, Stream& s)
     {
@@ -71,29 +221,36 @@ public:
     SERIALIZE_METHODS(CDeterministicMNState, obj)
     {
         READWRITE(
-                obj.nRegisteredHeight,
-                obj.nLastPaidHeight,
-                obj.nPoSePenalty,
-                obj.nPoSeRevivedHeight,
-                obj.nPoSeBanHeight,
-                obj.nRevocationReason,
-                obj.confirmedHash,
-                obj.confirmedHashWithProRegTxHash,
-                obj.keyIDOwner,
-                obj.pubKeyOperator,
-                obj.keyIDVoting,
-                obj.addr,
-                obj.scriptPayout,
-                obj.scriptOperatorPayout
-                );
+            obj.nVersion,
+            obj.nRegisteredHeight,
+            obj.nLastPaidHeight,
+            obj.nConsecutivePayments,
+            obj.nPoSePenalty,
+            obj.nPoSeRevivedHeight,
+            obj.nPoSeBanHeight,
+            obj.nRevocationReason,
+            obj.confirmedHash,
+            obj.confirmedHashWithProRegTxHash,
+            obj.keyIDOwner);
+        READWRITE(CBLSLazyPublicKeyVersionWrapper(const_cast<CBLSLazyPublicKey&>(obj.pubKeyOperator), obj.nVersion == CProRegTx::LEGACY_BLS_VERSION));
+        READWRITE(
+            obj.keyIDVoting,
+            obj.addr,
+            obj.scriptPayout,
+            obj.scriptOperatorPayout,
+            obj.platformNodeID,
+            obj.platformP2PPort,
+            obj.platformHTTPPort);
     }
 
     void ResetOperatorFields()
     {
-        pubKeyOperator.Set(CBLSPublicKey());
+        nVersion = CProRegTx::LEGACY_BLS_VERSION;
+        pubKeyOperator = CBLSLazyPublicKey();
         addr = CService();
         scriptOperatorPayout = CScript();
         nRevocationReason = CProUpRevTx::REASON_NOT_SPECIFIED;
+        platformNodeID = uint160();
     }
     void BanIfNotBanned(int height)
     {
@@ -126,44 +283,54 @@ public:
 
 public:
     std::string ToString() const;
-    void ToJson(UniValue& obj) const;
+    void ToJson(UniValue& obj, MnType nType) const;
 };
 
 class CDeterministicMNStateDiff
 {
 public:
     enum Field : uint32_t {
-        Field_nRegisteredHeight                 = 0x0001,
-        Field_nLastPaidHeight                   = 0x0002,
-        Field_nPoSePenalty                      = 0x0004,
-        Field_nPoSeRevivedHeight                = 0x0008,
-        Field_nPoSeBanHeight                    = 0x0010,
-        Field_nRevocationReason                 = 0x0020,
-        Field_confirmedHash                     = 0x0040,
-        Field_confirmedHashWithProRegTxHash     = 0x0080,
-        Field_keyIDOwner                        = 0x0100,
-        Field_pubKeyOperator                    = 0x0200,
-        Field_keyIDVoting                       = 0x0400,
-        Field_addr                              = 0x0800,
-        Field_scriptPayout                      = 0x1000,
-        Field_scriptOperatorPayout              = 0x2000,
+        Field_nRegisteredHeight = 0x0001,
+        Field_nLastPaidHeight = 0x0002,
+        Field_nPoSePenalty = 0x0004,
+        Field_nPoSeRevivedHeight = 0x0008,
+        Field_nPoSeBanHeight = 0x0010,
+        Field_nRevocationReason = 0x0020,
+        Field_confirmedHash = 0x0040,
+        Field_confirmedHashWithProRegTxHash = 0x0080,
+        Field_keyIDOwner = 0x0100,
+        Field_pubKeyOperator = 0x0200,
+        Field_keyIDVoting = 0x0400,
+        Field_addr = 0x0800,
+        Field_scriptPayout = 0x1000,
+        Field_scriptOperatorPayout = 0x2000,
+        Field_nConsecutivePayments = 0x4000,
+        Field_platformNodeID = 0x8000,
+        Field_platformP2PPort = 0x10000,
+        Field_platformHTTPPort = 0x20000,
+        Field_nVersion = 0x40000,
     };
 
-#define DMN_STATE_DIFF_ALL_FIELDS \
-    DMN_STATE_DIFF_LINE(nRegisteredHeight) \
-    DMN_STATE_DIFF_LINE(nLastPaidHeight) \
-    DMN_STATE_DIFF_LINE(nPoSePenalty) \
-    DMN_STATE_DIFF_LINE(nPoSeRevivedHeight) \
-    DMN_STATE_DIFF_LINE(nPoSeBanHeight) \
-    DMN_STATE_DIFF_LINE(nRevocationReason) \
-    DMN_STATE_DIFF_LINE(confirmedHash) \
+#define DMN_STATE_DIFF_ALL_FIELDS                      \
+    DMN_STATE_DIFF_LINE(nRegisteredHeight)             \
+    DMN_STATE_DIFF_LINE(nLastPaidHeight)               \
+    DMN_STATE_DIFF_LINE(nPoSePenalty)                  \
+    DMN_STATE_DIFF_LINE(nPoSeRevivedHeight)            \
+    DMN_STATE_DIFF_LINE(nPoSeBanHeight)                \
+    DMN_STATE_DIFF_LINE(nRevocationReason)             \
+    DMN_STATE_DIFF_LINE(confirmedHash)                 \
     DMN_STATE_DIFF_LINE(confirmedHashWithProRegTxHash) \
-    DMN_STATE_DIFF_LINE(keyIDOwner) \
-    DMN_STATE_DIFF_LINE(pubKeyOperator) \
-    DMN_STATE_DIFF_LINE(keyIDVoting) \
-    DMN_STATE_DIFF_LINE(addr) \
-    DMN_STATE_DIFF_LINE(scriptPayout) \
-    DMN_STATE_DIFF_LINE(scriptOperatorPayout)
+    DMN_STATE_DIFF_LINE(keyIDOwner)                    \
+    DMN_STATE_DIFF_LINE(pubKeyOperator)                \
+    DMN_STATE_DIFF_LINE(keyIDVoting)                   \
+    DMN_STATE_DIFF_LINE(addr)                          \
+    DMN_STATE_DIFF_LINE(scriptPayout)                  \
+    DMN_STATE_DIFF_LINE(scriptOperatorPayout)          \
+    DMN_STATE_DIFF_LINE(nConsecutivePayments)          \
+    DMN_STATE_DIFF_LINE(platformNodeID)                \
+    DMN_STATE_DIFF_LINE(platformP2PPort)               \
+    DMN_STATE_DIFF_LINE(platformHTTPPort)              \
+    DMN_STATE_DIFF_LINE(nVersion)
 
 public:
     uint32_t fields{0};
@@ -177,14 +344,26 @@ public:
 #define DMN_STATE_DIFF_LINE(f) if (a.f != b.f) { state.f = b.f; fields |= Field_##f; }
         DMN_STATE_DIFF_ALL_FIELDS
 #undef DMN_STATE_DIFF_LINE
+        if (fields & Field_pubKeyOperator) { state.nVersion = b.nVersion; fields |= Field_nVersion; }
     }
 
     SERIALIZE_METHODS(CDeterministicMNStateDiff, obj)
     {
+        // NOTE: reading pubKeyOperator requires nVersion
+        bool read_pubkey{false};
         READWRITE(VARINT(obj.fields));
-#define DMN_STATE_DIFF_LINE(f) if (obj.fields & Field_##f) READWRITE(obj.state.f);
+#define DMN_STATE_DIFF_LINE(f) \
+        if (strcmp(#f, "pubKeyOperator") == 0 && (obj.fields & Field_pubKeyOperator)) {\
+            SER_READ(obj, read_pubkey = true); \
+            READWRITE(CBLSLazyPublicKeyVersionWrapper(const_cast<CBLSLazyPublicKey&>(obj.state.pubKeyOperator), obj.state.nVersion == CProRegTx::LEGACY_BLS_VERSION)); \
+        } else if (obj.fields & Field_##f) READWRITE(obj.state.f);
+
         DMN_STATE_DIFF_ALL_FIELDS
 #undef DMN_STATE_DIFF_LINE
+        if (read_pubkey) {
+            SER_READ(obj, obj.fields |= Field_nVersion);
+            SER_READ(obj, obj.state.pubKeyOperator.SetLegacy(obj.state.nVersion == CProRegTx::LEGACY_BLS_VERSION));
+        }
     }
 
     void ApplyToState(CDeterministicMNState& target) const

@@ -70,7 +70,7 @@ class TestNode():
         self.index = i
         self.datadir = datadir
         self.chain = chain
-        self.bitcoinconf = os.path.join(self.datadir, "dash.conf")
+        self.bitcoinconf = os.path.join(self.datadir, "cosanta.conf")
         self.stdout_dir = os.path.join(self.datadir, "stdout")
         self.stderr_dir = os.path.join(self.datadir, "stderr")
         self.rpchost = rpchost
@@ -525,7 +525,7 @@ def arg_to_cli(arg):
         return str(arg)
 
 class TestNodeCLI():
-    """Interface to dash-cli for an individual node"""
+    """Interface to cosanta-cli for an individual node"""
 
     def __init__(self, binary, datadir):
         self.options = []
@@ -535,7 +535,7 @@ class TestNodeCLI():
         self.log = logging.getLogger('TestFramework.dashcli')
 
     def __call__(self, *options, input=None):
-        # TestNodeCLI is callable with dash-cli command-line options
+        # TestNodeCLI is callable with cosanta-cli command-line options
         cli = TestNodeCLI(self.binary, self.datadir)
         cli.options = [str(o) for o in options]
         cli.input = input
@@ -554,17 +554,17 @@ class TestNodeCLI():
         return results
 
     def send_cli(self, command=None, *args, **kwargs):
-        """Run dash-cli command. Deserializes returned string as python object."""
+        """Run cosanta-cli command. Deserializes returned string as python object."""
         pos_args = [arg_to_cli(arg) for arg in args]
         named_args = [str(key) + "=" + arg_to_cli(value) for (key, value) in kwargs.items()]
-        assert not (pos_args and named_args), "Cannot use positional arguments and named arguments in the same dash-cli call"
+        assert not (pos_args and named_args), "Cannot use positional arguments and named arguments in the same cosanta-cli call"
         p_args = [self.binary, "-datadir=" + self.datadir] + self.options
         if named_args:
             p_args += ["-named"]
         if command is not None:
             p_args += [command]
         p_args += pos_args + named_args
-        self.log.debug("Running dash-cli command: %s" % command)
+        self.log.debug("Running cosanta-cli command: %s" % command)
         process = subprocess.Popen(p_args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         cli_stdout, cli_stderr = process.communicate(input=self.input)
         returncode = process.poll()

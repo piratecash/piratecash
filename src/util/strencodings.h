@@ -11,12 +11,13 @@
 
 #include <attributes.h>
 #include <span.h>
+#include <util/string.h>
 
+#include <charconv>
 #include <cstdint>
+#include <optional>
 #include <string>
 #include <vector>
-
-#define ARRAYLEN(array)     (sizeof(array)/sizeof((array)[0]))
 
 /** Used by SanitizeString() */
 enum SafeChars
@@ -67,12 +68,34 @@ std::string EncodeBase32(Span<const unsigned char> input, bool pad = true);
  */
 std::string EncodeBase32(const std::string& str, bool pad = true);
 
-void SplitHostPort(std::string in, int &portOut, std::string &hostOut);
-std::string i64tostr(int64_t n);
-std::string itostr(int n);
-int64_t atoi64(const char* psz);
-int64_t atoi64(const std::string& str);
-int atoi(const std::string& str);
+void SplitHostPort(std::string in, uint16_t &portOut, std::string &hostOut);
+
+// LocaleIndependentAtoi is provided for backwards compatibility reasons.
+//
+// New code should use the ParseInt64/ParseUInt64/ParseInt32/ParseUInt32 functions
+// which provide parse error feedback.
+//
+// The goal of LocaleIndependentAtoi is to replicate the exact defined behaviour
+// of atoi and atoi64 as they behave under the "C" locale.
+template <typename T>
+T LocaleIndependentAtoi(const std::string& str)
+{
+    static_assert(std::is_integral<T>::value);
+    T result;
+    // Emulate atoi(...) handling of white space and leading +/-.
+    std::string s = TrimString(str);
+    if (!s.empty() && s[0] == '+') {
+        if (s.length() >= 2 && s[1] == '-') {
+            return 0;
+        }
+        s = s.substr(1);
+    }
+    auto [_, error_condition] = std::from_chars(s.data(), s.data() + s.size(), result);
+    if (error_condition != std::errc{}) {
+        return 0;
+    }
+    return result;
+}
 
 /**
  * Tests if the given character is a decimal digit.
@@ -100,6 +123,24 @@ constexpr inline bool IsSpace(char c) noexcept {
 }
 
 /**
+ * Convert string to integral type T.
+ *
+ * @returns std::nullopt if the entire string could not be parsed, or if the
+ *   parsed value is not in the range representable by the type T.
+ */
+template <typename T>
+std::optional<T> ToIntegral(const std::string& str)
+{
+    static_assert(std::is_integral<T>::value);
+    T result;
+    const auto [first_nonmatching, error_condition] = std::from_chars(str.data(), str.data() + str.size(), result);
+    if (first_nonmatching != str.data() + str.size() || error_condition != std::errc{}) {
+        return std::nullopt;
+    }
+    return {result};
+}
+
+/**
  * Convert string to signed 32-bit integer with strict parse error feedback.
  * @returns true if the entire string could be parsed as valid integer,
  *   false if not the entire string could be parsed or when overflow or underflow occurred.
@@ -119,6 +160,13 @@ constexpr inline bool IsSpace(char c) noexcept {
  *   false if not the entire string could be parsed or when overflow or underflow occurred.
  */
 [[nodiscard]] bool ParseUInt8(const std::string& str, uint8_t *out);
+
+/**
+ * Convert decimal string to unsigned 16-bit integer with strict parse error feedback.
+ * @returns true if the entire string could be parsed as valid integer,
+ *   false if the entire string could not be parsed or if overflow or underflow occurred.
+ */
+[[nodiscard]] bool ParseUInt16(const std::string& str, uint16_t* out);
 
 /**
  * Convert decimal string to unsigned 32-bit integer with strict parse error feedback.
@@ -263,6 +311,6 @@ std::string ToUpper(const std::string& str);
 std::string Capitalize(std::string str);
 
 /** Parse an HD keypaths like "m/7/0'/2000". */
-bool ParseHDKeypath(const std::string& keypath_str, std::vector<uint32_t>& keypath);
+[[nodiscard]] bool ParseHDKeypath(const std::string& keypath_str, std::vector<uint32_t>& keypath);
 
 #endif // BITCOIN_UTIL_STRENCODINGS_H

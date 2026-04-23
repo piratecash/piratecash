@@ -17,7 +17,7 @@ BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
             VALUE "CompanyName",        "PirateCash"
-            VALUE "FileDescription",    "piratecash-tx (CLI Cosanta transaction editor utility)"
+            VALUE "FileDescription",    "piratecash-tx (CLI PirateCash transaction editor utility)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
             VALUE "InternalName",       "piratecash-tx"
             VALUE "LegalCopyright",     COPYRIGHT_STR

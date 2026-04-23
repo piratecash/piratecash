@@ -352,7 +352,6 @@ BOOST_AUTO_TEST_CASE( divide )
     BOOST_CHECK(R1L / MaxL == ZeroL);
     BOOST_CHECK(MaxL / R1L == 2);
     BOOST_CHECK_THROW(R1L / ZeroL, uint_error);
-    BOOST_CHECK((ZeroL / R1L) == ZeroL);
     BOOST_CHECK((R2L / D1L).ToString() == "000000000000000013e1665895a1cc981de6d93670105a6b3ec3b73141b3a3c5");
     BOOST_CHECK((R2L / D2L).ToString() == "000000000e8f0abe753bb0afe2e9437ee85d280be60882cf0bd1aaf7fa3cc2c4");
     BOOST_CHECK(R2L / OneL == R2L);

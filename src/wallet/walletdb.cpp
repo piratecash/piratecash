@@ -17,10 +17,18 @@
 #include <sync.h>
 #include <util/system.h>
 #include <util/time.h>
+#include <util/translation.h>
+#ifdef USE_BDB
+#include <wallet/bdb.h>
+#endif
+#ifdef USE_SQLITE
+#include <wallet/sqlite.h>
+#endif
 #include <wallet/wallet.h>
 #include <validation.h>
 
 #include <atomic>
+#include <optional>
 #include <string>
 
 namespace DBKeys {
@@ -222,7 +230,7 @@ public:
 
 static bool
 ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
-             CWalletScanState &wss, std::string& strType, std::string& strErr, const KeyFilterFn& filter_fn = nullptr) EXCLUSIVE_LOCKS_REQUIRED(pwallet->cs_wallet)
+             CWalletScanState &wss, std::string& strType, std::string& strErr, const KeyFilterFn& filter_fn = nullptr) EXCLUSIVE_LOCKS_REQUIRED(pwallet->cs_wallet, pwallet->GetLegacyScriptPubKeyMan()->cs_wallet)
 {
     try {
         // Unserialize
@@ -281,8 +289,9 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
             ssKey >> script;
             char fYes;
             ssValue >> fYes;
-            if (fYes == '1')
-                pwallet->LoadWatchOnly(script);
+            if (fYes == '1') {
+                pwallet->GetLegacyScriptPubKeyMan()->LoadWatchOnly(script);
+            }
         } else if (strType == DBKeys::KEY) {
             CPubKey vchPubKey;
             ssKey >> vchPubKey;
@@ -333,12 +342,13 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
                 strErr = "Error reading wallet database: CPrivKey corrupt";
                 return false;
             }
-            if (!pwallet->LoadKey(key, vchPubKey))
+            if (!pwallet->GetLegacyScriptPubKeyMan()->LoadKey(key, vchPubKey))
             {
-                strErr = "Error reading wallet database: LoadKey failed";
+                strErr = "Error reading wallet database: LegacyScriptPubKeyMan::LoadKey failed";
                 return false;
             }
         } else if (strType == DBKeys::MASTER_KEY) {
+            // Master encryption key is loaded into only the wallet and not any of the ScriptPubKeyMans.
             unsigned int nID;
             ssKey >> nID;
             CMasterKey kMasterKey;
@@ -363,9 +373,9 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
             ssValue >> vchPrivKey;
             wss.nCKeys++;
 
-            if (!pwallet->LoadCryptedKey(vchPubKey, vchPrivKey))
+            if (!pwallet->GetLegacyScriptPubKeyMan()->LoadCryptedKey(vchPubKey, vchPrivKey))
             {
-                strErr = "Error reading wallet database: LoadCryptedKey failed";
+                strErr = "Error reading wallet database: LegacyScriptPubKeyMan::LoadCryptedKey failed";
                 return false;
             }
             wss.fIsEncrypted = true;
@@ -375,14 +385,14 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
             CKeyMetadata keyMeta;
             ssValue >> keyMeta;
             wss.nKeyMeta++;
-            pwallet->LoadKeyMetadata(vchPubKey.GetID(), keyMeta);
+            pwallet->GetLegacyScriptPubKeyMan()->LoadKeyMetadata(vchPubKey.GetID(), keyMeta);
         } else if (strType == DBKeys::WATCHMETA) {
             CScript script;
             ssKey >> script;
             CKeyMetadata keyMeta;
             ssValue >> keyMeta;
             wss.nKeyMeta++;
-            pwallet->LoadScriptMetadata(CScriptID(script), keyMeta);
+            pwallet->GetLegacyScriptPubKeyMan()->LoadScriptMetadata(CScriptID(script), keyMeta);
         } else if (strType == DBKeys::DEFAULTKEY) {
             // We don't want or need the default key, but if there is one set,
             // we want to make sure that it is valid so that we can detect corruption
@@ -397,15 +407,15 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
             ssKey >> nIndex;
             CKeyPool keypool;
             ssValue >> keypool;
-            pwallet->LoadKeyPool(nIndex, keypool);
+            pwallet->GetLegacyScriptPubKeyMan()->LoadKeyPool(nIndex, keypool);
         } else if (strType == DBKeys::CSCRIPT) {
             uint160 hash;
             ssKey >> hash;
             CScript script;
             ssValue >> script;
-            if (!pwallet->LoadCScript(script))
+            if (!pwallet->GetLegacyScriptPubKeyMan()->LoadCScript(script))
             {
-                strErr = "Error reading wallet database: LoadCScript failed";
+                strErr = "Error reading wallet database: LegacyScriptPubKeyMan::LoadCScript failed";
                 return false;
             }
         } else if (strType == DBKeys::ORDERPOSNEXT) {
@@ -419,7 +429,7 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
         } else if (strType == DBKeys::HDCHAIN) {
             CHDChain chain;
             ssValue >> chain;
-            if (!pwallet->SetHDChainSingle(chain, true))
+            if (!pwallet->GetLegacyScriptPubKeyMan()->SetHDChainSingle(chain, true))
             {
                 strErr = "Error reading wallet database: SetHDChain failed";
                 return false;
@@ -427,7 +437,7 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
         } else if (strType == DBKeys::CRYPTED_HDCHAIN) {
             CHDChain chain;
             ssValue >> chain;
-            if (!pwallet->SetCryptedHDChainSingle(chain, true))
+            if (!pwallet->GetLegacyScriptPubKeyMan()->SetCryptedHDChainSingle(chain, true))
             {
                 strErr = "Error reading wallet database: SetHDCryptedChain failed";
                 return false;
@@ -445,7 +455,7 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
                 strErr = "Error reading wallet database: CHDPubKey corrupt";
                 return false;
             }
-            if (!pwallet->LoadHDPubKey(hdPubKey))
+            if (!pwallet->GetLegacyScriptPubKeyMan()->LoadHDPubKey(hdPubKey))
             {
                 strErr = "Error reading wallet database: LoadHDPubKey failed";
                 return false;
@@ -476,7 +486,9 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
             strErr = "Found unsupported 'wkey' record, try loading with version 0.17";
             return false;
         } else if (strType != DBKeys::BESTBLOCK && strType != DBKeys::BESTBLOCK_NOMERKLE &&
-                   strType != DBKeys::MINVERSION && strType != DBKeys::ACENTRY && strType != DBKeys::VERSION) {
+                   strType != DBKeys::MINVERSION && strType != DBKeys::ACENTRY &&
+                   strType != DBKeys::VERSION &&
+                   strType != DBKeys::PRIVATESEND_SALT && strType != DBKeys::COINJOIN_SALT) {
             wss.m_unknown_records++;
         }
     } catch (const std::exception& e) {
@@ -497,6 +509,7 @@ bool ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue, st
 {
     CWalletScanState dummy_wss;
     LOCK(pwallet->cs_wallet);
+    AssertLockHeld(pwallet->GetLegacyScriptPubKeyMan()->cs_wallet);
     return ReadKeyValue(pwallet, ssKey, ssValue, dummy_wss, strType, strErr, filter_fn);
 }
 
@@ -513,9 +526,8 @@ DBErrors WalletBatch::LoadWallet(CWallet* pwallet)
     bool fNoncriticalErrors = false;
     DBErrors result = DBErrors::LOAD_OK;
 
-    auto locked_chain = pwallet->chain().lock();
-    LockAnnotation lock(::cs_main);
     LOCK(pwallet->cs_wallet);
+    AssertLockHeld(pwallet->GetLegacyScriptPubKeyMan()->cs_wallet);
     try {
         int nMinVersion = 0;
         if (m_batch->Read(DBKeys::MINVERSION, nMinVersion)) {
@@ -599,8 +611,13 @@ DBErrors WalletBatch::LoadWallet(CWallet* pwallet)
            wss.nWatchKeys, wss.nHDPubKeys, wss.nKeyMeta, wss.m_unknown_records);
 
     // nTimeFirstKey is only reliable if all keys have metadata
-    if ((wss.nKeys + wss.nCKeys + wss.nWatchKeys + wss.nHDPubKeys) != wss.nKeyMeta)
-        pwallet->UpdateTimeFirstKey(1);
+    if ((wss.nKeys + wss.nCKeys + wss.nWatchKeys + wss.nHDPubKeys) != wss.nKeyMeta) {
+        auto spk_man = pwallet->GetLegacyScriptPubKeyMan();
+        if (spk_man) {
+            AssertLockHeld(spk_man->cs_wallet);
+            spk_man->UpdateTimeFirstKey(1);
+        }
+    }
 
     for (const uint256& hash : wss.vWalletUpgrade)
         WriteTx(pwallet->mapWallet.at(hash));
@@ -618,7 +635,11 @@ DBErrors WalletBatch::LoadWallet(CWallet* pwallet)
     // Upgrade all of the wallet keymetadata to have the hd master key id
     // This operation is not atomic, but if it fails, updated entries are still backwards compatible with older software
     try {
-        pwallet->UpgradeKeyMetadata();
+        auto spk_man = pwallet->GetLegacyScriptPubKeyMan();
+        if (spk_man) {
+            AssertLockHeld(spk_man->cs_wallet);
+            spk_man->UpgradeKeyMetadata();
+        }
     } catch (...) {
         result = DBErrors::CORRUPT;
     }
@@ -718,30 +739,10 @@ DBErrors WalletBatch::ZapSelectTx(std::vector<uint256>& vTxHashIn, std::vector<u
     return DBErrors::LOAD_OK;
 }
 
-DBErrors WalletBatch::ZapWalletTx(std::vector<CWalletTx>& vWtx)
-{
-    // build list of wallet TXs
-    std::vector<uint256> vTxHash;
-    DBErrors err = FindWalletTx(vTxHash, vWtx);
-    if (err != DBErrors::LOAD_OK)
-        return err;
-
-    // erase each wallet TX
-    for (const uint256& hash : vTxHash) {
-        if (!EraseTx(hash))
-            return DBErrors::CORRUPT;
-    }
-
-    return DBErrors::LOAD_OK;
-}
-
 void MaybeCompactWalletDB()
 {
     static std::atomic<bool> fOneThread(false);
     if (fOneThread.exchange(true)) {
-        return;
-    }
-    if (!gArgs.GetBoolArg("-flushwallet", DEFAULT_FLUSHWALLET)) {
         return;
     }
 
@@ -818,26 +819,97 @@ bool WalletBatch::TxnAbort()
     return m_batch->TxnAbort();
 }
 
-bool IsWalletLoaded(const fs::path& wallet_path)
+std::unique_ptr<WalletDatabase> MakeDatabase(const fs::path& path, const DatabaseOptions& options, DatabaseStatus& status, bilingual_str& error)
 {
-    return IsBDBWalletLoaded(wallet_path);
-}
+    bool exists;
+    try {
+        exists = fs::symlink_status(path).type() != fs::file_not_found;
+    } catch (const fs::filesystem_error& e) {
+        error = Untranslated(strprintf("Failed to access database path '%s': %s", path.string(), fsbridge::get_filesystem_error_message(e)));
+        status = DatabaseStatus::FAILED_BAD_PATH;
+        return nullptr;
+    }
 
-/** Return object for accessing database at specified path. */
-std::unique_ptr<WalletDatabase> CreateWalletDatabase(const fs::path& path)
-{
-    std::string filename;
-    return MakeUnique<BerkeleyDatabase>(GetWalletEnv(path, filename), std::move(filename));
+    std::optional<DatabaseFormat> format;
+    if (exists) {
+        if (IsBDBFile(BDBDataFile(path))) {
+            format = DatabaseFormat::BERKELEY;
+        }
+        if (IsSQLiteFile(SQLiteDataFile(path))) {
+            if (format) {
+                error = Untranslated(strprintf("Failed to load database path '%s'. Data is in ambiguous format.", path.string()));
+                status = DatabaseStatus::FAILED_BAD_FORMAT;
+                return nullptr;
+            }
+            format = DatabaseFormat::SQLITE;
+        }
+    } else if (options.require_existing) {
+        error = Untranslated(strprintf("Failed to load database path '%s'. Path does not exist.", path.string()));
+        status = DatabaseStatus::FAILED_NOT_FOUND;
+        return nullptr;
+    }
+
+    if (!format && options.require_existing) {
+        error = Untranslated(strprintf("Failed to load database path '%s'. Data is not in recognized format.", path.string()));
+        status = DatabaseStatus::FAILED_BAD_FORMAT;
+        return nullptr;
+    }
+
+    if (format && options.require_create) {
+        error = Untranslated(strprintf("Failed to create database path '%s'. Database already exists.", path.string()));
+        status = DatabaseStatus::FAILED_ALREADY_EXISTS;
+        return nullptr;
+    }
+
+    // A db already exists so format is set, but options also specifies the format, so make sure they agree
+    if (format && options.require_format && format != options.require_format) {
+        error = Untranslated(strprintf("Failed to load database path '%s'. Data is not in required format.", path.string()));
+        status = DatabaseStatus::FAILED_BAD_FORMAT;
+        return nullptr;
+    }
+
+    // Format is not set when a db doesn't already exist, so use the format specified by the options if it is set.
+    if (!format && options.require_format) format = options.require_format;
+
+    // If the format is not specified or detected, choose the default format based on what is available. We prefer BDB over SQLite for now..
+    if (!format) {
+#ifdef USE_SQLITE
+        format = DatabaseFormat::SQLITE;
+#endif
+#ifdef USE_BDB
+        format = DatabaseFormat::BERKELEY;
+#endif
+    }
+
+    if (format == DatabaseFormat::SQLITE) {
+#ifdef USE_SQLITE
+        return MakeSQLiteDatabase(path, options, status, error);
+#endif
+        error = Untranslated(strprintf("Failed to open database path '%s'. Build does not support SQLite database format.", path.string()));
+        status = DatabaseStatus::FAILED_BAD_FORMAT;
+        return nullptr;
+    }
+
+#ifdef USE_BDB
+    return MakeBerkeleyDatabase(path, options, status, error);
+#endif
+    error = Untranslated(strprintf("Failed to open database path '%s'. Build does not support Berkeley DB database format.", path.string()));
+    status = DatabaseStatus::FAILED_BAD_FORMAT;
+    return nullptr;
 }
 
 /** Return object for accessing dummy database with no read/write capabilities. */
 std::unique_ptr<WalletDatabase> CreateDummyWalletDatabase()
 {
-    return MakeUnique<DummyDatabase>();
+    return std::make_unique<DummyDatabase>();
 }
 
 /** Return object for accessing temporary in-memory database. */
 std::unique_ptr<WalletDatabase> CreateMockWalletDatabase()
 {
-    return MakeUnique<BerkeleyDatabase>(std::make_shared<BerkeleyEnvironment>(), "");
+#ifdef USE_BDB
+    return std::make_unique<BerkeleyDatabase>(std::make_shared<BerkeleyEnvironment>(), "");
+#elif defined(USE_SQLITE)
+    return std::make_unique<SQLiteDatabase>("", "", true);
+#endif
 }

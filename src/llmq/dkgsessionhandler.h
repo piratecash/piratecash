@@ -16,9 +16,10 @@ class CBlockIndex;
 
 namespace llmq
 {
-
+class CDKGDebugManager;
 class CDKGSession;
 class CDKGSessionManager;
+class CQuorumBlockProcessor;
 
 enum class QuorumPhase {
     Initialized = 1,
@@ -108,10 +109,13 @@ private:
     mutable CCriticalSection cs;
     std::atomic<bool> stopRequested{false};
 
-    const Consensus::LLMQParams& params;
+    const Consensus::LLMQParams params;
+    CConnman& connman;
     const int quorumIndex;
     CBLSWorker& blsWorker;
     CDKGSessionManager& dkgManager;
+    CDKGDebugManager& dkgDebugManager;
+    CQuorumBlockProcessor& quorumBlockProcessor;
 
     QuorumPhase phase GUARDED_BY(cs) {QuorumPhase::Idle};
     int currentHeight GUARDED_BY(cs) {-1};
@@ -127,25 +131,12 @@ private:
     CDKGPendingMessages pendingPrematureCommitments;
 
 public:
-    CDKGSessionHandler(const Consensus::LLMQParams& _params, CBLSWorker& _blsWorker, CDKGSessionManager& _dkgManager, int _quorumIndex) :
-            params(_params),
-            blsWorker(_blsWorker),
-            dkgManager(_dkgManager),
-            quorumIndex(_quorumIndex),
-            curSession(std::make_unique<CDKGSession>(_params, _blsWorker, _dkgManager)),
-            pendingContributions((size_t)_params.size * 2, MSG_QUORUM_CONTRIB), // we allow size*2 messages as we need to make sure we see bad behavior (double messages)
-            pendingComplaints((size_t)_params.size * 2, MSG_QUORUM_COMPLAINT),
-            pendingJustifications((size_t)_params.size * 2, MSG_QUORUM_JUSTIFICATION),
-            pendingPrematureCommitments((size_t)_params.size * 2, MSG_QUORUM_PREMATURE_COMMITMENT)
-    {
-        if (params.type == Consensus::LLMQType::LLMQ_NONE) {
-            throw std::runtime_error("Can't initialize CDKGSessionHandler with LLMQ_NONE type.");
-        }
-    }
+    CDKGSessionHandler(const Consensus::LLMQParams& _params, CBLSWorker& _blsWorker, CDKGSessionManager& _dkgManager,
+                       CDKGDebugManager& _dkgDebugManager, CQuorumBlockProcessor& _quorumBlockProcessor, CConnman& _connman, int _quorumIndex);
     ~CDKGSessionHandler() = default;
 
     void UpdatedBlockTip(const CBlockIndex *pindexNew);
-    void ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv);
+    void ProcessMessage(const CNode& pfrom, const std::string& msg_type, CDataStream& vRecv);
 
     void StartThread();
     void StopThread();

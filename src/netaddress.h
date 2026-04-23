@@ -6,7 +6,7 @@
 #define BITCOIN_NETADDRESS_H
 
 #if defined(HAVE_CONFIG_H)
-#include <config/piratecash-config.h>
+#include <config/bitcoin-config.h>
 #endif
 
 #include <attributes.h>
@@ -30,7 +30,7 @@ extern bool fAllowPrivateNet;
  * should be serialized in (unserialized from) v2 format (BIP155).
  * Make sure that this does not collide with any of the values in `version.h`
  */
-static const int ADDRV2_FORMAT = 0x20000000;
+static constexpr int ADDRV2_FORMAT = 0x20000000;
 
 /**
  * A network type.
@@ -505,11 +505,11 @@ class CService : public CNetAddr
 
     public:
         CService();
-        CService(const CNetAddr& ip, unsigned short port);
-        CService(const struct in_addr& ipv4Addr, unsigned short port);
+        CService(const CNetAddr& ip, uint16_t port);
+        CService(const struct in_addr& ipv4Addr, uint16_t port);
         explicit CService(const struct sockaddr_in& addr);
-        void SetPort(unsigned short portIn);
-        unsigned short GetPort() const;
+        void SetPort(uint16_t portIn);
+        uint16_t GetPort() const;
         bool GetSockAddr(struct sockaddr* paddr, socklen_t *addrlen) const;
         bool SetSockAddr(const struct sockaddr* paddr);
         friend bool operator==(const CService& a, const CService& b);
@@ -520,7 +520,7 @@ class CService : public CNetAddr
         std::string ToStringPort() const;
         std::string ToStringIPPort(bool fUseGetnameinfo = true) const;
 
-        CService(const struct in6_addr& ipv6Addr, unsigned short port);
+        CService(const struct in6_addr& ipv6Addr, uint16_t port);
         explicit CService(const struct sockaddr_in6& addr);
 
         SERIALIZE_METHODS(CService, obj)

@@ -1,8 +1,9 @@
 // Copyright (c) 2012-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2014-2022 The Dash Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <netaddress.h>
 #include <netbase.h>
 #include <net_permissions.h>
 #include <protocol.h>
@@ -19,21 +20,21 @@
 
 BOOST_FIXTURE_TEST_SUITE(netbase_tests, BasicTestingSetup)
 
-static CNetAddr ResolveIP(const char* ip)
+static CNetAddr ResolveIP(const std::string& ip)
 {
     CNetAddr addr;
     LookupHost(ip, addr, false);
     return addr;
 }
 
-static CSubNet ResolveSubNet(const char* subnet)
+static CSubNet ResolveSubNet(const std::string& subnet)
 {
     CSubNet ret;
     LookupSubNet(subnet, ret);
     return ret;
 }
 
-static CNetAddr CreateInternal(const char* host)
+static CNetAddr CreateInternal(const std::string& host)
 {
     CNetAddr addr;
     addr.SetInternal(host);
@@ -82,36 +83,36 @@ BOOST_AUTO_TEST_CASE(netbase_properties)
 
 }
 
-bool static TestSplitHost(std::string test, std::string host, int port)
+bool static TestSplitHost(const std::string& test, const std::string& host, uint16_t port)
 {
     std::string hostOut;
-    int portOut = -1;
+    uint16_t portOut{0};
     SplitHostPort(test, portOut, hostOut);
     return hostOut == host && port == portOut;
 }
 
 BOOST_AUTO_TEST_CASE(netbase_splithost)
 {
-    BOOST_CHECK(TestSplitHost("www.bitcoin.org", "www.bitcoin.org", -1));
-    BOOST_CHECK(TestSplitHost("[www.bitcoin.org]", "www.bitcoin.org", -1));
+    BOOST_CHECK(TestSplitHost("www.bitcoin.org", "www.bitcoin.org", 0));
+    BOOST_CHECK(TestSplitHost("[www.bitcoin.org]", "www.bitcoin.org", 0));
     BOOST_CHECK(TestSplitHost("www.bitcoin.org:80", "www.bitcoin.org", 80));
     BOOST_CHECK(TestSplitHost("[www.bitcoin.org]:80", "www.bitcoin.org", 80));
-    BOOST_CHECK(TestSplitHost("127.0.0.1", "127.0.0.1", -1));
+    BOOST_CHECK(TestSplitHost("127.0.0.1", "127.0.0.1", 0));
     BOOST_CHECK(TestSplitHost("127.0.0.1:9999", "127.0.0.1", 9999));
-    BOOST_CHECK(TestSplitHost("[127.0.0.1]", "127.0.0.1", -1));
+    BOOST_CHECK(TestSplitHost("[127.0.0.1]", "127.0.0.1", 0));
     BOOST_CHECK(TestSplitHost("[127.0.0.1]:9999", "127.0.0.1", 9999));
-    BOOST_CHECK(TestSplitHost("::ffff:127.0.0.1", "::ffff:127.0.0.1", -1));
+    BOOST_CHECK(TestSplitHost("::ffff:127.0.0.1", "::ffff:127.0.0.1", 0));
     BOOST_CHECK(TestSplitHost("[::ffff:127.0.0.1]:9999", "::ffff:127.0.0.1", 9999));
     BOOST_CHECK(TestSplitHost("[::]:9999", "::", 9999));
-    BOOST_CHECK(TestSplitHost("::9999", "::9999", -1));
+    BOOST_CHECK(TestSplitHost("::9999", "::9999", 0));
     BOOST_CHECK(TestSplitHost(":9999", "", 9999));
     BOOST_CHECK(TestSplitHost("[]:9999", "", 9999));
-    BOOST_CHECK(TestSplitHost("", "", -1));
+    BOOST_CHECK(TestSplitHost("", "", 0));
 }
 
 bool static TestParse(std::string src, std::string canon)
 {
-    CService addr(LookupNumeric(src.c_str(), 65535));
+    CService addr(LookupNumeric(src, 65535));
     return canon == addr.ToString();
 }
 
@@ -133,7 +134,6 @@ BOOST_AUTO_TEST_CASE(netbase_lookupnumeric)
 
 BOOST_AUTO_TEST_CASE(onioncat_test)
 {
-
     // values from https://web.archive.org/web/20121122003543/http://www.cypherpunk.at/onioncat/wiki/OnionCat
     CNetAddr addr1(ResolveIP("5wyqrzbvrdsumnok.onion"));
     CNetAddr addr2(ResolveIP("FD87:D87E:EB43:edb1:8e4:3588:e546:35ca"));
@@ -332,6 +332,125 @@ BOOST_AUTO_TEST_CASE(netbase_getgroup)
     BOOST_CHECK(CreateInternal("baz.net").GetGroup(asmap) == internal_group);
 }
 
+// Since CNetAddr (un)ser is tested separately in net_tests.cpp here we only
+// try a few edge cases for port, service flags and time.
+
+static const std::vector<CAddress> fixture_addresses({
+    CAddress(
+        CService(CNetAddr(in6_addr(IN6ADDR_LOOPBACK_INIT)), 0 /* port */),
+        NODE_NONE,
+        0x4966bc61U /* Fri Jan  9 02:54:25 UTC 2009 */
+    ),
+    CAddress(
+        CService(CNetAddr(in6_addr(IN6ADDR_LOOPBACK_INIT)), 0x00f1 /* port */),
+        NODE_NETWORK,
+        0x83766279U /* Tue Nov 22 11:22:33 UTC 2039 */
+    ),
+    CAddress(
+        CService(CNetAddr(in6_addr(IN6ADDR_LOOPBACK_INIT)), 0xf1f2 /* port */),
+        static_cast<ServiceFlags>(NODE_NETWORK_LIMITED),
+        0xffffffffU /* Sun Feb  7 06:28:15 UTC 2106 */
+    )
+});
+
+// fixture_addresses should equal to this when serialized in V1 format.
+// When this is unserialized from V1 format it should equal to fixture_addresses.
+static constexpr const char* stream_addrv1_hex =
+    "03" // number of entries
+
+    "61bc6649"                         // time, Fri Jan  9 02:54:25 UTC 2009
+    "0000000000000000"                 // service flags, NODE_NONE
+    "00000000000000000000000000000001" // address, fixed 16 bytes (IPv4 embedded in IPv6)
+    "0000"                             // port
+
+    "79627683"                         // time, Tue Nov 22 11:22:33 UTC 2039
+    "0100000000000000"                 // service flags, NODE_NETWORK
+    "00000000000000000000000000000001" // address, fixed 16 bytes (IPv6)
+    "00f1"                             // port
+
+    "ffffffff"                         // time, Sun Feb  7 06:28:15 UTC 2106
+    "0004000000000000"                 // service flags, NODE_NETWORK_LIMITED
+    "00000000000000000000000000000001" // address, fixed 16 bytes (IPv6)
+    "f1f2";                            // port
+
+// fixture_addresses should equal to this when serialized in V2 format.
+// When this is unserialized from V2 format it should equal to fixture_addresses.
+static constexpr const char* stream_addrv2_hex =
+    "03" // number of entries
+
+    "61bc6649"                         // time, Fri Jan  9 02:54:25 UTC 2009
+    "00"                               // service flags, COMPACTSIZE(NODE_NONE)
+    "02"                               // network id, IPv6
+    "10"                               // address length, COMPACTSIZE(16)
+    "00000000000000000000000000000001" // address
+    "0000"                             // port
+
+    "79627683"                         // time, Tue Nov 22 11:22:33 UTC 2039
+    "01"                               // service flags, COMPACTSIZE(NODE_NETWORK)
+    "02"                               // network id, IPv6
+    "10"                               // address length, COMPACTSIZE(16)
+    "00000000000000000000000000000001" // address
+    "00f1"                             // port
+
+    "ffffffff"                         // time, Sun Feb  7 06:28:15 UTC 2106
+    "fd0004"                           // service flags, COMPACTSIZE(NODE_NETWORK_LIMITED)
+    "02"                               // network id, IPv6
+    "10"                               // address length, COMPACTSIZE(16)
+    "00000000000000000000000000000001" // address
+    "f1f2";                            // port
+
+BOOST_AUTO_TEST_CASE(caddress_serialize_v1)
+{
+    CDataStream s(SER_NETWORK, PROTOCOL_VERSION);
+
+    s << fixture_addresses;
+    BOOST_CHECK_EQUAL(HexStr(s), stream_addrv1_hex);
+}
+
+BOOST_AUTO_TEST_CASE(caddress_unserialize_v1)
+{
+    CDataStream s(ParseHex(stream_addrv1_hex), SER_NETWORK, PROTOCOL_VERSION);
+    std::vector<CAddress> addresses_unserialized;
+
+    s >> addresses_unserialized;
+    BOOST_CHECK(fixture_addresses == addresses_unserialized);
+}
+
+BOOST_AUTO_TEST_CASE(caddress_serialize_v2)
+{
+    CDataStream s(SER_NETWORK, PROTOCOL_VERSION | ADDRV2_FORMAT);
+
+    s << fixture_addresses;
+    BOOST_CHECK_EQUAL(HexStr(s), stream_addrv2_hex);
+}
+
+BOOST_AUTO_TEST_CASE(caddress_unserialize_v2)
+{
+    CDataStream s(ParseHex(stream_addrv2_hex), SER_NETWORK, PROTOCOL_VERSION | ADDRV2_FORMAT);
+    std::vector<CAddress> addresses_unserialized;
+
+    s >> addresses_unserialized;
+    BOOST_CHECK(fixture_addresses == addresses_unserialized);
+}
+
+BOOST_AUTO_TEST_CASE(netbase_parsenetwork)
+{
+    BOOST_CHECK_EQUAL(ParseNetwork("ipv4"), NET_IPV4);
+    BOOST_CHECK_EQUAL(ParseNetwork("ipv6"), NET_IPV6);
+    BOOST_CHECK_EQUAL(ParseNetwork("onion"), NET_ONION);
+    BOOST_CHECK_EQUAL(ParseNetwork("tor"), NET_ONION);
+
+    BOOST_CHECK_EQUAL(ParseNetwork("IPv4"), NET_IPV4);
+    BOOST_CHECK_EQUAL(ParseNetwork("IPv6"), NET_IPV6);
+    BOOST_CHECK_EQUAL(ParseNetwork("ONION"), NET_ONION);
+    BOOST_CHECK_EQUAL(ParseNetwork("TOR"), NET_ONION);
+
+    BOOST_CHECK_EQUAL(ParseNetwork(":)"), NET_UNROUTABLE);
+    BOOST_CHECK_EQUAL(ParseNetwork("tÖr"), NET_UNROUTABLE);
+    BOOST_CHECK_EQUAL(ParseNetwork("\xfe\xff"), NET_UNROUTABLE);
+    BOOST_CHECK_EQUAL(ParseNetwork(""), NET_UNROUTABLE);
+}
+
 BOOST_AUTO_TEST_CASE(netpermissions_test)
 {
     bilingual_str error;
@@ -388,7 +507,7 @@ BOOST_AUTO_TEST_CASE(netpermissions_test)
     BOOST_CHECK(!NetWhitebindPermissions::TryParse("bloom,forcerelay,oopsie@1.2.3.4:32", whitebindPermissions, error));
     BOOST_CHECK(error.original.find("Invalid P2P permission") != std::string::npos);
 
-    // Check whitelist error
+    // Check netmask error
     BOOST_CHECK(!NetWhitelistPermissions::TryParse("bloom,forcerelay,noban@1.2.3.4:32", whitelistPermissions, error));
     BOOST_CHECK(error.original.find("Invalid netmask specified in -whitelist") != std::string::npos);
 
@@ -410,22 +529,23 @@ BOOST_AUTO_TEST_CASE(netpermissions_test)
     BOOST_CHECK(std::find(strings.begin(), strings.end(), "mempool") != strings.end());
 }
 
-BOOST_AUTO_TEST_CASE(netbase_parsenetwork)
+BOOST_AUTO_TEST_CASE(netbase_dont_resolve_strings_with_embedded_nul_characters)
 {
-    BOOST_CHECK_EQUAL(ParseNetwork("ipv4"), NET_IPV4);
-    BOOST_CHECK_EQUAL(ParseNetwork("ipv6"), NET_IPV6);
-    BOOST_CHECK_EQUAL(ParseNetwork("onion"), NET_ONION);
-    BOOST_CHECK_EQUAL(ParseNetwork("tor"), NET_ONION);
-
-    BOOST_CHECK_EQUAL(ParseNetwork("IPv4"), NET_IPV4);
-    BOOST_CHECK_EQUAL(ParseNetwork("IPv6"), NET_IPV6);
-    BOOST_CHECK_EQUAL(ParseNetwork("ONION"), NET_ONION);
-    BOOST_CHECK_EQUAL(ParseNetwork("TOR"), NET_ONION);
-
-    BOOST_CHECK_EQUAL(ParseNetwork(":)"), NET_UNROUTABLE);
-    BOOST_CHECK_EQUAL(ParseNetwork("tÖr"), NET_UNROUTABLE);
-    BOOST_CHECK_EQUAL(ParseNetwork("\xfe\xff"), NET_UNROUTABLE);
-    BOOST_CHECK_EQUAL(ParseNetwork(""), NET_UNROUTABLE);
+    CNetAddr addr;
+    BOOST_CHECK(LookupHost(std::string("127.0.0.1", 9), addr, false));
+    BOOST_CHECK(!LookupHost(std::string("127.0.0.1\0", 10), addr, false));
+    BOOST_CHECK(!LookupHost(std::string("127.0.0.1\0example.com", 21), addr, false));
+    BOOST_CHECK(!LookupHost(std::string("127.0.0.1\0example.com\0", 22), addr, false));
+    CSubNet ret;
+    BOOST_CHECK(LookupSubNet(std::string("1.2.3.0/24", 10), ret));
+    BOOST_CHECK(!LookupSubNet(std::string("1.2.3.0/24\0", 11), ret));
+    BOOST_CHECK(!LookupSubNet(std::string("1.2.3.0/24\0example.com", 22), ret));
+    BOOST_CHECK(!LookupSubNet(std::string("1.2.3.0/24\0example.com\0", 23), ret));
+    // We only do subnetting for IPv4 and IPv6
+    BOOST_CHECK(!LookupSubNet(std::string("5wyqrzbvrdsumnok.onion", 22), ret));
+    BOOST_CHECK(!LookupSubNet(std::string("5wyqrzbvrdsumnok.onion\0", 23), ret));
+    BOOST_CHECK(!LookupSubNet(std::string("5wyqrzbvrdsumnok.onion\0example.com", 34), ret));
+    BOOST_CHECK(!LookupSubNet(std::string("5wyqrzbvrdsumnok.onion\0example.com\0", 35), ret));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

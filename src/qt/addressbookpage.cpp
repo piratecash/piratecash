@@ -4,14 +4,13 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include <config/piratecash-config.h>
+#include <config/bitcoin-config.h>
 #endif
 
 #include <qt/addressbookpage.h>
 #include <qt/forms/ui_addressbookpage.h>
 
 #include <qt/addresstablemodel.h>
-#include <qt/bitcoingui.h>
 #include <qt/csvmodelwriter.h>
 #include <qt/editaddressdialog.h>
 #include <qt/guiutil.h>

@@ -191,8 +191,8 @@
         <translation>Confirmaţi criptarea portofelului</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
-        <translation>Avertisment: dacă criptezi portofelul și pierzi fraza de acces, vei &lt;b&gt;PIERDE TOATE MONEDELE TALE DASH&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATE&lt;/b&gt;!</source>
+        <translation>Avertisment: dacă criptezi portofelul și pierzi fraza de acces, vei &lt;b&gt;PIERDE TOATE MONEDELE TALE PIRATE&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -300,7 +300,7 @@
         <translation>P&amp;rimeşte</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
         <translation>Cereţi plăţi (generează coduri QR şi PirateCash-uri: URls)</translation>
     </message>
     <message>
@@ -488,7 +488,7 @@
         <translation>Deschide &amp;URI...</translation>
     </message>
     <message>
-        <source>Open a dash: URI or payment request</source>
+        <source>Open a piratecash: URI or payment request</source>
         <translation>Deschidere PirateCash: o adresa URI sau o cerere de plată</translation>
     </message>
     <message>
@@ -1598,8 +1598,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Suma și Runde:</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
-        <translation>0 DASH / 0 Runde</translation>
+        <source>0 PIRATE / 0 Rounds</source>
+        <translation>0 PIRATE / 0 Runde</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -1733,7 +1733,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Eroare la cererea de plată</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
+        <source>Cannot start piratecash: click-to-pay handler</source>
         <translation>PirateCash nu poate porni: click-to-pay handler</translation>
     </message>
     <message>
@@ -2586,7 +2586,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Dacă taxa vamală este stabilită la 1000 de corsari și tranzacția are doar 250 de octeți, atunci "per kilobyte" plătește doar 250 de corsari în taxă,&lt;br /&gt;în timp ce "cel puțin" plătește 1000 de corsari. Pentru tranzacțiile mai mari decât un kilobyte, ambele plătesc cu kilobyte.</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>Plata numai a taxei minime este ok, atâta timp cât există un volum mai mic de tranzacții decât spațiul din block-uri.&lt;br /&gt;Dar trebuie să știi că acest lucru se poate încheia într-o tranzacție care nu se confirmă odată ce există mai multă cerere pentru tranzacții dash decât poate procesa rețeaua.</translation>
     </message>
     <message>
@@ -2861,7 +2861,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Mesaj:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
         <translation>un mesaj a fost ataşat la PirateCash: URI care va fi stocat cu tranzacţia pentru referinţa dvs. Notă: Acest mesaj nu va fi trimis către reţeaua PirateCash.</translation>
     </message>
     <message>

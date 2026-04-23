@@ -1,12 +1,11 @@
-// Copyright (c) 2014-2021 The Dash Core developers
+// Copyright (c) 2014-2022 The Dash Core developers
 // Distributed under the MIT software license, see the accompanying
 #ifndef BITCOIN_HDCHAIN_H
 #define BITCOIN_HDCHAIN_H
 
 #include <key.h>
+#include <script/keyorigin.h>
 #include <sync.h>
-
-class CKeyMetadata;
 
 /* hd account data model */
 class CHDAccount
@@ -110,7 +109,7 @@ public:
     uint256 GetID() const { LOCK(cs); return id; }
 
     uint256 GetSeedHash();
-    void DeriveChildExtKey(uint32_t nAccountIndex, bool fInternal, uint32_t nChildIndex, CExtKey& extKeyRet, CKeyMetadata& metadata);
+    void DeriveChildExtKey(uint32_t nAccountIndex, bool fInternal, uint32_t nChildIndex, CExtKey& extKeyRet, KeyOriginInfo& key_origin);
 
     void AddAccount();
     bool GetAccount(uint32_t nAccountIndex, CHDAccount& hdAccountRet);
@@ -126,7 +125,7 @@ private:
     int nVersion{CHDPubKey::CURRENT_VERSION};
 
 public:
-    CExtPubKey extPubKey;
+    CExtPubKey extPubKey{};
     uint256 hdchainID;
     uint32_t nAccountIndex{0};
     uint32_t nChangeIndex{0};

@@ -1,3 +1,7 @@
+// Copyright (c) 2016-2022 The Dash Core developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #include <qt/masternodelist.h>
 #include <qt/forms/ui_masternodelist.h>
 
@@ -7,7 +11,6 @@
 #include <coins.h>
 #include <qt/guiutil.h>
 #include <netbase.h>
-#include <validation.h>
 #include <qt/walletmodel.h>
 
 #include <univalue.h>
@@ -55,6 +58,7 @@ MasternodeList::MasternodeList(QWidget* parent) :
     GUIUtil::setFont({ui->label_filter_2}, GUIUtil::FontWeight::Normal, 15);
 
     int columnAddressWidth = 200;
+    int columnTypeWidth = 160;
     int columnStatusWidth = 80;
     int columnPoSeScoreWidth = 80;
     int columnRegisteredWidth = 80;
@@ -67,6 +71,7 @@ MasternodeList::MasternodeList(QWidget* parent) :
     int columnVotingWidth = 130;
 
     ui->tableWidgetMasternodesDIP3->setColumnWidth(COLUMN_SERVICE, columnAddressWidth);
+    ui->tableWidgetMasternodesDIP3->setColumnWidth(COLUMN_TYPE, columnTypeWidth);
     ui->tableWidgetMasternodesDIP3->setColumnWidth(COLUMN_STATUS, columnStatusWidth);
     ui->tableWidgetMasternodesDIP3->setColumnWidth(COLUMN_POSE, columnPoSeScoreWidth);
     ui->tableWidgetMasternodesDIP3->setColumnWidth(COLUMN_REGISTERED, columnRegisteredWidth);
@@ -84,9 +89,7 @@ MasternodeList::MasternodeList(QWidget* parent) :
     ui->tableWidgetMasternodesDIP3->setColumnHidden(COLUMN_PROTX_HASH, true);
 
     ui->tableWidgetMasternodesDIP3->setContextMenuPolicy(Qt::CustomContextMenu);
-    ui->tableWidgetMasternodesDIP3->verticalHeader()->setVisible(false);
 
-    ui->filterLineEditDIP3->setPlaceholderText(tr("Filter by any property (e.g. address or protx hash)"));
     ui->checkBoxMyMasternodesOnly->setEnabled(false);
 
     QAction* copyProTxHashAction = new QAction(tr("Copy ProTx Hash"), this);
@@ -199,7 +202,7 @@ void MasternodeList::updateDIP3List()
 
     nTimeUpdatedDIP3 = GetTime();
 
-    auto projectedPayees = mnList.GetProjectedMNPayees(mnList.GetValidMNsCount());
+    auto projectedPayees = mnList.GetProjectedMNPayees();
     std::map<uint256, int> nextPayments;
     for (size_t i = 0; i < projectedPayees.size(); i++) {
         const auto& dmn = projectedPayees[i];
@@ -218,8 +221,8 @@ void MasternodeList::updateDIP3List()
     mnList.ForEachMN(false, [&](auto& dmn) {
         if (walletModel && ui->checkBoxMyMasternodesOnly->isChecked()) {
             bool fMyMasternode = setOutpts.count(dmn.collateralOutpoint) ||
-                walletModel->wallet().isSpendable(dmn.pdmnState->keyIDOwner) ||
-                walletModel->wallet().isSpendable(dmn.pdmnState->keyIDVoting) ||
+                walletModel->wallet().isSpendable(PKHash(dmn.pdmnState->keyIDOwner)) ||
+                walletModel->wallet().isSpendable(PKHash(dmn.pdmnState->keyIDVoting)) ||
                 walletModel->wallet().isSpendable(dmn.pdmnState->scriptPayout) ||
                 walletModel->wallet().isSpendable(dmn.pdmnState->scriptOperatorPayout);
             if (!fMyMasternode) return;
@@ -229,6 +232,7 @@ void MasternodeList::updateDIP3List()
         auto addr_key = dmn.pdmnState->addr.GetKey();
         QByteArray addr_ba(reinterpret_cast<const char*>(addr_key.data()), addr_key.size());
         QTableWidgetItem* addressItem = new CMasternodeListWidgetItem<QByteArray>(QString::fromStdString(dmn.pdmnState->addr.ToString()), addr_ba);
+        QTableWidgetItem* typeItem = new QTableWidgetItem(QString::fromStdString(std::string(GetMnType(dmn.nType).description)));
         QTableWidgetItem* statusItem = new QTableWidgetItem(mnList.IsMNValid(dmn) ? tr("ENABLED") : (mnList.IsMNPoSeBanned(dmn) ? tr("POSE_BANNED") : tr("UNKNOWN")));
         QTableWidgetItem* PoSeScoreItem = new CMasternodeListWidgetItem<int>(QString::number(dmn.pdmnState->nPoSePenalty), dmn.pdmnState->nPoSePenalty);
         QTableWidgetItem* registeredItem = new CMasternodeListWidgetItem<int>(QString::number(dmn.pdmnState->nRegisteredHeight), dmn.pdmnState->nRegisteredHeight);
@@ -273,16 +277,17 @@ void MasternodeList::updateDIP3List()
         }
         QTableWidgetItem* collateralItem = new QTableWidgetItem(collateralStr);
 
-        QString ownerStr = QString::fromStdString(EncodeDestination(dmn.pdmnState->keyIDOwner));
+        QString ownerStr = QString::fromStdString(EncodeDestination(PKHash(dmn.pdmnState->keyIDOwner)));
         QTableWidgetItem* ownerItem = new QTableWidgetItem(ownerStr);
 
-        QString votingStr = QString::fromStdString(EncodeDestination(dmn.pdmnState->keyIDVoting));
+        QString votingStr = QString::fromStdString(EncodeDestination(PKHash(dmn.pdmnState->keyIDVoting)));
         QTableWidgetItem* votingItem = new QTableWidgetItem(votingStr);
 
         QTableWidgetItem* proTxHashItem = new QTableWidgetItem(QString::fromStdString(dmn.proTxHash.ToString()));
 
         if (strCurrentFilterDIP3 != "") {
             strToFilter = addressItem->text() + " " +
+                          typeItem->text() + " " +
                           statusItem->text() + " " +
                           PoSeScoreItem->text() + " " +
                           registeredItem->text() + " " +
@@ -299,6 +304,7 @@ void MasternodeList::updateDIP3List()
 
         ui->tableWidgetMasternodesDIP3->insertRow(0);
         ui->tableWidgetMasternodesDIP3->setItem(0, COLUMN_SERVICE, addressItem);
+        ui->tableWidgetMasternodesDIP3->setItem(0, COLUMN_TYPE, typeItem);
         ui->tableWidgetMasternodesDIP3->setItem(0, COLUMN_STATUS, statusItem);
         ui->tableWidgetMasternodesDIP3->setItem(0, COLUMN_POSE, PoSeScoreItem);
         ui->tableWidgetMasternodesDIP3->setItem(0, COLUMN_REGISTERED, registeredItem);

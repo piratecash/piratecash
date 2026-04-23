@@ -13,6 +13,15 @@ TransactionError FillPSBT(const CWallet* pwallet, PartiallySignedTransaction& ps
         const CTxIn& txin = psbtx.tx->vin[i];
         PSBTInput& input = psbtx.inputs.at(i);
 
+        if (PSBTInputSigned(input)) {
+            continue;
+        }
+
+        // Verify input looks sane. This will check that we have at most one uxto.
+        if (!input.IsSane()) {
+            return TransactionError::INVALID_PSBT;
+        }
+
         const uint256& txhash = txin.prevout.hash;
         const auto it = pwallet->mapWallet.find(txhash);
         if (it != pwallet->mapWallet.end()) {
@@ -27,21 +36,36 @@ TransactionError FillPSBT(const CWallet* pwallet, PartiallySignedTransaction& ps
             return TransactionError::SIGHASH_MISMATCH;
         }
 
-        complete &= SignPSBTInput(HidingSigningProvider(pwallet, !sign, !bip32derivs), *psbtx.tx, input, i, sighash_type);
+        // Get the scriptPubKey to know which SigningProvider to use
+        CScript script;
+        if (input.non_witness_utxo) {
+            if (txin.prevout.n >= input.non_witness_utxo->vout.size()) {
+                return TransactionError::MISSING_INPUTS;
+            }
+            script = input.non_witness_utxo->vout[txin.prevout.n].scriptPubKey;
+        } else {
+            // There's no UTXO so we can just skip this now
+            complete = false;
+            continue;
+        }
+        SignatureData sigdata;
+        input.FillSignatureData(sigdata);
+        const SigningProvider* provider = pwallet->GetSigningProvider(script, sigdata);
+        if (!provider) {
+            complete = false;
+            continue;
+        }
+
+        complete &= SignPSBTInput(HidingSigningProvider(provider, !sign, !bip32derivs), psbtx, i, sighash_type);
     }
 
     // Fill in the bip32 keypaths and redeemscripts for the outputs so that hardware wallets can identify change
     for (unsigned int i = 0; i < psbtx.tx->vout.size(); ++i) {
         const CTxOut& out = psbtx.tx->vout.at(i);
-        PSBTOutput& psbt_out = psbtx.outputs.at(i);
-
-        // Fill a SignatureData with output info
-        SignatureData sigdata;
-        psbt_out.FillSignatureData(sigdata);
-
-        MutableTransactionSignatureCreator creator(psbtx.tx.get_ptr(), 0, out.nValue, 1);
-        ProduceSignature(HidingSigningProvider(pwallet, true, !bip32derivs), creator, out.scriptPubKey, sigdata);
-        psbt_out.FromSignatureData(sigdata);
+        const SigningProvider* provider = pwallet->GetSigningProvider(out.scriptPubKey);
+        if (provider) {
+            UpdatePSBTOutput(HidingSigningProvider(provider, true, !bip32derivs), psbtx, i);
+        }
     }
 
     return TransactionError::OK;

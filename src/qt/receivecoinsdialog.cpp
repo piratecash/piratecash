@@ -5,9 +5,7 @@
 #include <qt/receivecoinsdialog.h>
 #include <qt/forms/ui_receivecoinsdialog.h>
 
-#include <qt/addressbookpage.h>
 #include <qt/addresstablemodel.h>
-#include <qt/bitcoinunits.h>
 #include <qt/optionsmodel.h>
 #include <qt/receiverequestdialog.h>
 #include <qt/recentrequeststablemodel.h>
@@ -32,9 +30,6 @@ ReceiveCoinsDialog::ReceiveCoinsDialog(QWidget* parent) :
                       ui->label_2,
                       ui->label_3}, GUIUtil::FontWeight::Normal, 15);
     GUIUtil::updateFonts();
-
-    ui->reqLabel->setPlaceholderText(tr("Enter a label to associate with the new receiving address"));
-    ui->reqMessage->setPlaceholderText(tr("Enter a message to attach to the payment request"));
 
     // context menu actions
     QAction *copyURIAction = new QAction(tr("Copy URI"), this);

@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include <config/piratecash-config.h>
+#include <config/bitcoin-config.h>
 #endif
 
 #include <qt/rpcconsole.h>
@@ -22,11 +22,16 @@
 #include <rpc/client.h>
 #include <util/strencodings.h>
 #include <util/system.h>
+#include <util/underlying.h>
 
 #include <univalue.h>
 
 #ifdef ENABLE_WALLET
+#ifdef USE_BDB
+#include <wallet/bdb.h>
+#endif
 #include <wallet/db.h>
+#include <wallet/walletutil.h>
 #endif
 
 #include <QButtonGroup>
@@ -56,9 +61,6 @@ const TrafficGraphData::GraphRange INITIAL_TRAFFIC_GRAPH_SETTING = TrafficGraphD
 // Repair parameters
 const QString RESCAN1("-rescan=1");
 const QString RESCAN2("-rescan=2");
-const QString ZAPTXES1("-zapwallettxes=1 -persistmempool=0");
-const QString ZAPTXES2("-zapwallettxes=2 -persistmempool=0");
-const QString UPGRADEWALLET("-upgradewallet");
 const QString REINDEX("-reindex");
 
 namespace {
@@ -228,7 +230,7 @@ bool RPCConsole::RPCParseCommandLine(interfaces::Node* node, std::string &strRes
                                     for(char argch: curarg)
                                         if (!IsDigit(argch))
                                             throw std::runtime_error("Invalid result query");
-                                    subelement = lastResult[atoi(curarg.c_str())];
+                                    subelement = lastResult[LocaleIndependentAtoi<int>(curarg)];
                                 }
                                 else if (lastResult.isObject())
                                     subelement = find_value(lastResult, curarg);
@@ -494,14 +496,8 @@ RPCConsole::RPCConsole(interfaces::Node& node, QWidget* parent, Qt::WindowFlags 
     // Disable wallet repair options that require a wallet (enable them later when a wallet is added)
     ui->btn_rescan1->setEnabled(false);
     ui->btn_rescan2->setEnabled(false);
-    ui->btn_zapwallettxes1->setEnabled(false);
-    ui->btn_zapwallettxes2->setEnabled(false);
-    ui->btn_upgradewallet->setEnabled(false);
     connect(ui->btn_rescan1, &QPushButton::clicked, this, &RPCConsole::walletRescan1);
     connect(ui->btn_rescan2, &QPushButton::clicked, this, &RPCConsole::walletRescan2);
-    connect(ui->btn_zapwallettxes1, &QPushButton::clicked, this, &RPCConsole::walletZaptxes1);
-    connect(ui->btn_zapwallettxes2, &QPushButton::clicked, this, &RPCConsole::walletZaptxes2);
-    connect(ui->btn_upgradewallet, &QPushButton::clicked, this, &RPCConsole::walletUpgrade);
     connect(ui->btn_reindex, &QPushButton::clicked, this, &RPCConsole::walletReindex);
 
     // Register RPC timer interface
@@ -524,7 +520,7 @@ RPCConsole::RPCConsole(interfaces::Node& node, QWidget* parent, Qt::WindowFlags 
     pageButtons->addButton(ui->btnRepair, pageButtons->buttons().size());
     connect(pageButtons, QOverload<int>::of(&QButtonGroup::buttonClicked), this, &RPCConsole::showPage);
 
-    showPage(int(TabTypes::INFO));
+    showPage(ToUnderlying(TabTypes::INFO));
 
     reloadThemedWidgets();
 }
@@ -584,7 +580,7 @@ bool RPCConsole::eventFilter(QObject* obj, QEvent *event)
     return QWidget::eventFilter(obj, event);
 }
 
-void RPCConsole::setClientModel(ClientModel *model)
+void RPCConsole::setClientModel(ClientModel *model, int bestblock_height, int64_t bestblock_date, uint256 bestblock_hash, double verification_progress)
 {
     clientModel = model;
     ui->trafficGraph->setClientModel(model);
@@ -593,8 +589,7 @@ void RPCConsole::setClientModel(ClientModel *model)
         setNumConnections(model->getNumConnections());
         connect(model, &ClientModel::numConnectionsChanged, this, &RPCConsole::setNumConnections);
 
-        interfaces::Node& node = clientModel->node();
-        setNumBlocks(node.getNumBlocks(), QDateTime::fromTime_t(node.getLastBlockTime()), QString::fromStdString(node.getLastBlockHash()), node.getVerificationProgress(), false);
+        setNumBlocks(bestblock_height, QDateTime::fromTime_t(bestblock_date), QString::fromStdString(bestblock_hash.ToString()), verification_progress, false);
         connect(model, &ClientModel::numBlocksChanged, this, &RPCConsole::setNumBlocks);
 
         connect(model, &ClientModel::chainLockChanged, this, &RPCConsole::setChainLock);
@@ -721,19 +716,25 @@ void RPCConsole::addWallet(WalletModel * const walletModel)
 {
     // use name for text and wallet model for internal data object (to allow to move to a wallet id later)
     ui->WalletSelector->addItem(walletModel->getDisplayName(), QVariant::fromValue(walletModel));
-    if (ui->WalletSelector->count() == 2 && !isVisible()) {
-        // First wallet added, set to default so long as the window isn't presently visible (and potentially in use)
-        ui->WalletSelector->setCurrentIndex(1);
-    }
-    if (ui->WalletSelector->count() > 2) {
+    if (ui->WalletSelector->count() == 2) {
+        if (!isVisible()) {
+            // First wallet added, set to default so long as the window isn't presently visible (and potentially in use)
+            ui->WalletSelector->setCurrentIndex(1);
+        }
+        // The only loaded wallet
+        ui->btn_rescan1->setEnabled(true);
+        ui->btn_rescan2->setEnabled(true);
+        QString wallet_path = QString::fromStdString(GetWalletDir().string() + QDir::separator().toLatin1());
+        QString wallet_name = walletModel->getWalletName().isEmpty() ? "wallet.dat" : walletModel->getWalletName();
+        ui->wallet_path->setText(wallet_path + wallet_name);
+    } else {
         ui->WalletSelector->setVisible(true);
         ui->WalletSelectorLabel->setVisible(true);
+        // No wallet recovery for multiple loaded wallets
+        ui->btn_rescan1->setEnabled(false);
+        ui->btn_rescan2->setEnabled(false);
+        ui->wallet_path->clear();
     }
-    ui->btn_rescan1->setEnabled(true);
-    ui->btn_rescan2->setEnabled(true);
-    ui->btn_zapwallettxes1->setEnabled(true);
-    ui->btn_zapwallettxes2->setEnabled(true);
-    ui->btn_upgradewallet->setEnabled(true);
 }
 
 void RPCConsole::removeWallet(WalletModel * const walletModel)
@@ -742,13 +743,18 @@ void RPCConsole::removeWallet(WalletModel * const walletModel)
     if (ui->WalletSelector->count() == 2) {
         ui->WalletSelector->setVisible(false);
         ui->WalletSelectorLabel->setVisible(false);
-    }
-    if (ui->WalletSelector->count() == 1) {
+        // Back to the only loaded wallet
+        ui->btn_rescan1->setEnabled(true);
+        ui->btn_rescan2->setEnabled(true);
+        WalletModel* wallet_model = ui->WalletSelector->itemData(1).value<WalletModel*>();
+        QString wallet_path = QString::fromStdString(GetWalletDir().string() + QDir::separator().toLatin1());
+        QString wallet_name = wallet_model->getWalletName().isEmpty() ? "wallet.dat" : wallet_model->getWalletName();
+        ui->wallet_path->setText(wallet_path + wallet_name);
+    } else {
+        // No wallet recovery for multiple loaded wallets
         ui->btn_rescan1->setEnabled(false);
         ui->btn_rescan2->setEnabled(false);
-        ui->btn_zapwallettxes1->setEnabled(false);
-        ui->btn_zapwallettxes2->setEnabled(false);
-        ui->btn_upgradewallet->setEnabled(false);
+        ui->wallet_path->clear();
     }
 }
 #endif
@@ -809,24 +815,6 @@ void RPCConsole::walletRescan2()
     buildParameterlist(RESCAN2);
 }
 
-/** Restart wallet with "-zapwallettxes=1" */
-void RPCConsole::walletZaptxes1()
-{
-    buildParameterlist(ZAPTXES1);
-}
-
-/** Restart wallet with "-zapwallettxes=2" */
-void RPCConsole::walletZaptxes2()
-{
-    buildParameterlist(ZAPTXES2);
-}
-
-/** Restart wallet with "-upgradewallet" */
-void RPCConsole::walletUpgrade()
-{
-    buildParameterlist(UPGRADEWALLET);
-}
-
 /** Restart wallet with "-reindex" */
 void RPCConsole::walletReindex()
 {
@@ -841,10 +829,10 @@ void RPCConsole::buildParameterlist(QString arg)
 
     for (const auto& [key, values] : gArgs.GetCommandLineArgs()) {
         for (const auto& value : values) {
-            if (value.empty()) {
-                args << QString::fromStdString(key);
+            if (value.getValStr().empty()) {
+                args << QString::fromStdString("-" + key);
             } else {
-                args << QString::fromStdString(key + "=" + value);
+                args << QString::fromStdString("-" + key + "=" + value.getValStr());
             }
         }
     }
@@ -852,9 +840,6 @@ void RPCConsole::buildParameterlist(QString arg)
     // Remove existing repair-options
     args.removeAll(RESCAN1);
     args.removeAll(RESCAN2);
-    args.removeAll(ZAPTXES1);
-    args.removeAll(ZAPTXES2);
-    args.removeAll(UPGRADEWALLET);
     args.removeAll(REINDEX);
 
     // Append repair parameter to command line.
@@ -973,10 +958,18 @@ void RPCConsole::updateMasternodeCount()
         return;
     }
     auto mnList = clientModel->getMasternodeList();
+    size_t total_mn_count = mnList.GetAllMNsCount();
+    size_t total_enabled_mn_count = mnList.GetValidMNsCount();
+    size_t total_hpmn_count = mnList.GetAllHPMNsCount();
+    size_t total_enabled_hpmn_count = mnList.GetValidHPMNsCount();
     QString strMasternodeCount = tr("Total: %1 (Enabled: %2)")
-        .arg(QString::number(mnList.GetAllMNsCount()))
-        .arg(QString::number(mnList.GetValidMNsCount()));
+        .arg(QString::number(total_mn_count - total_hpmn_count))
+        .arg(QString::number(total_enabled_mn_count - total_enabled_hpmn_count));
     ui->masternodeCount->setText(strMasternodeCount);
+    QString strHPMNCount = tr("Total: %1 (Enabled: %2)")
+            .arg(QString::number(total_hpmn_count))
+            .arg(QString::number(total_enabled_hpmn_count));
+    ui->hpmnCount->setText(strHPMNCount);
 }
 
 void RPCConsole::setMempoolSize(long numberOfTxs, size_t dynUsage)
@@ -1236,7 +1229,11 @@ void RPCConsole::updateNodeDetail(const CNodeCombinedStats *stats)
     ui->timeoffset->setText(GUIUtil::formatTimeOffset(stats->nodeStats.nTimeOffset));
     ui->peerVersion->setText(QString("%1").arg(QString::number(stats->nodeStats.nVersion)));
     ui->peerSubversion->setText(QString::fromStdString(stats->nodeStats.cleanSubVer));
-    ui->peerDirection->setText(stats->nodeStats.fInbound ? tr("Inbound") : tr("Outbound"));
+    ui->peerDirection->setText(stats->nodeStats.fInbound
+            ? tr("Inbound")
+            : stats->nodeStats.fRelayTxes
+                ? tr("Outbound")
+                : tr("Outbound block-relay"));
     ui->peerHeight->setText(QString("%1").arg(QString::number(stats->nodeStats.nStartingHeight)));
     ui->peerWhitelisted->setText(stats->nodeStats.m_legacyWhitelisted ? tr("Yes") : tr("No"));
     auto dmn = clientModel->getMasternodeList().GetMNByService(stats->nodeStats.addr);
@@ -1375,7 +1372,7 @@ void RPCConsole::banSelectedNode(int bantime)
         // Find possible nodes, ban it and clear the selected node
         const CNodeCombinedStats *stats = clientModel->getPeerTableModel()->getNodeStats(detailNodeRow);
         if (stats) {
-            m_node.ban(stats->nodeStats.addr, BanReasonManuallyAdded, bantime);
+            m_node.ban(stats->nodeStats.addr, bantime);
             m_node.disconnect(stats->nodeStats.addr);
         }
     }
@@ -1396,7 +1393,7 @@ void RPCConsole::unbanSelectedNode()
         QString strNode = nodes.at(i).data().toString();
         CSubNet possibleSubnet;
 
-        LookupSubNet(strNode.toStdString().c_str(), possibleSubnet);
+        LookupSubNet(strNode.toStdString(), possibleSubnet);
         if (possibleSubnet.IsValid() && m_node.unban(possibleSubnet))
         {
             clientModel->getBanTableModel()->refresh();
@@ -1424,12 +1421,12 @@ void RPCConsole::showOrHideBanTableIfRequired()
 
 void RPCConsole::setTabFocus(enum TabTypes tabType)
 {
-    showPage(int(tabType));
+    showPage(ToUnderlying(tabType));
 }
 
 QString RPCConsole::tabTitle(TabTypes tab_type) const
 {
-    return pageButtons->button(int(tab_type))->text();
+    return pageButtons->button(ToUnderlying(tab_type))->text();
 }
 
 QKeySequence RPCConsole::tabShortcut(TabTypes tab_type) const

@@ -7,15 +7,18 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include "chainparams.h"
-#include "db.h"
-#include "pos_kernel.h"
-#include "script/interpreter.h"
-#include "policy/policy.h"
-#include "timedata.h"
-#include "util/system.h"
-#include "consensus/validation.h"
 #include <crypto/common.h>
+#include <arith_uint256.h>
+#include <chain.h>
+#include <chainparams.h>
+#include <consensus/validation.h>
+#include <db.h>
+#include <policy/policy.h>
+#include <pos_kernel.h>
+#include <script/interpreter.h>
+#include <timedata.h>
+#include <util/system.h>
+#include <validation.h>
 
 using namespace std;
 
@@ -111,10 +114,11 @@ static bool SelectBlockFromCandidates(
             break;
         }
 
-        if (!::BlockIndex().count(iter->second))
+        CBlockIndex* pindex_lookup = LookupBlockIndex(iter->second);
+        if (!pindex_lookup)
             return error("SelectBlockFromCandidates: failed to find block index for candidate block %s", iter->second.ToString().c_str());
 
-        const CBlockIndex* pindex = ::BlockIndex()[iter->second];
+        const CBlockIndex* pindex = pindex_lookup;
         if (fSelected && pindex->GetBlockTime() > nSelectionIntervalStop) {
             // No point to re-consider the blocks
             vSortedByTimestamp.erase(vSortedByTimestamp.begin(), iter+1);
@@ -509,10 +513,10 @@ bool CheckStakeKernelHash(
 }
 
 // Check kernel hash target and coinstake signature
-bool CheckProofOfStake(CValidationState &state, const CBlockHeader &header, uint256& hashProofOfStake, const Consensus::Params& consensus)
+bool CheckProofOfStake(CValidationState &state, const CBlockHeader &header, uint256& hashProofOfStake, const Consensus::Params& consensus, const CTxMemPool* mempool)
 {
     if (header.vchBlockSig.empty()) {
-        return state.DoS(100, false, REJECT_MALFORMED, "bad-pos-sig", false, "missing PoS signature");
+        return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_MALFORMED, "bad-pos-sig", "missing PoS signature");
     }
 
     COutPoint prevout = header.StakeInput();
@@ -523,44 +527,43 @@ bool CheckProofOfStake(CValidationState &state, const CBlockHeader &header, uint
     CBlockIndex* pindex_tx = nullptr;
     CBlockIndex* pindex_prev = nullptr;
 
-    if (!GetTransaction(prevout.hash, txinPrevRef, consensus, txinHashBlock)) {
-        BlockMap::iterator it = ::BlockIndex().find(header.hashPrevBlock);
+    txinPrevRef = GetTransaction(/* block_index */ nullptr, mempool, prevout.hash, consensus, txinHashBlock);
+    if (!txinPrevRef) {
+        auto it = g_chainman.BlockIndex().find(header.hashPrevBlock);
         
-        if ((it != ::BlockIndex().end()) && ::ChainActive().Contains(it->second)) {
-            return state.DoS(100, false, REJECT_INVALID, "bad-unkown-stake");
+        if ((it != g_chainman.BlockIndex().end()) && ::ChainActive().Contains(it->second)) {
+            return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-unkown-stake");
         } else {
-            // We do not have the previous block, so the block may be valid
-            return state.TransientError("tmp-bad-unkown-stake");
+            return state.Error("tmp-bad-unkown-stake");
         }
     }
 
     // Check tx input block is known
     {
-        BlockMap::iterator it = ::BlockIndex().find(txinHashBlock);
+        auto it = g_chainman.BlockIndex().find(txinHashBlock);
 
-        if ((it != ::BlockIndex().end()) && ::ChainActive().Contains(it->second)) {
+        if ((it != g_chainman.BlockIndex().end()) && ::ChainActive().Contains(it->second)) {
             pindex_tx = it->second;
         } else {
-            it = ::BlockIndex().find(header.hashPrevBlock);
+            it = g_chainman.BlockIndex().find(header.hashPrevBlock);
             
-            if ((it != ::BlockIndex().end()) && ::ChainActive().Contains(it->second)) {
-                return state.DoS(100, false, REJECT_INVALID, "bad-stake-mempool",
-                                 false, "stake from mempool");
+            if ((it != g_chainman.BlockIndex().end()) && ::ChainActive().Contains(it->second)) {
+                return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-stake-mempool",
+                                 "stake from mempool");
             } else {
-                // We do not have the previous block, so the block may be valid
-                return state.TransientError("tmp-bad-stake-mempool");
+                return state.Error("tmp-bad-stake-mempool");
             }
         }
     }
 
     // Header-only chain specific validation
     {
-        BlockMap::iterator it = ::BlockIndex().find(header.hashPrevBlock);
+        auto it = g_chainman.BlockIndex().find(header.hashPrevBlock);
 
         // It must never happen as it's part of header validation.
-        if (it == ::BlockIndex().end()) {
-            return state.DoS(100, false, REJECT_INVALID, "bad-prev-header",
-                                false, "previous PoS header is not known");
+        if (it == g_chainman.BlockIndex().end()) {
+            return state.Invalid(ValidationInvalidReason::BLOCK_MISSING_PREV, false, REJECT_INVALID, "bad-prev-header",
+                                "previous PoS header is not known");
         }
 
         pindex_prev = it->second;
@@ -568,14 +571,14 @@ bool CheckProofOfStake(CValidationState &state, const CBlockHeader &header, uint
 
         // Just in case, it must never happen.
         if (!pindex_fork) {
-            return state.DoS(100, false, REJECT_INVALID, "bad-fork-point",
-                                false, "the fork point is not found");
+            return state.Invalid(ValidationInvalidReason::BLOCK_INVALID_PREV, false, REJECT_INVALID, "bad-fork-point",
+                                "the fork point is not found");
         }
 
         // Check if UTXO is beyond possible fork point
         if (pindex_fork->nHeight < pindex_tx->nHeight) {
-            return state.DoS(100, false, REJECT_INVALID, "bad-stake-after-fork",
-                                false, "rogue fork tries to use UTXO from the current chain");
+            return state.Invalid(ValidationInvalidReason::BLOCK_INVALID_PREV, false, REJECT_INVALID, "bad-stake-after-fork",
+                                "rogue fork tries to use UTXO from the current chain");
         }
 
         // Check if UTXO is used in headers before the last known fully validated block
@@ -586,8 +589,8 @@ bool CheckProofOfStake(CValidationState &state, const CBlockHeader &header, uint
              pindex_walk = pindex_fork->pprev
         ) {
             if (prevout == pindex_walk->StakeInput()) {
-                return state.DoS(100, false, REJECT_INVALID, "bad-header-double-spent",
-                                 false, "rogue fork tries use the same UTXO twice");
+                return state.Invalid(ValidationInvalidReason::BLOCK_INVALID_PREV, false, REJECT_INVALID, "bad-header-double-spent",
+                                 "rogue fork tries use the same UTXO twice");
             }
         }
     }
@@ -598,41 +601,41 @@ bool CheckProofOfStake(CValidationState &state, const CBlockHeader &header, uint
     if (txinPrevRef->IsCoinBase() &&
         ((::ChainActive().Tip()->nHeight - pindex_tx->nHeight) <= COINBASE_MATURITY)
     ) {
-        return state.DoS(100, false, REJECT_INVALID, "bad-stake-coinbase-maturity",
-                            false, "coinbase maturity mismatch for stake");
+        return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-stake-coinbase-maturity",
+                            "coinbase maturity mismatch for stake");
     }
 
     // Extract stake public key ID and verify block signature
     {
-        txnouttype whichType;
+        TxoutType whichType;
         std::vector<std::vector<unsigned char>> vSolutions;
         CKeyID key_id;
         const auto &spk = txinPrevRef->vout[prevout.n].scriptPubKey;
 
         whichType = Solver(spk, vSolutions);
 
-        if (whichType == TX_NONSTANDARD) {
-            return state.DoS(100, false, REJECT_MALFORMED, "bad-pos-input",
-                             false, "invalid Stake Input script");
+        if (whichType == TxoutType::NONSTANDARD) {
+            return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_MALFORMED, "bad-pos-input",
+                             "invalid Stake Input script");
         }
 
-        if (whichType == TX_PUBKEYHASH) // pay to address type
+        if (whichType == TxoutType::PUBKEYHASH) // pay to address type
         {
             key_id = CKeyID(uint160(vSolutions[0]));
         }
-        else if (whichType == TX_PUBKEY) // pay to public key
+        else if (whichType == TxoutType::PUBKEY) // pay to public key
         {
             key_id = CPubKey(vSolutions[0]).GetID();
         }
         else
         {
-            return state.DoS(100, false, REJECT_MALFORMED, "bad-pos-input",
-                             false, "unsupported Stake Input script");
+            return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_MALFORMED, "bad-pos-input",
+                             "unsupported Stake Input script");
         }
 
         if (!header.CheckBlockSignature(key_id)) {
-            return state.DoS(100, false, REJECT_INVALID, "bad-blk-sig",
-                             false, "invalid block signature");
+            return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-blk-sig",
+                             "invalid block signature");
         }
     }
 
@@ -651,7 +654,7 @@ bool CheckProofOfStake(CValidationState &state, const CBlockHeader &header, uint
             false);
 
     if (!is_valid) {
-        return state.DoS(100, false, REJECT_INVALID, "bad-pos-proof");
+        return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-pos-proof");
     }
 
     return true;

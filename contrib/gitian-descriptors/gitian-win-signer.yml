@@ -11,7 +11,7 @@ packages:
 - "libtool"
 - "pkg-config"
 remotes:
-- "url": "https://github.com/dashpay/dash-detached-sigs.git"
+- "url": "https://github.com/cosanta/cosanta-detached-sigs.git"
   "dir": "signature"
 files:
 - "osslsigncode-2.0.tar.gz"

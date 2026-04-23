@@ -171,7 +171,7 @@ static bool InitHTTPAllowList()
     rpc_allow_subnets.push_back(CSubNet(localv6));         // always allow IPv6 localhost
     for (const std::string& strAllow : gArgs.GetArgs("-rpcallowip")) {
         CSubNet subnet;
-        LookupSubNet(strAllow.c_str(), subnet);
+        LookupSubNet(strAllow, subnet);
         if (!subnet.IsValid()) {
             uiInterface.ThreadSafeMessageBox(
                 strprintf(Untranslated("Invalid -rpcallowip subnet specification: %s. Valid are a single IP (e.g. 1.2.3.4), a network/netmask (e.g. 1.2.3.4/255.255.255.0) or a network/CIDR (e.g. 1.2.3.4/24)."), strAllow),
@@ -188,7 +188,7 @@ static bool InitHTTPAllowList()
 }
 
 /** HTTP request method as string - use for logging only */
-static std::string RequestMethodString(HTTPRequest::RequestMethod m)
+std::string RequestMethodString(HTTPRequest::RequestMethod m)
 {
     switch (m) {
     case HTTPRequest::GET:
@@ -295,8 +295,8 @@ static bool ThreadHTTP(struct event_base* base)
 /** Bind HTTP server to specified addresses */
 static bool HTTPBindAddresses(struct evhttp* http)
 {
-    int http_port = gArgs.GetArg("-rpcport", BaseParams().RPCPort());
-    std::vector<std::pair<std::string, uint16_t> > endpoints;
+    uint16_t http_port{static_cast<uint16_t>(gArgs.GetArg("-rpcport", BaseParams().RPCPort()))};
+    std::vector<std::pair<std::string, uint16_t>> endpoints;
 
     // Determine what addresses to bind to
     if (!(gArgs.IsArgSet("-rpcallowip") && gArgs.IsArgSet("-rpcbind"))) { // Default to loopback if not allowing external IPs
@@ -310,7 +310,7 @@ static bool HTTPBindAddresses(struct evhttp* http)
         }
     } else if (gArgs.IsArgSet("-rpcbind")) { // Specific bind address
         for (const std::string& strRPCBind : gArgs.GetArgs("-rpcbind")) {
-            int port = http_port;
+            uint16_t port{http_port};
             std::string host;
             SplitHostPort(strRPCBind, port, host);
             endpoints.push_back(std::make_pair(host, port));
@@ -326,7 +326,7 @@ static bool HTTPBindAddresses(struct evhttp* http)
         evhttp_bound_socket *bind_handle = evhttp_bind_socket_with_handle(http, i->first.empty() ? nullptr : i->first.c_str(), i->second);
         if (bind_handle) {
             CNetAddr addr;
-            if (i->first.empty() || (LookupHost(i->first.c_str(), addr, false) && addr.IsBindAny())) {
+            if (i->first.empty() || (LookupHost(i->first, addr, false) && addr.IsBindAny())) {
                 LogPrintf("WARNING: the RPC server is not safe to expose to untrusted networks such as the public internet\n");
             }
             boundSockets.push_back(bind_handle);
@@ -423,7 +423,7 @@ bool UpdateHTTPServerLogging(bool enable) {
 #endif
 }
 
-static std::thread threadHTTP;
+static std::thread g_thread_http;
 static std::vector<std::thread> g_thread_http_workers;
 
 void StartHTTPServer()
@@ -431,7 +431,7 @@ void StartHTTPServer()
     LogPrint(BCLog::HTTP, "Starting HTTP server\n");
     int rpcThreads = std::max((long)gArgs.GetArg("-rpcthreads", DEFAULT_HTTP_THREADS), 1L);
     LogPrintf("HTTP: starting %d worker threads\n", rpcThreads);
-    threadHTTP = std::thread(ThreadHTTP, eventBase);
+    g_thread_http = std::thread(ThreadHTTP, eventBase);
 
     for (int i = 0; i < rpcThreads; i++) {
         g_thread_http_workers.emplace_back(HTTPWorkQueueRun, g_work_queue.get(), i);
@@ -468,7 +468,7 @@ void StopHTTPServer()
     boundSockets.clear();
     if (eventBase) {
         LogPrint(BCLog::HTTP, "Waiting for HTTP event thread to exit\n");
-        threadHTTP.join();
+        if (g_thread_http.joinable()) g_thread_http.join();
     }
     if (eventHTTP) {
         evhttp_free(eventHTTP);
@@ -513,10 +513,10 @@ void HTTPEvent::trigger(struct timeval* tv)
     else
         evtimer_add(ev, tv); // trigger after timeval passed
 }
-HTTPRequest::HTTPRequest(struct evhttp_request* _req) : req(_req),
-                                                       replySent(false)
+HTTPRequest::HTTPRequest(struct evhttp_request* _req, bool _replySent) : req(_req), replySent(_replySent)
 {
 }
+
 HTTPRequest::~HTTPRequest()
 {
     if (!replySent) {

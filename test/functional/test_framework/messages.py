@@ -27,12 +27,12 @@ import struct
 import time
 
 from test_framework.siphash import siphash256
-from test_framework.util import hex_str_to_bytes
+from test_framework.util import hex_str_to_bytes, assert_equal
 
 import dash_hash
 
 MIN_VERSION_SUPPORTED = 60001
-MY_VERSION = 70220  # ISDLOCK_PROTO_VERSION
+MY_VERSION = 70228  # SMNLE_VERSIONED_PROTO_VERSION
 MY_SUBVERSION = b"/python-mininode-tester:0.0.3%s/"
 MY_RELAY = 1 # from version 70001 onwards, fRelay should be appended to version messages (BIP37)
 
@@ -40,6 +40,7 @@ MAX_LOCATOR_SZ = 101
 MAX_BLOCK_SIZE = 1000000
 
 COIN = 100000000  # 1 btc in satoshis
+MAX_MONEY = 21000000 * COIN
 
 BIP125_SEQUENCE_NUMBER = 0xfffffffd  # Sequence number that is BIP 125 opt-in and BIP 68-opt-out
 
@@ -48,6 +49,12 @@ NODE_GETUTXO = (1 << 1)
 NODE_BLOOM = (1 << 2)
 NODE_COMPACT_FILTERS = (1 << 6)
 NODE_NETWORK_LIMITED = (1 << 10)
+NODE_HEADERS_COMPRESSED = (1 << 11)
+
+MSG_TX = 1
+MSG_BLOCK = 2
+MSG_CMPCT_BLOCK = 20
+MSG_TYPE_MASK = 0xffffffff >> 2
 
 FILTER_TYPE_BASIC = 0
 
@@ -570,6 +577,8 @@ class CBlockHeader:
                % (self.nVersion, self.hashPrevBlock, self.hashMerkleRoot,
                   time.ctime(self.nTime), self.nBits, self.nNonce)
 
+BLOCK_HEADER_SIZE = len(CBlockHeader().serialize())
+assert_equal(BLOCK_HEADER_SIZE, 80)
 
 class CBlock(CBlockHeader):
     __slots__ = ("vtx",)
@@ -629,6 +638,177 @@ class CBlock(CBlockHeader):
         return "CBlock(nVersion=%i hashPrevBlock=%064x hashMerkleRoot=%064x nTime=%s nBits=%08x nNonce=%08x vtx=%s)" \
                % (self.nVersion, self.hashPrevBlock, self.hashMerkleRoot,
                   time.ctime(self.nTime), self.nBits, self.nNonce, repr(self.vtx))
+
+
+class CompressibleBlockHeader:
+    __slots__ = ("bitfield", "timeOffset", "nVersion", "hashPrevBlock", "hashMerkleRoot", "nTime", "nBits", "nNonce",
+                 "hash", "sha256")
+
+    FLAG_VERSION_BIT_0 = 1 << 0
+    FLAG_VERSION_BIT_1 = 1 << 1
+    FLAG_VERSION_BIT_2 = 1 << 2
+    FLAG_PREV_BLOCK_HASH = 1 << 3
+    FLAG_TIMESTAMP = 1 << 4
+    FLAG_NBITS = 1 << 5
+
+    BITMASK_VERSION = FLAG_VERSION_BIT_0 | FLAG_VERSION_BIT_1 | FLAG_VERSION_BIT_2
+
+    def __init__(self, header=None):
+        if header is None:
+            self.set_null()
+        else:
+            self.bitfield = 0
+            self.timeOffset = 0
+            self.nVersion = header.nVersion
+            self.hashPrevBlock = header.hashPrevBlock
+            self.hashMerkleRoot = header.hashMerkleRoot
+            self.nTime = header.nTime
+            self.nBits = header.nBits
+            self.nNonce = header.nNonce
+            self.hash = None
+            self.sha256 = None
+            self.calc_sha256()
+
+    def set_null(self):
+        self.bitfield = 0
+        self.timeOffset = 0
+        self.nVersion = 0
+        self.hashPrevBlock = 0
+        self.hashMerkleRoot = 0
+        self.nTime = 0
+        self.nBits = 0
+        self.nNonce = 0
+        self.hash = None
+        self.sha256 = None
+
+    def deserialize(self, f):
+        self.bitfield = struct.unpack("<B", f.read(1))[0]
+        if self.bitfield & self.BITMASK_VERSION == 0:
+            self.nVersion = struct.unpack("<i", f.read(4))[0]
+        if self.bitfield & self.FLAG_PREV_BLOCK_HASH:
+            self.hashPrevBlock = deser_uint256(f)
+        self.hashMerkleRoot = deser_uint256(f)
+        if self.bitfield & self.FLAG_TIMESTAMP:
+            self.nTime = struct.unpack("<I", f.read(4))[0]
+        else:
+            self.timeOffset = struct.unpack("<h", f.read(2))[0]
+        if self.bitfield & self.FLAG_NBITS:
+            self.nBits = struct.unpack("<I", f.read(4))[0]
+        self.nNonce = struct.unpack("<I", f.read(4))[0]
+        self.rehash()
+
+    def serialize(self):
+        r = b""
+        r += struct.pack("<B", self.bitfield)
+        if not self.bitfield & self.BITMASK_VERSION:
+            r += struct.pack("<i", self.nVersion)
+        if self.bitfield & self.FLAG_PREV_BLOCK_HASH:
+            r += ser_uint256(self.hashPrevBlock)
+        r += ser_uint256(self.hashMerkleRoot)
+        r += struct.pack("<I", self.nTime) if self.bitfield & self.FLAG_TIMESTAMP else struct.pack("<h", self.timeOffset)
+        if self.bitfield & self.FLAG_NBITS:
+            r += struct.pack("<I", self.nBits)
+        r += struct.pack("<I", self.nNonce)
+        return r
+
+    def calc_sha256(self):
+        if self.sha256 is None:
+            r = b""
+            r += struct.pack("<i", self.nVersion)
+            r += ser_uint256(self.hashPrevBlock)
+            r += ser_uint256(self.hashMerkleRoot)
+            r += struct.pack("<I", self.nTime)
+            r += struct.pack("<I", self.nBits)
+            r += struct.pack("<I", self.nNonce)
+            self.sha256 = uint256_from_str(dashhash(r))
+            self.hash = int(encode(dashhash(r)[::-1], 'hex_codec'), 16)
+
+    def rehash(self):
+        self.sha256 = None
+        self.calc_sha256()
+        return self.sha256
+
+    def __repr__(self):
+        return "BlockHeaderCompressed(bitfield=%064x, nVersion=%i hashPrevBlock=%064x hashMerkleRoot=%064x nTime=%s " \
+               "nBits=%08x nNonce=%08x timeOffset=%i)" % \
+               (self.bitfield, self.nVersion, self.hashPrevBlock, self.hashMerkleRoot, time.ctime(self.nTime), self.nBits, self.nNonce, self.timeOffset)
+
+    def __save_version_as_most_recent(self, last_unique_versions):
+        last_unique_versions.insert(0, self.nVersion)
+
+        # Evict the oldest version
+        if len(last_unique_versions) > 7:
+            last_unique_versions.pop()
+
+    @staticmethod
+    def __mark_version_as_most_recent(last_unique_versions, version_idx):
+        # Move version to the front of the list
+        last_unique_versions.insert(0, last_unique_versions.pop(version_idx))
+
+    def compress(self, last_blocks, last_unique_versions):
+        if not last_blocks:
+            # First block, everything must be uncompressed
+            self.bitfield &= (~CompressibleBlockHeader.BITMASK_VERSION)
+            self.bitfield |= CompressibleBlockHeader.FLAG_PREV_BLOCK_HASH
+            self.bitfield |= CompressibleBlockHeader.FLAG_TIMESTAMP
+            self.bitfield |= CompressibleBlockHeader.FLAG_NBITS
+            self.__save_version_as_most_recent(last_unique_versions)
+            return
+
+        # Compress version
+        try:
+            version_idx = last_unique_versions.index(self.nVersion)
+            version_offset = len(last_unique_versions) - version_idx
+            self.bitfield &= (~CompressibleBlockHeader.BITMASK_VERSION)
+            self.bitfield |= (version_offset & CompressibleBlockHeader.BITMASK_VERSION)
+            self.__mark_version_as_most_recent(last_unique_versions, version_idx)
+        except ValueError:
+            self.__save_version_as_most_recent(last_unique_versions)
+
+        # We have the previous block
+        last_block = last_blocks[-1]
+
+        # Compress time
+        self.timeOffset = self.nTime - last_block.nTime
+        if self.timeOffset > 32767 or self.timeOffset < -32768:
+            # Time diff overflows, we have to send it as 4 bytes (uncompressed)
+            self.bitfield |= CompressibleBlockHeader.FLAG_TIMESTAMP
+
+        # If nBits doesn't match previous block, we have to send it
+        if self.nBits != last_block.nBits:
+            self.bitfield |= CompressibleBlockHeader.FLAG_NBITS
+
+    def uncompress(self, last_compressed_blocks, last_unique_versions):
+        if not last_compressed_blocks:
+            # First block header is always uncompressed
+            self.__save_version_as_most_recent(last_unique_versions)
+            return
+
+        previous_block = last_compressed_blocks[-1]
+
+        # Uncompress version
+        version_idx = self.bitfield & self.BITMASK_VERSION
+        if version_idx != 0:
+            if version_idx <= len(last_unique_versions):
+                self.nVersion = last_unique_versions[version_idx - 1]
+                self.__mark_version_as_most_recent(last_unique_versions, version_idx - 1)
+        else:
+            self.__save_version_as_most_recent(last_unique_versions)
+
+        # Uncompress prev block hash
+        if not self.bitfield & self.FLAG_PREV_BLOCK_HASH:
+            self.hashPrevBlock = previous_block.hash
+
+        # Uncompress time
+        if not self.bitfield & self.FLAG_TIMESTAMP:
+            self.nTime = previous_block.nTime + self.timeOffset
+
+        # Uncompress time bits
+        if not self.bitfield & self.FLAG_NBITS:
+            self.nBits = previous_block.nBits
+
+        self.rehash()
+
 
 class PrefilledTransaction:
     __slots__ = ("index", "tx")
@@ -709,7 +889,7 @@ class HeaderAndShortIDs:
         self.shortids = []
         self.prefilled_txn = []
 
-        if p2pheaders_and_shortids != None:
+        if p2pheaders_and_shortids is not None:
             self.header = p2pheaders_and_shortids.header
             self.nonce = p2pheaders_and_shortids.nonce
             self.shortids = p2pheaders_and_shortids.shortids
@@ -759,7 +939,7 @@ class BlockTransactionsRequest:
 
     def __init__(self, blockhash=0, indexes = None):
         self.blockhash = blockhash
-        self.indexes = indexes if indexes != None else []
+        self.indexes = indexes if indexes is not None else []
 
     def deserialize(self, f):
         self.blockhash = deser_uint256(f)
@@ -800,7 +980,7 @@ class BlockTransactions:
 
     def __init__(self, blockhash=0, transactions = None):
         self.blockhash = blockhash
-        self.transactions = transactions if transactions != None else []
+        self.transactions = transactions if transactions is not None else []
 
     def deserialize(self, f):
         self.blockhash = deser_uint256(f)
@@ -814,52 +994,6 @@ class BlockTransactions:
 
     def __repr__(self):
         return "BlockTransactions(hash=%064x transactions=%s)" % (self.blockhash, repr(self.transactions))
-
-class CPartialMerkleTree():
-    def __init__(self):
-        self.nTransactions = 0
-        self.vHash = []
-        self.vBits = []
-        self.fBad = False
-
-    def deserialize(self, f):
-        self.nTransactions = struct.unpack("<i", f.read(4))[0]
-        self.vHash = deser_uint256_vector(f)
-        vBytes = deser_string(f)
-        self.vBits = []
-        for i in range(len(vBytes) * 8):
-            self.vBits.append(vBytes[i//8] & (1 << (i % 8)) != 0)
-
-    def serialize(self):
-        r = b""
-        r += struct.pack("<i", self.nTransactions)
-        r += ser_uint256_vector(self.vHash)
-        vBytesArray = bytearray([0x00] * ((len(self.vBits) + 7)//8))
-        for i in range(len(self.vBits)):
-            vBytesArray[i // 8] |= self.vBits[i] << (i % 8)
-        r += ser_string(bytes(vBytesArray))
-        return r
-
-    def __repr__(self):
-        return "CPartialMerkleTree(nTransactions=%d, vHash=%s, vBits=%s)" % (self.nTransactions, repr(self.vHash), repr(self.vBits))
-
-class CMerkleBlock():
-    def __init__(self):
-        self.header = CBlockHeader()
-        self.txn = CPartialMerkleTree()
-
-    def deserialize(self, f):
-        self.header.deserialize(f)
-        self.txn.deserialize(f)
-
-    def serialize(self):
-        r = b""
-        r += self.header.serialize()
-        r += self.txn.serialize()
-        return r
-
-    def __repr__(self):
-        return "CMerkleBlock(header=%s, txn=%s)" % (repr(self.header), repr(self.txn))
 
 
 class CPartialMerkleTree:
@@ -944,7 +1078,7 @@ class CCbTx:
 
 
 class CSimplifiedMNListEntry:
-    __slots__ = ("proRegTxHash", "confirmedHash", "service", "pubKeyOperator", "keyIDVoting", "isValid")
+    __slots__ = ("proRegTxHash", "confirmedHash", "service", "pubKeyOperator", "keyIDVoting", "isValid", "nVersion", "type", "platformHTTPPort", "platformNodeID")
 
     def __init__(self):
         self.set_null()
@@ -953,26 +1087,43 @@ class CSimplifiedMNListEntry:
         self.proRegTxHash = 0
         self.confirmedHash = 0
         self.service = CService()
-        self.pubKeyOperator = b'\\x0' * 48
+        self.pubKeyOperator = b'\x00' * 48
         self.keyIDVoting = 0
         self.isValid = False
+        self.nVersion = 0
+        self.type = 0
+        self.platformHTTPPort = 0
+        self.platformNodeID = b'\x00' * 20
 
     def deserialize(self, f):
+        self.nVersion = struct.unpack("<H", f.read(2))[0]
         self.proRegTxHash = deser_uint256(f)
         self.confirmedHash = deser_uint256(f)
         self.service.deserialize(f)
         self.pubKeyOperator = f.read(48)
         self.keyIDVoting = f.read(20)
         self.isValid = struct.unpack("<?", f.read(1))[0]
+        if self.nVersion == 2:
+            self.type = struct.unpack("<H", f.read(2))[0]
+            if self.type == 1:
+                self.platformHTTPPort = struct.unpack("<H", f.read(2))[0]
+                self.platformNodeID = f.read(20)
 
-    def serialize(self):
+    def serialize(self, with_version = True):
         r = b""
+        if with_version:
+            r += struct.pack("<H", self.nVersion)
         r += ser_uint256(self.proRegTxHash)
         r += ser_uint256(self.confirmedHash)
         r += self.service.serialize()
         r += self.pubKeyOperator
         r += self.keyIDVoting
         r += struct.pack("<?", self.isValid)
+        if self.nVersion == 2:
+            r += struct.pack("<H", self.type)
+            if self.type == 1:
+                r += struct.pack("<H", self.platformHTTPPort)
+                r += self.platformNodeID
         return r
 
 
@@ -990,16 +1141,16 @@ class CFinalCommitment:
         self.quorumIndex = 0
         self.signers = []
         self.validMembers = []
-        self.quorumPublicKey = b'\\x0' * 48
+        self.quorumPublicKey = b'\x00' * 48
         self.quorumVvecHash = 0
-        self.quorumSig = b'\\x0' * 96
-        self.membersSig = b'\\x0' * 96
+        self.quorumSig = b'\x00' * 96
+        self.membersSig = b'\x00' * 96
 
     def deserialize(self, f):
         self.nVersion = struct.unpack("<H", f.read(2))[0]
         self.llmqType = struct.unpack("<B", f.read(1))[0]
         self.quorumHash = deser_uint256(f)
-        if self.nVersion == 2:
+        if self.nVersion == 2 or self.nVersion == 4:
             self.quorumIndex = struct.unpack("<H", f.read(2))[0]
         self.signers = deser_dyn_bitset(f, False)
         self.validMembers = deser_dyn_bitset(f, False)
@@ -1013,7 +1164,7 @@ class CFinalCommitment:
         r += struct.pack("<H", self.nVersion)
         r += struct.pack("<B", self.llmqType)
         r += ser_uint256(self.quorumHash)
-        if self.nVersion == 2:
+        if self.nVersion == 2 or self.nVersion == 4:
             r += struct.pack("<H", self.quorumIndex)
         r += ser_dyn_bitset(self.signers, False)
         r += ser_dyn_bitset(self.validMembers, False)
@@ -1113,7 +1264,7 @@ class CRecoveredSig:
         self.quorumHash = 0
         self.id = 0
         self.msgHash = 0
-        self.sig = b'\\x0' * 96
+        self.sig = b'\x00' * 96
 
     def deserialize(self, f):
         self.llmqType = struct.unpack("<B", f.read(1))[0]
@@ -1141,7 +1292,7 @@ class CSigShare:
         self.quorumMember = 0
         self.id = 0
         self.msgHash = 0
-        self.sigShare = b'\\x0' * 96
+        self.sigShare = b'\x00' * 96
 
     def deserialize(self, f):
         self.llmqType = struct.unpack("<B", f.read(1))[0]
@@ -1166,7 +1317,7 @@ class CBLSPublicKey:
     __slots__ = ("data")
 
     def __init__(self):
-        self.data = b'\\x0' * 48
+        self.data = b'\x00' * 48
 
     def deserialize(self, f):
         self.data = f.read(48)
@@ -1181,9 +1332,9 @@ class CBLSIESEncryptedSecretKey:
     __slots__ = ("ephemeral_pubKey", "iv", "data")
 
     def __init__(self):
-        self.ephemeral_pubKey = b'\\x0' * 48
-        self.iv = b'\\x0' * 32
-        self.data = b'\\x0' * 32
+        self.ephemeral_pubKey = b'\x00' * 48
+        self.iv = b'\x00' * 32
+        self.data = b'\x00' * 32
 
     def deserialize(self, f):
         self.ephemeral_pubKey = f.read(48)
@@ -1355,7 +1506,7 @@ class msg_getdata:
     command = b"getdata"
 
     def __init__(self, inv=None):
-        self.inv = inv if inv != None else []
+        self.inv = inv if inv is not None else []
 
     def deserialize(self, f):
         self.inv = deser_vector(f, CInv)
@@ -1548,6 +1699,23 @@ class msg_sendheaders:
         return "msg_sendheaders()"
 
 
+class msg_sendheaders2:
+    __slots__ = ()
+    command = b"sendheaders2"
+
+    def __init__(self):
+        pass
+
+    def deserialize(self, f):
+        pass
+
+    def serialize(self):
+        return b""
+
+    def __repr__(self):
+        return "msg_sendheaders2()"
+
+
 # getheaders message has
 # number of entries
 # vector of hashes
@@ -1576,6 +1744,31 @@ class msg_getheaders:
                % (repr(self.locator), self.hashstop)
 
 
+# same as msg_getheaders, but to request the headers compressed
+class msg_getheaders2:
+    __slots__ = ("hashstop", "locator",)
+    command = b"getheaders2"
+
+    def __init__(self):
+        self.locator = CBlockLocator()
+        self.hashstop = 0
+
+    def deserialize(self, f):
+        self.locator = CBlockLocator()
+        self.locator.deserialize(f)
+        self.hashstop = deser_uint256(f)
+
+    def serialize(self):
+        r = b""
+        r += self.locator.serialize()
+        r += ser_uint256(self.hashstop)
+        return r
+
+    def __repr__(self):
+        return "msg_getheaders2(locator=%s, stop=%064x)" \
+               % (repr(self.locator), self.hashstop)
+
+
 # headers message has
 # <count> <vector of block headers>
 class msg_headers:
@@ -1599,37 +1792,29 @@ class msg_headers:
         return "msg_headers(headers=%s)" % repr(self.headers)
 
 
-class msg_reject:
-    __slots__ = ("code", "data", "message", "reason")
-    command = b"reject"
-    REJECT_MALFORMED = 1
+# headers message has
+# <count> <vector of compressed block headers>
+class msg_headers2:
+    __slots__ = ("headers",)
+    command = b"headers2"
 
-    def __init__(self):
-        self.message = b""
-        self.code = 0
-        self.reason = b""
-        self.data = 0
+    def __init__(self, headers=None):
+        self.headers = headers if headers is not None else []
 
     def deserialize(self, f):
-        self.message = deser_string(f)
-        self.code = struct.unpack("<B", f.read(1))[0]
-        self.reason = deser_string(f)
-        if (self.code != self.REJECT_MALFORMED and
-                (self.message == b"block" or self.message == b"tx")):
-            self.data = deser_uint256(f)
+        self.headers = deser_vector(f, CompressibleBlockHeader)
+        last_unique_versions = []
+        for idx in range(len(self.headers)):
+            self.headers[idx].uncompress(self.headers[:idx], last_unique_versions)
 
     def serialize(self):
-        r = ser_string(self.message)
-        r += struct.pack("<B", self.code)
-        r += ser_string(self.reason)
-        if (self.code != self.REJECT_MALFORMED and
-                (self.message == b"block" or self.message == b"tx")):
-            r += ser_uint256(self.data)
-        return r
+        last_unique_versions = []
+        for idx in range(len(self.headers)):
+            self.headers[idx].compress(self.headers[:idx], last_unique_versions)
+        return ser_vector(self.headers)
 
     def __repr__(self):
-        return "msg_reject: %s %d %s [%064x]" \
-               % (self.message, self.code, self.reason, self.data)
+        return "msg_headers2(headers=%s)" % repr(self.headers)
 
 
 class msg_sendcmpct:
@@ -1737,7 +1922,7 @@ class msg_getmnlistd:
 QuorumId = namedtuple('QuorumId', ['llmqType', 'quorumHash'])
 
 class msg_mnlistdiff:
-    __slots__ = ("baseBlockHash", "blockHash", "merkleProof", "cbTx", "deletedMNs", "mnList", "deletedQuorums", "newQuorums",)
+    __slots__ = ("baseBlockHash", "blockHash", "merkleProof", "cbTx", "nVersion", "deletedMNs", "mnList", "deletedQuorums", "newQuorums",)
     command = b"mnlistdiff"
 
     def __init__(self):
@@ -1745,6 +1930,7 @@ class msg_mnlistdiff:
         self.blockHash = 0
         self.merkleProof = CPartialMerkleTree()
         self.cbTx = None
+        self.nVersion = 0
         self.deletedMNs = []
         self.mnList = []
         self.deletedQuorums = []
@@ -1757,6 +1943,7 @@ class msg_mnlistdiff:
         self.cbTx = CTransaction()
         self.cbTx.deserialize(f)
         self.cbTx.rehash()
+        self.nVersion = struct.unpack("<H", f.read(2))[0]
         self.deletedMNs = deser_uint256_vector(f)
         self.mnList = []
         for i in range(deser_compact_size(f)):
@@ -1783,7 +1970,7 @@ class msg_clsig:
     __slots__ = ("height", "blockHash", "sig",)
     command = b"clsig"
 
-    def __init__(self, height=0, blockHash=0, sig=b'\\x0' * 96):
+    def __init__(self, height=0, blockHash=0, sig=b'\x00' * 96):
         self.height = height
         self.blockHash = blockHash
         self.sig = sig
@@ -1808,7 +1995,7 @@ class msg_islock:
     __slots__ = ("inputs", "txid", "sig",)
     command = b"islock"
 
-    def __init__(self, inputs=[], txid=0, sig=b'\\x0' * 96):
+    def __init__(self, inputs=[], txid=0, sig=b'\x00' * 96):
         self.inputs = inputs
         self.txid = txid
         self.sig = sig
@@ -1833,7 +2020,7 @@ class msg_isdlock:
     __slots__ = ("nVersion", "inputs", "txid", "cycleHash", "sig")
     command = b"isdlock"
 
-    def __init__(self, nVersion=1, inputs=[], txid=0, cycleHash=0, sig=b'\\x0' * 96):
+    def __init__(self, nVersion=1, inputs=[], txid=0, cycleHash=0, sig=b'\x00' * 96):
         self.nVersion = nVersion
         self.inputs = inputs
         self.txid = txid

@@ -3,16 +3,13 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-# Pattern rule to print variables, e.g. make print-top_srcdir
-print-%:
-	@echo '$*' = '$($*)'
+DIST_SUBDIRS = secp256k1
 
-DIST_SUBDIRS = secp256k1 univalue
-
-AM_LDFLAGS = $(PTHREAD_CFLAGS) $(LIBTOOL_LDFLAGS) $(HARDENED_LDFLAGS) $(GPROF_LDFLAGS) $(SANITIZER_LDFLAGS)
+AM_LDFLAGS = $(LIBTOOL_LDFLAGS) $(HARDENED_LDFLAGS) $(GPROF_LDFLAGS) $(SANITIZER_LDFLAGS)
 AM_CXXFLAGS = $(DEBUG_CXXFLAGS) $(HARDENED_CXXFLAGS) $(WARN_CXXFLAGS) $(NOWARN_CXXFLAGS) $(ERROR_CXXFLAGS) $(GPROF_CXXFLAGS) $(SANITIZER_CXXFLAGS)
 AM_CPPFLAGS = $(DEBUG_CPPFLAGS) $(HARDENED_CPPFLAGS)
 AM_LIBTOOLFLAGS = --preserve-dup-deps
+PTHREAD_FLAGS = $(PTHREAD_CFLAGS) $(PTHREAD_LIBS)
 EXTRA_LIBRARIES =
 
 if ENABLE_STACKTRACES
@@ -35,21 +32,9 @@ BACKTRACE_LIB = -lbacktrace
 endif
 endif #ENABLE_STACKTRACES
 
-if EMBEDDED_UNIVALUE
-LIBUNIVALUE = univalue/libunivalue.la
-
-$(LIBUNIVALUE): $(wildcard univalue/lib/*) $(wildcard univalue/include/*)
-	$(AM_V_at)$(MAKE) $(AM_MAKEFLAGS) -C $(@D) $(@F)
-else
-LIBUNIVALUE = $(UNIVALUE_LIBS)
-endif
-
-BITCOIN_INCLUDES=-I$(builddir) $(BDB_CPPFLAGS) $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS)
-
-BITCOIN_INCLUDES += -I$(srcdir)/secp256k1/include
-BITCOIN_INCLUDES += $(UNIVALUE_CFLAGS)
-
-BLS_LIBS=-lbls-dash -lrelic_s
+BITCOIN_INCLUDES=-I$(builddir) -I$(srcdir)/secp256k1/include -I$(srcdir)/$(UNIVALUE_INCLUDE_DIR_INT) $(BDB_CPPFLAGS) $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS)
+BITCOIN_INCLUDES+=-I$(srcdir)/dashbls/include -I$(srcdir)/dashbls/depends/relic/include -I$(srcdir)/dashbls/depends/minialloc/include
+BITCOIN_INCLUDES+=-I$(srcdir)/immer
 
 LIBBITCOIN_SERVER=libpiratecash_server.a
 LIBBITCOIN_COMMON=libpiratecash_common.a
@@ -58,6 +43,7 @@ LIBBITCOIN_CLI=libpiratecash_cli.a
 LIBBITCOIN_UTIL=libpiratecash_util.a
 LIBBITCOIN_CRYPTO_BASE=crypto/libpiratecash_crypto_base.a
 LIBBITCOINQT=qt/libpiratecashqt.a
+LIBDASHBLS=dashbls/libdashbls.la
 LIBSECP256K1=secp256k1/libsecp256k1.la
 
 if ENABLE_ZMQ
@@ -89,7 +75,10 @@ LIBBITCOIN_CRYPTO_ARM_SHANI = crypto/libpiratecash_crypto_arm_shani.a
 LIBBITCOIN_CRYPTO += $(LIBBITCOIN_CRYPTO_ARM_SHANI)
 endif
 
-$(LIBSECP256K1): $(wildcard secp256k1/src/*) $(wildcard secp256k1/include/*)
+$(LIBDASHBLS):
+	$(AM_V_at)$(MAKE) $(AM_MAKEFLAGS) -C $(@D)
+
+$(LIBSECP256K1): $(wildcard secp256k1/src/*.h) $(wildcard secp256k1/src/*.c) $(wildcard secp256k1/include/*)
 	$(AM_V_at)$(MAKE) $(AM_MAKEFLAGS) -C $(@D) $(@F)
 
 # Make is not made aware of per-object dependencies to avoid limiting building parallelization
@@ -106,6 +95,7 @@ EXTRA_LIBRARIES += \
   $(LIBBITCOIN_ZMQ)
 
 lib_LTLIBRARIES = $(LIBBITCOINCONSENSUS)
+noinst_LTLIBRARIES =
 
 bin_PROGRAMS =
 noinst_PROGRAMS =
@@ -162,9 +152,11 @@ BITCOIN_CORE_H = \
   compat.h \
   compat/assumptions.h \
   compat/byteswap.h \
+  compat/cpuid.h \
   compat/endian.h \
   compat/sanity.h \
   compressor.h \
+  context.h \
   consensus/consensus.h \
   consensus/tx_check.h \
   consensus/tx_verify.h \
@@ -173,6 +165,7 @@ BITCOIN_CORE_H = \
   cuckoocache.h \
   ctpl_stl.h \
   cxxtimer.hpp \
+  evo/dmn_types.h \
   evo/cbtx.h \
   evo/deterministicmns.h \
   evo/dmnstate.h \
@@ -210,7 +203,6 @@ BITCOIN_CORE_H = \
   interfaces/wallet.h \
   key.h \
   key_io.h \
-  keystore.h \
   dbwrapper.h \
   limitedmap.h \
   llmq/quorums.h \
@@ -222,7 +214,7 @@ BITCOIN_CORE_H = \
   llmq/dkgsessionhandler.h \
   llmq/dkgsessionmgr.h \
   llmq/dkgsession.h \
-  llmq/init.h \
+  llmq/context.h \
   llmq/instantsend.h \
   llmq/snapshot.h \
   llmq/signing.h \
@@ -251,9 +243,10 @@ BITCOIN_CORE_H = \
   netmessagemaker.h \
   node/coin.h \
   node/coinstats.h \
+  node/context.h \
   node/transaction.h \
+  node/utxo_snapshot.h \
   noui.h \
-  optional.h \
   policy/feerate.h \
   policy/fees.h \
   policy/policy.h \
@@ -262,10 +255,10 @@ BITCOIN_CORE_H = \
   protocol.h \
   psbt.h \
   random.h \
+  randomenv.h \
   reverse_iterator.h \
   rpc/blockchain.h \
   rpc/client.h \
-  rpc/mining.h \
   rpc/protocol.h \
   rpc/rawtransaction_util.h \
   rpc/register.h \
@@ -275,8 +268,10 @@ BITCOIN_CORE_H = \
   saltedhasher.h \
   scheduler.h \
   script/descriptor.h \
+  script/keyorigin.h \
   script/sigcache.h \
   script/sign.h \
+  script/signingprovider.h \
   script/standard.h \
   shutdown.h \
   spork.h \
@@ -303,17 +298,23 @@ BITCOIN_CORE_H = \
   util/bip32.h \
   util/bytevectorhash.h \
   util/check.h \
+  util/enumerate.h \
   util/error.h \
   util/fees.h \
+  util/golombrice.h \
+  util/irange.h \
   util/spanparsing.h \
   util/system.h \
   util/asmap.h \
   util/getuniquepath.h \
   util/macros.h \
-  util/memory.h \
+  util/message.h \
   util/moneystr.h \
   util/ranges.h \
+  util/underlying.h \
   util/serfloat.h \
+  util/settings.h \
+  util/sock.h \
   util/string.h \
   util/time.h \
   util/threadnames.h \
@@ -328,6 +329,7 @@ BITCOIN_CORE_H = \
   walletinitinterface.h \
   wallet/bdb.h \
   wallet/coincontrol.h \
+  wallet/context.h \
   wallet/crypter.h \
   wallet/db.h \
   wallet/fees.h \
@@ -336,6 +338,8 @@ BITCOIN_CORE_H = \
   wallet/psbtwallet.h \
   wallet/rpcwallet.h \
   wallet/salvage.h \
+  wallet/scriptpubkeyman.h \
+  wallet/sqlite.h \
   wallet/wallet.h \
   wallet/walletdb.h \
   wallet/wallettool.h \
@@ -409,7 +413,7 @@ libpiratecash_server_a_SOURCES = \
   llmq/dkgsessionhandler.cpp \
   llmq/dkgsessionmgr.cpp \
   llmq/dkgsession.cpp \
-  llmq/init.cpp \
+  llmq/context.cpp \
   llmq/instantsend.cpp \
   llmq/snapshot.cpp \
   llmq/signing.cpp \
@@ -428,6 +432,7 @@ libpiratecash_server_a_SOURCES = \
   net_processing.cpp \
   node/coin.cpp \
   node/coinstats.cpp \
+  node/context.cpp \
   node/transaction.cpp \
   noui.cpp \
   policy/fees.cpp \
@@ -436,16 +441,16 @@ libpiratecash_server_a_SOURCES = \
   pow.cpp \
   rest.cpp \
   rpc/blockchain.cpp \
+  rpc/coinjoin.cpp \
+  rpc/evo.cpp \
   rpc/masternode.cpp \
   rpc/governance.cpp \
   rpc/mining.cpp \
   rpc/misc.cpp \
   rpc/net.cpp \
+  rpc/quorums.cpp \
   rpc/rawtransaction.cpp \
-  rpc/rpcevo.cpp \
-  rpc/rpcquorums.cpp \
   rpc/server.cpp \
-  rpc/coinjoin.cpp \
   script/sigcache.cpp \
   shutdown.cpp \
   spork.cpp \
@@ -481,7 +486,7 @@ endif
 
 # wallet: shared between piratecashd and piratecash-qt, but only linked
 # when wallet enabled
-libpiratecash_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+libpiratecash_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(SQLITE_CFLAGS)
 libpiratecash_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libpiratecash_wallet_a_SOURCES = \
   coinjoin/client.cpp \
@@ -489,22 +494,28 @@ libpiratecash_wallet_a_SOURCES = \
   coinjoin/util.cpp \
   interfaces/wallet.cpp \
   pos_kernel.cpp \
-  wallet/bdb.cpp \
   wallet/coincontrol.cpp \
+  wallet/context.cpp \
   wallet/crypter.cpp \
   wallet/db.cpp \
   wallet/fees.cpp \
-  wallet/ismine.cpp \
   wallet/load.cpp \
   wallet/psbtwallet.cpp \
   wallet/rpcdump.cpp \
   wallet/rpcwallet.cpp \
-  wallet/salvage.cpp \
+  wallet/scriptpubkeyman.cpp \
   wallet/wallet.cpp \
   wallet/walletdb.cpp \
   wallet/walletutil.cpp \
   wallet/coinselection.cpp \
   $(BITCOIN_CORE_H)
+
+if USE_SQLITE
+libpiratecash_wallet_a_SOURCES += wallet/sqlite.cpp
+endif
+if USE_BDB
+libpiratecash_wallet_a_SOURCES += wallet/bdb.cpp wallet/salvage.cpp
+endif
 
 libpiratecash_wallet_tool_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libpiratecash_wallet_tool_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
@@ -529,6 +540,8 @@ crypto_libpiratecash_crypto_base_a_SOURCES = \
   crypto/hmac_sha256.h \
   crypto/hmac_sha512.cpp \
   crypto/hmac_sha512.h \
+  crypto/muhash.h \
+  crypto/muhash.cpp \
   crypto/poly1305.h \
   crypto/poly1305.cpp \
   crypto/pkcs5_pbkdf2_hmac_sha512.cpp \
@@ -605,13 +618,14 @@ libpiratecash_consensus_a_SOURCES = \
   primitives/transaction.h \
   pubkey.cpp \
   pubkey.h \
-  script/piratecashconsensus.cpp \
+  script/bitcoinconsensus.cpp \
   script/interpreter.cpp \
   script/interpreter.h \
   script/script.cpp \
   script/script.h \
   script/script_error.cpp \
   script/script_error.h \
+  script/standard.cpp \
   serialize.h \
   span.h \
   streams.h \
@@ -620,6 +634,7 @@ libpiratecash_consensus_a_SOURCES = \
   uint256.h \
   util/strencodings.cpp \
   util/strencodings.h \
+  util/string.cpp \
   version.h
 
 # common: shared between piratecashd, and piratecash-qt and non-server tools
@@ -638,22 +653,21 @@ libpiratecash_common_a_SOURCES = \
   hdchain.cpp \
   key.cpp \
   key_io.cpp \
-  keystore.cpp \
   merkleblock.cpp \
   netaddress.cpp \
   netbase.cpp \
   net_permissions.cpp \
   policy/feerate.cpp \
   policy/policy.cpp \
-  psbt.cpp \
   protocol.cpp \
+  psbt.cpp \
   rpc/rawtransaction_util.cpp \
   rpc/util.cpp \
   saltedhasher.cpp \
   scheduler.cpp \
   script/descriptor.cpp \
   script/sign.cpp \
-  script/standard.cpp \
+  script/signingprovider.cpp \
   versionbitsinfo.cpp \
   warnings.cpp \
   $(BITCOIN_CORE_H)
@@ -672,27 +686,29 @@ libpiratecash_util_a_SOURCES = \
   support/lockedpool.cpp \
   chainparamsbase.cpp \
   clientversion.cpp \
-  compat/glibc_sanity_fdelt.cpp \
-  compat/glibc_sanity.cpp \
   compat/glibcxx_sanity.cpp \
   compat/strnlen.cpp \
   fs.cpp \
   interfaces/handler.cpp \
   logging.cpp \
   random.cpp \
+  randomenv.cpp \
   rpc/request.cpp \
   stacktraces.cpp \
   support/cleanse.cpp \
   sync.cpp \
   threadinterrupt.cpp \
+  util/asmap.cpp \
   util/bip32.cpp \
   util/bytevectorhash.cpp \
   util/error.cpp \
   util/fees.cpp \
   util/getuniquepath.cpp \
+  util/sock.cpp \
   util/system.cpp \
-  util/asmap.cpp \
+  util/message.cpp \
   util/moneystr.cpp \
+  util/settings.cpp \
   util/spanparsing.cpp \
   util/strencodings.cpp \
   util/time.cpp \
@@ -733,25 +749,25 @@ endif
 piratecashd_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_WALLET) \
-  $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_COMMON) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_ZMQ) \
   $(LIBBITCOIN_CONSENSUS) \
   $(LIBBITCOIN_CRYPTO) \
+  $(LIBDASHBLS) \
   $(LIBLEVELDB) \
   $(LIBLEVELDB_SSE42) \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-piratecashd_LDADD += $(BACKTRACE_LIB) $(BOOST_LIBS) $(BDB_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(NATPMP_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS) $(BLS_LIBS) $(GMP_LIBS)
+piratecashd_LDADD += $(BACKTRACE_LIB) $(BOOST_LIBS) $(BDB_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(NATPMP_LIBS) $(SQLITE_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS) $(GMP_LIBS)
 
 # piratecash-cli binary #
 piratecash_cli_SOURCES = bitcoin-cli.cpp
 piratecash_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
 piratecash_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-piratecash_cli_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+piratecash_cli_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(PTHREAD_FLAGS)
 
 if TARGET_WINDOWS
 piratecash_cli_SOURCES += piratecash-cli-res.rc
@@ -762,14 +778,14 @@ piratecash_cli_LDADD = \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO)
-piratecash_cli_LDADD += $(BACKTRACE_LIB) $(BOOST_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS) $(BLS_LIBS) $(GMP_LIBS)
+piratecash_cli_LDADD += $(BACKTRACE_LIB) $(BOOST_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS) $(GMP_LIBS)
 #
 
 # piratecash-tx binary #
 piratecash_tx_SOURCES = bitcoin-tx.cpp
 piratecash_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 piratecash_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-piratecash_tx_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+piratecash_tx_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(PTHREAD_FLAGS)
 
 if TARGET_WINDOWS
 piratecash_tx_SOURCES += piratecash-tx-res.rc
@@ -781,16 +797,17 @@ piratecash_tx_LDADD = \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CONSENSUS) \
   $(LIBBITCOIN_CRYPTO) \
+  $(LIBDASHBLS) \
   $(LIBSECP256K1)
 
-piratecash_tx_LDADD += $(BACKTRACE_LIB) $(BOOST_LIBS) $(CRYPTO_LIBS) $(BLS_LIBS) $(GMP_LIBS)
+piratecash_tx_LDADD += $(BACKTRACE_LIB) $(BOOST_LIBS) $(CRYPTO_LIBS) $(GMP_LIBS)
 #
 
 # piratecash-wallet binary #
 piratecash_wallet_SOURCES = bitcoin-wallet.cpp
 piratecash_wallet_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 piratecash_wallet_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-piratecash_wallet_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+piratecash_wallet_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(PTHREAD_FLAGS)
 
 if TARGET_WINDOWS
 piratecash_wallet_SOURCES += dash-wallet-res.rc
@@ -808,18 +825,19 @@ piratecash_wallet_LDADD = \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBBITCOIN_ZMQ) \
+  $(LIBDASHBLS) \
   $(LIBLEVELDB) \
   $(LIBLEVELDB_SSE42) \
   $(LIBMEMENV) \
   $(LIBSECP256K1) \
   $(LIBUNIVALUE)
 
-piratecash_wallet_LDADD += $(BACKTRACE_LIB) $(BOOST_LIBS) $(BDB_LIBS) $(CRYPTO_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(MINIUPNPC_LIBS) $(NATPMP_LIBS) $(ZMQ_LIBS) $(BLS_LIBS) $(GMP_LIBS)
+piratecash_wallet_LDADD += $(BACKTRACE_LIB) $(BOOST_LIBS) $(BDB_LIBS) $(CRYPTO_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(MINIUPNPC_LIBS) $(NATPMP_LIBS) $(SQLITE_LIBS) $(ZMQ_LIBS) $(GMP_LIBS)
 #
 
 # piratecashconsensus library #
 if BUILD_BITCOIN_LIBS
-include_HEADERS = script/piratecashconsensus.h
+include_HEADERS = script/bitcoinconsensus.h
 libpiratecashconsensus_la_SOURCES = support/cleanse.cpp $(crypto_libpiratecash_crypto_base_a_SOURCES) $(libpiratecash_consensus_a_SOURCES)
 
 if GLIBC_BACK_COMPAT
@@ -827,8 +845,10 @@ if GLIBC_BACK_COMPAT
 endif
 
 libpiratecashconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
-libpiratecashconsensus_la_LIBADD = $(LIBSECP256K1) $(BLS_LIBS) $(GMP_LIBS)
-libpiratecashconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) $(LEVELDB_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
+libpiratecashconsensus_la_LIBADD = $(LIBDASHBLS) $(LIBSECP256K1) $(GMP_LIBS)
+libpiratecashconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
+libpiratecashconsensus_la_CPPFLAGS += -I$(srcdir)/dashbls/include -I$(srcdir)/dashbls/depends/relic/include -I$(srcdir)/dashbls/depends/minialloc/include
+libpiratecashconsensus_la_CPPFLAGS += -I$(srcdir)/immer
 libpiratecashconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 
 endif
@@ -862,19 +882,25 @@ CLEANFILES += wallet/test/*.gcda wallet/test/*.gcno
 CLEANFILES += zmq/*.gcda zmq/*.gcno
 CLEANFILES += obj/build.h
 
-EXTRA_DIST = $(CTAES_DIST)
+IMMER_DIST = immer/immer
+LIBDASHBLS_DIST = dashbls
 
-config/piratecash-config.h: config/stamp-h1
+EXTRA_DIST = \
+  $(CTAES_DIST)   \
+  $(IMMER_DIST)   \
+  $(LIBDASHBLS_DIST)
+
+config/bitcoin-config.h: config/stamp-h1
 	@$(MAKE) -C $(top_builddir) $(subdir)/$(@)
-config/stamp-h1: $(top_srcdir)/$(subdir)/config/piratecash-config.h.in $(top_builddir)/config.status
+config/stamp-h1: $(top_srcdir)/$(subdir)/config/bitcoin-config.h.in $(top_builddir)/config.status
 	$(AM_V_at)$(MAKE) -C $(top_builddir) $(subdir)/$(@)
-$(top_srcdir)/$(subdir)/config/piratecash-config.h.in:  $(am__configure_deps)
-	$(AM_V_at)$(MAKE) -C $(top_srcdir) $(subdir)/config/piratecash-config.h.in
+$(top_srcdir)/$(subdir)/config/bitcoin-config.h.in:  $(am__configure_deps)
+	$(AM_V_at)$(MAKE) -C $(top_srcdir) $(subdir)/config/bitcoin-config.h.in
 
 
 clean-local:
+	-$(MAKE) -C dashbls clean
 	-$(MAKE) -C secp256k1 clean
-	-$(MAKE) -C univalue clean
 	-rm -f leveldb/*/*.gcda leveldb/*/*.gcno leveldb/helpers/memenv/*.gcda leveldb/helpers/memenv/*.gcno
 	-rm -f config.h
 	-rm -rf test/__pycache__
@@ -884,10 +910,6 @@ clean-local:
 	@test -f $(WINDRES)
 	## FIXME: How to get the appropriate modulename_CPPFLAGS in here?
 	$(AM_V_GEN) $(WINDRES) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(CPPFLAGS) -DWINDRES_PREPROC -i $< -o $@
-
-.mm.o:
-	$(AM_V_CXX) $(OBJCXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	  $(CPPFLAGS) $(AM_CXXFLAGS) $(QT_INCLUDES) $(AM_CXXFLAGS) $(PIE_FLAGS) $(CXXFLAGS) -c -o $@ $<
 
 check-symbols: $(bin_PROGRAMS)
 if TARGET_DARWIN
@@ -913,6 +935,7 @@ osx_debug: $(bin_PROGRAMS)
 include Makefile.crc32c.include
 include Makefile.leveldb.include
 include Makefile.test_util.include
+include Makefile.test_fuzz.include
 
 if ENABLE_TESTS
 include Makefile.test.include
@@ -929,3 +952,5 @@ endif
 if ENABLE_QT_TESTS
 include Makefile.qttest.include
 endif
+
+include Makefile.univalue.include

@@ -348,7 +348,7 @@
         <translation>&amp;Recibir</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
         <translation>Solicitar pagos (genera códigos QR y URIs de PirateCash)</translation>
     </message>
     <message>
@@ -536,8 +536,8 @@
         <translation>Abrir &amp;URI...</translation>
     </message>
     <message>
-        <source>Open a dash: URI or payment request</source>
-        <translation>Abrir un dash: URI o petición de pago</translation>
+        <source>Open a piratecash: URI or payment request</source>
+        <translation>Abrir un piratecash: URI o petición de pago</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -1787,8 +1787,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Error en solicitud de pago</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
-        <translation>No se pudo iniciar dash: manejador de pago-por-clic</translation>
+        <source>Cannot start piratecash: click-to-pay handler</source>
+        <translation>No se pudo iniciar piratecash: manejador de pago-por-clic</translation>
     </message>
     <message>
         <source>URI handling</source>
@@ -2792,7 +2792,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Si la comisión personalizada se establece en 1000 corsars y la transacción sólo ocupa 250 bytes, entonces "por kilobyte" sólo se pagan 250 corsars de comisión,&lt;br /&gt;mientras que "como mínimo" paga 1000 corsars. Para transacciones mayores de un kilobyte ambas pagan por kilobyte.</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>Pagar sólo la comisión mínima está bien mientras el volumen de transacciones sea menor al espacio en los bloques.&lt;br /&gt;No obstante, tenga en cuenta que esto puede acabar en una transacción que nunca se confirme una vez haya más demanda de transacciones PirateCash que lo que la red puede procesar.</translation>
     </message>
     <message>
@@ -3075,7 +3075,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Mensaje:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
         <translation>Un mensaje que se adjuntó al PirateCash: URI que será almacenada con la transacción para su referencia. Nota: Este mensaje no se enviará a través de la red PirateCash.</translation>
     </message>
     <message>

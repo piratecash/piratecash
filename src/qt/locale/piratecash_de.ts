@@ -348,8 +348,8 @@
         <translation>&amp;Empfangen</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
-        <translation>Zahlungen anfordern (erzeugt QR-Codes und "dash:"-URIs)</translation>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
+        <translation>Zahlungen anfordern (erzeugt QR-Codes und "piratecash:"-URIs)</translation>
     </message>
     <message>
         <source>&amp;Transactions</source>
@@ -540,8 +540,8 @@
         <translation>&amp;URI öffnen...</translation>
     </message>
     <message>
-        <source>Open a dash: URI or payment request</source>
-        <translation>Eine "dash:"-URI oder Zahlungsanforderung öffnen</translation>
+        <source>Open a piratecash: URI or payment request</source>
+        <translation>Eine "piratecash:"-URI oder Zahlungsanforderung öffnen</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -1839,7 +1839,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Fehlerhafte Zahlungsanforderung</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
+        <source>Cannot start piratecash: click-to-pay handler</source>
         <translation>PirateCash kann nicht gestartet werden: click-to-pay handler</translation>
     </message>
     <message>
@@ -1847,8 +1847,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>URI-Verarbeitung</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash://' ist keine gültige URI. Verwende 'dash:' stattdessen.</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>'piratecash://' ist keine gültige URI. Verwende 'piratecash:' stattdessen.</translation>
     </message>
     <message>
         <source>Payment request fetch URL is invalid: %1</source>
@@ -2868,7 +2868,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Wenn die benutzerdefinierten Gebühren auf 1000 corsars gesetzt sind und eine Transaktion hat nur 250 Bytes, dann kostet "pro Kilobyte" nur 250 corsars Gebühren,&lt;br/&gt; während "mindestens" 1000 corsars kostet. Transaktionen größer als 1 Kilobyte werden immer pro Kilobyte bezahlt.</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>Nur die minimalen Gebühren zu zahlen ist völlig ausreichend so lange in einem neuen Block der Blockkette noch genug Platz für neue Transaktionen ist.&lt;br /&gt; Bitte beachten Sie dass wenn dies in der Zukunft nicht mehr der Fall sein sollte Ihre Transaktion eventuell niemals in einen neuen Block aufgenommen werden wird, also niemals bestätigt wird.</translation>
     </message>
     <message>
@@ -3159,8 +3159,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Nachricht:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
-        <translation>Eine an die "dash:"-URI angefügte Nachricht, die zusammen mit der Transaktion gespeichert wird. Hinweis: Diese Nachricht wird nicht über das PirateCash-Netzwerk gesendet.</translation>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <translation>Eine an die "piratecash:"-URI angefügte Nachricht, die zusammen mit der Transaktion gespeichert wird. Hinweis: Diese Nachricht wird nicht über das PirateCash-Netzwerk gesendet.</translation>
     </message>
     <message>
         <source>This is an unauthenticated payment request.</source>

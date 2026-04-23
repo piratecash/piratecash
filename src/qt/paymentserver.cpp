@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include <config/piratecash-config.h>
+#include <config/bitcoin-config.h>
 #endif
 
 #include <qt/paymentserver.h>
@@ -186,7 +186,7 @@ PaymentServer::~PaymentServer()
 }
 
 //
-// OSX-specific way of handling cosa: URIs
+// OSX-specific way of handling piratecash: URIs
 //
 bool PaymentServer::eventFilter(QObject *object, QEvent *event)
 {

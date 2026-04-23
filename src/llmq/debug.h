@@ -12,6 +12,8 @@
 #include <functional>
 #include <set>
 
+#include <llmq/dkgsessionhandler.h>
+
 class CDataStream;
 class CInv;
 class CScheduler;
@@ -51,7 +53,7 @@ public:
     Consensus::LLMQType llmqType{Consensus::LLMQType::LLMQ_NONE};
     uint256 quorumHash;
     uint32_t quorumHeight{0};
-    uint8_t phase{0};
+    QuorumPhase phase{0};
 
     union {
         struct
@@ -104,8 +106,6 @@ public:
     void UpdateLocalSessionStatus(Consensus::LLMQType llmqType, int quorumIndex, std::function<bool(CDKGDebugSessionStatus& status)>&& func);
     void UpdateLocalMemberStatus(Consensus::LLMQType llmqType, int quorumIndex, size_t memberIdx, std::function<bool(CDKGDebugMemberStatus& status)>&& func);
 };
-
-extern CDKGDebugManager* quorumDKGDebugManager;
 
 } // namespace llmq
 

@@ -5,7 +5,7 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 from test_framework.test_framework import DashTestFramework
-from test_framework.util import assert_equal, assert_raises_rpc_error, isolate_node, reconnect_isolated_node
+from test_framework.util import assert_equal, assert_raises_rpc_error
 
 '''
 p2p_instantsend.py
@@ -13,9 +13,9 @@ p2p_instantsend.py
 Tests InstantSend functionality (prevent doublespend for unconfirmed transactions)
 '''
 
-class InstantSendTest(CosantaTestFramework):
+class InstantSendTest(DashTestFramework):
     def set_test_params(self):
-        self.set_cosanta_test_params(7, 3, fast_dip3_enforcement=True)
+        self.set_dash_test_params(7, 3, fast_dip3_enforcement=True)
         # set sender,  receiver,  isolated nodes
         self.isolated_idx = 1
         self.receiver_idx = 2
@@ -44,7 +44,7 @@ class InstantSendTest(CosantaTestFramework):
         # create doublespending transaction, but don't relay it
         dblspnd_tx = self.create_raw_tx(sender, isolated, 0.5, 1, 100)
         # isolate one node from network
-        isolate_node(isolated)
+        self.isolate_node(self.isolated_idx)
         # instantsend to receiver
         receiver_addr = receiver.getnewaddress()
         is_id = sender.sendtoaddress(receiver_addr, 0.9)
@@ -61,7 +61,7 @@ class InstantSendTest(CosantaTestFramework):
         isolated.generate(1)
         wrong_block = isolated.getbestblockhash()
         # connect isolated block to network
-        reconnect_isolated_node(isolated, 0)
+        self.reconnect_isolated_node(self.isolated_idx, 0)
         # check doublespend block is rejected by other nodes
         timeout = 10
         for i in range(0, self.num_nodes):
@@ -99,13 +99,13 @@ class InstantSendTest(CosantaTestFramework):
         # create doublespending transaction, but don't relay it
         dblspnd_tx = self.create_raw_tx(sender, isolated, 0.5, 1, 100)
         # isolate one node from network
-        isolate_node(isolated)
+        self.isolate_node(self.isolated_idx)
         # send doublespend transaction to isolated node
         dblspnd_txid = isolated.sendrawtransaction(dblspnd_tx['hex'])
         assert dblspnd_txid in set(isolated.getrawmempool())
         # let isolated node rejoin the network
         # The previously isolated node should NOT relay the doublespending TX
-        reconnect_isolated_node(isolated, 0)
+        self.reconnect_isolated_node(self.isolated_idx, 0)
         for node in connected_nodes:
             assert_raises_rpc_error(-5, "No such mempool or blockchain transaction", node.getrawtransaction, dblspnd_txid)
         # Instantsend to receiver. The previously isolated node won't accept the tx but it should

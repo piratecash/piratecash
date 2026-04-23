@@ -7,13 +7,12 @@
 #define BITCOIN_MINER_H
 
 #include <threadinterrupt.h>
-#include <wallet/wallet.h>
-#include <optional.h>
 #include <primitives/block.h>
 #include <txmempool.h>
 #include <validation.h>
 
 #include <memory>
+#include <optional>
 #include <stdint.h>
 
 #include <boost/multi_index_container.hpp>
@@ -22,9 +21,18 @@
 class CBlockIndex;
 class CChainParams;
 class CConnman;
+class CEvoDB;
+class CGovernanceManager;
 class CScript;
+class CSporkManager;
+class CWallet;
 
 namespace Consensus { struct Params; };
+namespace llmq {
+class CChainLocksHandler;
+class CInstantSendManager;
+class CQuorumBlockProcessor;
+} // namespace llmq
 
 static const bool DEFAULT_PRINTPRIORITY = false;
 
@@ -133,8 +141,6 @@ class BlockAssembler
 private:
     // The constructed block template
     std::unique_ptr<CBlockTemplate> pblocktemplate;
-    // A convenience pointer that always refers to the CBlock in pblocktemplate
-    std::shared_ptr<CBlock> pblock;
 
     // Configuration parameters for the block size
     unsigned int nBlockMaxSize;
@@ -151,6 +157,13 @@ private:
     int nHeight;
     int64_t nLockTimeCutoff;
     const CChainParams& chainparams;
+    const CTxMemPool& m_mempool;
+    const CSporkManager& spork_manager;
+    CGovernanceManager& governance_manager;
+    const llmq::CQuorumBlockProcessor& quorum_block_processor;
+    llmq::CChainLocksHandler& m_clhandler;
+    llmq::CInstantSendManager& m_isman;
+    CEvoDB& m_evoDb;
 
 public:
     struct Options {
@@ -159,14 +172,18 @@ public:
         CFeeRate blockMinFeeRate;
     };
 
-    explicit BlockAssembler(const CChainParams& params);
-    BlockAssembler(const CChainParams& params, const Options& options);
+    explicit BlockAssembler(const CSporkManager& sporkManager, CGovernanceManager& governanceManager,
+                            const llmq::CQuorumBlockProcessor& quorumBlockProcessor, llmq::CChainLocksHandler& clhandler,
+                            llmq::CInstantSendManager& isman, CEvoDB& evoDb, const CTxMemPool& mempool, const CChainParams& params);
+    explicit BlockAssembler(const CSporkManager& sporkManager, CGovernanceManager& governanceManager,
+                            const llmq::CQuorumBlockProcessor& quorumBlockProcessor, llmq::CChainLocksHandler& clhandler,
+                            llmq::CInstantSendManager& isman, CEvoDB& evoDb, const CTxMemPool& mempool, const CChainParams& params, const Options& options);
 
     /** Construct a new block template with coinbase to scriptPubKeyIn */
     std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, std::shared_ptr<CWallet> pwallet, int64_t block_time=0, bool isPos = false);
 
-    static Optional<int64_t> m_last_block_num_txs;
-    static Optional<int64_t> m_last_block_size;
+    inline static std::optional<int64_t> m_last_block_num_txs{};
+    inline static std::optional<int64_t> m_last_block_size{};
 
 private:
     // utility functions
@@ -179,7 +196,7 @@ private:
     /** Add transactions based on feerate including unconfirmed ancestors
       * Increments nPackagesSelected / nDescendantsUpdated with corresponding
       * statistics from the package selection (for logging statistics). */
-    void addPackageTxs(int &nPackagesSelected, int &nDescendantsUpdated) EXCLUSIVE_LOCKS_REQUIRED(mempool.cs);
+    void addPackageTxs(int& nPackagesSelected, int& nDescendantsUpdated) EXCLUSIVE_LOCKS_REQUIRED(m_mempool.cs);
 
     // helper functions for addPackageTxs()
     /** Remove confirmed (inBlock) entries from given set */
@@ -193,19 +210,19 @@ private:
     bool TestPackageTransactions(const CTxMemPool::setEntries& package);
     /** Return true if given transaction from mapTx has already been evaluated,
       * or if the transaction's cached data in mapTx is incorrect. */
-    bool SkipMapTxEntry(CTxMemPool::txiter it, indexed_modified_transaction_set &mapModifiedTx, CTxMemPool::setEntries &failedTx) EXCLUSIVE_LOCKS_REQUIRED(mempool.cs);
+    bool SkipMapTxEntry(CTxMemPool::txiter it, indexed_modified_transaction_set& mapModifiedTx, CTxMemPool::setEntries& failedTx) EXCLUSIVE_LOCKS_REQUIRED(m_mempool.cs);
     /** Sort the package in an order that is valid to appear in a block */
     void SortForBlock(const CTxMemPool::setEntries& package, std::vector<CTxMemPool::txiter>& sortedEntries);
     /** Add descendants of given transactions to mapModifiedTx with ancestor
       * state updated assuming given transactions are inBlock. Returns number
       * of updated descendants. */
-    int UpdatePackagesForAdded(const CTxMemPool::setEntries& alreadyAdded, indexed_modified_transaction_set &mapModifiedTx) EXCLUSIVE_LOCKS_REQUIRED(mempool.cs);
+    int UpdatePackagesForAdded(const CTxMemPool::setEntries& alreadyAdded, indexed_modified_transaction_set& mapModifiedTx) EXCLUSIVE_LOCKS_REQUIRED(m_mempool.cs);
 };
 
 /** Modify the extranonce in a block */
 void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned int& nExtraNonce);
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev);
-void PoSMiner(std::shared_ptr<CWallet> pwallet, CThreadInterrupt &interrupt);
+void PoSMiner(std::shared_ptr<CWallet> pwallet, CConnman& connman, CEvoDB& evo_db, CTxMemPool& mempool, CThreadInterrupt& interrupt);
 bool IsStakingActive();
 std::string getMiningStatus();
 void SetThreadPriority(int nPriority);

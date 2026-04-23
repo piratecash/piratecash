@@ -8,7 +8,6 @@
 #include <qt/guiutil.h>
 #include <qt/walletmodel.h>
 
-#include <interfaces/node.h>
 #include <key_io.h>
 
 #include <algorithm>
@@ -259,7 +258,7 @@ bool AddressTableModel::setData(const QModelIndex &index, const QVariant &value,
         } else if(index.column() == Address) {
             CTxDestination newAddress = DecodeDestination(value.toString().toStdString());
             // Refuse to set invalid address, set error status and return false
-            if(boost::get<CNoDestination>(&newAddress))
+            if(std::get_if<CNoDestination>(&newAddress))
             {
                 editStatus = INVALID_ADDRESS;
                 return false;
@@ -365,12 +364,14 @@ QString AddressTableModel::addRow(const QString &type, const QString &label, con
                 return QString();
             }
         }
+        // Add entry
+        walletModel->wallet().setAddressBook(DecodeDestination(strAddress), strLabel, "send");
     }
     else if(type == Receive)
     {
         // Generate a new address to associate with given label
-        CPubKey newKey;
-        if(!walletModel->wallet().getKeyFromPool(false /* internal */, newKey))
+        CTxDestination dest;
+        if(!walletModel->wallet().getNewDestination(strLabel, dest))
         {
             WalletModel::UnlockContext ctx(walletModel->requestUnlock());
             if(!ctx.isValid())
@@ -379,22 +380,18 @@ QString AddressTableModel::addRow(const QString &type, const QString &label, con
                 editStatus = WALLET_UNLOCK_FAILURE;
                 return QString();
             }
-            if(!walletModel->wallet().getKeyFromPool(false /* internal */, newKey))
+            if(!walletModel->wallet().getNewDestination(strLabel, dest))
             {
                 editStatus = KEY_GENERATION_FAILURE;
                 return QString();
             }
         }
-        strAddress = EncodeDestination(newKey.GetID());
+        strAddress = EncodeDestination(dest);
     }
     else
     {
         return QString();
     }
-
-    // Add entry
-    walletModel->wallet().setAddressBook(DecodeDestination(strAddress), strLabel,
-                           (type == Send ? "send" : "receive"));
     return QString::fromStdString(strAddress);
 }
 

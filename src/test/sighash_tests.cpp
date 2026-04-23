@@ -14,8 +14,6 @@
 #include <util/strencodings.h>
 #include <version.h>
 
-#include <iostream>
-
 #include <boost/test/unit_test.hpp>
 
 #include <univalue.h>
@@ -25,10 +23,9 @@ extern UniValue read_json(const std::string& jsondata);
 // Old script.cpp SignatureHash function
 uint256 static SignatureHashOld(CScript scriptCode, const CTransaction& txTo, unsigned int nIn, int nHashType)
 {
-    static const uint256 one(uint256S("0000000000000000000000000000000000000000000000000000000000000001"));
     if (nIn >= txTo.vin.size())
     {
-        return one;
+        return uint256::ONE;
     }
     CMutableTransaction txTmp(txTo);
 
@@ -58,7 +55,7 @@ uint256 static SignatureHashOld(CScript scriptCode, const CTransaction& txTo, un
         unsigned int nOut = nIn;
         if (nOut >= txTmp.vout.size())
         {
-            return one;
+            return uint256::ONE;
         }
         txTmp.vout.resize(nOut+1);
         for (unsigned int i = 0; i < nOut; i++)
@@ -88,7 +85,7 @@ void static RandomScript(CScript &script) {
     script = CScript();
     int ops = (InsecureRandRange(10));
     for (int i=0; i<ops; i++)
-        script << oplist[InsecureRandRange(sizeof(oplist)/sizeof(oplist[0]))];
+        script << oplist[InsecureRandRange(std::size(oplist))];
 }
 
 void static RandomTransaction(CMutableTransaction &tx, bool fSingle) {
@@ -121,11 +118,9 @@ BOOST_AUTO_TEST_CASE(sighash_test)
     #if defined(PRINT_SIGHASH_JSON)
     std::cout << "[\n";
     std::cout << "\t[\"raw_transaction, script, input_index, hashType, signature_hash (result)\"],\n";
-    #endif
+    int nRandomTests = 500;
+    #else
     int nRandomTests = 50000;
-
-    #if defined(PRINT_SIGHASH_JSON)
-    nRandomTests = 500;
     #endif
     for (int i=0; i<nRandomTests; i++) {
         int nHashType = InsecureRand32();

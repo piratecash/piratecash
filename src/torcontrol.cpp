@@ -9,6 +9,7 @@
 #include <netbase.h>
 #include <net.h>
 #include <util/system.h>
+#include <util/time.h>
 #include <crypto/hmac_sha256.h>
 
 #include <vector>
@@ -17,9 +18,6 @@
 #include <stdlib.h>
 
 #include <boost/signals2/signal.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/replace.hpp>
 
 #include <event2/bufferevent.h>
 #include <event2/buffer.h>
@@ -146,7 +144,7 @@ void TorControlConnection::readcb(struct bufferevent *bev, void *ctx)
         if (s.size() < 4) // Short line
             continue;
         // <status>(-|+| )<data><CRLF>
-        self->message.code = atoi(s.substr(0,3));
+        self->message.code = LocaleIndependentAtoi<int>(s.substr(0,3));
         self->message.lines.push_back(s.substr(4));
         char ch = s[3]; // '-','+' or ' '
         if (ch == ' ') {
@@ -501,7 +499,7 @@ void TorController::add_onion_cb(TorControlConnection& _conn, const TorControlRe
             }
             return;
         }
-        service = LookupNumeric(std::string(service_id+".onion").c_str(), Params().GetDefaultPort());
+        service = LookupNumeric(std::string(service_id+".onion"), Params().GetDefaultPort());
         LogPrintf("tor: Got service ID %s, advertising service %s\n", service_id, service.ToString());
         if (WriteBinaryFile(GetPrivateKeyFile(), private_key)) {
             LogPrint(BCLog::TOR, "tor: Cached service private key to %s\n", GetPrivateKeyFile().string());
@@ -621,8 +619,10 @@ void TorController::protocolinfo_cb(TorControlConnection& _conn, const TorContro
             if (l.first == "AUTH") {
                 std::map<std::string,std::string> m = ParseTorReplyMapping(l.second);
                 std::map<std::string,std::string>::iterator i;
-                if ((i = m.find("METHODS")) != m.end())
-                    boost::split(methods, i->second, boost::is_any_of(","));
+                if ((i = m.find("METHODS")) != m.end()) {
+                    std::vector<std::string> m_vec = SplitString(i->second, ',');
+                    methods = std::set<std::string>(m_vec.begin(), m_vec.end());
+                }
                 if ((i = m.find("COOKIEFILE")) != m.end())
                     cookiefile = i->second;
             } else if (l.first == "VERSION") {
@@ -645,7 +645,7 @@ void TorController::protocolinfo_cb(TorControlConnection& _conn, const TorContro
         if (!torpassword.empty()) {
             if (methods.count("HASHEDPASSWORD")) {
                 LogPrint(BCLog::TOR, "tor: Using HASHEDPASSWORD authentication\n");
-                boost::replace_all(torpassword, "\"", "\\\"");
+                ReplaceAll(torpassword, "\"", "\\\"");
                 _conn.Command("AUTHENTICATE \"" + torpassword + "\"", std::bind(&TorController::auth_cb, this, std::placeholders::_1, std::placeholders::_2));
             } else {
                 LogPrintf("tor: Password provided with -torpassword, but HASHEDPASSWORD authentication is not available\n");

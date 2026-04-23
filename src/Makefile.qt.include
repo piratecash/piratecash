@@ -7,28 +7,7 @@ bin_PROGRAMS += qt/piratecash-qt
 EXTRA_LIBRARIES += qt/libpiratecashqt.a
 
 # piratecash qt core #
-QT_TS = \
-  qt/locale/piratecash_ar.ts \
-  qt/locale/piratecash_bg.ts \
-  qt/locale/piratecash_de.ts \
-  qt/locale/piratecash_en.ts \
-  qt/locale/piratecash_es.ts \
-  qt/locale/piratecash_fi.ts \
-  qt/locale/piratecash_fr.ts \
-  qt/locale/piratecash_it.ts \
-  qt/locale/piratecash_ja.ts \
-  qt/locale/piratecash_ko.ts \
-  qt/locale/piratecash_nl.ts \
-  qt/locale/piratecash_pl.ts \
-  qt/locale/piratecash_pt.ts \
-  qt/locale/piratecash_ro.ts \
-  qt/locale/piratecash_ru.ts \
-  qt/locale/piratecash_sk.ts \
-  qt/locale/piratecash_th.ts \
-  qt/locale/piratecash_tr.ts \
-  qt/locale/piratecash_vi.ts \
-  qt/locale/piratecash_zh_CN.ts \
-  qt/locale/piratecash_zh_TW.ts
+include Makefile.qt_locale.include
 
 QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
@@ -339,7 +318,6 @@ RES_IMAGES = \
   qt/res/images/radio_checked_disabled_light.png \
   qt/res/images/splash.png
 
-
 RES_CSS = \
   qt/res/css/dark.css \
   qt/res/css/general.css \
@@ -410,11 +388,11 @@ endif
 if ENABLE_ZMQ
 qt_piratecash_qt_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
 endif
-qt_piratecash_qt_LDADD += $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CONSENSUS) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) \
-  $(BACKTRACE_LIB) $(BOOST_LIBS) $(QT_LIBS) $(QT_DBUS_LIBS) $(QR_LIBS) $(BDB_LIBS) $(MINIUPNPC_LIBS) $(NATPMP_LIBS) $(LIBSECP256K1) \
-  $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(BLS_LIBS) $(GMP_LIBS)
+qt_piratecash_qt_LDADD += $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CONSENSUS) $(LIBBITCOIN_CRYPTO) $(LIBDASHBLS) $(LIBUNIVALUE) $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) \
+  $(BACKTRACE_LIB) $(BOOST_LIBS) $(QT_LIBS) $(QT_DBUS_LIBS) $(QR_LIBS) $(BDB_LIBS) $(MINIUPNPC_LIBS) $(NATPMP_LIBS) $(SQLITE_LIBS) $(LIBSECP256K1) \
+  $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(GMP_LIBS)
 qt_piratecash_qt_LDADD += $(CRYPTO_LIBS)
-qt_piratecash_qt_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+qt_piratecash_qt_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(PTHREAD_FLAGS)
 qt_piratecash_qt_LIBTOOLFLAGS = $(AM_LIBTOOLFLAGS) --tag CXX
 
 #locale/foo.ts -> locale/foo.qm
@@ -422,7 +400,7 @@ QT_QM=$(QT_TS:.ts=.qm)
 
 SECONDARY: $(QT_QM)
 
-$(srcdir)/qt/dashstrings.cpp: $(libpiratecash_server_a_SOURCES) $(libpiratecash_wallet_a_SOURCES) $(libpiratecash_common_a_SOURCES) $(libpiratecash_zmq_a_SOURCES) $(libpiratecash_consensus_a_SOURCES) $(libpiratecash_util_a_SOURCES)
+$(srcdir)/qt/dashstrings.cpp: FORCE
 	@test -n $(XGETTEXT) || echo "xgettext is required for updating translations"
 	$(AM_V_GEN) cd $(srcdir); XGETTEXT=$(XGETTEXT) COPYRIGHT_HOLDERS="$(COPYRIGHT_HOLDERS)" $(PYTHON) ../share/qt/extract_strings_qt.py $(libpiratecash_server_a_SOURCES) $(libpiratecash_wallet_a_SOURCES) $(libpiratecash_common_a_SOURCES) $(libpiratecash_zmq_a_SOURCES) $(libpiratecash_consensus_a_SOURCES) $(libpiratecash_util_a_SOURCES)
 

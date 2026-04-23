@@ -1,16 +1,20 @@
-// Copyright (c) 2014-2022 The Dash Core developers
+// Copyright (c) 2014-2023 The Dash Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <evo/dmn_types.h>
 #include <governance/vote.h>
 
 #include <bls/bls.h>
 #include <chainparams.h>
 #include <key.h>
+#include <llmq/utils.h>
 #include <masternode/sync.h>
 #include <messagesigner.h>
 #include <net.h>
+#include <util/string.h>
 #include <util/system.h>
+#include <validation.h>
 
 #include <evo/deterministicmns.h>
 
@@ -107,18 +111,22 @@ CGovernanceVote::CGovernanceVote(const COutPoint& outpointMasternodeIn, const ui
 
 std::string CGovernanceVote::ToString() const
 {
+    auto mnList = deterministicMNManager->GetListAtChainTip();
+    auto dmn = mnList.GetMNByCollateral(masternodeOutpoint);
+    int voteWeight = dmn != nullptr ? GetMnType(dmn->nType).voting_weight : 0;
     std::ostringstream ostr;
     ostr << masternodeOutpoint.ToStringShort() << ":"
          << nTime << ":"
          << CGovernanceVoting::ConvertOutcomeToString(GetOutcome()) << ":"
-         << CGovernanceVoting::ConvertSignalToString(GetSignal());
+         << CGovernanceVoting::ConvertSignalToString(GetSignal()) << ":"
+         << voteWeight;
     return ostr.str();
 }
 
 void CGovernanceVote::Relay(CConnman& connman) const
 {
     // Do not relay until fully synced
-    if (!masternodeSync.IsSynced()) {
+    if (!::masternodeSync->IsSynced()) {
         LogPrint(BCLog::GOBJECT, "CGovernanceVote::Relay -- won't relay until fully synced\n");
         return;
     }
@@ -175,7 +183,7 @@ bool CGovernanceVote::Sign(const CKey& key, const CKeyID& keyID)
         }
     } else {
         std::string strMessage = masternodeOutpoint.ToStringShort() + "|" + nParentHash.ToString() + "|" +
-                                 std::to_string(nVoteSignal) + "|" + std::to_string(nVoteOutcome) + "|" + std::to_string(nTime);
+                                 ::ToString(nVoteSignal) + "|" + ::ToString(nVoteOutcome) + "|" + ::ToString(nTime);
 
         if (!CMessageSigner::SignMessage(strMessage, vchSig, key)) {
             LogPrintf("CGovernanceVote::Sign -- SignMessage() failed\n");
@@ -203,9 +211,9 @@ bool CGovernanceVote::CheckSignature(const CKeyID& keyID) const
         }
     } else {
         std::string strMessage = masternodeOutpoint.ToStringShort() + "|" + nParentHash.ToString() + "|" +
-                                 std::to_string(nVoteSignal) + "|" +
-                                 std::to_string(nVoteOutcome) + "|" +
-                                 std::to_string(nTime);
+                                 ::ToString(nVoteSignal) + "|" +
+                                 ::ToString(nVoteOutcome) + "|" +
+                                 ::ToString(nTime);
 
         if (!CMessageSigner::VerifyMessage(keyID, vchSig, strMessage, strError)) {
             LogPrint(BCLog::GOBJECT, "CGovernanceVote::IsValid -- VerifyMessage() failed, error: %s\n", strError);
@@ -228,7 +236,11 @@ bool CGovernanceVote::Sign(const CBLSSecretKey& key)
 
 bool CGovernanceVote::CheckSignature(const CBLSPublicKey& pubKey) const
 {
-    if (!CBLSSignature(vchSig).VerifyInsecure(pubKey, GetSignatureHash())) {
+    CBLSSignature sig;
+    const auto pindex = llmq::utils::V19ActivationIndex(::ChainActive().Tip());
+    bool is_bls_legacy_scheme = pindex == nullptr || nTime < pindex->pprev->nTime;
+    sig.SetByteVector(vchSig, is_bls_legacy_scheme);
+    if (!sig.VerifyInsecure(pubKey, GetSignatureHash(), is_bls_legacy_scheme)) {
         LogPrintf("CGovernanceVote::CheckSignature -- VerifyInsecure() failed\n");
         return false;
     }

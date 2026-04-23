@@ -348,7 +348,7 @@
         <translation>&amp;Recevoir</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
         <translation>Demande de paiements (génère des QR-codes et des URIs PirateCash)</translation>
     </message>
     <message>
@@ -540,7 +540,7 @@
         <translation>Ouvrir une &amp;URI...</translation>
     </message>
     <message>
-        <source>Open a dash: URI or payment request</source>
+        <source>Open a piratecash: URI or payment request</source>
         <translation>Ouvrir une URI ou demande de paiement PirateCash</translation>
     </message>
     <message>
@@ -1839,7 +1839,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Erreur de demande de paiement</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
+        <source>Cannot start piratecash: click-to-pay handler</source>
         <translation>Impossible de démarrer le gestionnaire PirateCash click-to-pay</translation>
     </message>
     <message>
@@ -1847,8 +1847,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Gestion des URI</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash://' n'est pas un URI valide. Utilisez 'dash:' à la place.</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>'piratecash://' n'est pas un URI valide. Utilisez 'piratecash:' à la place.</translation>
     </message>
     <message>
         <source>Payment request fetch URL is invalid: %1</source>
@@ -2868,7 +2868,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Si les frais personnalisés sont à 1000 corsars et que la transaction fait seulement 250 octets, alors "par kilooctet" coûtera seulement 250 corsars de frais,&lt;br /&gt;alors que "au moins" coûtera 1000 corsars. Pour les transactions de plus d'un kilooctet, les deux coûts seront calculés au kilooctet.</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>Payer les frais minimaux fonctionne tant que le volume des transactions est inférieur à l'espace libre dans les blocs.&lt;br/&gt;Gardez à l'esprit que cette option peut entraîner des transactions qui ne seront jamais confirmées si la demande excède la capacité du réseau.</translation>
     </message>
     <message>
@@ -3159,7 +3159,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Message :</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
         <translation>Un message joint à l'URI PirateCash qui sera sauvegardé avec la transaction pour référence. Note : ce message ne sera pas envoyé à travers le réseau PirateCash.</translation>
     </message>
     <message>

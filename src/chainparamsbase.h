@@ -8,6 +8,8 @@
 #include <memory>
 #include <string>
 
+class ArgsManager;
+
 /**
  * CBaseChainParams defines the base parameters (shared between piratecash-cli and piratecashd)
  * of a given instance of the PirateCash system.
@@ -15,20 +17,22 @@
 class CBaseChainParams
 {
 public:
-    /** BIP70 chain name strings (main, test or regtest) */
+    ///@{
+    /** Chain name strings */
     static const std::string MAIN;
     static const std::string TESTNET;
     static const std::string DEVNET;
     static const std::string REGTEST;
+    ///@}
 
     const std::string& DataDir() const { return strDataDir; }
-    int RPCPort() const { return nRPCPort; }
+    uint16_t RPCPort() const { return nRPCPort; }
 
     CBaseChainParams() = delete;
     CBaseChainParams(const std::string& data_dir, int rpc_port) : nRPCPort(rpc_port), strDataDir(data_dir) {}
 
 private:
-    int nRPCPort;
+    uint16_t nRPCPort;
     std::string strDataDir;
 };
 
@@ -42,7 +46,7 @@ std::unique_ptr<CBaseChainParams> CreateBaseChainParams(const std::string& chain
 /**
  *Set the arguments for chainparams
  */
-void SetupChainParamsBaseOptions();
+void SetupChainParamsBaseOptions(ArgsManager& argsman);
 
 /**
  * Return the currently selected parameters. This won't change after app

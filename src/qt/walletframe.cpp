@@ -2,6 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <qt/createwalletdialog.h>
+#include <qt/walletcontroller.h>
 #include <qt/walletframe.h>
 #include <qt/walletmodel.h>
 
@@ -11,10 +13,11 @@
 #include <qt/walletview.h>
 
 #include <cassert>
-#include <cstdio>
 
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 WalletFrame::WalletFrame(BitcoinGUI* _gui) :
     QFrame(_gui),
@@ -27,9 +30,25 @@ WalletFrame::WalletFrame(BitcoinGUI* _gui) :
     walletFrameLayout->setContentsMargins(0,0,0,0);
     walletFrameLayout->addWidget(walletStack);
 
-    QLabel *noWallet = new QLabel(tr("No wallet has been loaded."));
+    // hbox for no wallet
+    no_wallet_group = new QGroupBox(walletStack);
+    QVBoxLayout* no_wallet_layout = new QVBoxLayout(no_wallet_group);
+
+    QLabel *noWallet = new QLabel(tr("No wallet has been loaded.\nGo to File > Open Wallet to load a wallet.\n- OR -"));
     noWallet->setAlignment(Qt::AlignCenter);
-    walletStack->addWidget(noWallet);
+    no_wallet_layout->addWidget(noWallet, 0, Qt::AlignHCenter | Qt::AlignBottom);
+
+    // A button for create wallet dialog
+    QPushButton* create_wallet_button = new QPushButton(tr("Create a new wallet"), walletStack);
+    connect(create_wallet_button, &QPushButton::clicked, [this] {
+        auto activity = new CreateWalletActivity(gui->getWalletController(), this);
+        connect(activity, &CreateWalletActivity::finished, activity, &QObject::deleteLater);
+        activity->create();
+    });
+    no_wallet_layout->addWidget(create_wallet_button, 0, Qt::AlignHCenter | Qt::AlignTop);
+    no_wallet_group->setLayout(no_wallet_layout);
+
+    walletStack->addWidget(no_wallet_group);
 
     masternodeListPage = new MasternodeList();
     walletStack->addWidget(masternodeListPage);
@@ -61,7 +80,6 @@ bool WalletFrame::addWallet(WalletModel *walletModel)
     if (mapWalletViews.count(walletModel) > 0) return false;
 
     WalletView* walletView = new WalletView(this);
-    walletView->setBitcoinGUI(gui);
     walletView->setClientModel(clientModel);
     walletView->setWalletModel(walletModel);
     walletView->showOutOfSyncWarning(bOutOfSync);
@@ -77,6 +95,14 @@ bool WalletFrame::addWallet(WalletModel *walletModel)
     mapWalletViews[walletModel] = walletView;
 
     connect(walletView, &WalletView::outOfSyncWarningClicked, this, &WalletFrame::outOfSyncWarningClicked);
+    connect(walletView, &WalletView::transactionClicked, gui, &BitcoinGUI::gotoHistoryPage);
+    connect(walletView, &WalletView::coinsSent, gui, &BitcoinGUI::gotoHistoryPage);
+    connect(walletView, &WalletView::message, [this](const QString& title, const QString& message, unsigned int style) {
+        gui->message(title, message, style);
+    });
+    connect(walletView, &WalletView::encryptionStatusChanged, gui, &BitcoinGUI::updateWalletStatus);
+    connect(walletView, &WalletView::incomingTransaction, gui, &BitcoinGUI::incomingTransaction);
+    connect(walletView, &WalletView::hdEnabledStatusChanged, gui, &BitcoinGUI::updateWalletStatus);
 
     return true;
 }
@@ -145,6 +171,12 @@ void WalletFrame::gotoGovernancePage()
 void WalletFrame::gotoOverviewPage()
 {
     QMap<WalletModel*, WalletView*>::const_iterator i;
+
+    if (mapWalletViews.empty()) {
+        walletStack->setCurrentWidget(no_wallet_group);
+        return;
+    }
+
     for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
         i.value()->gotoOverviewPage();
 }
@@ -233,19 +265,19 @@ void WalletFrame::unlockWallet()
         walletView->unlockWallet();
 }
 
+void WalletFrame::unlockWalletForMixingOnly()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->unlockWallet(true);
+}
+
 void WalletFrame::lockWallet()
 {
     WalletView *walletView = currentWalletView();
     if (walletView)
         walletView->lockWallet();
 }
-
-void WalletFrame::unlockWalletForMixingOnly()
- {
-     WalletView *walletView = currentWalletView();
-     if (walletView)
-         walletView->unlockWallet(true);
- }
 
 void WalletFrame::usedSendingAddresses()
 {

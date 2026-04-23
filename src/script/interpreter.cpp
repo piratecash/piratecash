@@ -82,7 +82,7 @@ bool static IsCompressedOrUncompressedPubKey(const valtype &vchPubKey) {
     return true;
 }
 
-bool static IsCompressedPubKey(const valtype &vchPubKey) {
+[[maybe_unused]] bool static IsCompressedPubKey(const valtype &vchPubKey) {
     if (vchPubKey.size() != CPubKey::COMPRESSED_SIZE) {
         //  Non-canonical public key: invalid length for compressed key
         return false;
@@ -1213,8 +1213,8 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                         valtype vchOut1, vchOut2;
                         vchOut1.insert(vchOut1.end(), vch.begin(), vch.begin() + nPosition);
                         vchOut2.insert(vchOut2.end(), vch.begin() + nPosition, vch.end());
-                        stack.emplace_back(move(vchOut1));
-                        stack.emplace_back(move(vchOut2));
+                        stack.emplace_back(std::move(vchOut1));
+                        stack.emplace_back(std::move(vchOut2));
                     }
                 }
                 break;
@@ -1446,10 +1446,6 @@ void PrecomputedTransactionData::Init(const T& txTo, std::vector<CTxOut>&& spent
 
     m_spent_outputs = std::move(spent_outputs);
 
-    hashPrevouts = SHA256Uint256(GetPrevoutsSHA256(txTo));
-    hashSequence = SHA256Uint256(GetSequencesSHA256(txTo));
-    hashOutputs = SHA256Uint256(GetOutputsSHA256(txTo));
-
     m_ready = true;
 }
 
@@ -1470,13 +1466,11 @@ uint256 SignatureHash(const CScript& scriptCode, const T& txTo, unsigned int nIn
 {
     assert(nIn < txTo.vin.size());
 
-    static const uint256 one(uint256S("0000000000000000000000000000000000000000000000000000000000000001"));
-
     // Check for invalid use of SIGHASH_SINGLE
     if ((nHashType & 0x1f) == SIGHASH_SINGLE) {
         if (nIn >= txTo.vout.size()) {
             //  nOut out of range
-            return one;
+            return uint256::ONE;
         }
     }
 

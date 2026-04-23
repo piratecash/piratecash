@@ -10,13 +10,14 @@
 
 #include <algorithm>
 #include <atomic>
+#include <cstdint>
+#include <cstring>
 #include <ios>
 #include <limits>
 #include <list>
 #include <map>
 #include <memory>
 #include <set>
-#include <stdint.h>
 #include <string>
 #include <string.h>
 #include <unordered_map>
@@ -127,27 +128,31 @@ template<typename Stream> inline uint64_t ser_readdata64(Stream &s)
 }
 inline uint64_t ser_double_to_uint64(double x)
 {
-    union { double x; uint64_t y; } tmp;
-    tmp.x = x;
-    return tmp.y;
+    uint64_t tmp;
+    std::memcpy(&tmp, &x, sizeof(x));
+    static_assert(sizeof(tmp) == sizeof(x), "double and uint64_t assumed to have the same size");
+    return tmp;
 }
 inline uint32_t ser_float_to_uint32(float x)
 {
-    union { float x; uint32_t y; } tmp;
-    tmp.x = x;
-    return tmp.y;
+    uint32_t tmp;
+    std::memcpy(&tmp, &x, sizeof(x));
+    static_assert(sizeof(tmp) == sizeof(x), "float and uint32_t assumed to have the same size");
+    return tmp;
 }
 inline double ser_uint64_to_double(uint64_t y)
 {
-    union { double x; uint64_t y; } tmp;
-    tmp.y = y;
-    return tmp.x;
+    double tmp;
+    std::memcpy(&tmp, &y, sizeof(y));
+    static_assert(sizeof(tmp) == sizeof(y), "double and uint64_t assumed to have the same size");
+    return tmp;
 }
 inline float ser_uint32_to_float(uint32_t y)
 {
-    union { float x; uint32_t y; } tmp;
-    tmp.y = y;
-    return tmp.x;
+    float tmp;
+    std::memcpy(&tmp, &y, sizeof(y));
+    static_assert(sizeof(tmp) == sizeof(y), "float and uint32_t assumed to have the same size");
+    return tmp;
 }
 
 
@@ -262,8 +267,7 @@ template<typename Stream> inline void Unserialize(Stream& s, Span<unsigned char>
 template<typename Stream> inline void Serialize(Stream& s, bool a)    { char f=a; ser_writedata8(s, f); }
 template<typename Stream> inline void Unserialize(Stream& s, bool& a) { char f=ser_readdata8(s); a=f; }
 
-template <typename T> size_t GetSerializeSize(const T& t, int nType, int nVersion = 0);
-template <typename S, typename T> size_t GetSerializeSize(const S& s, const T& t);
+template <typename T> size_t GetSerializeSize(const T& t, int nVersion = 0);
 
 
 
@@ -279,7 +283,7 @@ template <typename S, typename T> size_t GetSerializeSize(const S& s, const T& t
 inline unsigned int GetSizeOfCompactSize(uint64_t nSize)
 {
     if (nSize < 253)             return sizeof(unsigned char);
-    else if (nSize <= std::numeric_limits<unsigned short>::max()) return sizeof(unsigned char) + sizeof(unsigned short);
+    else if (nSize <= std::numeric_limits<uint16_t>::max()) return sizeof(unsigned char) + sizeof(uint16_t);
     else if (nSize <= std::numeric_limits<unsigned int>::max())  return sizeof(unsigned char) + sizeof(unsigned int);
     else                         return sizeof(unsigned char) + sizeof(uint64_t);
 }
@@ -293,7 +297,7 @@ void WriteCompactSize(Stream& os, uint64_t nSize)
     {
         ser_writedata8(os, nSize);
     }
-    else if (nSize <= std::numeric_limits<unsigned short>::max())
+    else if (nSize <= std::numeric_limits<uint16_t>::max())
     {
         ser_writedata8(os, 253);
         ser_writedata16(os, nSize);
@@ -557,8 +561,8 @@ void WriteAutoBitSet(Stream& s, const autobitset_t& item)
 
     assert(vec.size() == size);
 
-    size_t size1 = ::GetSerializeSize(s, CFixedBitSet(vec, size));
-    size_t size2 = ::GetSerializeSize(s, CFixedVarIntsBitSet(vec, size));
+    size_t size1 = ::GetSerializeSize(CFixedBitSet(vec, size), s.GetVersion());
+    size_t size2 = ::GetSerializeSize(CFixedVarIntsBitSet(vec, size), s.GetVersion());
 
     assert(size1 == GetSizeOfFixedBitSet(size));
 
@@ -1395,6 +1399,7 @@ protected:
     const int nType;
     const int nVersion;
 public:
+    explicit CSizeComputer(int nVersionIn) : nSize(0), nType(SER_NETWORK), nVersion(nVersionIn) {}
     CSizeComputer(int nTypeIn, int nVersionIn) : nSize(0), nType(nTypeIn), nVersion(nVersionIn) {}
 
     void write(const char *psz, size_t _nSize)
@@ -1493,21 +1498,21 @@ inline void WriteCompactSize(CSizeComputer &s, uint64_t nSize)
 }
 
 template <typename T>
+size_t GetSerializeSize(const T& t, int nVersion)
+{
+    return (CSizeComputer(nVersion) << t).size();
+}
+
+template <typename T>
 size_t GetSerializeSize(const T& t, int nType, int nVersion)
 {
     return (CSizeComputer(nType, nVersion) << t).size();
 }
 
-template <typename S, typename T>
-size_t GetSerializeSize(const S& s, const T& t)
+template <typename... T>
+size_t GetSerializeSizeMany(int nVersion, const T&... t)
 {
-    return (CSizeComputer(s.GetType(), s.GetVersion()) << t).size();
-}
-
-template <typename S, typename... T>
-size_t GetSerializeSizeMany(const S& s, const T&... t)
-{
-    CSizeComputer sc(s.GetType(), s.GetVersion());
+    CSizeComputer sc(nVersion);
     SerializeMany(sc, t...);
     return sc.size();
 }

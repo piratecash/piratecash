@@ -6,9 +6,11 @@
 #ifndef BITCOIN_SCRIPT_SIGN_H
 #define BITCOIN_SCRIPT_SIGN_H
 
+#include <coins.h>
 #include <hash.h>
 #include <pubkey.h>
 #include <script/interpreter.h>
+#include <script/keyorigin.h>
 #include <streams.h>
 
 class CKey;
@@ -16,73 +18,9 @@ class CKeyID;
 class CScript;
 class CScriptID;
 class CTransaction;
+class SigningProvider;
 
 struct CMutableTransaction;
-
-struct KeyOriginInfo
-{
-    unsigned char fingerprint[4]; //!< First 32 bits of the Hash160 of the public key at the root of the path
-    std::vector<uint32_t> path;
-
-    friend bool operator==(const KeyOriginInfo& a, const KeyOriginInfo& b)
-    {
-        return std::equal(std::begin(a.fingerprint), std::end(a.fingerprint), std::begin(b.fingerprint)) && a.path == b.path;
-    }
-
-    SERIALIZE_METHODS(KeyOriginInfo, obj)
-    {
-        READWRITE(obj.fingerprint, obj.path);
-    }
-
-    void clear()
-    {
-        memset(fingerprint, 0, 4);
-        path.clear();
-    }
-};
-
-/** An interface to be implemented by keystores that support signing. */
-class SigningProvider
-{
-public:
-    virtual ~SigningProvider() {}
-    virtual bool GetCScript(const CScriptID &scriptid, CScript& script) const { return false; }
-    virtual bool GetPubKey(const CKeyID &address, CPubKey& pubkey) const { return false; }
-    virtual bool GetKey(const CKeyID &address, CKey& key) const { return false; }
-    virtual bool GetKeyOrigin(const CKeyID& keyid, KeyOriginInfo& info) const { return false; }
-};
-
-extern const SigningProvider& DUMMY_SIGNING_PROVIDER;
-
-class HidingSigningProvider : public SigningProvider
-{
-private:
-    const bool m_hide_secret;
-    const bool m_hide_origin;
-    const SigningProvider* m_provider;
-
-public:
-    HidingSigningProvider(const SigningProvider* provider, bool hide_secret, bool hide_origin) : m_hide_secret(hide_secret), m_hide_origin(hide_origin), m_provider(provider) {}
-    bool GetCScript(const CScriptID& scriptid, CScript& script) const override;
-    bool GetPubKey(const CKeyID& keyid, CPubKey& pubkey) const override;
-    bool GetKey(const CKeyID& keyid, CKey& key) const override;
-    bool GetKeyOrigin(const CKeyID& keyid, KeyOriginInfo& info) const override;
-};
-
-struct FlatSigningProvider final : public SigningProvider
-{
-    std::map<CScriptID, CScript> scripts;
-    std::map<CKeyID, CPubKey> pubkeys;
-    std::map<CKeyID, std::pair<CPubKey, KeyOriginInfo>> origins;
-    std::map<CKeyID, CKey> keys;
-
-    bool GetCScript(const CScriptID& scriptid, CScript& script) const override;
-    bool GetPubKey(const CKeyID& keyid, CPubKey& pubkey) const override;
-    bool GetKeyOrigin(const CKeyID& keyid, KeyOriginInfo& info) const override;
-    bool GetKey(const CKeyID& keyid, CKey& key) const override;
-};
-
-FlatSigningProvider Merge(const FlatSigningProvider& a, const FlatSigningProvider& b);
 
 /** Interface for signature creators. */
 class BaseSignatureCreator {
@@ -138,7 +76,7 @@ struct SignatureData {
 template<typename Stream, typename... X>
 void SerializeToVector(Stream& s, const X&... args)
 {
-    WriteCompactSize(s, GetSerializeSizeMany(s, args...));
+    WriteCompactSize(s, GetSerializeSizeMany(s.GetVersion(), args...));
     SerializeMany(s, args...);
 }
 
@@ -223,5 +161,8 @@ void UpdateInput(CTxIn& input, const SignatureData& data);
  * provider is used to look up public keys and redeemscripts by hash.
  * Solvability is unrelated to whether we consider this output to be ours. */
 bool IsSolvable(const SigningProvider& provider, const CScript& script);
+
+/** Sign the CMutableTransaction */
+bool SignTransaction(CMutableTransaction& mtx, const SigningProvider* provider, const std::map<COutPoint, Coin>& coins, int sighash, std::map<int, std::string>& input_errors);
 
 #endif // BITCOIN_SCRIPT_SIGN_H

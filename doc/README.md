@@ -1,11 +1,11 @@
 PirateCash Core
 ==========
 
-This is the official reference wallet for PirateCash digital currency and comprises the backbone of the PirateCash peer-to-peer network. You can [download PirateCash Core](https://www.dash.org/downloads/) or [build it yourself](#building) using the guides below.
+This is the official reference wallet for PirateCash digital currency and comprises the backbone of the PirateCash peer-to-peer network. You can [download PirateCash Core](https://p.cash/en/download/) or [build it yourself](#building) using the guides below.
 
 Running
 ---------------------
-The following are some helpful notes on how to run Dash on your native platform.
+The following are some helpful notes on how to run PirateCash on your native platform.
 
 ### Unix
 
@@ -24,12 +24,9 @@ Drag PirateCash-Qt to your applications folder, and then run PirateCash-Qt.
 
 ### Need Help?
 
-* See the [Dash documentation](https://docs.dash.org)
+* See the [PirateCash documentation](https://p.cash/)
 for help and more information.
-* See the [Dash Developer Documentation](https://dash-docs.github.io/) 
-for technical specifications and implementation details.
-* Ask for help on [Dash Nation Discord](http://dashchat.org)
-* Ask for help on the [Dash Forum](https://dash.org/forum)
+* Ask for help on the [PirateCash Forum](https://p.cash/)
 
 Building
 ---------------------
@@ -60,8 +57,7 @@ The PirateCash Core repo's [root README](/README.md) contains relevant informati
 - [Benchmarking](benchmarking.md)
 
 ### Resources
-* Discuss on the [Dash Forum](https://dash.org/forum), in the Development & Technical Discussion board.
-* Discuss on [Dash Nation Discord](http://dashchat.org)
+* Discuss on the [PirateCash Forum](https://p.cash/), in the Development & Technical Discussion board.
 
 ### Miscellaneous
 - [Assets Attribution](assets-attribution.md)

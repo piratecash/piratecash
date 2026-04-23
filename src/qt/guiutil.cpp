@@ -15,15 +15,17 @@
 
 #include <base58.h>
 #include <chainparams.h>
-#include <primitives/transaction.h>
 #include <interfaces/node.h>
 #include <key_io.h>
 #include <policy/policy.h>
+#include <primitives/transaction.h>
 #include <protocol.h>
 #include <script/script.h>
 #include <script/standard.h>
 #include <ui_interface.h>
 #include <util/system.h>
+
+#include <cmath>
 
 #ifdef WIN32
 #ifdef _WIN32_IE
@@ -437,7 +439,6 @@ bool isDust(interfaces::Node& node, const QString& address, const CAmount& amoun
 QString HtmlEscape(const QString& str, bool fMultiLine)
 {
     QString escaped = str.toHtmlEscaped();
-    escaped = escaped.replace(" ", "&nbsp;");
     if(fMultiLine)
     {
         escaped = escaped.replace("\n", "<br>\n");
@@ -1302,7 +1303,7 @@ bool loadFonts()
     auto supportedWeights = [](FontFamily family) -> std::vector<QFont::Weight> {
         auto getTestWidth = [&](QFont::Weight weight) -> int {
             QFont font = getFont(family, weight, false, defaultFontSize);
-            return TextWidth(QFontMetrics(font), ("Check the width of this text to see if the weight change has an impact!"));
+            return QFontMetrics(font).width("Check the width of this text to see if the weight change has an impact!");
         };
         std::vector<QFont::Weight> vecWeights{QFont::Thin, QFont::ExtraLight, QFont::Light,
                                               QFont::Normal, QFont::Medium, QFont::DemiBold,
@@ -1456,7 +1457,7 @@ void updateFonts()
         std::vector<QString> vecIgnoreClasses{
             "QWidget", "QDialog", "QFrame", "QStackedWidget", "QDesktopWidget", "QDesktopScreenWidget",
             "QTipLabel", "QMessageBox", "QMenu", "QComboBoxPrivateScroller", "QComboBoxPrivateContainer",
-            "QScrollBar", "QListView", "BitcoinGUI", "WalletView", "WalletFrame"
+            "QScrollBar", "QListView", "BitcoinGUI", "WalletView", "WalletFrame", "QVBoxLayout", "QGroupBox"
         };
         std::vector<QString> vecIgnoreObjects{
             "messagesWidget"

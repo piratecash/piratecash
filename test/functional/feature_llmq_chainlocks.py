@@ -17,9 +17,9 @@ from test_framework.test_framework import DashTestFramework
 from test_framework.util import connect_nodes, force_finish_mnsync, isolate_node, reconnect_isolated_node
 
 
-class LLMQChainLocksTest(CosantaTestFramework):
+class LLMQChainLocksTest(DashTestFramework):
     def set_test_params(self):
-        self.set_cosanta_test_params(4, 3, fast_dip3_enforcement=True)
+        self.set_dash_test_params(4, 3, fast_dip3_enforcement=True)
 
     def run_test(self):
 
@@ -52,6 +52,20 @@ class LLMQChainLocksTest(CosantaTestFramework):
         for h in range(1, self.nodes[0].getblockcount()):
             block = self.nodes[0].getblock(self.nodes[0].getblockhash(h))
             assert block['chainlock']
+
+        # Update spork to SPORK_19_CHAINLOCKS_ENABLED and test its behaviour
+        self.nodes[0].sporkupdate("SPORK_19_CHAINLOCKS_ENABLED", 1)
+        self.wait_for_sporks_same()
+
+        # Generate new blocks and verify that they are not chainlocked
+        previous_block_hash = self.nodes[0].getbestblockhash()
+        for _ in range(2):
+            block_hash = self.nodes[0].generate(1)[0]
+            self.wait_for_chainlocked_block_all_nodes(block_hash, expected=False)
+            assert self.nodes[0].getblock(previous_block_hash)["chainlock"]
+
+        self.nodes[0].sporkupdate("SPORK_19_CHAINLOCKS_ENABLED", 0)
+        self.wait_for_sporks_same()
 
         self.log.info("Isolate node, mine on another, and reconnect")
         isolate_node(self.nodes[0])

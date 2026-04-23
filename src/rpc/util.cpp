@@ -4,20 +4,20 @@
 
 #include <chainparamsbase.h>
 #include <key_io.h>
-#include <keystore.h>
 #include <pubkey.h>
 #include <rpc/util.h>
+#include <script/descriptor.h>
+#include <script/signingprovider.h>
 #include <tinyformat.h>
 #include <util/system.h>
+#include <util/string.h>
 #include <util/strencodings.h>
 #include <util/translation.h>
 
 #include <tuple>
 
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/split.hpp>
+const std::string UNIX_EPOCH_TIME = "UNIX epoch time";
 
-InitInterfaces* g_rpc_interfaces = nullptr;
 
 void RPCTypeCheck(const UniValue& params,
                   const std::list<UniValueType>& typesExpected,
@@ -149,7 +149,7 @@ bool ParseBoolV(const UniValue& v, const std::string &strName)
     if (v.isBool())
         return v.get_bool();
     else if (v.isNum())
-        strBool = itostr(v.get_int());
+        strBool = ToString(v.get_int());
     else if (v.isStr())
         strBool = v.get_str();
 
@@ -172,7 +172,7 @@ std::string HelpExampleRpc(const std::string& methodname, const std::string& arg
 {
     return "> curl --user myusername --data-binary '{\"jsonrpc\": \"1.0\", \"id\":\"curltest\", "
         "\"method\": \"" + methodname + "\", \"params\": [" + args + "] }' -H 'content-type: text/plain;'"
-        " http://127.0.0.1:" + strprintf("%d", gArgs.GetArg("-rpcport", BaseParams().RPCPort())) + "/\n";
+        " http://127.0.0.1:9998/\n";
 }
 
 // Converts a hex string to a public key if possible
@@ -188,19 +188,19 @@ CPubKey HexToPubKey(const std::string& hex_in)
     return vchPubKey;
 }
 
-// Retrieves a public key for an address from the given CKeyStore
-CPubKey AddrToPubKey(CKeyStore* const keystore, const std::string& addr_in)
+// Retrieves a public key for an address from the given FillableSigningProvider
+CPubKey AddrToPubKey(const FillableSigningProvider& keystore, const std::string& addr_in)
 {
     CTxDestination dest = DecodeDestination(addr_in);
     if (!IsValidDestination(dest)) {
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid address: " + addr_in);
     }
-    const CKeyID *keyID = boost::get<CKeyID>(&dest);
-    if (!keyID) {
+    const PKHash *pkhash = std::get_if<PKHash>(&dest);
+    if (!pkhash) {
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("%s does not refer to a key", addr_in));
     }
     CPubKey vchPubKey;
-    if (!keystore->GetPubKey(*keyID, vchPubKey)) {
+    if (!keystore.GetPubKey(CKeyID(*pkhash), vchPubKey)) {
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("no full public key for address %s", addr_in));
     }
     if (!vchPubKey.IsFullyValid()) {
@@ -232,7 +232,7 @@ CScript CreateMultisigRedeemscript(const int required, const std::vector<CPubKey
     return result;
 }
 
-class DescribeAddressVisitor : public boost::static_visitor<UniValue>
+class DescribeAddressVisitor
 {
 public:
 
@@ -240,13 +240,13 @@ public:
 
     UniValue operator()(const CNoDestination &dest) const { return UniValue(UniValue::VOBJ); }
 
-    UniValue operator()(const CKeyID &keyID) const {
+    UniValue operator()(const PKHash &pkhash) const {
         UniValue obj(UniValue::VOBJ);
         obj.pushKV("isscript", false);
         return obj;
     }
 
-    UniValue operator()(const CScriptID &scriptID) const {
+    UniValue operator()(const ScriptHash &scriptID) const {
         UniValue obj(UniValue::VOBJ);
         obj.pushKV("isscript", true);
         return obj;
@@ -255,7 +255,7 @@ public:
 
 UniValue DescribeAddress(const CTxDestination& dest)
 {
-    return boost::apply_visitor(DescribeAddressVisitor(), dest);
+    return std::visit(DescribeAddressVisitor(), dest);
 }
 
 unsigned int ParseConfirmTarget(const UniValue& value, unsigned int max_target)
@@ -405,8 +405,7 @@ RPCHelpMan::RPCHelpMan(std::string name, std::string description, std::vector<RP
 {
     std::set<std::string> named_args;
     for (const auto& arg : m_args) {
-        std::vector<std::string> names;
-        boost::split(names, arg.m_names, boost::is_any_of("|"));
+        std::vector<std::string> names = SplitString(arg.m_names, '|');
         // Should have unique named arguments
         for (const std::string& name : names) {
             CHECK_NONFATAL(named_args.insert(name).second);
@@ -423,13 +422,9 @@ std::string RPCResults::ToDescriptionString() const
         } else {
             result += "\nResult (" + r.m_cond + "):\n";
         }
-        if (r.m_legacy) {
-            result += r.m_result;
-        } else {
-            Sections sections;
-            r.ToSections(sections);
-            result += sections.ToString();
-        }
+        Sections sections;
+        r.ToSections(sections);
+        result += sections.ToString();
     }
     return result;
 }
@@ -495,7 +490,7 @@ std::string RPCHelpMan::ToString() const
         if (i == 0) ret += "\nArguments:\n";
 
         // Push named argument name and description
-        sections.m_sections.emplace_back(std::to_string(i + 1) + ". " + arg.GetFirstName(), arg.ToDescriptionString());
+        sections.m_sections.emplace_back(::ToString(i + 1) + ". " + arg.GetFirstName(), arg.ToDescriptionString());
         sections.m_max_pad = std::max(sections.m_max_pad, sections.m_sections.back().m_left.size());
 
         // Recursively push nested args
@@ -525,10 +520,10 @@ std::string RPCArg::GetName() const
 
 bool RPCArg::IsOptional() const
 {
-    if (m_fallback.which() == 1) {
+    if (m_fallback.index() == 1) {
         return true;
     } else {
-        return RPCArg::Optional::NO != boost::get<RPCArg::Optional>(m_fallback);
+        return RPCArg::Optional::NO != std::get<RPCArg::Optional>(m_fallback);
     }
 }
 
@@ -572,10 +567,10 @@ std::string RPCArg::ToDescriptionString() const
         }
         } // no default case, so the compiler can warn about missing cases
     }
-    if (m_fallback.which() == 1) {
-        ret += ", optional, default=" + boost::get<std::string>(m_fallback);
+    if (m_fallback.index() == 1) {
+        ret += ", optional, default=" + std::get<std::string>(m_fallback);
     } else {
-        switch (boost::get<RPCArg::Optional>(m_fallback)) {
+        switch (std::get<RPCArg::Optional>(m_fallback)) {
         case RPCArg::Optional::OMITTED: {
             // nothing to do. Element is treated as if not present and has no default value
             break;
@@ -830,4 +825,42 @@ UniValue GetServicesNames(ServiceFlags services)
     }
 
     return servicesNames;
+}
+
+std::vector<CScript> EvalDescriptorStringOrObject(const UniValue& scanobject, FlatSigningProvider& provider)
+{
+    std::string desc_str;
+    std::pair<int64_t, int64_t> range = {0, 1000};
+    if (scanobject.isStr()) {
+        desc_str = scanobject.get_str();
+    } else if (scanobject.isObject()) {
+        UniValue desc_uni = find_value(scanobject, "desc");
+        if (desc_uni.isNull()) throw JSONRPCError(RPC_INVALID_PARAMETER, "Descriptor needs to be provided in scan object");
+        desc_str = desc_uni.get_str();
+        UniValue range_uni = find_value(scanobject, "range");
+        if (!range_uni.isNull()) {
+            range = ParseDescriptorRange(range_uni);
+        }
+    } else {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Scan object needs to be either a string or an object");
+    }
+
+    std::string error;
+    auto desc = Parse(desc_str, provider, error);
+    if (!desc) {
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, error);
+    }
+    if (!desc->IsRange()) {
+        range.first = 0;
+        range.second = 0;
+    }
+    std::vector<CScript> ret;
+    for (int i = range.first; i <= range.second; ++i) {
+        std::vector<CScript> scripts;
+        if (!desc->Expand(i, provider, scripts, provider)) {
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("Cannot derive script without private keys: '%s'", desc_str));
+        }
+        std::move(scripts.begin(), scripts.end(), std::back_inserter(ret));
+    }
+    return ret;
 }

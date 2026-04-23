@@ -1,12 +1,11 @@
-# Copyright (c) 2013-2016 The Bitcoin Core developers
+# Copyright (c) 2013-2020 The Bitcoin Core developers
 # Copyright (c) 2014-2018 The Dash Core developers
-# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 # Pattern rule to print variables, e.g. make print-top_srcdir
 print-%:
-	@echo '$*' = '$($*)'
+	@echo $* = $($*)
 
 ACLOCAL_AMFLAGS = -I build-aux/m4
 SUBDIRS = src
@@ -16,7 +15,6 @@ endif
 .PHONY: deploy FORCE
 .INTERMEDIATE: $(OSX_TEMP_ISO) $(COVERAGE_INFO)
 
-GZIP_ENV="-9n"
 export PYTHONPATH
 
 if BUILD_BITCOIN_LIBS
@@ -46,13 +44,16 @@ OSX_DEPLOY_SCRIPT=$(top_srcdir)/contrib/macdeploy/macdeployqtplus
 OSX_FANCY_PLIST=$(top_srcdir)/contrib/macdeploy/fancy.plist
 OSX_INSTALLER_ICONS=$(top_srcdir)/src/qt/res/icons/piratecash.icns
 OSX_PLIST=$(top_builddir)/share/qt/Info.plist #not installed
-OSX_QT_TRANSLATIONS = ar,bg,ca,cs,da,de,es,fa,fi,fr,gd,gl,he,hu,it,ja,ko,lt,lv,pl,pt,ru,sk,sl,sv,uk,zh_CN,zh_TW
+OSX_QT_TRANSLATIONS = ar,bg,ca,cs,da,de,es,fa,fi,fr,gd,gl,he,hu,it,ja,ko,lt,lv,pl,pt_BR,pt_PT,ru,sk,sl,sv,uk,zh_CN,zh_TW
 
 DIST_DOCS = $(wildcard doc/*.md) $(wildcard doc/release-notes/*.md)
-DIST_CONTRIB = $(top_srcdir)/contrib/cosanta-cli.bash-completion \
+DIST_CONTRIB = $(top_srcdir)/contrib/piratecash-cli.bash-completion \
 	       $(top_srcdir)/contrib/piratecash-tx.bash-completion \
 	       $(top_srcdir)/contrib/piratecashd.bash-completion \
-	       $(top_srcdir)/contrib/init
+	       $(top_srcdir)/contrib/init \
+	       $(top_srcdir)/contrib/debian/copyright \
+	       $(top_srcdir)/contrib/linearize/linearize-data.py \
+	       $(top_srcdir)/contrib/linearize/linearize-hashes.py
 DIST_SHARE = \
   $(top_srcdir)/share/genbuild.sh \
   $(top_srcdir)/share/rpcuser
@@ -102,7 +103,7 @@ $(OSX_APP)/Contents/PkgInfo:
 
 $(OSX_APP)/Contents/Resources/empty.lproj:
 	$(MKDIR_P) $(@D)
-	@touch $@ 
+	@touch $@
 
 $(OSX_APP)/Contents/Info.plist: $(OSX_PLIST)
 	$(MKDIR_P) $(@D)
@@ -150,7 +151,7 @@ $(APP_DIST_DIR)/Applications:
 $(APP_DIST_EXTRAS): $(APP_DIST_DIR)/$(OSX_APP)/Contents/MacOS/PirateCash-Qt
 
 $(OSX_TEMP_ISO): $(APP_DIST_EXTRAS)
-	$(XORRISOFS) -D -l -V "$(OSX_VOLNAME)" -no-pad -r -dir-mode 0755 -o $@ dist -- $(if $(SOURCE_DATE_EPOCH),-volume_date all_file_dates =$(SOURCE_DATE_EPOCH))
+	$(XORRISOFS) -D -l -V "$(OSX_VOLNAME)" -no-pad -r -dir-mode 0755 -o $@ dist
 
 $(OSX_DMG): $(OSX_TEMP_ISO)
 	$(DMG) dmg "$<" "$@"
@@ -191,7 +192,20 @@ $(BITCOIN_WALLET_BIN): FORCE
 	$(MAKE) -C src $(@F)
 
 if USE_LCOV
-LCOV_FILTER_PATTERN=-p "/usr/include/" -p "/usr/lib/" -p "src/leveldb/" -p "src/crc32c/" -p "src/bench/" -p "src/univalue" -p "src/crypto/ctaes" -p "src/secp256k1"
+LCOV_FILTER_PATTERN = \
+	-p "/usr/local/" \
+	-p "/usr/include/" \
+	-p "/usr/lib/" \
+	-p "/usr/lib64/" \
+	-p "src/dashbls/" \
+	-p "src/immer/" \
+	-p "src/leveldb/" \
+	-p "src/crc32c/" \
+	-p "src/bench/" \
+	-p "src/univalue" \
+	-p "src/crypto/ctaes" \
+	-p "src/secp256k1" \
+	-p "depends"
 
 baseline.info:
 	$(LCOV) -c -i -d $(abs_builddir)/src -o $@
@@ -238,7 +252,7 @@ endif
 
 dist_noinst_SCRIPTS = autogen.sh
 
-EXTRA_DIST = $(DIST_SHARE) $(DIST_CONTRIB) $(DIST_DOCS) $(WINDOWS_PACKAGING) $(OSX_PACKAGING) $(BIN_CHECKS)
+EXTRA_DIST = $(DIST_SHARE) $(DIST_CONTRIB) $(WINDOWS_PACKAGING) $(OSX_PACKAGING) $(BIN_CHECKS)
 
 EXTRA_DIST += \
     test/functional \
@@ -280,6 +294,8 @@ EXTRA_DIST += \
     test/util/data/txcreatescript1.json \
     test/util/data/txcreatescript2.hex \
     test/util/data/txcreatescript2.json \
+    test/util/data/txcreatescript5.hex \
+    test/util/data/txcreatescript6.hex \
     test/util/data/txcreatesignv1.hex \
     test/util/data/txcreatesignv1.json \
     test/util/data/txcreatesignv2.hex \
@@ -306,5 +322,13 @@ clean-docs:
 
 clean-local: clean-docs
 	rm -rf coverage_percent.txt test_piratecash.coverage/ total.coverage/ test/tmp/ cache/ $(OSX_APP)
-	rm -rf test/functional/__pycache__ test/functional/test_framework/__pycache__ test/cache share/rpcauth/__pycache__
+	rm -rf test/functional/__pycache__ test/functional/test_framework/__pycache__ test/cache share/rpcuser/__pycache__
 	rm -rf osx_volname dist/ dpi36.background.tiff dpi72.background.tiff
+
+test-security-check:
+if TARGET_DARWIN
+	$(AM_V_at) $(PYTHON) $(top_srcdir)/contrib/devtools/test-symbol-check.py TestSymbolChecks.test_MACHO
+endif
+if TARGET_LINUX
+	$(AM_V_at) $(PYTHON) $(top_srcdir)/contrib/devtools/test-symbol-check.py TestSymbolChecks.test_ELF
+endif

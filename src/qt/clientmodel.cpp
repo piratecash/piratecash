@@ -12,19 +12,13 @@
 
 #include <evo/deterministicmns.h>
 
-#include <chain.h>
-#include <chainparams.h>
 #include <clientversion.h>
 #include <governance/object.h>
 #include <interfaces/handler.h>
 #include <interfaces/node.h>
 #include <net.h>
 #include <netbase.h>
-#include <txmempool.h>
-#include <ui_interface.h>
 #include <util/system.h>
-#include <validation.h>
-#include <warnings.h>
 
 #include <stdint.h>
 
@@ -138,9 +132,9 @@ int64_t ClientModel::getHeaderTipTime() const
     return cachedBestHeaderTime;
 }
 
-std::vector<CGovernanceObject> ClientModel::getAllGovernanceObjects()
+void ClientModel::getAllGovernanceObjects(std::vector<CGovernanceObject> &obj)
 {
-    return m_node.gov().getAllNewerThan(0);
+    m_node.gov().getAllNewerThan(obj, 0);
 }
 
 void ClientModel::updateNumConnections(int numConnections)
@@ -172,7 +166,7 @@ enum BlockSource ClientModel::getBlockSource() const
 
 QString ClientModel::getStatusBarWarnings() const
 {
-    return QString::fromStdString(m_node.getWarnings("gui"));
+    return QString::fromStdString(m_node.getWarnings());
 }
 
 OptionsModel *ClientModel::getOptionsModel()

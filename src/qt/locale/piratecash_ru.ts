@@ -235,8 +235,8 @@
         <translation>Подтвердите шифрование кошелька</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COSA&lt;/b&gt;!</source>
-        <translation>Внимание: если Вы зашифруете кошелёк и потеряете пароль, вы &lt;b&gt;ПОТЕРЯЕТЕ ВСЕ ВАШИ COSA&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATE&lt;/b&gt;!</source>
+        <translation>Внимание: если Вы зашифруете кошелёк и потеряете пароль, вы &lt;b&gt;ПОТЕРЯЕТЕ ВСЕ ВАШИ PIRATE&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -348,8 +348,8 @@
         <translation>&amp;Получить</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and cosa: URIs)</source>
-        <translation>Запросить платежи (создать QR-коды и cosa: URI)</translation>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
+        <translation>Запросить платежи (создать QR-коды и piratecash: URI)</translation>
     </message>
     <message>
         <source>&amp;Transactions</source>
@@ -540,8 +540,8 @@
         <translation>Открыть &amp;URI...</translation>
     </message>
     <message>
-        <source>Open a cosa: URI or payment request</source>
-        <translation>Открыть cosa: URI или запрос платежа</translation>
+        <source>Open a piratecash: URI or payment request</source>
+        <translation>Открыть piratecash: URI или запрос платежа</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -1040,8 +1040,8 @@
         <translation>Информация о %1</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 COSA, 0.01 COSA, 0.1 COSA, 1 COSA and 10 COSA -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;Основы %1&lt;/h3&gt;%1 позволяет Вам получить настоящую финансовую конфиденциальность за счет скрытия источников Ваших средств. Все PirateCash в  Вашем кошельке состоят из различных "входов", Вы можете думать о них как об отдельных монетах.&lt;br&gt;%1 использует инновационный процесс для перемешивания Ваших входов со входами еще двоих или более человек, но при этом Ваши монеты никогда не покидают Ваш кошелек. Вы сохраняете контроль над Вашими деньгами на протяжении всего времени.&lt;hr&gt; &lt;b&gt;%1 работает так:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 начинается с разбиения Ваших входов транзакций на стандартные номиналы. Такими номиналами являются 0.001 COSA, 0.01 COSA, 0.1 COSA, 1 COSA и 10 COSA -- что-то вроде купюр, которыми вы пользуетесь каждый день.&lt;/li&gt; &lt;li&gt;Ваш кошелек затем отправляет запросы к особым образом настроенным сетевым узлам, называемым "мастернодами". Эти мастерноды знают только то, что Вы хотите перемешать определенные номиналы. Никакой идентифицирующей информации мастернодам не отправляется, так что они не знают "кто" Вы конкретно.&lt;/li&gt; &lt;li&gt;Сессия перемешивания начинается тогда, когда еще двое или более человек отправляют схожее сообщение, подтверждающее, что они хотят перемешать точно такой же номинал. Мастернода перемешивает входы и просит кошельки всех пользователей осуществить платежи по ним. Ваш кошелек осуществляет выплату самому себе, но на другой адрес (тоже из вашего кошелька).&lt;/li&gt; &lt;li&gt;Для скрытия Ваших средств кошелек должен повторить этот процесс несколько раз с каждым номиналом. Каждый раз, когда такой процесс завершается, называется "раундом". С каждым раундом %1 становится экспоненциально сложнее определить откуда поступили средства.&lt;/li&gt; &lt;li&gt;Процесс перемешивания выполняется в фоне, без участия пользователя. Когда Вы захотите провести транзакцию, средства уже будут перемешаны. Дополнительно ждать не требуется.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;ВАЖНО:&lt;/b&gt; Ваш кошелек содержит 1000 адресов. Каждое перемешивание использует до 9 из этих адресов. Это означает, что 1000 адресов хватит примерно на 100 перемешиваний. Когда 900 адресов будут уже использованы, Ваш кошелек должен создать новые адреса. Однако, он может сделать это, только если у Вас включены автоматические резервные копии.&lt;br&gt;Соответственно, пользователям с отключенным резервным копированием %1 не доступен. &lt;hr&gt;Дополнительная информация доступна в &lt;a style="%2" href="%3"&gt; документации %1&lt;/a&gt;.</translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE and 10 PIRATE -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;Основы %1&lt;/h3&gt;%1 позволяет Вам получить настоящую финансовую конфиденциальность за счет скрытия источников Ваших средств. Все PirateCash в  Вашем кошельке состоят из различных "входов", Вы можете думать о них как об отдельных монетах.&lt;br&gt;%1 использует инновационный процесс для перемешивания Ваших входов со входами еще двоих или более человек, но при этом Ваши монеты никогда не покидают Ваш кошелек. Вы сохраняете контроль над Вашими деньгами на протяжении всего времени.&lt;hr&gt; &lt;b&gt;%1 работает так:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 начинается с разбиения Ваших входов транзакций на стандартные номиналы. Такими номиналами являются 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE и 10 PIRATE -- что-то вроде купюр, которыми вы пользуетесь каждый день.&lt;/li&gt; &lt;li&gt;Ваш кошелек затем отправляет запросы к особым образом настроенным сетевым узлам, называемым "мастернодами". Эти мастерноды знают только то, что Вы хотите перемешать определенные номиналы. Никакой идентифицирующей информации мастернодам не отправляется, так что они не знают "кто" Вы конкретно.&lt;/li&gt; &lt;li&gt;Сессия перемешивания начинается тогда, когда еще двое или более человек отправляют схожее сообщение, подтверждающее, что они хотят перемешать точно такой же номинал. Мастернода перемешивает входы и просит кошельки всех пользователей осуществить платежи по ним. Ваш кошелек осуществляет выплату самому себе, но на другой адрес (тоже из вашего кошелька).&lt;/li&gt; &lt;li&gt;Для скрытия Ваших средств кошелек должен повторить этот процесс несколько раз с каждым номиналом. Каждый раз, когда такой процесс завершается, называется "раундом". С каждым раундом %1 становится экспоненциально сложнее определить откуда поступили средства.&lt;/li&gt; &lt;li&gt;Процесс перемешивания выполняется в фоне, без участия пользователя. Когда Вы захотите провести транзакцию, средства уже будут перемешаны. Дополнительно ждать не требуется.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;ВАЖНО:&lt;/b&gt; Ваш кошелек содержит 1000 адресов. Каждое перемешивание использует до 9 из этих адресов. Это означает, что 1000 адресов хватит примерно на 100 перемешиваний. Когда 900 адресов будут уже использованы, Ваш кошелек должен создать новые адреса. Однако, он может сделать это, только если у Вас включены автоматические резервные копии.&lt;br&gt;Соответственно, пользователям с отключенным резервным копированием %1 не доступен. &lt;hr&gt;Дополнительная информация доступна в &lt;a style="%2" href="%3"&gt; документации %1&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -1564,9 +1564,9 @@
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/projects/p/cosa/</source>
+https://www.transifex.com/projects/p/piratecash/</source>
         <translation>Нет Вашего языка или перевод неполон? Помогите нам сделать перевод лучше:
-https://www.transifex.com/projects/p/cosa/</translation>
+https://www.transifex.com/projects/p/piratecash/</translation>
     </message>
     <message>
         <source>&amp;Unit to show amounts in:</source>
@@ -1716,8 +1716,8 @@ https://www.transifex.com/projects/p/cosa/</translation>
         <translation>Сумма и раунды:</translation>
     </message>
     <message>
-        <source>0 COSA / 0 Rounds</source>
-        <translation>0 COSA / 0 раундов</translation>
+        <source>0 PIRATE / 0 Rounds</source>
+        <translation>0 PIRATE / 0 раундов</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -1859,16 +1859,16 @@ https://www.transifex.com/projects/p/cosa/</translation>
         <translation>Ошибка запроса платежа</translation>
     </message>
     <message>
-        <source>Cannot start cosa: click-to-pay handler</source>
-        <translation>Не удаётся запустить обработчик cosa: click-to-pay</translation>
+        <source>Cannot start piratecash: click-to-pay handler</source>
+        <translation>Не удаётся запустить обработчик piratecash: click-to-pay</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>Обработка URI</translation>
     </message>
     <message>
-        <source>'cosa://' is not a valid URI. Use 'cosa:' instead.</source>
-        <translation>'cosa://' не является валидным URI. Используйте 'cosa:'.</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>'piratecash://' не является валидным URI. Используйте 'piratecash:'.</translation>
     </message>
     <message>
         <source>Payment request fetch URL is invalid: %1</source>
@@ -2892,7 +2892,7 @@ https://www.transifex.com/projects/p/cosa/</translation>
         <translation>Если ручная комиссия  установлена в 1000 corsar, а транзакция по размеру только 250 байт, то плата "за килобайт" составит лишь 250 corsar,&lt;br&gt;в то время как "минимум" будет равна 1000 corsar. Для транзакций больше килобайта в любом случае идет расчет "за килобайт".</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for cosa transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>Оплаты только минимальной комиссии должно быть достаточно во всех случаях, пока в блоках достаточно места.&lt;br&gt;Однако, будьте готовы к тому, что транзакция может вовсе не получить подтверждения,&lt;br&gt;если количество транзакций будет стабильно больше, чем сеть способна обработать.</translation>
     </message>
     <message>
@@ -3183,8 +3183,8 @@ https://www.transifex.com/projects/p/cosa/</translation>
         <translation>Сообщение:</translation>
     </message>
     <message>
-        <source>A message that was attached to the cosa: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
-        <translation>К cosa: URI было прикреплено сообщение, которое будет сохранено вместе с транзакцией для вашего сведения. Обратите внимание: сообщение не будет отправлено через сеть PirateCash.</translation>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <translation>К piratecash: URI было прикреплено сообщение, которое будет сохранено вместе с транзакцией для вашего сведения. Обратите внимание: сообщение не будет отправлено через сеть PirateCash.</translation>
     </message>
     <message>
         <source>This is an unauthenticated payment request.</source>

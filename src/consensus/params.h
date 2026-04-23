@@ -23,6 +23,7 @@ enum DeploymentPos {
     DEPLOYMENT_REALLOC, // Deployment of Block Reward Reallocation
     DEPLOYMENT_DIP0020, // Deployment of DIP0020, DIP0021 and LMQ_100_67 quorums
     DEPLOYMENT_DIP0024, // Deployment of DIP0024 (Quorum Rotation) and decreased governance proposal fee
+    DEPLOYMENT_V19,     // Deployment of Basic BLS, AssetLocks, EHF
     // NOTE: Also add new deployments to VersionBitsDeploymentInfo in versionbits.cpp
     MAX_VERSION_BITS_DEPLOYMENTS
 };
@@ -55,8 +56,6 @@ struct Params {
     uint256 hashDevnetGenesisBlock;
     int nSubsidyHalvingInterval;
     int nMasternodePaymentsStartBlock;
-    int nMasternodePaymentsIncreaseBlock;
-    int nMasternodePaymentsIncreasePeriod; // in blocks
     int nInstantSendConfirmationsRequired; // in blocks
     int nInstantSendKeepLock; // in blocks
     int nBudgetPaymentsStartBlock;
@@ -65,6 +64,7 @@ struct Params {
     int nSuperblockStartBlock;
     uint256 nSuperblockStartHash;
     int nSuperblockCycle; // in blocks
+    int nSuperblockMaturityWindow; // in blocks
     int nGovernanceMinQuorum; // Min absolute vote count to trigger an action
     int nGovernanceFilterElements;
     int nMasternodeMinimumConfirmations;

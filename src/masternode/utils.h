@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2021 The Dash Core developers
+// Copyright (c) 2014-2023 The Dash Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -6,12 +6,12 @@
 #define BITCOIN_MASTERNODE_UTILS_H
 
 class CConnman;
+class CMasternodeSync;
 
 class CMasternodeUtils
 {
 public:
-    static void ProcessMasternodeConnections(CConnman& connman);
-    static void DoMaintenance(CConnman &connman);
+    static void DoMaintenance(CConnman &connman, const CMasternodeSync& mn_sync);
 };
 
 #endif // BITCOIN_MASTERNODE_UTILS_H

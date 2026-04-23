@@ -12,9 +12,10 @@ stages:
 
 builder-image:
   stage: builder-image
-  image: docker:19.03.5
+  image: docker:20.10.20
   services:
-    - docker:19.03.5-dind
+    - name: docker:20.10.20-dind
+      command: ["--tls=false"]
   variables:
     DOCKER_HOST: "tcp://docker:2375"
     DOCKER_DRIVER: overlay2
@@ -122,12 +123,12 @@ builder-image:
       - build-ci
     # Exclude some less important binaries to reduce the size of the artifacts
     exclude:
-      - build-ci/dashcore-$BUILD_TARGET/src/bench/bench_dash
-      - build-ci/dashcore-$BUILD_TARGET/src/bench/bench_dash.exe
-      - build-ci/dashcore-$BUILD_TARGET/src/qt/test/test_dash-qt
-      - build-ci/dashcore-$BUILD_TARGET/src/qt/test/test_dash-qt.exe
-      - build-ci/dashcore-$BUILD_TARGET/src/test/test_dash
-      - build-ci/dashcore-$BUILD_TARGET/src/test/test_dash.exe
+      - build-ci/cosantacore-$BUILD_TARGET/src/bench/bench_dash
+      - build-ci/cosantacore-$BUILD_TARGET/src/bench/bench_dash.exe
+      - build-ci/cosantacore-$BUILD_TARGET/src/qt/test/test_dash-qt
+      - build-ci/cosantacore-$BUILD_TARGET/src/qt/test/test_dash-qt.exe
+      - build-ci/cosantacore-$BUILD_TARGET/src/test/test_dash
+      - build-ci/cosantacore-$BUILD_TARGET/src/test/test_dash.exe
     expire_in: 3 days
 
 .test-template:
@@ -253,6 +254,13 @@ linux64_cxx20-build:
   variables:
     BUILD_TARGET: linux64_cxx20
 
+linux64_sqlite-build:
+  extends: .build-template
+  needs:
+    - x86_64-pc-linux-gnu-debug
+  variables:
+    BUILD_TARGET: linux64_sqlite
+
 linux64_fuzz-build:
   extends: .build-template
   needs:
@@ -322,6 +330,13 @@ linux64-test:
     - linux64-build
   variables:
     BUILD_TARGET: linux64
+
+linux64_sqlite-test:
+  extends: .test-template
+  needs:
+    - linux64_sqlite-build
+  variables:
+    BUILD_TARGET: linux64_sqlite
 
 linux64_tsan-test:
   extends:

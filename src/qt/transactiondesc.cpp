@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifdef HAVE_CONFIG_H
-#include <config/piratecash-config.h>
+#include <config/bitcoin-config.h>
 #endif
 
 #include <qt/transactiondesc.h>
@@ -19,7 +19,6 @@
 #include <interfaces/node.h>
 #include <validation.h>
 #include <script/script.h>
-#include <timedata.h>
 #include <util/system.h>
 #include <wallet/ismine.h>
 

@@ -17,7 +17,6 @@ class CBlock;
 class CBlockIndex;
 struct CBlockLocator;
 class CConnman;
-class CReserveScript;
 class CValidationInterface;
 class CValidationState;
 class CGovernanceVote;
@@ -26,7 +25,6 @@ class CDeterministicMNList;
 class CDeterministicMNListDiff;
 class uint256;
 class CScheduler;
-class CTxMemPool;
 enum class MemPoolRemovalReason;
 
 namespace llmq {
@@ -43,6 +41,14 @@ void RegisterValidationInterface(CValidationInterface* pwalletIn);
 void UnregisterValidationInterface(CValidationInterface* pwalletIn);
 /** Unregister all wallets from core */
 void UnregisterAllValidationInterfaces();
+
+// Alternate registration functions that release a shared_ptr after the last
+// notification is sent. These are useful for race-free cleanup, since
+// unregistration is nonblocking and can return before the last notification is
+// processed.
+void RegisterSharedValidationInterface(std::shared_ptr<CValidationInterface> callbacks);
+void UnregisterSharedValidationInterface(std::shared_ptr<CValidationInterface> callbacks);
+
 /**
  * Pushes a function to callback onto the notification queue, guaranteeing any
  * callbacks generated prior to now are finished when the function is called.
@@ -111,10 +117,31 @@ protected:
     /**
      * Notifies listeners of a transaction leaving mempool.
      *
-     * This only fires for transactions which leave mempool because of expiry,
-     * size limiting, reorg (changes in lock times/coinbase maturity), or
-     * replacement. This does not include any transactions which are included
-     * in BlockConnectedDisconnected either in block->vtx or in txnConflicted.
+     * This notification fires for transactions that are removed from the
+     * mempool for the following reasons:
+     *
+     * - EXPIRY (expired from mempool after -mempoolexpiry hours)
+     * - SIZELIMIT (removed in size limiting if the mempool exceeds -maxmempool megabytes)
+     * - REORG (removed during a reorg)
+     * - CONFLICT (removed because it conflicts with in-block transaction)
+     *
+     * This does not fire for transactions that are removed from the mempool
+     * because they have been included in a block. Any client that is interested
+     * in transactions removed from the mempool for inclusion in a block can learn
+     * about those transactions from the BlockConnected notification.
+     *
+     * Transactions that are removed from the mempool because they conflict
+     * with a transaction in the new block will have
+     * TransactionRemovedFromMempool events fired *before* the BlockConnected
+     * event is fired. If multiple blocks are connected in one step, then the
+     * ordering could be:
+     *
+     * - TransactionRemovedFromMempool(tx1 from block A)
+     * - TransactionRemovedFromMempool(tx2 from block A)
+     * - TransactionRemovedFromMempool(tx1 from block B)
+     * - TransactionRemovedFromMempool(tx2 from block B)
+     * - BlockConnected(A)
+     * - BlockConnected(B)
      *
      * Called on a background thread.
      */
@@ -125,20 +152,20 @@ protected:
      *
      * Called on a background thread.
      */
-    virtual void BlockConnected(const std::shared_ptr<const CBlock> &block, const CBlockIndex *pindex, const std::vector<CTransactionRef> &txnConflicted) {}
+    virtual void BlockConnected(const std::shared_ptr<const CBlock> &block, const CBlockIndex *pindex) {}
     /**
      * Notifies listeners of a block being disconnected
      *
      * Called on a background thread.
      */
-    virtual void BlockDisconnected(const std::shared_ptr<const CBlock> &block, const CBlockIndex *pindexDisconnected) {}
+    virtual void BlockDisconnected(const std::shared_ptr<const CBlock> &block, const CBlockIndex *pindex) {}
     virtual void NotifyTransactionLock(const CTransactionRef &tx, const std::shared_ptr<const llmq::CInstantSendLock>& islock) {}
     virtual void NotifyChainLock(const CBlockIndex* pindex, const std::shared_ptr<const llmq::CChainLockSig>& clsig) {}
     virtual void NotifyGovernanceVote(const std::shared_ptr<const CGovernanceVote>& vote) {}
     virtual void NotifyGovernanceObject(const std::shared_ptr<const CGovernanceObject>& object) {}
     virtual void NotifyInstantSendDoubleSpendAttempt(const CTransactionRef& currentTx, const CTransactionRef& previousTx) {}
     virtual void NotifyRecoveredSig(const std::shared_ptr<const llmq::CRecoveredSig>& sig) {}
-    virtual void NotifyMasternodeListChanged(bool undo, const CDeterministicMNList& oldMNList, const CDeterministicMNListDiff& diff) {}
+    virtual void NotifyMasternodeListChanged(bool undo, const CDeterministicMNList& oldMNList, const CDeterministicMNListDiff& diff, CConnman& connman) {}
     /**
      * Notifies listeners of the new active block chain on-disk.
      *
@@ -167,7 +194,7 @@ protected:
      * Notifies listeners that a block which builds directly on our current tip
      * has been received and connected to the headers tree, though not validated yet */
     virtual void NewPoWValidBlock(const CBlockIndex *pindex, const std::shared_ptr<const CBlock>& block) {};
-    friend void ::RegisterValidationInterface(CValidationInterface*);
+    friend void ::RegisterSharedValidationInterface(std::shared_ptr<CValidationInterface>);
     friend void ::UnregisterValidationInterface(CValidationInterface*);
     friend void ::UnregisterAllValidationInterfaces();
 };
@@ -177,12 +204,10 @@ class CMainSignals {
 private:
     std::unique_ptr<MainSignalsInstance> m_internals;
 
-    friend void ::RegisterValidationInterface(CValidationInterface*);
+    friend void ::RegisterSharedValidationInterface(std::shared_ptr<CValidationInterface>);
     friend void ::UnregisterValidationInterface(CValidationInterface*);
     friend void ::UnregisterAllValidationInterfaces();
     friend void ::CallFunctionInValidationInterfaceQueue(std::function<void ()> func);
-
-    void MempoolEntryRemoved(CTransactionRef tx, MemPoolRemovalReason reason);
 
 public:
     /** Register a CScheduler to give callbacks which should run in the background (may only be called once) */
@@ -194,25 +219,22 @@ public:
 
     size_t CallbacksPending();
 
-    /** Register with mempool to call TransactionRemovedFromMempool callbacks */
-    void RegisterWithMempoolSignals(CTxMemPool& pool);
-    /** Unregister with mempool */
-    void UnregisterWithMempoolSignals(CTxMemPool& pool);
 
     void AcceptedBlockHeader(const CBlockIndex *pindexNew);
     void NotifyHeaderTip(const CBlockIndex *pindexNew, bool fInitialDownload);
     void UpdatedBlockTip(const CBlockIndex *, const CBlockIndex *, bool fInitialDownload);
     void SynchronousUpdatedBlockTip(const CBlockIndex *, const CBlockIndex *, bool fInitialDownload);
     void TransactionAddedToMempool(const CTransactionRef &, int64_t);
-    void BlockConnected(const std::shared_ptr<const CBlock> &, const CBlockIndex *pindex, const std::shared_ptr<const std::vector<CTransactionRef>> &);
-    void BlockDisconnected(const std::shared_ptr<const CBlock> &, const CBlockIndex* pindexDisconnected);
+    void TransactionRemovedFromMempool(const CTransactionRef &, MemPoolRemovalReason);
+    void BlockConnected(const std::shared_ptr<const CBlock> &, const CBlockIndex *pindex);
+    void BlockDisconnected(const std::shared_ptr<const CBlock> &, const CBlockIndex* pindex);
     void NotifyTransactionLock(const CTransactionRef &tx, const std::shared_ptr<const llmq::CInstantSendLock>& islock);
     void NotifyChainLock(const CBlockIndex* pindex, const std::shared_ptr<const llmq::CChainLockSig>& clsig);
     void NotifyGovernanceVote(const std::shared_ptr<const CGovernanceVote>& vote);
     void NotifyGovernanceObject(const std::shared_ptr<const CGovernanceObject>& object);
     void NotifyInstantSendDoubleSpendAttempt(const CTransactionRef &currentTx, const CTransactionRef &previousTx);
     void NotifyRecoveredSig(const std::shared_ptr<const llmq::CRecoveredSig> &sig);
-    void NotifyMasternodeListChanged(bool undo, const CDeterministicMNList& oldMNList, const CDeterministicMNListDiff& diff);
+    void NotifyMasternodeListChanged(bool undo, const CDeterministicMNList& oldMNList, const CDeterministicMNListDiff& diff, CConnman& connman);
     void ChainStateFlushed(const CBlockLocator &);
     void BlockChecked(const CBlock&, const CValidationState&);
     void NewPoWValidBlock(const CBlockIndex *, const std::shared_ptr<const CBlock>&);

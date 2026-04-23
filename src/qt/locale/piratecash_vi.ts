@@ -344,8 +344,8 @@
         <translation>&amp;Nhận</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
-        <translation>Yêu cầu thanh toán (sinh mã QR và dash: URIs)</translation>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
+        <translation>Yêu cầu thanh toán (sinh mã QR và piratecash: URIs)</translation>
     </message>
     <message>
         <source>&amp;Transactions</source>
@@ -536,8 +536,8 @@
         <translation>Mở &amp;URI...</translation>
     </message>
     <message>
-        <source>Open a dash: URI or payment request</source>
-        <translation>Mở một dash: URI hoặc một yêu cầu thanh toán</translation>
+        <source>Open a piratecash: URI or payment request</source>
+        <translation>Mở một piratecash: URI hoặc một yêu cầu thanh toán</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -1881,8 +1881,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Yêu cầu thanh toán bị lỗi</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
-        <translation>Không thể khởi động dash: trình xử lý click-to-pay</translation>
+        <source>Cannot start piratecash: click-to-pay handler</source>
+        <translation>Không thể khởi động piratecash: trình xử lý click-to-pay</translation>
     </message>
     <message>
         <source>URI handling</source>
@@ -2818,7 +2818,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Nếu mức phí tuỳ chỉnh được đặt là 1000 corsar và giao dịch chỉ có 250 byte, thì "theo kilobyte" chỉ trả 250 corsar cho phí,&lt;br /&gt;trong khi "ít nhất" phải trả 1000 corsar. Cho các giao dịch lớn hơn 1 kilobyte thì cả hai đều trả theo kilobyte.</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>Chỉ trả phí tối thiểu cũng được chỉ khi mà có lượng giao dịch ít hơn không gian trong khối.&lt;br /&gt;Nhưng cần lưu ý là nó có thể xảy ra hiện tượng giao dịch không bao giờ được xác nhận một khi có nhiều nhu cầu giao dash hơn khả năng mà mạng lưới có thể xử lý được.</translation>
     </message>
     <message>
@@ -3101,8 +3101,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Thông điệp:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
-        <translation>Một thông điệp được đính với dash: URI đó sẽ được lưu trữ với các giao dịch cho các bạn tham khảo. Lưu ý: Thông điệp này sẽ không được gửi qua mạng PirateCash. </translation>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <translation>Một thông điệp được đính với piratecash: URI đó sẽ được lưu trữ với các giao dịch cho các bạn tham khảo. Lưu ý: Thông điệp này sẽ không được gửi qua mạng PirateCash. </translation>
     </message>
     <message>
         <source>This is an unauthenticated payment request.</source>

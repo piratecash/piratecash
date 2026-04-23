@@ -8,10 +8,15 @@
 
 #include "pubkey.h"
 
-class CKeyStore;
+class SigningProvider;
+
+#include <deque>
+#include <list>
 #include <primitives/transaction.h>
 #include <serialize.h>
 #include <uint256.h>
+#include <cstddef>
+#include <type_traits>
 
 #define BEGIN(a)	((char*)&(a))
 
@@ -58,14 +63,13 @@ public:
         if (obj.IsProofOfStakeV2()) {
             READWRITE(obj.posStakeHash);
             READWRITE(obj.posStakeN);
-
             if (!(s.GetType() & SER_GETHASH)) {
                 READWRITE(obj.vchBlockSig);
             }
 
-            if (ser_action.ForRead()) {
+            SER_READ(obj, {
                 obj.posPubKey = CPubKey();
-            }
+            });
         }
         // piratecash: do not serialize nFlags when computing hash
         if (!(s.GetType() & SER_GETHASH) && s.GetType() & SER_POSMARKER)
@@ -96,6 +100,8 @@ public:
 
     uint256 GetPoWHash() const;
 
+    uint256 hashProofOfStake() const;
+
     int64_t GetBlockTime() const
     {
         return (int64_t)nTime;
@@ -123,7 +129,7 @@ public:
         return !IsProofOfStake();
     }
 
-    bool SignBlock(const CKeyStore& keystore);
+    bool SignBlock(const SigningProvider& keystore);
     bool CheckBlockSignature(const CKeyID&) const;
     const CPubKey& BlockPubKey() const;
     COutPoint StakeInput() const {
@@ -131,6 +137,153 @@ public:
     }
 };
 
+class CompressedHeaderBitField
+{
+    std::byte bit_field{0};
+
+public:
+    enum class Flag : std::underlying_type_t<std::byte> {
+        VERSION_BIT_0 = (1 << 0),
+        VERSION_BIT_1 = (1 << 1),
+        VERSION_BIT_2 = (1 << 2),
+        PREV_BLOCK_HASH = (1 << 3),
+        TIMESTAMP = (1 << 4),
+        NBITS = (1 << 5),
+        PROOF_OF_STAKE = (1 << 6),
+    };
+
+    inline bool IsCompressed(Flag flag) const
+    {
+        return (bit_field & to_byte(flag)) == to_byte(0);
+    }
+
+    inline void MarkAsUncompressed(Flag flag)
+    {
+        bit_field |= to_byte(flag);
+    }
+
+    inline void MarkAsCompressed(Flag flag)
+    {
+        bit_field &= ~to_byte(flag);
+    }
+
+    inline bool IsVersionCompressed() const
+    {
+        return GetVersionOffset() != 0;
+    }
+
+    inline void SetVersionOffset(uint8_t version)
+    {
+        bit_field &= ~VERSION_BIT_MASK;
+        bit_field |= to_byte(version) & VERSION_BIT_MASK;
+    }
+
+    inline uint8_t GetVersionOffset() const
+    {
+        return to_uint8(bit_field & VERSION_BIT_MASK);
+    }
+
+    inline bool IsProofOfStake() const
+    {
+        return (bit_field & to_byte(Flag::PROOF_OF_STAKE)) == to_byte(Flag::PROOF_OF_STAKE);
+    }
+
+    inline void SetProofOfStake(bool proof_of_stake)
+    {
+        if (proof_of_stake) {
+            bit_field |= to_byte(Flag::PROOF_OF_STAKE);
+        } else {
+            bit_field &= ~to_byte(Flag::PROOF_OF_STAKE);
+        }
+    }
+
+    template <typename Stream>
+    void Serialize(Stream& s) const
+    {
+        ::Serialize(s, to_uint8(bit_field));
+    }
+
+    template <typename Stream>
+    void Unserialize(Stream& s)
+    {
+        uint8_t new_bit_field_value;
+        ::Unserialize(s, new_bit_field_value);
+        bit_field = to_byte(new_bit_field_value);
+    }
+
+private:
+    static constexpr uint8_t to_uint8(const std::byte value)
+    {
+        return std::to_integer<uint8_t>(value);
+    }
+
+    static constexpr std::byte to_byte(const uint8_t value)
+    {
+        return std::byte{value};
+    }
+
+    static constexpr std::byte to_byte(const Flag flag)
+    {
+        return static_cast<std::byte>(flag);
+    }
+
+    static constexpr std::byte VERSION_BIT_MASK = static_cast<std::byte>(Flag::VERSION_BIT_0) | static_cast<std::byte>(Flag::VERSION_BIT_1) | static_cast<std::byte>(Flag::VERSION_BIT_2);
+};
+
+struct CompressibleBlockHeader : CBlockHeader {
+    CompressedHeaderBitField bit_field;
+    int16_t time_offset{0};
+
+    CompressibleBlockHeader() = default;
+
+    explicit CompressibleBlockHeader(CBlockHeader&& block_header)
+    {
+        static_cast<CBlockHeader&>(*this) = block_header;
+
+        // When we create this from a block header, mark everything as uncompressed
+        // Version offset 0 means "not compressed via version history"; Compress()
+        // may later replace it with a back-reference to one of the recent versions.
+        bit_field.SetVersionOffset(0);
+        bit_field.SetProofOfStake(block_header.IsProofOfStake());
+        bit_field.MarkAsUncompressed(CompressedHeaderBitField::Flag::PREV_BLOCK_HASH);
+        bit_field.MarkAsUncompressed(CompressedHeaderBitField::Flag::TIMESTAMP);
+        bit_field.MarkAsUncompressed(CompressedHeaderBitField::Flag::NBITS);
+    }
+
+    SERIALIZE_METHODS(CompressibleBlockHeader, obj)
+    {
+        READWRITE(obj.bit_field);
+        if (!obj.bit_field.IsVersionCompressed()) {
+            READWRITE(obj.nVersion);
+        }
+        if (!obj.bit_field.IsCompressed(CompressedHeaderBitField::Flag::PREV_BLOCK_HASH)) {
+            READWRITE(obj.hashPrevBlock);
+        }
+        READWRITE(obj.hashMerkleRoot);
+        if (!obj.bit_field.IsCompressed(CompressedHeaderBitField::Flag::TIMESTAMP)) {
+            READWRITE(obj.nTime);
+        } else {
+            READWRITE(obj.time_offset);
+        }
+        if (!obj.bit_field.IsCompressed(CompressedHeaderBitField::Flag::NBITS)) {
+            READWRITE(obj.nBits);
+        }
+        READWRITE(obj.nNonce);
+        if (obj.bit_field.IsProofOfStake()) {
+            READWRITE(obj.posStakeHash);
+            READWRITE(obj.posStakeN);
+            READWRITE(obj.vchBlockSig);
+
+            SER_READ(obj, {
+                obj.posPubKey = CPubKey();
+            });
+        }
+    }
+
+    void Compress(const std::vector<CompressibleBlockHeader>& previous_blocks, std::list<int32_t>& last_unique_versions);
+
+    void Uncompress(const std::vector<CBlockHeader>& previous_blocks, std::list<int32_t>& last_unique_versions);
+};
 
 class CBlock : public CBlockHeader
 {

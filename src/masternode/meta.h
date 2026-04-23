@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2021 The Dash Core developers
+// Copyright (c) 2014-2022 The Dash Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -108,7 +108,7 @@ public:
     {
         LOCK(cs);
         std::vector<CMasternodeMetaInfo> tmpMetaInfo;
-        for (auto& p : metaInfos) {
+        for (const auto& p : metaInfos) {
             tmpMetaInfo.emplace_back(*p.second);
         }
         s << SERIALIZATION_VERSION_STRING << tmpMetaInfo << nDsqCount;
