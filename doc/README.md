@@ -53,6 +53,7 @@ The PirateCash Core repo's [root README](/README.md) contains relevant informati
 - [Unauthenticated REST Interface](REST-interface.md)
 - [Shared Libraries](shared-libraries.md)
 - [BIPS](bips.md)
+- [PIPs](pips.md)
 - [Dnsseed Policy](dnsseed-policy.md)
 - [Benchmarking](benchmarking.md)
 
