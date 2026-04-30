@@ -42,6 +42,7 @@
 #include <coinjoin/options.h>
 #include <llmq/chainlocks.h>
 #include <llmq/instantsend.h>
+#include <masternode/sync.h>
 
 #include <stdint.h>
 
@@ -2580,6 +2581,66 @@ static UniValue getwalletinfo(const JSONRPCRequest& request)
     return obj;
 }
 
+static UniValue getstakingstatus(const JSONRPCRequest& request)
+{
+    RPCHelpMan{"getstakingstatus",
+        "\nReturns an object containing various staking information.\n",
+        {},
+        RPCResult{
+            RPCResult::Type::OBJ, "", "",
+            {
+                {RPCResult::Type::BOOL, "staking_status", "whether the wallet is staking or not"},
+                {RPCResult::Type::BOOL, "staking_enabled", "whether staking is enabled/disabled in cosanta.conf"},
+                {RPCResult::Type::BOOL, "haveconnections", "whether network connections are present"},
+                {RPCResult::Type::BOOL, "mnsync", "whether the required masternode/spork data is synced"},
+                {RPCResult::Type::BOOL, "walletunlocked", "whether the wallet is unlocked"},
+                {RPCResult::Type::BOOL, "mintable_coins", "whether there are coins eligible for staking"},
+                {RPCResult::Type::BOOL, "above_reserve_balance", "whether the wallet balance is above the reserve balance"},
+                {RPCResult::Type::NUM, "stakesplitthreshold", "value of the current threshold for stake split"},
+                {RPCResult::Type::NUM, "stakemaxsplit", "the number of max inputs & outputs of a stake"},
+                {RPCResult::Type::NUM, "stakeautocombine", "autocombine feature: 0 - disable, 1 - same account, 2 - any account"},
+            },
+        },
+        RPCExamples{
+            HelpExampleCli("getstakingstatus", "")
+            + HelpExampleRpc("getstakingstatus", "")
+        },
+    }.Check(request);
+
+    std::shared_ptr<CWallet> const wallet = GetWalletForJSONRPCRequest(request);
+    if (!wallet) return NullUniValue;
+    CWallet* const pwallet = wallet.get();
+
+    pwallet->BlockUntilSyncedToCurrentChain();
+
+    LOCK(pwallet->cs_wallet);
+
+    // Note: with the v19 NodeContext refactor connman is not directly reachable
+    // from a wallet RPC handler (request.context carries WalletContext, not
+    // NodeContext). interfaces::Chain only exposes p2pEnabled() — true while
+    // P2P networking is up — so haveconnections degrades to that signal.
+    // mnsync below covers the "no peers yet" case, since masternode sync
+    // cannot complete without active peers.
+    const bool fHaveConnections = pwallet->chain().p2pEnabled();
+    const bool fMintableCoins = pwallet->MintableCoins();
+    const bool fLessReserveBalance = nReserveBalance >= pwallet->GetBalance().m_mine_trusted;
+    const bool fMnSynced = ::masternodeSync != nullptr && ::masternodeSync->IsSynced();
+    const bool fStatus = !(pwallet->IsLocked(true) || !fMintableCoins || fLessReserveBalance || !fMnSynced || !fHaveConnections);
+
+    UniValue obj(UniValue::VOBJ);
+    obj.pushKV("staking_status", fStatus);
+    obj.pushKV("staking_enabled", gArgs.GetBoolArg("-staking", true));
+    obj.pushKV("haveconnections", fHaveConnections);
+    obj.pushKV("mnsync", fMnSynced);
+    obj.pushKV("walletunlocked", !pwallet->IsLocked(true));
+    obj.pushKV("mintable_coins", fMintableCoins);
+    obj.pushKV("above_reserve_balance", !fLessReserveBalance);
+    obj.pushKV("stakesplitthreshold", gArgs.GetArg("-stakesplitthreshold", DEFAULT_STAKE_SPLIT_THRESHOLD));
+    obj.pushKV("stakemaxsplit", gArgs.GetArg("-stakemaxsplit", DEFAULT_STAKE_MAX_SPLIT));
+    obj.pushKV("stakeautocombine", gArgs.GetArg("-stakeautocombine", DEFAULT_STAKE_AUTOCOMBINE));
+    return obj;
+}
+
 static UniValue listwalletdir(const JSONRPCRequest& request)
 {
     RPCHelpMan{"listwalletdir",
@@ -4209,6 +4270,7 @@ static const CRPCCommand commands[] =
     { "wallet",             "gettransaction",                   &gettransaction,                {"txid","include_watchonly"} },
     { "wallet",             "getunconfirmedbalance",            &getunconfirmedbalance,         {} },
     { "wallet",             "getbalances",                      &getbalances,                   {} },
+    { "wallet",             "getstakingstatus",                 &getstakingstatus,              {} },
     { "wallet",             "getwalletinfo",                    &getwalletinfo,                 {} },
     { "wallet",             "importaddress",                    &importaddress,                 {"address","label","rescan","p2sh"} },
     { "wallet",             "importelectrumwallet",             &importelectrumwallet,          {"filename", "index"} },
