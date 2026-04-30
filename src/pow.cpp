@@ -212,9 +212,12 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 {
     assert(pindexLast != nullptr);
     assert(pblock != nullptr);
-    const arith_uint256 bnPowLimit = pblock->IsProofOfStake()
-        ? UintToArith256(params.posLimit)
-        : UintToArith256(params.powLimit);
+    // Single unified limit at this layer matches master and the on-chain
+    // reality. The fPowAllowMinDifficultyBlocks branch on testnet must not
+    // diverge between PoW and PoS — otherwise the post-2h "min-difficulty"
+    // shortcut returns posLimit and mismatches the nBits actually mined,
+    // producing bad-diffbits at the first PoS block after a long testnet idle.
+    const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
 
     // this is only active on devnets
     if (pindexLast->nHeight < params.nMinimumDifficultyBlocks) {
@@ -250,7 +253,12 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         return KimotoGravityWell(pindexLast, params);
     }
 
-    return DarkGravityWave(pindexLast, bnPowLimit, params);
+    // DGW keeps its own PoS-aware cap to stay byte-for-byte compatible with
+    // master's internal DarkGravityWave logic.
+    const arith_uint256 bnDgwLimit = pblock->IsProofOfStake()
+        ? UintToArith256(params.posLimit)
+        : UintToArith256(params.powLimit);
+    return DarkGravityWave(pindexLast, bnDgwLimit, params);
 }
 
 // for DIFF_BTC only!
