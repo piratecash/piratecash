@@ -2191,11 +2191,20 @@ static void ProcessHeadersMessage(CNode& pfrom, CConnman& connman, ChainstateMan
         if (!nodestate->vPostponedHeaders.empty()) {
             // Just in case. It should not really happen
             LogPrint(BCLog::NET, "peer %d sent us more headers while we were processing current postponed \n", pfrom.GetId());
-        } else if (!headers.empty()) {
+        } else if (!headers.empty() && !::ChainActive().Contains(pindexLast)) {
+            // Save for later retry only while there are still blocks to
+            // download for these headers. If pindexLast is already in our
+            // active chain, every block in this batch has been downloaded and
+            // re-saving would just spin in the postpone/retry loop without
+            // making progress (direct fetch below would walk back from
+            // pindexLast and find nothing to request).
             nodestate->vPostponedHeaders.swap(headers);
             LogPrint(BCLog::NET, "saving postponed headers for peer %d \n", pfrom.GetId());
         } else if (get_more_headers) {
-            // Headers message had its maximum size; the peer may have more headers.
+            // Either headers was empty (postponed-retry hand-off), or every
+            // block for the current batch has already been added to the active
+            // chain. Headers message had its maximum size; the peer may have
+            // more headers — ask for the next batch.
             // TODO: optimize: if pindexLast is an ancestor of ::ChainActive().Tip or pindexBestHeader, continue
             // from there instead.
             std::string msg_type = (pfrom.nServices & NODE_HEADERS_COMPRESSED) ? NetMsgType::GETHEADERS2 : NetMsgType::GETHEADERS;
