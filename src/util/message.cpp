@@ -18,8 +18,15 @@
 /**
  * Text used to signify that a signed message follows and to prevent
  * inadvertently signing a transaction.
+ *
+ * PirateCash: this MUST match the legacy `strMessageMagic` defined in
+ * src/util/validation.cpp ("Piratecash Signed Message:\n"). v18 used
+ * that string for CMessageSigner, and any block-chain-embedded ECDSA
+ * signature (e.g. ProRegTx collateral signature) was produced over
+ * that prefix. If the two constants drift apart, CMessageSigner
+ * verification of pre-existing signatures fails with "Keys don't match".
  */
-const std::string MESSAGE_MAGIC = "DarkCoin Signed Message:\n";
+const std::string MESSAGE_MAGIC = "Piratecash Signed Message:\n";
 
 MessageVerificationResult MessageVerify(
     const std::string& address,
