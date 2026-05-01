@@ -88,9 +88,10 @@ inline bool IsBlockReason(ValidationInvalidReason r)
 class CValidationState {
 private:
     enum mode_state {
-        MODE_VALID,   //!< everything ok
-        MODE_INVALID, //!< network rule violation (DoS value may be set)
-        MODE_ERROR,   //!< run-time error
+        MODE_VALID,           //!< everything ok
+        MODE_INVALID,         //!< network rule violation (DoS value may be set)
+        MODE_ERROR,           //!< run-time error
+        MODE_TRANSIENT_ERROR, //!< a temporary error which may get vanished with changes of state (PirateCash)
     } mode;
     ValidationInvalidReason m_reason;
     std::string strRejectReason;
@@ -116,6 +117,15 @@ public:
         mode = MODE_ERROR;
         return false;
     }
+    // PirateCash: transient error (e.g. PoS stake tx not yet known) — header
+    // is rejected for now but is not marked permanently invalid; will be
+    // re-tried as our local chain progresses.
+    bool TransientError(const std::string& strRejectReasonIn) {
+        if (mode == MODE_VALID)
+            strRejectReason = strRejectReasonIn;
+        mode = MODE_TRANSIENT_ERROR;
+        return false;
+    }
     bool IsValid() const {
         return mode == MODE_VALID;
     }
@@ -124,6 +134,9 @@ public:
     }
     bool IsError() const {
         return mode == MODE_ERROR;
+    }
+    bool IsTransientError() const {
+        return mode == MODE_TRANSIENT_ERROR;
     }
     ValidationInvalidReason GetReason() const { return m_reason; }
     unsigned int GetRejectCode() const { return chRejectCode; }

@@ -4040,8 +4040,15 @@ bool BlockManager::AcceptBlockHeader(const CBlockHeader& block, CValidationState
             // it's ok-ish, the other node is probably missing the latest chainlock
             return state.Invalid(ValidationInvalidReason::BLOCK_CHAINLOCK, error("%s: prev block %s conflicts with chainlock", __func__, block.hashPrevBlock.ToString()), REJECT_INVALID, "bad-prevblk-chainlock");
 
-        if (!ContextualCheckBlockHeader(block, state, chainparams, pindexPrev, GetAdjustedTime(), true))
-            return error("%s: Consensus::ContextualCheckBlockHeader: %s, %s", __func__, hash.ToString(), FormatStateMessage(state));
+        if (!ContextualCheckBlockHeader(block, state, chainparams, pindexPrev, GetAdjustedTime(), true)) {
+            // PirateCash: do not spam the log for transient errors (e.g. PoS
+            // stake utxo not yet present locally). They will be retried once
+            // our local chain catches up.
+            if (!state.IsTransientError()) {
+                return error("%s: Consensus::ContextualCheckBlockHeader: %s, %s", __func__, hash.ToString(), FormatStateMessage(state));
+            }
+            return false;
+        }
 
         /* Determine if this block descends from any block which has been found
          * invalid (m_failed_blocks), then mark pindexPrev and any blocks between
@@ -4142,6 +4149,14 @@ bool ChainstateManager::ProcessNewBlockHeaders(const std::vector<CBlockHeader>& 
             if (!m_blockman.AcceptBlockHeader(header, state, chainparams, &pindex)) {
                 if (first_invalid != nullptr) {
                     *first_invalid = header;
+                }
+                // PirateCash: on partial failure (e.g. transient PoS error
+                // on a later header), expose the last successfully accepted
+                // header to the caller so it can save the batch as postponed
+                // / continue requesting headers. Without this, callers see
+                // pindexLast = nullptr and either bail or punish the peer.
+                if (ppindex != nullptr) {
+                    *ppindex = pindex;
                 }
                 return false;
             }

@@ -2152,12 +2152,28 @@ static void ProcessHeadersMessage(CNode& pfrom, CConnman& connman, ChainstateMan
             MaybePunishNode(pfrom.GetId(), state, via_compact_block, "invalid header received");
             return;
         }
-        if (state.IsError()) {
+        if (state.IsError() || state.IsTransientError()) {
+            // PirateCash: transient error means the peer sent us a header we
+            // cannot fully validate yet (e.g. PoS stake utxo not in our local
+            // chain). Don't punish, retry later.
             LogPrint(BCLog::NET, "peer %d sent us header which we are unable to process yet \n", pfrom.GetId());
+            if (pindexLast == nullptr && !first_invalid_header.IsNull()) {
+                // Prefer the parent of the failing header (= last successfully
+                // accepted header in this batch). ProcessNewBlockHeaders also
+                // tries to set *ppindex on partial failure, but be defensive
+                // for paths that may not (and for the case of the first
+                // header in the batch failing — fall through to pindexPrev).
+                LOCK(cs_main);
+                pindexLast = LookupBlockIndex(first_invalid_header.hashPrevBlock);
+            }
             if (pindexLast == nullptr) {
-                // edge case of the first header error
+                // edge case: the first header in the batch failed
                 pindexLast = pindexPrev;
             }
+            // PirateCash: the peer still has more headers for us beyond the
+            // one we choked on — once our chain catches up to pindexLast we
+            // must explicitly ask for the next batch, otherwise sync stalls.
+            get_more_headers = true;
         }
         if (pindexLast == nullptr) {
             // This situation should not happen in normal operation, just some safety measurements.
@@ -3590,6 +3606,17 @@ void PeerLogicValidation::ProcessMessage(
             if (state.IsInvalid()) {
                 MaybePunishNode(pfrom.GetId(), state, /*via_compact_block*/ true, "invalid header via cmpctblock");
                 return;
+            }
+            // PirateCash: a transient error (e.g. PoS stake input not yet in
+            // our local chain) means we cannot fully validate this header
+            // right now. Don't enter the cmpctblock fast-path below — pindex
+            // is unset and assert(pindex) would fire. Instead reroute the
+            // header through the normal headers-message path, which puts it
+            // into vPostponedHeaders / arms get_more_headers so the peer can
+            // be re-queried once our chain catches up.
+            if (state.IsError() || state.IsTransientError()) {
+                LogPrint(BCLog::NET, "peer %d sent us cmpctblock header we are unable to process yet, deferring to header path\n", pfrom.GetId());
+                return ProcessHeadersMessage(pfrom, m_connman, m_chainman, m_mempool, {cmpctblock.header}, chainparams, /*via_compact_block=*/true);
             }
         }
 

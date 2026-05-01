@@ -534,7 +534,10 @@ bool CheckProofOfStake(CValidationState &state, const CBlockHeader &header, uint
         if ((it != g_chainman.BlockIndex().end()) && ::ChainActive().Contains(it->second)) {
             return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-unkown-stake");
         } else {
-            return state.Error("tmp-bad-unkown-stake");
+            // We do not have the previous block, so the block may be valid.
+            // PirateCash: this is a transient error — header validation will
+            // be retried once our local chain progresses past the stake utxo.
+            return state.TransientError("tmp-bad-unkown-stake");
         }
     }
 
@@ -546,12 +549,17 @@ bool CheckProofOfStake(CValidationState &state, const CBlockHeader &header, uint
             pindex_tx = it->second;
         } else {
             it = g_chainman.BlockIndex().find(header.hashPrevBlock);
-            
+
             if ((it != g_chainman.BlockIndex().end()) && ::ChainActive().Contains(it->second)) {
                 return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-stake-mempool",
                                  "stake from mempool");
             } else {
-                return state.Error("tmp-bad-stake-mempool");
+                // PirateCash: same rationale as the tmp-bad-unkown-stake
+                // branch above — the stake input's containing block is not
+                // yet in our active chain. Mark the failure as transient so
+                // header validation gets retried as we catch up, instead of
+                // being treated as a permanent run-time error.
+                return state.TransientError("tmp-bad-stake-mempool");
             }
         }
     }
