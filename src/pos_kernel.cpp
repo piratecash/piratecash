@@ -605,9 +605,18 @@ bool CheckProofOfStake(CValidationState &state, const CBlockHeader &header, uint
 
     // NOTE: stake age check is part of CheckStakeKernelHash()
 
-    // Check stake maturity (double checking with other functionality for DoS mitigation)
+    // Check stake maturity (double checking with other functionality for DoS mitigation).
+    //
+    // PirateCash: measure maturity against the height of the new block being
+    // validated (pindex_prev->nHeight + 1), not the height of our own local
+    // tip. During headers-first IBD the peer can deliver a header for a block
+    // far ahead of our chain (e.g. pindex_prev = 1_076_000 while our Tip is
+    // only at 526_274). Using ChainActive().Tip() here mistakenly rejects
+    // such legitimate headers whenever the stake-utxo's containing block
+    // happens to land within COINBASE_MATURITY blocks of our local tip even
+    // though it is already mature at the actual new-block height.
     if (txinPrevRef->IsCoinBase() &&
-        ((::ChainActive().Tip()->nHeight - pindex_tx->nHeight) <= COINBASE_MATURITY)
+        ((pindex_prev->nHeight - pindex_tx->nHeight) <= COINBASE_MATURITY)
     ) {
         return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-stake-coinbase-maturity",
                             "coinbase maturity mismatch for stake");
