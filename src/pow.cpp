@@ -253,12 +253,13 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         return KimotoGravityWell(pindexLast, params);
     }
 
-    // DGW keeps its own PoS-aware cap to stay byte-for-byte compatible with
-    // master's internal DarkGravityWave logic.
-    const arith_uint256 bnDgwLimit = pblock->IsProofOfStake()
-        ? UintToArith256(params.posLimit)
-        : UintToArith256(params.powLimit);
-    return DarkGravityWave(pindexLast, bnDgwLimit, params);
+    // DGW must use the same upper cap regardless of PoW/PoS to stay
+    // byte-for-byte compatible with v18 master's DarkGravityWave, which
+    // unconditionally clamps with params.powLimit. Substituting posLimit
+    // for PoS blocks (smaller, stricter cap) reshapes the resulting nBits
+    // and trips bad-diffbits on every PoS block whose v18-computed target
+    // landed between posLimit and powLimit. Keep the cap unified.
+    return DarkGravityWave(pindexLast, bnPowLimit, params);
 }
 
 // for DIFF_BTC only!
