@@ -116,6 +116,10 @@ public:
     int64_t MinStakeAge() const { return nStakeMinAge; }
     uint32_t FirstPoSv2Block() const { return nFirstPoSv2Block; }
     bool HasLLMQ(Consensus::LLMQType llmqType) const;
+    /** Minimum Corsa messenger node `protocol_version` accepted by the
+     *  PIP-0001 stage 1 startup probe. A masternode whose local Corsa
+     *  reports a lower version refuses to start. */
+    int MinCorsaProtocolVersion() const { return nMinCorsaProtocolVersion; }
 
 protected:
     CChainParams() {}
@@ -154,6 +158,8 @@ protected:
     int64_t nStakeMinAge;
     // POS V2
     uint32_t nFirstPoSv2Block;
+    // PIP-0001: minimum required Corsa protocol_version for masternode startup
+    int nMinCorsaProtocolVersion{0};
 
     void AddLLMQ(Consensus::LLMQType llmqType);
 };

@@ -403,6 +403,8 @@ public:
         fBIP9CheckMasternodesUpgraded = true;
         nStakeMinAge = 8 * 60 * 60; // 8 hours
         nFirstPoSv2Block = 1ULL;
+        // PIP-0001: minimum Corsa messenger protocol_version accepted by masternodes.
+        nMinCorsaProtocolVersion = 13;
 
         checkpointData = {
             {
@@ -640,6 +642,8 @@ public:
 
         nStakeMinAge = 8 * 60 * 60; // 8 hours
         nFirstPoSv2Block = 1ULL;
+        // PIP-0001: minimum Corsa messenger protocol_version accepted by masternodes.
+        nMinCorsaProtocolVersion = 13;
 
         checkpointData = {
             {
@@ -877,6 +881,8 @@ public:
 
         nStakeMinAge = 24 * 60 * 60; // 24 hours
         nFirstPoSv2Block = 78000ULL;
+        // PIP-0001: minimum Corsa messenger protocol_version accepted by masternodes.
+        nMinCorsaProtocolVersion = 13;
 
         checkpointData = (CCheckpointData) {
             {
@@ -1124,6 +1130,9 @@ public:
 
         nStakeMinAge = 24 * 60 * 60; // 24 hours
         nFirstPoSv2Block = 10000ULL;
+        // PIP-0001: minimum Corsa messenger protocol_version accepted by masternodes.
+        // Regtest masternodes use the same gate so test infra exercises the check.
+        nMinCorsaProtocolVersion = 13;
 
         checkpointData = {
             {

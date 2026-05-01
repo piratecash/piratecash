@@ -162,6 +162,7 @@ BITCOIN_CORE_H = \
   consensus/tx_verify.h \
   core_io.h \
   core_memusage.h \
+  corsa/client.h \
   cuckoocache.h \
   ctpl_stl.h \
   cxxtimer.hpp \
@@ -377,6 +378,7 @@ libpiratecash_server_a_SOURCES = \
   coinjoin/options.cpp \
   coinjoin/server.cpp \
   consensus/tx_verify.cpp \
+  corsa/client.cpp \
   dbwrapper.cpp \
   dsnotificationinterface.cpp \
   evo/cbtx.cpp \
