@@ -10,6 +10,7 @@
 
 #include <clientversion.h>
 #include <streams.h>
+#include <util/system.h>
 
 #include <utility>
 
@@ -184,7 +185,35 @@ void RecentRequestsTableModel::addNewRequest(const std::string &recipient)
     CDataStream ss(data, SER_DISK, CLIENT_VERSION);
 
     RecentRequestEntry entry;
-    ss >> entry;
+    // Don't let a single malformed receive-request entry bring down the whole
+    // WalletModel construction. If the entry is unreadable for any reason
+    // (format mismatch between PirateCash versions, partial write, etc.), log it
+    // and skip -- the wallet will still open in the GUI.
+    // TODO(remove-in-v20): together with the SendCoinsRecipient backward-compat
+    // reader, once `piratecash-wallet migrate-v19` has been run on all known wallets.
+    try {
+        ss >> entry;
+    } catch (const std::exception& e) {
+        // Even if the full entry is unreadable, try a minimal parse of just
+        // (nVersion, id) so that nReceiveRequestsMaxId still advances past
+        // the broken record's id. Otherwise the next request created from
+        // the GUI could reuse this id and overwrite the broken entry on
+        // disk.
+        int64_t broken_id = 0;
+        try {
+            CDataStream ss_id(data, SER_DISK, CLIENT_VERSION);
+            int nVersion = 0;
+            ss_id >> nVersion >> broken_id;
+        } catch (...) {
+            // value is too short even for the header -- give up
+        }
+        if (broken_id > nReceiveRequestsMaxId) {
+            nReceiveRequestsMaxId = broken_id;
+        }
+        LogPrintf("RecentRequestsTableModel: skipping malformed receive request "
+                  "(id=%d): %s\n", (int)broken_id, e.what());
+        return;
+    }
 
     if (entry.id == 0) // should not happen
         return;

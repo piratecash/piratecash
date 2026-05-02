@@ -72,20 +72,42 @@ public:
     static const int CURRENT_VERSION = 1;
     int nVersion;
 
-    SERIALIZE_METHODS(SendCoinsRecipient, obj)
+    template <typename Stream>
+    void Serialize(Stream& s) const
+    {
+        std::string address_str       = address.toStdString();
+        std::string label_str         = label.toStdString();
+        std::string message_str       = message.toStdString();
+        std::string auth_merchant_str = authenticatedMerchant.toStdString();
+        s << nVersion << address_str << label_str << amount << message_str
+          << sPaymentRequest << auth_merchant_str;
+    }
+
+    template <typename Stream>
+    void Unserialize(Stream& s)
     {
         std::string address_str, label_str, message_str, auth_merchant_str;
-        SER_WRITE(obj, address_str = obj.address.toStdString());
-        SER_WRITE(obj, label_str = obj.label.toStdString());
-        SER_WRITE(obj, message_str = obj.message.toStdString());
-        SER_WRITE(obj, auth_merchant_str = obj.authenticatedMerchant.toStdString());
+        s >> nVersion >> address_str >> label_str >> amount >> message_str;
 
-        READWRITE(obj.nVersion, address_str, label_str, obj.amount, message_str, obj.sPaymentRequest, auth_merchant_str);
+        // PirateCash-specific backward compatibility:
+        // Wallets created on the master branch (where BIP70 support was removed
+        // via upstream commit 38e7e164f0 / Bitcoin PR #17165) wrote SendCoinsRecipient
+        // using only 5 fields, without sPaymentRequest and authenticatedMerchant.
+        // The v19 backport from Dash restored those two fields, so we still write
+        // and try to read them, but tolerate their absence so that pre-v19
+        // (master) wallets keep loading. In PirateCash these fields are always
+        // empty anyway because the GUI does not use the BIP70 payment protocol.
+        // TODO(remove-in-v20): drop this backward-compat branch once all
+        // wallets have been migrated via `piratecash-wallet migrate-v19`.
+        sPaymentRequest.clear();
+        auth_merchant_str.clear();
+        if (!s.empty()) s >> sPaymentRequest;
+        if (!s.empty()) s >> auth_merchant_str;
 
-        SER_READ(obj, obj.address = QString::fromStdString(address_str));
-        SER_READ(obj, obj.label = QString::fromStdString(label_str));
-        SER_READ(obj, obj.message = QString::fromStdString(message_str));
-        SER_READ(obj, obj.authenticatedMerchant = QString::fromStdString(auth_merchant_str));
+        address               = QString::fromStdString(address_str);
+        label                 = QString::fromStdString(label_str);
+        message               = QString::fromStdString(message_str);
+        authenticatedMerchant = QString::fromStdString(auth_merchant_str);
     }
 };
 

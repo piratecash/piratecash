@@ -28,6 +28,10 @@ static void SetupWalletToolArgs(ArgsManager& argsman)
 
     argsman.AddArg("info", "Get wallet info", ArgsManager::ALLOW_ANY, OptionsCategory::COMMANDS);
     argsman.AddArg("create", "Create new wallet file", ArgsManager::ALLOW_ANY, OptionsCategory::COMMANDS);
+    // PirateCash-specific. TODO(remove-in-v20): drop together with the Qt-side
+    // backward-compat reader in src/qt/walletmodel.h once all known wallets
+    // have been migrated.
+    argsman.AddArg("migrate-v19", "Migrate a wallet from a pre-v19 (PirateCash master) format to the v19 format. Currently rewrites Qt receive-request entries from 5-field to 7-field SendCoinsRecipient layout. Before any change, the wallet file is copied to a timestamped backup next to it: <wallet>.bak.<UTC>, e.g. wallet.dat.bak.20260502T103022Z. Safe to re-run; each run produces its own backup.", ArgsManager::ALLOW_ANY, OptionsCategory::COMMANDS);
 
     // Hidden
     argsman.AddArg("salvage", "Attempt to recover private keys from a corrupt wallet", ArgsManager::ALLOW_ANY, OptionsCategory::COMMANDS);
