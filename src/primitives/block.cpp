@@ -6,7 +6,6 @@
 #include <primitives/block.h>
 
 #include <pos_kernel.h>
-#include <script/signingprovider.h>
 #include <script/standard.h>
 #include <crypto/common.h>
 #include <hash.h>
@@ -98,30 +97,6 @@ static void SaveVersionAsMostRecent(std::list<int32_t>& last_unique_versions, co
         // Evict the oldest version
         last_unique_versions.pop_back();
     }
-}
-
-// ppcoin: sign block
-bool CBlockHeader::SignBlock(const SigningProvider& keystore)
-{
-    if (IsProofOfStake())
-    {
-        if (!posPubKey.IsValid())
-            return false;
-
-        CKey key;
-
-        if (!keystore.GetKey(posPubKey.GetID(), key)) {
-            return false;
-        }
-
-        if (!key.SignCompact(GetHash(), vchBlockSig)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    return true;
 }
 
 void CompressibleBlockHeader::Compress(const std::vector<CompressibleBlockHeader>& previous_blocks, std::list<int32_t>& last_unique_versions)

@@ -8,8 +8,6 @@
 
 #include "pubkey.h"
 
-class SigningProvider;
-
 #include <deque>
 #include <list>
 #include <primitives/transaction.h>
@@ -129,7 +127,6 @@ public:
         return !IsProofOfStake();
     }
 
-    bool SignBlock(const SigningProvider& keystore);
     bool CheckBlockSignature(const CKeyID&) const;
     const CPubKey& BlockPubKey() const;
     COutPoint StakeInput() const {

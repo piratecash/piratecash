@@ -847,7 +847,7 @@ if GLIBC_BACK_COMPAT
 endif
 
 libpiratecashconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
-libpiratecashconsensus_la_LIBADD = $(LIBDASHBLS) $(LIBSECP256K1) $(GMP_LIBS)
+libpiratecashconsensus_la_LIBADD = $(LIBDASHBLS) $(LIBSECP256K1) $(CRYPTO_LIBS) $(GMP_LIBS)
 libpiratecashconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
 libpiratecashconsensus_la_CPPFLAGS += -I$(srcdir)/dashbls/include -I$(srcdir)/dashbls/depends/relic/include -I$(srcdir)/dashbls/depends/minialloc/include
 libpiratecashconsensus_la_CPPFLAGS += -I$(srcdir)/immer
