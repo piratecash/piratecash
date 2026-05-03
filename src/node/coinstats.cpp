@@ -100,7 +100,9 @@ static bool GetUTXOStats(CCoinsView* view, CCoinsStats& stats, T hash_obj, const
     uint256 prevkey;
     std::map<uint32_t, Coin> outputs;
     while (pcursor->Valid()) {
-        interruption_point();
+        if (interruption_point) {
+            interruption_point();
+        }
         COutPoint key;
         Coin coin;
         if (pcursor->GetKey(key) && pcursor->GetValue(coin)) {
