@@ -1,18 +1,18 @@
-PirateCash Core version v18.0.0
-=========================
+# PirateCash Core version v19.0.0
 
 Release is now available from:
 
   <https://p.cash/en/download/>
 
-This is a new minor version release, bringing various bugfixes and other
-improvements.
+This is the first major release of the PirateCash Core 19.x.x series. It is based
+on Dash Core v19.3.0 and includes the Dash Core 19.0.0 through 19.3.0 feature
+set, improvements and bug fixes adapted for the PirateCash network.
 
-This release is optional for all nodes.
+This release is mandatory for all nodes.
 
-Please report bugs using the issue tracker at github:
+Please report bugs using the issue tracker at GitHub:
 
-  <https://github.com/piratecash/piratecash-core/issues>
+  <https://github.com/piratecash/piratecash/issues>
 
 
 # Upgrading and downgrading
@@ -20,249 +20,181 @@ Please report bugs using the issue tracker at github:
 ## How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
-shut down (which might take a few minutes for older versions), then run the
-installer (on Windows) or just copy over /Applications/PirateCash-Qt (on Mac) or
-piratecashd/piratecash-qt (on Linux). If you upgrade after DIP0003 activation and you were
-using version < 0.13 you will have to reindex (start with -reindex-chainstate
-or -reindex) to make sure your wallet has all the new data synced. Upgrading
-from version 0.13 should not require any additional actions.
+shut down, which might take a few minutes for older versions, then run the
+installer on Windows or copy over `/Applications/PirateCash-Qt` on macOS or
+`piratecashd`/`piratecash-qt` on Linux.
 
-When upgrading from a version prior to 0.14.0.3, the
-first startup of PirateCash Core will run a migration process which can take a few minutes
-to finish. After the migration, a downgrade to an older version is only possible with
-a reindex (or reindex-chainstate).
+When upgrading from a version older than v19.0.0, PirateCash Core will run a
+migration process on first startup. This is expected to complete quickly, but
+can take up to thirty minutes on some systems. After this migration, a downgrade
+to an older version is only possible with a reindex or a full resync.
 
-### Downgrade to a version < v19.2.0
+Masternode operators should upgrade Sentinel to v1.7.3 or newer if Sentinel is
+used as part of their deployment.
 
-Downgrading to a version older than v19.2.0 is not supported due to changes
-in the evodb database. If you need to use an older version, you must either
-reindex or re-sync the whole chain.
+Masternode operators must also configure the local Corsa messenger RPC required
+by [PIP-0001](pips/pip-0001.md). Starting with v19.0.0, PirateCash Core refuses
+to start as a masternode unless the local authenticated Corsa service check
+passes.
+
+## Downgrade warning
+
+### Downgrade to a version < v19.0.0
+
+Downgrading to a version older than v19.0.0 is not supported due to database
+changes. If you need to use an older version, you must either reindex or resync
+the whole chain.
+
 
 # Notable changes
 
-## CoinJoin improvements
+## Dash Core v19.3.0 base
 
-This release fixes a couple of issues with mixing on nodes that start with no
-wallet loaded initially.
+PirateCash Core v19.0.0 is built from the Dash Core v19.3.0 codebase. This means
+the PirateCash release includes the major v19 feature work as well as the v19.1,
+v19.2 and v19.3 maintenance fixes that followed the original Dash v19.0.0
+release.
 
-## Wallet GUI improvements
+## High-Performance Masternodes
 
-Wallets with 100k+ txes should now be able to rescan without hanging forever
-while processing notifications for every tx. Running `keypoolrefill` with a
-large number of keys will no longer lockup the GUI and can be interrupted.
-Running `upgradetohd` can also be interrupted now.
+A new high-performance masternode type has been added. High-performance
+masternodes are intended to host Platform services in addition to existing
+masternode responsibilities such as ChainLocks and InstantSend.
 
-Quorum rotation is activated via a BIP9 style hard fork that will begin
-signalling on August 15, 2022 using bit 7. New quorums will start forming in
-1152-1440 block range after the activation. Any nodes that do not upgrade by
-that time will diverge from the rest of the network.
+Activation of the v19 hard fork enables registration of 40000 PIRATE collateral
+masternodes. In v19.0.0, regular masternodes and high-performance masternodes
+have equivalent rewards and voting power per 10000 PIRATE collateral.
 
-Deterministic InstantSend
--------------------------
-Deterministically verifying InstantSend locks at any point in the future has
-been added to support PirateCash Platform. This update introduces versioning to
-InstantSend messages and adds quorum information to them. While the previous
-design was sufficient for core chain payments, the platform chain will benefit
-from this enhanced verification capability. Details about deterministic
-InstantSend are provided in [DIP-0022](https://github.com/dashpay/dips/blob/master/dip-0022.md).
+## PIP-0001 masternode Corsa requirement
 
-## Other changes
+This release ships Stage 1 of [PIP-0001](pips/pip-0001.md), the masternode
+messenger service integration. Masternodes must now run a local Corsa messenger
+node and configure PirateCash Core with its authenticated RPC credentials.
 
-Governance
-----------
-Several improvements have been made to PirateCash’s DAO governance system.
-The governance proposal fee has been reduced from 5 PIRATE to 1 PIRATE following
-a vote by masternode owners to do so. For improved security and flexibility,
-proposal payouts to pay-to-script-hash (P2SH) addresses are now supported.
+The required options are:
 
-# v19.3.0 Change log
+- `-corsarpcuser=<user>`
+- `-corsarpcpassword=<pw>`
+- `-corsarpcport=<port>`
 
-See detailed [set of changes](https://github.com/dashpay/dash/compare/v19.2.0...dashpay:v19.3.0).
+When `-masternodeblsprivkey` is set, `piratecashd` probes
+`127.0.0.1:<port>/rpc/v1/system/node_status` before entering masternode mode.
+The Corsa node must be reachable, must return the required node status fields,
+must satisfy the network minimum Corsa protocol version, and must reject a
+deliberately invalid authentication probe. If the check fails, PirateCash Core
+exits instead of starting the masternode. Regular full nodes, wallets and
+`piratecash-cli` are not affected.
 
-Initial Enhanced Hard Fork support
-----------------------------------
-The masternode hard fork signal special transaction has been added as the first
-step in enabling an improved hard fork mechanism. This enhancement enables
-future hard forks to be activated quickly and safely without any
-“race conditions” if miners and masternodes update at significantly different
-speeds. Effectively there will be a masternode signal on chain in addition to
-the miner one to ensure smooth transitions. Details of the enhanced hard fork
-system are provided in [DIP-0023](https://github.com/dashpay/dips/blob/master/dip-0023.md).
+After startup, active masternodes run a background heartbeat monitor for the
+same local Corsa endpoint. In Stage 1, heartbeat failures are logged but do not
+apply PoSe penalties. Network-visible checks and PoSe enforcement are reserved
+for later PIP-0001 stages. See [doc/release-notes-pip-0001.md](release-notes-pip-0001.md)
+for the detailed operator notes.
 
-Network improvements
---------------------
-We implemented and backported implementations of several improvement proposals.
-You can read more about implemented changes in the following documents:
-- [`DIP-0025`](https://gist.github.com/thephez/6c4c2a7747298e8b3e528c0c4e98a68c): Compressed headers.
-- [`BIP 155`](https://github.com/bitcoin/bips/blob/master/bip-0155.mediawiki): The 'addrv2' and 'sendaddrv2' messages which enable relay of Tor V3 addresses (and other networks).
-- [`BIP 158`](https://github.com/bitcoin/bips/blob/master/bip-0158.mediawiki): Compact Block Filters for Light Clients.
+## BLS scheme upgrade
 
-KeePass support removed
------------------------
-Please make sure to move your coins to a wallet with a regular passphrase.
+The v19 hard fork migrates remaining BLS public key and signature usage to the
+basic BLS scheme, aligning serialization with IETF standards. This affects
+network messages, quorum commitments, deterministic masternode lists, ProTx
+transactions and related RPC behavior.
 
-Wallet changes
---------------
-We continued backporting wallet functionality updates. Most notable changes
-are:
-- Added support for empty, encrypted-on-creation and watch-only wallets.
-- Wallets can now be created, opened and closed via a GUI menu.
-- No more `salvagewallet` option in cmd-line and Repair tab in GUI. Check the
-`salvage` command in the `piratecash-wallet` tool.
+The release also includes the later Dash v19 fixes for BLS database migration
+and historical masternode list handling, improving compatibility for upgraded
+nodes and light clients.
 
-Indexes
--------
-The transaction index is moved into `indexes/` folder. The migration of the old
-data is done on the first run and does not require reindexing. Note that the data
-in the old path is removed which means that this change is not backwards
-compatible and you'll have to reindex the whole blockchain if you decide to
-downgrade to a pre-v18.0.0 version.
+## Wallet changes
 
-Remote Procedure Call (RPC) Changes
------------------------------------
-Most changes here were introduced through Bitcoin backports mostly related to
-the deprecation of wallet accounts in PirateCashCore v0.17 and introduction of PSBT
-format.
+PirateCash Core no longer automatically creates new wallets on startup. Existing
+wallets specified by `-wallet`, `piratecash.conf` or `settings.json` are loaded as
+before. If a specified wallet does not exist, PirateCash Core logs a warning
+instead of creating a new wallet automatically.
 
-The new RPCs are:
-- `combinepsbt`
-- `converttopsbt`
-- `createpsbt`
-- `decodepsbt`
-- `deriveaddresses`
-- `finalizepsbt`
-- `getblockfilter`
-- `getdescriptorinfo`
-- `getnodeaddresses`
-- `getrpcinfo`
-- `joinpsbts`
-- `listwalletdir`
-- `quorum rotationinfo`
-- `scantxoutset`
-- `submitheader`
-- `testmempoolaccept`
-- `utxoupdatepsbt`
-- `walletcreatefundedpsbt`
-- `walletprocesspsbt`
+New wallets can be created through the GUI, the `piratecash-wallet create` command
+or the `createwallet` RPC.
 
-The removed RPCs are:
-- `estimatefee`
-- `getinfo`
-- `getreceivedbyaccount`
-- `keepass`
-- `listaccounts`
-- `listreceivedbyaccount`
-- `move`
-- `resendwallettransactions`
-- `sendfrom`
-- `signrawtransaction`
+## P2P and network changes
 
-Changes in existing RPCs introduced through bitcoin backports:
-- The `testnet` field in `piratecash-cli -getinfo` has been renamed to `chain` and
-now returns the current network name as defined in BIP70 (main, test, regtest).
-- Added `window_final_block_height` in `getchaintxstats`
-- Added `feerate_percentiles` object with feerates at the 10th, 25th, 50th,
-75th, and 90th percentile weight unit instead of `medianfeerate` in
-`getblockstats`
-- In `getmempoolancestors`, `getmempooldescendants`, `getmempoolentry` and
-`getrawmempool` RPCs, to be consistent with the returned value and other RPCs
-such as `getrawtransaction`, `vsize` has been added and `size` is now
-deprecated. `size` will only be returned if `piratecashd` is started with
-`-deprecatedrpc=size`.
-- Added `loaded` in mempool related RPCs indicates whether the mempool is fully
-loaded or not
-- Added `localservicesnames` in `getnetworkinfo` list the services the node
-offers to the network, in human-readable form (in addition to an already
-existing `localservices` hex string)
-- Added `hwm` in `getzmqnotifications`
-- `createwallet` can create blank, encrypted or watch-only wallets now.
-- Added `private_keys_enabled` in `getwalletinfo`
-- Added `solvable`, `desc`, `ischange` and `hdmasterfingerprint` in `getaddressinfo`
-- Added `desc` in `listunspent`
+Support for BIP61 reject messages has been removed, including the
+`-enablebip61` option. Debugging and testing should use node logs and RPCs such
+as `submitblock`, `getblocktemplate`, `sendrawtransaction` and
+`testmempoolaccept`.
 
-PirateCash-specific changes in existing RPCs:
-- Added `quorumIndex` in `quorum getinfo` and `quorum memberof`
-- In rpc `masternodelist` with parameters `full`, `info` and `json` the PoS penalty score of the MN will be returned. For `json` parameter, the field `pospenaltyscore` was added.
+CoinJoin-related network messages were updated to improve support for light
+clients. The release also includes Dash v19.2 and v19.3 fixes for mixing,
+masternode list handling and ChainLocks operation.
 
-Please check `help <command>` for more detailed information on specific RPCs.
+## RPC, command and configuration changes
 
-Command-line options
---------------------
-Most changes here were introduced through Bitcoin backports.
+New or updated RPC and command behavior includes:
 
-New cmd-line options:
-- `asmap`
-- `avoidpartialspends`
-- `blockfilterindex`
-- `blocksonly`
-- `llmqinstantsenddip0024`
-- `llmqtestinstantsendparams`
-- `maxuploadtarget`
-- `natpmp`
-- `peerblockfilters`
-- `powtargetspacing`
-- `stdinwalletpassphrase`
-- `zmqpubhashchainlock`
-- `zmqpubrawchainlock`
+- `protx register_hpmn`, `protx register_fund_hpmn`,
+  `protx register_prepare_hpmn` and `protx update_service_hpmn`
+- `protx register_legacy`, `protx register_fund_legacy` and
+  `protx register_prepare_legacy`
+- `cleardiscouraged`
+- `upgradewallet`
+- `wipewallettxes`
+- `piratecash-wallet wipetxes`
+- `masternodelist` modes including `recent` and `hpmn`
+- `protx list hpmn`
+- additional quorum and BLS scheme fields in related RPC responses
 
-The option to set the PUB socket's outbound message high water mark
-(SNDHWM) may be set individually for each notification:
-- `-zmqpubhashtxhwm=n`
-- `-zmqpubhashblockhwm=n`
-- `-zmqpubhashchainlockhwm=n`
-- `-zmqpubhashtxlockhwm=n`
-- `-zmqpubhashgovernancevotehwm=n`
-- `-zmqpubhashgovernanceobjecthwm=n`
-- `-zmqpubhashinstantsenddoublespendhwm=n`
-- `-zmqpubhashrecoveredsighwm=n`
-- `-zmqpubrawblockhwm=n`
-- `-zmqpubrawtxhwm=n`
-- `-zmqpubrawchainlockhwm=n`
-- `-zmqpubrawchainlocksighwm=n`
-- `-zmqpubrawtxlockhwm=n`
-- `-zmqpubrawtxlocksighwm=n`
-- `-zmqpubrawgovernancevotehwm=n`
-- `-zmqpubrawgovernanceobjecthwm=n`
-- `-zmqpubrawinstantsenddoublespendhwm=n`
-- `-zmqpubrawrecoveredsighwm=n`
+Command-line and configuration changes include:
 
-Removed cmd-line options:
-- `keepass`
-- `keepassport`
-- `keepasskey`
-- `keepassid`
-- `keepassname`
-- `salvagewallet`
+- new `llmqplatform` option for devnet
+- new `unsafesqlitesync` option
+- removed `enablebip61`
+- changed `llmqinstantsend` and `llmqinstantsenddip0024` handling on regtest
+- invalid `-rpcauth` values now cause startup failure
+- `-blockversion` is allowed on non-mainnet networks
 
-Changes in existing cmd-line options:
+Please check `help <command>`, `piratecashd --help` or the Qt wallet command-line
+options dialog for detailed information.
 
-Please check `Help -> Command-line options` in Qt wallet or `piratecashd --help` for
-more information.
+## Other fixes and improvements
 
-Backports from Bitcoin Core
----------------------------
-This release introduces over 1000 updates from Bitcoin v0.18/v0.19/v0.20 as well as numerous updates from Bitcoin v0.21 and more recent versions. This includes multi-wallet support in the GUI, support for partially signed transactions (PSBT), Tor version 3 support, and a number of other updates that will benefit PirateCash users. Bitcoin changes that do not align with PirateCash’s product needs, such as SegWit and RBF, are excluded from our backporting. For additional detail on what’s included in Bitcoin, please refer to their release notes – v0.18, v0.19, v0.20.
+This release also includes:
 
-Miscellaneous
--------------
-A lot of refactoring, code cleanups and other small fixes were done in this release.
+- fixes for v19 hard fork activation and database migration behavior
+- improved support for historical masternode list data on light clients
+- ability to keep ChainLocks enforced while disabling signing of new ChainLocks
+- wallet GUI improvements for large rescans and long-running wallet operations
+- fixes for startup with an empty `settings.json`
+- reduced sensitive value logging for masternode and spork keys
+- block processing optimizations
+- BLS library update to version 1.3.0
+- build, test and documentation fixes inherited from Dash Core v19.3.0
 
-v18.0.0 Change log
-==================
+## Backports from Bitcoin Core
 
-See detailed [set of changes]().
+This release includes many updates from Bitcoin Core v0.18 through v0.21, as
+well as selected updates from Bitcoin Core v22 and newer versions. Changes that
+do not align with Dash or PirateCash network behavior, such as SegWit and RBF, are
+excluded from these backports.
 
-Credits
-=======
 
-Thanks to everyone who directly contributed to this release:
+# v19.0.0 Change log
 
-- Odysseas Gabrielides (ogabrielides)
-- PastaPastaPasta
-- UdjinM6
+PirateCash Core v19.0.0 is based on Dash Core v19.3.0.
 
-As well as everyone that submitted issues, reviewed pull requests and helped
-debug the release candidates.
+For upstream Dash Core changes included in this release, see:
+
+- <https://github.com/dashpay/dash/compare/v18.2.2...dashpay:v19.3.0>
+
+PirateCash-specific changes are tracked in the PirateCash Core repository history:
+
+- <https://github.com/piratecash/piratecash>
+
+
+# Credits
+
+Thanks to everyone who directly contributed to this release, submitted issues,
+reviewed pull requests, helped with release candidates, maintained
+infrastructure, or helped translate the project.
+
+Thanks also go to Dash Core and Bitcoin Core developers for the upstream work
+this release builds on.
+
 
 # Older releases
 
