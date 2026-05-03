@@ -28,7 +28,14 @@ void
 PBKDF2_SHA256(const uint8_t *passwd, size_t passwdlen, const uint8_t *salt,
     size_t saltlen, uint64_t c, uint8_t *buf, size_t dkLen);
 
-#if !defined(__APPLE__) && !defined(__FreeBSD__)
+#if defined(__has_include)
+#  if __has_include(<sys/endian.h>)
+#    include <sys/endian.h>
+#    define SCRYPT_H_HAVE_SYS_ENDIAN_H 1
+#  endif
+#endif
+
+#if !defined(SCRYPT_H_HAVE_SYS_ENDIAN_H)
 static inline uint32_t le32dec(const void *pp)
 {
         const uint8_t *p = (uint8_t const *)pp;

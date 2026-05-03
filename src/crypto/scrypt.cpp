@@ -43,10 +43,14 @@
 #include <cpuid.h>
 #endif
 #endif
-#if defined(__APPLE__) || defined(__FreeBSD__)
-#include <sys/endian.h>
+#if defined(__has_include)
+#  if __has_include(<sys/endian.h>)
+#    include <sys/endian.h>
+#    define SCRYPT_HAVE_SYS_ENDIAN_H 1
+#  endif
 #endif
-#if !defined(__APPLE__) && !defined(__FreeBSD__)
+
+#if !defined(SCRYPT_HAVE_SYS_ENDIAN_H)
 static inline uint32_t be32dec(const void *pp)
 {
 	const uint8_t *p = (uint8_t const *)pp;
