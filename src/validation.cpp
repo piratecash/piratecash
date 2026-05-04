@@ -397,7 +397,12 @@ bool ContextualCheckTransaction(const CTransaction& tx, CValidationState &state,
     }
 
     // Size limits
-    if (fDIP0001Active_context && ::GetSerializeSize(tx, PROTOCOL_VERSION) > MAX_STANDARD_TX_SIZE)
+    // Consensus: this check runs both for blocks (ContextualCheckBlock) and for the mempool
+    // (AcceptToMemoryPoolWorker). It MUST stay on MAX_LEGACY_TX_SIZE so that existing blocks
+    // produced by older PirateCash clients with oversized transactions still validate. The
+    // tighter MAX_STANDARD_TX_SIZE is enforced higher up the stack (wallet today; v20 will
+    // also tighten IsStandardTx and the orphan path). See doc/pips/pip-0003.md.
+    if (fDIP0001Active_context && ::GetSerializeSize(tx, PROTOCOL_VERSION) > MAX_LEGACY_TX_SIZE)
         return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-txns-oversize");
 
     return true;

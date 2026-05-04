@@ -270,12 +270,39 @@ class MempoolAcceptanceTest(BitcoinTestFramework):
         )
         tx.deserialize(BytesIO(hex_str_to_bytes(raw_tx_reference)))
         output_p2sh_burn = CTxOut(nValue=540, scriptPubKey=CScript([OP_HASH160, hash160(b'burn'), OP_EQUAL]))
-        num_scripts = 100000 // len(output_p2sh_burn.serialize())  # Use enough outputs to make the tx too large for our policy
+        # PIP-0003 stage 1 (v19): IsStandardTx temporarily uses MAX_LEGACY_TX_SIZE
+        # (2900000) instead of MAX_STANDARD_TX_SIZE (100000) so v19 nodes stay
+        # compatible with pre-v19 peers. Because ContextualCheckTransaction (a
+        # consensus check that is invoked before IsStandardTx in
+        # AcceptToMemoryPoolWorker) gates on `size > MAX_LEGACY_TX_SIZE`, an
+        # oversized tx is rejected at consensus level with `16: bad-txns-oversize`
+        # and never reaches the policy `64: tx-size` path on v19 nodes. The
+        # expectation is restored to `64: tx-size` in v20 (PIP-0003 stage 2),
+        # along with the bound below being lowered back to 100000.
+        max_legacy_tx_size = 2900000
+        num_scripts = max_legacy_tx_size // len(output_p2sh_burn.serialize()) + 1  # Use enough outputs to make the tx too large for our policy
         tx.vout = [output_p2sh_burn] * num_scripts
         self.check_mempool_result(
-            result_expected=[{'txid': tx.rehash(), 'allowed': False, 'reject-reason': '64: tx-size'}],
+            result_expected=[{'txid': tx.rehash(), 'allowed': False, 'reject-reason': '16: bad-txns-oversize'}],
             rawtxs=[tx.serialize().hex()],
         )
+
+        self.log.info('A transaction that hits the v19 BroadcastTransaction local guard (PIP-0003)')
+        # Build a transaction whose serialised size is in the band
+        # (MAX_STANDARD_TX_SIZE, MAX_LEGACY_TX_SIZE]: above the new v19 strict
+        # local-submission cap, but still under the legacy consensus and policy
+        # ceilings. testmempoolaccept goes through AcceptToMemoryPool directly
+        # and would let such a tx through in v19, which is why this case must
+        # be exercised via sendrawtransaction — the only path that goes through
+        # BroadcastTransaction and therefore through the new tx-size-local
+        # guard. The expectation will need updating in v20 once the guard is
+        # removed (PIP-0003 stage 2).
+        tx.deserialize(BytesIO(hex_str_to_bytes(raw_tx_reference)))
+        max_standard_tx_size = 100000
+        num_scripts_local = max_standard_tx_size // len(output_p2sh_burn.serialize()) + 1
+        tx.vout = [output_p2sh_burn] * num_scripts_local
+        assert_raises_rpc_error(-26, 'tx-size-local', node.sendrawtransaction, hexstring=tx.serialize().hex(), maxfeerate=0)
+
         tx.deserialize(BytesIO(hex_str_to_bytes(raw_tx_reference)))
         tx.vout[0] = output_p2sh_burn
         tx.vout[0].nValue -= 1  # Make output smaller, such that it is dust for our policy

@@ -6,10 +6,13 @@
 
 #include <iostream>
 #include <future>
+#include <limits>
 #include <memory>
 #include <stdint.h>
+#include <string>
 #include <vector>
 
+#include <init.h>
 #include <interfaces/chain.h>
 #include <key_io.h>
 #include <node/context.h>
@@ -55,6 +58,121 @@ static void TestUnloadWallet(std::shared_ptr<CWallet>&& wallet)
     wallet->m_chain_notifications_handler.reset();
     RemoveWallet(wallet, std::nullopt, warnings);
     UnloadWallet(std::move(wallet));
+}
+
+static constexpr const char* STAKING_ARG_NAMES[] = {
+    "stakesplitthreshold",
+    "stakemaxsplit",
+    "stakeautocombine",
+    "inputstakeprotect",
+    "poshashinterval",
+};
+
+static void ClearStakingArgs()
+{
+    for (const char* arg : STAKING_ARG_NAMES) {
+        gArgs.ForceRemoveArg(arg);
+    }
+}
+
+static void SetStakingArg(const std::string& arg, const std::string& value)
+{
+    gArgs.ForceSetArg("-" + arg, value);
+}
+
+struct ScopedStakingArgsCleanup {
+    ~ScopedStakingArgsCleanup()
+    {
+        ClearStakingArgs();
+    }
+};
+
+static void CheckInvalidStakingArg(const std::string& arg, const std::string& value, const std::string& expected_error)
+{
+    const ScopedStakingArgsCleanup cleanup;
+    SetStakingArg(arg, value);
+    {
+        BOOST_TEST_INFO("arg=-" << arg << " value=" << value);
+        ASSERT_DEBUG_LOG(expected_error);
+        BOOST_CHECK(!AppInitParameterInteraction(gArgs));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(wallet_constructor_reads_staking_args)
+{
+    const ScopedStakingArgsCleanup cleanup;
+    SetStakingArg("stakesplitthreshold", "123");
+    SetStakingArg("stakemaxsplit", "45");
+    SetStakingArg("stakeautocombine", "2");
+    SetStakingArg("inputstakeprotect", "0");
+    SetStakingArg("poshashinterval", "7");
+
+    const bool params_valid = AppInitParameterInteraction(gArgs);
+    auto wallet = TestLoadWallet(*m_chain);
+    const bool loaded = wallet != nullptr;
+    size_t stake_split_threshold = 0;
+    int stake_max_split = 0;
+    int stake_autocombine = 0;
+    bool input_stake_protect = true;
+    unsigned int pos_hash_interval = 0;
+    if (loaded) {
+        stake_split_threshold = wallet->nStakeSplitThreshold;
+        stake_max_split = wallet->nStakeMaxSplit;
+        stake_autocombine = wallet->fAutocombine;
+        input_stake_protect = wallet->inputStakeProtect;
+        pos_hash_interval = wallet->nHashInterval;
+        TestUnloadWallet(std::move(wallet));
+    }
+
+    BOOST_REQUIRE(params_valid);
+    BOOST_REQUIRE(loaded);
+    BOOST_CHECK_EQUAL(stake_split_threshold, 123U);
+    BOOST_CHECK_EQUAL(stake_max_split, 45);
+    BOOST_CHECK_EQUAL(stake_autocombine, AUTOCOMBINE_ANY);
+    BOOST_CHECK(!input_stake_protect);
+    BOOST_CHECK_EQUAL(pos_hash_interval, 7U);
+}
+
+BOOST_AUTO_TEST_CASE(wallet_accepts_boundary_staking_args)
+{
+    const ScopedStakingArgsCleanup cleanup;
+    SetStakingArg("stakesplitthreshold", "1");
+    SetStakingArg("stakemaxsplit", "0");
+    SetStakingArg("poshashinterval", std::to_string(MAX_POS_HASH_INTERVAL));
+
+    BOOST_REQUIRE(AppInitParameterInteraction(gArgs));
+    auto wallet = TestLoadWallet(*m_chain);
+    BOOST_REQUIRE(wallet != nullptr);
+
+    BOOST_CHECK_EQUAL(wallet->nStakeSplitThreshold, 1U);
+    BOOST_CHECK_EQUAL(wallet->nStakeMaxSplit, 0);
+    BOOST_CHECK_EQUAL(wallet->nHashInterval, MAX_POS_HASH_INTERVAL);
+
+    TestUnloadWallet(std::move(wallet));
+
+    ClearStakingArgs();
+    SetStakingArg("stakesplitthreshold", std::to_string(MAX_STAKE_SPLIT_THRESHOLD));
+
+    BOOST_REQUIRE(AppInitParameterInteraction(gArgs));
+    wallet = TestLoadWallet(*m_chain);
+    BOOST_REQUIRE(wallet != nullptr);
+
+    BOOST_CHECK_EQUAL(wallet->nStakeSplitThreshold, static_cast<size_t>(MAX_STAKE_SPLIT_THRESHOLD));
+
+    TestUnloadWallet(std::move(wallet));
+}
+
+BOOST_AUTO_TEST_CASE(wallet_rejects_invalid_staking_args)
+{
+    CheckInvalidStakingArg("stakesplitthreshold", "0", "-stakesplitthreshold must be between 1 and");
+    CheckInvalidStakingArg("stakesplitthreshold", "-1", "-stakesplitthreshold must be between 1 and");
+    CheckInvalidStakingArg("stakesplitthreshold", "1000001", "-stakesplitthreshold must be between 1 and 1000000");
+    CheckInvalidStakingArg("stakemaxsplit", "-1", "-stakemaxsplit must be between 0 and");
+    CheckInvalidStakingArg("stakeautocombine", "-1", "-stakeautocombine must be between 0 and 2");
+    CheckInvalidStakingArg("stakeautocombine", "3", "-stakeautocombine must be between 0 and 2");
+    CheckInvalidStakingArg("poshashinterval", "0", "-poshashinterval must be between 1 and");
+    CheckInvalidStakingArg("poshashinterval", "-1", "-poshashinterval must be between 1 and");
+    CheckInvalidStakingArg("poshashinterval", "86401", "-poshashinterval must be between 1 and 86400");
 }
 
 static CMutableTransaction TestSimpleSpend(const CTransaction& from, uint32_t index, const CKey& key, const CScript& pubkey)

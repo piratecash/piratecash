@@ -2599,6 +2599,8 @@ static UniValue getstakingstatus(const JSONRPCRequest& request)
                 {RPCResult::Type::NUM, "stakesplitthreshold", "value of the current threshold for stake split"},
                 {RPCResult::Type::NUM, "stakemaxsplit", "the number of max inputs & outputs of a stake"},
                 {RPCResult::Type::NUM, "stakeautocombine", "autocombine feature: 0 - disable, 1 - same account, 2 - any account"},
+                {RPCResult::Type::BOOL, "inputstakeprotect", "whether masternode collateral is excluded from staking"},
+                {RPCResult::Type::NUM, "poshashinterval", "number of seconds between stake hash attempts"},
             },
         },
         RPCExamples{
@@ -2635,9 +2637,11 @@ static UniValue getstakingstatus(const JSONRPCRequest& request)
     obj.pushKV("walletunlocked", !pwallet->IsLocked(true));
     obj.pushKV("mintable_coins", fMintableCoins);
     obj.pushKV("above_reserve_balance", !fLessReserveBalance);
-    obj.pushKV("stakesplitthreshold", gArgs.GetArg("-stakesplitthreshold", DEFAULT_STAKE_SPLIT_THRESHOLD));
-    obj.pushKV("stakemaxsplit", gArgs.GetArg("-stakemaxsplit", DEFAULT_STAKE_MAX_SPLIT));
-    obj.pushKV("stakeautocombine", gArgs.GetArg("-stakeautocombine", DEFAULT_STAKE_AUTOCOMBINE));
+    obj.pushKV("stakesplitthreshold", static_cast<uint64_t>(pwallet->nStakeSplitThreshold));
+    obj.pushKV("stakemaxsplit", pwallet->nStakeMaxSplit);
+    obj.pushKV("stakeautocombine", pwallet->fAutocombine);
+    obj.pushKV("inputstakeprotect", pwallet->inputStakeProtect);
+    obj.pushKV("poshashinterval", static_cast<uint64_t>(pwallet->nHashInterval));
     return obj;
 }
 

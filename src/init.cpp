@@ -100,6 +100,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <limits>
 #include <memory>
 #include <set>
 #include <thread>
@@ -825,12 +826,12 @@ void SetupServerArgs(NodeContext& node)
 #ifdef ENABLE_WALLET
     gArgs.AddArg("-staking=<n>", strprintf("Enable staking functionality (0-1, default: %u)", 1), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
     gArgs.AddArg("-reservebalance=<amt>", "Keep the specified amount available for spending at all times (default: 0)", ArgsManager::ALLOW_ANY, OptionsCategory::POS);
-    gArgs.AddArg("-stakesplitthreshold=<n>", strprintf("Splits stake reward by threshold (default: %d)", DEFAULT_STAKE_SPLIT_THRESHOLD), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+    gArgs.AddArg("-stakesplitthreshold=<n>", strprintf("Splits stake reward by threshold (1-%d, default: %d)", MAX_STAKE_SPLIT_THRESHOLD, DEFAULT_STAKE_SPLIT_THRESHOLD), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
     gArgs.AddArg("-stakemaxsplit=<n>", strprintf("Sets the number of max inputs & outputs of a stake (default: %d)", DEFAULT_STAKE_MAX_SPLIT), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
     gArgs.AddArg("-stakeautocombine=<n>", strprintf("Autocombine feature: 0 - disable, 1 - same account, 2 - any account (default: %d)", DEFAULT_STAKE_AUTOCOMBINE), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
-    gArgs.AddArg("-inputstakeprotect=<n>", strprintf("Don't use masternode collateral and denominated amounts for staking (0-1, default: %u)", 1), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+    gArgs.AddArg("-inputstakeprotect=<n>", strprintf("Don't use masternode collateral for staking (0-1, default: %u)", DEFAULT_INPUT_STAKE_PROTECT), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
     gArgs.AddArg("-printcoinstake", "", ArgsManager::ALLOW_ANY, OptionsCategory::HIDDEN);
-    gArgs.AddArg("-poshashinterval", "", ArgsManager::ALLOW_ANY, OptionsCategory::HIDDEN);
+    gArgs.AddArg("-poshashinterval=<n>", strprintf("Specify the number of seconds between stake hash attempts (1-%u, default: %u)", MAX_POS_HASH_INTERVAL, DEFAULT_POS_HASH_INTERVAL), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
 #endif
 #if HAVE_DECL_DAEMON
     argsman.AddArg("-daemon", "Run in the background as a daemon and accept commands", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
@@ -1337,6 +1338,28 @@ bool AppInitParameterInteraction(const ArgsManager& args)
     if (!warnings.empty()) {
         InitWarning(warnings);
     }
+
+#ifdef ENABLE_WALLET
+    const int64_t stake_split_threshold = args.GetArg("-stakesplitthreshold", static_cast<int64_t>(DEFAULT_STAKE_SPLIT_THRESHOLD));
+    if (stake_split_threshold <= 0 || stake_split_threshold > MAX_STAKE_SPLIT_THRESHOLD) {
+        return InitError(strprintf(_("-stakesplitthreshold must be between 1 and %d"), MAX_STAKE_SPLIT_THRESHOLD));
+    }
+
+    const int64_t stake_max_split = args.GetArg("-stakemaxsplit", static_cast<int64_t>(DEFAULT_STAKE_MAX_SPLIT));
+    if (stake_max_split < 0 || stake_max_split > std::numeric_limits<int>::max()) {
+        return InitError(strprintf(_("-stakemaxsplit must be between 0 and %d"), std::numeric_limits<int>::max()));
+    }
+
+    const int64_t stake_autocombine = args.GetArg("-stakeautocombine", static_cast<int64_t>(DEFAULT_STAKE_AUTOCOMBINE));
+    if (stake_autocombine < AUTOCOMBINE_DISABLE || stake_autocombine > AUTOCOMBINE_ANY) {
+        return InitError(strprintf(_("-stakeautocombine must be between %d and %d"), AUTOCOMBINE_DISABLE, AUTOCOMBINE_ANY));
+    }
+
+    const int64_t pos_hash_interval = args.GetArg("-poshashinterval", static_cast<int64_t>(DEFAULT_POS_HASH_INTERVAL));
+    if (pos_hash_interval <= 0 || pos_hash_interval > MAX_POS_HASH_INTERVAL) {
+        return InitError(strprintf(_("-poshashinterval must be between 1 and %u"), MAX_POS_HASH_INTERVAL));
+    }
+#endif
 
     if (!fs::is_directory(GetBlocksDir())) {
         return InitError(strprintf(_("Specified blocks directory \"%s\" does not exist."), args.GetArg("-blocksdir", "")));

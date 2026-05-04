@@ -68,8 +68,14 @@ bool IsStandardTx(const CTransaction& tx, bool permit_bare_multisig, const CFeeR
     // almost as much to process as they cost the sender in fees, because
     // computing signature hashes is O(ninputs*txsize). Limiting transactions
     // to MAX_STANDARD_TX_SIZE mitigates CPU exhaustion attacks.
+    //
+    // PIP-0003 (v19): we keep MAX_LEGACY_TX_SIZE here so that the mempool/relay
+    // stays compatible with older PirateCash peers that may still propagate
+    // historically-oversized transactions. The wallet has already been tightened
+    // to MAX_STANDARD_TX_SIZE, so no new oversized transactions originate from
+    // an upgraded node. v20 will switch this back to MAX_STANDARD_TX_SIZE.
     unsigned int sz = GetSerializeSize(tx, CTransaction::CURRENT_VERSION);
-    if (sz >= MAX_STANDARD_TX_SIZE) {
+    if (sz >= MAX_LEGACY_TX_SIZE) {
         reason = "tx-size";
         return false;
     }

@@ -370,43 +370,74 @@ std::vector<std::vector<CDeterministicMNCPtr>> BuildNewQuorumQuarterMembers(cons
     }
 
     std::vector<int> skipList;
-    size_t firstSkippedIndex = 0;
-    size_t idx{0};
-    for (const size_t i : irange::range(nQuorums)) {
-        auto usedMNsCount = MnsUsedAtHIndexed[i].GetAllMNsCount();
-        bool updated{false};
-        size_t initial_loop_idx = idx;
-        while (quarterQuorumMembers[i].size() < quarterSize && (usedMNsCount + quarterQuorumMembers[i].size() < sortedCombinedMnsList.size())) {
-            bool skip{true};
-            if (!MnsUsedAtHIndexed[i].HasMN(sortedCombinedMnsList[idx]->proTxHash)) {
-                try {
-                    // NOTE: AddMN is the one that can throw exceptions, must be exicuted first
-                    MnsUsedAtHIndexed[i].AddMN(sortedCombinedMnsList[idx]);
-                    quarterQuorumMembers[i].push_back(sortedCombinedMnsList[idx]);
-                    updated = true;
-                    skip = false;
-                } catch (const std::runtime_error& e) {
-                }
-            }
-            if (skip) {
-                if (firstSkippedIndex == 0) {
-                    firstSkippedIndex = idx;
-                    skipList.push_back(idx);
+
+    // PirateCash: pre-V19 mainnet LLMQ_60_75 needs the v18 picking algorithm
+    // (no AddMN-after-pick, no termination guard) to match on-chain commitments.
+    const bool use_v18_picking =
+        Params().NetworkIDString() == CBaseChainParams::MAIN
+        && llmqParams.type == Consensus::LLMQType::LLMQ_60_75
+        && !IsV19Active(pQuorumBaseBlockIndex);
+
+    if (use_v18_picking) {
+        int firstSkippedIndex_v18 = 0;
+        auto idx_v18 = 0;
+        for (auto i = 0; i < nQuorums; ++i) {
+            auto usedMNsCount = MnsUsedAtHIndexed[i].GetAllMNsCount();
+            while (quarterQuorumMembers[i].size() < quarterSize && (usedMNsCount + quarterQuorumMembers[i].size() < sortedCombinedMnsList.size())) {
+                if (!MnsUsedAtHIndexed[i].HasMN(sortedCombinedMnsList[idx_v18]->proTxHash)) {
+                    quarterQuorumMembers[i].push_back(sortedCombinedMnsList[idx_v18]);
                 } else {
-                    skipList.push_back(idx - firstSkippedIndex);
+                    if (firstSkippedIndex_v18 == 0) {
+                        firstSkippedIndex_v18 = idx_v18;
+                        skipList.push_back(idx_v18);
+                    } else {
+                        skipList.push_back(idx_v18 - firstSkippedIndex_v18);
+                    }
+                }
+                if (++idx_v18 == static_cast<int>(sortedCombinedMnsList.size())) {
+                    idx_v18 = 0;
                 }
             }
-            if (++idx == sortedCombinedMnsList.size()) {
-                idx = 0;
-            }
-            if (idx == initial_loop_idx) {
-                // we made full "while" loop
-                if (!updated) {
-                    // there are not enough MNs, there is nothing we can do here
-                    return std::vector<std::vector<CDeterministicMNCPtr>>(nQuorums);
+        }
+    } else {
+        size_t firstSkippedIndex = 0;
+        size_t idx{0};
+        for (const size_t i : irange::range(nQuorums)) {
+            auto usedMNsCount = MnsUsedAtHIndexed[i].GetAllMNsCount();
+            bool updated{false};
+            size_t initial_loop_idx = idx;
+            while (quarterQuorumMembers[i].size() < quarterSize && (usedMNsCount + quarterQuorumMembers[i].size() < sortedCombinedMnsList.size())) {
+                bool skip{true};
+                if (!MnsUsedAtHIndexed[i].HasMN(sortedCombinedMnsList[idx]->proTxHash)) {
+                    try {
+                        // NOTE: AddMN is the one that can throw exceptions, must be exicuted first
+                        MnsUsedAtHIndexed[i].AddMN(sortedCombinedMnsList[idx]);
+                        quarterQuorumMembers[i].push_back(sortedCombinedMnsList[idx]);
+                        updated = true;
+                        skip = false;
+                    } catch (const std::runtime_error& e) {
+                    }
                 }
-                // reset and try again
-                updated = false;
+                if (skip) {
+                    if (firstSkippedIndex == 0) {
+                        firstSkippedIndex = idx;
+                        skipList.push_back(idx);
+                    } else {
+                        skipList.push_back(idx - firstSkippedIndex);
+                    }
+                }
+                if (++idx == sortedCombinedMnsList.size()) {
+                    idx = 0;
+                }
+                if (idx == initial_loop_idx) {
+                    // we made full "while" loop
+                    if (!updated) {
+                        // there are not enough MNs, there is nothing we can do here
+                        return std::vector<std::vector<CDeterministicMNCPtr>>(nQuorums);
+                    }
+                    // reset and try again
+                    updated = false;
+                }
             }
         }
     }

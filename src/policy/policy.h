@@ -20,8 +20,19 @@ class CTxOut;
 static const unsigned int DEFAULT_BLOCK_MAX_SIZE = 2000000;
 /** Default for -blockmintxfee, which sets the minimum feerate for a transaction in blocks created by mining code **/
 static const unsigned int DEFAULT_BLOCK_MIN_TX_FEE = 1000;
-/** The maximum size for transactions we're willing to relay/mine */
-static const unsigned int MAX_STANDARD_TX_SIZE = 2900000;
+/** The maximum size for transactions we're willing to relay/mine.
+ *  Aligned with upstream Dash/Cosanta. Used by the wallet (cannot create
+ *  larger tx) and, starting from v20, by mempool/relay/orphan paths.
+ *  See doc/pips/pip-0003.md for the rollout plan. */
+static const unsigned int MAX_STANDARD_TX_SIZE = 100000;
+/** Legacy upper bound on transaction size historically allowed by
+ *  PirateCash. Required for consensus (so existing blocks containing
+ *  oversized transactions still validate during initial sync) and, in
+ *  v19 only, for mempool/relay/orphan paths so that we stay compatible
+ *  with older peers. v20 will drop the mempool/relay/orphan use sites
+ *  back to MAX_STANDARD_TX_SIZE; the consensus use site stays on
+ *  MAX_LEGACY_TX_SIZE. See doc/pips/pip-0003.md. */
+static const unsigned int MAX_LEGACY_TX_SIZE = 2900000;
 /** The minimum size for transactions we're willing to relay/mine (1 empty scriptSig input + 1 P2SH output = 83 bytes) */
 static const unsigned int MIN_STANDARD_TX_SIZE = 83;
 /** Maximum number of signature check operations in an IsStandard() P2SH script */
