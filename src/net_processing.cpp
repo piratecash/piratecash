@@ -1061,15 +1061,22 @@ bool AddOrphanTx(const CTransactionRef& tx, NodeId peer) EXCLUSIVE_LOCKS_REQUIRE
     if (mapOrphanTransactions.count(hash))
         return false;
 
-    // Ignore big transactions, to avoid a
-    // send-big-orphans memory exhaustion attack. If a peer has a legitimate
-    // large transaction with a missing parent then we assume
-    // it will rebroadcast it later, after the parent transaction(s)
-    // have been mined or received.
-    // 100 orphans, each of which is at most 99,999 bytes big is
-    // at most 10 megabytes of orphans and somewhat more byprev index (in the worst case):
+    // Ignore big transactions, to avoid a send-big-orphans memory exhaustion
+    // attack. If a peer has a legitimate large transaction with a missing
+    // parent then we assume it will rebroadcast it later, after the parent
+    // transaction(s) have been mined or received.
+    //
+    // PIP-0003 stage 1 (v19): we keep MAX_LEGACY_TX_SIZE here in lock-step
+    // with IsStandardTx so a pre-v19 peer that legitimately rebroadcasts a
+    // legacy-sized transaction does not get its orphan dropped. The total
+    // orphan-pool memory footprint is independently capped by
+    // -maxorphantxsize (DEFAULT_MAX_ORPHAN_TRANSACTIONS_SIZE megabytes,
+    // currently 10 MB by default), so even with the per-tx cap raised to
+    // ~2.9 MB an attacker cannot grow the pool beyond that aggregate limit
+    // — at most a handful of legacy-sized orphans coexist in memory at any
+    // moment. v20 will switch this per-tx cap back to MAX_STANDARD_TX_SIZE.
     unsigned int sz = GetSerializeSize(*tx, CTransaction::CURRENT_VERSION);
-    if (sz > MAX_STANDARD_TX_SIZE)
+    if (sz > MAX_LEGACY_TX_SIZE)
     {
         LogPrint(BCLog::MEMPOOL, "ignoring large orphan tx (size: %u, hash: %s)\n", sz, hash.ToString());
         return false;
