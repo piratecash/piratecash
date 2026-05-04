@@ -91,7 +91,11 @@ static const CAmount HIGH_MAX_TX_FEE = 100 * HIGH_TX_FEE_PER_KB;
 static const bool DEFAULT_USE_HD_WALLET = false;
 
 static const size_t DEFAULT_STAKE_SPLIT_THRESHOLD = 500;
-static const size_t DEFAULT_STAKE_MAX_SPLIT = 500;
+static const int64_t MAX_STAKE_SPLIT_THRESHOLD = 1000000;
+static const int DEFAULT_STAKE_MAX_SPLIT = 500;
+static const unsigned int DEFAULT_POS_HASH_INTERVAL = 1;
+static const unsigned int MAX_POS_HASH_INTERVAL = 86400;
+static const bool DEFAULT_INPUT_STAKE_PROTECT = true;
 
 enum {
     AUTOCOMBINE_DISABLE = 0,
@@ -814,24 +818,18 @@ public:
     unsigned int nMasterKeyMaxID = 0;
 
     unsigned int nHashDrift = 30;
-    unsigned int nHashInterval = 1;
+    unsigned int nHashInterval = DEFAULT_POS_HASH_INTERVAL;
     CAmount nReserveBalance = 0;
     size_t nStakeSplitThreshold = DEFAULT_STAKE_SPLIT_THRESHOLD;
-    size_t nStakeMaxSplit = DEFAULT_STAKE_MAX_SPLIT;
+    int nStakeMaxSplit = DEFAULT_STAKE_MAX_SPLIT;
     int fAutocombine = DEFAULT_STAKE_AUTOCOMBINE;
-    bool inputStakeProtect = true;
+    bool inputStakeProtect = DEFAULT_INPUT_STAKE_PROTECT;
     mutable StakeCandidates setStakeCoins;
     mutable int64_t nLastStakeSetUpdate = 0;
     int64_t nStakeSetUpdateTime = 60;
 
     /** Construct wallet with specified name and database implementation. */
-    CWallet(interfaces::Chain* chain, const std::string& name, std::unique_ptr<WalletDatabase> database)
-        : fOnlyMixingAllowed(false),
-          m_chain(chain),
-          m_name(name),
-          database(std::move(database))
-    {
-    }
+    CWallet(interfaces::Chain* chain, const std::string& name, std::unique_ptr<WalletDatabase> database);
 
     ~CWallet()
     {

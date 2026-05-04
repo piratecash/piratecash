@@ -59,6 +59,8 @@
 #include <pos_kernel.h>
 #include <assert.h>
 
+#include <limits>
+
 const std::map<uint64_t,std::string> WALLET_FLAG_CAVEATS{
     {WALLET_FLAG_AVOID_REUSE,
         "You need to rescan the blockchain in order to correctly mark used "
@@ -72,6 +74,19 @@ static const size_t OUTPUT_GROUP_MAX_ENTRIES = 10;
 static CCriticalSection cs_wallets;
 static std::vector<std::shared_ptr<CWallet>> vpwallets GUARDED_BY(cs_wallets);
 static std::list<LoadWalletFn> g_load_wallet_fns GUARDED_BY(cs_wallets);
+
+CWallet::CWallet(interfaces::Chain* chain, const std::string& name, std::unique_ptr<WalletDatabase> database)
+    : fOnlyMixingAllowed(false),
+      m_chain(chain),
+      m_name(name),
+      database(std::move(database))
+{
+    nStakeSplitThreshold = static_cast<size_t>(gArgs.GetArg("-stakesplitthreshold", static_cast<int64_t>(DEFAULT_STAKE_SPLIT_THRESHOLD)));
+    nStakeMaxSplit = static_cast<int>(gArgs.GetArg("-stakemaxsplit", static_cast<int64_t>(DEFAULT_STAKE_MAX_SPLIT)));
+    fAutocombine = static_cast<int>(gArgs.GetArg("-stakeautocombine", static_cast<int64_t>(DEFAULT_STAKE_AUTOCOMBINE)));
+    nHashInterval = static_cast<unsigned int>(gArgs.GetArg("-poshashinterval", static_cast<int64_t>(DEFAULT_POS_HASH_INTERVAL)));
+    inputStakeProtect = gArgs.GetBoolArg("-inputstakeprotect", DEFAULT_INPUT_STAKE_PROTECT);
+}
 
 bool AddWalletSetting(interfaces::Chain& chain, const std::string& wallet_name)
 {
