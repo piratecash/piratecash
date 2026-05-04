@@ -1235,13 +1235,26 @@ static UniValue pruneblockchain(const JSONRPCRequest& request)
     return uint64_t(block->nHeight);
 }
 
+CoinStatsHashType ParseHashType(const std::string& hash_type_input)
+{
+    if (hash_type_input == "hash_serialized_2") {
+        return CoinStatsHashType::HASH_SERIALIZED;
+    } else if (hash_type_input == "muhash") {
+        return CoinStatsHashType::MUHASH;
+    } else if (hash_type_input == "none") {
+        return CoinStatsHashType::NONE;
+    } else {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("%s is not a valid hash_type", hash_type_input));
+    }
+}
+
 static UniValue gettxoutsetinfo(const JSONRPCRequest& request)
 {
     RPCHelpMan{"gettxoutsetinfo",
         "\nReturns statistics about the unspent transaction output set.\n"
         "Note this call may take some time.\n",
         {
-            {"hash_type", RPCArg::Type::STR, /* default */ "hash_serialized_2", "Only 'hash_serialized_2' is supported by this build."},
+            {"hash_type", RPCArg::Type::STR, /* default */ "hash_serialized_2", "Which UTXO set hash should be calculated. Options: 'hash_serialized_2' (the legacy algorithm), 'muhash', 'none'."},
         },
         RPCResult{
             RPCResult::Type::OBJ, "", "",
@@ -1251,7 +1264,8 @@ static UniValue gettxoutsetinfo(const JSONRPCRequest& request)
                 {RPCResult::Type::NUM, "transactions", "The number of transactions with unspent outputs"},
                 {RPCResult::Type::NUM, "txouts", "The number of unspent transaction outputs"},
                 {RPCResult::Type::NUM, "bogosize", "A meaningless metric for UTXO set size"},
-                {RPCResult::Type::STR_HEX, "hash_serialized_2", "The serialized hash"},
+                {RPCResult::Type::STR_HEX, "hash_serialized_2", /* optional */ true, "The serialized hash (only present if 'hash_serialized_2' hash_type is chosen)"},
+                {RPCResult::Type::STR_HEX, "muhash", /* optional */ true, "The serialized hash (only present if 'muhash' hash_type is chosen)"},
                 {RPCResult::Type::NUM, "disk_size", "The estimated size of the chainstate on disk"},
                 {RPCResult::Type::STR_AMOUNT, "total_amount", "The total amount"},
             }},
@@ -1266,18 +1280,22 @@ static UniValue gettxoutsetinfo(const JSONRPCRequest& request)
     CCoinsStats stats;
     ::ChainstateActive().ForceFlushStateToDisk();
 
-    if (!request.params[0].isNull() && request.params[0].get_str() != "hash_serialized_2") {
-        throw JSONRPCError(RPC_INVALID_PARAMETER, "Only hash_serialized_2 is supported by this build");
-    }
+    const CoinStatsHashType hash_type{request.params[0].isNull() ? CoinStatsHashType::HASH_SERIALIZED : ParseHashType(request.params[0].get_str())};
 
     CCoinsView* coins_view = WITH_LOCK(cs_main, return &ChainstateActive().CoinsDB());
-    if (GetUTXOStats(coins_view, stats, CoinStatsHashType::HASH_SERIALIZED)) {
+    NodeContext& node = EnsureNodeContext(request.context);
+    if (GetUTXOStats(coins_view, stats, hash_type, node.rpc_interruption_point)) {
         ret.pushKV("height", (int64_t)stats.nHeight);
         ret.pushKV("bestblock", stats.hashBlock.GetHex());
         ret.pushKV("transactions", (int64_t)stats.nTransactions);
         ret.pushKV("txouts", (int64_t)stats.nTransactionOutputs);
         ret.pushKV("bogosize", (int64_t)stats.nBogoSize);
-        ret.pushKV("hash_serialized_2", stats.hashSerialized.GetHex());
+        if (hash_type == CoinStatsHashType::HASH_SERIALIZED) {
+            ret.pushKV("hash_serialized_2", stats.hashSerialized.GetHex());
+        }
+        if (hash_type == CoinStatsHashType::MUHASH) {
+              ret.pushKV("muhash", stats.hashSerialized.GetHex());
+        }
         ret.pushKV("disk_size", stats.nDiskSize);
         ret.pushKV("total_amount", ValueFromAmount(stats.nTotalAmount));
     } else {
@@ -2724,7 +2742,7 @@ UniValue dumptxoutset(const JSONRPCRequest& request)
 
         ::ChainstateActive().ForceFlushStateToDisk();
 
-        if (!GetUTXOStats(&::ChainstateActive().CoinsDB(), stats, CoinStatsHashType::HASH_SERIALIZED)) {
+        if (!GetUTXOStats(&::ChainstateActive().CoinsDB(), stats, CoinStatsHashType::NONE, node.rpc_interruption_point)) {
             throw JSONRPCError(RPC_INTERNAL_ERROR, "Unable to read UTXO set");
         }
 
@@ -2733,7 +2751,7 @@ UniValue dumptxoutset(const JSONRPCRequest& request)
         CHECK_NONFATAL(tip);
     }
 
-    SnapshotMetadata metadata{tip->GetBlockHash(), stats.nTransactionOutputs, tip->nChainTx};
+    SnapshotMetadata metadata{tip->GetBlockHash(), stats.coins_count, tip->nChainTx};
 
     afile << metadata;
 
@@ -2756,7 +2774,7 @@ UniValue dumptxoutset(const JSONRPCRequest& request)
     fs::rename(temppath, path);
 
     UniValue result(UniValue::VOBJ);
-    result.pushKV("coins_written", stats.nTransactionOutputs);
+    result.pushKV("coins_written", stats.coins_count);
     result.pushKV("base_hash", tip->GetBlockHash().ToString());
     result.pushKV("base_height", tip->nHeight);
     result.pushKV("path", path.string());
