@@ -589,6 +589,54 @@ BOOST_AUTO_TEST_CASE(compressible_header_pos_compress_decompress)
     BOOST_CHECK(decompressed.posBlockSig == header.posBlockSig);
 }
 
+BOOST_AUTO_TEST_CASE(compressible_header_v1_pos_marker_only_in_nflags_decompress)
+{
+    CBlockHeader rawHeader;
+    rawHeader.nVersion = 1; // no POS_BIT, no POSV2_BITS
+    rawHeader.hashPrevBlock = InsecureRand256();
+    rawHeader.hashMerkleRoot = InsecureRand256();
+    rawHeader.nTime = 1600000000;
+    rawHeader.nBits = 0x207fffff;
+    rawHeader.nNonce = 0;
+    rawHeader.posStakeHash = InsecureRand256();
+    rawHeader.posStakeN = 7;
+    rawHeader.posBlockSig = {0xCA, 0xFE, 0xBA, 0xBE};
+    rawHeader.nFlags = CBlockIndex::BLOCK_PROOF_OF_STAKE;
+
+    BOOST_CHECK(rawHeader.IsProofOfStake());
+    BOOST_CHECK(!rawHeader.IsProofOfStakeV2());
+    BOOST_CHECK_EQUAL(rawHeader.nVersion & CBlockHeader::POS_BIT, 0U);
+
+    CompressibleBlockHeader header(std::move(rawHeader));
+    BOOST_CHECK(header.bit_field.IsProofOfStake());
+
+    std::vector<CompressibleBlockHeader> prevBlocks;
+    std::list<int32_t> versions;
+    header.Compress(prevBlocks, versions);
+
+    CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
+    ss << header;
+
+    CompressibleBlockHeader decompressed;
+    ss >> decompressed;
+    BOOST_CHECK_EQUAL(decompressed.nFlags, 0U); // nFlags is not on the wire
+
+    std::vector<CBlockHeader> prevHeaders;
+    std::list<int32_t> versions2;
+    decompressed.Uncompress(prevHeaders, versions2);
+
+    BOOST_CHECK(decompressed.bit_field.IsProofOfStake());
+    BOOST_CHECK(decompressed.IsProofOfStake());
+    BOOST_CHECK(!decompressed.IsProofOfStakeV2());
+    BOOST_CHECK_EQUAL(decompressed.nFlags & CBlockIndex::BLOCK_PROOF_OF_STAKE,
+                      static_cast<uint32_t>(CBlockIndex::BLOCK_PROOF_OF_STAKE));
+
+    BOOST_CHECK_EQUAL(decompressed.nVersion, header.nVersion);
+    BOOST_CHECK_EQUAL(decompressed.posStakeHash, header.posStakeHash);
+    BOOST_CHECK_EQUAL(decompressed.posStakeN, header.posStakeN);
+    BOOST_CHECK(decompressed.posBlockSig == header.posBlockSig);
+}
+
 BOOST_AUTO_TEST_CASE(compressible_header_prev_block_compression)
 {
     // When previous block is available, hashPrevBlock should be compressed

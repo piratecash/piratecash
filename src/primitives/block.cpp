@@ -139,6 +139,10 @@ void CompressibleBlockHeader::Compress(const std::vector<CompressibleBlockHeader
 
 void CompressibleBlockHeader::Uncompress(const std::vector<CBlockHeader>& previous_blocks, std::list<int32_t>& last_unique_versions)
 {
+    if (bit_field.IsProofOfStake()) {
+        nFlags |= 1; // CBlockIndex::BLOCK_PROOF_OF_STAKE
+    }
+
     if (previous_blocks.empty()) {
         // First block in chain is always uncompressed
         SaveVersionAsMostRecent(last_unique_versions, nVersion);
