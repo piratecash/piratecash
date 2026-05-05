@@ -185,7 +185,7 @@ public:
     uint32_t nBits;
     uint32_t nNonce;
 
-    std::vector<unsigned char> vchBlockSig;
+    std::vector<unsigned char> posBlockSig;
     // PirateCash: money supply related block index fields
     unsigned int nFlags{0};  // PirateCash: block index flags
     enum
@@ -261,7 +261,7 @@ public:
         nNonce         = 0;
         posStakeHash   = uint256();
         posStakeN      = 0;
-        vchBlockSig.clear();
+        posBlockSig.clear();
     }
 
     CBlockIndex()
@@ -280,7 +280,7 @@ public:
         nNonce         = block.nNonce;
         posStakeHash   = block.posStakeHash;
         posStakeN      = block.posStakeN;
-        vchBlockSig    = block.vchBlockSig;
+        posBlockSig    = block.posBlockSig;
         nFlags         = block.nFlags;
     }
 
@@ -314,7 +314,7 @@ public:
         block.nNonce         = nNonce;
         block.posStakeHash   = posStakeHash;
         block.posStakeN      = posStakeN;
-        block.vchBlockSig    = vchBlockSig;
+        block.posBlockSig    = posBlockSig;
         block.nFlags         = nFlags;
         return block;
     }
@@ -461,7 +461,7 @@ public:
         if (obj.IsProofOfStake()) {
             READWRITE(obj.posStakeHash);
             READWRITE(obj.posStakeN);
-            READWRITE(obj.vchBlockSig);
+            READWRITE(obj.posBlockSig);
         }
     }
 

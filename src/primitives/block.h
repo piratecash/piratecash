@@ -44,7 +44,7 @@ public:
     // PoS only
     uint256 posStakeHash; // stake primary input tx
     uint32_t posStakeN; // stake primary input tx output
-    std::vector<unsigned char> vchBlockSig; // to be signed by coinbase/coinstake primary out
+    std::vector<unsigned char> posBlockSig; // to be signed by coinbase/coinstake primary out
     // PirateCash: A copy from CBlockIndex.nFlags from other clients. We need this information because we are using headers-first syncronization.
     uint32_t nFlags;
 
@@ -62,7 +62,7 @@ public:
             READWRITE(obj.posStakeHash);
             READWRITE(obj.posStakeN);
             if (!(s.GetType() & SER_GETHASH)) {
-                READWRITE(obj.vchBlockSig);
+                READWRITE(obj.posBlockSig);
             }
 
             SER_READ(obj, {
@@ -84,7 +84,7 @@ public:
         nNonce = 0;
         posStakeHash.SetNull();
         posStakeN = 0;
-        vchBlockSig.clear();
+        posBlockSig.clear();
         nFlags = 0;
         posPubKey = CPubKey();
     }
@@ -269,7 +269,7 @@ struct CompressibleBlockHeader : CBlockHeader {
         if (obj.bit_field.IsProofOfStake()) {
             READWRITE(obj.posStakeHash);
             READWRITE(obj.posStakeN);
-            READWRITE(obj.vchBlockSig);
+            READWRITE(obj.posBlockSig);
 
             SER_READ(obj, {
                 obj.posPubKey = CPubKey();
@@ -336,6 +336,7 @@ public:
         block.nFlags         = nFlags;
         block.posStakeHash   = posStakeHash;
         block.posStakeN      = posStakeN;
+        block.posBlockSig    = posBlockSig;
         return block;
     }
 
