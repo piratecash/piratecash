@@ -521,7 +521,7 @@ BOOST_AUTO_TEST_CASE(pos_block_reject_missing_signature)
 
     CBlockHeader header;
     header.nVersion = CBlockHeader::POS_BIT | 1;
-    header.vchBlockSig.clear(); // Empty signature!
+    header.posBlockSig.clear(); // Empty signature!
     header.posStakeHash = InsecureRand256();
     header.posStakeN = 0;
     header.hashPrevBlock = ::ChainActive().Tip()->GetBlockHash();
@@ -551,7 +551,7 @@ BOOST_AUTO_TEST_CASE(pos_block_reject_unknown_stake_input)
     header.hashPrevBlock = ::ChainActive().Tip()->GetBlockHash();
     header.nTime = ::ChainActive().Tip()->nTime + 60;
     header.nBits = 0x207fffff;
-    header.vchBlockSig = {0x01, 0x02, 0x03}; // Non-empty dummy sig
+    header.posBlockSig = {0x01, 0x02, 0x03}; // Non-empty dummy sig
 
     CValidationState state;
     uint256 hashProofOfStake;

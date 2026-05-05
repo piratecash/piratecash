@@ -51,7 +51,7 @@ std::string CBlock::ToString() const
     std::stringstream s;
 
     if (IsProofOfStake()) {
-         s << strprintf("CBlock(hash=%s, ver=0x%08x, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%u, posStakeHash=%s, posStakeN=%u, posPubKey=%u, vchBlockSig=%u vtx=%u)\n",
+         s << strprintf("CBlock(hash=%s, ver=0x%08x, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%u, posStakeHash=%s, posStakeN=%u, posPubKey=%u, posBlockSig=%u vtx=%u)\n",
                         GetHash().ToString(),
                         nVersion,
                         hashPrevBlock.ToString(),
@@ -61,7 +61,7 @@ std::string CBlock::ToString() const
                         posStakeHash.ToString(),
                         posStakeN,
                         posPubKey.size(),
-                        vchBlockSig.size(),
+                        posBlockSig.size(),
                         vtx.size());
     }else{
         s << strprintf("CBlock(hash=%s, ver=0x%08x, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%u, vtx=%u)\n",
@@ -191,12 +191,12 @@ bool CBlockHeader::CheckBlockSignature(const CKeyID& key_id) const
         return true;
     }
 
-    if (vchBlockSig.empty()) {
+    if (posBlockSig.empty()) {
         return false;
     }
 
     auto hash = GetHash();
-    posPubKey.RecoverCompact(hash, vchBlockSig);
+    posPubKey.RecoverCompact(hash, posBlockSig);
 
     if (!posPubKey.IsValid()) {
         return false;
@@ -208,8 +208,8 @@ bool CBlockHeader::CheckBlockSignature(const CKeyID& key_id) const
 const CPubKey& CBlockHeader::BlockPubKey() const
 {
     // In case it's read from disk
-    if (!posPubKey.IsValid() && !vchBlockSig.empty()) {
-        posPubKey.RecoverCompact(GetHash(), vchBlockSig);
+    if (!posPubKey.IsValid() && !posBlockSig.empty()) {
+        posPubKey.RecoverCompact(GetHash(), posBlockSig);
     }
 
     return posPubKey;

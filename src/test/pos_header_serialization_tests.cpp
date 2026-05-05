@@ -8,7 +8,7 @@
 //
 // These tests verify:
 //   1. CBlockHeader serialization differs between PoW and PoS
-//   2. PoS headers include posStakeHash, posStakeN, vchBlockSig in serialized form
+//   2. PoS headers include posStakeHash, posStakeN, posBlockSig in serialized form
 //   3. PoW headers do NOT include PoS fields
 //   4. CompressibleBlockHeader compression/decompression with PoS flag
 //   5. CDiskBlockIndex serialization round-trip for PoW and PoS
@@ -44,7 +44,7 @@ BOOST_FIXTURE_TEST_SUITE(pos_header_serialization_tests, BasicTestingSetup)
 
 BOOST_AUTO_TEST_CASE(pow_header_serialization_excludes_pos_fields)
 {
-    // A PoW header should serialize WITHOUT posStakeHash, posStakeN, vchBlockSig
+    // A PoW header should serialize WITHOUT posStakeHash, posStakeN, posBlockSig
     CBlockHeader powHeader;
     powHeader.nVersion = 1; // PoW
     powHeader.hashPrevBlock = InsecureRand256();
@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE(pow_header_serialization_excludes_pos_fields)
     // PoS fields set but should NOT appear in serialized output
     powHeader.posStakeHash = InsecureRand256();
     powHeader.posStakeN = 5;
-    powHeader.vchBlockSig = {0xDE, 0xAD};
+    powHeader.posBlockSig = {0xDE, 0xAD};
 
     BOOST_CHECK(powHeader.IsProofOfWork());
 
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE(pow_header_serialization_excludes_pos_fields)
 
 BOOST_AUTO_TEST_CASE(pos_header_serialization_includes_pos_fields)
 {
-    // A PoS header should serialize WITH posStakeHash, posStakeN, vchBlockSig
+    // A PoS header should serialize WITH posStakeHash, posStakeN, posBlockSig
     CBlockHeader posHeader;
     posHeader.nVersion = CBlockHeader::POS_BIT | 1; // PoS
     posHeader.hashPrevBlock = InsecureRand256();
@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE(pos_header_serialization_includes_pos_fields)
     posHeader.nNonce = 0;
     posHeader.posStakeHash = InsecureRand256();
     posHeader.posStakeN = 3;
-    posHeader.vchBlockSig = {0x01, 0x02, 0x03, 0x04, 0x05};
+    posHeader.posBlockSig = {0x01, 0x02, 0x03, 0x04, 0x05};
 
     BOOST_CHECK(posHeader.IsProofOfStake());
 
@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE(pos_header_serialization_includes_pos_fields)
     ss << posHeader;
 
     // PoS header: base(80) + posStakeHash(32) + posStakeN(4) +
-    //             vchBlockSig(compactSize + data) = 80 + 32 + 4 + (1 + 5) = 122
+    //             posBlockSig(compactSize + data) = 80 + 32 + 4 + (1 + 5) = 122
     BOOST_CHECK_EQUAL(ss.size(), 80U + 32U + 4U + 1U + 5U);
 }
 
@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(pos_header_empty_sig_serialization)
     posHeader.nNonce = 0;
     posHeader.posStakeHash = InsecureRand256();
     posHeader.posStakeN = 0;
-    posHeader.vchBlockSig.clear(); // Empty
+    posHeader.posBlockSig.clear(); // Empty
 
     CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
     ss << posHeader;
@@ -144,7 +144,7 @@ BOOST_AUTO_TEST_CASE(pow_header_serialize_deserialize_roundtrip)
     // PoS fields should be default/empty for PoW
     BOOST_CHECK(deserialized.posStakeHash.IsNull());
     BOOST_CHECK_EQUAL(deserialized.posStakeN, 0U);
-    BOOST_CHECK(deserialized.vchBlockSig.empty());
+    BOOST_CHECK(deserialized.posBlockSig.empty());
 }
 
 // ============================================================================
@@ -162,7 +162,7 @@ BOOST_AUTO_TEST_CASE(pos_header_serialize_deserialize_roundtrip)
     original.nNonce = 0; // stake modifier
     original.posStakeHash = InsecureRand256();
     original.posStakeN = 7;
-    original.vchBlockSig = {0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF};
+    original.posBlockSig = {0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF};
 
     BOOST_CHECK(original.IsProofOfStake());
 
@@ -182,7 +182,7 @@ BOOST_AUTO_TEST_CASE(pos_header_serialize_deserialize_roundtrip)
     // PoS-specific fields must survive round-trip
     BOOST_CHECK_EQUAL(deserialized.posStakeHash, original.posStakeHash);
     BOOST_CHECK_EQUAL(deserialized.posStakeN, original.posStakeN);
-    BOOST_CHECK(deserialized.vchBlockSig == original.vchBlockSig);
+    BOOST_CHECK(deserialized.posBlockSig == original.posBlockSig);
 }
 
 BOOST_AUTO_TEST_CASE(posv2_header_serialize_deserialize_roundtrip)
@@ -197,7 +197,7 @@ BOOST_AUTO_TEST_CASE(posv2_header_serialize_deserialize_roundtrip)
     original.nNonce = 42;
     original.posStakeHash = InsecureRand256();
     original.posStakeN = 2;
-    original.vchBlockSig = {0x01, 0x02, 0x03};
+    original.posBlockSig = {0x01, 0x02, 0x03};
 
     BOOST_CHECK(original.IsProofOfStake());
     BOOST_CHECK(original.IsProofOfStakeV2());
@@ -212,7 +212,7 @@ BOOST_AUTO_TEST_CASE(posv2_header_serialize_deserialize_roundtrip)
     BOOST_CHECK(deserialized.IsProofOfStakeV2());
     BOOST_CHECK_EQUAL(deserialized.posStakeHash, original.posStakeHash);
     BOOST_CHECK_EQUAL(deserialized.posStakeN, original.posStakeN);
-    BOOST_CHECK(deserialized.vchBlockSig == original.vchBlockSig);
+    BOOST_CHECK(deserialized.posBlockSig == original.posBlockSig);
 }
 
 // ============================================================================
@@ -265,7 +265,7 @@ BOOST_AUTO_TEST_CASE(pos_block_serialize_deserialize_roundtrip)
     original.nNonce = 0;
     original.posStakeHash = InsecureRand256();
     original.posStakeN = 1;
-    original.vchBlockSig = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88};
+    original.posBlockSig = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88};
 
     // Add coinbase
     CMutableTransaction coinbase;
@@ -299,7 +299,7 @@ BOOST_AUTO_TEST_CASE(pos_block_serialize_deserialize_roundtrip)
     BOOST_CHECK(deserialized.IsProofOfStake());
     BOOST_CHECK_EQUAL(deserialized.posStakeHash, original.posStakeHash);
     BOOST_CHECK_EQUAL(deserialized.posStakeN, original.posStakeN);
-    BOOST_CHECK(deserialized.vchBlockSig == original.vchBlockSig);
+    BOOST_CHECK(deserialized.posBlockSig == original.posBlockSig);
     BOOST_CHECK_EQUAL(deserialized.vtx.size(), 2U);
     BOOST_CHECK_EQUAL(deserialized.hashMerkleRoot, original.hashMerkleRoot);
 }
@@ -339,13 +339,13 @@ BOOST_AUTO_TEST_CASE(get_block_header_preserves_pos_fields)
     block.nNonce = 0;
     block.posStakeHash = InsecureRand256();
     block.posStakeN = 42;
+    block.posBlockSig = {0xAA, 0xBB, 0xCC, 0xDD, 0xEE};
 
     CBlockHeader header = block.GetBlockHeader();
 
     BOOST_CHECK_EQUAL(header.posStakeHash, block.posStakeHash);
     BOOST_CHECK_EQUAL(header.posStakeN, block.posStakeN);
-    // Note: vchBlockSig is NOT copied by GetBlockHeader() per current implementation
-    // This is by design — the signature is a separate concern
+    BOOST_CHECK(header.posBlockSig == block.posBlockSig);
 }
 
 // ============================================================================
@@ -562,7 +562,7 @@ BOOST_AUTO_TEST_CASE(compressible_header_pos_compress_decompress)
     rawHeader.nNonce = 0;
     rawHeader.posStakeHash = InsecureRand256();
     rawHeader.posStakeN = 5;
-    rawHeader.vchBlockSig = {0xAB, 0xCD, 0xEF};
+    rawHeader.posBlockSig = {0xAB, 0xCD, 0xEF};
 
     CompressibleBlockHeader header(std::move(rawHeader));
 
@@ -586,7 +586,7 @@ BOOST_AUTO_TEST_CASE(compressible_header_pos_compress_decompress)
     BOOST_CHECK(decompressed.bit_field.IsProofOfStake());
     BOOST_CHECK_EQUAL(decompressed.posStakeHash, header.posStakeHash);
     BOOST_CHECK_EQUAL(decompressed.posStakeN, header.posStakeN);
-    BOOST_CHECK(decompressed.vchBlockSig == header.vchBlockSig);
+    BOOST_CHECK(decompressed.posBlockSig == header.posBlockSig);
 }
 
 BOOST_AUTO_TEST_CASE(compressible_header_prev_block_compression)
@@ -722,7 +722,7 @@ BOOST_AUTO_TEST_CASE(disk_block_index_pos_roundtrip)
     index.nNonce = 0;
     index.posStakeHash = InsecureRand256();
     index.posStakeN = 3;
-    index.vchBlockSig = {0xDE, 0xAD, 0xBE, 0xEF};
+    index.posBlockSig = {0xDE, 0xAD, 0xBE, 0xEF};
 
     CDiskBlockIndex diskIndex(&index);
     diskIndex.hashPrev = InsecureRand256();
@@ -737,7 +737,7 @@ BOOST_AUTO_TEST_CASE(disk_block_index_pos_roundtrip)
     BOOST_CHECK_EQUAL(deserialized.nHeight, index.nHeight);
     BOOST_CHECK_EQUAL(deserialized.posStakeHash, index.posStakeHash);
     BOOST_CHECK_EQUAL(deserialized.posStakeN, index.posStakeN);
-    BOOST_CHECK(deserialized.vchBlockSig == index.vchBlockSig);
+    BOOST_CHECK(deserialized.posBlockSig == index.posBlockSig);
     BOOST_CHECK_EQUAL(deserialized.nUndoPos, index.nUndoPos);
 }
 
@@ -759,12 +759,12 @@ BOOST_AUTO_TEST_CASE(truncated_pos_header_deserialization_fails)
     posHeader.nNonce = 0;
     posHeader.posStakeHash = InsecureRand256();
     posHeader.posStakeN = 1;
-    posHeader.vchBlockSig = {0x01, 0x02, 0x03};
+    posHeader.posBlockSig = {0x01, 0x02, 0x03};
 
     CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
     ss << posHeader;
 
-    // Truncate: remove the last few bytes (part of vchBlockSig)
+    // Truncate: remove the last few bytes (part of posBlockSig)
     std::vector<char> data(ss.begin(), ss.end());
     data.resize(data.size() - 2); // Remove 2 bytes
 
@@ -824,7 +824,7 @@ BOOST_AUTO_TEST_CASE(header_set_null_clears_all_fields)
     header.nNonce = 42;
     header.posStakeHash = InsecureRand256();
     header.posStakeN = 7;
-    header.vchBlockSig = {0x01, 0x02};
+    header.posBlockSig = {0x01, 0x02};
 
     header.SetNull();
 
@@ -836,7 +836,7 @@ BOOST_AUTO_TEST_CASE(header_set_null_clears_all_fields)
     BOOST_CHECK_EQUAL(header.nNonce, 0U);
     BOOST_CHECK(header.posStakeHash.IsNull());
     BOOST_CHECK_EQUAL(header.posStakeN, 0U);
-    BOOST_CHECK(header.vchBlockSig.empty());
+    BOOST_CHECK(header.posBlockSig.empty());
     BOOST_CHECK(header.IsNull()); // nBits == 0
 }
 
@@ -907,7 +907,7 @@ BOOST_AUTO_TEST_CASE(version_bits_pos_identification)
 BOOST_AUTO_TEST_CASE(pos_serialization_always_larger_than_pow)
 {
     // PoS headers should always serialize to a larger size than PoW
-    // because they include posStakeHash + posStakeN + vchBlockSig
+    // because they include posStakeHash + posStakeN + posBlockSig
 
     CBlockHeader powHeader;
     powHeader.nVersion = 1;
@@ -926,7 +926,7 @@ BOOST_AUTO_TEST_CASE(pos_serialization_always_larger_than_pow)
     posHeader.nNonce = 0;
     posHeader.posStakeHash = InsecureRand256();
     posHeader.posStakeN = 0;
-    posHeader.vchBlockSig.clear(); // Even with empty sig
+    posHeader.posBlockSig.clear(); // Even with empty sig
 
     CDataStream ssPow(SER_NETWORK, PROTOCOL_VERSION);
     ssPow << powHeader;
@@ -1012,7 +1012,7 @@ BOOST_AUTO_TEST_CASE(ser_gethash_pos_payload)
     posHeader.nNonce = 0;
     posHeader.posStakeHash = InsecureRand256();
     posHeader.posStakeN = 5;
-    posHeader.vchBlockSig = {0xAA, 0xBB, 0xCC};
+    posHeader.posBlockSig = {0xAA, 0xBB, 0xCC};
 
     CDataStream ssNet(SER_NETWORK, PROTOCOL_VERSION);
     ssNet << posHeader;
@@ -1060,7 +1060,7 @@ BOOST_AUTO_TEST_CASE(ser_gethash_pos_differs_from_pow_same_base)
     posHeader.nNonce = nonce;
     posHeader.posStakeHash = InsecureRand256();
     posHeader.posStakeN = 1;
-    posHeader.vchBlockSig = {0x01};
+    posHeader.posBlockSig = {0x01};
 
     CDataStream ssPow(SER_GETHASH, PROTOCOL_VERSION);
     ssPow << powHeader;
@@ -1081,8 +1081,8 @@ BOOST_AUTO_TEST_CASE(ser_gethash_pos_differs_from_pow_same_base)
 BOOST_AUTO_TEST_CASE(ser_gethash_hash_proof_of_stake_consistency)
 {
     // hashProofOfStake() internally serializes via SerializeBlockHeaderForHash
-    // which includes posStakeHash and posStakeN but NOT vchBlockSig.
-    // Verify that changing vchBlockSig does NOT change hashProofOfStake(),
+    // which includes posStakeHash and posStakeN but NOT posBlockSig.
+    // Verify that changing posBlockSig does NOT change hashProofOfStake(),
     // but changing posStakeHash or posStakeN DOES.
 
     CBlockHeader base;
@@ -1094,13 +1094,13 @@ BOOST_AUTO_TEST_CASE(ser_gethash_hash_proof_of_stake_consistency)
     base.nNonce = 0;
     base.posStakeHash = InsecureRand256();
     base.posStakeN = 3;
-    base.vchBlockSig = {0x01, 0x02, 0x03};
+    base.posBlockSig = {0x01, 0x02, 0x03};
 
     uint256 hash1 = base.hashProofOfStake();
 
-    // Change vchBlockSig: hash should NOT change (sig excluded from hash input)
+    // Change posBlockSig: hash should NOT change (sig excluded from hash input)
     CBlockHeader withDifferentSig = base;
-    withDifferentSig.vchBlockSig = {0xFF, 0xFE, 0xFD};
+    withDifferentSig.posBlockSig = {0xFF, 0xFE, 0xFD};
     uint256 hash2 = withDifferentSig.hashProofOfStake();
     BOOST_CHECK_EQUAL(hash1, hash2);
 
@@ -1154,7 +1154,7 @@ BOOST_AUTO_TEST_CASE(ser_gethash_disk_block_index_pos_includes_pos_fields)
     posIndex.nNonce = 0;
     posIndex.posStakeHash = InsecureRand256();
     posIndex.posStakeN = 3;
-    posIndex.vchBlockSig = {0x01, 0x02, 0x03};
+    posIndex.posBlockSig = {0x01, 0x02, 0x03};
 
     CDiskBlockIndex posDisk(&posIndex);
     posDisk.hashPrev = InsecureRand256();

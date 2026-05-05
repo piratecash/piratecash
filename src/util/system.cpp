@@ -1332,7 +1332,7 @@ std::string CopyrightHolders(const std::string& strPrefix, unsigned int nStartYe
 
     // Check for untranslated substitution to make sure PirateCash Core copyright is not removed by accident
     if (copyright_devs.find("PirateCash Core") == std::string::npos) {
-        strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2014, nEndYear) + "The PirateCash Core developers";
+        strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2018, nEndYear) + "The PirateCash Core developers";
     }
     // Check for untranslated substitution to make sure Bitcoin Core copyright is not removed by accident
     if (copyright_devs.find("Bitcoin Core") == std::string::npos) {

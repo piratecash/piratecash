@@ -3909,7 +3909,7 @@ void PeerLogicValidation::ProcessMessage(
                     vRecv >> headers[n];
                     ReadCompactSize(vRecv); // ignore tx count; assume it is 0.
                     if (!headers[n].IsProofOfStakeV2()) {
-                        ReadCompactSize(vRecv); // needed for legacy PirateCash vchBlockSig.
+                        ReadCompactSize(vRecv); // needed for legacy PirateCash oldVchBlockSig.
                     }
                 }
             } else if (msg_type == NetMsgType::HEADERS2) {

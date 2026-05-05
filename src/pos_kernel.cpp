@@ -515,7 +515,7 @@ bool CheckStakeKernelHash(
 // Check kernel hash target and coinstake signature
 bool CheckProofOfStake(CValidationState &state, const CBlockHeader &header, uint256& hashProofOfStake, const Consensus::Params& consensus, const CTxMemPool* mempool)
 {
-    if (header.vchBlockSig.empty()) {
+    if (header.posBlockSig.empty()) {
         return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_MALFORMED, "bad-pos-sig", "missing PoS signature");
     }
 

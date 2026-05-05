@@ -304,7 +304,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
             const SigningProvider* provider = pwallet->GetSigningProvider(pos_script);
             CKey key;
             if (!provider || !provider->GetKey(pblock->posPubKey.GetID(), key) ||
-                !key.SignCompact(pblock->GetHash(), pblock->vchBlockSig)) {
+                !key.SignCompact(pblock->GetHash(), pblock->posBlockSig)) {
                 error("%s: failed to sign block", __func__);
                 return nullptr;
             }
