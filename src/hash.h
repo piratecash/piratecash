@@ -7,6 +7,14 @@
 #ifndef BITCOIN_HASH_H
 #define BITCOIN_HASH_H
 
+#include <crypto/sph_hamsi.h>
+#include <crypto/sph_fugue.h>
+#include <crypto/sph_shabal.h>
+#include <crypto/sph_whirlpool.h>
+#include <crypto/sph_sha2.h>
+#include <crypto/sph_haval.h>
+#include <crypto/sph_streebog.h>
+#include <crypto/algos/Lyra2Z/Lyra2.h>
 #include <attributes.h>
 #include <crypto/common.h>
 #include <crypto/ripemd160.h>
@@ -291,7 +299,7 @@ unsigned int MurmurHash3(unsigned int nHashSeed, Span<const unsigned char> vData
 
 void BIP32Hash(const ChainCode &chainCode, unsigned int nChild, unsigned char header, const unsigned char data[32], unsigned char output[64]);
 
-/* ----------- Dash Hash ------------------------------------------------ */
+/* ----------- Cosanta Hash ------------------------------------------------ */
 template<typename T1>
 inline uint256 HashX11(const T1 pbegin, const T1 pend)
 
@@ -307,9 +315,17 @@ inline uint256 HashX11(const T1 pbegin, const T1 pend)
     sph_shavite512_context   ctx_shavite;
     sph_simd512_context      ctx_simd;
     sph_echo512_context      ctx_echo;
+    sph_hamsi512_context     ctx_hamsi;
+    sph_fugue512_context     ctx_fugue;
+    sph_shabal512_context    ctx_shabal;
+    sph_whirlpool_context    ctx_whirlpool;
+    sph_sha512_context       ctx_sha2;
+    sph_haval256_5_context   ctx_haval;
+    sph_gost512_context      ctx_gost;
+
     static unsigned char pblank[1];
 
-    uint512 hash[11];
+    uint512 hash[22];
 
     sph_blake512_init(&ctx_blake);
     sph_blake512 (&ctx_blake, (pbegin == pend ? pblank : static_cast<const void*>(&pbegin[0])), (pend - pbegin) * sizeof(pbegin[0]));
@@ -355,7 +371,37 @@ inline uint256 HashX11(const T1 pbegin, const T1 pend)
     sph_echo512 (&ctx_echo, static_cast<const void*>(&hash[9]), 64);
     sph_echo512_close(&ctx_echo, static_cast<void*>(&hash[10]));
 
-    return hash[10].trim256();
+    sph_hamsi512_init(&ctx_hamsi);
+    sph_hamsi512 (&ctx_hamsi, static_cast<const void*>(&hash[10]), 64);
+    sph_hamsi512_close(&ctx_hamsi, static_cast<void*>(&hash[11]));
+
+    sph_fugue512_init(&ctx_fugue);
+    sph_fugue512 (&ctx_fugue, static_cast<const void*>(&hash[11]), 64);
+    sph_fugue512_close(&ctx_fugue, static_cast<void*>(&hash[12]));
+
+    sph_shabal512_init(&ctx_shabal);
+    sph_shabal512 (&ctx_shabal, static_cast<const void*>(&hash[12]), 64);
+    sph_shabal512_close(&ctx_shabal, static_cast<void*>(&hash[13]));
+
+    sph_whirlpool_init(&ctx_whirlpool);
+    sph_whirlpool (&ctx_whirlpool, static_cast<const void*>(&hash[13]), 64);
+    sph_whirlpool_close(&ctx_whirlpool, static_cast<void*>(&hash[14]));
+
+    sph_sha512_init(&ctx_sha2);
+    sph_sha512 (&ctx_sha2, static_cast<const void*>(&hash[14]), 64);
+    sph_sha512_close(&ctx_sha2, static_cast<void*>(&hash[15]));
+
+    sph_haval256_5_init(&ctx_haval);
+    sph_haval256_5 (&ctx_haval, static_cast<const void*>(&hash[15]), 64);
+    sph_haval256_5_close(&ctx_haval, static_cast<void*>(&hash[16]));
+
+    sph_gost512_init(&ctx_gost);
+    sph_gost512 (&ctx_gost, static_cast<const void*>(&hash[16]), 64);
+    sph_gost512_close(&ctx_gost, static_cast<void*>(&hash[17]));
+
+    LYRA2(&hash[18], 32, &hash[17], 80, &hash[17], 80, 2, 66, 66);
+
+    return hash[18].trim256();
 }
 
 #endif // BITCOIN_HASH_H
