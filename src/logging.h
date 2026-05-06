@@ -57,6 +57,10 @@ namespace BCLog {
         QT          = (1 << 19),
         LEVELDB     = (1 << 20),
 
+        //Start Cosanta
+        STAKING  = ((uint64_t)1 << 31),
+        //End Cosanta
+
         //Start Dash
         CHAINLOCKS  = ((uint64_t)1 << 32),
         GOBJECT     = ((uint64_t)1 << 33),

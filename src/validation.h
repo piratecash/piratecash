@@ -127,6 +127,11 @@ struct BlockHasher
     size_t operator()(const uint256& hash) const { return ReadLE64(hash.begin()); }
 };
 
+struct StakeHasher
+{
+    size_t operator()(const COutPoint& op) const { return ReadLE64(op.hash.begin()) + op.n; }
+};
+
 extern CCriticalSection cs_main;
 extern CBlockPolicyEstimator feeEstimator;
 typedef std::unordered_map<uint256, CBlockIndex*, BlockHasher> BlockMap;
@@ -154,6 +159,8 @@ extern int64_t nMaxTipAge;
 extern bool fLargeWorkForkFound;
 extern bool fLargeWorkInvalidChainFound;
 
+extern int64_t nReserveBalance;
+
 extern std::atomic<bool> fDIP0001ActiveAtTip;
 
 /** Block hash whose ancestors we will assume to have valid scripts without checking them. */
@@ -172,6 +179,45 @@ extern bool fHavePruned;
 extern bool fPruneMode;
 /** Number of MiB of block files that we're trying to stay below. */
 extern uint64_t nPruneTarget;
+
+extern uint32_t nFirstPoSBlock;
+extern uint32_t nlastPoWBlock;
+
+/**
+ * Process an incoming block. This only returns after the best known valid
+ * block is made active. Note that it does not, however, guarantee that the
+ * specific block passed to it has been checked for validity!
+ *
+ * If you want to *possibly* get feedback on whether pblock is valid, you must
+ * install a CValidationInterface (see validationinterface.h) - this will have
+ * its BlockChecked method called whenever *any* block completes validation.
+ *
+ * Note that we guarantee that either the proof-of-work is valid on pblock, or
+ * (and possibly also) BlockChecked will have been called.
+ *
+ * May not be called in a
+ * validationinterface callback.
+ *
+ * @param[in]   pblock  The block we want to process.
+ * @param[in]   fForceProcessing Process this block even if unrequested; used for non-network block sources and whitelisted peers.
+ * @param[out]  fNewBlock A boolean which is set to indicate if the block was first received via this call
+ * @returns     If the block was processed, independently of block validity
+ */
+bool ProcessNewBlock(const CChainParams& chainparams, const std::shared_ptr<const CBlock> pblock, bool fForceProcessing, bool* fNewBlock) LOCKS_EXCLUDED(cs_main);
+
+/**
+ * Process incoming block headers.
+ *
+ * May not be called in a
+ * validationinterface callback.
+ *
+ * @param[in]  block The block headers themselves
+ * @param[out] state This may be set to an Error state if any error occurred processing them
+ * @param[in]  chainparams The params for the chain we want to connect to
+ * @param[out] ppindex If set, the pointer will be set to point to the last new block index object for the given headers
+ * @param[out] first_invalid First header that fails validation, if one exists
+ */
+bool ProcessNewBlockHeaders(std::deque<CBlockHeader>& headers, CValidationState& state, const CChainParams& chainparams, const CBlockIndex** ppindex=nullptr, CBlockHeader *first_invalid=nullptr, int burst_limit=MAX_HEADERS_RESULTS) LOCKS_EXCLUDED(cs_main);
 
 /** Open a block file (blk?????.dat) */
 FILE* OpenBlockFile(const FlatFilePos &pos, bool fReadOnly = false);
@@ -331,7 +377,7 @@ bool UndoReadFromDisk(CBlockUndo& blockundo, const CBlockIndex* pindex);
 /** Functions for validating blocks and updating the block tree */
 
 /** Context-independent validity checks */
-bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true, bool fCheckMerkleRoot = true);
+bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckProof = true, bool fCheckMerkleRoot = true);
 
 /** Check a block is completely valid from start to finish (only works on top of our current best block) */
 bool TestBlockValidity(CValidationState& state, llmq::CChainLocksHandler& clhandler, CEvoDB& evoDb, const CChainParams& chainparams, const CBlock& block, CBlockIndex* pindexPrev, bool fCheckPOW = true, bool fCheckMerkleRoot = true) EXCLUSIVE_LOCKS_REQUIRED(cs_main);
@@ -991,7 +1037,7 @@ extern VersionBitsCache versionbitscache;
 /**
  * Determine what nVersion a new block should use.
  */
-int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params, bool fCheckMasternodesUpgraded = false);
+int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params, bool fCheckMasternodesUpgraded = false, bool isPos = false);
 
 /**
  * Return true if hash can be found in ::ChainActive() at nBlockHeight height.
@@ -1015,6 +1061,14 @@ bool DumpMempool(const CTxMemPool& pool);
 
 /** Load the mempool from disk. */
 bool LoadMempool(CTxMemPool& pool);
+
+/** Check if Proof-of-Stake is required for particular height **/
+bool IsPoSEnforcedHeight(int nBlockHeight);
+bool IsPoSV2EnforcedHeight(int nFirstPoSv2Block);
+bool IsPowActiveHeight(int nBlockHeight);
+
+bool CheckProof(CValidationState& state, const CBlockIndex &pindex, const Consensus::Params& params);
+bool CheckProof(CValidationState& state, const CBlockHeader &block, const Consensus::Params& params);
 
 //! Check whether the block associated with this index entry is pruned or not.
 inline bool IsBlockPruned(const CBlockIndex* pblockindex)

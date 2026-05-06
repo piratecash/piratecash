@@ -38,6 +38,9 @@ enum SporkId : int32_t {
     SPORK_19_CHAINLOCKS_ENABLED                            = 10018,
     SPORK_21_QUORUM_ALL_CONNECTED                          = 10020,
     SPORK_23_QUORUM_POSE                                   = 10022,
+    SPORK_31_FIRST_POS_BLOCK                               = 60001,
+    SPORK_32_FIRST_POS_V2_BLOCK                            = 60002,
+    SPORK_33_LAST_POW_BLOCK                                = 60003,
 
     SPORK_INVALID                                          = -1,
 };
@@ -63,7 +66,7 @@ struct CSporkDef
 };
 
 #define MAKE_SPORK_DEF(name, defaultValue) CSporkDef{name, defaultValue, #name}
-[[maybe_unused]] static constexpr std::array<CSporkDef, 7> sporkDefs = {
+[[maybe_unused]] static constexpr std::array<CSporkDef, 10> sporkDefs = {
     MAKE_SPORK_DEF(SPORK_2_INSTANTSEND_ENABLED,            4070908800ULL), // OFF
     MAKE_SPORK_DEF(SPORK_3_INSTANTSEND_BLOCK_FILTERING,    4070908800ULL), // OFF
     MAKE_SPORK_DEF(SPORK_9_SUPERBLOCKS_ENABLED,            4070908800ULL), // OFF
@@ -71,6 +74,9 @@ struct CSporkDef
     MAKE_SPORK_DEF(SPORK_19_CHAINLOCKS_ENABLED,            4070908800ULL), // OFF
     MAKE_SPORK_DEF(SPORK_21_QUORUM_ALL_CONNECTED,          4070908800ULL), // OFF
     MAKE_SPORK_DEF(SPORK_23_QUORUM_POSE,                   4070908800ULL), // OFF
+    MAKE_SPORK_DEF(SPORK_31_FIRST_POS_BLOCK,               4070908800ULL), // OFF
+    MAKE_SPORK_DEF(SPORK_32_FIRST_POS_V2_BLOCK,            4070908800ULL), // OFF
+    MAKE_SPORK_DEF(SPORK_33_LAST_POW_BLOCK,                4070908800ULL), // OFF
 };
 #undef MAKE_SPORK_DEF
 extern std::unique_ptr<CSporkManager> sporkManager;

@@ -40,7 +40,7 @@ struct ChainTxData {
 
 /**
  * CChainParams defines various tweakable parameters of a given instance of the
- * Dash system. There are three: the main network on which people trade goods
+ * Cosanta system. There are three: the main network on which people trade goods
  * and services, the public test network which gets reset from time to time and
  * a regression test mode which is intended for private networks only. It has
  * minimal difficulty to ensure that blocks can be found instantly.
@@ -113,6 +113,9 @@ public:
     int MinSporkKeys() const { return nMinSporkKeys; }
     bool BIP9CheckMasternodesUpgraded() const { return fBIP9CheckMasternodesUpgraded; }
     std::optional<Consensus::LLMQParams> GetLLMQ(Consensus::LLMQType llmqType) const;
+    int64_t MinStakeAge() const { return nStakeMinAge; }
+    uint32_t FirstPoSv2Block() const { return nFirstPoSv2Block; }
+    bool HasLLMQ(Consensus::LLMQType llmqType) const;
 
 protected:
     CChainParams() {}
@@ -148,6 +151,9 @@ protected:
     bool fBIP9CheckMasternodesUpgraded;
     uint16_t nDefaultPlatformP2PPort;
     uint16_t nDefaultPlatformHTTPPort;
+    int64_t nStakeMinAge;
+    // POS V2
+    uint32_t nFirstPoSv2Block;
 
     void AddLLMQ(Consensus::LLMQType llmqType);
 };

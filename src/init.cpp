@@ -69,6 +69,7 @@
 #ifdef ENABLE_WALLET
 #include <coinjoin/client.h>
 #include <coinjoin/options.h>
+#include <wallet/wallet.h>
 #endif // ENABLE_WALLET
 #include <coinjoin/server.h>
 #include <dsnotificationinterface.h>
@@ -98,6 +99,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <limits>
 #include <memory>
 #include <set>
 #include <thread>
@@ -193,6 +195,32 @@ static std::unique_ptr<ECCVerifyHandle> globalVerifyHandle;
 
 static std::thread g_load_block;
 
+#ifdef ENABLE_WALLET
+static std::unique_ptr<CThreadInterrupt> g_staking_interrupt;
+static std::thread g_staking_thread;
+
+static void StartStakingThread(NodeContext& node)
+{
+    if (g_staking_thread.joinable() || ShutdownRequested()) {
+        return;
+    }
+
+    auto wallets = GetWallets();
+    if (wallets.empty()) {
+        LogPrintf("Staking start skipped: no wallets loaded\n");
+        return;
+    }
+
+    LogPrintf("Staking with wallet: %s\n", wallets[0]->GetName().c_str());
+    g_staking_interrupt = std::make_unique<CThreadInterrupt>();
+    LogPrintf("About to start staking thread\n");
+    g_staking_thread = std::thread([wallet = wallets[0], &node]() {
+        LogPrintf("Entered staking thread lambda\n");
+        PoSMiner(wallet, *Assert(node.connman), *Assert(node.evodb), *Assert(node.mempool), *Assert(g_staking_interrupt));
+    });
+}
+#endif // ENABLE_WALLET
+
 void Interrupt(NodeContext& node)
 {
     InterruptHTTPServer();
@@ -204,6 +232,9 @@ void Interrupt(NodeContext& node)
         node.llmq_ctx->Interrupt();
     }
     InterruptMapPort();
+#ifdef ENABLE_WALLET
+    if (g_staking_interrupt) (*g_staking_interrupt)();
+#endif // ENABLE_WALLET
     if (node.connman)
         node.connman->Interrupt();
     if (g_txindex) {
@@ -248,6 +279,10 @@ void PrepareShutdown(NodeContext& node)
     // Because these depend on each-other, we make sure that neither can be
     // using the other before destroying them.
     if (node.peer_logic) UnregisterValidationInterface(node.peer_logic.get());
+#ifdef ENABLE_WALLET
+    if (g_staking_thread.joinable()) g_staking_thread.join();
+    g_staking_interrupt.reset();
+#endif // ENABLE_WALLET
     if (node.connman) node.connman->Stop();
 
     StopTorControl();
@@ -780,6 +815,16 @@ void SetupServerArgs(NodeContext& node)
     argsman.AddArg("-statsport=<port>", strprintf("Specify statsd port (default: %u)", DEFAULT_STATSD_PORT), ArgsManager::ALLOW_ANY, OptionsCategory::STATSD);
     argsman.AddArg("-statsns=<ns>", strprintf("Specify additional namespace prefix (default: %s)", DEFAULT_STATSD_NAMESPACE), ArgsManager::ALLOW_ANY, OptionsCategory::STATSD);
     argsman.AddArg("-statsperiod=<seconds>", strprintf("Specify the number of seconds between periodic measurements (default: %d)", DEFAULT_STATSD_PERIOD), ArgsManager::ALLOW_ANY, OptionsCategory::STATSD);
+#ifdef ENABLE_WALLET
+    gArgs.AddArg("-staking=<n>", strprintf("Enable staking functionality (0-1, default: %u)", 1), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+    gArgs.AddArg("-reservebalance=<amt>", "Keep the specified amount available for spending at all times (default: 0)", ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+    gArgs.AddArg("-stakesplitthreshold=<n>", strprintf("Splits stake reward by threshold (1-%d, default: %d)", MAX_STAKE_SPLIT_THRESHOLD, DEFAULT_STAKE_SPLIT_THRESHOLD), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+    gArgs.AddArg("-stakemaxsplit=<n>", strprintf("Sets the number of max inputs & outputs of a stake (default: %d)", DEFAULT_STAKE_MAX_SPLIT), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+    gArgs.AddArg("-stakeautocombine=<n>", strprintf("Autocombine feature: 0 - disable, 1 - same account, 2 - any account (default: %d)", DEFAULT_STAKE_AUTOCOMBINE), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+    gArgs.AddArg("-inputstakeprotect=<n>", strprintf("Don't use masternode collateral for staking (0-1, default: %u)", DEFAULT_INPUT_STAKE_PROTECT), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+    gArgs.AddArg("-printcoinstake", "", ArgsManager::ALLOW_ANY, OptionsCategory::HIDDEN);
+    gArgs.AddArg("-poshashinterval=<n>", strprintf("Specify the number of seconds between stake hash attempts (1-%u, default: %u)", MAX_POS_HASH_INTERVAL, DEFAULT_POS_HASH_INTERVAL), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+#endif
 #if HAVE_DECL_DAEMON
     argsman.AddArg("-daemon", "Run in the background as a daemon and accept commands", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
 #else
@@ -1283,6 +1328,28 @@ bool AppInitParameterInteraction(const ArgsManager& args)
     if (!warnings.empty()) {
         InitWarning(warnings);
     }
+
+#ifdef ENABLE_WALLET
+    const int64_t stake_split_threshold = args.GetArg("-stakesplitthreshold", static_cast<int64_t>(DEFAULT_STAKE_SPLIT_THRESHOLD));
+    if (stake_split_threshold <= 0 || stake_split_threshold > MAX_STAKE_SPLIT_THRESHOLD) {
+        return InitError(strprintf(_("-stakesplitthreshold must be between 1 and %d"), MAX_STAKE_SPLIT_THRESHOLD));
+    }
+
+    const int64_t stake_max_split = args.GetArg("-stakemaxsplit", static_cast<int64_t>(DEFAULT_STAKE_MAX_SPLIT));
+    if (stake_max_split < 0 || stake_max_split > std::numeric_limits<int>::max()) {
+        return InitError(strprintf(_("-stakemaxsplit must be between 0 and %d"), std::numeric_limits<int>::max()));
+    }
+
+    const int64_t stake_autocombine = args.GetArg("-stakeautocombine", static_cast<int64_t>(DEFAULT_STAKE_AUTOCOMBINE));
+    if (stake_autocombine < AUTOCOMBINE_DISABLE || stake_autocombine > AUTOCOMBINE_ANY) {
+        return InitError(strprintf(_("-stakeautocombine must be between %d and %d"), AUTOCOMBINE_DISABLE, AUTOCOMBINE_ANY));
+    }
+
+    const int64_t pos_hash_interval = args.GetArg("-poshashinterval", static_cast<int64_t>(DEFAULT_POS_HASH_INTERVAL));
+    if (pos_hash_interval <= 0 || pos_hash_interval > MAX_POS_HASH_INTERVAL) {
+        return InitError(strprintf(_("-poshashinterval must be between 1 and %u"), MAX_POS_HASH_INTERVAL));
+    }
+#endif
 
     if (!fs::is_directory(GetBlocksDir())) {
         return InitError(strprintf(_("Specified blocks directory \"%s\" does not exist."), args.GetArg("-blocksdir", "")));
@@ -2602,6 +2669,12 @@ bool AppInitMain(const CoreContext& context, NodeContext& node, interfaces::Bloc
     for (const auto& client : node.chain_clients) {
         client->start(*node.scheduler);
     }
+
+#ifdef ENABLE_WALLET
+    if (args.GetBoolArg("-staking", true) && !args.IsArgSet("-masternodeblsprivkey")) {
+        node.scheduler->scheduleFromNow([&node]() { StartStakingThread(node); }, std::chrono::milliseconds{1000});
+    }
+#endif // ENABLE_WALLET
 
     BanMan* banman = node.banman.get();
     node.scheduler->scheduleEvery([banman]{

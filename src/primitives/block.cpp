@@ -5,16 +5,38 @@
 
 #include <primitives/block.h>
 
+#include <pos_kernel.h>
+#include <script/standard.h>
+#include <crypto/common.h>
 #include <hash.h>
 #include <streams.h>
 #include <tinyformat.h>
 
+template <typename Stream>
+static void SerializeBlockHeaderForHash(Stream& s, const CBlockHeader& block)
+{
+    ::Serialize(s, block.nVersion);
+    ::Serialize(s, block.hashPrevBlock);
+    ::Serialize(s, block.hashMerkleRoot);
+    ::Serialize(s, block.nTime);
+    ::Serialize(s, block.nBits);
+    ::Serialize(s, block.nNonce);
+
+    if (block.IsProofOfStake()) {
+        ::Serialize(s, block.posStakeHash);
+        ::Serialize(s, block.posStakeN);
+    }
+}
+
 uint256 CBlockHeader::GetHash() const
 {
-    std::vector<unsigned char> vch(80);
-    CVectorWriter ss(SER_GETHASH, PROTOCOL_VERSION, vch, 0);
-    ss << *this;
-    return HashX11((const char *)vch.data(), (const char *)vch.data() + vch.size());
+    if (IsProofOfStake()) {
+        return hashProofOfStake();
+    }
+
+    CDataStream ss(SER_GETHASH, PROTOCOL_VERSION);
+    SerializeBlockHeaderForHash(ss, *this);
+    return HashX11(ss.begin(), ss.end());
 }
 
 std::string CBlock::ToString() const
@@ -130,4 +152,93 @@ void CompressibleBlockHeader::Uncompress(const std::vector<CBlockHeader>& previo
     if (bit_field.IsCompressed(CompressedHeaderBitField::Flag::NBITS)) {
         nBits = last_block.nBits;
     }
+}
+
+uint256 CBlockHeader::hashProofOfStake() const
+{
+    CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+    SerializeBlockHeaderForHash(ss, *this);
+    return ss.GetHash();
+}
+
+bool CBlockHeader::CheckBlockSignature(const CKeyID& key_id) const
+{
+    if (!IsProofOfStake()) {
+        return true;
+    }
+
+    if (posBlockSig.empty()) {
+        return false;
+    }
+
+    auto hash = GetHash();
+    posPubKey.RecoverCompact(hash, posBlockSig);
+
+    if (!posPubKey.IsValid()) {
+        return false;
+    }
+
+    return posPubKey.GetID() == key_id;
+}
+
+const CPubKey& CBlockHeader::BlockPubKey() const
+{
+    if (!posPubKey.IsValid() && !posBlockSig.empty()) {
+        posPubKey.RecoverCompact(GetHash(), posBlockSig);
+    }
+
+    return posPubKey;
+}
+
+bool CBlock::HasCoinBase() const
+{
+    return (!vtx.empty() && CoinBase()->IsCoinBase());
+}
+
+bool CBlock::HasStake() const
+{
+    if (!IsProofOfStake() || (vtx.size() < 2)) {
+        return false;
+    }
+
+    BlockPubKey();
+
+    if (!posPubKey.IsValid()) {
+        return false;
+    }
+
+    const auto spk = GetScriptForDestination(PKHash(posPubKey));
+    const auto& cb_vout = CoinBase()->vout;
+    const auto& stake = Stake();
+
+    if (cb_vout.empty() || stake->vin.empty() || stake->vout.empty()) {
+        return false;
+    }
+
+    if (stake->vin[0].prevout != COutPoint(posStakeHash, posStakeN)) {
+        return false;
+    }
+
+    if (cb_vout[0].scriptPubKey != spk) {
+        return false;
+    }
+
+    CAmount total_amt = 0;
+
+    for (const auto& so : stake->vout) {
+        if (so.IsEmpty()) {
+            continue;
+        }
+        if (so.scriptPubKey != spk) {
+            return false;
+        }
+
+        total_amt += so.nValue;
+    }
+
+    if (total_amt < MIN_STAKE_AMOUNT) {
+        return false;
+    }
+
+    return true;
 }

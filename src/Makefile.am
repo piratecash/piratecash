@@ -196,6 +196,7 @@ BITCOIN_CORE_H = \
   index/txindex.h \
   indirectmap.h \
   init.h \
+  pos_kernel.h \
   interfaces/chain.h \
   interfaces/handler.h \
   interfaces/node.h \
@@ -492,6 +493,7 @@ libcosanta_wallet_a_SOURCES = \
   coinjoin/options.cpp \
   coinjoin/util.cpp \
   interfaces/wallet.cpp \
+  pos_kernel.cpp \
   wallet/coincontrol.cpp \
   wallet/context.cpp \
   wallet/crypter.cpp \

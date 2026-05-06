@@ -39,7 +39,7 @@ static const int ISDLOCK_PROTO_VERSION = 70220;
 static const int GOVSCRIPT_PROTO_VERSION = 70221;
 
 //! ADDRV2 was introduced in this version
-static const int ADDRV2_PROTO_VERSION = 70223;
+static const int ADDRV2_PROTO_VERSION = 70228;
 
 //! CCoinJoinStatusUpdate bug fix was introduced in this version
 static const int COINJOIN_SU_PROTO_VERSION = 70224;

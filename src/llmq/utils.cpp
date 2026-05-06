@@ -22,9 +22,18 @@
 #include <validation.h>
 #include <versionbits.h>
 
+#include <limits>
 #include <optional>
 
-static constexpr int TESTNET_LLMQ_25_67_ACTIVATION_HEIGHT = 847000;
+// PirateCash: LLMQ_25_67 (Dash v19 Platform/HighPerformance quorum type) is
+// not produced by the v18 nodes that ran the existing testnet history, so
+// the chain has no commitments of this type at any height. Keeping the
+// activation in the past would force ProcessBlock to demand a commitment
+// that simply does not exist on-chain (bad-qc-missing). Park the height
+// far in the future so the type stays effectively disabled on the existing
+// testnet history; this can be lowered later when a future testnet reset
+// or HF actually starts producing LLMQ_25_67 quorums.
+static constexpr int TESTNET_LLMQ_25_67_ACTIVATION_HEIGHT = std::numeric_limits<int>::max();
 
 namespace llmq
 {

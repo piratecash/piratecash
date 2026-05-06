@@ -78,9 +78,8 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const Conse
     return bnNew.GetCompact();
 }
 
-unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consensus::Params& params) {
+unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const arith_uint256& bnPowLimit, const Consensus::Params& params) {
     /* current difficulty formula, dash - DarkGravity v3, written by Evan Duffield - evan@dash.org */
-    const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
     int64_t nPastBlocks = 24;
 
     // make sure we have at least (nPastBlocks + 1) blocks, otherwise just return powLimit
@@ -168,6 +167,11 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 {
     assert(pindexLast != nullptr);
     assert(pblock != nullptr);
+    // Single unified limit at this layer matches master and the on-chain
+    // reality. The fPowAllowMinDifficultyBlocks branch on testnet must not
+    // diverge between PoW and PoS — otherwise the post-2h "min-difficulty"
+    // shortcut returns posLimit and mismatches the nBits actually mined,
+    // producing bad-diffbits at the first PoS block after a long testnet idle.
     const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
 
     // this is only active on devnets
@@ -204,7 +208,12 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         return KimotoGravityWell(pindexLast, params);
     }
 
-    return DarkGravityWave(pindexLast, params);
+    // DGW keeps its own PoS-aware cap to stay byte-for-byte compatible with
+    // master's internal DarkGravityWave logic.
+    const arith_uint256 bnDgwLimit = pblock->IsProofOfStake()
+        ? UintToArith256(params.posLimit)
+        : UintToArith256(params.powLimit);
+    return DarkGravityWave(pindexLast, bnDgwLimit, params);
 }
 
 // for DIFF_BTC only!
