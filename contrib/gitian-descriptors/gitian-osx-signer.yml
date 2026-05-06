@@ -1,5 +1,5 @@
 ---
-name: "dash-dmg-signer"
+name: "cosanta-dmg-signer"
 distro: "ubuntu"
 suites:
 - "focal"
@@ -10,13 +10,13 @@ packages:
 - "xorriso"
 - "python3-pip"
 remotes:
-- "url": "https://github.com/dashpay/dash-detached-sigs.git"
+- "url": "https://github.com/cosanta/cosanta-detached-sigs.git"
   "dir": "signature"
 - "url": "https://github.com/achow101/signapple.git"
   "dir": "signapple"
   "commit": "8a945a2e7583be2665cf3a6a89d665b70ecd1ab6"
 files:
-- "dashcore-osx-unsigned.tar.gz"
+- "cosantacore-osx-unsigned.tar.gz"
 script: |
   set -e -o pipefail
 
@@ -42,9 +42,9 @@ script: |
   export PATH="$HOME/.local/bin":$PATH
   cd ..
 
-  UNSIGNED_TARBALL=dashcore-osx-unsigned.tar.gz
-  UNSIGNED_APP=dist/Dash-Qt.app
-  SIGNED=dashcore-osx-signed.dmg
+  UNSIGNED_TARBALL=cosantacore-osx-unsigned.tar.gz
+  UNSIGNED_APP=dist/Cosanta-Qt.app
+  SIGNED=cosantacore-osx-signed.dmg
 
   tar -xf ${UNSIGNED_TARBALL}
   OSX_VOLNAME="$(cat osx_volname)"

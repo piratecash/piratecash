@@ -1,9 +1,8 @@
 ---
-name: "dash-win-19"
+name: "cosanta-win-18.0"
 enable_cache: true
-distro: "ubuntu"
 suites:
-- "focal"
+- "bionic"
 architectures:
 - "amd64"
 packages:
@@ -22,10 +21,11 @@ packages:
 - "zip"
 - "ca-certificates"
 - "python3"
+- "rename"
 - "ccache"
 remotes:
-- "url": "https://github.com/dashpay/dash.git"
-  "dir": "dash"
+- "url": "contrib/gitian-descriptors/gitian-win.yml"
+  "dir": "cosanta"
 files: []
 script: |
   set -e -o pipefail
@@ -35,8 +35,8 @@ script: |
   CONFIGFLAGS="--enable-reduce-exports --disable-miner --disable-bench --disable-gui-tests --enable-crash-hooks"
   FAKETIME_HOST_PROGS="ar ranlib nm windres strip objcopy"
   FAKETIME_PROGS="date makensis zip"
-  HOST_CFLAGS="-O2 -g -fno-ident"
-  HOST_CXXFLAGS="-O2 -g -fno-ident"
+  HOST_CFLAGS="-O2 -g"
+  HOST_CXXFLAGS="-O2 -g"
 
   export TZ="UTC"
   export BUILD_DIR="$PWD"
@@ -65,15 +65,14 @@ script: |
   fi
 
   # We include the GCC version in all wrappers so that ccache can detect compiler upgrades when hashing the wrappers
-  GCCVERSION=$(gcc --version | head -1)
+  GCCVERSION=`gcc --version | head -1`
 
-  # Use $LIB in LD_PRELOAD to avoid hardcoding the dir (See `man ld.so`)
   function create_global_faketime_wrappers {
   for prog in ${FAKETIME_PROGS}; do
     echo '#!/usr/bin/env bash' > ${WRAP_DIR}/${prog}
     echo "# GCCVERSION=${GCCVERSION}" >> ${WRAP_DIR}/${prog}
     echo "REAL=\`which -a ${prog} | grep -v ${WRAP_DIR}/${prog} | head -1\`" >> ${WRAP_DIR}/${prog}
-    echo "export LD_PRELOAD='/usr/\$LIB/faketime/libfaketime.so.1'" >> ${WRAP_DIR}/${prog}
+    echo 'export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/faketime/libfaketime.so.1' >> ${WRAP_DIR}/${prog}
     echo "export FAKETIME=\"$1\"" >> ${WRAP_DIR}/${prog}
     echo "\$REAL \$@" >> $WRAP_DIR/${prog}
     chmod +x ${WRAP_DIR}/${prog}
@@ -87,7 +86,7 @@ script: |
         echo '#!/usr/bin/env bash' > ${WRAP_DIR}/${i}-${prog}
         echo "# GCCVERSION=${GCCVERSION}" >> ${WRAP_DIR}/${i}-${prog}
         echo "REAL=\`which -a ${i}-${prog} | grep -v ${WRAP_DIR}/${i}-${prog} | head -1\`" >> ${WRAP_DIR}/${i}-${prog}
-        echo "export LD_PRELOAD='/usr/\$LIB/faketime/libfaketime.so.1'" >> ${WRAP_DIR}/${i}-${prog}
+        echo 'export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/faketime/libfaketime.so.1' >> ${WRAP_DIR}/${i}-${prog}
         echo "export FAKETIME=\"$1\"" >> ${WRAP_DIR}/${i}-${prog}
         echo "\$REAL \$@" >> $WRAP_DIR/${i}-${prog}
         chmod +x ${WRAP_DIR}/${i}-${prog}
@@ -96,18 +95,19 @@ script: |
   done
   }
 
-  function create_per-host_compiler_wrapper {
-  # -posix variant is required for c++11 threading.
+  function create_per-host_linker_wrapper {
+  # This is only needed for trusty, as the mingw linker leaks a few bytes of
+  # heap, causing non-determinism. See discussion in https://github.com/bitcoin/bitcoin/pull/6900
   for i in $HOSTS; do
     for prog in gcc g++; do
         echo '#!/usr/bin/env bash' > ${WRAP_DIR}/${i}-${prog}
         echo "# GCCVERSION=${GCCVERSION}" >> ${WRAP_DIR}/${i}-${prog}
         echo "REAL=\`which -a ${i}-${prog}-posix | grep -v ${WRAP_DIR}/${i}-${prog} | head -1\`" >> ${WRAP_DIR}/${i}-${prog}
         echo '# Add the gcc version to the wrapper so that ccache takes this into account (we use CCACHE_COMPILERCHECK=content)' >> ${WRAP_DIR}/${i}-${prog}
-        echo "# $(${prog} --version | head -1)" >> ${WRAP_DIR}/${i}-${prog}
-        echo "export LD_PRELOAD='/usr/\$LIB/faketime/libfaketime.so.1'" >> ${WRAP_DIR}/${i}-${prog}
+        echo "# `${prog} --version | head -1`" >> ${WRAP_DIR}/${i}-${prog}
+        echo 'export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/faketime/libfaketime.so.1' >> ${WRAP_DIR}/${i}-${prog}
         echo "export FAKETIME=\"$1\"" >> ${WRAP_DIR}/${i}-${prog}
-        echo "\$REAL \"\$@\"" >> $WRAP_DIR/${i}-${prog}
+        echo "\$REAL \$@" >> $WRAP_DIR/${i}-${prog}
         chmod +x ${WRAP_DIR}/${i}-${prog}
         touch -d "${REFERENCE_DATETIME}" ${WRAP_DIR}/${i}-${prog}
     done
@@ -118,10 +118,10 @@ script: |
   export PATH_orig=${PATH}
   create_global_faketime_wrappers "2000-01-01 12:00:00"
   create_per-host_faketime_wrappers "2000-01-01 12:00:00"
-  create_per-host_compiler_wrapper "2000-01-01 12:00:00"
+  create_per-host_linker_wrapper "2000-01-01 12:00:00"
   export PATH=${WRAP_DIR}:${PATH}
 
-  cd dash
+  cd cosanta
   BASEPREFIX="${PWD}/depends"
   # Build dependencies for each host
   for i in $HOSTS; do
@@ -132,7 +132,7 @@ script: |
   export PATH=${PATH_orig}
   create_global_faketime_wrappers "${REFERENCE_DATETIME}"
   create_per-host_faketime_wrappers "${REFERENCE_DATETIME}"
-  create_per-host_compiler_wrapper "${REFERENCE_DATETIME}"
+  create_per-host_linker_wrapper "${REFERENCE_DATETIME}"
   export PATH=${WRAP_DIR}:${PATH}
 
   # Define DISTNAME variable.
@@ -143,7 +143,7 @@ script: |
 
   # Create the source tarball
   mkdir -p "$(dirname "$GIT_ARCHIVE")"
-  git archive --prefix="${DISTNAME}/" --output="$GIT_ARCHIVE" HEAD
+  git archive --output="$GIT_ARCHIVE" HEAD
 
   ORIGPATH="$PATH"
   # Extract the git archive into a dir for each host and build
@@ -153,7 +153,7 @@ script: |
     cd distsrc-${i}
     INSTALLPATH="${PWD}/installed/${DISTNAME}"
     mkdir -p ${INSTALLPATH}
-    tar --strip-components=1 -xf "${GIT_ARCHIVE}"
+    tar -xf $GIT_ARCHIVE
 
     ./autogen.sh
     CONFIG_SITE=${BASEPREFIX}/${i}/share/config.site ./configure --prefix=/ --disable-maintainer-mode --disable-dependency-tracking ${CONFIGFLAGS} CFLAGS="${HOST_CFLAGS}" CXXFLAGS="${HOST_CXXFLAGS}"
@@ -166,11 +166,10 @@ script: |
     find . -name "lib*.la" -delete
     find . -name "lib*.a" -delete
     rm -rf ${DISTNAME}/lib/pkgconfig
-    find ${DISTNAME}/bin -type f -executable -print0 | xargs -0 -n1 -I{} ../contrib/devtools/split-debug.sh {} {} {}.dbg
-    find ${DISTNAME}/lib -type f -print0 | xargs -0 -n1 -I{} ../contrib/devtools/split-debug.sh {} {} {}.dbg
-    cp ../doc/README_windows.txt ${DISTNAME}/readme.txt
-    find ${DISTNAME} -not -name "*.dbg"  -type f | sort | zip -X@ ${OUTDIR}/${DISTNAME}-${i//x86_64-w64-mingw32/win64}.zip
-    find ${DISTNAME} -name "*.dbg"  -type f | sort | zip -X@ ${OUTDIR}/${DISTNAME}-${i//x86_64-w64-mingw32/win64}-debug.zip
+    find ${DISTNAME}/bin -type f -executable -exec ${i}-objcopy --only-keep-debug {} {}.dbg \; -exec ${i}-strip -s {} \; -exec ${i}-objcopy --add-gnu-debuglink={}.dbg {} \;
+    find ${DISTNAME}/lib -type f -exec ${i}-objcopy --only-keep-debug {} {}.dbg \; -exec ${i}-strip -s {} \; -exec ${i}-objcopy --add-gnu-debuglink={}.dbg {} \;
+    find ${DISTNAME} -not -name "*.dbg"  -type f | sort | zip -X@ ${OUTDIR}/${DISTNAME}-${i}.zip
+    find ${DISTNAME} -name "*.dbg"  -type f | sort | zip -X@ ${OUTDIR}/${DISTNAME}-${i}-debug.zip
     cd ../../
     rm -rf distsrc-${i}
   done
@@ -180,6 +179,8 @@ script: |
   mkdir unsigned
   cp ${OUTDIR}/${DISTNAME}-win64-setup-unsigned.exe unsigned/
   find . | sort | tar --mtime="$REFERENCE_DATETIME" --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ${OUTDIR}/${DISTNAME}-win-unsigned.tar.gz
+  mv ${OUTDIR}/${DISTNAME}-x86_64-*-debug.zip ${OUTDIR}/${DISTNAME}-win64-debug.zip
+  mv ${OUTDIR}/${DISTNAME}-x86_64-*.zip ${OUTDIR}/${DISTNAME}-win64.zip
 
   # Compress ccache (otherwise the assert file will get too huge)
   if [ "$CCACHE_DIR" != "" ]; then

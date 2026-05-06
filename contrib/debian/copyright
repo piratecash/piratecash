@@ -1,10 +1,10 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Dash Core
 Upstream-Contact: Dash Core Group, Inc https://www.dash.org/team/
-Source: https://github.com/dashpay/dash
+Source: https://github.com/cosanta/cosanta-core
 
 Files: *
-Copyright: 2009-2019, Bitcoin Core Developers,
+Copyright: 2009-2017, Bitcoin Core Developers,
            2019-2020, Dash Core Developers
 License: Expat
 Comment: The Bitcoin Core Developers encompasses the current developers listed on bitcoin.org,

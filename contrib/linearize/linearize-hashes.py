@@ -3,11 +3,16 @@
 # linearize-hashes.py:  List blocks in a linear, no-fork version of the chain.
 #
 # Copyright (c) 2013-2014 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #
 
-from http.client import HTTPConnection
+from __future__ import print_function
+try: # Python 3
+    import http.client as httplib
+except ImportError: # Python 2
+    import httplib
 import json
 import re
 import base64
@@ -27,7 +32,7 @@ class BitcoinRPC:
         authpair = "%s:%s" % (username, password)
         authpair = authpair.encode('utf-8')
         self.authhdr = b"Basic " + base64.b64encode(authpair)
-        self.conn = HTTPConnection(host, port=port, timeout=30)
+        self.conn = httplib.HTTPConnection(host, port=port, timeout=30)
 
     def execute(self, obj):
         try:
@@ -120,7 +125,7 @@ if __name__ == '__main__':
     if 'host' not in settings:
         settings['host'] = '127.0.0.1'
     if 'port' not in settings:
-        settings['port'] = 9998
+        settings['port'] = 9606
     if 'min_height' not in settings:
         settings['min_height'] = 0
     if 'max_height' not in settings:

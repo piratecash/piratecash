@@ -1,5 +1,5 @@
 ---
-name: "dash-osx-19"
+name: "cosanta-osx-18.0"
 enable_cache: true
 distro: "ubuntu"
 suites:
@@ -32,8 +32,8 @@ packages:
 - "xorriso"
 - "libtinfo5"
 remotes:
-- "url": "https://github.com/dashpay/dash.git"
-  "dir": "dash"
+- "url": "https://github.com/cosanta/cosanta-core.git"
+  "dir": "cosanta"
 files:
 - "Xcode-12.1-12A7403-extracted-SDK-with-libcxx-headers.tar.gz"
 script: |
@@ -104,7 +104,7 @@ script: |
   create_per-host_faketime_wrappers "2000-01-01 12:00:00"
   export PATH=${WRAP_DIR}:${PATH}
 
-  cd dash
+  cd cosanta
   BASEPREFIX="${PWD}/depends"
 
   mkdir -p ${BASEPREFIX}/SDKs
@@ -129,7 +129,7 @@ script: |
 
   # Create the source tarball
   mkdir -p "$(dirname "$GIT_ARCHIVE")"
-  git archive --prefix="${DISTNAME}/" --output="$GIT_ARCHIVE" HEAD
+  git archive --output="$GIT_ARCHIVE" HEAD
 
   ORIGPATH="$PATH"
   # Extract the git archive into a dir for each host and build

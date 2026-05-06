@@ -53,18 +53,18 @@ MAX_VERSIONS = {
 
 # Ignore symbols that are exported as part of every executable
 IGNORE_EXPORTS = {
-'_edata', '_end', '__end__', '_init', '__bss_start', '__bss_start__', '_bss_end__', '__bss_end__', '_fini', '_IO_stdin_used', 'stdin', 'stdout', 'stderr',
-'environ', '_environ', '__environ',
+'_edata', '_end', '__end__', '_init', '__bss_start', '__bss_start__', '_bss_end__', '__bss_end__', '_fini', '_IO_stdin_used', 'stdin', 'stdout', 'stderr'
 }
 CPPFILT_CMD = os.getenv('CPPFILT', '/usr/bin/c++filt')
 OTOOL_CMD = os.getenv('OTOOL', '/usr/bin/otool')
 
 # Allowed NEEDED libraries
 ELF_ALLOWED_LIBRARIES = {
-# dashd and dash-qt
+# cosantad and cosanta-qt
 'libgcc_s.so.1', # GCC base support
 'libc.so.6', # C library
 'libpthread.so.0', # threading
+'libanl.so.1', # DNS resolve
 'libm.so.6', # math library
 'librt.so.1', # real-time (clock)
 'libatomic.so.1',
@@ -75,13 +75,25 @@ ELF_ALLOWED_LIBRARIES = {
 'ld64.so.1', # POWER64 ABIv1 dynamic linker
 'ld64.so.2', # POWER64 ABIv2 dynamic linker
 'ld-linux-riscv64-lp64d.so.1', # 64-bit RISC-V dynamic linker
-# dash-qt only
+# cosanta-qt only
 'libxcb.so.1', # part of X11
 'libxkbcommon.so.0', # keyboard keymapping
 'libxkbcommon-x11.so.0', # keyboard keymapping
 'libfontconfig.so.1', # font support
 'libfreetype.so.6', # font parsing
-'libdl.so.2' # programming interface to dynamic linker
+'libdl.so.2', # programming interface to dynamic linker
+'libxcb-icccm.so.4',
+'libxcb-image.so.0',
+'libxcb-shm.so.0',
+'libxcb-keysyms.so.1',
+'libxcb-randr.so.0',
+'libxcb-render-util.so.0',
+'libxcb-render.so.0',
+'libxcb-shape.so.0',
+'libxcb-sync.so.1',
+'libxcb-xfixes.so.0',
+'libxcb-xinerama.so.0',
+'libxcb-xkb.so.1',
 }
 
 MACHO_ALLOWED_LIBRARIES = {
@@ -92,19 +104,15 @@ MACHO_ALLOWED_LIBRARIES = {
 'AppKit', # user interface
 'ApplicationServices', # common application tasks.
 'Carbon', # deprecated c back-compat API
+'ColorSync',
 'CoreFoundation', # low level func, data types
 'CoreGraphics', # 2D rendering
 'CoreServices', # operating system services
 'CoreText', # interface for laying out text and handling fonts.
-'CoreVideo', # video processing
 'Foundation', # base layer functionality for apps/frameworks
 'ImageIO', # read and write image file formats.
 'IOKit', # user-space access to hardware devices and drivers.
-'IOSurface', # cross process image/drawing buffers
 'libobjc.A.dylib', # Objective-C runtime library
-'Metal', # 3D graphics
-'Security', # access control and authentication
-'QuartzCore', # animation
 }
 
 class CPPFilt(object):

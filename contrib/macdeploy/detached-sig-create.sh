@@ -7,7 +7,7 @@ export LC_ALL=C
 set -e
 
 ROOTDIR=dist
-BUNDLE="${ROOTDIR}/Dash-Qt.app"
+BUNDLE="${ROOTDIR}/Cosanta-Qt.app"
 SIGNAPPLE=signapple
 TEMPDIR=sign.temp
 OUT=signature-osx.tar.gz

@@ -24,8 +24,8 @@ TMPFILE="hashes.tmp"
 
 SIGNATUREFILENAME="SHA256SUMS.asc"
 RCSUBDIR="test"
-HOST1="https://github.com/dashpay/dash/releases/download/v"
-HOST2="https://pasta.keybase.pub/Dash-Core-Releases/"
+HOST1="https://github.com/cosanta/cosanta-core/releases/download/v"
+HOST2=""
 BASEDIR=""
 VERSIONPREFIX=""
 RCVERSIONSTRING="rc"
@@ -92,20 +92,22 @@ if ! WGETOUT=$(wget -N "$HOST1$BASEDIR$SIGNATUREFILENAME" 2>&1); then
    exit 2
 fi
 
-if ! WGETOUT=$(wget -N -O "$SIGNATUREFILENAME.2" "$HOST2$BASEDIR$SIGNATUREFILENAME" 2>&1); then
-   echo "pasta.keybase.pub failed to provide signature file, but github.com did?"
-   echo "wget output:"
-   # shellcheck disable=SC2001
-   echo "$WGETOUT"|sed 's/^/\t/g'
-   clean_up $SIGNATUREFILENAME
-   exit 3
-fi
+if [ -n "$HOST2" ]; then
+   if ! WGETOUT=$(wget -N -O "$SIGNATUREFILENAME.2" "$HOST2$BASEDIR$SIGNATUREFILENAME" 2>&1); then
+      echo "The secondary release host failed to provide signature file, but github.com did?"
+      echo "wget output:"
+      # shellcheck disable=SC2001
+      echo "$WGETOUT"|sed 's/^/\t/g'
+      clean_up $SIGNATUREFILENAME
+      exit 3
+   fi
 
-SIGFILEDIFFS="$(diff $SIGNATUREFILENAME $SIGNATUREFILENAME.2)"
-if [ "$SIGFILEDIFFS" != "" ]; then
-   echo "pasta.keybase.pub and github.com signature files were not equal?"
-   clean_up $SIGNATUREFILENAME $SIGNATUREFILENAME.2
-   exit 4
+   SIGFILEDIFFS="$(diff $SIGNATUREFILENAME $SIGNATUREFILENAME.2)"
+   if [ "$SIGFILEDIFFS" != "" ]; then
+      echo "The secondary release host and github.com signature files were not equal?"
+      clean_up $SIGNATUREFILENAME $SIGNATUREFILENAME.2
+      exit 4
+   fi
 fi
 
 #then we check it
@@ -122,7 +124,7 @@ if [ $RET -ne 0 ]; then
       echo "Bad signature."
    elif [ $RET -eq 2 ]; then
       #or if a gpg error has occurred
-      echo "gpg error. Do you have the Dash Core binary release signing key installed?"
+      echo "gpg error. Do you have the Cosanta Core binary release signing key installed?"
    fi
 
    echo "gpg output:"

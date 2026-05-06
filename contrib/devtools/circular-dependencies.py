@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
-# Copyright (c) 2018 The Bitcoin Core developers
-# Distributed under the MIT software license, see the accompanying
-# file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 import sys
 import re
-from multiprocess import Pool
 
 MAPPING = {
     'core_read.cpp': 'core_io.cpp',
@@ -38,33 +34,13 @@ if __name__=="__main__":
 
     RE = re.compile("^#include <(.*)>")
 
-    def handle_module(arg):
+    def handle_module(module):
         module = module_name(arg)
         if module is None:
             print("Ignoring file %s (does not constitute module)\n" % arg)
         else:
             files[arg] = module
             deps[module] = set()
-
-    def handle_module2(module):
-        # Build the transitive closure of dependencies of module
-        closure = dict()
-        for dep in deps[module]:
-            closure[dep] = []
-        while True:
-            old_size = len(closure)
-            old_closure_keys = sorted(closure.keys())
-            for src in old_closure_keys:
-                for dep in deps[src]:
-                    if dep not in closure:
-                        closure[dep] = closure[src] + [src]
-            if len(closure) == old_size:
-                break
-        # If module is in its own transitive closure, it's a circular dependency; check if it is the shortest
-        if module in closure:
-            return [module] + closure[module]
-
-        return None
 
 
     # Iterate over files, and create list of modules
@@ -92,20 +68,32 @@ if __name__=="__main__":
     def shortest_c_dep():
         have_cycle = False
 
-        sorted_keys = None
+        def handle_module(module, shortest_cycle):
+
+            # Build the transitive closure of dependencies of module
+            closure = dict()
+            for dep in deps[module]:
+                closure[dep] = []
+            while True:
+                old_size = len(closure)
+                old_closure_keys = sorted(closure.keys())
+                for src in old_closure_keys:
+                    for dep in deps[src]:
+                        if dep not in closure:
+                            closure[dep] = closure[src] + [src]
+                if len(closure) == old_size:
+                    break
+            # If module is in its own transitive closure, it's a circular dependency; check if it is the shortest
+            if module in closure and (shortest_cycle is None or len(closure[module]) + 1 < len(shortest_cycle)):
+                shortest_cycle = [module] + closure[module]
+
+            return shortest_cycle
 
         while True:
 
             shortest_cycles = None
-            if sorted_keys is None:
-                sorted_keys = sorted(deps.keys())
-
-            with Pool(8) as pool:
-                cycles = pool.map(handle_module2, sorted_keys)
-
-            for cycle in cycles:
-                if cycle is not None and (shortest_cycles is None or len(cycle) < len(shortest_cycles)):
-                    shortest_cycles = cycle
+            for module in sorted(deps.keys()):
+                shortest_cycles = handle_module(module, shortest_cycles)
 
             if shortest_cycles is None:
                 break
@@ -113,8 +101,7 @@ if __name__=="__main__":
             module = shortest_cycles[0]
             print("Circular dependency: %s" % (" -> ".join(shortest_cycles + [module])))
             # And then break the dependency to avoid repeating in other cycles
-            deps[shortest_cycles[-1]] -= {module}
-            sorted_keys = None
+            deps[shortest_cycles[-1]] = deps[shortest_cycles[-1]] - set([module])
             have_cycle = True
 
         if have_cycle:

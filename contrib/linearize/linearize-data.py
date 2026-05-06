@@ -3,19 +3,20 @@
 # linearize-data.py: Construct a linear, no-fork version of the chain.
 #
 # Copyright (c) 2013-2014 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #
 
+from __future__ import print_function, division
 import struct
 import re
 import os
 import os.path
 import sys
-import dash_hash
+import cosanta_hash
 import datetime
 import time
-import glob
 from collections import namedtuple
 from binascii import unhexlify
 
@@ -57,7 +58,7 @@ def calc_hdr_hash(blk_hdr):
     #hash2_o = hash2.digest()
 
     #return hash2_o
-        pow_hash = dash_hash.getPoWHash(blk_hdr)
+        pow_hash = cosanta_hash.getPoWHash(blk_hdr)
         return pow_hash
 
 def calc_hash_str(blk_hdr):
@@ -95,30 +96,6 @@ def mkblockmap(blkindex):
         blkmap[hash] = height
     return blkmap
 
-# This gets the first block file ID that exists from the input block
-# file directory.
-def getFirstBlockFileId(block_dir_path):
-    # First, this sets up a pattern to search for block files, for
-    # example 'blkNNNNN.dat'.
-    blkFilePattern = os.path.join(block_dir_path, "blk[0-9][0-9][0-9][0-9][0-9].dat")
-
-    # This search is done with glob
-    blkFnList = glob.glob(blkFilePattern)
-
-    if len(blkFnList) == 0:
-        print("blocks not pruned - starting at 0")
-        return 0
-    # We then get the lexicographic minimum, which should be the first
-    # block file name.
-    firstBlkFilePath = min(blkFnList)
-    firstBlkFn = os.path.basename(firstBlkFilePath)
-
-    # now, the string should be ['b','l','k','N','N','N','N','N','.','d','a','t']
-    # So get the ID by choosing:              3   4   5   6   7
-    # The ID is not necessarily 0 if this is a pruned node.
-    blkId = int(firstBlkFn[3:8])
-    return blkId
-
 # Block header and extent on disk
 BlockExtent = namedtuple('BlockExtent', ['fn', 'offset', 'inhdr', 'blkhdr', 'size'])
 
@@ -128,9 +105,7 @@ class BlockDataCopier:
         self.blkindex = blkindex
         self.blkmap = blkmap
 
-        # Get first occurring block file id - for pruned nodes this
-        # will not necessarily be 0
-        self.inFn = getFirstBlockFileId(self.settings['input'])
+        self.inFn = 0
         self.inF = None
         self.outFn = 0
         self.outsz = 0
@@ -242,11 +217,8 @@ class BlockDataCopier:
 
             inMagic = inhdr[:4]
             if (inMagic != self.settings['netmagic']):
-                # Seek backwards 7 bytes (skipping the first byte in the previous search)
-                # and continue searching from the new position if the magic bytes are not
-                # found.
-                self.inF.seek(-7, os.SEEK_CUR)
-                continue
+                print("Invalid magic: " + inMagic.hex())
+                return
             inLenLE = inhdr[4:]
             su = struct.unpack("<I", inLenLE)
             inLen = su[0] - 80 # length without header

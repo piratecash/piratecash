@@ -6,17 +6,17 @@ reset-files.bash
 *.tar.gz
 
 *.exe
-src/dash
-src/dashd
-src/dash-cli
-src/dash-tx
-src/dash-wallet
+src/cosanta
+src/cosantad
+src/cosanta-cli
+src/cosanta-tx
+src/cosanta-wallet
 src/test/fuzz/*
 !src/test/fuzz/*.*
-src/test/test_dash
-src/qt/test/test_dash-qt
+src/test/test_cosanta
+src/qt/test/test_cosanta-qt
 src/qt/res/css/colors/*
-src/bench/bench_dash
+src/bench/bench_cosanta
 
 # autoreconf
 Makefile.in
@@ -35,7 +35,6 @@ build-aux/m4/ltversion.m4
 build-aux/missing
 build-aux/compile
 build-aux/test-driver
-config.cache
 config.log
 config.status
 configure
@@ -43,7 +42,6 @@ libtool
 src/config/bitcoin-config.h
 src/config/bitcoin-config.h.in
 src/config/stamp-h1
-src/obj
 share/setup.nsi
 share/qt/Info.plist
 
@@ -60,7 +58,7 @@ libconftest.dylib*
 .dirstamp
 .libs
 .*.swp
-*~
+*.*~*
 *.bak
 *.rej
 *.orig
@@ -82,7 +80,6 @@ libconftest.dylib*
 
 # Only ignore unexpected patches
 *.patch
-!contrib/guix/patches/*.patch
 !depends/patches/**/*.patch
 
 #libtool object files
@@ -92,18 +89,13 @@ libconftest.dylib*
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
-!depends/Makefile
-dash-qt
-Dash-Qt.app
-background.tiff*
+cosanta-qt
+Cosanta-Qt.app
 !/depends/Makefile
-
-# Qt Creator
-Makefile.am.user
 
 # Unit-tests
 Makefile.test
-dash-qt_test
+cosanta-qt_test
 
 # Resources cpp
 qrc_*.cpp
@@ -117,7 +109,7 @@ build
 *.gcno
 *.gcda
 /*.info
-test_dash.coverage/
+test_cosanta.coverage/
 total.coverage/
 coverage_percent.txt
 
@@ -135,15 +127,15 @@ test/cache/*
 .autotools
 /doc/doxygen/
 
-libdashconsensus.pc
+libcosantaconsensus.pc
 contrib/devtools/split-debug.sh
-src/qt/dash-qt.bash
+src/qt/cosanta-qt.bash
 qa/pull-tester/tests-config.sh
 
 #development symlinks
-dash-cli
-dashd
-dash-qt
+cosanta-cli
+cosantad
+cosanta-qt
 make
 
 /docker/bin
@@ -158,11 +150,3 @@ cmake-build-debug
 osx_volname
 dist/
 *.background.tiff
-
-/guix-build-*
-
-# cppcheck cache-directory
-.cppcheck/*
-
-# flake8 cache location
-.cache/*

@@ -1,11 +1,11 @@
 Sample configuration files for:
 ```
-SystemD: dashd.service
-Upstart: dashd.conf
-OpenRC:  dashd.openrc
-         dashd.openrcconf
-CentOS:  dashd.init
-macOS:   org.dash.dashd.plist
+SystemD: cosantad.service
+Upstart: cosantad.conf
+OpenRC:  cosantad.openrc
+         cosantad.openrcconf
+CentOS:  cosantad.init
+macOS:   net.cosanta.cosantad.plist
 ```
 have been made available to assist packagers in creating node packages here.
 

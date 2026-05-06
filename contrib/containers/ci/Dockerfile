@@ -4,7 +4,7 @@ FROM ubuntu:focal
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
 
 # Build and base stuff
-# (zlib1g-dev is needed for the Qt host binary builds, but should not be used by target binaries)
+# (zlib1g-dev and libssl-dev are needed for the Qt host binary builds, but should not be used by target binaries)
 ENV APT_ARGS="-y --no-install-recommends --no-upgrade"
 RUN dpkg --add-architecture i386
 RUN apt-get update && apt-get install $APT_ARGS \
@@ -21,9 +21,20 @@ RUN apt-get update && apt-get install $APT_ARGS \
     git \
     g++ \
     gettext \
+    libtool \
+    libxcb-icccm4 \
+    libxcb-image0 \
+    libxcb-keysyms1 \
+    libxcb-randr0 \
+    libxcb-render-util0 \
+    libxcb-shape0 \
+    libxcb-sync1 \
+    libxcb-xfixes0 \
+    libxcb-xinerama0 \
+    libxcb-xkb1 \
+    libxkbcommon-x11-0 \
     wget \
     unzip \
-    libtool \
     m4 \
     pkg-config \
     python3 \
@@ -39,13 +50,11 @@ RUN pip3 install \
     jinja2 \
     pyzmq \
     vulture==2.3 \
-    yq \
-    multiprocess
+    yq
 
-# dash_hash
-ARG DASH_HASH_VERSION=1.4.0
-RUN git clone --depth 1 --no-tags --branch=${DASH_HASH_VERSION} https://github.com/dashpay/dash_hash
-RUN cd dash_hash && pip3 install -r requirements.txt .
+# cosnata_hash
+RUN git clone --depth 1 --no-tags https://github.com/cosanta/cosanta_hash
+RUN cd cosanta_hash && python3 setup.py install
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
@@ -53,8 +62,8 @@ ARG GROUP_ID=1000
 # add user with specified (or default) user/group ids
 ENV USER_ID ${USER_ID}
 ENV GROUP_ID ${GROUP_ID}
-RUN groupadd -g ${GROUP_ID} dash
-RUN useradd -u ${USER_ID} -g dash -s /bin/bash -m -d /home/dash dash
+RUN groupadd -g ${GROUP_ID} cosanta
+RUN useradd -u ${USER_ID} -g cosanta -s /bin/bash -m -d /cosanta cosanta
 
 # Packages needed for all target builds
 RUN apt-get update && apt-get install $APT_ARGS \
@@ -80,7 +89,7 @@ RUN apt-get update && apt-get install $APT_ARGS \
     xorriso \
     && rm -rf /var/lib/apt/lists/*
 
-ARG CPPCHECK_VERSION=2.9
+ARG CPPCHECK_VERSION=2.4
 RUN curl -sL "https://github.com/danmar/cppcheck/archive/${CPPCHECK_VERSION}.tar.gz" | tar -xvzf - --directory /tmp/
 RUN cd /tmp/cppcheck-${CPPCHECK_VERSION} && mkdir build && cd build && cmake .. && cmake --build . -j 8
 ENV PATH "/tmp/cppcheck-${CPPCHECK_VERSION}/build/bin:${PATH}"
@@ -98,20 +107,20 @@ RUN ln -s x86_64-linux-gnu/asm /usr/include/asm
 
 # Make sure std::thread and friends is available
 RUN \
+  update-alternatives --set i686-w64-mingw32-gcc /usr/bin/i686-w64-mingw32-gcc-posix; \
+  update-alternatives --set i686-w64-mingw32-g++  /usr/bin/i686-w64-mingw32-g++-posix; \
   update-alternatives --set x86_64-w64-mingw32-gcc  /usr/bin/x86_64-w64-mingw32-gcc-posix; \
   update-alternatives --set x86_64-w64-mingw32-g++  /usr/bin/x86_64-w64-mingw32-g++-posix; \
   exit 0
 
-RUN \
-  mkdir -p /src/dash && \
+RUN mkdir /cosanta-src && \
   mkdir -p /cache/ccache && \
   mkdir /cache/depends && \
   mkdir /cache/sdk-sources && \
-  chown ${USER_ID}:${GROUP_ID} /src && \
-  chown ${USER_ID}:${GROUP_ID} -R /src && \
-  chown ${USER_ID}:${GROUP_ID} /cache && \
-  chown ${USER_ID}:${GROUP_ID} -R /cache
+  chown $USER_ID:$GROUP_ID /cosanta-src && \
+  chown $USER_ID:$GROUP_ID /cache && \
+  chown $USER_ID:$GROUP_ID /cache -R
 
-WORKDIR /src/dash
+WORKDIR /cosanta-src
 
-USER dash
+USER cosanta
