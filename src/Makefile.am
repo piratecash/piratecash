@@ -655,6 +655,7 @@ libcosanta_consensus_a_SOURCES = \
   script/script.h \
   script/script_error.cpp \
   script/script_error.h \
+  script/standard.cpp \
   serialize.h \
   span.h \
   streams.h \
@@ -697,7 +698,6 @@ libcosanta_common_a_SOURCES = \
   script/descriptor.cpp \
   script/sign.cpp \
   script/signingprovider.cpp \
-  script/standard.cpp \
   versionbitsinfo.cpp \
   warnings.cpp \
   $(BITCOIN_CORE_H)
@@ -770,7 +770,7 @@ nodist_libcosanta_util_a_SOURCES = $(srcdir)/obj/build.h
 cosantad_SOURCES = bitcoind.cpp
 cosantad_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 cosantad_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-cosantad_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(PTHREAD_FLAGS)
+cosantad_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
 cosantad_SOURCES += cosantad-res.rc
