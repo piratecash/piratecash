@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-# Copyright (c) 2018-2022 The Dash Core developers
+# Copyright (c) 2018-2020 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Test the dash specific ZMQ notification interfaces."""
+"""Test the Cosanta-specific ZMQ notification interfaces."""
 
 import configparser
 from enum import Enum
@@ -83,22 +83,22 @@ class TestP2PConn(P2PInterface):
         inv = msg_inv([CInv(31 if deterministic else 30, hash)])
         self.send_message(inv)
 
-    def send_tx(self, tx):
+    def send_tx(self, tx, deterministic):
         hash = uint256_from_str(hash256(tx.serialize()))
         self.txes[hash] = tx
 
-        inv = msg_inv([CInv(MSG_TX, hash)])
+        inv = msg_inv([CInv(31 if deterministic else 30, hash)])
         self.send_message(inv)
 
     def on_getdata(self, message):
         for inv in message.inv:
-            if ((inv.type & MSG_TYPE_MASK) == 30 or (inv.type & MSG_TYPE_MASK) == 31) and inv.hash in self.islocks:
+            if inv.hash in self.islocks:
                 self.send_message(self.islocks[inv.hash])
-            if (inv.type & MSG_TYPE_MASK) == MSG_TX and inv.hash in self.txes:
+            if inv.hash in self.txes:
                 self.send_message(self.txes[inv.hash])
 
 
-class DashZMQTest (DashTestFramework):
+class CosantaZMQTest(DashTestFramework):
     def set_test_params(self):
         # That's where the zmq publisher will listen for subscriber
         self.address = "tcp://127.0.0.1:28333"
@@ -119,7 +119,7 @@ class DashZMQTest (DashTestFramework):
 
     def run_test(self):
         self.subscribers = {}
-        # Check that dashd has been built with ZMQ enabled.
+        # Check that cosantad has been built with ZMQ enabled.
         config = configparser.ConfigParser()
         config.read_file(open(self.options.configfile))
         import zmq
@@ -129,7 +129,7 @@ class DashZMQTest (DashTestFramework):
             self.zmq_context = zmq.Context()
             # Initialize the network
             self.activate_dip8()
-            self.nodes[0].sporkupdate("SPORK_17_QUORUM_DKG_ENABLED", 0)
+            self.nodes[0].spork("SPORK_17_QUORUM_DKG_ENABLED", 0)
             self.wait_for_sporks_same()
             # Create an LLMQ for testing
             self.quorum_type = 100  # llmq_test
@@ -139,7 +139,7 @@ class DashZMQTest (DashTestFramework):
             # Wait a moment to avoid subscribing to recovered sig in the test before the one from the chainlock
             # has been sent which leads to test failure.
             time.sleep(1)
-            # Test all dash related ZMQ publisher
+            # Test all Cosanta-related ZMQ publishers
             self.test_recovered_signature_publishers()
             self.test_chainlock_publishers()
             self.test_governance_publishers()
@@ -337,7 +337,7 @@ class DashZMQTest (DashTestFramework):
             # this is expected
             pass
         # Now send the tx itself
-        self.test_node.send_tx(FromHex(msg_tx(), rpc_raw_tx_3['hex']))
+        self.test_node.send_tx(FromHex(msg_tx(), rpc_raw_tx_3['hex']), deterministic)
         self.wait_for_instantlock(rpc_raw_tx_3['txid'], self.nodes[0])
         # Validate hashtxlock
         zmq_tx_lock_hash = self.subscribers[ZMQPublisher.hash_tx_lock].receive().read(32).hex()
@@ -367,7 +367,7 @@ class DashZMQTest (DashTestFramework):
             "end_epoch": proposal_time + 60,
             "payment_amount": 5,
             "payment_address": self.nodes[0].getnewaddress(),
-            "url": "https://dash.org"
+            "url": "https://cosa.is"
         }
         proposal_hex = ''.join(format(x, '02x') for x in json.dumps(proposal_data).encode())
         collateral = self.nodes[0].gobject("prepare", "0", proposal_rev, proposal_time, proposal_hex)
@@ -441,4 +441,4 @@ class DashZMQTest (DashTestFramework):
         ])
 
 if __name__ == '__main__':
-    DashZMQTest().main()
+    CosantaZMQTest().main()

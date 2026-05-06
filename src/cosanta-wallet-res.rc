@@ -16,14 +16,14 @@ BEGIN
     BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
-            VALUE "CompanyName",        "Dash Core"
-            VALUE "FileDescription",    "dash-wallet (CLI tool for " PACKAGE_NAME " wallets)"
+            VALUE "CompanyName",        "Cosanta Core"
+            VALUE "FileDescription",    "cosanta-wallet (CLI tool for " PACKAGE_NAME " wallets)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
-            VALUE "InternalName",       "dash-wallet"
+            VALUE "InternalName",       "cosanta-wallet"
             VALUE "LegalCopyright",     COPYRIGHT_STR
             VALUE "LegalTrademarks1",   "Distributed under the MIT software license, see the accompanying file COPYING or http://www.opensource.org/licenses/mit-license.php."
-            VALUE "OriginalFilename",   "dash-wallet.exe"
-            VALUE "ProductName",        "dash-wallet"
+            VALUE "OriginalFilename",   "cosanta-wallet.exe"
+            VALUE "ProductName",        "cosanta-wallet"
             VALUE "ProductVersion",     VER_PRODUCTVERSION_STR
         END
     END

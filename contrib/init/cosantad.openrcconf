@@ -1,33 +1,33 @@
-# /etc/conf.d/dashd: config file for /etc/init.d/dashd
+# /etc/conf.d/cosantad: config file for /etc/init.d/cosantad
 
 # Config file location
-#BITCOIND_CONFIGFILE="/etc/dashcore/dash.conf"
+#COSANTAD_CONFIGFILE="/etc/cosantacore/cosanta.conf"
 
-# What directory to write pidfile to?  (created and owned by $BITCOIND_USER)
-#BITCOIND_PIDDIR="/var/run/dashd"
+# What directory to write pidfile to?  (created and owned by $COSANTAD_USER)
+#COSANTAD_PIDDIR="/var/run/cosantad"
 
 # What filename to give the pidfile
-#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/dashd.pid"
+#COSANTAD_PIDFILE="${COSANTAD_PIDDIR}/cosantad.pid"
 
-# Where to write dashd data (be mindful that the blockchain is large)
-#BITCOIND_DATADIR="/var/lib/dashd"
+# Where to write cosantad data (be mindful that the blockchain is large)
+#COSANTAD_DATADIR="/var/lib/cosantad"
 
-# User and group to own dashd process
-#BITCOIND_USER="dashcore"
-#BITCOIND_GROUP="dashcore"
+# User and group to own cosantad process
+#COSANTAD_USER="cosantacore"
+#COSANTAD_GROUP="cosantacore"
 
-# Path to dashd executable
-#BITCOIND_BIN="/usr/bin/dashd"
+# Path to cosantad executable
+#COSANTAD_BIN="/usr/bin/cosantad"
 
-# Nice value to run dashd under
-#BITCOIND_NICE=0
+# Nice value to run cosantad under
+#COSANTAD_NICE=0
 
 # Additional options (avoid -conf and -datadir, use flags above)
-#BITCOIND_OPTS=""
+#COSANTAD_OPTS=""
 
-# The timeout in seconds OpenRC will wait for dashd to terminate
+# The timeout in seconds OpenRC will wait for cosantad to terminate
 # after a SIGTERM has been raised.
 # Note that this will be mapped as argument to start-stop-daemon's
 # '--retry' option, which means you can specify a retry schedule
 # here. For more information see man 8 start-stop-daemon.
-BITCOIND_SIGTERM_TIMEOUT=60
+COSANTAD_SIGTERM_TIMEOUT=60
