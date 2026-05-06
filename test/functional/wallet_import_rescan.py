@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test wallet import RPCs.
@@ -21,6 +22,7 @@ happened previously.
 
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import (
+    connect_nodes,
     assert_equal,
     set_node_times,
 )
@@ -36,6 +38,7 @@ Rescan = enum.Enum("Rescan", "no yes late_timestamp")
 
 class Variant(collections.namedtuple("Variant", "call data rescan prune")):
     """Helper for importing one key and verifying scanned transactions."""
+
     def do_import(self, timestamp):
         """Call one key import RPC."""
         rescan = self.rescan == Rescan.yes
@@ -118,8 +121,6 @@ TIMESTAMP_WINDOW = 2 * 60 * 60
 class ImportRescanTest(BitcoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 2 + len(IMPORT_NODES)
-        self.supports_cli = False
-        self.rpc_timeout = 120
 
     def skip_test_if_missing_module(self):
         self.skip_if_no_wallet()
@@ -128,19 +129,22 @@ class ImportRescanTest(BitcoinTestFramework):
         extra_args = [[] for _ in range(self.num_nodes)]
         for i, import_node in enumerate(IMPORT_NODES, 2):
             if import_node.prune:
-                # txindex is enabled by default in Dash and needs to be disabled for import-rescan.py
+                # txindex is enabled by default in Cosanta and needs to be disabled for import-rescan.py
                 extra_args[i] += ["-prune=1", "-txindex=0", "-reindex"]
 
         self.add_nodes(self.num_nodes, extra_args=extra_args)
 
         # Import keys with pruning disabled
         self.start_nodes(extra_args=[[]] * self.num_nodes)
-        self.import_deterministic_coinbase_privkeys()
+        super().import_deterministic_coinbase_privkeys()
         self.stop_nodes()
 
         self.start_nodes()
         for i in range(1, self.num_nodes):
-            self.connect_nodes(i, 0)
+            connect_nodes(self.nodes[i], 0)
+
+    def import_deterministic_coinbase_privkeys(self):
+        pass
 
     def run_test(self):
         # Create one transaction on node 0 with a unique amount for
@@ -159,7 +163,7 @@ class ImportRescanTest(BitcoinTestFramework):
         timestamp = self.nodes[0].getblockheader(self.nodes[0].getbestblockhash())["time"]
         set_node_times(self.nodes, timestamp + TIMESTAMP_WINDOW + 1)
         self.nodes[0].generate(1)
-        self.sync_all()
+        self.sync_blocks()
 
         # For each variation of wallet key import, invoke the import RPC and
         # check the results from getbalance and listtransactions.
@@ -185,7 +189,7 @@ class ImportRescanTest(BitcoinTestFramework):
         # Generate a block containing the new transactions.
         self.nodes[0].generate(1)
         assert_equal(self.nodes[0].getrawmempool(), [])
-        self.sync_all()
+        self.sync_blocks()
 
         # Check the latest results from getbalance and listtransactions.
         for variant in IMPORT_VARIANTS:
@@ -196,7 +200,6 @@ class ImportRescanTest(BitcoinTestFramework):
         for i, import_node in enumerate(IMPORT_NODES, 2):
             if import_node.prune:
                 self.stop_node(i, expected_stderr='Warning: You are starting with governance validation disabled. This is expected because you are running a pruned node.')
-
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2017 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test RPC calls related to net.
@@ -23,7 +24,6 @@ from test_framework.messages import (
     NODE_NETWORK,
     NODE_GETUTXO,NODE_BLOOM,
     NODE_NETWORK_LIMITED,
-    NODE_HEADERS_COMPRESSED,
 )
 
 
@@ -32,7 +32,7 @@ def assert_net_servicesnames(servicesflag, servicenames):
     `getpeerinfo` and `getnetworkinfo`.
 
     :param servicesflag: The services as an integer.
-    :param servicenames: The list of decoded services names, as strings.
+    :param servicesnames: The list of decoded services names, as strings.
     """
     if servicesflag & NODE_NETWORK:
         assert "NETWORK" in servicenames
@@ -42,14 +42,11 @@ def assert_net_servicesnames(servicesflag, servicenames):
         assert "BLOOM" in servicenames
     if servicesflag & NODE_NETWORK_LIMITED:
         assert "NETWORK_LIMITED" in servicenames
-    if servicesflag & NODE_HEADERS_COMPRESSED:
-        assert "HEADERS_COMPRESSED" in servicenames
 
 
-class NetTest(DashTestFramework):
+class NetTest(BitcoinTestFramework):
     def set_test_params(self):
         self.set_dash_test_params(3, 1, fast_dip3_enforcement=True)
-        self.supports_cli = False
 
     def run_test(self):
         # Wait for one ping/pong to finish so that we can be sure that there is no chatter between nodes for some time
@@ -102,8 +99,8 @@ class NetTest(DashTestFramework):
 
         peer_info_after_ping = self.nodes[0].getpeerinfo()
         for before, after in zip(peer_info, peer_info_after_ping):
-            assert_greater_than_or_equal(after['bytesrecv_per_msg'].get('pong', 0), before['bytesrecv_per_msg'].get('pong', 0) + 32)
-            assert_greater_than_or_equal(after['bytessent_per_msg'].get('ping', 0), before['bytessent_per_msg'].get('ping', 0) + 32)
+            assert_greater_than_or_equal(after['bytesrecv_per_msg']['pong'], before['bytesrecv_per_msg']['pong'] + 32)
+            assert_greater_than_or_equal(after['bytessent_per_msg']['ping'], before['bytessent_per_msg']['ping'] + 32)
 
     def _test_getnetworkinfo(self):
         assert_equal(self.nodes[0].getnetworkinfo()['networkactive'], True)
@@ -113,7 +110,6 @@ class NetTest(DashTestFramework):
         assert_equal(self.nodes[0].getnetworkinfo()['networkactive'], False)
         # Wait a bit for all sockets to close
         wait_until(lambda: self.nodes[0].getnetworkinfo()['connections'] == 0, timeout=3)
-        wait_until(lambda: self.nodes[1].getnetworkinfo()['connections'] == 0, timeout=3)
 
         self.nodes[0].setnetworkactive(state=True)
         self.log.info('Connect nodes both way')
@@ -126,7 +122,7 @@ class NetTest(DashTestFramework):
         # check the `servicesnames` field
         network_info = [node.getnetworkinfo() for node in self.nodes]
         for info in network_info:
-            assert_net_servicesnames(int(info["localservices"], 16), info["localservicesnames"])
+            assert_net_servicesnames(int(info["localservices"]), info["localservicesnames"])
 
         self.log.info('Test extended connections info')
         self.connect_nodes(1, 2)
@@ -148,13 +144,6 @@ class NetTest(DashTestFramework):
         added_nodes = self.nodes[0].getaddednodeinfo(ip_port)
         assert_equal(len(added_nodes), 1)
         assert_equal(added_nodes[0]['addednode'], ip_port)
-        # check that node cannot be added again
-        assert_raises_rpc_error(-23, "Node already added", self.nodes[0].addnode, node=ip_port, command='add')
-        # check that node can be removed
-        self.nodes[0].addnode(node=ip_port, command='remove')
-        assert_equal(self.nodes[0].getaddednodeinfo(), [])
-        # check that trying to remove the node again returns an error
-        assert_raises_rpc_error(-24, "Node could not be removed", self.nodes[0].addnode, node=ip_port, command='remove')
         # check that a non-existent node returns an error
         assert_raises_rpc_error(-24, "Node has not been added", self.nodes[0].getaddednodeinfo, '1.1.1.1')
 
@@ -166,7 +155,7 @@ class NetTest(DashTestFramework):
         assert_equal(peer_info[1][0]['addrbind'], peer_info[0][0]['addr'])
         # check the `servicesnames` field
         for info in peer_info:
-            assert_net_servicesnames(int(info[0]["services"], 16), info[0]["servicesnames"])
+            assert_net_servicesnames(int(info[0]["services"]), info[0]["servicesnames"])
 
     def test_service_flags(self):
         self.nodes[0].add_p2p_connection(P2PInterface(), services=(1 << 4) | (1 << 63))

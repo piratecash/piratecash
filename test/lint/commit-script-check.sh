@@ -1,5 +1,6 @@
 #!/bin/sh
 # Copyright (c) 2017 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -15,11 +16,6 @@ export LC_ALL=C
 if test -z "$1"; then
     echo "Usage: $0 <commit>..."
     exit 1
-fi
-
-if ! sed --help 2>&1 | grep -q 'GNU'; then
-    echo "Error: the installed sed package is not compatible. Please make sure you have GNU sed installed in your system.";
-    exit 1;
 fi
 
 RET=0
@@ -42,7 +38,7 @@ for commit in $(git rev-list --reverse $1); do
         git reset --quiet --hard HEAD
      else
         if git rev-list "--format=%b" -n1 $commit | grep -q '^-\(BEGIN\|END\)[ a-zA-Z]*-$'; then
-            echo "Error: script block marker but no scripted-diff in title of commit $commit"
+            echo "Error: script block marker but no scripted-diff in title"
             echo "Failed"
             RET=1
         fi

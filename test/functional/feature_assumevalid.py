@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test logic for skipping signature validation on old blocks.
@@ -40,7 +41,7 @@ from test_framework.messages import (
     CTxIn,
     CTxOut,
     msg_block,
-    msg_headers,
+    msg_headers
 )
 from test_framework.mininode import P2PInterface
 from test_framework.script import (CScript, OP_TRUE)
@@ -88,7 +89,7 @@ class AssumeValidTest(BitcoinTestFramework):
                 last_height = current_height
                 if timeout < 0:
                     assert False, "blockchain too short after timeout: %d" % current_height
-                timeout -= 0.25
+                timeout - 0.25
                 continue
             elif current_height > height:
                 assert False, "blockchain too long: %d" % current_height
@@ -146,7 +147,7 @@ class AssumeValidTest(BitcoinTestFramework):
         self.block_time += 1
         height += 1
 
-        # Bury the assumed valid block 8400 deep (Dash needs 4x as much blocks to allow -assumevalid to work)
+        # Bury the assumed valid block 8400 deep (Cosanta needs 4x as much blocks to allow -assumevalid to work)
         for i in range(8400):
             block = create_block(self.tip, create_coinbase(height), self.block_time)
             block.nVersion = 4
@@ -190,7 +191,7 @@ class AssumeValidTest(BitcoinTestFramework):
         for i in range(200):
             p2p1.send_message(msg_block(self.blocks[i]))
         # Syncing so many blocks can take a while on slow systems. Give it plenty of time to sync.
-        p2p1.sync_with_ping(960)
+        p2p1.sync_with_ping(300)
         assert_equal(self.nodes[1].getblock(self.nodes[1].getbestblockhash())['height'], 200)
 
         # Send blocks to node2. Block 102 will be rejected.

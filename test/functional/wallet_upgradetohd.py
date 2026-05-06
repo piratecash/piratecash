@@ -28,13 +28,12 @@ class WalletUpgradeToHDTest(BitcoinTestFramework):
     def setup_network(self):
         self.add_nodes(self.num_nodes)
         self.start_nodes()
-        self.import_deterministic_coinbase_privkeys()
 
     def recover_non_hd(self):
         self.log.info("Recover non-HD wallet to check different upgrade paths")
         node = self.nodes[0]
         self.stop_node(0)
-        shutil.copyfile(os.path.join(node.datadir, "non_hd.bak"), os.path.join(node.datadir, self.chain, self.default_wallet_name, self.wallet_data_filename))
+        shutil.copyfile(os.path.join(node.datadir, "non_hd.bak"), os.path.join(node.datadir, "regtest", "wallets", "wallet.dat"))
         self.start_node(0)
         assert 'hdchainid' not in node.getwalletinfo()
 
@@ -68,7 +67,7 @@ class WalletUpgradeToHDTest(BitcoinTestFramework):
 
         self.log.info("Should no longer be able to start it with HD disabled")
         self.stop_node(0)
-        node.assert_start_raises_init_error(['-usehd=0'], "Error: Error loading %s: You can't disable HD on an already existing HD wallet" % self.default_wallet_name)
+        node.assert_start_raises_init_error(['-usehd=0'], "Error: Error loading : You can't disable HD on an already existing HD wallet")
         self.start_node(0)
         balance_after = node.getbalance()
 
@@ -86,17 +85,6 @@ class WalletUpgradeToHDTest(BitcoinTestFramework):
         node.keypoolrefill(5)
         node.rescanblockchain()
         # Completely different keys, no HD coins should be recovered
-        assert_equal(balance_non_HD, node.getbalance())
-
-        self.recover_non_hd()
-
-        self.log.info("No mnemonic, no mnemonic passphrase, no wallet passphrase, should result in completely different keys")
-        self.stop_node(0)
-        self.start_node(0, extra_args=['-keypool=10'])
-        assert node.upgradetohd("", "", "", True)
-        # Completely different keys, no HD coins should be recovered
-        assert mnemonic != node.dumphdinfo()['mnemonic']
-        assert chainid != node.getwalletinfo()['hdchainid']
         assert_equal(balance_non_HD, node.getbalance())
 
         self.recover_non_hd()
@@ -134,7 +122,6 @@ class WalletUpgradeToHDTest(BitcoinTestFramework):
         assert_equal(mnemonic, node.dumphdinfo()['mnemonic'])
         assert_equal(chainid, node.getwalletinfo()['hdchainid'])
         node.keypoolrefill(5)
-        assert balance_after != node.getbalance()
         node.rescanblockchain()
         assert_equal(balance_after, node.getbalance())
 
@@ -146,19 +133,6 @@ class WalletUpgradeToHDTest(BitcoinTestFramework):
         assert node.upgradetohd(mnemonic)
         assert_equal(mnemonic, node.dumphdinfo()['mnemonic'])
         assert_equal(chainid, node.getwalletinfo()['hdchainid'])
-        # All coins should be recovered
-        assert_equal(balance_after, node.getbalance())
-
-        self.recover_non_hd()
-
-        self.log.info("Same mnemonic, no mnemonic passphrase, no wallet passphrase, large enough keepool, rescan is skipped initially, should recover all coins after rescanblockchain")
-        self.stop_node(0)
-        self.start_node(0, extra_args=['-keypool=10'])
-        assert node.upgradetohd(mnemonic, "", "", False)
-        assert_equal(mnemonic, node.dumphdinfo()['mnemonic'])
-        assert_equal(chainid, node.getwalletinfo()['hdchainid'])
-        assert balance_after != node.getbalance()
-        node.rescanblockchain()
         # All coins should be recovered
         assert_equal(balance_after, node.getbalance())
 

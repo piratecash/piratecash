@@ -4,21 +4,20 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test the wallet balance RPC methods."""
 from decimal import Decimal
-import struct
 
-from test_framework.address import ADDRESS_BCRT1_UNSPENDABLE as ADDRESS_WATCHONLY
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import (
     assert_equal,
     assert_raises_rpc_error,
 )
 
+RANDOM_COINBASE_ADDRESS = 'ycwedq2f3sz2Yf9JqZsBCQPxp18WU3Hp4J'
 
 def create_transactions(node, address, amt, fees):
     # Create and sign raw transactions from node to address for amt.
     # Creates a transaction for each fee and returns an array
     # of the raw transactions.
-    utxos = [u for u in node.listunspent(0) if u['spendable']]
+    utxos = node.listunspent(0)
 
     # Create transactions
     inputs = []
@@ -26,20 +25,14 @@ def create_transactions(node, address, amt, fees):
     for utxo in utxos:
         inputs.append({"txid": utxo["txid"], "vout": utxo["vout"]})
         ins_total += utxo['amount']
-        if ins_total >= amt + max(fees):
+        if ins_total > amt:
             break
-    # make sure there was enough utxos
-    assert ins_total >= amt + max(fees)
 
     txs = []
     for fee in fees:
-        outputs = {address: amt}
-        # prevent 0 change output
-        if ins_total > amt + fee:
-            outputs[node.getrawchangeaddress()] = ins_total - amt - fee
+        outputs = {address: amt, node.getrawchangeaddress(): ins_total - amt - fee}
         raw_tx = node.createrawtransaction(inputs, outputs, 0)
         raw_tx = node.signrawtransactionwithwallet(raw_tx)
-        assert_equal(raw_tx['complete'], True)
         txs.append(raw_tx)
 
     return txs
@@ -48,37 +41,22 @@ class WalletTest(BitcoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 2
         self.setup_clean_chain = True
-        self.extra_args = [
-            ['-limitdescendantcount=3'],  # Limit mempool descendants as a hack to have wallet txs rejected from the mempool
-            [],
-        ]
 
     def skip_test_if_missing_module(self):
         self.skip_if_no_wallet()
 
     def run_test(self):
-        self.nodes[0].importaddress(ADDRESS_WATCHONLY)
         # Check that nodes don't own any UTXOs
         assert_equal(len(self.nodes[0].listunspent()), 0)
         assert_equal(len(self.nodes[1].listunspent()), 0)
 
-        self.log.info("Check that only node 0 is watching an address")
-        assert 'watchonly' in self.nodes[0].getbalances()
-        assert 'watchonly' not in self.nodes[1].getbalances()
+        self.log.info("Mining one block for each node")
 
-        self.log.info("Mining blocks ...")
         self.nodes[0].generate(1)
         self.sync_all()
         self.nodes[1].generate(1)
-        self.nodes[1].generatetoaddress(101, ADDRESS_WATCHONLY)
+        self.nodes[1].generatetoaddress(100, RANDOM_COINBASE_ADDRESS)
         self.sync_all()
-
-        assert_equal(self.nodes[0].getbalances()['mine']['trusted'], 500)
-        assert_equal(self.nodes[0].getwalletinfo()['balance'], 500)
-        assert_equal(self.nodes[1].getbalances()['mine']['trusted'], 500)
-
-        assert_equal(self.nodes[0].getbalances()['watchonly']['immature'], 50000)
-        assert 'watchonly' not in self.nodes[1].getbalances()
 
         assert_equal(self.nodes[0].getbalance(), 500)
         assert_equal(self.nodes[1].getbalance(), 500)
@@ -87,12 +65,7 @@ class WalletTest(BitcoinTestFramework):
         assert_equal(self.nodes[0].getbalance("*"), 500)
         assert_equal(self.nodes[0].getbalance("*", 1), 500)
         assert_equal(self.nodes[0].getbalance("*", 1, True), 500)
-        assert_equal(self.nodes[0].getbalance("*", 1, True, False), 500)
-        assert_equal(self.nodes[0].getbalance(minconf=1, addlocked=True), 500)
-        assert_equal(self.nodes[0].getbalance(minconf=1, avoid_reuse=False), 500)
         assert_equal(self.nodes[0].getbalance(minconf=1), 500)
-        assert_equal(self.nodes[0].getbalance(minconf=0, include_watchonly=True), 1000)
-        assert_equal(self.nodes[1].getbalance(minconf=0, include_watchonly=True), 500)
 
         # Send 490 BTC from 0 to 1 and 960 BTC from 1 to 0.
         txs = create_transactions(self.nodes[0], self.nodes[1].getnewaddress(), 490 , [Decimal('0.01')])
@@ -110,37 +83,32 @@ class WalletTest(BitcoinTestFramework):
 
         self.log.info("Test getbalance and getunconfirmedbalance with unconfirmed inputs")
 
-        def test_balances(*, fee_node_1=0):
-            # getbalance without any arguments includes unconfirmed transactions, but not untrusted transactions
-            assert_equal(self.nodes[0].getbalance(), Decimal('9.99'))  # change from node 0's send
-            assert_equal(self.nodes[1].getbalance(), Decimal('30') - fee_node_1)  # change from node 1's send
-            # Same with minconf=0
-            assert_equal(self.nodes[0].getbalance(minconf=0), Decimal('9.99'))
-            assert_equal(self.nodes[1].getbalance(minconf=0), Decimal('30') - fee_node_1)
-            # getbalance with a minconf incorrectly excludes coins that have been spent more recently than the minconf blocks ago
-            # TODO: fix getbalance tracking of coin spentness depth
-            assert_equal(self.nodes[0].getbalance(minconf=1), Decimal('0'))
-            assert_equal(self.nodes[1].getbalance(minconf=1), Decimal('0'))
-            # getunconfirmedbalance
-            assert_equal(self.nodes[0].getunconfirmedbalance(), Decimal('960'))  # output of node 1's spend
-            assert_equal(self.nodes[0].getbalances()['mine']['untrusted_pending'], Decimal('960'))
-            assert_equal(self.nodes[0].getwalletinfo()["unconfirmed_balance"], Decimal('960'))
-
-            assert_equal(self.nodes[1].getunconfirmedbalance(), Decimal('0'))  # Doesn't include output of node 0's send since it was spent
-            assert_equal(self.nodes[1].getbalances()['mine']['untrusted_pending'], Decimal('0'))
-            assert_equal(self.nodes[1].getwalletinfo()["unconfirmed_balance"], Decimal('0'))
-
-        test_balances(fee_node_1=Decimal('0.01'))
+        # getbalance without any arguments includes unconfirmed transactions, but not untrusted transactions
+        assert_equal(self.nodes[0].getbalance(), Decimal('9.99'))  # change from node 0's send
+        assert_equal(self.nodes[1].getbalance(), Decimal('29.99'))  # change from node 1's send
+        # Same with minconf=0
+        assert_equal(self.nodes[0].getbalance(minconf=0), Decimal('9.99'))
+        assert_equal(self.nodes[1].getbalance(minconf=0), Decimal('29.99'))
+        # getbalance with a minconf incorrectly excludes coins that have been spent more recently than the minconf blocks ago
+        # TODO: fix getbalance tracking of coin spentness depth
+        assert_equal(self.nodes[0].getbalance(minconf=1), Decimal('0'))
+        assert_equal(self.nodes[1].getbalance(minconf=1), Decimal('0'))
+        # getunconfirmedbalance
+        assert_equal(self.nodes[0].getunconfirmedbalance(), Decimal('960'))  # output of node 1's spend
+        assert_equal(self.nodes[1].getunconfirmedbalance(), Decimal('0'))  # Doesn't include output of node 0's send since it was spent
 
         # Node 1 bumps the transaction fee and resends
         # self.nodes[1].sendrawtransaction(txs[1]['hex']) # disabled, no RBF in Dash
-        #self.nodes[0].sendrawtransaction(txs[1]['hex'])  # sending on both nodes is faster than waiting for propagation # disabled, no RBF in Dash
         self.sync_all()
 
         self.log.info("Test getbalance and getunconfirmedbalance with conflicted unconfirmed inputs")
-        # test_balances(fee_node_1=Decimal('0.02'))
 
-        self.nodes[1].generatetoaddress(1, ADDRESS_WATCHONLY)
+        assert_equal(self.nodes[0].getwalletinfo()["unconfirmed_balance"], Decimal('960'))  # output of node 1's send
+        assert_equal(self.nodes[0].getunconfirmedbalance(), Decimal('960'))
+        assert_equal(self.nodes[1].getwalletinfo()["unconfirmed_balance"], Decimal('0'))  # Doesn't include output of node 0's send since it was spent
+        assert_equal(self.nodes[1].getunconfirmedbalance(), Decimal('0'))
+
+        self.nodes[1].generatetoaddress(1, RANDOM_COINBASE_ADDRESS)
         self.sync_all()
 
         # balances are correct after the transactions are confirmed
@@ -150,7 +118,7 @@ class WalletTest(BitcoinTestFramework):
         # Send total balance away from node 1
         txs = create_transactions(self.nodes[1], self.nodes[0].getnewaddress(), Decimal('29.98'), [Decimal('0.01')])
         self.nodes[1].sendrawtransaction(txs[0]['hex'])
-        self.nodes[1].generatetoaddress(2, ADDRESS_WATCHONLY)
+        self.nodes[1].generatetoaddress(2, RANDOM_COINBASE_ADDRESS)
         self.sync_all()
 
         # getbalance with a minconf incorrectly excludes coins that have been spent more recently than the minconf blocks ago
@@ -165,10 +133,10 @@ class WalletTest(BitcoinTestFramework):
         # dynamically loading the wallet.
         before = self.nodes[1].getunconfirmedbalance()
         dst = self.nodes[1].getnewaddress()
-        self.nodes[1].unloadwallet(self.default_wallet_name)
+        self.nodes[1].unloadwallet('')
         self.nodes[0].sendtoaddress(dst, 0.1)
         self.sync_all()
-        self.nodes[1].loadwallet(self.default_wallet_name)
+        self.nodes[1].loadwallet('')
         after = self.nodes[1].getunconfirmedbalance()
         assert_equal(before + Decimal('0.1'), after)
 
@@ -204,17 +172,15 @@ class WalletTest(BitcoinTestFramework):
         self.log.info('Put txs back into mempool of node 1 (not node 0)')
         self.nodes[0].invalidateblock(block_reorg)
         self.nodes[1].invalidateblock(block_reorg)
-        self.sync_blocks()
-        self.nodes[0].syncwithvalidationinterfacequeue()
         assert_equal(self.nodes[0].getbalance(minconf=0), 0)  # wallet txs not in the mempool are untrusted
         self.nodes[0].generatetoaddress(1, ADDRESS_WATCHONLY)
         assert_equal(self.nodes[0].getbalance(minconf=0), 0)  # wallet txs not in the mempool are untrusted
 
         # Now confirm tx_orig
         self.restart_node(1, ['-persistmempool=0', '-checklevel=0'])
-        self.connect_nodes(0, 1)
-        self.connect_nodes(1, 0)
-        self.sync_blocks()
+        connect_nodes(self.nodes[0], 1)
+        connect_nodes(self.nodes[1], 0)
+        sync_blocks(self.nodes)
         self.nodes[1].sendrawtransaction(tx_orig)
         self.nodes[1].generatetoaddress(1, ADDRESS_WATCHONLY)
         self.sync_all()

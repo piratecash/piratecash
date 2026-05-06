@@ -24,19 +24,20 @@ class TestRPCAuth(unittest.TestCase):
         self.rpcauth = importlib.import_module('rpcauth')
 
     def test_generate_salt(self):
-        for i in range(16, 32 + 1):
-            self.assertEqual(len(self.rpcauth.generate_salt(i)), i * 2)
+        self.assertLessEqual(len(self.rpcauth.generate_salt()), 32)
+        self.assertGreaterEqual(len(self.rpcauth.generate_salt()), 16)
 
     def test_generate_password(self):
-        password = self.rpcauth.generate_password()
+        salt = self.rpcauth.generate_salt()
+        password, password_hmac = self.rpcauth.generate_password(salt)
+
         expected_password = base64.urlsafe_b64encode(
             base64.urlsafe_b64decode(password)).decode('utf-8')
         self.assertEqual(expected_password, password)
 
     def test_check_password_hmac(self):
-        salt = self.rpcauth.generate_salt(16)
-        password = self.rpcauth.generate_password()
-        password_hmac = self.rpcauth.password_to_hmac(salt, password)
+        salt = self.rpcauth.generate_salt()
+        password, password_hmac = self.rpcauth.generate_password(salt)
 
         m = hmac.new(bytearray(salt, 'utf-8'),
             bytearray(password, 'utf-8'), 'SHA256')

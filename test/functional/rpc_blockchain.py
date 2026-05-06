@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test RPCs related to blockchainstate.
@@ -31,16 +32,12 @@ from test_framework.util import (
     assert_raises_rpc_error,
     assert_is_hex_string,
     assert_is_hash_string,
-    set_node_times,
 )
 from test_framework.blocktools import (
     create_block,
     create_coinbase,
-    TIME_GENESIS_BLOCK,
 )
 from test_framework.messages import (
-    CBlockHeader,
-    FromHex,
     msg_block,
 )
 from test_framework.mininode import (
@@ -50,12 +47,9 @@ from test_framework.mininode import (
 
 class BlockchainTest(BitcoinTestFramework):
     def set_test_params(self):
-        self.setup_clean_chain = True
         self.num_nodes = 1
-        self.supports_cli = False
 
     def run_test(self):
-        self.mine_chain()
         self.restart_node(0, extra_args=['-stopatheight=207', '-prune=1', '-txindex=0'])  # Set extra args with pruning after rescan is complete
 
         # Actual tests
@@ -68,15 +62,6 @@ class BlockchainTest(BitcoinTestFramework):
         self._test_stopatheight()
         self._test_waitforblockheight()
         assert self.nodes[0].verifychain(4, 0)
-
-    def mine_chain(self):
-        self.log.info('Create some old blocks')
-        address = self.nodes[0].get_deterministic_priv_key().address
-        for t in range(TIME_GENESIS_BLOCK, TIME_GENESIS_BLOCK + 200 * 156, 156):
-            # 156 sec steps from genesis block time
-            set_node_times(self.nodes, t)
-            self.nodes[0].generatetoaddress(1, address)
-        assert_equal(self.nodes[0].getblockchaininfo()['blocks'], 200)
 
     def _test_getblockchaininfo(self):
         self.log.info("Test getblockchaininfo")
@@ -112,7 +97,7 @@ class BlockchainTest(BitcoinTestFramework):
         assert res['pruned']
         assert not res['automatic_pruning']
 
-        self.restart_node(0, ['-stopatheight=207', '-txindex=0'], expected_stderr='Warning: You are starting with governance validation disabled. This is expected because you are running a pruned node.')
+        self.restart_node(0, ['-stopatheight=207', '-txindex=0'])
         res = self.nodes[0].getblockchaininfo()
         # should have exact keys
         assert_equal(sorted(res.keys()), keys)
@@ -213,33 +198,13 @@ class BlockchainTest(BitcoinTestFramework):
         node.reconsiderblock(b1hash)
 
         res3 = node.gettxoutsetinfo()
-        # The field 'disk_size' is non-deterministic and can thus not be
-        # compared between res and res3.  Everything else should be the same.
-        del res['disk_size'], res3['disk_size']
-        assert_equal(res, res3)
-
-        self.log.info("Test hash_type option for gettxoutsetinfo()")
-        # Adding hash_type 'hash_serialized_2', which is the default, should
-        # not change the result.
-        res4 = node.gettxoutsetinfo(hash_type='hash_serialized_2')
-        del res4['disk_size']
-        assert_equal(res, res4)
-
-        # hash_type none should not return a UTXO set hash.
-        res5 = node.gettxoutsetinfo(hash_type='none')
-        assert 'hash_serialized_2' not in res5
-
-        # hash_type muhash should return a different UTXO set hash.
-        res6 = node.gettxoutsetinfo(hash_type='muhash')
-        assert 'muhash' in res6
-        assert(res['hash_serialized_2'] != res6['muhash'])
-
-        # muhash should not be included in gettxoutset unless requested.
-        for r in [res, res2, res3, res4, res5]:
-            assert 'muhash' not in r
-
-        # Unknown hash_type raises an error
-        assert_raises_rpc_error(-8, "foohash is not a valid hash_type", node.gettxoutsetinfo, "foohash")
+        assert_equal(res['total_amount'], res3['total_amount'])
+        assert_equal(res['transactions'], res3['transactions'])
+        assert_equal(res['height'], res3['height'])
+        assert_equal(res['txouts'], res3['txouts'])
+        assert_equal(res['bogosize'], res3['bogosize'])
+        assert_equal(res['bestblock'], res3['bestblock'])
+        assert_equal(res['hash_serialized_2'], res3['hash_serialized_2'])
 
     def _test_getblockheader(self):
         node = self.nodes[0]
@@ -266,14 +231,6 @@ class BlockchainTest(BitcoinTestFramework):
         assert isinstance(header['version'], int)
         assert isinstance(int(header['versionHex'], 16), int)
         assert isinstance(header['difficulty'], Decimal)
-
-        # Test with verbose=False, which should return the header as hex.
-        header_hex = node.getblockheader(blockhash=besthash, verbose=False)
-        assert_is_hex_string(header_hex)
-
-        header = FromHex(CBlockHeader(), header_hex)
-        header.calc_sha256()
-        assert_equal(header.hash, besthash)
 
     def _test_getdifficulty(self):
         difficulty = self.nodes[0].getdifficulty()

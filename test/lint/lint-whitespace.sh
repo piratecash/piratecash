@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2017-2019 The Bitcoin Core developers
+# Copyright (c) 2017 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #
@@ -12,11 +12,11 @@ export LC_ALL=C
 while getopts "?" opt; do
   case $opt in
     ?)
-      echo "Usage: $0 [N]"
-      echo "       COMMIT_RANGE='<commit range>' $0"
-      echo "       $0 -?"
+      echo "Usage: .lint-whitespace.sh [N]"
+      echo "       COMMIT_RANGE='<commit range>' .lint-whitespace.sh"
+      echo "       .lint-whitespace.sh -?"
       echo "Checks unstaged changes, the previous N commits, or a commit range."
-      echo "COMMIT_RANGE='47ba2c3...ee50c9e' $0"
+      echo "COMMIT_RANGE='47ba2c3...ee50c9e' .lint-whitespace.sh"
       exit 0
     ;;
   esac
@@ -31,14 +31,14 @@ if [ -z "${COMMIT_RANGE}" ]; then
 fi
 
 showdiff() {
-  if ! git diff -U0 "${COMMIT_RANGE}" -- "." ":(exclude)depends/patches/" ":(exclude)src/dashbls/" ":(exclude)src/immer/" ":(exclude)src/leveldb/" ":(exclude)src/crc32c/" ":(exclude)src/secp256k1/" ":(exclude)src/univalue/" ":(exclude)doc/release-notes/"; then
+  if ! git diff -U0 "${COMMIT_RANGE}" -- "." ":(exclude)depends/patches/" ":(exclude)contrib/guix/patches/" ":(exclude)src/dashbls/" ":(exclude)src/immer/" ":(exclude)src/leveldb/" ":(exclude)src/crc32c/" ":(exclude)src/secp256k1/" ":(exclude)src/univalue/" ":(exclude)doc/release-notes/"; then
     echo "Failed to get a diff"
     exit 1
   fi
 }
 
 showcodediff() {
-  if ! git diff -U0 "${COMMIT_RANGE}" -- *.cpp *.h *.md *.py *.sh ":(exclude)src/dashbls/" ":(exclude)src/immer/" ":(exclude)src/leveldb/" ":(exclude)src/crc32c/" ":(exclude)src/secp256k1/" ":(exclude)src/univalue/" ":(exclude)doc/release-notes/"; then
+  if ! git diff -U0 "${COMMIT_RANGE}" -- *.cpp *.h *.md *.py *.sh ":(exclude)src/leveldb/" ":(exclude)src/crc32c/" ":(exclude)src/secp256k1/" ":(exclude)src/univalue/" ":(exclude)doc/release-notes/"; then
     echo "Failed to get a diff"
     exit 1
   fi

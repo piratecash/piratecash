@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# Copyright (c) 2015-2022 The Dash Core developers
+# Copyright (c) 2015-2021 The Dash Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -19,7 +20,7 @@ from test_framework.util import assert_equal, assert_raises_rpc_error, force_fin
 class LLMQSigningTest(DashTestFramework):
     def set_test_params(self):
         self.set_dash_test_params(6, 5, fast_dip3_enforcement=True)
-        self.set_dash_llmq_test_params(5, 3)
+        self.set_cosanta_llmq_test_params(5, 3)
 
     def add_options(self, parser):
         parser.add_argument("--spork21", dest="spork21", default=False, action="store_true",
@@ -27,9 +28,9 @@ class LLMQSigningTest(DashTestFramework):
 
     def run_test(self):
 
-        self.nodes[0].sporkupdate("SPORK_17_QUORUM_DKG_ENABLED", 0)
+        self.nodes[0].spork("SPORK_17_QUORUM_DKG_ENABLED", 0)
         if self.options.spork21:
-            self.nodes[0].sporkupdate("SPORK_21_QUORUM_ALL_CONNECTED", 0)
+            self.nodes[0].spork("SPORK_21_QUORUM_ALL_CONNECTED", 0)
         self.wait_for_sporks_same()
 
         self.mine_quorum()
@@ -52,7 +53,12 @@ class LLMQSigningTest(DashTestFramework):
             return True
 
         def wait_for_sigs(hasrecsigs, isconflicting1, isconflicting2, timeout):
-            wait_until(lambda: check_sigs(hasrecsigs, isconflicting1, isconflicting2), timeout = timeout)
+            t = time.time()
+            while time.time() - t < timeout:
+                if check_sigs(hasrecsigs, isconflicting1, isconflicting2):
+                    return
+                time.sleep(0.1)
+            raise AssertionError("wait_for_sigs timed out")
 
         def assert_sigs_nochange(hasrecsigs, isconflicting1, isconflicting2, timeout):
             assert not wait_until(lambda: not check_sigs(hasrecsigs, isconflicting1, isconflicting2), timeout = timeout, do_assert = False)
@@ -174,6 +180,7 @@ class LLMQSigningTest(DashTestFramework):
         if self.options.spork21:
             id = uint256_to_string(request_id + 1)
 
+        if self.options.spork21:
             # Isolate the node that is responsible for the recovery of a signature and assert that recovery fails
             q = self.nodes[0].quorum('selectquorum', 104, id)
             mn = self.get_mninfo(q['recoveryMembers'][0])

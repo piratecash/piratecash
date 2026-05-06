@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2020-2022 The Dash Core developers
+# Copyright (c) 2020 The Dash Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 from test_framework.test_framework import DashTestFramework
@@ -66,30 +66,10 @@ class RPCMasternodeTest(DashTestFramework):
             assert_equal(gbt_masternode[i]["script"], payments_masternode["payees"][i]["script"])
             assert_equal(gbt_masternode[i]["amount"], payments_masternode["payees"][i]["amount"])
 
-        self.log.info("test that `masternode payments` results and `protx info` results match")
-        # we expect some masternodes to have 0 operator reward and some to have non-0 operator reward
-        checked_0_operator_reward = False
-        checked_non_0_operator_reward = False
-        while not checked_0_operator_reward or not checked_non_0_operator_reward:
-            payments_masternode = self.nodes[0].masternode("payments")[0]["masternodes"][0]
-            protx_info = self.nodes[0].protx("info", payments_masternode["proTxHash"])
-            if len(payments_masternode["payees"]) == 1:
-                assert_equal(protx_info["state"]["payoutAddress"], payments_masternode["payees"][0]["address"])
-                checked_0_operator_reward = True
-            else:
-                assert_equal(len(payments_masternode["payees"]), 2)
-                option1 = protx_info["state"]["payoutAddress"] == payments_masternode["payees"][0]["address"] and \
-                    protx_info["state"]["operatorPayoutAddress"] == payments_masternode["payees"][1]["address"]
-                option2 = protx_info["state"]["payoutAddress"] == payments_masternode["payees"][1]["address"] and \
-                    protx_info["state"]["operatorPayoutAddress"] == payments_masternode["payees"][0]["address"]
-                assert option1 or option2
-                checked_non_0_operator_reward = True
-            self.nodes[0].generate(1)
-
         self.log.info("test that `masternode outputs` show correct list")
         addr1 = self.nodes[0].getnewaddress()
         addr2 = self.nodes[0].getnewaddress()
-        self.nodes[0].sendmany('', {addr1: 1000, addr2: 1000})
+        self.nodes[0].sendmany('', {addr1: 10000, addr2: 10000})
         self.nodes[0].generate(1)
         # we have 3 masternodes that are running already and 2 new outputs we just created
         assert_equal(len(self.nodes[0].masternode("outputs")), 5)

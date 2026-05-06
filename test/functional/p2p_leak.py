@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2017 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test message sending before handshake completion.
@@ -23,7 +24,6 @@ from test_framework.util import (
 )
 
 banscore = 10
-
 
 class CLazyNode(P2PInterface):
     def __init__(self):
@@ -62,7 +62,7 @@ class CLazyNode(P2PInterface):
 # anyway, and eventually get disconnected.
 class CNodeNoVersionBan(CLazyNode):
     # send a bunch of veracks without sending a message. This should get us disconnected.
-    # NOTE: implementation-specific check here. Remove if dashd ban behavior changes
+    # NOTE: implementation-specific check here. Remove if cosantad ban behavior changes
     def on_open(self):
         super().on_open()
         for i in range(banscore):
@@ -110,11 +110,7 @@ class P2PLeakTest(BitcoinTestFramework):
     def run_test(self):
         no_version_bannode = self.nodes[0].add_p2p_connection(CNodeNoVersionBan(), send_version=False, wait_for_verack=False)
         no_version_idlenode = self.nodes[0].add_p2p_connection(CNodeNoVersionIdle(), send_version=False, wait_for_verack=False)
-        no_verack_idlenode = self.nodes[0].add_p2p_connection(CNodeNoVerackIdle(), wait_for_verack=False)
-
-        # Wait until we got the verack in response to the version. Though, don't wait for the other node to receive the
-        # verack, since we never sent one
-        no_verack_idlenode.wait_for_verack()
+        no_verack_idlenode = self.nodes[0].add_p2p_connection(CNodeNoVerackIdle())
 
         wait_until(lambda: no_version_bannode.ever_connected, timeout=10, lock=mininode_lock)
         wait_until(lambda: no_version_idlenode.ever_connected, timeout=10, lock=mininode_lock)

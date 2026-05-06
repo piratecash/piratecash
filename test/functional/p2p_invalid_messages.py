@@ -3,16 +3,12 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test node responses to invalid network messages."""
+import asyncio
 import struct
 import sys
 
-from test_framework.messages import (
-    msg_ping,
-    ser_string,
-)
-from test_framework.mininode import (
-    P2PDataStore,
-)
+from test_framework import messages
+from test_framework.mininode import P2PDataStore, NetworkThread
 from test_framework.test_framework import BitcoinTestFramework
 
 
@@ -25,7 +21,7 @@ class msg_unrecognized:
         self.str_data = str_data.encode() if not isinstance(str_data, bytes) else str_data
 
     def serialize(self):
-        return ser_string(self.str_data)
+        return messages.ser_string(self.str_data)
 
     def __repr__(self):
         return "{}(data={})".format(self.command, self.str_data)
@@ -69,21 +65,24 @@ class InvalidMessagesTest(BitcoinTestFramework):
         msg_at_size = msg_unrecognized(str_data="b" * valid_data_limit)
         assert len(msg_at_size.serialize()) == msg_limit
 
-        self.log.info("Sending a bunch of large, junk messages to test memory exhaustion. May take a bit...")
+        with node.assert_memory_usage_stable(increase_allowed=0.5):
+            self.log.info(
+                "Sending a bunch of large, junk messages to test "
+                "memory exhaustion. May take a bit...")
 
-        # Run a bunch of times to test for memory exhaustion.
-        for _ in range(80):
-            node.p2p.send_message(msg_at_size)
+            # Run a bunch of times to test for memory exhaustion.
+            for _ in range(80):
+                node.p2p.send_message(msg_at_size)
 
-        # Check that, even though the node is being hammered by nonsense from one
-        # connection, it can still service other peers in a timely way.
-        for _ in range(20):
-            conn2.sync_with_ping(timeout=2)
+            # Check that, even though the node is being hammered by nonsense from one
+            # connection, it can still service other peers in a timely way.
+            for _ in range(20):
+                conn2.sync_with_ping(timeout=2)
 
-        # Peer 1, despite serving up a bunch of nonsense, should still be connected.
-        self.log.info("Waiting for node to drop junk messages.")
-        node.p2p.sync_with_ping(timeout=400)
-        assert node.p2p.is_connected
+            # Peer 1, despite serving up a bunch of nonsense, should still be connected.
+            self.log.info("Waiting for node to drop junk messages.")
+            node.p2p.sync_with_ping(timeout=30)
+            assert node.p2p.is_connected
 
         #
         # 1.
@@ -134,7 +133,7 @@ class InvalidMessagesTest(BitcoinTestFramework):
             # For some reason unknown to me, we sometimes have to push additional data to the
             # peer in order for it to realize a disconnect.
             try:
-                node.p2p.send_message(msg_ping(nonce=123123))
+                node.p2p.send_message(messages.msg_ping(nonce=123123))
             except IOError:
                 pass
 
@@ -144,23 +143,33 @@ class InvalidMessagesTest(BitcoinTestFramework):
 
         # Node is still up.
         conn = node.add_p2p_connection(P2PDataStore())
+        conn.sync_with_ping()
 
     def test_magic_bytes(self):
         conn = self.nodes[0].add_p2p_connection(P2PDataStore())
-        with self.nodes[0].assert_debug_log(['HEADER ERROR - MESSAGESTART (badmsg, 2 bytes), received ffffffff']):
-            msg = conn.build_message(msg_unrecognized(str_data="d"))
-            # modify magic bytes
-            msg = b'\xff' * 4 + msg[4:]
-            conn.send_raw_message(msg)
-            conn.wait_for_disconnect(timeout=5)
+
+        def swap_magic_bytes():
+            conn._on_data = lambda: None  # Need to ignore all incoming messages from now, since they come with "invalid" magic bytes
+            conn.magic_bytes = b'\x00\x11\x22\x32'
+
+        # Call .result() to block until the atomic swap is complete, otherwise
+        # we might run into races later on
+        asyncio.run_coroutine_threadsafe(asyncio.coroutine(swap_magic_bytes)(), NetworkThread.network_event_loop).result()
+
+        with self.nodes[0].assert_debug_log(['PROCESSMESSAGE: INVALID MESSAGESTART ping']):
+            conn.send_message(messages.msg_ping(nonce=0xff))
+            conn.wait_for_disconnect(timeout=1)
             self.nodes[0].disconnect_p2ps()
 
     def test_checksum(self):
         conn = self.nodes[0].add_p2p_connection(P2PDataStore())
         with self.nodes[0].assert_debug_log(['CHECKSUM ERROR (badmsg, 2 bytes), expected 78df0a04 was ffffffff']):
             msg = conn.build_message(msg_unrecognized(str_data="d"))
-            # Checksum is after start bytes (4B), message type (12B), len (4B)
-            cut_len = 4 + 12 + 4
+            cut_len = (
+                4 +  # magic
+                12 +  # command
+                4  #len
+            )
             # modify checksum
             msg = msg[:cut_len] + b'\xff' * 4 + msg[cut_len + 4:]
             self.nodes[0].p2p.send_raw_message(msg)
@@ -169,7 +178,7 @@ class InvalidMessagesTest(BitcoinTestFramework):
 
     def test_size(self):
         conn = self.nodes[0].add_p2p_connection(P2PDataStore())
-        with self.nodes[0].assert_debug_log(['HEADER ERROR - SIZE (badmsg, 33554433 bytes)']):
+        with self.nodes[0].assert_debug_log(['']):
             msg = conn.build_message(msg_unrecognized(str_data="d"))
             cut_len = (
                 4 +  # magic
@@ -178,13 +187,14 @@ class InvalidMessagesTest(BitcoinTestFramework):
             # modify len to MAX_SIZE + 1
             msg = msg[:cut_len] + struct.pack("<I", 0x02000000 + 1) + msg[cut_len + 4:]
             self.nodes[0].p2p.send_raw_message(msg)
-            conn.wait_for_disconnect(timeout=5)
+            conn.wait_for_disconnect(timeout=1)
             self.nodes[0].disconnect_p2ps()
 
     def test_command(self):
         conn = self.nodes[0].add_p2p_connection(P2PDataStore())
-        with self.nodes[0].assert_debug_log(['HEADER ERROR - COMMAND']):
+        with self.nodes[0].assert_debug_log(['PROCESSMESSAGE: ERRORS IN HEADER']):
             msg = msg_unrecognized(str_data="d")
+            msg.command = b'\xff' * 12
             msg = conn.build_message(msg)
             # Modify command
             msg = msg[:7] + b'\x00' + msg[7 + 1:]

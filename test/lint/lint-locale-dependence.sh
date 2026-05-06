@@ -1,28 +1,47 @@
 #!/usr/bin/env bash
-# Copyright (c) 2018-2019 The Bitcoin Core developers
-# Distributed under the MIT software license, see the accompanying
-# file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 export LC_ALL=C
 
-# TODO: Reduce KNOWN_VIOLATIONS by replacing uses of locale dependent stoul/strtol with locale
-#       independent ToIntegral<T>(...).
-# TODO: Reduce KNOWN_VIOLATIONS by replacing uses of locale dependent snprintf with strprintf.
 KNOWN_VIOLATIONS=(
+    "src/bench/string_cast.cpp.*atoi"
+    "src/bench/string_cast.cpp.*std::to_string"
     "src/bitcoin-tx.cpp.*stoul"
+    "src/bitcoin-tx.cpp.*std::to_string"
+    "src/bitcoin-tx.cpp.*trim_right"
     "src/dbwrapper.cpp.*stoul"
     "src/dbwrapper.cpp:.*vsnprintf"
+    "src/httprpc.cpp.*trim"
+    "src/init.cpp:.*atoi"
+    "src/qt/rpcconsole.cpp:.*atoi"
     "src/rest.cpp:.*strtol"
+    "src/rpc/blockchain.cpp.*atoi"
+    "src/rpc/governance.cpp.*atoi"
+    "src/rpc/masternode.cpp.*atoi"
     "src/statsd_client.cpp:.*snprintf"
     "src/test/dbwrapper_tests.cpp:.*snprintf"
+    "src/test/denialofservice_tests.cpp.*std::to_string"
     "src/test/fuzz/locale.cpp"
-    "src/test/fuzz/string.cpp"
+    "src/test/fuzz/parse_numbers.cpp:.*atoi"
+    "src/test/key_tests.cpp.*std::to_string"
+    "src/test/net_tests.cpp.*std::to_string"
+    "src/test/settings_tests.cpp.*std::to_string"
+    "src/test/timedata_tests.cpp.*std::to_string"
+    "src/test/util/setup_common.cpp.*std::to_string"
+    "src/test/util_tests.cpp.*std::to_string"
+    "src/test/util_threadnames_tests.cpp.*std::to_string"
+    "src/test/fuzz/parse_numbers.cpp:.*atoi"
+    "src/torcontrol.cpp:.*atoi"
     "src/torcontrol.cpp:.*strtol"
-    "src/util/strencodings.cpp:.*strtoll"
+    "src/util/strencodings.cpp:.*atoi"
+    "src/util/strencodings.cpp:.*strtol"
+    "src/util/strencodings.cpp:.*strtoul"
+    "src/util/strencodings.h:.*atoi"
+    "src/wallet/wallet.cpp:.*atoi"
+    "src/util/system.cpp:.*atoi"
     "src/util/system.cpp:.*fprintf"
 )
 
-REGEXP_IGNORE_EXTERNAL_DEPENDENCIES="^src/(dashbls/|immer/|crypto/ctaes/|leveldb/|secp256k1/|tinyformat.h|univalue/)"
+REGEXP_IGNORE_EXTERNAL_DEPENDENCIES="^src/(crypto/ctaes/|leveldb/|secp256k1/|tinyformat.h|univalue/)"
 
 LOCALE_DEPENDENT_FUNCTIONS=(
     alphasort    # LC_COLLATE (via strcoll)
@@ -94,8 +113,6 @@ LOCALE_DEPENDENT_FUNCTIONS=(
     snprintf
     sprintf
     sscanf
-    std::locale::global
-    std::to_string
     stod
     stof
     stoi

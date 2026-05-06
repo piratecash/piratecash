@@ -9,10 +9,7 @@
 # Check includes: Check for duplicate includes. Enforce bracket syntax includes.
 
 export LC_ALL=C
-IGNORE_REGEXP="/(dashbls|immer|leveldb|secp256k1|univalue|crc32c)/"
-
-# cd to root folder of git repo for git ls-files to work properly
-cd "$(dirname $0)/../.." || exit 1
+IGNORE_REGEXP="/(leveldb|secp256k1|univalue|crc32c)/"
 
 filter_suffix() {
     git ls-files | grep -E "^src/.*\.${1}"'$' | grep -Ev "${IGNORE_REGEXP}"
@@ -25,6 +22,17 @@ for HEADER_FILE in $(filter_suffix h); do
     if [[ ${DUPLICATE_INCLUDES_IN_HEADER_FILE} != "" ]]; then
         echo "Duplicate include(s) in ${HEADER_FILE}:"
         echo "${DUPLICATE_INCLUDES_IN_HEADER_FILE}"
+        echo
+        EXIT_CODE=1
+    fi
+    CPP_FILE=${HEADER_FILE/%\.h/.cpp}
+    if [[ ! -e $CPP_FILE ]]; then
+        continue
+    fi
+    DUPLICATE_INCLUDES_IN_HEADER_AND_CPP_FILES=$(grep -hE "^#include " <(sort -u < "${HEADER_FILE}") <(sort -u < "${CPP_FILE}") | grep -E "^#include " | sort | uniq -d)
+    if [[ ${DUPLICATE_INCLUDES_IN_HEADER_AND_CPP_FILES} != "" ]]; then
+        echo "Include(s) from ${HEADER_FILE} duplicated in ${CPP_FILE}:"
+        echo "${DUPLICATE_INCLUDES_IN_HEADER_AND_CPP_FILES}"
         echo
         EXIT_CODE=1
     fi
@@ -49,7 +57,10 @@ if [[ ${INCLUDED_CPP_FILES} != "" ]]; then
 fi
 
 EXPECTED_BOOST_INCLUDES=(
+    boost/algorithm/string.hpp
+    boost/algorithm/string/classification.hpp
     boost/algorithm/string/replace.hpp
+    boost/algorithm/string/split.hpp
     boost/date_time/posix_time/posix_time.hpp
     boost/filesystem.hpp
     boost/filesystem/fstream.hpp
@@ -67,9 +78,16 @@ EXPECTED_BOOST_INCLUDES=(
     boost/signals2/optional_last_value.hpp
     boost/signals2/signal.hpp
     boost/test/unit_test.hpp
+    boost/test/unit_test_monitor.hpp
+    boost/thread.hpp
+    boost/thread/condition_variable.hpp
+    boost/thread/thread.hpp
+    boost/variant.hpp
+    boost/variant/apply_visitor.hpp
+    boost/variant/static_visitor.hpp
 )
 
-for BOOST_INCLUDE in $(git grep '^#include <boost/' -- "*.cpp" "*.h" | grep -vE "src/(immer)/" | cut -f2 -d: | cut -f2 -d'<' | cut -f1 -d'>' | sort -u); do
+for BOOST_INCLUDE in $(git grep '^#include <boost/' -- "*.cpp" "*.h" | cut -f2 -d: | cut -f2 -d'<' | cut -f1 -d'>' | sort -u); do
     IS_EXPECTED_INCLUDE=0
     for EXPECTED_BOOST_INCLUDE in "${EXPECTED_BOOST_INCLUDES[@]}"; do
         if [[ "${BOOST_INCLUDE}" == "${EXPECTED_BOOST_INCLUDE}" ]]; then

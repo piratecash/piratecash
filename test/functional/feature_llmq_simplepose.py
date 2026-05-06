@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# Copyright (c) 2015-2022 The Dash Core developers
+# Copyright (c) 2015-2021 The Dash Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,17 +14,17 @@ Checks simple PoSe system based on LLMQ commitments
 import time
 
 from test_framework.test_framework import DashTestFramework
-from test_framework.util import assert_equal, force_finish_mnsync, p2p_port, wait_until
+from test_framework.util import connect_nodes, force_finish_mnsync, p2p_port, wait_until
 
 
 class LLMQSimplePoSeTest(DashTestFramework):
     def set_test_params(self):
         self.set_dash_test_params(6, 5, fast_dip3_enforcement=True)
-        self.set_dash_llmq_test_params(5, 3)
+        self.set_cosanta_llmq_test_params(5, 3)
 
     def run_test(self):
 
-        self.nodes[0].sporkupdate("SPORK_17_QUORUM_DKG_ENABLED", 0)
+        self.nodes[0].spork("SPORK_17_QUORUM_DKG_ENABLED", 0)
         self.wait_for_sporks_same()
 
         # check if mining quorums with all nodes being online succeeds without punishment/banning
@@ -34,8 +35,8 @@ class LLMQSimplePoSeTest(DashTestFramework):
 
         self.repair_masternodes(False)
 
-        self.nodes[0].sporkupdate("SPORK_21_QUORUM_ALL_CONNECTED", 0)
-        self.nodes[0].sporkupdate("SPORK_23_QUORUM_POSE", 0)
+        self.nodes[0].spork("SPORK_21_QUORUM_ALL_CONNECTED", 0)
+        self.nodes[0].spork("SPORK_23_QUORUM_POSE", 0)
         self.wait_for_sporks_same()
 
         self.reset_probe_timeouts()
@@ -52,7 +53,7 @@ class LLMQSimplePoSeTest(DashTestFramework):
         self.test_banning(self.force_old_mn_proto, 3)
 
         # With PoSe off there should be no punishing for non-reachable and outdated nodes
-        self.nodes[0].sporkupdate("SPORK_23_QUORUM_POSE", 4070908800)
+        self.nodes[0].spork("SPORK_23_QUORUM_POSE", 4070908800)
         self.wait_for_sporks_same()
 
         self.repair_masternodes(True)
@@ -71,18 +72,18 @@ class LLMQSimplePoSeTest(DashTestFramework):
     def close_mn_port(self, mn):
         self.stop_node(mn.node.index)
         self.start_masternode(mn, ["-listen=0", "-nobind"])
-        self.connect_nodes(mn.node.index, 0)
+        connect_nodes(mn.node, 0)
         # Make sure the to-be-banned node is still connected well via outbound connections
         for mn2 in self.mninfo:
             if mn2 is not mn:
-                self.connect_nodes(mn.node.index, mn2.node.index)
+                connect_nodes(mn.node, mn2.node.index)
         self.reset_probe_timeouts()
         return False, False
 
     def force_old_mn_proto(self, mn):
         self.stop_node(mn.node.index)
         self.start_masternode(mn, ["-pushversion=70216"])
-        self.connect_nodes(mn.node.index, 0)
+        connect_nodes(mn.node, 0)
         self.reset_probe_timeouts()
         return False, True
 
@@ -91,67 +92,6 @@ class LLMQSimplePoSeTest(DashTestFramework):
             self.mine_quorum(expected_connections=expected_connections)
         for mn in self.mninfo:
             assert not self.check_punished(mn) and not self.check_banned(mn)
-
-    def mine_quorum_no_check(self, expected_good_nodes, mninfos_online):
-        # Unlike in mine_quorum we skip most of the checks and only care about
-        # nodes moving forward from phase to phase and the fact that the quorum is actualy mined.
-        self.log.info("Mining a quorum with no checks")
-        nodes = [self.nodes[0]] + [mn.node for mn in mninfos_online]
-
-        # move forward to next DKG
-        skip_count = 24 - (self.nodes[0].getblockcount() % 24)
-        if skip_count != 0:
-            self.bump_mocktime(1, nodes=nodes)
-            self.nodes[0].generate(skip_count)
-        self.sync_blocks(nodes)
-
-        q = self.nodes[0].getbestblockhash()
-        self.log.info("Expected quorum_hash: "+str(q))
-        self.log.info("Waiting for phase 1 (init)")
-        self.wait_for_quorum_phase(q, 1, expected_good_nodes, None, 0, mninfos_online)
-        self.move_blocks(nodes, 2)
-
-        self.log.info("Waiting for phase 2 (contribute)")
-        self.wait_for_quorum_phase(q, 2, expected_good_nodes, None, 0, mninfos_online)
-        self.move_blocks(nodes, 2)
-
-        self.log.info("Waiting for phase 3 (complain)")
-        self.wait_for_quorum_phase(q, 3, expected_good_nodes, None, 0, mninfos_online)
-        self.move_blocks(nodes, 2)
-
-        self.log.info("Waiting for phase 4 (justify)")
-        self.wait_for_quorum_phase(q, 4, expected_good_nodes, None, 0, mninfos_online)
-        self.move_blocks(nodes, 2)
-
-        self.log.info("Waiting for phase 5 (commit)")
-        self.wait_for_quorum_phase(q, 5, expected_good_nodes, None, 0, mninfos_online)
-        self.move_blocks(nodes, 2)
-
-        self.log.info("Waiting for phase 6 (mining)")
-        self.wait_for_quorum_phase(q, 6, expected_good_nodes, None, 0, mninfos_online)
-
-        self.log.info("Waiting final commitment")
-        self.wait_for_quorum_commitment(q, nodes)
-
-        self.log.info("Mining final commitment")
-        self.bump_mocktime(1, nodes=nodes)
-        self.nodes[0].getblocktemplate() # this calls CreateNewBlock
-        self.nodes[0].generate(1)
-        self.sync_blocks(nodes)
-
-        self.log.info("Waiting for quorum to appear in the list")
-        self.wait_for_quorum_list(q, nodes)
-
-        new_quorum = self.nodes[0].quorum("list", 1)["llmq_test"][0]
-        assert_equal(q, new_quorum)
-        quorum_info = self.nodes[0].quorum("info", 100, new_quorum)
-
-        # Mine 8 (SIGN_HEIGHT_OFFSET) more blocks to make sure that the new quorum gets eligible for signing sessions
-        self.nodes[0].generate(8)
-        self.sync_blocks(nodes)
-        self.log.info("New quorum: height=%d, quorumHash=%s, quorumIndex=%d, minedBlock=%s" % (quorum_info["height"], new_quorum, quorum_info["quorumIndex"], quorum_info["minedBlock"]))
-
-        return new_quorum
 
     def test_banning(self, invalidate_proc, expected_connections):
         mninfos_online = self.mninfo.copy()
@@ -166,15 +106,13 @@ class LLMQSimplePoSeTest(DashTestFramework):
 
             # NOTE: Min PoSe penalty is 100 (see CDeterministicMNList::CalcMaxPoSePenalty()),
             # so nodes are PoSe-banned in the same DKG they misbehave without being PoSe-punished first.
-            if instant_ban:
-                self.reset_probe_timeouts()
-                self.mine_quorum(expected_connections=expected_connections, expected_members=expected_contributors, expected_contributions=expected_contributors, expected_complaints=expected_contributors-1, expected_commitments=expected_contributors, mninfos_online=mninfos_online, mninfos_valid=mninfos_valid)
-            else:
-                # It's ok to miss probes/quorum connections up to 5 times.
-                # 6th time is when it should be banned for sure.
-                for i in range(6):
+            if not instant_ban:
+                # it's ok to miss probes/quorum connections up to 5 times
+                for i in range(5):
                     self.reset_probe_timeouts()
-                    self.mine_quorum_no_check(expected_contributors - 1, mninfos_online)
+                    self.mine_quorum(expected_connections=expected_connections, expected_members=expected_contributors, expected_contributions=expected_contributors, expected_complaints=0, expected_commitments=expected_contributors, mninfos_online=mninfos_online, mninfos_valid=mninfos_valid)
+            self.reset_probe_timeouts()
+            self.mine_quorum(expected_connections=expected_connections, expected_members=expected_contributors, expected_contributions=expected_contributors, expected_complaints=expected_contributors-1, expected_commitments=expected_contributors, mninfos_online=mninfos_online, mninfos_valid=mninfos_valid)
 
             assert self.check_banned(mn)
 
@@ -199,7 +137,7 @@ class LLMQSimplePoSeTest(DashTestFramework):
                     self.start_masternode(mn)
                 else:
                     mn.node.setnetworkactive(True)
-            self.connect_nodes(mn.node.index, 0)
+            connect_nodes(mn.node, 0)
         self.sync_all()
 
         # Isolate and re-connect all MNs (otherwise there might be open connections with no MNAUTH for MNs which were banned before)
@@ -208,7 +146,7 @@ class LLMQSimplePoSeTest(DashTestFramework):
             wait_until(lambda: mn.node.getconnectioncount() == 0)
             mn.node.setnetworkactive(True)
             force_finish_mnsync(mn.node)
-            self.connect_nodes(mn.node.index, 0)
+            connect_nodes(mn.node, 0)
 
     def reset_probe_timeouts(self):
         # Make sure all masternodes will reconnect/re-probe

@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-# Copyright (c) 2018-2022 The Dash Core developers
+# Copyright (c) 2018-2021 The Dash Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 from test_framework.test_framework import BitcoinTestFramework
-from test_framework.util import wait_until
+from test_framework.util import connect_nodes, wait_until
 
 '''
 '''
@@ -19,7 +20,7 @@ class SporkTest(BitcoinTestFramework):
         self.disable_mocktime()
         self.setup_nodes()
         # connect only 2 first nodes at start
-        self.connect_nodes(0, 1)
+        connect_nodes(self.nodes[0], 1)
 
     def get_test_spork_state(self, node):
         info = node.spork('active')
@@ -32,7 +33,7 @@ class SporkTest(BitcoinTestFramework):
         else:
             value = 4070908800
         # use InstantSend spork for tests
-        node.sporkupdate("SPORK_2_INSTANTSEND_ENABLED", value)
+        node.spork('SPORK_2_INSTANTSEND_ENABLED', value)
 
     def run_test(self):
         spork_default_state = self.get_test_spork_state(self.nodes[0])
@@ -57,7 +58,7 @@ class SporkTest(BitcoinTestFramework):
         self.nodes[1].generate(1)
 
         # connect new node and check spork propagation after restoring from cache
-        self.connect_nodes(1, 2)
+        connect_nodes(self.nodes[1], 2)
         wait_until(lambda: self.get_test_spork_state(self.nodes[2]), sleep=0.1, timeout=10)
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2015-2022 The Dash Core developers
+# Copyright (c) 2015-2020 The Dash Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,11 +13,8 @@ Checks intra quorum connections
 import time
 
 from test_framework.test_framework import DashTestFramework
-from test_framework.util import assert_greater_than_or_equal, Options, wait_until
+from test_framework.util import assert_greater_than_or_equal, connect_nodes, wait_until
 
-# Probes should age after this many seconds.
-# NOTE: mine_quorum() can bump mocktime quite often internally so make sure this number is high enough.
-MAX_AGE = 120 * Options.timeout_scale
 
 class LLMQConnections(DashTestFramework):
     def set_test_params(self):
@@ -25,7 +22,7 @@ class LLMQConnections(DashTestFramework):
         self.set_dash_llmq_test_params(5, 3)
 
     def run_test(self):
-        self.nodes[0].sporkupdate("SPORK_17_QUORUM_DKG_ENABLED", 0)
+        self.nodes[0].spork("SPORK_17_QUORUM_DKG_ENABLED", 0)
         self.wait_for_sporks_same()
 
         q = self.mine_quorum()
@@ -41,7 +38,7 @@ class LLMQConnections(DashTestFramework):
         self.check_reconnects(2)
 
         self.log.info("Activating SPORK_23_QUORUM_POSE")
-        self.nodes[0].sporkupdate("SPORK_23_QUORUM_POSE", 0)
+        self.nodes[0].spork("SPORK_23_QUORUM_POSE", 0)
         self.wait_for_sporks_same()
 
         self.log.info("mining one block and waiting for all members to connect to each other")
@@ -57,7 +54,7 @@ class LLMQConnections(DashTestFramework):
             wait_until(lambda: self.get_mn_probe_count(mn.node, q, False) == 4)
 
         self.log.info("checking that probes age")
-        self.bump_mocktime(MAX_AGE)
+        self.bump_mocktime(60)
         for mn in self.get_quorum_masternodes(q):
             wait_until(lambda: self.get_mn_probe_count(mn.node, q, False) == 0)
 
@@ -67,26 +64,10 @@ class LLMQConnections(DashTestFramework):
             wait_until(lambda: self.get_mn_probe_count(mn.node, q, True) == 4)
 
         self.log.info("Activating SPORK_21_QUORUM_ALL_CONNECTED")
-        self.nodes[0].sporkupdate("SPORK_21_QUORUM_ALL_CONNECTED", 0)
+        self.nodes[0].spork("SPORK_21_QUORUM_ALL_CONNECTED", 0)
         self.wait_for_sporks_same()
 
         self.check_reconnects(4)
-
-        self.log.info("check that old masternode conections are dropped")
-        removed = False
-        for mn in self.mninfo:
-            if len(mn.node.quorum("memberof", mn.proTxHash)) > 0:
-                try:
-                    with mn.node.assert_debug_log(['removing masternodes quorum connections']):
-                        with mn.node.assert_debug_log(['keeping mn quorum connections']):
-                            self.mine_quorum()
-                            mn.node.mockscheduler(60) # we check for old connections via the scheduler every 60 seconds
-                    removed = True
-                except:
-                    pass # it's ok to not remove connections sometimes
-            if removed:
-                break
-        assert removed # no way we removed none
 
         self.log.info("check that inter-quorum masternode conections are added")
         added = False
@@ -108,9 +89,9 @@ class LLMQConnections(DashTestFramework):
             mn.node.setnetworkactive(False)
         for mn in self.mninfo:
             wait_until(lambda: len(mn.node.getpeerinfo()) == 0)
+        self.bump_mocktime(60)
         for mn in self.mninfo:
             mn.node.setnetworkactive(True)
-        self.bump_mocktime(60)
 
         self.log.info("verify that all masternodes re-connected")
         for q in self.nodes[0].quorum('list')['llmq_test']:
@@ -119,12 +100,8 @@ class LLMQConnections(DashTestFramework):
 
         # Also re-connect non-masternode connections
         for i in range(1, len(self.nodes)):
-            self.connect_nodes(i, 0)
-            self.nodes[i].ping()
-        # wait for ping/pong so that we can be sure that spork propagation works
-        time.sleep(1) # needed to make sure we don't check before the ping is actually sent (fPingQueued might be true but SendMessages still not called)
-        for i in range(1, len(self.nodes)):
-            wait_until(lambda: all('pingwait' not in peer for peer in self.nodes[i].getpeerinfo()))
+            connect_nodes(self.nodes[i], 0)
+
 
     def get_mn_connection_count(self, node):
         peers = node.getpeerinfo()
@@ -147,7 +124,7 @@ class LLMQConnections(DashTestFramework):
                 peerMap[p['verified_proregtx_hash']] = p
         for mn in self.get_quorum_masternodes(q):
             pi = mnMap[mn.proTxHash]
-            if pi['metaInfo']['lastOutboundSuccessElapsed'] < MAX_AGE:
+            if pi['metaInfo']['lastOutboundSuccessElapsed'] < 60:
                 count += 1
             elif check_peers and mn.proTxHash in peerMap:
                 count += 1

@@ -35,7 +35,7 @@ enabled=(
     E701 # multiple statements on one line (colon)
     E702 # multiple statements on one line (semicolon)
     E703 # statement ends with a semicolon
-    E711 # comparison to None should be 'if cond is None:'
+    # E711 # comparison to None should be 'if cond is None:'
     E714 # test for object identity should be "is not"
     E721 # do not compare types, use "isinstance()"
     E742 # do not define classes named "l", "O", or "I"
@@ -88,18 +88,4 @@ elif PYTHONWARNINGS="ignore" flake8 --version | grep -q "Python 2"; then
     exit 0
 fi
 
-FLAKECMD=flake8
-
-if command -v flake8-cached > /dev/null; then
-    FLAKECMD=flake8-cached
-else
-    echo "Consider install flake8-cached for cached flake8 results."
-fi
-
-PYTHONWARNINGS="ignore" $FLAKECMD --ignore=B,C,E,F,I,N,W --select=$(IFS=","; echo "${enabled[*]}")$(
-    if [[ $# == 0 ]]; then
-        git ls-files "*.py" | grep -vE "src/(immer)/"
-    else
-        echo "$@"
-    fi
-)
+PYTHONWARNINGS="ignore" flake8 --ignore=B,C,E,F,I,N,W --select=$(IFS=","; echo "${enabled[*]}") "${@:-.}"

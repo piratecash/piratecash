@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2020-2022 The Dash Core developers
+# Copyright (c) 2020-2021 The Dash Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 import time
@@ -38,8 +38,8 @@ class LLMQISMigrationTest(DashTestFramework):
         self.activate_dip8()
 
         node = self.nodes[0]
-        node.sporkupdate("SPORK_17_QUORUM_DKG_ENABLED", 0)
-        node.sporkupdate("SPORK_2_INSTANTSEND_ENABLED", 0)
+        node.spork("SPORK_17_QUORUM_DKG_ENABLED", 0)
+        node.spork("SPORK_2_INSTANTSEND_ENABLED", 0)
         self.wait_for_sporks_same()
 
         self.mine_quorum()

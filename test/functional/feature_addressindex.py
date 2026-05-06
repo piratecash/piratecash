@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2014-2015 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,14 +14,13 @@ from test_framework.messages import COIN, COutPoint, CTransaction, CTxIn, CTxOut
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.test_node import ErrorMatch
 from test_framework.script import CScript, OP_CHECKSIG, OP_DUP, OP_EQUAL, OP_EQUALVERIFY, OP_HASH160
-from test_framework.util import assert_equal
+from test_framework.util import assert_equal, connect_nodes
 
 class AddressIndexTest(BitcoinTestFramework):
 
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 4
-        self.supports_cli = False
 
     def skip_test_if_missing_module(self):
         self.skip_if_no_wallet()
@@ -33,23 +33,23 @@ class AddressIndexTest(BitcoinTestFramework):
         # Nodes 2/3 are used for testing
         self.start_node(2, ["-addressindex"])
         self.start_node(3, ["-addressindex"])
-        self.connect_nodes(0, 1)
-        self.connect_nodes(0, 2)
-        self.connect_nodes(0, 3)
+        connect_nodes(self.nodes[0], 1)
+        connect_nodes(self.nodes[0], 2)
+        connect_nodes(self.nodes[0], 3)
+
         self.sync_all()
-        self.import_deterministic_coinbase_privkeys()
 
     def run_test(self):
         self.log.info("Test that settings can't be changed without -reindex...")
         self.stop_node(1)
         self.nodes[1].assert_start_raises_init_error(["-addressindex=0"], "You need to rebuild the database using -reindex to change -addressindex", match=ErrorMatch.PARTIAL_REGEX)
         self.start_node(1, ["-addressindex=0", "-reindex"])
-        self.connect_nodes(0, 1)
+        connect_nodes(self.nodes[0], 1)
         self.sync_all()
         self.stop_node(1)
         self.nodes[1].assert_start_raises_init_error(["-addressindex"], "You need to rebuild the database using -reindex to change -addressindex", match=ErrorMatch.PARTIAL_REGEX)
         self.start_node(1, ["-addressindex", "-reindex"])
-        self.connect_nodes(0, 1)
+        connect_nodes(self.nodes[0], 1)
         self.sync_all()
 
         self.log.info("Mining blocks...")
@@ -137,7 +137,7 @@ class AddressIndexTest(BitcoinTestFramework):
         unspent = self.nodes[0].listunspent()
         tx = CTransaction()
         tx.vin = [CTxIn(COutPoint(int(unspent[0]["txid"], 16), unspent[0]["vout"]))]
-        tx.vout = [CTxOut(10 * COIN, scriptPubKey), CTxOut(11 * COIN, scriptPubKey)]
+        tx.vout = [CTxOut(10, scriptPubKey), CTxOut(11, scriptPubKey)]
         tx.rehash()
 
         signed_tx = self.nodes[0].signrawtransactionwithwallet(tx.serialize().hex())
@@ -153,7 +153,7 @@ class AddressIndexTest(BitcoinTestFramework):
         # Check that balances are correct
         self.log.info("Testing balances...")
         balance0 = self.nodes[1].getaddressbalance("93bVhahvUKmQu8gu9g3QnPPa2cxFK98pMB")
-        assert_equal(balance0["balance"], (45 + 21) * 100000000)
+        assert_equal(balance0["balance"], 45 * 100000000 + 21)
 
         # Check that balances are correct after spending
         self.log.info("Testing balances after spending...")

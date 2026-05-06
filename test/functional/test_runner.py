@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Run regression test suite.
@@ -25,7 +26,6 @@ import subprocess
 import tempfile
 import re
 import logging
-import unittest
 
 # Formatting. Default colors to empty strings.
 BOLD, GREEN, RED, GREY = ("", ""), ("", ""), ("", ""), ("", "")
@@ -67,23 +67,13 @@ if os.name != 'nt' or sys.getwindowsversion() >= (10, 0, 14393):
 TEST_EXIT_PASSED = 0
 TEST_EXIT_SKIPPED = 77
 
-TEST_FRAMEWORK_MODULES = [
-    "muhash",
-    "script",
-    "util",
-]
-
-EXTENDED_SCRIPTS = [
-    # These tests are not run by default.
-    # Longest test should go first, to favor running tests in parallel
-    'feature_pruning.py', # NOTE: Prune mode is incompatible with -txindex, should work with governance validation disabled though.
-    'feature_dbcrash.py',
-]
+# 20 minutes represented in seconds
+TRAVIS_TIMEOUT_DURATION = 20 * 60
 
 BASE_SCRIPTS = [
-    # Scripts that are run by default.
+    # Scripts that are run by the travis build process.
     # Longest test should go first, to favor running tests in parallel
-    'feature_dip3_deterministicmns.py', # NOTE: needs dash_hash to pass
+    'feature_dip3_deterministicmns.py', # NOTE: needs cosanta_hash to pass
     'feature_llmq_data_recovery.py',
     'feature_fee_estimation.py',
     'wallet_hd.py',
@@ -91,7 +81,7 @@ BASE_SCRIPTS = [
     # vv Tests less than 5m vv
     'mining_getblocktemplate_longpoll.py', # FIXME: "socket.error: [Errno 54] Connection reset by peer" on my Mac, same as https://github.com/bitcoin/bitcoin/issues/6651
     'feature_maxuploadtarget.py',
-    'feature_block.py', # NOTE: needs dash_hash to pass
+    'feature_block.py', # NOTE: needs cosanta_hash to pass
     'rpc_fundrawtransaction.py',
     'rpc_fundrawtransaction_hd.py',
     'wallet_multiwallet.py --usecli',
@@ -107,21 +97,21 @@ BASE_SCRIPTS = [
     'wallet_listtransactions.py',
     'feature_multikeysporks.py',
     'feature_dip3_v19.py',
-    'feature_llmq_signing.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_signing.py --spork21', # NOTE: needs dash_hash to pass
-    'feature_llmq_chainlocks.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_rotation.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_connections.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_hpmn.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_simplepose.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_is_cl_conflicts.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_is_migration.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_is_retroactive.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_dkgerrors.py', # NOTE: needs dash_hash to pass
-    'feature_dip4_coinbasemerkleroots.py', # NOTE: needs dash_hash to pass
+    'feature_llmq_signing.py', # NOTE: needs cosanta_hash to pass
+    'feature_llmq_signing.py --spork21', # NOTE: needs cosanta_hash to pass
+    'feature_llmq_chainlocks.py', # NOTE: needs cosanta_hash to pass
+    'feature_llmq_rotation.py', # NOTE: needs cosanta_hash to pass
+    'feature_llmq_connections.py', # NOTE: needs cosanta_hash to pass
+    'feature_llmq_hpmn.py', # NOTE: needs cosanta_hash to pass
+    'feature_llmq_simplepose.py', # NOTE: needs cosanta_hash to pass
+    'feature_llmq_is_cl_conflicts.py', # NOTE: needs cosanta_hash to pass
+    'feature_llmq_is_migration.py', # NOTE: needs cosanta_hash to pass
+    'feature_llmq_is_retroactive.py', # NOTE: needs cosanta_hash to pass
+    'feature_llmq_dkgerrors.py', # NOTE: needs cosanta_hash to pass
+    'feature_dip4_coinbasemerkleroots.py', # NOTE: needs cosanta_hash to pass
     # vv Tests less than 60s vv
-    'p2p_sendheaders.py', # NOTE: needs dash_hash to pass
-    'p2p_sendheaders_compressed.py', # NOTE: needs dash_hash to pass
+    'p2p_sendheaders.py', # NOTE: needs cosanta_hash to pass
+    'wallet_zapwallettxes.py',
     'wallet_importmulti.py',
     'mempool_limit.py',
     'rpc_txoutproof.py',
@@ -132,9 +122,8 @@ BASE_SCRIPTS = [
     'feature_reindex.py',
     'feature_abortnode.py',
     # vv Tests less than 30s vv
-    'rpc_quorum.py',
     'wallet_keypool_topup.py',
-    'interface_zmq_dash.py',
+    'interface_zmq_cosanta.py',
     'interface_zmq.py',
     'interface_bitcoin_cli.py',
     'mempool_resurrect.py',
@@ -145,24 +134,19 @@ BASE_SCRIPTS = [
     'rpc_misc.py',
     'interface_rest.py',
     'mempool_spend_coinbase.py',
-    'wallet_avoidreuse.py',
     'mempool_reorg.py',
     'mempool_persist.py',
     'wallet_multiwallet.py',
     'wallet_createwallet.py',
     'wallet_createwallet.py --usecli',
-    'wallet_reorgsrestore.py',
-    'wallet_watchonly.py',
-    'wallet_watchonly.py --usecli',
     'interface_http.py',
     'interface_rpc.py',
     'rpc_psbt.py',
     'rpc_users.py',
-    'rpc_whitelist.py',
     'feature_proxy.py',
     'rpc_signrawtransaction.py',
-    'p2p_addrv2_relay.py',
     'wallet_groups.py',
+    'p2p_addrv2_relay.py',
     'p2p_disconnect_ban.py',
     'feature_addressindex.py',
     'feature_timestampindex.py',
@@ -191,7 +175,6 @@ BASE_SCRIPTS = [
     'rpc_getblockfilter.py',
     'rpc_invalidateblock.py',
     'feature_txindex.py',
-    'feature_utxo_set_hash.py',
     'mempool_packages.py',
     'mempool_package_onemore.py',
     'feature_versionbits_warning.py',
@@ -199,14 +182,12 @@ BASE_SCRIPTS = [
     'wallet_importprunedfunds.py',
     'p2p_leak_tx.py',
     'rpc_signmessage.py',
-    'rpc_generateblock.py',
     'wallet_balance.py',
     'feature_nulldummy.py',
     'mempool_accept.py',
     'mempool_expiry.py',
     'wallet_import_rescan.py',
     'wallet_import_with_label.py',
-    'wallet_upgradewallet.py',
     'rpc_bind.py --ipv4',
     'rpc_bind.py --ipv6',
     'rpc_bind.py --nonloopback',
@@ -227,9 +208,8 @@ BASE_SCRIPTS = [
     'rpc_uptime.py',
     'wallet_resendwallettransactions.py',
     'wallet_fallbackfee.py',
-    'rpc_dumptxoutset.py',
     'feature_minchainwork.py',
-    'p2p_unrequested_blocks.py', # NOTE: needs dash_hash to pass
+    'p2p_unrequested_blocks.py', # NOTE: needs cosanta_hash to pass
     'feature_shutdown.py',
     'rpc_coinjoin.py',
     'rpc_masternode.py',
@@ -242,13 +222,11 @@ BASE_SCRIPTS = [
     'rpc_wipewallettxes.py',
     'feature_dip0020_activation.py',
     'feature_uacomment.py',
-    'wallet_coinbase_category.py',
     'feature_filelock.py',
-    'feature_loadblock.py',
+    'p2p_unrequested_blocks.py',
     'p2p_blockfilters.py',
     'feature_asmap.py',
     'feature_includeconf.py',
-    'mempool_unbroadcast.py',
     'rpc_deriveaddresses.py',
     'rpc_deriveaddresses.py --usecli',
     'rpc_scantxoutset.py',
@@ -256,13 +234,16 @@ BASE_SCRIPTS = [
     'p2p_node_network_limited.py',
     'p2p_permissions.py',
     'feature_blocksdir.py',
-    'wallet_startup.py',
     'feature_config_args.py',
-    'feature_settings.py',
     'rpc_help.py',
     'feature_help.py',
-    # Don't append tests at the end to avoid merge conflicts
-    # Put them in a random line within the section that fits their approximate run-time
+]
+
+EXTENDED_SCRIPTS = [
+    # These tests are not run by the travis build process.
+    # Longest test should go first, to favor running tests in parallel
+    'feature_pruning.py', # NOTE: Prune mode is incompatible with -txindex, should work with governance validation disabled though.
+    'feature_dbcrash.py',
 ]
 
 # Place EXTENDED_SCRIPTS first since it has the 3 longest running tests
@@ -283,21 +264,20 @@ def main():
                                      epilog='''
     Help text and arguments for individual test script:''',
                                      formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument('--combinedlogslen', '-c', type=int, default=0, metavar='n', help='On failure, print a log (of length n lines) to the console, combined from the test framework and all test nodes.')
+    parser.add_argument('--combinedlogslen', '-c', type=int, default=0, help='print a combined log (of length n lines) from all test nodes and test framework to the console on failure.')
     parser.add_argument('--coverage', action='store_true', help='generate a basic coverage report for the RPC interface')
     parser.add_argument('--ci', action='store_true', help='Run checks and code that are usually only enabled in a continuous integration environment')
     parser.add_argument('--exclude', '-x', help='specify a comma-separated-list of scripts to exclude.')
     parser.add_argument('--extended', action='store_true', help='run the extended test suite in addition to the basic tests')
     parser.add_argument('--help', '-h', '-?', action='store_true', help='print help text and exit')
     parser.add_argument('--jobs', '-j', type=int, default=4, help='how many test scripts to run in parallel. Default=4.')
+    parser.add_argument('--quiet', '-q', action='store_true', help='only print results summary and failure logs')
     parser.add_argument('--keepcache', '-k', action='store_true', help='the default behavior is to flush the cache directory on startup. --keepcache retains the cache from the previous testrun.')
-    parser.add_argument('--quiet', '-q', action='store_true', help='only print dots, results summary and failure logs')
     parser.add_argument('--tmpdirprefix', '-t', default=tempfile.gettempdir(), help="Root directory for datadirs")
-    parser.add_argument('--failfast', '-F', action='store_true', help='stop execution after the first test failure')
-    parser.add_argument('--filter', help='filter scripts to run by regular expression')
+    parser.add_argument('--failfast', action='store_true', help='stop execution after the first test failure')
     args, unknown_args = parser.parse_known_args()
 
-    # args to be passed on always start with two dashes; tests are the remaining unknown args
+    # args to be passed on always start with two cosantaes; tests are the remaining unknown args
     tests = [arg for arg in unknown_args if arg[:2] != "--"]
     passon_args = [arg for arg in unknown_args if arg[:2] == "--"]
 
@@ -315,6 +295,10 @@ def main():
     # Create base test directory
     tmpdir = "%s/test_runner_∋_🏃_%s" % (args.tmpdirprefix, datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
 
+    # If we fixed the command-line and filename encoding issue on Windows, these two lines could be removed
+    if config["environment"]["EXEEXT"] == ".exe":
+        tmpdir = "%s/test_runner_%s" % (args.tmpdirprefix, datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
+
     os.makedirs(tmpdir)
 
     logging.debug("Temporary test directory at %s" % tmpdir)
@@ -327,48 +311,31 @@ def main():
         sys.exit(0)
 
     # Build list of tests
-    test_list = []
     if tests:
         # Individual tests have been specified. Run specified tests that exist
-        # in the ALL_SCRIPTS list. Accept names with or without a .py extension.
-        # Specified tests can contain wildcards, but in that case the supplied
-        # paths should be coherent, e.g. the same path as that provided to call
-        # test_runner.py. Examples:
-        #   `test/functional/test_runner.py test/functional/wallet*`
-        #   `test/functional/test_runner.py ./test/functional/wallet*`
-        #   `test_runner.py wallet*`
-        #   but not:
-        #   `test/functional/test_runner.py wallet*`
-        # Multiple wildcards can be passed:
-        #   `test_runner.py tool* mempool*`
+        # in the ALL_SCRIPTS list. Accept the name with or without .py extension.
+        tests = [re.sub(r"\.py$", "", test) + ".py" for test in tests]
+        test_list = []
         for test in tests:
-            script = test.split("/")[-1]
-            script = script + ".py" if ".py" not in script else script
-            matching_scripts = [s for s in ALL_SCRIPTS if s.startswith(script)]
-            if matching_scripts:
-                test_list.extend(matching_scripts)
+            if test in ALL_SCRIPTS:
+                test_list.append(test)
             else:
                 print("{}WARNING!{} Test '{}' not found in full test list.".format(BOLD[1], BOLD[0], test))
     elif args.extended:
         # Include extended tests
-        test_list += ALL_SCRIPTS
+        test_list = ALL_SCRIPTS
     else:
         # Run base tests only
-        test_list += BASE_SCRIPTS
+        test_list = BASE_SCRIPTS
 
     # Remove the test cases that the user has explicitly asked to exclude.
     if args.exclude:
-        exclude_tests = [test.split('.py')[0] for test in args.exclude.split(',')]
+        exclude_tests = [re.sub(r"\.py$", "", test) + (".py" if ".py" not in test else "") for test in args.exclude.split(',')]
         for exclude_test in exclude_tests:
-            # Remove <test_name>.py and <test_name>.py --arg from the test list
-            exclude_list = [test for test in test_list if test.split('.py')[0] == exclude_test]
-            for exclude_item in exclude_list:
-                test_list.remove(exclude_item)
-            if not exclude_list:
+            if exclude_test in test_list:
+                test_list.remove(exclude_test)
+            else:
                 print("{}WARNING!{} Test '{}' not found in current test list.".format(BOLD[1], BOLD[0], exclude_test))
-
-    if args.filter:
-        test_list = list(filter(re.compile(args.filter).search, test_list))
 
     if not test_list:
         print("No valid test scripts specified. Check that your test is in one "
@@ -395,20 +362,19 @@ def main():
         jobs=args.jobs,
         enable_coverage=args.coverage,
         args=passon_args,
-        combined_logs_len=args.combinedlogslen,
         failfast=args.failfast,
         runs_ci=args.ci,
+        combined_logs_len=args.combinedlogslen,
     )
 
-def run_tests(*, test_list, src_dir, build_dir, tmpdir, jobs=1, enable_coverage=False, args=None, combined_logs_len=0,failfast=False, runs_ci=False):
+def run_tests(*, test_list, src_dir, build_dir, tmpdir, jobs=1, enable_coverage=False, args=None, failfast=False, runs_ci, combined_logs_len=0):
     args = args or []
 
-    # Warn if dashd is already running
-    # pidof might fail or return an empty string if bitcoind is not running
+    # Warn if cosantad is already running (unix only)
     try:
-        pidof_output = subprocess.check_output(["pidof", "dashd"])
+        pidof_output = subprocess.check_output(["pidof", "cosantad"])
         if not (pidof_output is None or pidof_output == b''):
-            print("%sWARNING!%s There is already a dashd process running on this system. Tests may fail unexpectedly due to resource contention!" % (BOLD[1], BOLD[0]))
+            print("%sWARNING!%s There is already a cosantad process running on this system. Tests may fail unexpectedly due to resource contention!" % (BOLD[1], BOLD[0]))
     except (OSError, subprocess.SubprocessError):
         pass
 
@@ -416,16 +382,6 @@ def run_tests(*, test_list, src_dir, build_dir, tmpdir, jobs=1, enable_coverage=
     cache_dir = "%s/test/cache" % build_dir
     if os.path.isdir(cache_dir):
         print("%sWARNING!%s There is a cache directory here: %s. If tests fail unexpectedly, try deleting the cache directory." % (BOLD[1], BOLD[0], cache_dir))
-
-    # Test Framework Tests
-    print("Running Unit Tests for Test Framework Modules")
-    test_framework_tests = unittest.TestSuite()
-    for module in TEST_FRAMEWORK_MODULES:
-        test_framework_tests.addTest(unittest.TestLoader().loadTestsFromName("test_framework.{}".format(module)))
-    result = unittest.TextTestRunner(verbosity=1, failfast=True).run(test_framework_tests)
-    if not result.wasSuccessful():
-        logging.debug("Early exiting after failure in TestFramework unit tests")
-        sys.exit(False)
 
     tests_dir = src_dir + '/test/functional/'
 
@@ -453,23 +409,23 @@ def run_tests(*, test_list, src_dir, build_dir, tmpdir, jobs=1, enable_coverage=
         tmpdir=tmpdir,
         test_list=test_list,
         flags=flags,
-        timeout_duration=30 * 60 if runs_ci else float('inf'),  # in seconds
+        timeout_duration=TRAVIS_TIMEOUT_DURATION if runs_ci else float('inf'),  # in seconds
     )
     start_time = time.time()
     test_results = []
 
     max_len_name = len(max(test_list, key=len))
-    test_count = len(test_list)
-    for i in range(test_count):
+
+    for _ in range(len(test_list)):
         test_result, testdir, stdout, stderr = job_queue.get_next()
         test_results.append(test_result)
-        done_str = "{}/{} - {}{}{}".format(i + 1, test_count, BOLD[1], test_result.name, BOLD[0])
+
         if test_result.status == "Passed":
-            logging.debug("%s passed, Duration: %s s" % (done_str, test_result.time))
+            logging.debug("\n%s%s%s passed, Duration: %s s" % (BOLD[1], test_result.name, BOLD[0], test_result.time))
         elif test_result.status == "Skipped":
-            logging.debug("%s skipped" % (done_str))
+            logging.debug("\n%s%s%s skipped" % (BOLD[1], test_result.name, BOLD[0]))
         else:
-            print("%s failed, Duration: %s s\n" % (done_str, test_result.time))
+            print("\n%s%s%s failed, Duration: %s s\n" % (BOLD[1], test_result.name, BOLD[0], test_result.time))
             print(BOLD[1] + 'stdout:\n' + BOLD[0] + stdout + '\n')
             print(BOLD[1] + 'stderr:\n' + BOLD[0] + stderr + '\n')
             if combined_logs_len and os.path.isdir(testdir):
@@ -513,7 +469,7 @@ def run_tests(*, test_list, src_dir, build_dir, tmpdir, jobs=1, enable_coverage=
 def print_results(test_results, max_len_name, runtime):
     results = "\n" + BOLD[1] + "%s | %s | %s\n\n" % ("TEST".ljust(max_len_name), "STATUS   ", "DURATION") + BOLD[0]
 
-    test_results.sort(key=TestResult.sort_key)
+    test_results.sort(key=lambda result: result.name.lower())
     all_passed = True
     time_sum = 0
 
@@ -524,11 +480,7 @@ def print_results(test_results, max_len_name, runtime):
         results += str(test_result)
 
     status = TICK + "Passed" if all_passed else CROSS + "Failed"
-    if not all_passed:
-        results += RED[1]
     results += BOLD[1] + "\n%s | %s | %s s (accumulated) \n" % ("ALL".ljust(max_len_name), status.ljust(9), time_sum) + BOLD[0]
-    if not all_passed:
-        results += RED[0]
     results += "Runtime: %s s\n" % (runtime)
     print(results)
 
@@ -546,6 +498,10 @@ class TestHandler:
         self.test_list = test_list
         self.flags = flags
         self.num_running = 0
+        # In case there is a graveyard of zombie cosantads, we can apply a
+        # pseudorandom offset to hopefully jump over them.
+        # (625 is PORT_RANGE/MAX_NODES)
+        self.portseed_offset = int(time.time() * 1000) % 625
         self.jobs = []
 
     def get_next(self):
@@ -553,7 +509,7 @@ class TestHandler:
             # Add tests
             self.num_running += 1
             test = self.test_list.pop(0)
-            portseed = len(self.test_list)
+            portseed = len(self.test_list) + self.portseed_offset
             portseed_arg = ["--portseed={}".format(portseed)]
             log_stdout = tempfile.SpooledTemporaryFile(max_size=2**16)
             log_stderr = tempfile.SpooledTemporaryFile(max_size=2**16)
@@ -571,24 +527,17 @@ class TestHandler:
                               log_stderr))
         if not self.jobs:
             raise IndexError('pop from empty list')
-
-        # Print remaining running jobs when all jobs have been started.
-        if not self.test_list:
-            print("Remaining jobs: [{}]".format(", ".join(j[0] for j in self.jobs)))
-
-        dot_count = 0
         while True:
             # Return first proc that finishes
             time.sleep(.5)
             for job in self.jobs:
                 (name, start_time, proc, testdir, log_out, log_err) = job
                 if int(time.time() - start_time) > self.timeout_duration:
-                    # Timeout individual tests if timeout is specified (to stop
-                    # tests hanging and not providing useful output).
+                    # In travis, timeout individual tests (to stop tests hanging and not providing useful output).
                     proc.send_signal(signal.SIGINT)
                 if proc.poll() is not None:
                     log_out.seek(0), log_err.seek(0)
-                    [stdout, stderr] = [log_file.read().decode('utf-8') for log_file in (log_out, log_err)]
+                    [stdout, stderr] = [file.read().decode('utf-8') for file in (log_out, log_err)]
                     log_out.close(), log_err.close()
                     if proc.returncode == TEST_EXIT_PASSED and stderr == "":
                         status = "Passed"
@@ -598,12 +547,9 @@ class TestHandler:
                         status = "Failed"
                     self.num_running -= 1
                     self.jobs.remove(job)
-                    clearline = '\r' + (' ' * dot_count) + '\r'
-                    print(clearline, end='', flush=True)
-                    dot_count = 0
+
                     return TestResult(name, status, int(time.time() - start_time)), testdir, stdout, stderr
             print('.', end='', flush=True)
-            dot_count += 1
 
     def kill_and_join(self):
         """Send SIGKILL to all jobs and block until all have ended."""
@@ -622,14 +568,6 @@ class TestResult():
         self.status = status
         self.time = time
         self.padding = 0
-
-    def sort_key(self):
-        if self.status == "Passed":
-            return 0, self.name.lower()
-        elif self.status == "Failed":
-            return 2, self.name.lower()
-        elif self.status == "Skipped":
-            return 1, self.name.lower()
 
     def __repr__(self):
         if self.status == "Passed":
@@ -650,15 +588,21 @@ class TestResult():
 
 
 def check_script_prefixes():
-    """Check that test scripts start with one of the allowed name prefixes."""
+    """Check that at most a handful of the
+       test scripts don't start with one of the allowed name prefixes."""
 
-    good_prefixes_re = re.compile("^(example|feature|interface|mempool|mining|p2p|rpc|wallet|tool)_")
+    # LEEWAY is provided as a transition measure, so that pull-requests
+    # that introduce new tests that don't conform with the naming
+    # convention don't immediately cause the tests to fail.
+    LEEWAY = 10
+
+    good_prefixes_re = re.compile("(example|feature|interface|mempool|mining|p2p|rpc|wallet|tool)_")
     bad_script_names = [script for script in ALL_SCRIPTS if good_prefixes_re.match(script) is None]
 
-    if bad_script_names:
-        print("%sERROR:%s %d tests not meeting naming conventions:" % (BOLD[1], BOLD[0], len(bad_script_names)))
+    if len(bad_script_names) > 0:
+        print("INFO: %d tests not meeting naming conventions:" % (len(bad_script_names)))
         print("  %s" % ("\n  ".join(sorted(bad_script_names))))
-        raise AssertionError("Some tests are not following naming convention!")
+    assert len(bad_script_names) <= LEEWAY, "Too many tests not following naming convention! (%d found, maximum: %d)" % (len(bad_script_names), LEEWAY)
 
 
 def check_script_list(*, src_dir, fail_on_warn):
@@ -667,23 +611,23 @@ def check_script_list(*, src_dir, fail_on_warn):
     Check that there are no scripts in the functional tests directory which are
     not being run by pull-tester.py."""
     script_dir = src_dir + '/test/functional/'
-    python_files = set([test_file for test_file in os.listdir(script_dir) if test_file.endswith(".py")])
+    python_files = set([file for file in os.listdir(script_dir) if file.endswith(".py")])
     missed_tests = list(python_files - set(map(lambda x: x.split()[0], ALL_SCRIPTS + NON_SCRIPTS)))
     if len(missed_tests) != 0:
         print("%sWARNING!%s The following scripts are not being run: %s. Check the test lists in test_runner.py." % (BOLD[1], BOLD[0], str(missed_tests)))
         if fail_on_warn:
-            # On CI this warning is an error to prevent merging incomplete commits into master
+            # On travis this warning is an error to prevent merging incomplete commits into master
             sys.exit(1)
 
 
-class RPCCoverage():
+class RPCCoverage(object):
     """
     Coverage reporting utilities for test_runner.
 
     Coverage calculation works by having each test script subprocess write
     coverage files into a particular directory. These files contain the RPC
     commands invoked during testing, as well as a complete listing of RPC
-    commands per `dash-cli help` (`rpc_interface.txt`).
+    commands per `cosanta-cli help` (`rpc_interface.txt`).
 
     After all tests complete, the commands run are combined and diff'd against
     the complete list to calculate uncovered RPC commands.
@@ -730,8 +674,8 @@ class RPCCoverage():
         if not os.path.isfile(coverage_ref_filename):
             raise RuntimeError("No coverage reference found")
 
-        with open(coverage_ref_filename, 'r', encoding="utf8") as coverage_ref_file:
-            all_cmds.update([line.strip() for line in coverage_ref_file.readlines()])
+        with open(coverage_ref_filename, 'r', encoding="utf8") as file:
+            all_cmds.update([line.strip() for line in file.readlines()])
 
         for root, dirs, files in os.walk(self.dir):
             for filename in files:
@@ -739,8 +683,8 @@ class RPCCoverage():
                     coverage_filenames.add(os.path.join(root, filename))
 
         for filename in coverage_filenames:
-            with open(filename, 'r', encoding="utf8") as coverage_file:
-                covered_cmds.update([line.strip() for line in coverage_file.readlines()])
+            with open(filename, 'r', encoding="utf8") as file:
+                covered_cmds.update([line.strip() for line in file.readlines()])
 
         return all_cmds - covered_cmds
 

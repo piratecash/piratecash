@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-# Copyright (c) 2018-2022 The Dash Core developers
+# Copyright (c) 2018-2020 The Dash Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 import time
 
 from test_framework.test_framework import BitcoinTestFramework
-from test_framework.util import wait_until
+from test_framework.util import connect_nodes, wait_until
 
 '''
 feature_multikeysporks.py
@@ -66,7 +67,7 @@ class MultiKeySporkTest(BitcoinTestFramework):
         # connect nodes at start
         for i in range(0, 5):
             for j in range(i, 5):
-                self.connect_nodes(i, j)
+                connect_nodes(self.nodes[i], j)
 
     def get_test_spork_value(self, node, spork_name):
         self.bump_mocktime(5)  # advance ProcessTick
@@ -81,8 +82,8 @@ class MultiKeySporkTest(BitcoinTestFramework):
 
         self.bump_mocktime(1)
         # first and second signers set spork value
-        self.nodes[0].sporkupdate(spork_name, 1)
-        self.nodes[1].sporkupdate(spork_name, 1)
+        self.nodes[0].spork(spork_name, 1)
+        self.nodes[1].spork(spork_name, 1)
         # spork change requires at least 3 signers
         time.sleep(10)
         for node in self.nodes:
@@ -95,10 +96,10 @@ class MultiKeySporkTest(BitcoinTestFramework):
         # restart again with corect_params, should resync spork parts from other nodes
         self.restart_node(0, self.node0_extra_args)
         for i in range(1, 5):
-            self.connect_nodes(0, i)
+            connect_nodes(self.nodes[0], i)
 
         # third signer set spork value
-        self.nodes[2].sporkupdate(spork_name, 1)
+        self.nodes[2].spork(spork_name, 1)
         # now spork state is changed
         for node in self.nodes:
             wait_until(lambda: self.get_test_spork_value(node, spork_name) == 1, sleep=0.1, timeout=10)
@@ -110,16 +111,16 @@ class MultiKeySporkTest(BitcoinTestFramework):
         # restart again with corect_params, should resync sporks from other nodes
         self.restart_node(0, self.node0_extra_args)
         for i in range(1, 5):
-            self.connect_nodes(0, i)
+            connect_nodes(self.nodes[0], i)
 
         wait_until(lambda: self.get_test_spork_value(self.nodes[0], spork_name) == 1, sleep=0.1, timeout=10)
 
         self.bump_mocktime(1)
         # now set the spork again with other signers to test
         # old and new spork messages interaction
-        self.nodes[2].sporkupdate(spork_name, final_value)
-        self.nodes[3].sporkupdate(spork_name, final_value)
-        self.nodes[4].sporkupdate(spork_name, final_value)
+        self.nodes[2].spork(spork_name, final_value)
+        self.nodes[3].spork(spork_name, final_value)
+        self.nodes[4].spork(spork_name, final_value)
         for node in self.nodes:
             wait_until(lambda: self.get_test_spork_value(node, spork_name) == final_value, sleep=0.1, timeout=10)
 

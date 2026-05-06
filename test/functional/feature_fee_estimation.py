@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test fee estimation code."""
@@ -96,7 +97,7 @@ def split_inputs(from_node, txins, txouts, initial_split=False):
     txouts.append({"txid": txid, "vout": 0, "amount": half_change})
     txouts.append({"txid": txid, "vout": 1, "amount": rem_change})
 
-def check_estimates(node, fees_seen):
+def check_estimates(node, fees_seen, max_invalid):
     """Call estimatesmartfee and verify that the estimates meet certain invariants."""
 
     delta = 1.0e-6  # account for rounding error
@@ -146,9 +147,6 @@ class EstimateFeeTest(BitcoinTestFramework):
         # (17k is room enough for 110 or so transactions)
         # Node2 is a stingy miner, that
         # produces too small blocks (room for only 55 or so transactions)
-        self.start_nodes()
-        self.import_deterministic_coinbase_privkeys()
-        self.stop_nodes()
 
     def transact_and_mine(self, numblocks, mining_node):
         min_fee = Decimal("0.0001")
@@ -175,6 +173,11 @@ class EstimateFeeTest(BitcoinTestFramework):
                 else:
                     newmem.append(utx)
             self.memutxo = newmem
+
+    def import_deterministic_coinbase_privkeys(self):
+        self.start_nodes()
+        super().import_deterministic_coinbase_privkeys()
+        self.stop_nodes()
 
     def run_test(self):
         self.log.info("This test is time consuming, please be patient")
@@ -227,13 +230,13 @@ class EstimateFeeTest(BitcoinTestFramework):
             self.log.info("Creating transactions and mining them with a block size that can't keep up")
             # Create transactions and mine 10 small blocks with node 2, but create txs faster than we can mine
             self.transact_and_mine(10, self.nodes[2])
-            check_estimates(self.nodes[1], self.fees_per_kb)
+            check_estimates(self.nodes[1], self.fees_per_kb, 14)
 
             self.log.info("Creating transactions and mining them at a block size that is just big enough")
             # Generate transactions while mining 10 more blocks, this time with node1
             # which mines blocks with capacity just above the rate that transactions are being created
             self.transact_and_mine(10, self.nodes[1])
-            check_estimates(self.nodes[1], self.fees_per_kb)
+            check_estimates(self.nodes[1], self.fees_per_kb, 2)
 
         # Finish by mining a normal-sized block:
         while len(self.nodes[1].getrawmempool()) > 0:
@@ -241,7 +244,7 @@ class EstimateFeeTest(BitcoinTestFramework):
 
         self.sync_blocks(self.nodes[0:3], wait=.1)
         self.log.info("Final estimates after emptying mempools")
-        check_estimates(self.nodes[1], self.fees_per_kb)
+        check_estimates(self.nodes[1], self.fees_per_kb, 2)
 
 if __name__ == '__main__':
     EstimateFeeTest().main()

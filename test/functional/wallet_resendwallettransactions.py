@@ -1,27 +1,29 @@
 #!/usr/bin/env python3
 # Copyright (c) 2017 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Test that the wallet resends transactions periodically."""
-import time
+"""Test resendwallettransactions RPC."""
 
-from test_framework.blocktools import create_block, create_coinbase
-from test_framework.messages import ToHex
-from test_framework.mininode import P2PTxInvStore, mininode_lock
 from test_framework.test_framework import BitcoinTestFramework
-from test_framework.util import assert_equal, wait_until
+from test_framework.util import assert_equal, assert_raises_rpc_error
 
 class ResendWalletTransactionsTest(BitcoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
+        self.extra_args = [['--walletbroadcast=false']]
 
     def skip_test_if_missing_module(self):
         self.skip_if_no_wallet()
 
     def run_test(self):
-        node = self.nodes[0]  # alias
+        # Should raise RPC_WALLET_ERROR (-4) if walletbroadcast is disabled.
+        assert_raises_rpc_error(-4, "Error: Wallet transaction broadcasting is disabled with -walletbroadcast", self.nodes[0].resendwallettransactions)
 
-        node.add_p2p_connection(P2PTxInvStore())
+        # Should return an empty array if there aren't unconfirmed wallet transactions.
+        self.stop_node(0)
+        self.start_node(0, extra_args=[])
+        assert_equal(self.nodes[0].resendwallettransactions(), [])
 
         self.log.info("Create a new transaction and wait until it's broadcast")
         txid = int(node.sendtoaddress(node.getnewaddress(), 1), 16)
@@ -39,7 +41,7 @@ class ResendWalletTransactionsTest(BitcoinTestFramework):
         wait_until(wait_p2p, lock=mininode_lock)
 
         # Add a second peer since txs aren't rebroadcast to the same peer (see filterInventoryKnown)
-        node.add_p2p_connection(P2PTxInvStore())
+        node.add_p2p_connection(P2PStoreTxInvs())
 
         self.log.info("Create a block")
         # Create and submit a block without the transaction.
@@ -53,14 +55,12 @@ class ResendWalletTransactionsTest(BitcoinTestFramework):
         node.submitblock(ToHex(block))
 
         # Transaction should not be rebroadcast
-        node.syncwithvalidationinterfacequeue()
         node.p2ps[1].sync_with_ping()
         assert_equal(node.p2ps[1].tx_invs_received[txid], 0)
 
-        self.log.info("Bump time & check that transaction is rebroadcast")
-        # Transaction should be rebroadcast approximately 2 hours in the future,
-        # but can range from 1-3. So bump 3 hours to be sure.
-        rebroadcast_time = self.mocktime + 3 * 60 * 60
+        self.log.info("Transaction should be rebroadcast after 30 minutes")
+        # Use mocktime and give an extra 5 minutes to be sure.
+        rebroadcast_time = self.mocktime + 41 * 60
         node.setmocktime(rebroadcast_time)
         self.mocktime = rebroadcast_time
 
@@ -68,7 +68,6 @@ class ResendWalletTransactionsTest(BitcoinTestFramework):
             self.bump_mocktime(1)
             return node.p2ps[1].tx_invs_received[txid] >= 1
         wait_until(wait_p2p_1, lock=mininode_lock)
-
 
 if __name__ == '__main__':
     ResendWalletTransactionsTest().main()

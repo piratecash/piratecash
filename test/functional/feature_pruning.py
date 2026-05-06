@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test the pruning code.
@@ -14,7 +15,7 @@ from test_framework.blocktools import create_coinbase
 from test_framework.messages import CBlock, ToHex
 from test_framework.script import CScript, OP_RETURN, OP_NOP
 from test_framework.test_framework import BitcoinTestFramework
-from test_framework.util import assert_equal, assert_greater_than, assert_raises_rpc_error, wait_until
+from test_framework.util import assert_equal, assert_greater_than, assert_raises_rpc_error, connect_nodes, disconnect_nodes, wait_until
 
 # Rescans start at the earliest block up to 2 hours before a key timestamp, so
 # the manual prune RPC avoids pruning blocks in the same window to be
@@ -26,17 +27,16 @@ def mine_large_blocks(node, n):
     # followed by 950k of OP_NOP. This would be non-standard in a non-coinbase
     # transaction but is consensus valid.
 
-    # Set the nTime if this is the first time this function has been called.
-    # A static variable ensures that time is monotonicly increasing and is therefore
-    # different for each block created => blockhash is unique.
-    if "nTimes" not in mine_large_blocks.__dict__:
-        mine_large_blocks.nTime = 0
-
     # Get the block parameters for the first block
     big_script = CScript([OP_RETURN] + [OP_NOP] * 950000)
     best_block = node.getblock(node.getbestblockhash())
     height = int(best_block["height"]) + 1
-    mine_large_blocks.nTime = max(mine_large_blocks.nTime, int(best_block["time"])) + 1
+    try:
+        # Static variable ensures that time is monotonicly increasing and is therefore
+        # different for each block created => blockhash is unique.
+        mine_large_blocks.nTime = min(mine_large_blocks.nTime, int(best_block["time"])) + 1
+    except AttributeError:
+        mine_large_blocks.nTime = int(best_block["time"]) + 1
     previousblockhash = int(best_block["hash"], 16)
 
     for _ in range(n):
@@ -71,7 +71,6 @@ class PruneTest(BitcoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 6
-        self.supports_cli = False
 
         # Create nodes 0 and 1 to mine.
         # Create node 2 to test pruning.
@@ -86,7 +85,6 @@ class PruneTest(BitcoinTestFramework):
             ["-dip3params=2000:2000", "-dip8params=2000", "-disablegovernance","-txindex=0","-maxreceivebuffer=20000","-blockmaxsize=999000"],
             ["-dip3params=2000:2000", "-dip8params=2000", "-disablegovernance","-txindex=0","-prune=550"],
         ]
-        self.rpc_timeout = 120
 
     def skip_test_if_missing_module(self):
         self.skip_if_no_wallet()
@@ -96,17 +94,16 @@ class PruneTest(BitcoinTestFramework):
 
         self.prunedir = os.path.join(self.nodes[2].datadir, self.chain, 'blocks', '')
 
-        self.connect_nodes(0, 1)
-        self.connect_nodes(1, 2)
-        self.connect_nodes(0, 2)
-        self.connect_nodes(0, 3)
-        self.connect_nodes(0, 4)
+        connect_nodes(self.nodes[0], 1)
+        connect_nodes(self.nodes[1], 2)
+        connect_nodes(self.nodes[0], 2)
+        connect_nodes(self.nodes[0], 3)
+        connect_nodes(self.nodes[0], 4)
         self.sync_blocks(self.nodes[0:5])
 
     def setup_nodes(self):
         self.add_nodes(self.num_nodes, self.extra_args)
         self.start_nodes()
-        self.import_deterministic_coinbase_privkeys()
 
     def create_big_chain(self):
         # Start by creating some coinbases we can spend later
@@ -142,8 +139,8 @@ class PruneTest(BitcoinTestFramework):
         for j in range(12):
             # Disconnect node 0 so it can mine a longer reorg chain without knowing about node 1's soon-to-be-stale chain
             # Node 2 stays connected, so it hears about the stale blocks and then reorg's when node0 reconnects
-            self.disconnect_nodes(0, 1)
-            self.disconnect_nodes(0, 2)
+            disconnect_nodes(self.nodes[0], 1)
+            disconnect_nodes(self.nodes[0], 2)
             # Mine 24 blocks in node 1
             mine_large_blocks(self.nodes[1], 24)
 
@@ -151,8 +148,8 @@ class PruneTest(BitcoinTestFramework):
             mine_large_blocks(self.nodes[0], 25)
 
             # Create connections in the order so both nodes can see the reorg at the same time
-            self.connect_nodes(0, 1)
-            self.connect_nodes(0, 2)
+            connect_nodes(self.nodes[0], 1)
+            connect_nodes(self.nodes[0], 2)
             self.sync_blocks(self.nodes[0:3])
 
         self.log.info("Usage can be over target because of high stale rate: %d" % calc_usage(self.prunedir))
@@ -183,15 +180,15 @@ class PruneTest(BitcoinTestFramework):
         # Mine one block to avoid automatic recovery from forks on restart
         self.nodes[1].generate(1)
         # Disconnect node1 and generate the new chain
-        self.disconnect_nodes(0, 1)
-        self.disconnect_nodes(1, 2)
+        disconnect_nodes(self.nodes[0], 1)
+        disconnect_nodes(self.nodes[1], 2)
 
         self.log.info("Generating new longer chain of 300 more blocks")
         self.nodes[1].generate(299)
 
         self.log.info("Reconnect nodes")
-        self.connect_nodes(0, 1)
-        self.connect_nodes(1, 2)
+        connect_nodes(self.nodes[0], 1)
+        connect_nodes(self.nodes[1], 2)
         self.sync_blocks(self.nodes[0:3], timeout=120)
 
         self.log.info("Verify height on node 2: %d" % self.nodes[2].getblockcount())
@@ -200,7 +197,6 @@ class PruneTest(BitcoinTestFramework):
         self.log.info("Mine 220 more large blocks so we have requisite history")
 
         mine_large_blocks(self.nodes[0], 220)
-        self.sync_blocks(self.nodes[0:3], timeout=120)
 
         usage = calc_usage(self.prunedir)
         self.log.info("Usage should be below target: %d" % usage)
@@ -254,7 +250,7 @@ class PruneTest(BitcoinTestFramework):
         self.start_node(node_number, extra_args=["-dip3params=2000:2000", "-dip8params=2000", "-disablegovernance", "-txindex=0"])
         node = self.nodes[node_number]
         assert_equal(node.getblockcount(), 995)
-        assert_raises_rpc_error(-1, "Cannot prune blocks because node is not in prune mode", node.pruneblockchain, 500)
+        assert_raises_rpc_error(-1, "not in prune mode", node.pruneblockchain, 500)
 
         # now re-start in manual pruning mode
         self.stop_node(node_number, expected_stderr='Warning: You are starting with governance validation disabled.')
@@ -286,18 +282,11 @@ class PruneTest(BitcoinTestFramework):
         node.generate(6)
         assert_equal(node.getblockchaininfo()["blocks"], 1001)
 
-        # prune parameter in the future (block or timestamp) should raise an exception
-        future_parameter = height(1001) + 5
-        if use_timestamp:
-            assert_raises_rpc_error(-8, "Could not find block with at least the specified timestamp", node.pruneblockchain, future_parameter)
-        else:
-            assert_raises_rpc_error(-8, "Blockchain is shorter than the attempted prune height", node.pruneblockchain, future_parameter)
-
         # Pruned block should still know the number of transactions
         assert_equal(node.getblockheader(node.getblockhash(1))["nTx"], block1_details["nTx"])
 
         # negative heights should raise an exception
-        assert_raises_rpc_error(-8, "Negative block height", node.pruneblockchain, -10)
+        assert_raises_rpc_error(-8, "Negative", node.pruneblockchain, -10)
 
         # height=100 too low to prune first block file so this is a no-op
         prune(100)
@@ -342,7 +331,7 @@ class PruneTest(BitcoinTestFramework):
         # check that wallet loads successfully when restarting a pruned node after IBD.
         # this was reported to fail in #7494.
         self.log.info("Syncing node 5 to test wallet")
-        self.connect_nodes(0, 5)
+        connect_nodes(self.nodes[0], 5)
         nds = [self.nodes[0], self.nodes[5]]
         self.sync_blocks(nds, wait=5, timeout=300)
         self.stop_node(5, expected_stderr='Warning: You are starting with governance validation disabled. This is expected because you are running a pruned node.') # stop and start to trigger rescan

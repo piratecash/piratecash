@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-# Copyright (c) 2017-2019 The Bitcoin Core developers
-# Distributed under the MIT software license, see the accompanying
-# file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Combine logs from multiple bitcoin nodes as well as the test_framework log.
 
 This streams the combined log output to stdout. Use combine_logs.py > outputfile
@@ -15,7 +12,6 @@ import glob
 import heapq
 import itertools
 import os
-import pathlib
 import re
 import sys
 import tempfile
@@ -24,10 +20,10 @@ import tempfile
 # without the parent module installed.
 
 # Should match same symbol in `test_framework.test_framework`.
-TMPDIR_PREFIX = "dash_func_test_"
+TMPDIR_PREFIX = "cosanta_func_test_"
 
 # Matches on the date format at the start of the log event
-TIMESTAMP_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{6})?Z")
+TIMESTAMP_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}Z")
 
 LogEvent = namedtuple('LogEvent', ['timestamp', 'source', 'event'])
 
@@ -56,23 +52,9 @@ def main():
     if not args.testdir:
         print("Opening latest test directory: {}".format(testdir), file=sys.stderr)
 
-    colors = defaultdict(lambda: '')
-    if args.color:
-        colors["test"] = "\033[0;36m"  # CYAN
-        colors["node0"] = "\033[0;34m"  # BLUE
-        colors["node1"] = "\033[0;32m"  # GREEN
-        colors["node2"] = "\033[0;31m"  # RED
-        colors["node3"] = "\033[0;33m"  # YELLOW
-        colors["reset"] = "\033[0m"  # Reset font color
-
     log_events = read_logs(testdir)
 
-    if args.html:
-        print_logs_html(log_events)
-    else:
-        print_logs_plain(log_events, colors)
-        print_node_warnings(testdir, colors)
-
+    print_logs(log_events, color=args.color, html=args.html)
 
 def read_logs(tmp_dir):
     """Reads log files.
@@ -96,26 +78,6 @@ def read_logs(tmp_dir):
         files.append(("node%d" % i, logfile))
 
     return heapq.merge(*[get_log_events(source, f) for source, f in files])
-
-
-def print_node_warnings(tmp_dir, colors):
-    """Print nodes' errors and warnings"""
-
-    warnings = []
-    for stream in ['stdout', 'stderr']:
-        for i in itertools.count():
-            folder = "{}/node{}/{}".format(tmp_dir, i, stream)
-            if not os.path.isdir(folder):
-                break
-            for (_, _, fns) in os.walk(folder):
-                for fn in fns:
-                    warning = pathlib.Path('{}/{}'.format(folder, fn)).read_text().strip()
-                    if warning:
-                        warnings.append(("node{} {}".format(i, stream), warning))
-
-    print()
-    for w in warnings:
-        print("{} {} {} {}".format(colors[w[0].split()[0]], w[0], w[1], colors["reset"]))
 
 
 def find_latest_test_dir():
@@ -146,7 +108,7 @@ def get_log_events(source, logfile):
     Log events may be split over multiple lines. We use the timestamp
     regex match as the marker for a new log event."""
     try:
-        with open(logfile, 'r', encoding='utf-8') as infile:
+        with open(logfile, 'r') as infile:
             event = ''
             timestamp = ''
             for line in infile:
@@ -158,35 +120,32 @@ def get_log_events(source, logfile):
                 if time_match:
                     if event:
                         yield LogEvent(timestamp=timestamp, source=source, event=event.rstrip())
-                    timestamp = time_match.group()
-                    if time_match.group(1) is None:
-                        # timestamp does not have microseconds. Add zeroes.
-                        timestamp_micro = timestamp.replace("Z", ".000000Z")
-                        line = line.replace(timestamp, timestamp_micro)
-                        timestamp = timestamp_micro
                     event = line
+                    timestamp = time_match.group()
                 # if it doesn't have a timestamp, it's a continuation line of the previous log.
                 else:
-                    # Add the line. Prefix with space equivalent to the source + timestamp so log lines are aligned
-                    event += "                                   " + line
+                    event += "\n" + line
             # Flush the final event
             yield LogEvent(timestamp=timestamp, source=source, event=event.rstrip())
     except FileNotFoundError:
         print("File %s could not be opened. Continuing without it." % logfile, file=sys.stderr)
 
+def print_logs(log_events, color=False, html=False):
+    """Renders the iterator of log events into text or html."""
+    if not html:
+        colors = defaultdict(lambda: '')
+        if color:
+            colors["test"] = "\033[0;36m"   # CYAN
+            colors["node0"] = "\033[0;34m"  # BLUE
+            colors["node1"] = "\033[0;32m"  # GREEN
+            colors["node2"] = "\033[0;31m"  # RED
+            colors["node3"] = "\033[0;33m"  # YELLOW
+            colors["reset"] = "\033[0m"     # Reset font color
 
-def print_logs_plain(log_events, colors):
-        """Renders the iterator of log events into text."""
         for event in log_events:
-            lines = event.event.splitlines()
-            print("{0} {1: <5} {2} {3}".format(colors[event.source.rstrip()], event.source, lines[0], colors["reset"]))
-            if len(lines) > 1:
-                for line in lines[1:]:
-                    print("{0}{1}{2}".format(colors[event.source.rstrip()], line, colors["reset"]))
+            print("{0} {1: <5} {2} {3}".format(colors[event.source.rstrip()], event.source, event.event, colors["reset"]))
 
-
-def print_logs_html(log_events):
-        """Renders the iterator of log events into html."""
+    else:
         try:
             import jinja2
         except ImportError:

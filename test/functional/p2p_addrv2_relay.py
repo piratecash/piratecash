@@ -11,7 +11,7 @@ from test_framework.messages import (
     msg_addrv2,
     NODE_NETWORK,
 )
-from test_framework.mininode import P2PInterface
+from test_framework.mininode import P2PInterface, network_thread_join, network_thread_start
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import assert_equal, wait_until
 
@@ -26,7 +26,7 @@ class AddrReceiver(P2PInterface):
         for addr in message.addrs:
             assert_equal(addr.nServices, 1)
             assert addr.ip.startswith('123.123.123.')
-            assert 8333 <= addr.port < 8343
+            assert (8333 <= addr.port < 8343)
         self.addrv2_received_and_checked = True
 
     def wait_for_addrv2(self):
@@ -59,6 +59,7 @@ class AddrTest(BitcoinTestFramework):
             addr_source.send_and_ping(msg)
 
         self.nodes[0].disconnect_p2ps()
+        network_thread_join()
 
         self.log.info('Check that addrv2 message content is relayed and added to addrman')
         addr_source = self.nodes[0].add_p2p_connection(P2PInterface())
@@ -81,6 +82,7 @@ class AddrTest(BitcoinTestFramework):
         assert addr_receiver.addrv2_received_and_checked
 
         self.nodes[0].disconnect_p2ps()
+        network_thread_join()
 
 
 if __name__ == '__main__':

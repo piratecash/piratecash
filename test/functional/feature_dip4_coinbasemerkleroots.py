@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# Copyright (c) 2015-2022 The Dash Core developers
+# Copyright (c) 2015-2020 The Dash Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -56,7 +57,7 @@ class LLMQCoinbaseCommitmentsTest(DashTestFramework):
         mnList = self.test_getmnlistdiff(null_hash, self.nodes[0].getbestblockhash(), {}, [], expectedUpdated)
         expectedUpdated2 = expectedUpdated + []
 
-        # Register one more MN, but don't start it (that would fail as DashTestFramework doesn't support this atm)
+        # Register one more MN, but don't start it (that would fail as CosantaTestFramework doesn't support this atm)
         baseBlockHash = self.nodes[0].getbestblockhash()
         self.prepare_masternode(self.mn_count)
         new_mn = self.mninfo[self.mn_count]
@@ -75,7 +76,7 @@ class LLMQCoinbaseCommitmentsTest(DashTestFramework):
         expectedDeleted = [new_mn.proTxHash]
         expectedUpdated = []
         baseBlockHash2 = self.nodes[0].getbestblockhash()
-        self.remove_masternode(self.mn_count)
+        self.remove_mastermode(self.mn_count)
         mnList = self.test_getmnlistdiff(baseBlockHash2, self.nodes[0].getbestblockhash(), mnList, expectedDeleted, expectedUpdated)
 
         # When comparing genesis and best block, we shouldn't see the previously added and then deleted MN
@@ -87,18 +88,18 @@ class LLMQCoinbaseCommitmentsTest(DashTestFramework):
         self.nodes[0].generate(1)
         oldhash = self.nodes[0].getbestblockhash()
         # Have to disable ChainLocks here because they won't let you to invalidate already locked blocks
-        self.nodes[0].sporkupdate("SPORK_19_CHAINLOCKS_ENABLED", 4070908800)
+        self.nodes[0].spork("SPORK_19_CHAINLOCKS_ENABLED", 4070908800)
         self.wait_for_sporks_same()
         # Test DIP8 activation once with a pre-existing quorum and once without (we don't know in which order it will activate on mainnet)
         self.test_dip8_quorum_merkle_root_activation(True)
         for n in self.nodes:
             n.invalidateblock(oldhash)
         self.sync_all()
-        first_quorum = self.test_dip8_quorum_merkle_root_activation(False, True)
+        first_quorum = self.test_dip8_quorum_merkle_root_activation(False)
 
         # Re-enable ChainLocks again
-        self.nodes[0].sporkupdate("SPORK_19_CHAINLOCKS_ENABLED", 0)
-        self.nodes[0].sporkupdate("SPORK_17_QUORUM_DKG_ENABLED", 0)
+        self.nodes[0].spork("SPORK_19_CHAINLOCKS_ENABLED", 0)
+        self.nodes[0].spork("SPORK_17_QUORUM_DKG_ENABLED", 0)
         self.wait_for_sporks_same()
 
         # Verify that the first quorum appears in MNLISTDIFF
@@ -241,21 +242,21 @@ class LLMQCoinbaseCommitmentsTest(DashTestFramework):
 
         return d
 
-    def test_dip8_quorum_merkle_root_activation(self, with_initial_quorum, slow_mode=False):
+    def test_dip8_quorum_merkle_root_activation(self, with_initial_quorum):
         if with_initial_quorum:
-            self.nodes[0].sporkupdate("SPORK_17_QUORUM_DKG_ENABLED", 0)
+            self.nodes[0].spork("SPORK_17_QUORUM_DKG_ENABLED", 0)
             self.wait_for_sporks_same()
 
             # Mine one quorum before dip8 is activated
             self.mine_quorum()
 
-        self.nodes[0].sporkupdate("SPORK_17_QUORUM_DKG_ENABLED", 4070908800)
+        self.nodes[0].spork("SPORK_17_QUORUM_DKG_ENABLED", 4070908800)
         self.wait_for_sporks_same()
 
         cbtx = self.nodes[0].getblock(self.nodes[0].getbestblockhash(), 2)["tx"][0]
         assert cbtx["cbTx"]["version"] == 1
 
-        self.activate_dip8(slow_mode)
+        self.activate_dip8()
 
         # Assert that merkleRootQuorums is present and 0 (we have no quorums yet)
         cbtx = self.nodes[0].getblock(self.nodes[0].getbestblockhash(), 2)["tx"][0]
@@ -269,7 +270,7 @@ class LLMQCoinbaseCommitmentsTest(DashTestFramework):
             assert_equal(merkleRootQuorums, 0)
 
         self.bump_mocktime(1)
-        self.nodes[0].sporkupdate("SPORK_17_QUORUM_DKG_ENABLED", 0)
+        self.nodes[0].spork("SPORK_17_QUORUM_DKG_ENABLED", 0)
         self.wait_for_sporks_same()
 
         # Mine quorum and verify that merkleRootQuorums has changed

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test the wallet keypool and interaction with wallet encryption/locking."""
@@ -49,10 +50,11 @@ class KeyPoolTest(BitcoinTestFramework):
         time.sleep(1.1)
         assert_equal(nodes[0].getwalletinfo()["unlocked_until"], 0)
 
-        # drain the keypool
-        for _ in range(3):
-            nodes[0].getnewaddress()
-        assert_raises_rpc_error(-12, "Keypool ran out", nodes[0].getnewaddress)
+        # drain them by mining
+        nodes[0].generate(1)
+        nodes[0].generate(1)
+        nodes[0].generate(1)
+        assert_raises_rpc_error(-12, "Keypool ran out", nodes[0].generate, 1)
 
 if __name__ == '__main__':
     KeyPoolTest().main()

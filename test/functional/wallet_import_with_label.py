@@ -11,7 +11,7 @@ with and without a label.
 """
 
 from test_framework.test_framework import BitcoinTestFramework
-from test_framework.wallet_util import test_address
+from test_framework.util import assert_equal
 
 
 class ImportWithLabel(BitcoinTestFramework):
@@ -32,11 +32,11 @@ class ImportWithLabel(BitcoinTestFramework):
         address = self.nodes[0].getnewaddress()
         label = "Test Label"
         self.nodes[1].importaddress(address, label)
-        test_address(self.nodes[1],
-                     address,
-                     iswatchonly=True,
-                     ismine=False,
-                     label=label)
+        address_assert = self.nodes[1].getaddressinfo(address)
+
+        assert_equal(address_assert["iswatchonly"], True)
+        assert_equal(address_assert["ismine"], False)
+        assert_equal(address_assert["label"], label)
 
         self.log.info(
             "Import the watch-only address's private key without a "
@@ -45,9 +45,7 @@ class ImportWithLabel(BitcoinTestFramework):
         priv_key = self.nodes[0].dumpprivkey(address)
         self.nodes[1].importprivkey(priv_key)
 
-        test_address(self.nodes[1],
-                     address,
-                     label=label)
+        assert_equal(label, self.nodes[1].getaddressinfo(address)["label"])
 
         self.log.info(
             "Test importaddress without label and importprivkey with label."
@@ -55,11 +53,11 @@ class ImportWithLabel(BitcoinTestFramework):
         self.log.info("Import a watch-only address without a label.")
         address2 = self.nodes[0].getnewaddress()
         self.nodes[1].importaddress(address2)
-        test_address(self.nodes[1],
-                     address2,
-                     iswatchonly=True,
-                     ismine=False,
-                     label="")
+        address_assert2 = self.nodes[1].getaddressinfo(address2)
+
+        assert_equal(address_assert2["iswatchonly"], True)
+        assert_equal(address_assert2["ismine"], False)
+        assert_equal(address_assert2["label"], "")
 
         self.log.info(
             "Import the watch-only address's private key with a "
@@ -69,20 +67,18 @@ class ImportWithLabel(BitcoinTestFramework):
         label2 = "Test Label 2"
         self.nodes[1].importprivkey(priv_key2, label2)
 
-        test_address(self.nodes[1],
-                     address2,
-                     label=label2)
+        assert_equal(label2, self.nodes[1].getaddressinfo(address2)["label"])
 
         self.log.info("Test importaddress with label and importprivkey with label.")
         self.log.info("Import a watch-only address with a label.")
         address3 = self.nodes[0].getnewaddress()
         label3_addr = "Test Label 3 for importaddress"
         self.nodes[1].importaddress(address3, label3_addr)
-        test_address(self.nodes[1],
-                     address3,
-                     iswatchonly=True,
-                     ismine=False,
-                     label=label3_addr)
+        address_assert3 = self.nodes[1].getaddressinfo(address3)
+
+        assert_equal(address_assert3["iswatchonly"], True)
+        assert_equal(address_assert3["ismine"], False)
+        assert_equal(address_assert3["label"], label3_addr)
 
         self.log.info(
             "Import the watch-only address's private key with a "
@@ -92,9 +88,7 @@ class ImportWithLabel(BitcoinTestFramework):
         label3_priv = "Test Label 3 for importprivkey"
         self.nodes[1].importprivkey(priv_key3, label3_priv)
 
-        test_address(self.nodes[1],
-                     address3,
-                     label=label3_priv)
+        assert_equal(label3_priv, self.nodes[1].getaddressinfo(address3)["label"])
 
         self.log.info(
             "Test importprivkey won't label new dests with the same "
@@ -104,11 +98,15 @@ class ImportWithLabel(BitcoinTestFramework):
         address4 = self.nodes[0].getnewaddress()
         label4_addr = "Test Label 4 for importaddress"
         self.nodes[1].importaddress(address4, label4_addr)
-        test_address(self.nodes[1],
-                     address4,
-                     iswatchonly=True,
-                     ismine=False,
-                     label=label4_addr)
+        address_assert4 = self.nodes[1].getaddressinfo(address4)
+
+        assert_equal(address_assert4["iswatchonly"], True)
+        assert_equal(address_assert4["ismine"], False)
+        assert_equal(address_assert4["label"], label4_addr)
+
+        self.log.info("Asserts address has no embedded field with dests.")
+
+        assert_equal(address_assert4.get("embedded"), None)
 
         self.log.info(
             "Import the watch-only address's private key without a "
@@ -118,9 +116,16 @@ class ImportWithLabel(BitcoinTestFramework):
         )
         priv_key4 = self.nodes[0].dumpprivkey(address4)
         self.nodes[1].importprivkey(priv_key4)
-        test_address(self.nodes[1],
-                     address4,
-                     label=label4_addr)
+        address_assert4 = self.nodes[1].getaddressinfo(address4)
+
+        assert address_assert4.get("embedded")
+
+        bcaddress_assert = self.nodes[1].getaddressinfo(
+            address_assert4["embedded"]["address"]
+        )
+
+        assert_equal(address_assert4["label"], label4_addr)
+        assert_equal(bcaddress_assert["label"], "")
 
         self.stop_nodes()
 

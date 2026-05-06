@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # Copyright (c) 2017 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Class for dashd node under test"""
+"""Class for cosantad node under test"""
 
 import contextlib
 import decimal
@@ -11,7 +12,6 @@ from enum import Enum
 import http.client
 import json
 import logging
-import os.path
 import re
 import subprocess
 import tempfile
@@ -23,7 +23,6 @@ import collections
 
 from .authproxy import JSONRPCException
 from .util import (
-    MAX_NODES,
     append_config,
     delete_cookie_file,
     get_rpc_proxy,
@@ -31,11 +30,10 @@ from .util import (
     wait_until,
     p2p_port,
     get_chain_folder,
-    Options,
-    EncodeDecimal,
+    Options
 )
 
-BITCOIND_PROC_WAIT_TIMEOUT = 60
+COSANTAD_PROC_WAIT_TIMEOUT = 60
 
 
 class FailedToStartError(Exception):
@@ -49,7 +47,7 @@ class ErrorMatch(Enum):
 
 
 class TestNode():
-    """A class for representing a dashd node under test.
+    """A class for representing a cosantad node under test.
 
     This class contains:
 
@@ -62,7 +60,7 @@ class TestNode():
     To make things easier for the test writer, any unrecognised messages will
     be dispatched to the RPC connection."""
 
-    def __init__(self, i, datadir, extra_args_from_options, *, chain, rpchost, timewait, timeout_factor, bitcoind, bitcoin_cli, mocktime, coverage_dir, cwd, extra_conf=None, extra_args=None, use_cli=False, start_perf=False, use_valgrind=False):
+    def __init__(self, i, datadir, extra_args_from_options, *, chain, rpchost, timewait, bitcoind, bitcoin_cli, mocktime, coverage_dir, extra_conf=None, extra_args=None, use_cli=False, start_perf=False):
         """
         Kwargs:
             start_perf (bool): If True, begin profiling the node with `perf` as soon as
@@ -72,7 +70,7 @@ class TestNode():
         self.index = i
         self.datadir = datadir
         self.chain = chain
-        self.bitcoinconf = os.path.join(self.datadir, "dash.conf")
+        self.bitcoinconf = os.path.join(self.datadir, "cosanta.conf")
         self.stdout_dir = os.path.join(self.datadir, "stdout")
         self.stderr_dir = os.path.join(self.datadir, "stderr")
         self.rpchost = rpchost
@@ -80,38 +78,24 @@ class TestNode():
         self.rpc_timeout *= Options.timeout_scale
         self.binary = bitcoind
         self.coverage_dir = coverage_dir
-        self.cwd = cwd
         self.mocktime = mocktime
-        if extra_conf is not None:
+        if extra_conf != None:
             append_config(datadir, extra_conf)
         # Most callers will just need to add extra args to the standard list below.
         # For those callers that need more flexibity, they can just set the args property directly.
         # Note that common args are set in the config file (see initialize_datadir)
         self.extra_args = extra_args
         self.extra_args_from_options = extra_args_from_options
-        # Configuration for logging is set as command-line args rather than in the bitcoin.conf file.
-        # This means that starting a bitcoind using the temp dir to debug a failed test won't
-        # spam debug.log.
         self.args = [
             self.binary,
             "-datadir=" + self.datadir,
             "-logtimemicros",
-            "-logthreadnames",
             "-debug",
             "-debugexclude=libevent",
             "-debugexclude=leveldb",
             "-mocktime=" + str(mocktime),
             "-uacomment=testnode%d" % i
         ]
-        if use_valgrind:
-            default_suppressions_file = os.path.join(
-                os.path.dirname(os.path.realpath(__file__)),
-                "..", "..", "..", "contrib", "valgrind.supp")
-            suppressions_file = os.getenv("VALGRIND_SUPPRESSIONS_FILE",
-                                          default_suppressions_file)
-            self.args = ["valgrind", "--suppressions={}".format(suppressions_file),
-                         "--gen-suppressions=all", "--exit-on-first-error=yes",
-                         "--error-exitcode=1", "--quiet"] + self.args
 
         self.cli = TestNodeCLI(bitcoin_cli, self.datadir)
         self.use_cli = use_cli
@@ -131,10 +115,11 @@ class TestNode():
         self.perf_subprocesses = {}
 
         self.p2ps = []
-        self.timeout_factor = timeout_factor
 
-    AddressKeyPair = collections.namedtuple('AddressKeyPair', ['address', 'key'])
-    PRIV_KEYS = [
+    def get_deterministic_priv_key(self):
+        """Return a deterministic priv key in base58, that only depends on the node's index"""
+        AddressKeyPair = collections.namedtuple('AddressKeyPair', ['address', 'key'])
+        PRIV_KEYS = [
             # address , privkey
             AddressKeyPair('yYdShjQSptFKitYLksFEUSwHe4hnbar5rf', 'cMfbiEsnG5b8Gwm6vEgfWvZLuXZNC4zsN2y7Es3An9xHRWRjmwgR'),
             AddressKeyPair('yfTFJgvq65UZsb9RBbpdYAAzsJoCGXqH2w', 'cStuFACUD1N6JjKQxNLUQ443qJUtSzLitKKEkA8x6utxTPZTLUtA'),
@@ -145,23 +130,30 @@ class TestNode():
             AddressKeyPair('yfy21e12jn3A3uDicNehCq486o9fMwJKMc', 'cMuko9rLDbtxCFWuBSrFgBDRSMxsLWKpJKScRGNuWKbhuQsnsjKT'),
             AddressKeyPair('yURgENB3b2YRMWnbhKF7iGs3KoaVRVXsJr', 'cQhdjTMh57MaHCDk9FsWGPtftRMBUuhaYAtouWnetcewmBuSrLSM'),
             AddressKeyPair('yYC9AxBEUs3ZZxfcQvj2LUF5PVxxtqaEs7', 'cQFueiiP13mfytV3Svoe4o4Ux79fRJvwuSgHapXsnBwrHod57EeL'),
-            AddressKeyPair('yVs9jXGyLWLLFbpESnoppk7F8DtXcuCCTf', 'cN55daf1HotwBAgAKWVgDcoppmUNDtQSfb7XLutTLeAgVc3u8hik'),
-            AddressKeyPair('yV3eqNNshZJ4Pv6NCyYsbdJb1ERFFygFqf', 'cT7qK7g1wkYEMvKowd2ZrX1E5f6JQ7TM246UfqbCiyF7kZhorpX3'),
-            AddressKeyPair('yfE8gZCiFW9Uqu21v3JGibr3WVSPQWmY8n', 'cPiRWE8KMjTRxH1MWkPerhfoHFn5iHPWVK5aPqjW8NxmdwenFinJ'),
-            AddressKeyPair('yLLVXzya7GzmVkjQzsCG4iDpqYJyJFDSEV', 'cVLCocFyWxzyCwEknkWvDeWneTBsh9Jf3u4yiJCYjcy3gt8Jw1cM'),
-            AddressKeyPair('yLNNR3HeJxgR669oRePksYmCqHuPUG79mF', 'cQawC3oUgoToGDJBw1Ub2PpDmf44kVtcaVaTcHyzXMRKGwdn9UYW'),
-            AddressKeyPair('yLPKVwRTXME7Q3JfKAPJ4FHEaGdWgJuhpj', 'cVcFaWTbkCUZPFTHfDs8iHurPWns5QXc5rqcfkPMHUdmv17o8UYB'),
-            AddressKeyPair('yLPUundzTpvjU8KYVyM4Zmnr4REf3FFvhZ', 'cRVeRmRaYuEYP9HbCZFsf1ifYYZ4KQD9rttRoTNb9wjPzhvRwqMb'),
-            AddressKeyPair('yLRhHqau58AS1ALtnaowv1Pyztxi1Q6fXG', 'cNYFW52pJswYbfPR9fpiRpWHEQygg5tyMih2ASPsgMgPy9SUSSEV'),
-            AddressKeyPair('yLRwHeMkXwYrkDzC4q12vej243AyTeWiPm', 'cRqfZ3dAp8BJUcGhSv7ueCXNGbki1bpcXEKk5dEJN344H52GuHQY'),
-            AddressKeyPair('yLTMCXJhG1mpaWhbHcsr7zUt9wDWuQSPSk', 'cVWGbeCT5QcVGVTL5NuiLs9JfL8HFDb9PN5Gq2xudw6ZsDFeDy1V'),
-            AddressKeyPair('yLU9vxiAWUdiKKxn6EazLDFq9WXrK2T7RP', 'cVCzrzfxMhUMxV34UhTmdmntAqHvosAuNo2KUZsiHZSKLm73g35o'),
-    ]
+        ]
+        return PRIV_KEYS[self.index]
 
-    def get_deterministic_priv_key(self):
-        """Return a deterministic priv key in base58, that only depends on the node's index"""
-        assert len(self.PRIV_KEYS) == MAX_NODES
-        return self.PRIV_KEYS[self.index]
+    def get_mem_rss_kilobytes(self):
+        """Get the memory usage (RSS) per `ps`.
+
+        If process is stopped or `ps` is unavailable, return None.
+        """
+        if not (self.running and self.process):
+            self.log.warning("Couldn't get memory usage; process isn't running.")
+            return None
+
+        try:
+            return int(subprocess.check_output(
+                "ps h -o rss {}".format(self.process.pid),
+                shell=True, stderr=subprocess.DEVNULL).strip())
+
+        # Catching `Exception` broadly to avoid failing on platforms where ps
+        # isn't installed or doesn't work as expected, e.g. OpenBSD.
+        #
+        # We could later use something like `psutils` to work across platforms.
+        except Exception:
+            self.log.exception("Unable to get memory usage")
+            return None
 
     def _node_msg(self, msg: str) -> str:
         """Return a modified msg that identifies this node by its index as a debugging aid."""
@@ -172,7 +164,7 @@ class TestNode():
         raise AssertionError(self._node_msg(msg))
 
     def __del__(self):
-        # Ensure that we don't leave any dashd processes lying around after
+        # Ensure that we don't leave any cosantad processes lying around after
         # the test ends
         if self.process and self.cleanup_on_exit:
             # Should only happen on test failure
@@ -189,12 +181,12 @@ class TestNode():
             assert self.rpc_connected and self.rpc is not None, self._node_msg("Error: no RPC connection")
             return getattr(self.rpc, name)
 
-    def start(self, extra_args=None, *, cwd=None, stdout=None, stderr=None, **kwargs):
+    def start(self, extra_args=None, stdout=None, stderr=None, *args, **kwargs):
         """Start the node."""
         if extra_args is None:
             extra_args = self.extra_args
 
-        # Add a new stdout and stderr file each time dashd is started
+        # Add a new stdout and stderr file each time cosantad is started
         if stderr is None:
             stderr = tempfile.NamedTemporaryFile(dir=self.stderr_dir, delete=False)
         if stdout is None:
@@ -202,92 +194,55 @@ class TestNode():
         self.stderr = stderr
         self.stdout = stdout
 
-        if cwd is None:
-            cwd = self.cwd
-
         all_args = self.args + self.extra_args_from_options + extra_args
         if self.mocktime != 0:
             all_args = all_args + ["-mocktime=%d" % self.mocktime]
 
         # Delete any existing cookie file -- if such a file exists (eg due to
-        # unclean shutdown), it will get overwritten anyway by dashd, and
+        # unclean shutdown), it will get overwritten anyway by cosantad, and
         # potentially interfere with our attempt to authenticate
         delete_cookie_file(self.datadir, self.chain)
 
         # add environment variable LIBC_FATAL_STDERR_=1 so that libc errors are written to stderr and not the terminal
         subp_env = dict(os.environ, LIBC_FATAL_STDERR_="1")
 
-        self.process = subprocess.Popen(all_args, env=subp_env, stdout=stdout, stderr=stderr, cwd=cwd, **kwargs)
+        self.process = subprocess.Popen(all_args, env=subp_env, stdout=stdout, stderr=stderr, *args, **kwargs)
 
         self.running = True
-        self.log.debug("dashd started, waiting for RPC to come up")
+        self.log.debug("cosantad started, waiting for RPC to come up")
 
         if self.start_perf:
             self._start_perf()
 
     def wait_for_rpc_connection(self):
-        """Sets up an RPC connection to the dashd process. Returns False if unable to connect."""
+        """Sets up an RPC connection to the cosantad process. Returns False if unable to connect."""
         # Poll at a rate of four times per second
         poll_per_s = 4
         for _ in range(poll_per_s * self.rpc_timeout):
             if self.process.poll() is not None:
                 raise FailedToStartError(self._node_msg(
-                    'dashd exited with status {} during initialization'.format(self.process.returncode)))
+                    'cosantad exited with status {} during initialization'.format(self.process.returncode)))
             try:
-                rpc = get_rpc_proxy(
-                    rpc_url(self.datadir, self.index, self.chain, self.rpchost),
-                    self.index,
-                    timeout=self.rpc_timeout // 2,  # Shorter timeout to allow for one retry in case of ETIMEDOUT
-                    coveragedir=self.coverage_dir,
-                )
-                rpc.getblockcount()
+                self.rpc = get_rpc_proxy(rpc_url(self.datadir, self.index, self.chain, self.rpchost), self.index, timeout=self.rpc_timeout, coveragedir=self.coverage_dir)
+                self.rpc.getblockcount()
                 # If the call to getblockcount() succeeds then the RPC connection is up
-                wait_until(lambda: rpc.getmempoolinfo()['loaded'])
-                # Wait for the node to finish reindex, block import, and
-                # loading the mempool. Usually importing happens fast or
-                # even "immediate" when the node is started. However, there
-                # is no guarantee and sometimes ThreadImport might finish
-                # later. This is going to cause intermittent test failures,
-                # because generally the tests assume the node is fully
-                # ready after being started.
-                #
-                # For example, the node will reject block messages from p2p
-                # when it is still importing with the error "Unexpected
-                # block message received"
-                #
-                # The wait is done here to make tests as robust as possible
-                # and prevent racy tests and intermittent failures as much
-                # as possible. Some tests might not need this, but the
-                # overhead is trivial, and the added guarantees are worth
-                # the minimal performance cost.
-                self.log.debug("RPC successfully started")
-                if self.use_cli:
-                    return
-                self.rpc = rpc
                 self.rpc_connected = True
                 self.url = self.rpc.url
+                self.log.debug("RPC successfully started")
                 return
+            except IOError as e:
+                if e.errno != errno.ECONNREFUSED:  # Port not yet open?
+                    raise  # unknown IO error
             except JSONRPCException as e:  # Initialization phase
                 # -28 RPC in warmup
                 # -342 Service unavailable, RPC server started but is shutting down due to error
                 if e.error['code'] != -28 and e.error['code'] != -342:
                     raise  # unknown JSON RPC exception
-            except OSError as e:
-                if e.errno == errno.ETIMEDOUT:
-                    pass  # Treat identical to ConnectionResetError
-                elif e.errno == errno.ECONNREFUSED:
-                    pass  # Port not yet open?
-                else:
-                    raise  # unknown OS error
-            except ValueError as e:  # cookie file not found and no rpcuser or rpcassword. dashd still starting
+            except ValueError as e:  # cookie file not found and no rpcuser or rpcassword. cosantad still starting
                 if "No RPC credentials" not in str(e):
                     raise
             time.sleep(1.0 / poll_per_s)
-        self._raise_assertion_error("Unable to connect to dashd after {}s".format(self.rpc_timeout))
-
-    def generate(self, nblocks, maxtries=1000000):
-        self.log.debug("TestNode.generate() dispatches `generate` call to `generatetoaddress`")
-        return self.generatetoaddress(nblocks=nblocks, address=self.get_deterministic_priv_key().address, maxtries=maxtries)
+        self._raise_assertion_error("Unable to connect to cosantad")
 
     def get_wallet_rpc(self, wallet_name):
         if self.use_cli:
@@ -296,9 +251,6 @@ class TestNode():
             assert self.rpc_connected and self.rpc, self._node_msg("RPC not connected")
             wallet_path = "wallet/{}".format(urllib.parse.quote(wallet_name))
             return self.rpc / wallet_path
-
-    def version_is_at_least(self, ver):
-        return self.version is None or self.version >= ver
 
     def stop_node(self, expected_stderr='', wait=0):
         """Stop the node."""
@@ -319,9 +271,6 @@ class TestNode():
         stderr = self.stderr.read().decode('utf-8').strip()
         if stderr != expected_stderr:
             raise AssertionError("Unexpected stderr {} != {}".format(stderr, expected_stderr))
-
-        self.stdout.close()
-        self.stderr.close()
 
         del self.p2ps[:]
 
@@ -346,40 +295,53 @@ class TestNode():
         self.log.debug("Node stopped")
         return True
 
-    def wait_until_stopped(self, timeout=BITCOIND_PROC_WAIT_TIMEOUT):
-        wait_until(self.is_node_stopped, timeout=timeout, timeout_factor=self.timeout_factor)
+    def wait_until_stopped(self, timeout=COSANTAD_PROC_WAIT_TIMEOUT):
+        wait_until(self.is_node_stopped, timeout=timeout)
 
     @contextlib.contextmanager
-    def assert_debug_log(self, expected_msgs, unexpected_msgs=None, timeout=2):
-        if unexpected_msgs is None:
-            unexpected_msgs = []
-        time_end = time.time() + timeout * self.timeout_factor
+    def assert_debug_log(self, expected_msgs):
         chain = get_chain_folder(self.datadir, self.chain)
         debug_log = os.path.join(self.datadir, chain, 'debug.log')
         with open(debug_log, encoding='utf-8') as dl:
             dl.seek(0, 2)
             prev_size = dl.tell()
-
-        yield
-
-        while True:
-            found = True
+        try:
+            yield
+        finally:
             with open(debug_log, encoding='utf-8') as dl:
                 dl.seek(prev_size)
                 log = dl.read()
             print_log = " - " + "\n - ".join(log.splitlines())
-            for unexpected_msg in unexpected_msgs:
-                if re.search(re.escape(unexpected_msg), log, flags=re.MULTILINE):
-                    self._raise_assertion_error('Unexpected message "{}" partially matches log:\n\n{}\n\n'.format(unexpected_msg, print_log))
             for expected_msg in expected_msgs:
                 if re.search(re.escape(expected_msg), log, flags=re.MULTILINE) is None:
-                    found = False
-            if found:
-                return
-            if time.time() >= time_end:
-                break
-            time.sleep(0.05)
-        self._raise_assertion_error('Expected messages "{}" does not partially match log:\n\n{}\n\n'.format(str(expected_msgs), print_log))
+                    self._raise_assertion_error('Expected message "{}" does not partially match log:\n\n{}\n\n'.format(expected_msg, print_log))
+
+    @contextlib.contextmanager
+    def assert_memory_usage_stable(self, *, increase_allowed=0.03):
+        """Context manager that allows the user to assert that a node's memory usage (RSS)
+        hasn't increased beyond some threshold percentage.
+
+        Args:
+            increase_allowed (float): the fractional increase in memory allowed until failure;
+                e.g. `0.12` for up to 12% increase allowed.
+        """
+        before_memory_usage = self.get_mem_rss_kilobytes()
+
+        yield
+
+        after_memory_usage = self.get_mem_rss_kilobytes()
+
+        if not (before_memory_usage and after_memory_usage):
+            self.log.warning("Unable to detect memory usage (RSS) - skipping memory check.")
+            return
+
+        perc_increase_memory_usage = 1 - (float(before_memory_usage) / after_memory_usage)
+
+        if perc_increase_memory_usage > increase_allowed:
+            self._raise_assertion_error(
+                "Memory usage increased over threshold of {:.3f}% from {} to {} ({:.3f}%)".format(
+                    increase_allowed * 100, before_memory_usage, after_memory_usage,
+                    perc_increase_memory_usage * 100))
 
     @contextlib.contextmanager
     def profile_with_perf(self, profile_name):
@@ -462,11 +424,11 @@ class TestNode():
     def assert_start_raises_init_error(self, extra_args=None, expected_msg=None, match=ErrorMatch.FULL_TEXT, *args, **kwargs):
         """Attempt to start the node and expect it to raise an error.
 
-        extra_args: extra arguments to pass through to dashd
-        expected_msg: regex that stderr should match when dashd fails
+        extra_args: extra arguments to pass through to cosantad
+        expected_msg: regex that stderr should match when cosantad fails
 
-        Will throw if dashd starts without an error.
-        Will throw if an expected_msg is provided and it does not match dashd's stdout."""
+        Will throw if cosantad starts without an error.
+        Will throw if an expected_msg is provided and it does not match cosantad's stdout."""
         with tempfile.NamedTemporaryFile(dir=self.stderr_dir, delete=False) as log_stderr, \
              tempfile.NamedTemporaryFile(dir=self.stdout_dir, delete=False) as log_stdout:
             try:
@@ -475,7 +437,7 @@ class TestNode():
                 self.stop_node()
                 self.wait_until_stopped()
             except FailedToStartError as e:
-                self.log.debug('dashd failed to start: %s', e)
+                self.log.debug('cosantad failed to start: %s', e)
                 self.running = False
                 self.process = None
                 # Check stderr for expected message
@@ -496,9 +458,9 @@ class TestNode():
                                 'Expected message "{}" does not fully match stderr:\n"{}"'.format(expected_msg, stderr))
             else:
                 if expected_msg is None:
-                    assert_msg = "dashd should have exited with an error"
+                    assert_msg = "cosantad should have exited with an error"
                 else:
-                    assert_msg = "dashd should have exited with expected error " + expected_msg
+                    assert_msg = "cosantad should have exited with expected error " + expected_msg
                 self._raise_assertion_error(assert_msg)
 
     def add_p2p_connection(self, p2p_conn, *, wait_for_verack=True, **kwargs):
@@ -511,22 +473,10 @@ class TestNode():
         if 'dstaddr' not in kwargs:
             kwargs['dstaddr'] = '127.0.0.1'
 
-        p2p_conn.peer_connect(**kwargs, net=self.chain, timeout_factor=self.timeout_factor)()
+        p2p_conn.peer_connect(**kwargs, net=self.chain)()
         self.p2ps.append(p2p_conn)
         if wait_for_verack:
-            # Wait for the node to send us the version and verack
             p2p_conn.wait_for_verack()
-            # At this point we have sent our version message and received the version and verack, however the full node
-            # has not yet received the verack from us (in reply to their version). So, the connection is not yet fully
-            # established (fSuccessfullyConnected).
-            #
-            # This shouldn't lead to any issues when sending messages, since the verack will be in-flight before the
-            # message we send. However, it might lead to races where we are expecting to receive a message. E.g. a
-            # transaction that will be added to the mempool as soon as we return here.
-            #
-            # So syncing here is redundant when we only want to send a message, but the cost is low (a few milliseconds)
-            # in comparison to the upside of making tests less fragile and unexpected intermittent errors less likely.
-            p2p_conn.sync_with_ping()
 
         return p2p_conn
 
@@ -555,7 +505,6 @@ class TestNode():
 
         del self.p2ps[:]
 
-
 class TestNodeCLIAttr:
     def __init__(self, cli, command):
         self.cli = cli
@@ -567,18 +516,17 @@ class TestNodeCLIAttr:
     def get_request(self, *args, **kwargs):
         return lambda: self(*args, **kwargs)
 
-
 def arg_to_cli(arg):
     if isinstance(arg, bool):
         return str(arg).lower()
     elif isinstance(arg, dict) or isinstance(arg, list):
-        return json.dumps(arg, default=EncodeDecimal)
+        return json.dumps(arg)
     else:
         return str(arg)
 
-
 class TestNodeCLI():
-    """Interface to dash-cli for an individual node"""
+    """Interface to cosanta-cli for an individual node"""
+
     def __init__(self, binary, datadir):
         self.options = []
         self.binary = binary
@@ -587,7 +535,7 @@ class TestNodeCLI():
         self.log = logging.getLogger('TestFramework.dashcli')
 
     def __call__(self, *options, input=None):
-        # TestNodeCLI is callable with dash-cli command-line options
+        # TestNodeCLI is callable with cosanta-cli command-line options
         cli = TestNodeCLI(self.binary, self.datadir)
         cli.options = [str(o) for o in options]
         cli.input = input
@@ -606,17 +554,17 @@ class TestNodeCLI():
         return results
 
     def send_cli(self, command=None, *args, **kwargs):
-        """Run dash-cli command. Deserializes returned string as python object."""
+        """Run cosanta-cli command. Deserializes returned string as python object."""
         pos_args = [arg_to_cli(arg) for arg in args]
         named_args = [str(key) + "=" + arg_to_cli(value) for (key, value) in kwargs.items()]
-        assert not (pos_args and named_args), "Cannot use positional arguments and named arguments in the same dash-cli call"
+        assert not (pos_args and named_args), "Cannot use positional arguments and named arguments in the same cosanta-cli call"
         p_args = [self.binary, "-datadir=" + self.datadir] + self.options
         if named_args:
             p_args += ["-named"]
         if command is not None:
             p_args += [command]
         p_args += pos_args + named_args
-        self.log.debug("Running dash-cli command: %s" % command)
+        self.log.debug("Running cosanta-cli command: %s" % command)
         process = subprocess.Popen(p_args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         cli_stdout, cli_stderr = process.communicate(input=self.input)
         returncode = process.poll()
@@ -629,5 +577,5 @@ class TestNodeCLI():
             raise subprocess.CalledProcessError(returncode, self.binary, output=cli_stderr)
         try:
             return json.loads(cli_stdout, parse_float=decimal.Decimal)
-        except (json.JSONDecodeError, decimal.InvalidOperation):
+        except json.JSONDecodeError:
             return cli_stdout.rstrip("\n")

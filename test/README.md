@@ -1,4 +1,4 @@
-This directory contains integration tests that test dashd and its
+This directory contains integration tests that test cosantad and its
 utilities in their entirety. It does not contain unit tests, which
 can be found in [/src/test](/src/test), [/src/wallet/test](/src/wallet/test),
 etc.
@@ -6,82 +6,52 @@ etc.
 This directory contains the following sets of tests:
 
 - [functional](/test/functional) which test the functionality of
-dashd and dash-qt by interacting with them through the RPC and P2P
+cosantad and cosanta-qt by interacting with them through the RPC and P2P
 interfaces.
 - [util](/test/util) which tests the dash utilities, currently only
-dash-tx.
+cosanta-tx.
 - [lint](/test/lint/) which perform various static analysis checks.
 
 The util tests are run as part of `make check` target. The functional
-tests and lint scripts can be run as explained in the sections below.
+tests and lint scripts are run by the travis continuous build process whenever a pull
+request is opened. All sets of tests can also be run locally.
 
 # Running tests locally
 
-Before tests can be run locally, Dash Core must be built.  See the [building instructions](/doc#building) for help.
-
+Build for your system first. Be sure to enable wallet, utils and daemon when you configure. Tests will not run otherwise.
 
 ### Functional tests
 
 #### Dependencies and prerequisites
 
-Many Dash specific tests require dash_hash. To install it:
+Many Cosanta specific tests require cosanta_hash. To install it:
 
-- Clone the repo `git clone https://github.com/dashpay/dash_hash`
-- Install dash_hash `cd dash_hash && pip3 install -r requirements.txt .`
+- Clone the repo `git clone https://github.com/cosanta/cosanta_hash`
+- Install cosanta_hash `cd cosanta_hash && python3 setup.py install`
 
 The ZMQ functional test requires a python ZMQ library. To install it:
 
 - on Unix, run `sudo apt-get install python3-zmq`
 - on mac OS, run `pip3 install pyzmq`
 
-
-On Windows the `PYTHONUTF8` environment variable must be set to 1:
-
-```cmd
-set PYTHONUTF8=1
-```
-
 #### Running the tests
 
 Individual tests can be run by directly calling the test script, e.g.:
 
 ```
-test/functional/wallet_hd.py
+test/functional/wallet-hd.py
 ```
 
 or can be run through the test_runner harness, eg:
 
 ```
-test/functional/test_runner.py wallet_hd.py
+test/functional/test_runner.py wallet-hd.py
 ```
 
 You can run any combination (incl. duplicates) of tests by calling:
 
 ```
 test/functional/test_runner.py <testname1> <testname2> <testname3> ...
-```
-
-Wildcard test names can be passed, if the paths are coherent and the test runner
-is called from a `bash` shell or similar that does the globbing. For example,
-to run all the wallet tests:
-
-```
-test/functional/test_runner.py test/functional/wallet*
-functional/test_runner.py functional/wallet* (called from the test/ directory)
-test_runner.py wallet* (called from the test/functional/ directory)
-```
-
-but not
-
-```
-test/functional/test_runner.py wallet*
-```
-
-Combinations of wildcards can be passed:
-
-```
-test/functional/test_runner.py ./test/functional/tool* test/functional/mempool*
-test_runner.py tool* mempool*
 ```
 
 Run the regression test suite with:
@@ -100,35 +70,35 @@ By default, up to 4 tests will be run in parallel by test_runner. To specify
 how many jobs to run, append `--jobs=n`
 
 The individual tests and the test_runner harness have many command-line
-options. Run `test/functional/test_runner.py -h` to see them all.
+options. Run `test_runner.py -h` to see them all.
 
 #### Troubleshooting and debugging test failures
 
 ##### Resource contention
 
-The P2P and RPC ports used by the dashd nodes-under-test are chosen to make
-conflicts with other processes unlikely. However, if there is another dashd
+The P2P and RPC ports used by the cosantad nodes-under-test are chosen to make
+conflicts with other processes unlikely. However, if there is another cosantad
 process running on the system (perhaps from a previous test which hasn't successfully
-killed all its dashd nodes), then there may be a port conflict which will
+killed all its cosantad nodes), then there may be a port conflict which will
 cause the test to fail. It is recommended that you run the tests on a system
-where no other dashd processes are running.
+where no other cosantad processes are running.
 
-On linux, the test framework will warn if there is another
-dashd process running when the tests are started.
+On linux, the test_framework will warn if there is another
+cosantad process running when the tests are started.
 
-If there are zombie dashd processes after test failure, you can kill them
+If there are zombie cosantad processes after test failure, you can kill them
 by running the following commands. **Note that these commands will kill all
-dashd processes running on the system, so should not be used if any non-test
-dashd processes are being run.**
+cosantad processes running on the system, so should not be used if any non-test
+cosantad processes are being run.**
 
 ```bash
-killall dashd
+killall cosantad
 ```
 
 or
 
 ```bash
-pkill -9 dashd
+pkill -9 cosantad
 ```
 
 
@@ -139,46 +109,35 @@ functional test is run and is stored in test/cache. This speeds up
 test startup times since new blockchains don't need to be generated for
 each test. However, the cache may get into a bad state, in which case
 tests will fail. If this happens, remove the cache directory (and make
-sure dashd processes are stopped as above):
+sure cosantad processes are stopped as above):
 
 ```bash
-rm -rf test/cache
-killall dashd
+rm -rf cache
+killall cosantad
 ```
 
 ##### Test logging
 
-The tests contain logging at five different levels (DEBUG, INFO, WARNING, ERROR
-and CRITICAL). From within your functional tests you can log to these different
-levels using the logger included in the test_framework, e.g.
-`self.log.debug(object)`. By default:
+The tests contain logging at different levels (debug, info, warning, etc). By
+default:
 
 - when run through the test_runner harness, *all* logs are written to
   `test_framework.log` and no logs are output to the console.
 - when run directly, *all* logs are written to `test_framework.log` and INFO
   level and above are output to the console.
 - when run on Travis, no logs are output to the console. However, if a test
-  fails, the `test_framework.log` and dashd `debug.log`s will all be dumped
+  fails, the `test_framework.log` and cosantad `debug.log`s will all be dumped
   to the console to help troubleshooting.
-
-These log files can be located under the test data directory (which is always
-printed in the first line of test output):
-  - `<test data directory>/test_framework.log`
-  - `<test data directory>/node<node number>/regtest/debug.log`.
-
-The node number identifies the relevant test node, starting from `node0`, which
-corresponds to its position in the nodes list of the specific test,
-e.g. `self.nodes[0]`.
 
 To change the level of logs output to the console, use the `-l` command line
 argument.
 
-`test_framework.log` and dashd `debug.log`s can be combined into a single
+`test_framework.log` and cosantad `debug.log`s can be combined into a single
 aggregate log by running the `combine_logs.py` script. The output can be plain
 text, colorized text or html. For example:
 
 ```
-test/functional/combine_logs.py -c <test data directory> | less -r
+combine_logs.py -c <test data directory> | less -r
 ```
 
 will pipe the colorized logs from the test into less.
@@ -200,46 +159,27 @@ import pdb; pdb.set_trace()
 ```
 
 anywhere in the test. You will then be able to inspect variables, as well as
-call methods that interact with the dashd nodes-under-test.
+call methods that interact with the cosantad nodes-under-test.
 
-If further introspection of the dashd instances themselves becomes
+If further introspection of the cosantad instances themselves becomes
 necessary, this can be accomplished by first setting a pdb breakpoint
 at an appropriate location, running the test to that point, then using
-`gdb` (or `lldb` on macOS) to attach to the process and debug.
+`gdb` to attach to the process and debug.
 
-For instance, to attach to `self.node[1]` during a run you can get
-the pid of the node within `pdb`.
-
-```
-(pdb) self.node[1].process.pid
-```
-
-Alternatively, you can find the pid by inspecting the temp folder for the specific test
-you are running. The path to that folder is printed at the beginning of every
-test run:
+For instance, to attach to `self.node[1]` during a run:
 
 ```bash
 2017-06-27 14:13:56.686000 TestFramework (INFO): Initializing test directory /tmp/user/1000/testo9vsdjo3
 ```
 
-Use the path to find the pid file in the temp folder:
+use the directory path to get the pid from the pid file:
 
 ```bash
-cat /tmp/user/1000/testo9vsdjo3/node1/regtest/dashd.pid
+cat /tmp/user/1000/testo9vsdjo3/node1/regtest/cosantad.pid
+gdb /home/example/cosantad <pid>
 ```
 
-Then you can use the pid to start `gdb`:
-
-```bash
-gdb /home/example/dashd <pid>
-```
-
-Note: gdb attach step may require ptrace_scope to be modified, or `sudo` preceding the `gdb`.
-See this link for considerations: https://www.kernel.org/doc/Documentation/security/Yama.txt
-
-Often while debugging rpc calls from functional tests, the test might reach timeout before
-process can return a response. Use `--timeout-factor 0` to disable all rpc timeouts for that partcular
-functional test. Ex: `test/functional/wallet_hd.py --timeout-factor 0`.
+Note: gdb attach step may require `sudo`
 
 ##### Profiling
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2017-2019 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test recovery from a crash during chainstate writing.
@@ -50,8 +51,7 @@ class ChainstateWriteCrashTest(BitcoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 4
         self.setup_clean_chain = False
-        self.rpc_timeout = 480
-        self.supports_cli = False
+        self.rpc_timeout = 180
 
         # Set -maxmempool=0 to turn off mempool memory sharing with dbcache
         # Set -rpcservertimeout=900 to reduce socket disconnects in this
@@ -75,7 +75,6 @@ class ChainstateWriteCrashTest(BitcoinTestFramework):
     def setup_network(self):
         self.add_nodes(self.num_nodes, extra_args=self.extra_args)
         self.start_nodes()
-        self.import_deterministic_coinbase_privkeys()
         # Leave them unconnected, we'll use submitblock directly in this test
 
     def restart_node(self, node_index, expected_tip):
@@ -94,14 +93,14 @@ class ChainstateWriteCrashTest(BitcoinTestFramework):
                 return utxo_hash
             except:
                 # An exception here should mean the node is about to crash.
-                # If dashd exits, then try again.  wait_for_node_exit()
-                # should raise an exception if dashd doesn't exit.
+                # If cosantad exits, then try again.  wait_for_node_exit()
+                # should raise an exception if cosantad doesn't exit.
                 self.wait_for_node_exit(node_index, timeout=10)
             self.crashed_on_restart += 1
             time.sleep(1)
 
-        # If we got here, dashd isn't coming back up on restart.  Could be a
-        # bug in dashd, or we've gotten unlucky with our dbcrash ratio --
+        # If we got here, cosantad isn't coming back up on restart.  Could be a
+        # bug in cosantad, or we've gotten unlucky with our dbcrash ratio --
         # perhaps we generated a test case that blew up our cache?
         # TODO: If this happens a lot, we should try to restart without -dbcrashratio
         # and make sure that recovery happens.
@@ -258,11 +257,7 @@ class ChainstateWriteCrashTest(BitcoinTestFramework):
             self.log.debug("Mining longer tip")
             block_hashes = []
             while current_height + 1 > self.nodes[3].getblockcount():
-                block_hashes.extend(self.nodes[3].generatetoaddress(
-                    nblocks=min(10, current_height + 1 - self.nodes[3].getblockcount()),
-                    # new address to avoid mining a block that has just been invalidated
-                    address=self.nodes[3].getnewaddress(),
-                ))
+                block_hashes.extend(self.nodes[3].generate(min(10, current_height + 1 - self.nodes[3].getblockcount())))
             self.log.debug("Syncing %d new blocks...", len(block_hashes))
             self.sync_node3blocks(block_hashes)
             utxo_list = self.nodes[3].listunspent()
@@ -285,8 +280,7 @@ class ChainstateWriteCrashTest(BitcoinTestFramework):
         # Warn if any of the nodes escaped restart.
         for i in range(3):
             if self.restart_counts[i] == 0:
-                self.log.warning("Node %d never crashed during utxo flush!", i)
-
+                self.log.warn("Node %d never crashed during utxo flush!", i)
 
 if __name__ == "__main__":
     ChainstateWriteCrashTest().main()

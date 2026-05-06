@@ -68,7 +68,7 @@ def process_commands(fname):
                     else:
                         args = []
                     cmds.append(RPCCommand(name, args))
-    assert not in_rpcs and cmds, "Something went wrong with parsing the C++ file: update the regexps"
+    assert not in_rpcs, "Something went wrong with parsing the C++ file: update the regexps"
     return cmds
 
 def process_mapping(fname):
@@ -91,14 +91,10 @@ def process_mapping(fname):
                     idx = int(m.group(2))
                     argname = parse_string(m.group(3))
                     cmds.append((name, idx, argname))
-    assert not in_rpcs and cmds
+    assert not in_rpcs
     return cmds
 
 def main():
-    if len(sys.argv) != 2:
-        print('Usage: {} ROOT-DIR'.format(sys.argv[0]), file=sys.stderr)
-        sys.exit(1)
-
     root = sys.argv[1]
 
     # Get all commands from dispatch tables

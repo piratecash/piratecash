@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# Copyright (c) 2018-2022 The Dash Core developers
+# Copyright (c) 2018-2021 The Dash Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,7 +22,7 @@ class InstantSendTest(DashTestFramework):
         self.sender_idx = 3
 
     def run_test(self):
-        self.nodes[0].sporkupdate("SPORK_17_QUORUM_DKG_ENABLED", 0)
+        self.nodes[0].spork("SPORK_17_QUORUM_DKG_ENABLED", 0)
         self.wait_for_sporks_same()
         self.mine_quorum()
 
@@ -63,10 +64,10 @@ class InstantSendTest(DashTestFramework):
         self.reconnect_isolated_node(self.isolated_idx, 0)
         # check doublespend block is rejected by other nodes
         timeout = 10
-        for idx, node in enumerate(self.nodes):
-            if idx == self.isolated_idx:
+        for i in range(0, self.num_nodes):
+            if i == self.isolated_idx:
                 continue
-            res = node.waitforblock(wrong_block, timeout)
+            res = self.nodes[i].waitforblock(wrong_block, timeout)
             assert res['hash'] != wrong_block
             # wait for long time only for first node
             timeout = 1

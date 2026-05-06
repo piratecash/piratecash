@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2014-2015 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,7 +12,7 @@ import time
 
 from test_framework.authproxy import JSONRPCException
 from test_framework.test_framework import BitcoinTestFramework
-from test_framework.util import assert_equal, assert_raises_rpc_error
+from test_framework.util import assert_equal
 
 class KeyPoolTest(BitcoinTestFramework):
 
@@ -90,10 +91,15 @@ class KeyPoolTest(BitcoinTestFramework):
         time.sleep(1.1)
         assert_equal(nodes[0].getwalletinfo()["unlocked_until"], 0)
 
-        # drain the keypool
-        for _ in range(3):
-            nodes[0].getnewaddress()
-        assert_raises_rpc_error(-12, "Keypool ran out", nodes[0].getnewaddress)
+        # drain them by mining
+        nodes[0].generate(1)
+        nodes[0].generate(1)
+        nodes[0].generate(1)
+        try:
+            nodes[0].generate(1)
+            raise AssertionError('Keypool should be exhausted after three addesses')
+        except JSONRPCException as e:
+            assert e.error['code']==-12
 
         nodes[0].walletpassphrase('test', 100)
         nodes[0].keypoolrefill(100)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2020-2022 The Dash Core developers
+# Copyright (c) 2020 The Dash Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test that commands submitted by the platform user are filtered."""
@@ -16,15 +16,10 @@ import urllib.parse
 class HTTPBasicsTest(BitcoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
-        self.supports_cli = False
-
-    def setup_nodes(self):
-        self.add_nodes(self.num_nodes)
-        self.start_nodes()
 
     def setup_chain(self):
         super().setup_chain()
-        # Append rpcauth to dash.conf before initialization
+        # Append rpcauth to cosanta.conf before initialization
         rpcauthplatform = "rpcauth=platform-user:dd88fd676186f48553775d6fb5a2d344$bc1f7898698ead19c6ec7ff47055622dd7101478f1ff6444103d3dc03cd77c13"
         # rpcuser : platform-user
         # rpcpassword : password123
@@ -34,12 +29,13 @@ class HTTPBasicsTest(BitcoinTestFramework):
 
         masternodeblskey="masternodeblsprivkey=58af6e39bb4d86b22bda1a02b134c2f5b71caffa1377540b02f7f1ad122f59e0"
 
-        with open(os.path.join(self.options.tmpdir+"/node0", "dash.conf"), 'a', encoding='utf8') as f:
+        with open(os.path.join(self.options.tmpdir+"/node0", "cosanta.conf"), 'a', encoding='utf8') as f:
             f.write(masternodeblskey+"\n")
             f.write(rpcauthplatform+"\n")
             f.write(rpcauthoperator+"\n")
 
     def run_test(self):
+
         url = urllib.parse.urlparse(self.nodes[0].url)
 
         def test_command(method, params, auth, expexted_status, should_not_match=False):
@@ -87,8 +83,8 @@ class HTTPBasicsTest(BitcoinTestFramework):
         test_command("getblockhash", [0], rpcuser_authpair_platform, 200)
         test_command("getblockcount", [], rpcuser_authpair_platform, 200)
         test_command("getbestchainlock", [], rpcuser_authpair_platform, 500)
-        test_command("quorum", ["sign", 106], rpcuser_authpair_platform, 500)
-        test_command("quorum", ["sign", 106, "0000000000000000000000000000000000000000000000000000000000000000",
+        test_command("quorum", ["sign", 100], rpcuser_authpair_platform, 500)
+        test_command("quorum", ["sign", 100, "0000000000000000000000000000000000000000000000000000000000000000",
                                 "0000000000000000000000000000000000000000000000000000000000000001"],
                                 rpcuser_authpair_platform, 200)
         test_command("quorum", ["verify"], rpcuser_authpair_platform, 500)

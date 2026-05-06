@@ -19,7 +19,6 @@ from test_framework.authproxy import JSONRPCException
 class RpcMiscTest(BitcoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
-        self.supports_cli = False
 
     def run_test(self):
         node = self.nodes[0]
@@ -50,7 +49,7 @@ class RpcMiscTest(BitcoinTestFramework):
             assert_equal(tree.tag, 'malloc')
         except JSONRPCException:
             self.log.info('getmemoryinfo(mode="mallocinfo") not available')
-            assert_raises_rpc_error(-8, 'mallocinfo mode not available', node.getmemoryinfo, mode="mallocinfo")
+            assert_raises_rpc_error(-8, 'mallocinfo is only available when compiled with glibc 2.10+', node.getmemoryinfo, mode="mallocinfo")
 
         assert_raises_rpc_error(-8, "unknown mode foobar", node.getmemoryinfo, mode="foobar")
 

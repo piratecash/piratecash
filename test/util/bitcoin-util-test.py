@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # Copyright 2014 BitPay Inc.
 # Copyright 2016-2017 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test framework for bitcoin utils.
@@ -9,9 +10,14 @@ Runs automatically during `make check`.
 
 Can also be run manually."""
 
+from __future__ import division,print_function,unicode_literals
+
 import argparse
 import binascii
-import configparser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 import difflib
 import json
 import logging
@@ -23,7 +29,8 @@ import sys
 def main():
     config = configparser.ConfigParser()
     config.optionxform = str
-    config.read_file(open(os.path.join(os.path.dirname(__file__), "../config.ini"), encoding="utf8"))
+    with open(os.path.join(os.path.dirname(__file__), "../config.ini"), encoding="utf8") as config_file:
+        config.read_file(config_file)
     env_conf = dict(config.items('environment'))
 
     parser = argparse.ArgumentParser(description=__doc__)
@@ -152,7 +159,7 @@ def bctest(testDir, testObj, buildenv):
         want_error = testObj["error_txt"]
         # Compare error text
         # TODO: ideally, we'd compare the strings exactly and also assert
-        # That stderr is empty if no errors are expected. However, dash-tx
+        # That stderr is empty if no errors are expected. However, cosanta-tx
         # emits DISPLAY errors when running as a windows application on
         # linux through wine. Just assert that the expected error text appears
         # somewhere in stderr.

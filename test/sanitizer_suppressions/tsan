@@ -1,7 +1,5 @@
 # ThreadSanitizer suppressions
 # ============================
-#
-# https://github.com/google/sanitizers/wiki/ThreadSanitizerSuppressions
 
 # Data races from zmq namespace
 race:zmq::*
@@ -9,31 +7,21 @@ race:zmq::*
 # WalletBatch (unidentified deadlock)
 deadlock:WalletBatch
 
-# deadlock false positive (see: https://github.com/dashpay/dash/pull/4563)
+# deadlock false positive (see historical Dash upstream PR: https://github.com/dashpay/dash/pull/4563)
 deadlock:CChainState::ConnectTip
 
 # Intentional deadlock in tests
-deadlock:sync_tests::potential_deadlock_detected
-
-# fRPCRunning race
-race:InterruptRPC
+deadlock:TestPotentialDeadLockDetected
 
 # Wildcard for all gui tests, should be replaced with non-wildcard suppressions
 race:src/qt/test/*
 deadlock:src/qt/test/*
 
-# External libraries
-deadlock:libdb
-race:libzmq
-
-# Intermittent issues
-# -------------------
+# WIP: Unidentified suppressions to run the functional tests
+#race:zmqpublishnotifier.cpp
 #
-# Suppressions that follow might only happen intermittently, thus they are not
-# reproducible. Make sure to include a link to a full trace.
-
-# https://github.com/bitcoin/bitcoin/issues/20618
-race:CZMQAbstractPublishNotifier::SendZmqMessage
-
-# https://github.com/bitcoin/bitcoin/pull/20218, https://github.com/bitcoin/bitcoin/pull/20745
-race:epoll_ctl
+#deadlock:CreateWalletFromFile
+#deadlock:importprivkey
+#deadlock:walletdb.h
+#deadlock:walletdb.cpp
+#deadlock:wallet/db.cpp

@@ -9,7 +9,7 @@ from codecs import encode
 
 from test_framework.address import ADDRESS_BCRT1_UNSPENDABLE
 from test_framework.test_framework import BitcoinTestFramework
-from test_framework.messages import dashhash
+from test_framework.messages import cosantahash
 from test_framework.util import (
     assert_equal,
     hash256,
@@ -17,8 +17,8 @@ from test_framework.util import (
 
 ADDRESS = "tcp://127.0.0.1:28332"
 
-def dashhash_helper(b):
-    return encode(dashhash(b)[::-1], 'hex_codec').decode('ascii')
+def cosantahash_helper(b):
+    return encode(cosantahash(b)[::-1], 'hex_codec').decode('ascii')
 
 
 class ZMQSubscriber:
@@ -73,7 +73,6 @@ class ZMQTest (BitcoinTestFramework):
         ]
         self.add_nodes(self.num_nodes, self.extra_args)
         self.start_nodes()
-        self.import_deterministic_coinbase_privkeys()
 
     def run_test(self):
         try:
@@ -105,7 +104,7 @@ class ZMQTest (BitcoinTestFramework):
 
             # Should receive the generated raw block.
             block = self.rawblock.receive()
-            assert_equal(genhashes[x], dashhash_helper(block[:80]))
+            assert_equal(genhashes[x], bytes_to_hex_str(hash256(block[:80])))
 
         if self.is_wallet_compiled():
             self.log.info("Wait for tx from second node")

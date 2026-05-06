@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2017 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """An example functional test
@@ -13,10 +14,10 @@ is testing and *how* it's being tested
 # libraries then local imports).
 from collections import defaultdict
 
-# Avoid wildcard * imports
+# Avoid wildcard * imports if possible
 from test_framework.blocktools import (create_block, create_coinbase)
-from test_framework.messages import CInv, MSG_BLOCK
 from test_framework.mininode import (
+    CInv,
     P2PInterface,
     mininode_lock,
     msg_block,
@@ -25,6 +26,7 @@ from test_framework.mininode import (
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import (
     assert_equal,
+    connect_nodes,
     wait_until,
 )
 
@@ -115,8 +117,8 @@ class ExampleTest(BitcoinTestFramework):
         # In this test, we're not connecting node2 to node0 or node1. Calls to
         # sync_all() should not include node2, since we're not expecting it to
         # sync.
-        self.connect_nodes(0, 1)
-        self.sync_all(self.nodes[0:2])
+        connect_nodes(self.nodes[0], 1)
+        self.sync_all(self.nodes[0:1])
 
     # Use setup_nodes() to customize the node start behaviour (for example if
     # you don't want to start all nodes at the start of the test).
@@ -140,7 +142,7 @@ class ExampleTest(BitcoinTestFramework):
 
         # Generating a block on one of the nodes will get us out of IBD
         blocks = [int(self.nodes[0].generate(nblocks=1)[0], 16)]
-        self.sync_all(self.nodes[0:2])
+        self.sync_all(self.nodes[0:1])
 
         # Notice above how we called an RPC by calling a method with the same
         # name on the node object. Notice also how we used a keyword argument
@@ -163,13 +165,13 @@ class ExampleTest(BitcoinTestFramework):
         self.tip = int(self.nodes[0].getbestblockhash(), 16)
         self.block_time = self.nodes[0].getblock(self.nodes[0].getbestblockhash())['time'] + 1
 
-        height = self.nodes[0].getblockcount()
+        height = 1
 
         for i in range(10):
             # Use the mininode and blocktools functionality to manually build a block
             # Calling the generate() rpc is easier, but this allows us to exactly
             # control the blocks and transactions.
-            block = create_block(self.tip, create_coinbase(height+1), self.block_time)
+            block = create_block(self.tip, create_coinbase(height), self.block_time)
             block.solve()
             block_message = msg_block(block)
             # Send message is used to send a P2P message to the node over our P2PInterface
@@ -183,21 +185,18 @@ class ExampleTest(BitcoinTestFramework):
         self.nodes[1].waitforblockheight(11)
 
         self.log.info("Connect node2 and node1")
-        self.connect_nodes(1, 2)
-
-        self.log.info("Wait for node2 to receive all the blocks from node1")
-        self.sync_all()
+        connect_nodes(self.nodes[1], 2)
 
         self.log.info("Add P2P connection to node2")
         self.nodes[0].disconnect_p2ps()
 
         self.nodes[2].add_p2p_connection(BaseNode())
 
-        self.log.info("Test that node2 propagates all the blocks to us")
+        self.log.info("Wait for node2 reach current tip. Test that it has propagated all the blocks to us")
 
         getdata_request = msg_getdata()
         for block in blocks:
-            getdata_request.inv.append(CInv(MSG_BLOCK, block))
+            getdata_request.inv.append(CInv(2, block))
         self.nodes[2].p2p.send_message(getdata_request)
 
         # wait_until() will loop until a predicate condition is met. Use it to test properties of the

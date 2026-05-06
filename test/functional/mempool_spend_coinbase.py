@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2014-2016 The Bitcoin Core developers
+# Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test spending coinbase transactions.
@@ -18,10 +19,11 @@ from test_framework.test_framework import BitcoinTestFramework
 from test_framework.blocktools import create_raw_transaction
 from test_framework.util import assert_equal, assert_raises_rpc_error
 
-
+# Create one-input, one-output, no-fee transaction:
 class MempoolSpendCoinbaseTest(BitcoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
+        self.extra_args = [["-checkmempool"]]
 
     def skip_test_if_missing_module(self):
         self.skip_if_no_wallet()
@@ -36,7 +38,7 @@ class MempoolSpendCoinbaseTest(BitcoinTestFramework):
         # is too immature to spend.
         b = [ self.nodes[0].getblockhash(n) for n in range(101, 103) ]
         coinbase_txids = [ self.nodes[0].getblock(h)['tx'][0] for h in b ]
-        spends_raw = [ create_raw_transaction(self.nodes[0], txid, node0_address, amount=500 - Decimal('0.00001')) for txid in coinbase_txids ]
+        spends_raw = [ create_raw_transaction(self.nodes[0], txid, node0_address, 500 - Decimal('0.00001')) for txid in coinbase_txids ]
 
         spend_101_id = self.nodes[0].sendrawtransaction(spends_raw[0])
 

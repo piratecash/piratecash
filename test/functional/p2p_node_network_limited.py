@@ -8,10 +8,10 @@ Tests that a node configured with -prune=550 signals NODE_NETWORK_LIMITED correc
 and that it responds to getdata requests for blocks correctly:
     - send a block within 288 + 2 of the tip
     - disconnect peers who request blocks older than that."""
-from test_framework.messages import CInv, MSG_BLOCK, msg_getdata, NODE_BLOOM, NODE_NETWORK_LIMITED, NODE_HEADERS_COMPRESSED, msg_verack
+from test_framework.messages import CInv, msg_getdata, NODE_BLOOM, NODE_NETWORK_LIMITED, msg_verack
 from test_framework.mininode import P2PInterface, mininode_lock
 from test_framework.test_framework import BitcoinTestFramework
-from test_framework.util import assert_equal, wait_until
+from test_framework.util import assert_equal, disconnect_nodes, connect_nodes, sync_blocks, wait_until
 
 class P2PIgnoreInv(P2PInterface):
     firstAddrnServices = 0
@@ -25,7 +25,7 @@ class P2PIgnoreInv(P2PInterface):
         wait_until(test_function, timeout=timeout, lock=mininode_lock)
     def send_getdata_for_block(self, blockhash):
         getdata_request = msg_getdata()
-        getdata_request.inv.append(CInv(MSG_BLOCK, int(blockhash, 16)))
+        getdata_request.inv.append(CInv(2, int(blockhash, 16)))
         self.send_message(getdata_request)
 
 class NodeNetworkLimitedTest(BitcoinTestFramework):
@@ -35,18 +35,21 @@ class NodeNetworkLimitedTest(BitcoinTestFramework):
         self.extra_args = [['-prune=550', '-txindex=0', '-addrmantest'], [], []]
 
     def disconnect_all(self):
-        self.disconnect_nodes(0, 1)
-        self.disconnect_nodes(0, 2)
-        self.disconnect_nodes(1, 2)
+        disconnect_nodes(self.nodes[0], 1)
+        disconnect_nodes(self.nodes[1], 0)
+        disconnect_nodes(self.nodes[2], 1)
+        disconnect_nodes(self.nodes[2], 0)
+        disconnect_nodes(self.nodes[0], 2)
+        disconnect_nodes(self.nodes[1], 2)
 
     def setup_network(self):
-        self.add_nodes(self.num_nodes, self.extra_args)
-        self.start_nodes()
+        super(NodeNetworkLimitedTest, self).setup_network()
+        self.disconnect_all()
 
     def run_test(self):
         node = self.nodes[0].add_p2p_connection(P2PIgnoreInv())
 
-        expected_services = NODE_BLOOM | NODE_NETWORK_LIMITED | NODE_HEADERS_COMPRESSED
+        expected_services = NODE_BLOOM | NODE_NETWORK_LIMITED
 
         self.log.info("Check that node has signalled expected services.")
         assert_equal(node.nServices, expected_services)
@@ -55,9 +58,9 @@ class NodeNetworkLimitedTest(BitcoinTestFramework):
         assert_equal(int(self.nodes[0].getnetworkinfo()['localservices'], 16), expected_services)
 
         self.log.info("Mine enough blocks to reach the NODE_NETWORK_LIMITED range.")
-        self.connect_nodes(0, 1)
+        connect_nodes(self.nodes[0], 1)
         blocks = self.nodes[1].generatetoaddress(292, self.nodes[1].get_deterministic_priv_key().address)
-        self.sync_blocks([self.nodes[0], self.nodes[1]])
+        sync_blocks([self.nodes[0], self.nodes[1]])
 
         self.log.info("Make sure we can max retrieve block at tip-288.")
         node.send_getdata_for_block(blocks[1])  # last block in valid range
@@ -74,26 +77,26 @@ class NodeNetworkLimitedTest(BitcoinTestFramework):
 
         node1.wait_for_addr()
         #must relay address with NODE_NETWORK_LIMITED
-        assert_equal(node1.firstAddrnServices, expected_services)
+        assert_equal(node1.firstAddrnServices, 1028) # Not 1036 like bitcoin, because NODE_WITNESS = 1 << 3 = 8
 
         self.nodes[0].disconnect_p2ps()
         node1.wait_for_disconnect()
 
         # connect unsynced node 2 with pruned NODE_NETWORK_LIMITED peer
         # because node 2 is in IBD and node 0 is a NODE_NETWORK_LIMITED peer, sync must not be possible
-        self.connect_nodes(0, 2)
+        connect_nodes(self.nodes[0], 2)
         try:
-            self.sync_blocks([self.nodes[0], self.nodes[2]], timeout=5)
+            sync_blocks([self.nodes[0], self.nodes[2]], timeout=5)
         except:
             pass
         # node2 must remain at height 0
         assert_equal(self.nodes[2].getblockheader(self.nodes[2].getbestblockhash())['height'], 0)
 
         # now connect also to node 1 (non pruned)
-        self.connect_nodes(1, 2)
+        connect_nodes(self.nodes[1], 2)
 
         # sync must be possible
-        self.sync_blocks()
+        sync_blocks(self.nodes)
 
         # disconnect all peers
         self.disconnect_all()
@@ -102,12 +105,10 @@ class NodeNetworkLimitedTest(BitcoinTestFramework):
         self.nodes[0].generatetoaddress(10, self.nodes[0].get_deterministic_priv_key().address)
 
         # connect node1 (non pruned) with node0 (pruned) and check if the can sync
-        self.connect_nodes(0, 1)
+        connect_nodes(self.nodes[0], 1)
 
         # sync must be possible, node 1 is no longer in IBD and should therefore connect to node 0 (NODE_NETWORK_LIMITED)
-        self.sync_blocks([self.nodes[0], self.nodes[1]])
-        self.stop_node(0, expected_stderr='Warning: You are starting with governance validation disabled. This is expected because you are running a pruned node.')
-
+        sync_blocks([self.nodes[0], self.nodes[1]])
 
 if __name__ == '__main__':
     NodeNetworkLimitedTest().main()

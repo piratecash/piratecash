@@ -2,12 +2,12 @@
 # Copyright (c) 2019 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Test dashd aborts if can't disconnect a block.
+"""Test bitcoind aborts if can't disconnect a block.
 
 - Start a single node and generate 3 blocks.
 - Delete the undo data.
 - Mine a fork that requires disconnecting the tip.
-- Verify that dashd AbortNode's.
+- Verify that bitcoind AbortNode's.
 """
 
 from test_framework.test_framework import BitcoinTestFramework
@@ -29,7 +29,7 @@ class AbortNodeTest(BitcoinTestFramework):
         datadir = get_datadir_path(self.options.tmpdir, 0)
 
         # Deleting the undo file will result in reorg failure
-        os.unlink(os.path.join(datadir, self.chain, 'blocks', 'rev00000.dat'))
+        os.unlink(os.path.join(datadir, 'regtest', 'blocks', 'rev00000.dat'))
 
         # Connecting to a node with a more work chain will trigger a reorg
         # attempt.
