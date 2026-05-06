@@ -12,9 +12,9 @@ For example:
 
     make HOST=x86_64-w64-mingw32 -j4
 
-A prefix will be generated that's suitable for plugging into Dash's
+A prefix will be generated that's suitable for plugging into Cosanta's
 configure. In the above example, a dir named x86_64-w64-mingw32 will be
-created. To use it for Dash:
+created. To use it for Cosanta:
 
     ./configure --prefix=`pwd`/depends/x86_64-w64-mingw32
 
@@ -66,7 +66,7 @@ For linux RISC-V 64-bit cross compilation (there are no packages for 32-bit):
 
     sudo apt-get install g++-riscv64-linux-gnu binutils-riscv64-linux-gnu
 
-RISC-V known issue: gcc-7.3.0 and gcc-7.3.1 result in a broken `test_dash` executable (see https://github.com/bitcoin/bitcoin/pull/13543),
+RISC-V known issue: gcc-7.3.0 and gcc-7.3.1 result in a broken `test_cosanta` executable (see https://github.com/bitcoin/bitcoin/pull/13543),
 this is apparently fixed in gcc-8.1.0.
 
 ### Dependency Options
@@ -109,7 +109,7 @@ system's <code>$PATH</code> rather than the default prebuilt release of Clang
 from llvm.org. Clang 8 or later is required.</dd>
 </dl>
 If some packages are not built, for example `make NO_WALLET=1`, the appropriate
-options will be passed to Dash Core's configure. In this case, `--disable-wallet`.
+options will be passed to Cosanta Core's configure. In this case, `--disable-wallet`.
 
 ### Additional targets
 
@@ -135,4 +135,3 @@ This is an example command for a default build with no disabled dependencies:
 
 - [description.md](description.md): General description of the depends system
 - [packages.md](packages.md): Steps for adding packages
-

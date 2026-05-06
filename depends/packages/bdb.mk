@@ -12,6 +12,7 @@ $(package)_config_opts_mingw32=--enable-mingw
 $(package)_config_opts_linux=--with-pic
 $(package)_config_opts_android=--with-pic
 $(package)_cflags+=-Wno-error=implicit-function-declaration
+$(package)_cflags_darwin+=-Wno-error=deprecated-non-prototype -Wno-error=implicit-int
 $(package)_cxxflags=-std=c++17
 $(package)_cppflags_mingw32=-DUNICODE -D_UNICODE
 endef

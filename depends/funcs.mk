@@ -87,10 +87,10 @@ $(1)_download_path_fixed=$(subst :,\:,$$($(1)_download_path))
 # The default behavior for tar will try to set ownership when running as uid 0 and may not succeed, --no-same-owner disables this behavior
 $(1)_fetch_cmds ?= $(call fetch_file,$(1),$(subst \:,:,$$($(1)_download_path_fixed)),$$($(1)_download_file),$($(1)_file_name),$($(1)_sha256_hash))
 $(1)_extract_cmds ?= mkdir -p $$($(1)_extract_dir) && echo "$$($(1)_sha256_hash)  $$($(1)_source)" > $$($(1)_extract_dir)/.$$($(1)_file_name).hash &&  $(build_SHA256SUM) -c $$($(1)_extract_dir)/.$$($(1)_file_name).hash && tar --no-same-owner --strip-components=1 -xf $$($(1)_source)
-$(1)_preprocess_cmds ?=
-$(1)_build_cmds ?=
-$(1)_config_cmds ?=
-$(1)_stage_cmds ?=
+$(1)_preprocess_cmds ?= true
+$(1)_build_cmds ?= true
+$(1)_config_cmds ?= true
+$(1)_stage_cmds ?= true
 $(1)_set_vars ?=
 
 
@@ -138,6 +138,7 @@ $(1)_config_env+=$($(1)_config_env_$(host_arch)_$(host_os)) $($(1)_config_env_$(
 
 $(1)_config_env+=PKG_CONFIG_LIBDIR=$($($(1)_type)_prefix)/lib/pkgconfig
 $(1)_config_env+=PKG_CONFIG_PATH=$($($(1)_type)_prefix)/share/pkgconfig
+$(1)_config_env+=PKG_CONFIG_SYSROOT_DIR=/
 $(1)_config_env+=PATH=$(build_prefix)/bin:$(PATH)
 $(1)_build_env+=PATH=$(build_prefix)/bin:$(PATH)
 $(1)_stage_env+=PATH=$(build_prefix)/bin:$(PATH)
@@ -164,6 +165,33 @@ endif
 ifneq ($($(1)_ldflags),)
 $(1)_autoconf += LDFLAGS="$$($(1)_ldflags)"
 endif
+
+# We hardcode the library install path to "lib" to match the PKG_CONFIG_PATH
+# setting in depends/config.site.in, which also hardcodes "lib".
+# Without this setting, CMake by default would use the OS library
+# directory, which might be "lib64" or something else, not "lib", on multiarch systems.
+$(1)_cmake=env CC="$$($(1)_cc)" \
+               CFLAGS="$$($(1)_cppflags) $$($(1)_cflags)" \
+               CXX="$$($(1)_cxx)" \
+               CXXFLAGS="$$($(1)_cppflags) $$($(1)_cxxflags)" \
+               LDFLAGS="$$($(1)_ldflags)" \
+               cmake -DCMAKE_INSTALL_PREFIX:PATH="$$($($(1)_type)_prefix)" \
+               -DCMAKE_AR=`which $$($(1)_ar)` \
+               -DCMAKE_NM=`which $$($(1)_nm)` \
+               -DCMAKE_RANLIB=`which $$($(1)_ranlib)` \
+               -DCMAKE_INSTALL_LIBDIR=lib/ \
+               -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+               -DCMAKE_VERBOSE_MAKEFILE:BOOL=$(V) \
+               $$($(1)_config_opts)
+ifeq ($($(1)_type),build)
+$(1)_cmake += -DCMAKE_INSTALL_RPATH:PATH="$$($($(1)_type)_prefix)/lib"
+else
+ifneq ($(host),$(build))
+$(1)_cmake += -DCMAKE_SYSTEM_NAME=$($(host_os)_cmake_system_name)
+$(1)_cmake += -DCMAKE_C_COMPILER_TARGET=$(host)
+$(1)_cmake += -DCMAKE_CXX_COMPILER_TARGET=$(host)
+endif
+endif
 endef
 
 define int_add_cmds
@@ -189,17 +217,17 @@ $($(1)_configured): | $($(1)_dependencies) $($(1)_preprocessed)
 	$(AT)echo Configuring $(1)...
 	$(AT)rm -rf $(host_prefix); mkdir -p $(host_prefix)/lib; cd $(host_prefix); $(foreach package,$($(1)_all_dependencies), tar --no-same-owner -xf $($(package)_cached); )
 	$(AT)mkdir -p $$(@D)
-	$(AT)+cd $$(@D); $($(1)_config_env) $(call $(1)_config_cmds, $(1))
+	$(AT)+{ cd $$(@D); export $($(1)_config_env); $(call $(1)_config_cmds, $(1)); }
 	$(AT)touch $$@
 $($(1)_built): | $($(1)_configured)
 	$(AT)echo Building $(1)...
 	$(AT)mkdir -p $$(@D)
-	$(AT)+cd $$(@D); $($(1)_build_env) $(call $(1)_build_cmds, $(1))
+	$(AT)+{ cd $$(@D); export $($(1)_build_env); $(call $(1)_build_cmds, $(1)); }
 	$(AT)touch $$@
 $($(1)_staged): | $($(1)_built)
 	$(AT)echo Staging $(1)...
 	$(AT)mkdir -p $($(1)_staging_dir)/$(host_prefix)
-	$(AT)cd $($(1)_build_dir); $($(1)_stage_env) $(call $(1)_stage_cmds, $(1))
+	$(AT){ cd $($(1)_build_dir); export $($(1)_stage_env); $(call $(1)_stage_cmds, $(1)); }
 	$(AT)rm -rf $($(1)_extract_dir)
 	$(AT)touch $$@
 $($(1)_postprocessed): | $($(1)_staged)
