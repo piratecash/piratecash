@@ -3,7 +3,7 @@ Dash Core version v18.2.0
 
 Release is now available from:
 
-  <https://www.dash.org/downloads/#wallets>
+  <https://cosa.is/downloads/#wallets>
 
 This is a new minor version release, bringing new features, various bugfixes
 and other improvements.
@@ -24,7 +24,7 @@ How to Upgrade
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), then run the
 installer (on Windows) or just copy over /Applications/Dash-Qt (on Mac) or
-dashd/dash-qt (on Linux). If you upgrade after DIP0003 activation and you were
+cosantad/cosanta-qt (on Linux). If you upgrade after DIP0003 activation and you were
 using version < 0.13 you will have to reindex (start with -reindex-chainstate
 or -reindex) to make sure your wallet has all the new data synced. Upgrading
 from version 0.13 should not require any additional actions.
@@ -107,7 +107,7 @@ None
 ### Changes in existing RPCs introduced through bitcoin backports:
 - `walletprocesspsbt` and `walletcreatefundedpsbt` now include BIP 32 derivation paths by default for public keys if we know them. This can be disabled by setting `bip32derivs` to `false`.
 
-### Dash-specific changes in existing RPCs:
+### Cosanta-specific changes in existing RPCs:
 None
 
 Please check `help <command>` for more detailed information on specific RPCs.
@@ -116,7 +116,7 @@ Command-line options
 --------------------
 
 
-Please check `Help -> Command-line options` in Qt wallet or `dashd --help` for
+Please check `Help -> Command-line options` in Qt wallet or `cosantad --help` for
 more information.
 
 Backports from Bitcoin Core

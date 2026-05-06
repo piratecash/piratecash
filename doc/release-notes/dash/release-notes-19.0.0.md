@@ -2,7 +2,7 @@
 
 Release is now available from:
 
-  <https://www.dash.org/downloads/#wallets>
+  <https://cosa.is/downloads/#wallets>
 
 This is a new major version release, bringing new features, various bugfixes
 and other improvements.
@@ -21,7 +21,7 @@ Please report bugs using the issue tracker at GitHub:
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), then run the
 installer (on Windows) or just copy over /Applications/Dash-Qt (on Mac) or
-dashd/dash-qt (on Linux). If you upgrade after DIP0003 activation and you were
+cosantad/cosanta-qt (on Linux). If you upgrade after DIP0003 activation and you were
 using version < 0.13 you will have to reindex (start with -reindex-chainstate
 or -reindex) to make sure your wallet has all the new data synced. Upgrading
 from version 0.13 should not require any additional actions.
@@ -41,11 +41,11 @@ Downgrading to a version older than v19.0.0 is not supported due to changes in t
 
 ## High-Performance Masternodes
 
-In preparation for the release of Dash Platform to mainnet, a new masternode type has been added. High-performance masternodes will be responsible for hosting Dash Platform services (once they are on mainnet) in addition to the existing responsibilities like ChainLocks and InstantSend.
+In preparation for the release of Cosanta Platform to mainnet, a new masternode type has been added. High-performance masternodes will be responsible for hosting Cosanta Platform services (once they are on mainnet) in addition to the existing responsibilities like ChainLocks and InstantSend.
 
-Activation of the DashCore v19.0 hard fork will enable registration of the new 4000 DASH collateral masternodes. Until Dash Platform is released to mainnet, high-performance masternodes will provide the same services as regular masternodes with one small exception. Regular masternodes will no longer participate in the Platform-specific LLMQ after the hard fork since they will not be responsible for hosting Dash Platform.
+Activation of the Cosanta Core v19.0 hard fork will enable registration of the new 40000 COSA collateral masternodes. Until Cosanta Platform is released to mainnet, high-performance masternodes will provide the same services as regular masternodes with one small exception. Regular masternodes will no longer participate in the Platform-specific LLMQ after the hard fork since they will not be responsible for hosting Cosanta Platform.
 
-Note: In DashCore v19.0 the relative rewards and voting power are equivalent between regular and high-performance masternodes. Masternodes effectively receive one payout and one governance vote per 1000 DASH collateral. So, there is no difference in reward amount for running four regular masternodes or one high-performance masternode. In v19.0, high-performance masternodes simply receive payments in four consecutive blocks when they are selected for payout. Some frequently asked questions may be found at https://www.dash.org/hpmn-faq/.
+Note: In Cosanta Core v19.0 the relative rewards and voting power are equivalent between regular and high-performance masternodes. Masternodes effectively receive one payout and one governance vote per 10000 COSA collateral. So, there is no difference in reward amount for running four regular masternodes or one high-performance masternode. In v19.0, high-performance masternodes simply receive payments in four consecutive blocks when they are selected for payout. Some frequently asked questions may be found at https://cosa.is/hpmn-faq/.
 
 ## BLS Scheme Upgrade
 
@@ -113,13 +113,13 @@ The `version` field indicates which BLS scheme is used to serialise the `pubKeyO
 
 Dash Core will no longer automatically create new wallets on startup. It will
 load existing wallets specified by -wallet options on the command line or in
-dash.conf or settings.json files. And by default it will also load a
+cosanta.conf or settings.json files. And by default it will also load a
 top-level unnamed ("") wallet. However, if specified wallets don't exist,
 Dash Core will now just log warnings instead of creating new wallets with
 new keys and addresses like previous releases did.
 
 New wallets can be created through the GUI (which has a more prominent create
-wallet option), through the dash-wallet create command or the createwallet RPC.
+wallet option), through the cosanta-wallet create command or the createwallet RPC.
 
 ## P2P and Network Changes
 
@@ -172,7 +172,7 @@ argument. When provided, input and output scripts and keys will be filled in
 when known. See the RPC help text for full details.
 
 
-### Dash-specific changes in existing RPCs:
+### Cosanta-specific changes in existing RPCs:
 
 - `masternodelist`: New mode `recent` was added in order to hide banned masternodes for more than one `SuperblockCycle`. If the mode `recent` is used, then the reply mode is JSON (can be additionally filtered)
 - `quorum info`: The new `previousConsecutiveDKGFailures` field will be returned for rotated LLMQs. This field will hold the number of previous consecutive DKG failures for the corresponding quorumIndex before the currently active one. Note: If no previous commitments were found then 0 will be returned for `previousConsecutiveDKGFailures`.
@@ -200,9 +200,9 @@ Removed cmd-line options:
 
 Changes in existing cmd-line options:
 - `llmqinstantsend` and `llmqinstantsenddip0024` can be used in regtest now
-- Passing an invalid `-rpcauth` argument now cause dashd to fail to start.
+- Passing an invalid `-rpcauth` argument now cause cosantad to fail to start.
 
-Please check `Help -> Command-line options` in Qt wallet or `dashd --help` for
+Please check `Help -> Command-line options` in Qt wallet or `cosantad --help` for
 more information.
 
 ## Backports from Bitcoin Core
