@@ -1,4 +1,4 @@
-<TS version="2.1" language="ru">
+<TS language="ru" version="2.1">
 <context>
     <name>AddressBookPage</name>
     <message>
@@ -74,12 +74,12 @@
         <translation>Адреса получения</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Это ваши адреса Dash для отправки платежей. Всегда проверяйте количество и адрес получателя перед отправкой перевода.</translation>
+        <source>These are your Cosanta addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Это ваши адреса Cosanta для отправки платежей. Всегда проверяйте количество и адрес получателя перед отправкой перевода.</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>Это ваши адреса Dash для получения платежей. Используйте кнопку 'Создать новый адрес для получения' на закладке получения для создания новых адресов.</translation>
+        <source>These are your Cosanta addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Это ваши адреса Cosanta для приёма платежей. Рекомендуется использовать новый адрес получения для каждой транзакции.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -115,8 +115,6 @@
     </message>
     <message>
         <source>There was an error trying to save the address list to %1. Please try again.</source>
-        <comment>An error message.</comment>
-        <extracomment>%1 is a name of the file (e.g., "addrbook.csv") that the bitcoin addresses were exported to.</extracomment>
         <translation>Произошла ошибка при сохранении адресной книги в %1. Пожалуйста, попробуйте еще раз.</translation>
     </message>
 </context>
@@ -193,8 +191,12 @@
         <translation>Повторите новый пароль</translation>
     </message>
     <message>
-        <source>Show passphrase</source>
+        <source>Show password</source>
         <translation>Показать пароль</translation>
+    </message>
+    <message>
+        <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
+        <translation>Введите новый пароль кошелька.&lt;br/&gt;Используйте пароль, состоящий из &lt;b&gt;десяти или более случайных символов&lt;/b&gt; или &lt;b&gt;восьми или более слов&lt;/b&gt;.</translation>
     </message>
     <message>
         <source>Encrypt wallet</source>
@@ -205,7 +207,7 @@
         <translation>Для выполнения операции разблокирования требуется пароль вашего кошелька.</translation>
     </message>
     <message>
-        <source>Unlock wallet for mixing only</source>
+        <source>Unlock wallet for mixing and staking only</source>
         <translation>Разблокировать кошелёк только для перемешивания</translation>
     </message>
     <message>
@@ -225,12 +227,16 @@
         <translation>Сменить пароль</translation>
     </message>
     <message>
+        <source>Enter the old passphrase and new passphrase to the wallet.</source>
+        <translation>Введите старый пароль и новый пароль для кошелька.</translation>
+    </message>
+    <message>
         <source>Confirm wallet encryption</source>
         <translation>Подтвердите шифрование кошелька</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
-        <translation>Внимание: если Вы зашифруете кошелёк и потеряете пароль, вы &lt;b&gt;ПОТЕРЯЕТЕ ВСЕ ВАШИ DASH&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COSA&lt;/b&gt;!</source>
+        <translation>Внимание: если Вы зашифруете кошелёк и потеряете пароль, вы &lt;b&gt;ПОТЕРЯЕТЕ ВСЕ ВАШИ COSA&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -241,28 +247,8 @@
         <translation>Кошелёк зашифрован</translation>
     </message>
     <message>
-        <source>Enter the new passphrase for the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
-        <translation>Введите новый пароль кошелька.&lt;br/&gt;Используйте пароль, состоящий из &lt;b&gt;десяти или более случайных символов&lt;/b&gt; или &lt;b&gt;восьми или более слов&lt;/b&gt;.</translation>
-    </message>
-    <message>
-        <source>Enter the old passphrase and new passphrase for the wallet.</source>
-        <translation>Введите старый пароль и новый пароль для кошелька.</translation>
-    </message>
-    <message>
-        <source>Remember that encrypting your wallet cannot fully protect your funds from being stolen by malware infecting your computer.</source>
-        <translation>Помните, что шифрование вашего кошелька не может полностью защитить ваши средства от кражи с помощью инфицирования вашего компьютера вредоносным ПО.</translation>
-    </message>
-    <message>
-        <source>Wallet to be encrypted</source>
-        <translation>Кошелёк, который будет зашифрован</translation>
-    </message>
-    <message>
-        <source>Your wallet is about to be encrypted. </source>
-        <translation>Сейчас Ваш кошелёк будет зашифрован.</translation>
-    </message>
-    <message>
-        <source>Your wallet is now encrypted. </source>
-        <translation>Ваш кошелёк зашифрован.</translation>
+        <source>Your wallet is now encrypted. Remember that encrypting your wallet cannot fully protect your funds from being stolen by malware infecting your computer.</source>
+        <translation>Ваш кошелек теперь зашифрован. Помните, что шифрование вашего кошелька не может полностью защитить ваши средства от кражи с помощью инфицирования вашего компьютера вредоносным ПО.</translation>
     </message>
     <message>
         <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. Previous backups of the unencrypted wallet file contain the same HD seed and still have full access to all your funds just like the new, encrypted wallet.</source>
@@ -326,8 +312,20 @@
 <context>
     <name>BitcoinGUI</name>
     <message>
-        <source>A fatal error occurred. Dash Core can no longer continue safely and will quit.</source>
-        <translation>Произошла критическая ошибка. Дальнейшая безопасная работа Dash Core невозможна, программа будет закрыта.</translation>
+        <source>A fatal error occurred. Cosanta Core can no longer continue safely and will quit.</source>
+        <translation>Произошла критическая ошибка. Дальнейшая безопасная работа Cosanta Core невозможна, программа будет закрыта.</translation>
+    </message>
+    <message>
+        <source>Cosanta Core</source>
+        <translation>Cosanta Core</translation>
+    </message>
+    <message>
+        <source>Wallet</source>
+        <translation>Кошелёк</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation>Узел</translation>
     </message>
     <message>
         <source>&amp;Overview</source>
@@ -342,60 +340,16 @@
         <translation>&amp;Отправить</translation>
     </message>
     <message>
-        <source>Send coins to a Dash address</source>
-        <translation>Отправить монеты на указанный адрес Dash</translation>
+        <source>Send coins to a Cosanta address</source>
+        <translation>Отправить монеты на указанный адрес Cosanta</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>&amp;Получить</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
-        <translation>Запросить платежи (создать QR-коды и dash: URI)</translation>
-    </message>
-    <message>
-        <source>&amp;Sending addresses</source>
-        <translation>Адреса &amp;отправки</translation>
-    </message>
-    <message>
-        <source>&amp;Receiving addresses</source>
-        <translation>Адреса &amp;получения</translation>
-    </message>
-    <message>
-        <source>Open Wallet</source>
-        <translation>Открыть кошелёк</translation>
-    </message>
-    <message>
-        <source>Open a wallet</source>
-        <translation>Открыть кошелёк</translation>
-    </message>
-    <message>
-        <source>Close Wallet...</source>
-        <translation>Закрыть кошелёк...</translation>
-    </message>
-    <message>
-        <source>Close wallet</source>
-        <translation>Закрыть кошелёк</translation>
-    </message>
-    <message>
-        <source>No wallets available</source>
-        <translation>Нет доступных кошельков</translation>
-    </message>
-    <message>
-        <source>&amp;Window</source>
-        <translation>&amp;Окно</translation>
-    </message>
-    <message>
-        <source>Minimize</source>
-        <translation>Свернуть</translation>
-    </message>
-    <message>
-        <source>Zoom</source>
-        <translation>Увеличить</translation>
-    </message>
-    <message>
-        <source>Main Window</source>
-        <translation>Главное окно</translation>
+        <source>Request payments (generates QR codes and cosa: URIs)</source>
+        <translation>Запросить платежи (создать QR-коды и cosa: URI)</translation>
     </message>
     <message>
         <source>&amp;Transactions</source>
@@ -422,6 +376,10 @@
         <translation>Закрыть приложение</translation>
     </message>
     <message>
+        <source>Show information about Cosanta Core</source>
+        <translation>Показать информацию о Cosanta Core</translation>
+    </message>
+    <message>
         <source>About &amp;Qt</source>
         <translation>О &amp;Qt</translation>
     </message>
@@ -438,8 +396,8 @@
         <translation>&amp;О %1</translation>
     </message>
     <message>
-        <source>Send %1 funds to a Dash address</source>
-        <translation>Отправить %1 средства на Dash адрес</translation>
+        <source>Send %1 funds to a Cosanta address</source>
+        <translation>Отправить %1 средства на Cosanta адрес</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -494,16 +452,16 @@
         <translation>П&amp;одписать сообщение...</translation>
     </message>
     <message>
-        <source>Sign messages with your Dash addresses to prove you own them</source>
-        <translation>Подписать сообщения вашими адресами Dash, чтобы доказать, что вы ими владеете</translation>
+        <source>Sign messages with your Cosanta addresses to prove you own them</source>
+        <translation>Подписать сообщения вашими адресами Cosanta, чтобы доказать, что вы ими владеете</translation>
     </message>
     <message>
         <source>&amp;Verify message...</source>
         <translation>&amp;Проверить сообщение...</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dash addresses</source>
-        <translation>Проверить сообщения, чтобы удостовериться, что они были подписаны определёнными адресами Dash</translation>
+        <source>Verify messages to ensure they were signed with specified Cosanta addresses</source>
+        <translation>Проверить сообщения, чтобы удостовериться, что они были подписаны определёнными адресами Cosanta</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -516,6 +474,10 @@
     <message>
         <source>&amp;Debug console</source>
         <translation>&amp;Консоль отладки</translation>
+    </message>
+    <message>
+        <source>Open debugging console</source>
+        <translation>Открыть консоль отладки</translation>
     </message>
     <message>
         <source>&amp;Network Monitor</source>
@@ -558,8 +520,16 @@
         <translation>Показать автоматически созданные резервные копии кошелька</translation>
     </message>
     <message>
+        <source>&amp;Sending addresses...</source>
+        <translation>Адреса &amp;отправки...</translation>
+    </message>
+    <message>
         <source>Show the list of used sending addresses and labels</source>
         <translation>Показать список использованных адресов отправки и их меток</translation>
+    </message>
+    <message>
+        <source>&amp;Receiving addresses...</source>
+        <translation>Адреса &amp;получения...</translation>
     </message>
     <message>
         <source>Show the list of used receiving addresses and labels</source>
@@ -570,11 +540,15 @@
         <translation>Открыть &amp;URI...</translation>
     </message>
     <message>
+        <source>Open a cosa: URI or payment request</source>
+        <translation>Открыть cosa: URI или запрос платежа</translation>
+    </message>
+    <message>
         <source>&amp;Command-line options</source>
         <translation>&amp;Параметры командной строки</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Dash command-line options</source>
+        <source>Show the %1 help message to get a list with possible Cosanta command-line options</source>
         <translation>Показать справку по %1 со списком возможных параметров командной строки</translation>
     </message>
     <message>
@@ -600,26 +574,6 @@
         <translation>&amp;Файл</translation>
     </message>
     <message>
-        <source>Show information about %1</source>
-        <translation>Показать информацию о %1</translation>
-    </message>
-    <message>
-        <source>Open debugging and diagnostic console</source>
-        <translation>Открыть консоль отладки и диагностики</translation>
-    </message>
-    <message>
-        <source>Open a dash: URI</source>
-        <translation>Открыть dash: URI</translation>
-    </message>
-    <message>
-        <source>Create Wallet...</source>
-        <translation>Создать кошелёк...</translation>
-    </message>
-    <message>
-        <source>Create a new wallet</source>
-        <translation>Создать новый кошелёк</translation>
-    </message>
-    <message>
         <source>%1 &amp;information</source>
         <translation>&amp;Информация о %1</translation>
     </message>
@@ -632,6 +586,10 @@
         <translation>&amp;Настройки</translation>
     </message>
     <message>
+        <source>&amp;Tools</source>
+        <translation>&amp;Инструменты</translation>
+    </message>
+    <message>
         <source>&amp;Help</source>
         <translation>&amp;Помощь</translation>
     </message>
@@ -639,17 +597,9 @@
         <source>Tabs toolbar</source>
         <translation>Панель вкладок</translation>
     </message>
-    <message>
-        <source>&amp;Governance</source>
-        <translation>&amp;Управление</translation>
-    </message>
-    <message>
-        <source>View Governance Proposals</source>
-        <translation>Посмотреть предложения по Управлению</translation>
-    </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Dash network</source>
-        <translation><numerusform>%n активное соединение с сетью Dash</numerusform><numerusform>%n активных соединения с сетью Dash</numerusform><numerusform>%n активных соединений с сетью Dash</numerusform><numerusform>%n активных соединений с сетью Dash</numerusform></translation>
+        <source>%n active connection(s) to Cosanta network</source>
+        <translation><numerusform>%n активное соединение с сетью Cosanta</numerusform><numerusform>%n активных соединения с сетью Cosanta</numerusform><numerusform>%n активных соединений с сетью Cosanta</numerusform><numerusform>%n активных соединений с сетью Cosanta</numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
@@ -712,16 +662,8 @@
         <translation>Ошибка</translation>
     </message>
     <message>
-        <source>Error: %1</source>
-        <translation>Ошибка: %1</translation>
-    </message>
-    <message>
         <source>Warning</source>
         <translation>Внимание</translation>
-    </message>
-    <message>
-        <source>Warning: %1</source>
-        <translation>Внимание: %1</translation>
     </message>
     <message>
         <source>Information</source>
@@ -804,14 +746,6 @@
     <message>
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;locked&lt;/b&gt;</source>
         <translation>Кошелёк &lt;b&gt;зашифрован&lt;/b&gt; и в настоящее время &lt;b&gt;заблокирован&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>Proxy is &lt;b&gt;enabled&lt;/b&gt;: %1</source>
-        <translation>Прокси &lt;b&gt;включен&lt;/b&gt;: %1</translation>
-    </message>
-    <message>
-        <source>Original message:</source>
-        <translation>Изначальное сообщение:</translation>
     </message>
 </context>
 <context>
@@ -965,8 +899,8 @@
         <translation>Эта метка становится красной, если какой-либо из адресатов получает сумму меньше, чем "пыль".</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 duff(s) per input.</source>
-        <translation>Может отличаться на +/- %1 duff(ов) на каждый вход.</translation>
+        <source>Can vary +/- %1 unit(s) per input.</source>
+        <translation>Может отличаться на +/- %1 unit(ов) на каждый вход.</translation>
     </message>
     <message>
         <source>Some coins were unselected because they were spent.</source>
@@ -1010,60 +944,6 @@
     </message>
 </context>
 <context>
-    <name>CreateWalletActivity</name>
-    <message>
-        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
-        <translation>Создается кошелёк&lt;b&gt;%1&lt;/b&gt;...</translation>
-    </message>
-    <message>
-        <source>Create wallet failed</source>
-        <translation>Не удалось создать кошелёк</translation>
-    </message>
-    <message>
-        <source>Create wallet warning</source>
-        <translation>Предупреждение при создании кошелька</translation>
-    </message>
-</context>
-<context>
-    <name>CreateWalletDialog</name>
-    <message>
-        <source>Create Wallet</source>
-        <translation>Создать кошелёк</translation>
-    </message>
-    <message>
-        <source>Wallet Name</source>
-        <translation>Имя кошелька</translation>
-    </message>
-    <message>
-        <source>Encrypt the wallet. The wallet will be encrypted with a passphrase of your choice.</source>
-        <translation>Зашифровать кошелёк. Кошелёк будет зашифрован паролем, который Вы укажете.</translation>
-    </message>
-    <message>
-        <source>Encrypt Wallet</source>
-        <translation>Зашифровать кошелёк</translation>
-    </message>
-    <message>
-        <source>Disable private keys for this wallet. Wallets with private keys disabled will have no private keys and cannot have an HD seed or imported private keys. This is ideal for watch-only wallets.</source>
-        <translation>Запретить закрытые ключи для этого кошелька. Кошельки с запретом закрытых ключей не содержат изначальных закрытых ключей, а также не могут импортировать HD сиды и другие закрытые ключи. Это идеальный вариант для кошельков с доступом только для просмотра.</translation>
-    </message>
-    <message>
-        <source>Disable Private Keys</source>
-        <translation>Запретить закрытые ключи</translation>
-    </message>
-    <message>
-        <source>Make a blank wallet. Blank wallets do not initially have private keys or scripts. Private keys and addresses can be imported, or an HD seed can be set, at a later time.</source>
-        <translation>Создать пустой кошелёк. Пустые кошельки изначально не хранят закрытых ключей или скриптов. Можно импортировать закрытые ключи и адреса либо установить HD сид позже.</translation>
-    </message>
-    <message>
-        <source>Make Blank Wallet</source>
-        <translation>Создать пустой кошелёк</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation>Создать</translation>
-    </message>
-</context>
-<context>
     <name>EditAddressDialog</name>
     <message>
         <source>Edit Address</source>
@@ -1098,16 +978,12 @@
         <translation>Изменение адреса для отправки</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Dash address.</source>
-        <translation>Введённый адрес "%1" не является правильным адресом Dash.</translation>
+        <source>The entered address "%1" is not a valid Cosanta address.</source>
+        <translation>Введённый адрес "%1" не является правильным адресом Cosanta.</translation>
     </message>
     <message>
-        <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
-        <translation>Адрес "%1" уже присутствует в списке адресов получения под меткой "%2" и поэтому он не может быть добавлен в список адресов отправки.</translation>
-    </message>
-    <message>
-        <source>The entered address "%1" is already in the address book with label "%2".</source>
-        <translation>Введённый адрес "%1" уже находится в адресной книге под меткой "%2".</translation>
+        <source>The entered address "%1" is already in the address book.</source>
+        <translation>Введённый адрес "%1" уже находится в адресной книге.</translation>
     </message>
     <message>
         <source>Could not unlock wallet.</source>
@@ -1142,37 +1018,14 @@
     </message>
 </context>
 <context>
-    <name>GovernanceList</name>
-    <message>
-        <source>Form</source>
-        <translation>Форма</translation>
-    </message>
-    <message>
-        <source>Filter List:</source>
-        <translation>Фильтровать список:</translation>
-    </message>
-    <message>
-        <source>Filter proposal list</source>
-        <translation>Фильтровать список предложений</translation>
-    </message>
-    <message>
-        <source>Proposal Count:</source>
-        <translation>Количество предложений:</translation>
-    </message>
-    <message>
-        <source>Filter by Title</source>
-        <translation>Сортировать по названию</translation>
-    </message>
-    <message>
-        <source>Proposal Info: %1</source>
-        <translation>Информация о предложении: %1</translation>
-    </message>
-</context>
-<context>
     <name>HelpMessageDialog</name>
     <message>
         <source>version</source>
         <translation>версия</translation>
+    </message>
+    <message>
+        <source>(%1-bit)</source>
+        <translation>(%1-бит)</translation>
     </message>
     <message>
         <source>About %1</source>
@@ -1187,8 +1040,8 @@
         <translation>Информация о %1</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Dash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH and 10 DASH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;Основы %1&lt;/h3&gt;%1 позволяет Вам получить настоящую финансовую конфиденциальность за счет скрытия источников Ваших средств. Все Dash в  Вашем кошельке состоят из различных "входов", Вы можете думать о них как об отдельных монетах.&lt;br&gt;%1 использует инновационный процесс для перемешивания Ваших входов со входами еще двоих или более человек, но при этом Ваши монеты никогда не покидают Ваш кошелек. Вы сохраняете контроль над Вашими деньгами на протяжении всего времени.&lt;hr&gt; &lt;b&gt;%1 работает так:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 начинается с разбиения Ваших входов транзакций на стандартные номиналы. Такими номиналами являются 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH и 10 DASH -- что-то вроде купюр, которыми вы пользуетесь каждый день.&lt;/li&gt; &lt;li&gt;Ваш кошелек затем отправляет запросы к особым образом настроенным сетевым узлам, называемым "мастернодами". Эти мастерноды знают только то, что Вы хотите перемешать определенные номиналы. Никакой идентифицирующей информации мастернодам не отправляется, так что они не знают "кто" Вы конкретно.&lt;/li&gt; &lt;li&gt;Сессия перемешивания начинается тогда, когда еще двое или более человек отправляют схожее сообщение, подтверждающее, что они хотят перемешать точно такой же номинал. Мастернода перемешивает входы и просит кошельки всех пользователей осуществить платежи по ним. Ваш кошелек осуществляет выплату самому себе, но на другой адрес (тоже из вашего кошелька).&lt;/li&gt; &lt;li&gt;Для скрытия Ваших средств кошелек должен повторить этот процесс несколько раз с каждым номиналом. Каждый раз, когда такой процесс завершается, называется "раундом". С каждым раундом %1 становится экспоненциально сложнее определить откуда поступили средства.&lt;/li&gt; &lt;li&gt;Процесс перемешивания выполняется в фоне, без участия пользователя. Когда Вы захотите провести транзакцию, средства уже будут перемешаны. Дополнительно ждать не требуется.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;ВАЖНО:&lt;/b&gt; Ваш кошелек содержит 1000 адресов. Каждое перемешивание использует до 9 из этих адресов. Это означает, что 1000 адресов хватит примерно на 100 перемешиваний. Когда 900 адресов будут уже использованы, Ваш кошелек должен создать новые адреса. Однако, он может сделать это, только если у Вас включены автоматические резервные копии.&lt;br&gt;Соответственно, пользователям с отключенным резервным копированием %1 не доступен. &lt;hr&gt;Дополнительная информация доступна в &lt;a style="%2" href="%3"&gt; документации %1&lt;/a&gt;.</translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Cosanta in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 COSA, 0.01 COSA, 0.1 COSA, 1 COSA and 10 COSA -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;Основы %1&lt;/h3&gt;%1 позволяет Вам получить настоящую финансовую конфиденциальность за счет скрытия источников Ваших средств. Все Cosanta в  Вашем кошельке состоят из различных "входов", Вы можете думать о них как об отдельных монетах.&lt;br&gt;%1 использует инновационный процесс для перемешивания Ваших входов со входами еще двоих или более человек, но при этом Ваши монеты никогда не покидают Ваш кошелек. Вы сохраняете контроль над Вашими деньгами на протяжении всего времени.&lt;hr&gt; &lt;b&gt;%1 работает так:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 начинается с разбиения Ваших входов транзакций на стандартные номиналы. Такими номиналами являются 0.001 COSA, 0.01 COSA, 0.1 COSA, 1 COSA и 10 COSA -- что-то вроде купюр, которыми вы пользуетесь каждый день.&lt;/li&gt; &lt;li&gt;Ваш кошелек затем отправляет запросы к особым образом настроенным сетевым узлам, называемым "мастернодами". Эти мастерноды знают только то, что Вы хотите перемешать определенные номиналы. Никакой идентифицирующей информации мастернодам не отправляется, так что они не знают "кто" Вы конкретно.&lt;/li&gt; &lt;li&gt;Сессия перемешивания начинается тогда, когда еще двое или более человек отправляют схожее сообщение, подтверждающее, что они хотят перемешать точно такой же номинал. Мастернода перемешивает входы и просит кошельки всех пользователей осуществить платежи по ним. Ваш кошелек осуществляет выплату самому себе, но на другой адрес (тоже из вашего кошелька).&lt;/li&gt; &lt;li&gt;Для скрытия Ваших средств кошелек должен повторить этот процесс несколько раз с каждым номиналом. Каждый раз, когда такой процесс завершается, называется "раундом". С каждым раундом %1 становится экспоненциально сложнее определить откуда поступили средства.&lt;/li&gt; &lt;li&gt;Процесс перемешивания выполняется в фоне, без участия пользователя. Когда Вы захотите провести транзакцию, средства уже будут перемешаны. Дополнительно ждать не требуется.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;ВАЖНО:&lt;/b&gt; Ваш кошелек содержит 1000 адресов. Каждое перемешивание использует до 9 из этих адресов. Это означает, что 1000 адресов хватит примерно на 100 перемешиваний. Когда 900 адресов будут уже использованы, Ваш кошелек должен создать новые адреса. Однако, он может сделать это, только если у Вас включены автоматические резервные копии.&lt;br&gt;Соответственно, пользователям с отключенным резервным копированием %1 не доступен. &lt;hr&gt;Дополнительная информация доступна в &lt;a style="%2" href="%3"&gt; документации %1&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -1234,8 +1087,8 @@
         <translation>Приблизительно %1 GB данных будет сохранено в этой папке.</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Dash block chain.</source>
-        <translation>%1 скачает и сохранит копию цепочки блоков Dash.</translation>
+        <source>%1 will download and store a copy of the Cosanta block chain.</source>
+        <translation>%1 скачает и сохранит копию цепочки блоков Cosanta.</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1269,6 +1122,10 @@
         <translation>Статус</translation>
     </message>
     <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
         <source>Filter List:</source>
         <translation>Фильтровать список:</translation>
     </message>
@@ -1291,10 +1148,6 @@
     <message>
         <source>Service</source>
         <translation>Сервис</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation>Тип</translation>
     </message>
     <message>
         <source>PoSe Score</source>
@@ -1334,7 +1187,7 @@
     </message>
     <message>
         <source>Copy ProTx Hash</source>
-        <translation>Скопировать хеш ProTx</translation>
+        <translation>Скопировать хэш ProTx</translation>
     </message>
     <message>
         <source>Copy Collateral Outpoint</source>
@@ -1374,7 +1227,7 @@
     </message>
     <message>
         <source>Filter by any property (e.g. address or protx hash)</source>
-        <translation>Фильтровать по любому значению (например, по адресу или по хешу регистрационной транзакции)</translation>
+        <translation>Фильтровать по любому значению (например, по адресу или по регистрационной транзакции)</translation>
     </message>
     <message>
         <source>Please wait...</source>
@@ -1392,11 +1245,11 @@
         <translation>Форма</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
-        <translation>Последние транзакции пока что могут быть не видны и поэтому ваш баланс может отображаться некорректно. Информация будет корректироваться по мере синхронизации с сетью Dash, подробности о ходе синхронизации представлены ниже.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Cosanta network, as detailed below.</source>
+        <translation>Последние транзакции пока что могут быть не видны и поэтому ваш баланс может отображаться некорректно. Информация будет корректироваться по мере синхронизации с сетью Cosanta, подробности о ходе синхронизации представлены ниже.</translation>
     </message>
     <message>
-        <source>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <source>Attempting to spend Cosanta that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
         <translation>Попытка потратить средства из ещё не отображённых транзакций будет отвергнута сетью.</translation>
     </message>
     <message>
@@ -1432,12 +1285,8 @@
         <translation>Скрыть</translation>
     </message>
     <message>
-        <source>Dash Core is currently syncing.  It will download headers and blocks from peers and validate them until reaching the tip of the block chain.</source>
-        <translation>Dash Core синхронизируется.  Он будет скачивать заголовки и блоки и проверять их, пока не достигнет вершины цепочки блоков.</translation>
-    </message>
-    <message>
-        <source>Unknown. Syncing Headers (%1, %2%)...</source>
-        <translation>Неизвестно. Синхронизация заголовков (%1, %2%)...</translation>
+        <source>Unknown. Syncing Headers (%1)...</source>
+        <translation>Неизвестно. Синхронизация заголовков (%1)...</translation>
     </message>
 </context>
 <context>
@@ -1447,27 +1296,20 @@
         <translation>Открыть URI</translation>
     </message>
     <message>
+        <source>Open payment request from URI or file</source>
+        <translation>Открыть запрос платежа из URI или файла</translation>
+    </message>
+    <message>
         <source>URI:</source>
         <translation>URI:</translation>
     </message>
-</context>
-<context>
-    <name>OpenWalletActivity</name>
     <message>
-        <source>Open wallet failed</source>
-        <translation>Не удалось открыть кошелёк</translation>
+        <source>Select payment request file</source>
+        <translation>Выбрать файл запроса платежа</translation>
     </message>
     <message>
-        <source>Open wallet warning</source>
-        <translation>Предупреждение при открытии кошелька</translation>
-    </message>
-    <message>
-        <source>default wallet</source>
-        <translation>кошелек по умолчанию</translation>
-    </message>
-    <message>
-        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
-        <translation>Открывается кошелёк&lt;b&gt;%1&lt;/b&gt;...</translation>
+        <source>Select payment request file to open</source>
+        <translation>Выберите файл запроса платежа</translation>
     </message>
 </context>
 <context>
@@ -1483,6 +1325,10 @@
     <message>
         <source>Size of &amp;database cache</source>
         <translation>Размер кэша &amp;БД</translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation>МБ</translation>
     </message>
     <message>
         <source>Number of script &amp;verification threads</source>
@@ -1501,6 +1347,10 @@
         <translation>&amp;Внешний вид</translation>
     </message>
     <message>
+        <source>Disables some advanced features but all blocks will still be fully validated. Reverting this setting requires re-downloading the entire blockchain. Actual disk usage may be somewhat higher.</source>
+        <translation>Отключает некоторые продвинутые функции, но блоки все еще будут проверяться. Отмена этой настройки потребует скачивания всех блоков заново. Реальное использование диска может быть несколько выше.</translation>
+    </message>
+    <message>
         <source>Prune &amp;block storage to</source>
         <translation>Ограничить &amp;хранение блоков до</translation>
     </message>
@@ -1513,32 +1363,12 @@
         <translation>Отмена этой настройки потребует скачивания всех блоков заново.</translation>
     </message>
     <message>
-        <source>MiB</source>
-        <translation>MiB</translation>
-    </message>
-    <message>
-        <source>Whether to keep the specified custom change address or not.</source>
-        <translation>Сохранять указанный свой адрес для сдачи или нет.</translation>
-    </message>
-    <message>
-        <source>Keep custom change &amp;address</source>
-        <translation>Сохранить свой &amp;адрес для сдачи</translation>
-    </message>
-    <message>
         <source>Show additional tab listing all your masternodes in first sub-tab&lt;br/&gt;and all masternodes on the network in second sub-tab.</source>
         <translation>Показывать дополнительную вкладку со списком своих мастернод&lt;br/&gt;в одной таблице и списком всех мастернод в другой.</translation>
     </message>
     <message>
         <source>Show Masternodes Tab</source>
         <translation>Показывать вкладку с мастернодами</translation>
-    </message>
-    <message>
-        <source>Show additional tab listing governance proposals.</source>
-        <translation>Показать дополнительную вкладку с предложениями по управлению.</translation>
-    </message>
-    <message>
-        <source>Show Governance Tab</source>
-        <translation>Показать вкладку управления</translation>
     </message>
     <message>
         <source>If you disable the spending of unconfirmed change, the change from a transaction&lt;br/&gt;cannot be used until that transaction has at least one confirmation.&lt;br/&gt;This also affects how your balance is computed.</source>
@@ -1593,12 +1423,8 @@
         <translation>Целевой баланс</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Автоматически открыть порт для Dash Core на роутере. Работает только в том случае, если Ваш роутер поддерживает UPnP и данная функция включена.</translation>
-    </message>
-    <message>
-        <source>Map port using NA&amp;T-PMP</source>
-        <translation>Пробросить порт через NA&amp;T-PMP</translation>
+        <source>Automatically open the Cosanta Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Автоматически открыть порт для Cosanta Core на роутере. Работает только в том случае, если Ваш роутер поддерживает UPnP и данная функция включена.</translation>
     </message>
     <message>
         <source>Accept connections from outside.</source>
@@ -1609,8 +1435,8 @@
         <translation>Принимать &amp;входящие подключения</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a SOCKS5 proxy.</source>
-        <translation>Подключаться к сети Dash через прокси SOCKS5.</translation>
+        <source>Connect to the Cosanta network through a SOCKS5 proxy.</source>
+        <translation>Подключаться к сети Cosanta через прокси SOCKS5.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1623,10 +1449,6 @@
     <message>
         <source>Use separate SOCKS&amp;5 proxy to reach peers via Tor hidden services:</source>
         <translation>Использовать отдельный SOCKS&amp;5 прокси для подключения через Tor:</translation>
-    </message>
-    <message>
-        <source>Options set in this dialog are overridden by the command line or in the configuration file:</source>
-        <translation>Настройки, указанные в этом диалоге, перекрываются командной строкой либо файлом настроек:</translation>
     </message>
     <message>
         <source>Hide the icon from the system tray.</source>
@@ -1642,7 +1464,7 @@
     </message>
     <message>
         <source>Third party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items.&lt;br/&gt;%s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</source>
-        <translation>Сторонние URL (например, block explorer), которые отображаются на вкладке транзакций как пункты контекстного меню.&lt;br/&gt;%s в URL заменяется хешем транзакции. URL отделяются друг от друга вертикальной чертой |.</translation>
+        <translation>Сторонние URL (например, block explorer), которые отображаются на вкладке транзакций как пункты контекстного меню.&lt;br/&gt;%s в URL заменяется хэшем транзакции. URL отделяются друг от друга вертикальной чертой |.</translation>
     </message>
     <message>
         <source>&amp;Third party transaction URLs</source>
@@ -1677,16 +1499,8 @@
         <translation>&amp;Сеть</translation>
     </message>
     <message>
-        <source>Enabling pruning significantly reduces the disk space required to store transactions. All blocks are still fully validated. Reverting this setting requires re-downloading the entire blockchain.</source>
-        <translation>Включение удаления блоков существенно снижает требования к месту на диске для хранения транзакций. При этом все блоки все равно полностью проверяются. Отключение этой настройки потребует скачивания все цепочки блоков заново.</translation>
-    </message>
-    <message>
         <source>Map port using &amp;UPnP</source>
         <translation>Пробросить порт через &amp;UPnP</translation>
-    </message>
-    <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
-        <translation>Автоматически открыть порт для Dash Core на роутере. Работает только в том случае, если Ваш роутер поддерживает NAT-PMP и данная функция включена. Внешний порт может быть любым.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -1721,8 +1535,8 @@
         <translation>Tor</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a separate SOCKS5 proxy for Tor hidden services.</source>
-        <translation>Подключаться к сети Dash через отдельный прокси SOCKS5 для скрытых сервисов Tor.</translation>
+        <source>Connect to the Cosanta network through a separate SOCKS5 proxy for Tor hidden services.</source>
+        <translation>Подключаться к сети Cosanta через отдельный прокси SOCKS5 для скрытых сервисов Tor.</translation>
     </message>
     <message>
         <source>Show only a tray icon after minimizing the window.</source>
@@ -1750,9 +1564,9 @@
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/projects/p/dash/</source>
+https://www.transifex.com/projects/p/cosa/</source>
         <translation>Нет Вашего языка или перевод неполон? Помогите нам сделать перевод лучше:
-https://www.transifex.com/projects/p/dash/</translation>
+https://www.transifex.com/projects/p/cosa/</translation>
     </message>
     <message>
         <source>&amp;Unit to show amounts in:</source>
@@ -1765,6 +1579,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Decimal digits</source>
         <translation>Знаков после запятой</translation>
+    </message>
+    <message>
+        <source>Active command-line options that override above options:</source>
+        <translation>Активные параметры командной строки, которые перекрывают вышеуказанные настройки:</translation>
     </message>
     <message>
         <source>Reset all client options to default.</source>
@@ -1818,8 +1636,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Форма</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Dash network after a connection is established, but this process has not completed yet.</source>
-        <translation>Отображаемая информация может быть устаревшей. Ваш кошелёк автоматически синхронизируется с сетью Dash после подключения, но этот процесс пока не завершён.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Cosanta network after a connection is established, but this process has not completed yet.</source>
+        <translation>Отображаемая информация может быть устаревшей. Ваш кошелёк автоматически синхронизируется с сетью Cosanta после подключения, но этот процесс пока не завершён.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -1898,8 +1716,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Сумма и раунды:</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
-        <translation>0 DASH / 0 раундов</translation>
+        <source>0 COSA / 0 Rounds</source>
+        <translation>0 COSA / 0 раундов</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -2041,32 +1859,92 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Ошибка запроса платежа</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
-        <translation>Не удаётся запустить обработчик dash: click-to-pay</translation>
+        <source>Cannot start cosa: click-to-pay handler</source>
+        <translation>Не удаётся запустить обработчик cosa: click-to-pay</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>Обработка URI</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash://' не является валидным URI. Используйте 'dash:'.</translation>
+        <source>'cosa://' is not a valid URI. Use 'cosa:' instead.</source>
+        <translation>'cosa://' не является валидным URI. Используйте 'cosa:'.</translation>
     </message>
     <message>
-        <source>Cannot process payment request as BIP70 is no longer supported.</source>
-        <translation>Невозможно обработать запрос платежа так как BIP70 больше не поддерживается.</translation>
+        <source>Payment request fetch URL is invalid: %1</source>
+        <translation>Неверный URL запроса платежа: %1</translation>
     </message>
     <message>
         <source>Invalid payment address %1</source>
         <translation>Неверный адрес платежа %1</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Dash address or malformed URI parameters.</source>
-        <translation>Не удалось разобрать URI! Возможно указан некорректный адрес Dash либо параметры URI сформированы неверно.</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid Cosanta address or malformed URI parameters.</source>
+        <translation>Не удалось разобрать URI! Возможно указан некорректный адрес Cosanta либо параметры URI сформированы неверно.</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
         <translation>Обработка файла запроса платежа</translation>
+    </message>
+    <message>
+        <source>Payment request file cannot be read! This can be caused by an invalid payment request file.</source>
+        <translation>Не удается прочесть либо разобрать файл запроса платежа! Возможно это некоректный файл.</translation>
+    </message>
+    <message>
+        <source>Payment request rejected</source>
+        <translation>Запрос платежа отклонен</translation>
+    </message>
+    <message>
+        <source>Payment request network doesn't match client network.</source>
+        <translation>Сеть запроса платежа не соответствует сети клиента.</translation>
+    </message>
+    <message>
+        <source>Payment request expired.</source>
+        <translation>Время этого запроса платежа истекло.</translation>
+    </message>
+    <message>
+        <source>Payment request is not initialized.</source>
+        <translation>Запрос платежа не инициализирован.</translation>
+    </message>
+    <message>
+        <source>Unverified payment requests to custom payment scripts are unsupported.</source>
+        <translation>Непроверенные запросы платежей с нестандартными платёжными сценариями не поддерживаются.</translation>
+    </message>
+    <message>
+        <source>Invalid payment request.</source>
+        <translation>Неправильный запрос платежа.</translation>
+    </message>
+    <message>
+        <source>Requested payment amount of %1 is too small (considered dust).</source>
+        <translation>Запрошенная сумма платежа %1 слишком мала (считается "пылью").</translation>
+    </message>
+    <message>
+        <source>Refund from %1</source>
+        <translation>Возврат от %1</translation>
+    </message>
+    <message>
+        <source>Payment request %1 is too large (%2 bytes, allowed %3 bytes).</source>
+        <translation>Запрос платежа %1 слишком большой (%2 байт, разрешено %3 байт).</translation>
+    </message>
+    <message>
+        <source>Error communicating with %1: %2</source>
+        <translation>Ошибка связи с %1: %2</translation>
+    </message>
+    <message>
+        <source>Payment request cannot be parsed!</source>
+        <translation>Не могу разобрать запрос платежа!</translation>
+    </message>
+    <message>
+        <source>Bad response from server %1</source>
+        <translation>Плохой ответ от сервера %1</translation>
+    </message>
+    <message>
+        <source>Network request error</source>
+        <translation>Ошибка сетевого запроса</translation>
+    </message>
+    <message>
+        <source>Payment acknowledged</source>
+        <translation>Платёж принят</translation>
     </message>
 </context>
 <context>
@@ -2094,56 +1972,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Received</source>
         <translation>Получено</translation>
-    </message>
-</context>
-<context>
-    <name>Proposal</name>
-    <message>
-        <source>Passing +%1</source>
-        <translation>Проходит +%1</translation>
-    </message>
-    <message>
-        <source>Needs additional %1 votes</source>
-        <translation>Нужно еще %1 голосов</translation>
-    </message>
-</context>
-<context>
-    <name>ProposalModel</name>
-    <message>
-        <source>Yes</source>
-        <translation>Да</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation>Нет</translation>
-    </message>
-    <message>
-        <source>Hash</source>
-        <translation>Хеш</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation>Название</translation>
-    </message>
-    <message>
-        <source>Start</source>
-        <translation>Начало</translation>
-    </message>
-    <message>
-        <source>End</source>
-        <translation>Конец</translation>
-    </message>
-    <message>
-        <source>Amount</source>
-        <translation>Сумма</translation>
-    </message>
-    <message>
-        <source>Active</source>
-        <translation>Активно</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation>Статус</translation>
     </message>
 </context>
 <context>
@@ -2181,52 +2009,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Сбросить все настройки, измененные через графический интерфейс</translation>
     </message>
     <message>
+        <source>Set SSL root certificates for payment request (default: -system-)</source>
+        <translation>Указать корневые SSL-сертификаты для запроса платежа (по умолчанию: -system-)</translation>
+    </message>
+    <message>
         <source>Show splash screen on startup (default: %u)</source>
         <translation>Показывать заставку при запуске (по умолчанию: %u)</translation>
-    </message>
-    <message>
-        <source>Error: Specified data directory "%1" does not exist.</source>
-        <translation>Ошибка: Указанная папка данных "%1" не существует.</translation>
-    </message>
-    <message>
-        <source>Error: Cannot parse configuration file: %1.</source>
-        <translation>Ошибка: не могу прочитать файл настроек: %1.</translation>
-    </message>
-    <message>
-        <source>Error: %1</source>
-        <translation>Ошибка: %1</translation>
-    </message>
-    <message>
-        <source>Error initializing settings: %1</source>
-        <translation>Ошибка инициализации настроек: %1</translation>
-    </message>
-    <message>
-        <source>Error: Failed to load application fonts.</source>
-        <translation>Ошибка: не удалось загрузить шрифты приложения.</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-family invalid. Valid values: %1.</source>
-        <translation>Ошибка: некорректное значение font-family. Допустимые значения: %1.</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-weight-normal invalid. Valid range %1 to %2.</source>
-        <translation>Ошибка: некорректное значение font-weight-normal. Допустимы значения только от %1 до %2.</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-weight-bold invalid. Valid range %1 to %2.</source>
-        <translation>Ошибка: некорректное значение font-weight-bold. Допустимы значения только от %1 до %2.</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-scale invalid. Valid range %1 to %2.</source>
-        <translation>Ошибка: некорректное значение font-scale. Допустимы значения только от %1 до %2.</translation>
-    </message>
-    <message>
-        <source>Error: Invalid -custom-css-dir path.</source>
-        <translation>Ошибка: некорректный путь -custom-css-dir.</translation>
-    </message>
-    <message>
-        <source>Error: %1 CSS file(s) missing in -custom-css-dir path.</source>
-        <translation>Ошибка: не удалось обнаружить %1 CSS файл(ов) в папке -custom-css-dir.</translation>
     </message>
     <message>
         <source>%1 didn't yet exit safely...</source>
@@ -2237,8 +2025,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Сумма</translation>
     </message>
     <message>
-        <source>Enter a Dash address (e.g. %1)</source>
-        <translation>Введите адрес Dash (например, %1)</translation>
+        <source>Enter a Cosanta address (e.g. %1)</source>
+        <translation>Введите адрес Cosanta (например, %1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
@@ -2330,6 +2118,49 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
 </context>
 <context>
+    <name>QObject::QObject</name>
+    <message>
+        <source>Error: Specified data directory "%1" does not exist.</source>
+        <translation>Ошибка: Указанная папка данных "%1" не существует.</translation>
+    </message>
+    <message>
+        <source>Error: Cannot parse configuration file: %1. Only use key=value syntax.</source>
+        <translation>Ошибка: не могу прочитать файл настроек: %1. Используйте для настроек только строки ключ=значение.</translation>
+    </message>
+    <message>
+        <source>Error: %1</source>
+        <translation>Ошибка: %1</translation>
+    </message>
+    <message>
+        <source>Error: Failed to load application fonts.</source>
+        <translation>Ошибка: не удалось загрузить шрифты приложения.</translation>
+    </message>
+    <message>
+        <source>Error: Specified font-family invalid. Valid values: %1.</source>
+        <translation>Ошибка: некорректное значение font-family. Допустимые значения: %1.</translation>
+    </message>
+    <message>
+        <source>Error: Specified font-weight-normal invalid. Valid range %1 to %2.</source>
+        <translation>Ошибка: некорректное значение font-weight-normal. Допустимы значения только от %1 до %2.</translation>
+    </message>
+    <message>
+        <source>Error: Specified font-weight-bold invalid. Valid range %1 to %2.</source>
+        <translation>Ошибка: некорректное значение font-weight-bold. Допустимы значения только от %1 до %2.</translation>
+    </message>
+    <message>
+        <source>Error: Specified font-scale invalid. Valid range %1 to %2.</source>
+        <translation>Ошибка: некорректное значение font-scale. Допустимы значения только от %1 до %2.</translation>
+    </message>
+    <message>
+        <source>Error: Invalid -custom-css-dir path.</source>
+        <translation>Ошибка: некорректный путь -custom-css-dir.</translation>
+    </message>
+    <message>
+        <source>Error: %1 CSS file(s) missing in -custom-css-dir path.</source>
+        <translation>Ошибка: не удалось обнаружить %1 CSS файл(ов) в папке -custom-css-dir.</translation>
+    </message>
+</context>
+<context>
     <name>QRDialog</name>
     <message>
         <source>QR-Code Title</source>
@@ -2343,6 +2174,29 @@ https://www.transifex.com/projects/p/dash/</translation>
         <source>&amp;Save Image...</source>
         <translation>&amp;Сохранить изображение...</translation>
     </message>
+    <message>
+        <source>Error creating QR Code.</source>
+        <translation>Ошибка создания QR-кода</translation>
+    </message>
+</context>
+<context>
+    <name>QRGeneralImageWidget</name>
+    <message>
+        <source>&amp;Save Image...</source>
+        <translation>&amp;Сохранить изображение...</translation>
+    </message>
+    <message>
+        <source>&amp;Copy Image</source>
+        <translation>&amp;Копировать изображение</translation>
+    </message>
+    <message>
+        <source>Save QR Code</source>
+        <translation>Сохранить QR-код</translation>
+    </message>
+    <message>
+        <source>PNG Image (*.png)</source>
+        <translation>Изображение PNG (*.png)</translation>
+    </message>
 </context>
 <context>
     <name>QRImageWidget</name>
@@ -2353,18 +2207,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>&amp;Copy Image</source>
         <translation>&amp;Копировать изображение</translation>
-    </message>
-    <message>
-        <source>Resulting URI too long, try to reduce the text for label / message.</source>
-        <translation>Получившийся URI слишком длинный, попробуйте сократить текст метки / сообщения.</translation>
-    </message>
-    <message>
-        <source>Error encoding URI into QR Code.</source>
-        <translation>Ошибка кодирования URI в QR-код.</translation>
-    </message>
-    <message>
-        <source>QR code support not available.</source>
-        <translation>QR-коды не поддерживаются.</translation>
     </message>
     <message>
         <source>Save QR Code</source>
@@ -2422,8 +2264,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Отладочный лог-файл</translation>
     </message>
     <message>
+        <source>Current number of blocks</source>
+        <translation>Текущее количество блоков</translation>
+    </message>
+    <message>
         <source>Client version</source>
         <translation>Версия клиента</translation>
+    </message>
+    <message>
+        <source>Using BerkeleyDB version</source>
+        <translation>Используется версия BerkeleyDB</translation>
     </message>
     <message>
         <source>Block chain</source>
@@ -2514,16 +2364,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Пересканировать цепочку блоков 2</translation>
     </message>
     <message>
-        <source>The buttons below will restart the wallet with command-line options to repair the wallet, fix issues with corrupt blockchain files or missing/obsolete transactions.</source>
-        <translation>С помощью этих кнопок Вы можете перезапустить кошелек с добавлением специальных команд для починки кошелька, исправления проблем с испорченными файлами блокчейна или пропавшими/конфликтующими транзакциями.</translation>
-    </message>
-    <message>
         <source>-rescan=1: Rescan the block chain for missing wallet transactions starting from wallet creation time.</source>
         <translation>-rescan=1: Перепроверить цепочку блоков на предмет отсутствующих в кошельке транзакций, начиная со времени создания кошелька.</translation>
     </message>
     <message>
         <source>-rescan=2: Rescan the block chain for missing wallet transactions starting from genesis block.</source>
         <translation>-rescan=2: Перепроверить цепочку блоков на предмет отсутствующих в кошельке транзакций, начиная с самого первого блока.</translation>
+    </message>
+    <message>
+        <source>Wallet Path</source>
+        <translation>Путь к кошельку</translation>
     </message>
     <message>
         <source>User Agent</source>
@@ -2534,32 +2384,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Папка с данными</translation>
     </message>
     <message>
-        <source>To specify a non-default location of the data directory use the '%1' option.</source>
-        <translation>Чтобы указать нестандартное расположение папки с данными, используйте опцию '%1'.</translation>
-    </message>
-    <message>
-        <source>Blocksdir</source>
-        <translation>Папка с блоками</translation>
-    </message>
-    <message>
-        <source>To specify a non-default location of the blocks directory use the '%1' option.</source>
-        <translation>Чтобы указать нестандартное расположение папки с блоками, используйте опцию '%1'.</translation>
-    </message>
-    <message>
-        <source>Current block height</source>
-        <translation>Текущее количество блоков</translation>
-    </message>
-    <message>
         <source>Last block hash</source>
         <translation>Хеш последнего блока</translation>
-    </message>
-    <message>
-        <source>Latest ChainLocked block hash</source>
-        <translation>Хеш последнего блока с ChainLock</translation>
-    </message>
-    <message>
-        <source>Latest ChainLocked block height</source>
-        <translation>Номер последнего блока с ChainLock</translation>
     </message>
     <message>
         <source>Open the %1 debug log file from the current data directory. This can take a few seconds for large log files.</source>
@@ -2638,8 +2464,36 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Ремонт &amp;кошелька</translation>
     </message>
     <message>
+        <source>Salvage wallet</source>
+        <translation>Спасение кошелька</translation>
+    </message>
+    <message>
+        <source>Recover transactions 1</source>
+        <translation>Восстановление транзакций 1</translation>
+    </message>
+    <message>
+        <source>Recover transactions 2</source>
+        <translation>Восстановление транзакций 2</translation>
+    </message>
+    <message>
         <source>Upgrade wallet format</source>
         <translation>Обновить формат кошелька</translation>
+    </message>
+    <message>
+        <source>The buttons below will restart the wallet with command-line options to repair the wallet, fix issues with corrupt blockhain files or missing/obsolete transactions.</source>
+        <translation>С помощью этих кнопок Вы можете перезапустить кошелек с добавлением специальных команд для починки кошелька, исправления проблем с испорченными файлами блокчейна или пропавшими/конфликтующими транзакциями.</translation>
+    </message>
+    <message>
+        <source>-salvagewallet: Attempt to recover private keys from a corrupt wallet.dat.</source>
+        <translation>-salvagewallet: Попытаться восстановить закрытые ключи из повреждённого wallet.dat.</translation>
+    </message>
+    <message>
+        <source>-zapwallettxes=1: Recover transactions from blockchain (keep meta-data, e.g. account owner).</source>
+        <translation>-zapwallettxes=1: Восстановить транзакции из цепочки блоков (сохранить мета-данные, например, о владельцах аккаунтов).</translation>
+    </message>
+    <message>
+        <source>-zapwallettxes=2: Recover transactions from blockchain (drop meta-data).</source>
+        <translation>-zapwallettxes=2: Восстановить транзакции из цепочки блоков (удалить мета-данные).</translation>
     </message>
     <message>
         <source>-upgradewallet: Upgrade wallet to latest format on startup. (Note: this is NOT an update of the wallet itself!)</source>
@@ -2684,6 +2538,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>&amp;Unban</source>
         <translation>&amp;Разблокировать</translation>
+    </message>
+    <message>
+        <source>default wallet</source>
+        <translation>кошелек по умолчанию</translation>
     </message>
     <message>
         <source>Welcome to the %1 RPC console.</source>
@@ -2777,8 +2635,8 @@ https://www.transifex.com/projects/p/dash/</translation>
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>Необязательное сообщение для запроса платежа, которое будет показано при открытии запроса. Обратите внимание: сообщение не будет отправлено вместе с платежом через сеть Dash.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Cosanta network.</source>
+        <translation>Необязательное сообщение для запроса платежа, которое будет показано при открытии запроса. Обратите внимание: сообщение не будет отправлено вместе с платежом через сеть Cosanta.</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -2789,8 +2647,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Необязательная метка для нового адреса получения.</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>Необязательное сообщение для запроса платежа, которое будет показано при открытии запроса.&lt;br&gt;Обратите внимание: сообщение не будет отправлено вместе с платежом через сеть Dash.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Cosanta network.</source>
+        <translation>Необязательное сообщение для запроса платежа, которое будет показано при открытии запроса.&lt;br&gt;Обратите внимание: сообщение не будет отправлено вместе с платежом через сеть Cosanta.</translation>
     </message>
     <message>
         <source>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</source>
@@ -2809,8 +2667,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>&amp;Сумма:</translation>
     </message>
     <message>
-        <source>&amp;Create new receiving address</source>
-        <translation>&amp;Создать новый адрес для получения</translation>
+        <source>&amp;Request payment</source>
+        <translation>&amp;Запросить платёж</translation>
     </message>
     <message>
         <source>Clear all fields of the form.</source>
@@ -2851,10 +2709,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Copy URI</source>
         <translation>Копировать URI</translation>
-    </message>
-    <message>
-        <source>Copy address</source>
-        <translation>Копировать адрес</translation>
     </message>
     <message>
         <source>Copy label</source>
@@ -2918,6 +2772,14 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Wallet</source>
         <translation>Кошелек</translation>
+    </message>
+    <message>
+        <source>Resulting URI too long, try to reduce the text for label / message.</source>
+        <translation>Получившийся URI слишком длинный, попробуйте сократить текст метки / сообщения.</translation>
+    </message>
+    <message>
+        <source>Error encoding URI into QR Code.</source>
+        <translation>Ошибка кодирования URI в QR-код.</translation>
     </message>
 </context>
 <context>
@@ -3018,12 +2880,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Выбрать...</translation>
     </message>
     <message>
+        <source>collapse fee-settings</source>
+        <translation>свернуть настройки комиссии</translation>
+    </message>
+    <message>
         <source>Confirmation time target:</source>
         <translation>Желаемое время подтверждения:</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
-        <translation>Если ручная комиссия установлена в 1000 duff, а транзакция по размеру только 250 байт, то плата "за килобайт" составит лишь 250 duff,&lt;br&gt;в то время как "минимум" будет равна 1000 duff. Для транзакций больше килобайта в любом случае идет расчет "за килобайт".</translation>
+        <source>If the custom fee is set to 1000 units and the transaction is only 250 bytes, then "per kilobyte" only pays 250 units in fee,&lt;br /&gt;while "at least" pays 1000 units. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <translation>Если ручная комиссия  установлена в 1000 unit, а транзакция по размеру только 250 байт, то плата "за килобайт" составит лишь 250 unit,&lt;br&gt;в то время как "минимум" будет равна 1000 unit. Для транзакций больше килобайта в любом случае идет расчет "за килобайт".</translation>
+    </message>
+    <message>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for cosa transactions than the network can process.</source>
+        <translation>Оплаты только минимальной комиссии должно быть достаточно во всех случаях, пока в блоках достаточно места.&lt;br&gt;Однако, будьте готовы к тому, что транзакция может вовсе не получить подтверждения,&lt;br&gt;если количество транзакций будет стабильно больше, чем сеть способна обработать.</translation>
     </message>
     <message>
         <source>per kilobyte</source>
@@ -3038,12 +2908,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Внимание: недостаточно данных для определения комиссии, используется комиссия по умолчанию.</translation>
     </message>
     <message>
-        <source>Hide transaction fee settings</source>
-        <translation>Скрыть настройки комиссии</translation>
-    </message>
-    <message>
         <source>Hide</source>
         <translation>Скрыть</translation>
+    </message>
+    <message>
+        <source>(read the tooltip)</source>
+        <translation>(прочтите всплывающую подсказку)</translation>
     </message>
     <message>
         <source>Recommended:</source>
@@ -3118,16 +2988,28 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>%1 (блоков: %2)</translation>
     </message>
     <message>
+        <source>from wallet %1</source>
+        <translation>из кошелька %1</translation>
+    </message>
+    <message>
         <source>using</source>
         <translation>используя</translation>
     </message>
     <message>
         <source>%1 to %2</source>
-        <translation>%1 на %2</translation>
+        <translation>С %1 на %2</translation>
     </message>
     <message>
         <source>Are you sure you want to send?</source>
         <translation>Вы уверены, что хотите отправить?</translation>
+    </message>
+    <message>
+        <source>are added as transaction fee</source>
+        <translation>добавлено в качестве комиссии транзакции</translation>
+    </message>
+    <message>
+        <source>Total Amount = &lt;b&gt;%1&lt;/b&gt;&lt;br /&gt;= %2</source>
+        <translation>Общая сумма = &lt;b&gt;%1&lt;/b&gt;&lt;br /&gt;= %2</translation>
     </message>
     <message>
         <source>&lt;b&gt;(%1 of %2 entries displayed)&lt;/b&gt;</source>
@@ -3142,24 +3024,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Подтвердить отправку с помощью %1</translation>
     </message>
     <message>
-        <source> from wallet '%1'</source>
-        <translation>из кошелька '%1'</translation>
-    </message>
-    <message>
-        <source>%1 to '%2'</source>
-        <translation>%1 на '%2'</translation>
-    </message>
-    <message>
         <source>%1 funds only</source>
         <translation>только средства %1</translation>
     </message>
     <message>
         <source>any available funds</source>
         <translation>любые доступные средства</translation>
-    </message>
-    <message>
-        <source>Transaction fee</source>
-        <translation>Комиссия</translation>
     </message>
     <message>
         <source>(%1 transactions have higher fees usually due to no change output being allowed)</source>
@@ -3182,24 +3052,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Внимание: Использование транзакции %1 с %2 и более входами может повредить вашей приватности и потому не рекомендуется</translation>
     </message>
     <message>
-        <source>Click to learn more</source>
-        <translation>Нажмите, чтобы узнать больше</translation>
-    </message>
-    <message>
-        <source>Total Amount</source>
-        <translation>Полная сумма</translation>
-    </message>
-    <message>
-        <source>or</source>
-        <translation>или</translation>
-    </message>
-    <message>
         <source>Confirm send coins</source>
         <translation>Подтвердите отправку монет</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation>Отправить</translation>
     </message>
     <message>
         <source>The recipient address is not valid. Please recheck.</source>
@@ -3226,6 +3080,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Не удалось создать транзакцию!</translation>
     </message>
     <message>
+        <source>The transaction was rejected with the following reason: %1</source>
+        <translation>Транзакция отклонена по следующей причине: %1</translation>
+    </message>
+    <message>
         <source>A fee higher than %1 is considered an absurdly high fee.</source>
         <translation>Комиссия выше чем %1 считается "безумно высокой".</translation>
     </message>
@@ -3233,13 +3091,17 @@ https://www.transifex.com/projects/p/dash/</translation>
         <source>Payment request expired.</source>
         <translation>Время этого запроса платежа истекло.</translation>
     </message>
+    <message>
+        <source>Pay only the required fee of %1</source>
+        <translation>Заплатить только требуемую комиссию %1</translation>
+    </message>
     <message numerus="yes">
         <source>Estimated to begin confirmation within %n block(s).</source>
         <translation><numerusform>Будет подтверждено приблизительно в течение %n блока.</numerusform><numerusform>Будет подтверждено приблизительно в течение %n блоков.</numerusform><numerusform>Будет подтверждено приблизительно в течение %n блоков.</numerusform><numerusform>Будет подтверждено приблизительно в течение %n блоков.</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Dash address</source>
-        <translation>Внимание: неверный адрес Dash</translation>
+        <source>Warning: Invalid Cosanta address</source>
+        <translation>Внимание: неверный адрес Cosanta</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -3247,7 +3109,7 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
     <message>
         <source>Confirm custom change address</source>
-        <translation>Подтвердите свой адрес для сдачи</translation>
+        <translation>Подтвердите адрес для сдачи</translation>
     </message>
     <message>
         <source>The address you selected for change is not part of this wallet. Any or all funds in your wallet may be sent to this address. Are you sure?</source>
@@ -3261,12 +3123,16 @@ https://www.transifex.com/projects/p/dash/</translation>
 <context>
     <name>SendCoinsEntry</name>
     <message>
+        <source>This is a normal payment.</source>
+        <translation>Это нормальный платёж.</translation>
+    </message>
+    <message>
         <source>Pay &amp;To:</source>
         <translation>Полу&amp;чатель:</translation>
     </message>
     <message>
-        <source>The Dash address to send the payment to</source>
-        <translation>Адрес Dash для отправки на него монет</translation>
+        <source>The Cosanta address to send the payment to</source>
+        <translation>Адрес Cosanta для отправки на него монет</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3301,12 +3167,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Ко&amp;личество:</translation>
     </message>
     <message>
-        <source>The amount to send in the selected unit</source>
-        <translation>Сумма к отправке в выбранных единицах</translation>
-    </message>
-    <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>Комиссия будет вычтена из отправляемой суммы. Получателю придет меньше Dash, сем указано в поле "Сумма". Если указано несколько получателей, то комиссия будет разделена между ними поровну.</translation>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Cosanta than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <translation>Комиссия будет вычтена из отправляемой суммы. Получателю придет меньше Cosanta, сем указано в поле "Сумма". Если указано несколько получателей, то комиссия будет разделена между ними поровну.</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -3321,8 +3183,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Сообщение:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Dash network.</source>
-        <translation>К dash: URI было прикреплено сообщение, которое будет сохранено вместе с транзакцией для вашего сведения. Обратите внимание: сообщение не будет отправлено через сеть Dash.</translation>
+        <source>A message that was attached to the cosa: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Cosanta network.</source>
+        <translation>К cosa: URI было прикреплено сообщение, которое будет сохранено вместе с транзакцией для вашего сведения. Обратите внимание: сообщение не будет отправлено через сеть Cosanta.</translation>
     </message>
     <message>
         <source>This is an unauthenticated payment request.</source>
@@ -3339,6 +3201,17 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Memo:</source>
         <translation>Примечание:</translation>
+    </message>
+    <message>
+        <source>Enter a label for this address to add it to your address book</source>
+        <translation>Введите метку для данного адреса для добавления его в адресную книгу</translation>
+    </message>
+</context>
+<context>
+    <name>SendConfirmationDialog</name>
+    <message>
+        <source>Yes</source>
+        <translation>Да</translation>
     </message>
 </context>
 <context>
@@ -3363,12 +3236,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>&amp;Подписать сообщение</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Dash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>Вы можете подписывать сообщения своими адресами, чтобы доказать, что Вы можете получать Dash на них. Будьте осторожны, не подписывайте что-то неопределённое, так как фишинговые атаки могут обманным путём заставить вас подписать нежелательные сообщения. Подписывайте только те сообщения, с которыми вы согласны вплоть до мелочей.</translation>
+        <source>You can sign messages/agreements with your addresses to prove you can receive Cosanta sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <translation>Вы можете подписывать сообщения своими адресами, чтобы доказать, что Вы можете получать Cosanta на них. Будьте осторожны, не подписывайте что-то неопределённое, так как фишинговые атаки могут обманным путём заставить вас подписать нежелательные сообщения. Подписывайте только те сообщения, с которыми вы согласны вплоть до мелочей.</translation>
     </message>
     <message>
-        <source>The Dash address to sign the message with</source>
-        <translation>Адрес Dash, которым Вы хотите подписать сообщение</translation>
+        <source>The Cosanta address to sign the message with</source>
+        <translation>Адрес Cosanta, которым Вы хотите подписать сообщение</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3399,8 +3272,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Скопировать текущую подпись в системный буфер обмена</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Dash address</source>
-        <translation>Подписать сообщение, чтобы доказать владение этим адресом Dash</translation>
+        <source>Sign the message to prove you own this Cosanta address</source>
+        <translation>Подписать сообщение, чтобы доказать владение этим адресом Cosanta</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -3423,20 +3296,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Введите ниже адрес для подписи, сообщение (убедитесь, что переводы строк, пробелы, табы и т.п. в точности скопированы) и подпись, чтобы проверить сообщение. Убедитесь, что не скопировали лишнего в подпись, кроме самого подписываемого сообщения, чтобы не стать жертвой атаки "man-in-the-middle". Обратите внимание, что это лишь подтверждает, что подписывающий может получить средства на этот адрес, это не подтверждает, что он является отправителем какой-либо транзакции!</translation>
     </message>
     <message>
-        <source>The Dash address the message was signed with</source>
-        <translation>Адрес Dash, которым было подписано сообщение</translation>
+        <source>The Cosanta address the message was signed with</source>
+        <translation>Адрес Cosanta, которым было подписано сообщение</translation>
     </message>
     <message>
-        <source>The signed message to verify</source>
-        <translation>Проверяемое подписанное сообщение</translation>
-    </message>
-    <message>
-        <source>The signature given when the message was signed</source>
-        <translation>Подпись, полученная при подписании сообщения</translation>
-    </message>
-    <message>
-        <source>Verify the message to ensure it was signed with the specified Dash address</source>
-        <translation>Проверить сообщение, чтобы убедиться, что оно было подписано указанным адресом Dash</translation>
+        <source>Verify the message to ensure it was signed with the specified Cosanta address</source>
+        <translation>Проверить сообщение, чтобы убедиться, что оно было подписано указанным адресом Cosanta</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -3674,6 +3539,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Transaction total size</source>
         <translation>Полный размер транзакции</translation>
+    </message>
+    <message>
+        <source>Merchant</source>
+        <translation>Продавец</translation>
     </message>
     <message>
         <source>Generated coins must mature %1 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to "not accepted" and it won't be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
@@ -3941,10 +3810,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Сбросить транзакцию</translation>
     </message>
     <message>
-        <source>Resend transaction</source>
-        <translation>Отправить транзакцию еще раз</translation>
-    </message>
-    <message>
         <source>Copy address</source>
         <translation>Копировать адрес</translation>
     </message>
@@ -3969,8 +3834,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Скопировать все детали транзакции</translation>
     </message>
     <message>
-        <source>Edit address label</source>
-        <translation>Изменить метку адреса</translation>
+        <source>Edit label</source>
+        <translation>Изменить метку</translation>
     </message>
     <message>
         <source>Show transaction details</source>
@@ -4053,25 +3918,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
 </context>
 <context>
-    <name>WalletController</name>
-    <message>
-        <source>Close wallet</source>
-        <translation>Закрыть кошелёк</translation>
-    </message>
-    <message>
-        <source>Are you sure you wish to close the wallet &lt;i&gt;%1&lt;/i&gt;?</source>
-        <translation>Вы уверены, что хотите закрыть кошелёк &lt;i&gt;%1&lt;/i&gt;?</translation>
-    </message>
-    <message>
-        <source>Closing the wallet for too long can result in having to resync the entire chain if pruning is enabled.</source>
-        <translation>Закрытие кошелька на слишком долгое время может привести к необходимости скачивания всей цепочки с самого начала, если у вас включено удаление блоков.</translation>
-    </message>
-</context>
-<context>
     <name>WalletFrame</name>
     <message>
-        <source>Create a new wallet</source>
-        <translation>Создать новый кошелёк</translation>
+        <source>No wallet has been loaded.</source>
+        <translation>Не был загружен ни один кошелёк.</translation>
     </message>
 </context>
 <context>
@@ -4079,10 +3929,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Send Coins</source>
         <translation>Отправка</translation>
-    </message>
-    <message>
-        <source>default wallet</source>
-        <translation>кошелек по умолчанию</translation>
     </message>
 </context>
 <context>
@@ -4129,18 +3975,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
 </context>
 <context>
-    <name>dash-core</name>
+    <name>cosanta-core</name>
     <message>
         <source>Error: Listening for incoming connections failed (listen returned error %s)</source>
         <translation>Ошибка: не удалось начать прослушивание входящих подключений (прослушивание вернуло ошибку %s)</translation>
-    </message>
-    <message>
-        <source>Fee estimation failed. Fallbackfee is disabled. Wait a few blocks or enable -fallbackfee.</source>
-        <translation>Расчет комиссии невозможен. Комиссия по умолчанию не установлена. подождите пару блоков либо укажите -fallbackfee.</translation>
-    </message>
-    <message>
-        <source>This error could occur if this wallet was not shutdown cleanly and was last loaded using a build with a newer version of Berkeley DB. If so, please use the software that last loaded this wallet</source>
-        <translation>Эта ошибка может появляться, если кошелёк был закрыт некорректно либо был ранее открыт через приложение с более новой версией Berkeley DB. Если так, то, пожалуйста, используйте то же приложение, которым вы открывали кошелёк в прошлый раз</translation>
     </message>
     <message>
         <source>This is a pre-release test build - use at your own risk - do not use for mining or merchant applications</source>
@@ -4203,6 +4041,14 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Ошибка чтения базы данных, завершение работы.</translation>
     </message>
     <message>
+        <source>Error</source>
+        <translation>Ошибка</translation>
+    </message>
+    <message>
+        <source>Error: Disk space is low!</source>
+        <translation>Ошибка: мало места на диске!</translation>
+    </message>
+    <message>
         <source>Failed to listen on any port. Use -listen=0 if you want this.</source>
         <translation>Не удалось начать прослушивание на порту. Используйте -listen=0, если вас это устраивает.</translation>
     </message>
@@ -4239,6 +4085,18 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Запись превышает максимально допустимый размер.</translation>
     </message>
     <message>
+        <source>Failed to load fulfilled requests cache from</source>
+        <translation>Ошибка загрузки кэша выполненных запросов из</translation>
+    </message>
+    <message>
+        <source>Failed to load governance cache from</source>
+        <translation>Ошибка загрузки кэша управления из</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode cache from</source>
+        <translation>Ошибка загрузки кэша мастернод из</translation>
+    </message>
+    <message>
         <source>Found enough users, signing ( waiting %s )</source>
         <translation>Найдено достаточное количество участников, подписываем ( ожидание %s )</translation>
     </message>
@@ -4261,6 +4119,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Incorrect or no genesis block found. Wrong datadir for network?</source>
         <translation>Неверный или отсутствующий начальный блок. Неправильный каталог данных для сети?</translation>
+    </message>
+    <message>
+        <source>Information</source>
+        <translation>Информация</translation>
     </message>
     <message>
         <source>Input is not valid.</source>
@@ -4343,6 +4205,18 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Неизвестный ответ.</translation>
     </message>
     <message>
+        <source>Unsupported argument -benchmark ignored, use -debug=bench.</source>
+        <translation>Опция -benchmark проигнорирована, используйте -debug=bench вместо нее.</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -debugnet ignored, use -debug=net.</source>
+        <translation>Опция -debugnet проигнорирована, используйте -debug=net вместо нее.</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -tor found, use -onion.</source>
+        <translation>Обнаружен неподдерживаемый параметр -tor, используйте -onion вместо него.</translation>
+    </message>
+    <message>
         <source>User Agent comment (%s) contains unsafe characters.</source>
         <translation>Комментарий User Agent  (%s) содержит небезопасные символы.</translation>
     </message>
@@ -4367,6 +4241,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>%s в режиме ожидания.</translation>
     </message>
     <message>
+        <source>%s request incomplete: %s</source>
+        <translation>Запрос %s не завершен: %s</translation>
+    </message>
+    <message>
         <source>Can't mix while sync in progress.</source>
         <translation>Перемешивание до завершения синхронизации невозможно.</translation>
     </message>
@@ -4381,6 +4259,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>%s file contains all private keys from this wallet. Do not share it with anyone!</source>
         <translation>%s файл содержит в себе все закрытые ключи для этого кошелька. Никому его не показывайте!</translation>
+    </message>
+    <message>
+        <source>-masternode option is deprecated and ignored, specifying -masternodeblsprivkey is enough to start this node as a masternode.</source>
+        <translation>Опция -masternode устарела и будет проигнорирована, достаточно указать -masternodeblsprivkey, чтобы запустить этот узел в качестве мастерноды .</translation>
     </message>
     <message>
         <source>Failed to create backup, file already exists! This could happen if you restarted wallet in less than 60 seconds. You can continue if you are ok with this.</source>
@@ -4399,6 +4281,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Удаление блоков: последняя синхронизация кошелька выходит за рамки удаленных данных. Вам нужно запустить клиента с ключом -reindex (в случае узла с удаленными блоками это означает повторное скачивание всей цепи блоков)</translation>
     </message>
     <message>
+        <source>Rescans are not possible in pruned mode. You will need to use -reindex which will download the whole blockchain again.</source>
+        <translation>Повторное сканирование невозможно в режиме удаления блоков. Вам надо будет использовать -reindex, что приведет к повторной загрузке всей цепи блоков.</translation>
+    </message>
+    <message>
         <source>The block database contains a block which appears to be from the future. This may be due to your computer's date and time being set incorrectly. Only rebuild the block database if you are sure that your computer's date and time are correct</source>
         <translation>База данных блоков содержит блок, созданный в будущем. Такое может случиться из-за некорректно установленных даты и времени на Вашем компьютере. Перестройте базу блоков, только если вы уверены, что дата и время корректны.</translation>
     </message>
@@ -4411,12 +4297,24 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Длина строки сетевой версии (%i) превышает максимально допустимую (%i). Уменьшите количество или размер строк uacomment.</translation>
     </message>
     <message>
+        <source>Unsupported argument -socks found. Setting SOCKS version isn't possible anymore, only SOCKS5 proxies are supported.</source>
+        <translation>Обнаружен неподдерживаемый аргумент -socks. Выбор версии SOCKS больше невозможен, поддерживаются только прокси версии SOCKS5.</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -whitelistalwaysrelay ignored, use -whitelistrelay and/or -whitelistforcerelay.</source>
+        <translation>Неподдерживаемый аргумент -whitelistalwaysrelay проигнорирован, используйте -whitelistrelay и/или -whitelistforcerelay.</translation>
+    </message>
+    <message>
         <source>WARNING! Failed to replenish keypool, please unlock your wallet to do so.</source>
         <translation>ВНИМАНИЕ! Ну удалось обновить пул ключей, пожалуйста, разблокируйте кошелек.</translation>
     </message>
     <message>
         <source>Wallet is locked, can't replenish keypool! Automatic backups and mixing are disabled, please unlock your wallet to replenish keypool.</source>
         <translation>Кошелек заблокирован, невозможно пополнить пул ключей! Автоматические резервные копии и перемешивание отключены. Пожалуйста, разблокируйте кошелек для пополнения пула ключей.</translation>
+    </message>
+    <message>
+        <source>Warning: Unknown block versions being mined! It's possible unknown rules are in effect</source>
+        <translation>Внимание: создаются блоки неизвестной версии! Возможно активированы неизвестные правила</translation>
     </message>
     <message>
         <source>You need to rebuild the database using -reindex to change -timestampindex</source>
@@ -4431,6 +4329,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>%s завершилось неудачно</translation>
     </message>
     <message>
+        <source>-litemode is deprecated.</source>
+        <translation>Опция -litemode устарела.</translation>
+    </message>
+    <message>
         <source>-maxmempool must be at least %d MB</source>
         <translation>-maxmempool должно быть минимум %d MB</translation>
     </message>
@@ -4439,36 +4341,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Автоматические бэкапы отключены</translation>
     </message>
     <message>
-        <source>Cannot set -peerblockfilters without -blockfilterindex.</source>
-        <translation>Нельзя указывать -peerblockfilters без -blockfilterindex.</translation>
-    </message>
-    <message>
-        <source>Config setting for %s only applied on %s network when in [%s] section.</source>
-        <translation>Настройка %s применена только для сети %s поскольку она находится в секции [%s].</translation>
-    </message>
-    <message>
-        <source>Could not find asmap file %s</source>
-        <translation>Не удалось найти файл asmap %s</translation>
-    </message>
-    <message>
-        <source>Could not parse asmap file %s</source>
-        <translation>Не удалось прочитать файл asmap %s</translation>
-    </message>
-    <message>
         <source>ERROR! Failed to create automatic backup</source>
         <translation>ОШИБКА! Не удалось создать автоматический бэкап</translation>
-    </message>
-    <message>
-        <source>Error loading %s: Private keys can only be disabled during creation</source>
-        <translation>Ошибка загрузки %s: Закрытые ключи могут быть отключены только при создании кошелька</translation>
     </message>
     <message>
         <source>Error upgrading evo database</source>
         <translation>Ошибка обновления базы данных evo</translation>
     </message>
     <message>
-        <source>Error: Disk space is low for %s</source>
-        <translation>Ошибка: мало места на диске для %s</translation>
+        <source>Error: A fatal internal error occurred, see debug.log for details</source>
+        <translation>Ошибка: Произошла критическая ошибка, подробности смотрите в файле debug.log</translation>
     </message>
     <message>
         <source>Error: failed to add socket to epollfd (epoll_ctl returned error %s)</source>
@@ -4477,6 +4359,18 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Exceeded max tries.</source>
         <translation>Превышено максимальное количество попыток.</translation>
+    </message>
+    <message>
+        <source>Failed to clear fulfilled requests cache at</source>
+        <translation>Ошибка очистки кэша выполненных запросов в</translation>
+    </message>
+    <message>
+        <source>Failed to clear governance cache at</source>
+        <translation>Ошибка очистки кэша управления в</translation>
+    </message>
+    <message>
+        <source>Failed to clear masternode cache at</source>
+        <translation>Ошибка очистки кэша мастернод в</translation>
     </message>
     <message>
         <source>Failed to commit EvoDB</source>
@@ -4495,16 +4389,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Не удалось удалить резервную копию, ошибка: %s</translation>
     </message>
     <message>
+        <source>Failed to load sporks cache from</source>
+        <translation>Ошибка загрузки кэша спорков из</translation>
+    </message>
+    <message>
         <source>Failed to rescan the wallet during initialization</source>
         <translation>Ошибка сканирования кошелька во время инициализации</translation>
-    </message>
-    <message>
-        <source>Failed to verify database</source>
-        <translation>Ошибка проверки базы данных</translation>
-    </message>
-    <message>
-        <source>Invalid P2P permission: '%s'</source>
-        <translation>Некорректные разрешения P2P : '%s'</translation>
     </message>
     <message>
         <source>Invalid amount for -fallbackfee=&lt;amount&gt;: '%s'</source>
@@ -4513,6 +4403,14 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Invalid masternodeblsprivkey. Please see documentation.</source>
         <translation>Некорректный masternodeblsprivkey. Пожалуйста, ознакомьтесь с документацией.</translation>
+    </message>
+    <message>
+        <source>It has been replaced by -disablegovernance.</source>
+        <translation>Опция заменена на -disablegovernance.</translation>
+    </message>
+    <message>
+        <source>Its replacement -disablegovernance has been forced instead.</source>
+        <translation>Взамен активирована опция -disablegovernance.</translation>
     </message>
     <message>
         <source>Loading block index...</source>
@@ -4567,10 +4465,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Удаление блоков не может использовать отрицательное значение.</translation>
     </message>
     <message>
-        <source>Prune mode is incompatible with -blockfilterindex.</source>
-        <translation>Режим удаления блоков несовместим с -blockfilterindex.</translation>
-    </message>
-    <message>
         <source>Prune mode is incompatible with -disablegovernance=false.</source>
         <translation>Режим удаления блоков не совместим с -disablegovernance=false.</translation>
     </message>
@@ -4581,10 +4475,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Pruning blockstore...</source>
         <translation>Удаление старых блоков...</translation>
-    </message>
-    <message>
-        <source>Section [%s] is not recognized.</source>
-        <translation>Секция [%s] не распознана.</translation>
     </message>
     <message>
         <source>Specified -walletdir "%s" does not exist</source>
@@ -4601,12 +4491,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Synchronizing blockchain...</source>
         <translation>Синхронизация блокчейна...</translation>
-    </message>
-    <message>
-        <source>The specified config file %s does not exist
-</source>
-        <translation>Указанный файл настроек %s не существует
-</translation>
     </message>
     <message>
         <source>The wallet will avoid paying less than the minimum relay fee.</source>
@@ -4649,20 +4533,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Не удалось привязаться к %s на этом компьютере. Возможно, %s уже запущен.</translation>
     </message>
     <message>
-        <source>Unable to create the PID file '%s': %s</source>
-        <translation>Невозможно создать PID-файл '%s': %s</translation>
-    </message>
-    <message>
         <source>Unable to generate initial keys</source>
         <translation>Не удалось сгенерировать начальные ключи</translation>
     </message>
     <message>
-        <source>Unknown -blockfilterindex value %s.</source>
-        <translation>Неизвестное значение -blockfilterindex %s.</translation>
-    </message>
-    <message>
         <source>Upgrading UTXO database</source>
         <translation>Обновление базы UTXO</translation>
+    </message>
+    <message>
+        <source>Wallet %s resides outside wallet directory %s</source>
+        <translation>Кошелёк %s располагается вне каталога с кошельками %s</translation>
     </message>
     <message>
         <source>Wallet needed to be rewritten: restart %s to complete</source>
@@ -4689,12 +4569,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Вам необходимо пересобрать базы данных с помощью -reindex, чтобы изменить -spentindex</translation>
     </message>
     <message>
+        <source>You need to rebuild the database using -reindex to change -txindex</source>
+        <translation>Вам необходимо пересобрать базы данных с помощью -reindex, чтобы изменить -txindex</translation>
+    </message>
+    <message>
         <source>no mixing available.</source>
         <translation>перемешивание недоступно.</translation>
     </message>
     <message>
         <source>see debug.log for details.</source>
         <translation>смотрите debug.log для получения подробной информации.</translation>
+    </message>
+    <message>
+        <source>Cosanta Core</source>
+        <translation>Cosanta Core</translation>
     </message>
     <message>
         <source>The %s developers</source>
@@ -4741,32 +4629,32 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Это комиссия, которую Вы заплатите при отправке транзакции, если расчет комиссии не доступен.</translation>
     </message>
     <message>
+        <source>This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit %s and cryptographic software written by Eric Young and UPnP software written by Thomas Bernard.</source>
+        <translation>Этот продукт включает ПО, разработанное проектом OpenSSL Project для использования в OpenSSL Toolkit %s, криптографическое ПО, написанное Eric Young и ПО для работы с UPnP, написанное Thomas Bernard.</translation>
+    </message>
+    <message>
         <source>Unable to replay blocks. You will need to rebuild the database using -reindex-chainstate.</source>
         <translation>Невозможно повторить блоки. Необходимо перестроить базы даных с помощью -reindex-chainstate.</translation>
     </message>
     <message>
-        <source>Warning: Private keys detected in wallet {%s} with disabled private keys</source>
-        <translation>Внимание: Закрытые ключи обнаружены в кошельке {%s} с отключенными закрытыми ключами</translation>
+        <source>Warning: Wallet file corrupt, data salvaged! Original %s saved as %s in %s; if your balance or transactions are incorrect you should restore from a backup.</source>
+        <translation>Внимание: кошелек повреждён, данные спасены! Оригинальный %s сохранён как %s в %s. Если Ваш баланс или транзакции некорректны, Вы должны восстановить файл из резервной копии.</translation>
     </message>
     <message>
         <source>%d of last 100 blocks have unexpected version</source>
         <translation>%d из последних 100 блоков имеют неожиданную версию</translation>
     </message>
     <message>
+        <source>%s corrupt, salvage failed</source>
+        <translation>%s повреждён, спасение данных не удалось</translation>
+    </message>
+    <message>
         <source>%s is not a valid backup folder!</source>
         <translation>%s не является корректной директорией для резервной копии!</translation>
     </message>
     <message>
-        <source>%s is only allowed with a single wallet file</source>
-        <translation>%s доступно только для единичного файла кошелька</translation>
-    </message>
-    <message>
         <source>%s is set very high!</source>
         <translation>Для %s установлено слишком высокое значение!</translation>
-    </message>
-    <message>
-        <source>%s request incomplete:</source>
-        <translation>Запрос %s не завершен:</translation>
     </message>
     <message>
         <source>-devnet can only be specified once</source>
@@ -4779,10 +4667,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>-rpcport must be specified when -devnet and -server are specified</source>
         <translation>Необходимо указать -rpcport, если указаны -devnet и -server</translation>
-    </message>
-    <message>
-        <source>A fatal internal error occurred, see debug.log for details</source>
-        <translation>Произошла критическая ошибка, подробности смотрите в файле debug.log</translation>
     </message>
     <message>
         <source>Cannot resolve -%s address: '%s'</source>
@@ -4801,10 +4685,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Copyright (C)</translation>
     </message>
     <message>
-        <source>Disk space is too low!</source>
-        <translation>Слишком мало места на диске!</translation>
-    </message>
-    <message>
         <source>Error loading %s</source>
         <translation>Ошибка при загрузке %s</translation>
     </message>
@@ -4821,6 +4701,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Ошибка загрузки %s: Вы не можете отключить HD режим для существующего HD кошелька</translation>
     </message>
     <message>
+        <source>Error loading wallet %s. Duplicate -wallet filename specified.</source>
+        <translation>Ошибка загрузки кошелька %s. Имя файла -wallet указано повторно.</translation>
+    </message>
+    <message>
         <source>Error upgrading chainstate database</source>
         <translation>Ошибка обновления базы данных состояний цепочки</translation>
     </message>
@@ -4829,36 +4713,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Ошибка: не удалось добавить сокет в kqueuefd (kevent вернул ошибку %s)</translation>
     </message>
     <message>
-        <source>Failed to clear fulfilled requests cache at %s</source>
-        <translation>Ошибка очистки кэша выполненных запросов в %s</translation>
-    </message>
-    <message>
-        <source>Failed to clear governance cache at %s</source>
-        <translation>Ошибка очистки кэша управления в %s</translation>
-    </message>
-    <message>
-        <source>Failed to clear masternode cache at %s</source>
-        <translation>Ошибка очистки кэша мастернод в %s</translation>
-    </message>
-    <message>
         <source>Failed to find mixing queue to join</source>
         <translation>Не удалось найти очередь перемешивания</translation>
-    </message>
-    <message>
-        <source>Failed to load fulfilled requests cache from %s</source>
-        <translation>Ошибка загрузки кэша выполненных запросов из %s</translation>
-    </message>
-    <message>
-        <source>Failed to load governance cache from %s</source>
-        <translation>Ошибка загрузки кэша управления из %s</translation>
-    </message>
-    <message>
-        <source>Failed to load masternode cache from %s</source>
-        <translation>Ошибка загрузки кэша мастернод из %s</translation>
-    </message>
-    <message>
-        <source>Failed to load sporks cache from %s</source>
-        <translation>Ошибка загрузки кэша спорков из %s</translation>
     </message>
     <message>
         <source>Failed to start a new mixing queue</source>
@@ -4929,14 +4785,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Последняя очередь была создана слишком недавно.</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup.</source>
-        <translation>%s поврежден. Попробуете воспользоваться утилитой dash-wallet для восстановления.</translation>
-    </message>
-    <message>
-        <source>Can't generate a change-address key. No keys in the internal keypool and can't generate any keys.</source>
-        <translation>Не удалось сгенерировать ключ для адреса сдачи. Нет ключей во внутреннем хранилище и не получилось сгенерировать новых.</translation>
-    </message>
-    <message>
         <source>Last successful action was too recent.</source>
         <translation>Последнее успешное действие было слишком недавно.</translation>
     </message>
@@ -4977,6 +4825,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Транзакция некорректна.</translation>
     </message>
     <message>
+        <source>Transaction too large for fee policy</source>
+        <translation>Транзакция слишком большая для установленных ограничений комиссии</translation>
+    </message>
+    <message>
         <source>Unable to bind to %s on this computer (bind returned error %s)</source>
         <translation>Невозможно привязаться к %s на этом компьютере (привязка вернула ошибку %s)</translation>
     </message>
@@ -5005,10 +4857,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Неподдерживаемая категория отладочной информации %s=%s.</translation>
     </message>
     <message>
-        <source>Upgrading txindex database</source>
-        <translation>Обновление базы txindex</translation>
-    </message>
-    <message>
         <source>Verifying blocks...</source>
         <translation>Проверка блоков...</translation>
     </message>
@@ -5019,6 +4867,14 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Wallet is locked.</source>
         <translation>Кошелёк заблокирован.</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Внимание</translation>
+    </message>
+    <message>
+        <source>Warning: %s is deprecated, please use %s instead</source>
+        <translation>Внимание: %s устарело, используйте %s взамен</translation>
     </message>
     <message>
         <source>Warning: can't use %s and %s together, will prefer %s</source>
@@ -5039,6 +4895,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Your entries added successfully.</source>
         <translation>Ваши записи успешно добавлены.</translation>
+    </message>
+    <message>
+        <source>Zapping all transactions from wallet...</source>
+        <translation>Удаление всех транзакций из кошелька...</translation>
     </message>
 </context>
 </TS>

@@ -1,4 +1,4 @@
-<TS version="2.1" language="ar">
+<TS language="ar" version="2.1">
 <context>
     <name>AddressBookPage</name>
     <message>
@@ -74,12 +74,12 @@
         <translation>عناوين الاستقبال </translation>
     </message>
     <message>
-        <source>These are your Dash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <source>These are your Cosanta addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
         <translation>هذه هي عناوين داش التابعة لك من أجل إرسال الدفعات. تحقق دائما من المبلغ و عنوان المرسل المستقبل قبل إرسال العملات </translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>هذه هي عناوين داش الخاصة بك لتلقي المدفوعات. استخدم الزر "إنشاء عنوان استلام جديد" في علامة تبويب الاستلام لإنشاء عناوين جديدة.</translation>
+        <source>These are your Cosanta addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>هذه هي عناوين داش التابعة لك من أجل إستقبال الدفعات. ينصح استخدام عنوان جديد من أجل كل صفقة </translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -191,8 +191,12 @@
         <translation>اعد كتابة جملة السر الجديدة</translation>
     </message>
     <message>
-        <source>Show passphrase</source>
-        <translation>إظهار جملة السر</translation>
+        <source>Show password</source>
+        <translation>عرض كلمة المرور</translation>
+    </message>
+    <message>
+        <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
+        <translation>أدخل عبارة مرور جديدة إلى المحفظة. &lt;br/&gt;الرجاء استخدام عبارة مرور تتكون من&lt;b&gt;10 حروف عشوائية&lt;/b&gt; على الاقل, أو&lt;b&gt; ثمانية كلمات على الاقل&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Encrypt wallet</source>
@@ -203,7 +207,7 @@
         <translation>هذه العملية تحتاج كلمة مرور محفظتك لفتحها</translation>
     </message>
     <message>
-        <source>Unlock wallet for mixing only</source>
+        <source>Unlock wallet for mixing and staking only</source>
         <translation>افتح المحفظة لدمج فقط</translation>
     </message>
     <message>
@@ -223,11 +227,15 @@
         <translation>تغيير كلمة المرور</translation>
     </message>
     <message>
+        <source>Enter the old passphrase and new passphrase to the wallet.</source>
+        <translation>أدخل كلمة المرور القديمة والجديدة للمحفظة</translation>
+    </message>
+    <message>
         <source>Confirm wallet encryption</source>
         <translation>تأكيد تشفير المحفظة</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COSA&lt;/b&gt;!</source>
         <translation>تحذير: إذا قمت بتشفير محفظتك وفقدت كلمة المرور الخاص بك, ستفقد كل عملات داش الخاصة بك</translation>
     </message>
     <message>
@@ -239,28 +247,8 @@
         <translation>محفظة مشفرة</translation>
     </message>
     <message>
-        <source>Enter the new passphrase for the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
-        <translation>أدخل عبارة المرور الجديدة للمحفظة. &lt;br/&gt;الرجاء استخدام عبارة مرور مكونة من &lt;b&gt;عشرة أحرف عشوائية أو أكثر ،&lt;b&gt; أو ثماني كلمات أو أكثر&lt;/b&gt;.</translation>
-    </message>
-    <message>
-        <source>Enter the old passphrase and new passphrase for the wallet.</source>
-        <translation>أدخل كلمة المرور القديمة والجديدة للمحفظة</translation>
-    </message>
-    <message>
-        <source>Remember that encrypting your wallet cannot fully protect your funds from being stolen by malware infecting your computer.</source>
-        <translation>تذكر أن تشفير محفظتك لا يمكن أن يحمي أموالك بشكل كامل من السرقة عن طريق البرامج الضارة التي تصيب جهاز الكمبيوتر الخاص بك.</translation>
-    </message>
-    <message>
-        <source>Wallet to be encrypted</source>
-        <translation>المحفظة المراد تشفيرها</translation>
-    </message>
-    <message>
-        <source>Your wallet is about to be encrypted. </source>
-        <translation>محفظتك على وشك أن يتم تشفيرها.</translation>
-    </message>
-    <message>
-        <source>Your wallet is now encrypted. </source>
-        <translation>محفظتك الآن مشفرة.</translation>
+        <source>%1 will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your funds from being stolen by malware infecting your computer.</source>
+        <translation>%1 سوف يغلق الآن لإنهاء عملية التشفير. تذكر أن تشفير محفظتك لا يمكنه حماية أموالك بالكامل من التعرض للسرقة بسبب البرامج الضارة التي تصيب جهاز الكمبيوتر الخاص بك.</translation>
     </message>
     <message>
         <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. Previous backups of the unencrypted wallet file contain the same HD seed and still have full access to all your funds just like the new, encrypted wallet.</source>
@@ -324,8 +312,20 @@
 <context>
     <name>BitcoinGUI</name>
     <message>
-        <source>A fatal error occurred. Dash Core can no longer continue safely and will quit.</source>
+        <source>A fatal error occurred. Cosanta Core can no longer continue safely and will quit.</source>
         <translation>خطأ فادح حدث . لا يمكن اتمام داش بامان سيتم الخروج</translation>
+    </message>
+    <message>
+        <source>Cosanta Core</source>
+        <translation>جوهر الداش</translation>
+    </message>
+    <message>
+        <source>Wallet</source>
+        <translation>محفظة</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation>جهاز</translation>
     </message>
     <message>
         <source>&amp;Overview</source>
@@ -340,7 +340,7 @@
         <translation>إرسال</translation>
     </message>
     <message>
-        <source>Send coins to a Dash address</source>
+        <source>Send coins to a Cosanta address</source>
         <translation>إرسال عملات الى عنوان داش</translation>
     </message>
     <message>
@@ -348,52 +348,8 @@
         <translation>استقبل</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
+        <source>Request payments (generates QR codes and cosanta: URIs)</source>
         <translation>أطلب دفعات (يولد كودات الرمز المربع وبيت كوين: العناوين المعطاة)</translation>
-    </message>
-    <message>
-        <source>&amp;Sending addresses</source>
-        <translation>&amp;عناوين الإرسال</translation>
-    </message>
-    <message>
-        <source>&amp;Receiving addresses</source>
-        <translation>&amp;عناوين الاستقبال </translation>
-    </message>
-    <message>
-        <source>Open Wallet</source>
-        <translation>افتح المحفظة</translation>
-    </message>
-    <message>
-        <source>Open a wallet</source>
-        <translation>افتح المحفظة</translation>
-    </message>
-    <message>
-        <source>Close Wallet...</source>
-        <translation>إغلاق المحفظة ...</translation>
-    </message>
-    <message>
-        <source>Close wallet</source>
-        <translation>إغلاق المحفظة</translation>
-    </message>
-    <message>
-        <source>No wallets available</source>
-        <translation>لا توجد محافظ متاحة</translation>
-    </message>
-    <message>
-        <source>&amp;Window</source>
-        <translation>&amp;نافذة</translation>
-    </message>
-    <message>
-        <source>Minimize</source>
-        <translation>تصغير</translation>
-    </message>
-    <message>
-        <source>Zoom</source>
-        <translation>تكبير</translation>
-    </message>
-    <message>
-        <source>Main Window</source>
-        <translation>النافذة الرئيسية</translation>
     </message>
     <message>
         <source>&amp;Transactions</source>
@@ -420,6 +376,10 @@
         <translation>الخروج من التطبيق</translation>
     </message>
     <message>
+        <source>Show information about Cosanta Core</source>
+        <translation>أظهر المعلومات حولة داش الأساسية</translation>
+    </message>
+    <message>
         <source>About &amp;Qt</source>
         <translation>عن Qt</translation>
     </message>
@@ -434,10 +394,6 @@
     <message>
         <source>&amp;About %1</source>
         <translation>حوالي %1</translation>
-    </message>
-    <message>
-        <source>Send %1 funds to a Dash address</source>
-        <translation>إرسال %1 عملات الى عنوان داش</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -492,7 +448,7 @@
         <translation>توقيع الرسالة</translation>
     </message>
     <message>
-        <source>Sign messages with your Dash addresses to prove you own them</source>
+        <source>Sign messages with your Cosanta addresses to prove you own them</source>
         <translation>وقَع الرسائل بواسطة اداش الخاص بك لإثبات امتلاكك لهم</translation>
     </message>
     <message>
@@ -500,7 +456,7 @@
         <translation>التحقق من الرسالة</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dash addresses</source>
+        <source>Verify messages to ensure they were signed with specified Cosanta addresses</source>
         <translation>تحقق من الرسائل للتأكد من أنَها وُقعت برسائل داش محدَدة</translation>
     </message>
     <message>
@@ -560,8 +516,16 @@
         <translation>إظهار النسخ الاحتياطية المحفظة تلقائيا إنشاء</translation>
     </message>
     <message>
+        <source>&amp;Sending addresses...</source>
+        <translation>عناوين الإرسال...</translation>
+    </message>
+    <message>
         <source>Show the list of used sending addresses and labels</source>
         <translation>عرض قائمة عناوين الإرسال المستخدمة والملصقات</translation>
+    </message>
+    <message>
+        <source>&amp;Receiving addresses...</source>
+        <translation>عناوين الاستقبال...</translation>
     </message>
     <message>
         <source>Show the list of used receiving addresses and labels</source>
@@ -572,7 +536,7 @@
         <translation>فتح URI</translation>
     </message>
     <message>
-        <source>Open a dash: URI or payment request</source>
+        <source>Open a cosanta: URI or payment request</source>
         <translation>افتح شرطة: عنوان أوري أو طلب الدفع</translation>
     </message>
     <message>
@@ -580,12 +544,8 @@
         <translation>خيارات سطر الأوامر</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Dash command-line options</source>
+        <source>Show the %1 help message to get a list with possible Cosanta command-line options</source>
         <translation>عرض رسالة مساعدة %1 للحصول على قائمة مع خيارات سطر أوامر داش المحتملة</translation>
-    </message>
-    <message>
-        <source>default wallet</source>
-        <translation>المحفظة الافتراضية</translation>
     </message>
     <message>
         <source>%1 client</source>
@@ -606,28 +566,12 @@
         <translation>ملف</translation>
     </message>
     <message>
-        <source>Show information about %1</source>
-        <translation>إظهار معلومات حول%1</translation>
-    </message>
-    <message>
-        <source>Create Wallet...</source>
-        <translation>إنشاء المحفظة ...</translation>
-    </message>
-    <message>
-        <source>Create a new wallet</source>
-        <translation>أنشئ محفظة جديدة</translation>
-    </message>
-    <message>
-        <source>%1 &amp;information</source>
-        <translation>%1 معلومات</translation>
-    </message>
-    <message>
-        <source>Show the %1 basic information</source>
-        <translation>عرض %1 المعلومات الرئيسية</translation>
-    </message>
-    <message>
         <source>&amp;Settings</source>
         <translation>الإعدادات</translation>
+    </message>
+    <message>
+        <source>&amp;Tools</source>
+        <translation>الأدوات</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -637,16 +581,8 @@
         <source>Tabs toolbar</source>
         <translation>شريط أدوات علامات التبويب</translation>
     </message>
-    <message>
-        <source>&amp;Governance</source>
-        <translation>&amp;حوكمة</translation>
-    </message>
-    <message>
-        <source>View Governance Proposals</source>
-        <translation>عرض مقترحات الحوكمة</translation>
-    </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Dash network</source>
+        <source>%n active connection(s) to Cosanta network</source>
         <translation><numerusform>%n اتصالات نشطة بشبكة داش</numerusform><numerusform>%n اتصالات نشطة بشبكة داش</numerusform><numerusform>%n اتصالات نشطة بشبكة داش</numerusform><numerusform>%n اتصالات نشطة بشبكة داش</numerusform><numerusform>%n اتصالات نشطة بشبكة داش</numerusform><numerusform>%n اتصالات نشطة بشبكة داش</numerusform></translation>
     </message>
     <message>
@@ -710,16 +646,8 @@
         <translation>خطأ</translation>
     </message>
     <message>
-        <source>Error: %1</source>
-        <translation>خطأ: %1</translation>
-    </message>
-    <message>
         <source>Warning</source>
         <translation>تحذير</translation>
-    </message>
-    <message>
-        <source>Warning: %1</source>
-        <translation>تحذير:%1</translation>
     </message>
     <message>
         <source>Information</source>
@@ -803,14 +731,6 @@
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;locked&lt;/b&gt;</source>
         <translation>المحفظة هي &lt;b&gt;مشفرة&lt;/b&gt; وحاليا &lt;b&gt;مؤمنة&lt;/b&gt;</translation>
     </message>
-    <message>
-        <source>Proxy is &lt;b&gt;enabled&lt;/b&gt;: %1</source>
-        <translation>تم &lt;b&gt;تمكين&lt;/b&gt; الوكيل:%1</translation>
-    </message>
-    <message>
-        <source>Original message:</source>
-        <translation>رسالة أصلية:</translation>
-    </message>
 </context>
 <context>
     <name>CoinControlDialog</name>
@@ -877,10 +797,6 @@
     <message>
         <source>Received with address</source>
         <translation>تلقى مع عنوان</translation>
-    </message>
-    <message>
-        <source>Mixing Rounds</source>
-        <translation>جولات الخلط</translation>
     </message>
     <message>
         <source>Date</source>
@@ -963,7 +879,7 @@
         <translation>يتحول هذا التصنيف إلى اللون الأحمر إذا تلقى أي مستلم مبلغا أصغر من عتبة الغبار الحالية.</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 duff(s) per input.</source>
+        <source>Can vary +/- %1 unit(s) per input.</source>
         <translation>يمكن أن تختلف +/-%1 داف (ق) لكل مدخلات.</translation>
     </message>
     <message>
@@ -973,22 +889,6 @@
     <message>
         <source>Some coins were unselected because they do not have enough mixing rounds.</source>
         <translation>لم يتم تحديد بعض العملات المعدنية لأنها لا تحتوي على دورات خلط كافية.</translation>
-    </message>
-    <message>
-        <source>Show all coins</source>
-        <translation>اظهار جميع العملات</translation>
-    </message>
-    <message>
-        <source>Hide %1 coins</source>
-        <translation>إخفاء %1 العملات</translation>
-    </message>
-    <message>
-        <source>Show all %1 coins</source>
-        <translation>اظهار جميع %1 العملات</translation>
-    </message>
-    <message>
-        <source>Show spendable coins only</source>
-        <translation>اظهار العملات التي يمكن صرفها فقط</translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -1005,60 +905,6 @@
     <message>
         <source>n/a</source>
         <translation>غير معروف</translation>
-    </message>
-</context>
-<context>
-    <name>CreateWalletActivity</name>
-    <message>
-        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
-        <translation>جاري إنشاء المحفظة&lt;b&gt;%1&lt;/b&gt; ...</translation>
-    </message>
-    <message>
-        <source>Create wallet failed</source>
-        <translation>فشل إنشاء المحفظة</translation>
-    </message>
-    <message>
-        <source>Create wallet warning</source>
-        <translation>إنشاء تحذير المحفظة</translation>
-    </message>
-</context>
-<context>
-    <name>CreateWalletDialog</name>
-    <message>
-        <source>Create Wallet</source>
-        <translation>إنشاء المحفظة</translation>
-    </message>
-    <message>
-        <source>Wallet Name</source>
-        <translation>اسم المحفظة</translation>
-    </message>
-    <message>
-        <source>Encrypt the wallet. The wallet will be encrypted with a passphrase of your choice.</source>
-        <translation>تشفير المحفظة. سيتم تشفير المحفظة بعبارة مرور من اختيارك.</translation>
-    </message>
-    <message>
-        <source>Encrypt Wallet</source>
-        <translation>تشفير المحفظة</translation>
-    </message>
-    <message>
-        <source>Disable private keys for this wallet. Wallets with private keys disabled will have no private keys and cannot have an HD seed or imported private keys. This is ideal for watch-only wallets.</source>
-        <translation>تعطيل المفاتيح الخاصة لهذه المحفظة. لن تحتوي المحافظ التي تحتوي على مفاتيح خاصة معطلة على مفاتيح خاصة ولا يمكن أن تحتوي على مفتاح HD أو مفاتيح خاصة مستوردة. هذا مثالي لمحافظ الساعات فقط.</translation>
-    </message>
-    <message>
-        <source>Disable Private Keys</source>
-        <translation>تعطيل المفاتيح الخاصة</translation>
-    </message>
-    <message>
-        <source>Make a blank wallet. Blank wallets do not initially have private keys or scripts. Private keys and addresses can be imported, or an HD seed can be set, at a later time.</source>
-        <translation>اصنع محفظة فارغة. لا تحتوي المحافظ الفارغة في البداية على مفاتيح أو نصوص خاصة. يمكن استيراد المفاتيح والعناوين الخاصة ، أو يمكن تعيين مصدر HD في وقت لاحق.</translation>
-    </message>
-    <message>
-        <source>Make Blank Wallet</source>
-        <translation>اصنع محفظة فارغة</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation>انشاء</translation>
     </message>
 </context>
 <context>
@@ -1096,16 +942,12 @@
         <translation>تعديل عنوان الارسال</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Dash address.</source>
+        <source>The entered address "%1" is not a valid Cosanta address.</source>
         <translation>العنوان الذي تم إدخاله "%1" ليس عنوانًا صالحًا لداش.</translation>
     </message>
     <message>
-        <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
-        <translation>العنوان "%1" موجود بالفعل كعنوان استلام بالتسمية "%2" ومن ثم لا يمكن إضافته كعنوان إرسال.</translation>
-    </message>
-    <message>
-        <source>The entered address "%1" is already in the address book with label "%2".</source>
-        <translation>العنوان الذي تم إدخاله "%1" موجود بالفعل في دفتر العناوين بالتسمية "%2".</translation>
+        <source>The entered address "%1" is already in the address book.</source>
+        <translation>هدا العنوان "%1" موجود مسبقا في دفتر العناوين</translation>
     </message>
     <message>
         <source>Could not unlock wallet.</source>
@@ -1140,37 +982,14 @@
     </message>
 </context>
 <context>
-    <name>GovernanceList</name>
-    <message>
-        <source>Form</source>
-        <translation>نمودج</translation>
-    </message>
-    <message>
-        <source>Filter List:</source>
-        <translation>قائمة تصفية:</translation>
-    </message>
-    <message>
-        <source>Filter propsal list</source>
-        <translation>قائمة عوامل التصفية</translation>
-    </message>
-    <message>
-        <source>Proposal Count:</source>
-        <translation>عدد الاقتراح:</translation>
-    </message>
-    <message>
-        <source>Filter by Title</source>
-        <translation>تصفية حسب العنوان</translation>
-    </message>
-    <message>
-        <source>Proposal Info: %1</source>
-        <translation>معلومات الاقتراح:%1</translation>
-    </message>
-</context>
-<context>
     <name>HelpMessageDialog</name>
     <message>
         <source>version</source>
         <translation>الإصدار</translation>
+    </message>
+    <message>
+        <source>(%1-bit)</source>
+        <translation>(%1-بت)</translation>
     </message>
     <message>
         <source>About %1</source>
@@ -1180,15 +999,7 @@
         <source>Command-line options</source>
         <translation>خيارات سطر الأوامر</translation>
     </message>
-    <message>
-        <source>%1 information</source>
-        <translation>%1 معلومات</translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Dash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH and 10 DASH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>%1 يمنحك   &lt;h3&gt;%1 أساسيات&lt;/h3&gt; خصوصية مالية حقيقية من خلال حجب أصول أموالك. تتكون كل الداش في محفظتك من "مدخلات" مختلفة يمكنك التفكير فيها على أنها عملات معدنية منفصلة ومنفصلة.&lt;br&gt;  %1 يستخدم عملية مبتكرة لخلط مدخلاتك مع مدخلات شخصين آخرين أو أكثر ، دون أن تترك عملاتك محفظتك. أنت تحتفظ بالسيطرة على أموالك في جميع الأوقات.&lt;hr&gt;&lt;b&gt; تعمل  %1 عملية على النحو التالي:&lt;/b&gt;&lt;ol type="1"&gt;&lt;li&gt; يبدأ بتقسيم إدخالات معاملتك إلى فئات قياسية. هذه الفئات هي 0.001 داش و 0.01 داش و 0.1 داش و 1 داش و 10 داش - نوع من النقود الورقية التي تستخدمها كل يوم.&lt;/li&gt;&lt;li&gt; ثم ترسل محفظتك طلبات إلى عقد البرامج التي تم تكوينها خصيصًا على الشبكة ، والتي تسمى "العقد الرئيسية". يتم إبلاغ هذه الرموز الرئيسية بعد ذلك أنك مهتم بخلط فئة معينة. لا يتم إرسال أي معلومات يمكن التعرف عليها إلى رموز ماسترنود ، لذلك فهم لا يعرفون أبدًا "من أنت".&lt;/li&gt;&lt;li&gt; عندما يرسل شخصان آخران أو أكثر رسائل متشابهة ، للإشارة إلى رغبتهم في مزج نفس الفئة ، تبدأ جلسة خلط. يخلط الرمز الرئيسي بين المدخلات ويوجه جميع محافظ المستخدمين الثلاثة لدفع المدخلات التي تم تحويلها الآن لأنفسهم. تدفع محفظتك تلك الفئة مباشرة لنفسها ، ولكن في عنوان مختلف (يسمى تغيير العنوان). &lt;/li&gt;&lt;li&gt;من أجل إخفاء أموالك بالكامل ، يجب أن تكرر محفظتك هذه العملية عدة مرات مع كل فئة. في كل مرة يتم فيها الانتهاء من العملية ، يطلق عليها "جولة". كل جولة  1% تجعل تحديد مصدر أموالك أكثر صعوبة.&lt;/li&gt;&lt;li&gt; تحدث عملية الخلط هذه في الخلفية دون أي تدخل من جانبك. عندما ترغب في إجراء معاملة ، ستكون أموالك مختلطة بالفعل. لا حاجة إلى انتظار إضافي.&lt;/li&gt;&lt;/ol&gt;&lt;hr&gt;&lt;b&gt; هام: &lt;/b&gt;تحتوي محفظتك فقط على 1000 من "عناوين التغيير" هذه. في كل مرة يحدث فيها اختلاط ، يتم استخدام ما يصل إلى 9 عناوين. هذا يعني أن تلك العناوين الـ 1000 تدوم لحوالي 100 حدث خلط. عندما يتم استخدام 900 منهم ، يجب أن تنشئ محفظتك المزيد من العناوين. لا يمكنه القيام بذلك إلا إذا تم تمكين النسخ الاحتياطية التلقائية. &lt;br&gt;وبالتالي ، فإن المستخدمين الذين تم تعطيل النسخ الاحتياطية لديهم  %1 سيتم أيضًا تعطيل.&lt;hr&gt; لمزيد من المعلومات ، &lt;a style="%2" href="%3"&gt; %1 راجع وثائق&lt;/a&gt;.</translation>
-    </message>
-</context>
+    </context>
 <context>
     <name>Intro</name>
     <message>
@@ -1232,7 +1043,7 @@
         <translation>سيتم تخزين %1 جيجابايت تقريباً من البيانات في هذا الدليل.</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Dash block chain.</source>
+        <source>%1 will download and store a copy of the Cosanta block chain.</source>
         <translation>سيقوم %1 بتنزيل نسخة من سلسلة كتل بتكوين وتخزينها.</translation>
     </message>
     <message>
@@ -1265,6 +1076,10 @@
     <message>
         <source>Status</source>
         <translation>الحالة.</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
     </message>
     <message>
         <source>Filter List:</source>
@@ -1386,11 +1201,11 @@
         <translation>نمودج</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Cosanta network, as detailed below.</source>
         <translation>قد لا تكون المعاملات الأخيرة مرئية بعد ، وبالتالي قد يكون رصيد محفظتك غير صحيح. ستكون هذه المعلومات صحيحة بمجرد انتهاء محفظتك من المزامنة مع شبكة داش ، كما هو مفصل أدناه.</translation>
     </message>
     <message>
-        <source>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <source>Attempting to spend Cosanta that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
         <translation>لن تقبل الشبكة محاولة إنفاق داش المتأثرة بالمعاملات التي لم يتم عرضها بعد.</translation>
     </message>
     <message>
@@ -1426,8 +1241,8 @@
         <translation>إخفاء</translation>
     </message>
     <message>
-        <source>Unknown. Syncing Headers (%1, %2%)...</source>
-        <translation>مجهول. مزامنة الرؤوس (%1،%2) ...</translation>
+        <source>Unknown. Syncing Headers (%1)...</source>
+        <translation>غير معروف. مزامنة الرؤوس (%1) ...</translation>
     </message>
 </context>
 <context>
@@ -1454,25 +1269,6 @@
     </message>
 </context>
 <context>
-    <name>OpenWalletActivity</name>
-    <message>
-        <source>Open wallet failed</source>
-        <translation>فشل فتح المحفظة</translation>
-    </message>
-    <message>
-        <source>Open wallet warning</source>
-        <translation>فتح تحذير المحفظة</translation>
-    </message>
-    <message>
-        <source>default wallet</source>
-        <translation>المحفظة الافتراضية</translation>
-    </message>
-    <message>
-        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
-        <translation>جاري فتح المحفظة&lt;b&gt;%1&lt;/b&gt; ...</translation>
-    </message>
-</context>
-<context>
     <name>OptionsDialog</name>
     <message>
         <source>Options</source>
@@ -1485,6 +1281,10 @@
     <message>
         <source>Size of &amp;database cache</source>
         <translation>حجم ذاكرة التخزين المؤقت لقاعدة البيانات</translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation>م ب</translation>
     </message>
     <message>
         <source>Number of script &amp;verification threads</source>
@@ -1503,22 +1303,6 @@
         <translation>&amp;مظهر خارجي</translation>
     </message>
     <message>
-        <source>Prune &amp;block storage to</source>
-        <translation>تقليم وحظر التخزين إلى ملفات</translation>
-    </message>
-    <message>
-        <source>GB</source>
-        <translation>GB</translation>
-    </message>
-    <message>
-        <source>Reverting this setting requires re-downloading the entire blockchain.</source>
-        <translation>تتطلب العودة إلى هذا الإعداد إعادة تنزيل بلوكشين بالكامل.</translation>
-    </message>
-    <message>
-        <source>MiB</source>
-        <translation>MiB</translation>
-    </message>
-    <message>
         <source>Show additional tab listing all your masternodes in first sub-tab&lt;br/&gt;and all masternodes on the network in second sub-tab.</source>
         <translation>عرض علامة تبويب إضافية تسرد جميع رموزك في أول علامة تبويب فرعية &lt;br/&gt;وجميع ماسترنود على الشبكة في علامة التبويب الفرعية الثانية.</translation>
     </message>
@@ -1527,76 +1311,16 @@
         <translation>إضهار شريط ماسترنود</translation>
     </message>
     <message>
-        <source>Show additional tab listing governance proposals.</source>
-        <translation>إظهار علامة تبويب إضافية تسرد مقترحات الحوكمة.</translation>
-    </message>
-    <message>
-        <source>Show Governance Tab</source>
-        <translation>إظهار علامة التبويب الحوكمة</translation>
-    </message>
-    <message>
         <source>If you disable the spending of unconfirmed change, the change from a transaction&lt;br/&gt;cannot be used until that transaction has at least one confirmation.&lt;br/&gt;This also affects how your balance is computed.</source>
         <translation>إذا قمت بتعطيل الإنفاق من التغيير غير المؤكد ، فإن التغيير من معاملة&lt;br/&gt; لا يمكن استخدامه حتى يكون لهذه المعاملة تأكيد واحد على الأقل. &lt;br/&gt; يؤثر هذا أيضًا على كيفية حساب رصيدك.</translation>
-    </message>
-    <message>
-        <source>Show mixing interface on Overview screen and reveal an additional screen which allows to spend fully mixed coins only.&lt;br/&gt;A new tab with more settings will also appear in this dialog, please make sure to check them before mixing your coins.</source>
-        <translation>أظهر واجهة المزج على شاشة النظرة العامة واكشف عن شاشة إضافية تسمح بإنفاق عملات مختلطة بالكامل فقط. &lt;br/&gt; ستظهر أيضًا علامة تبويب جديدة بها المزيد من الإعدادات في مربع الحوار هذا ، يرجى التأكد من التحقق منها قبل خلط عملاتك المعدنية.</translation>
-    </message>
-    <message>
-        <source>Show additional information and buttons on overview screen.</source>
-        <translation>إظهار معلومات وأزرار إضافية على شاشة النظرة العامة.</translation>
-    </message>
-    <message>
-        <source>Enable advanced interface</source>
-        <translation>تفعيل الواجهة المتقدمة</translation>
-    </message>
-    <message>
-        <source>Show system popups for mixing transactions&lt;br/&gt;just like for all other transaction types.</source>
-        <translation>عرض النوافذ المنبثقة للنظام لخلط المعاملات&lt;br/&gt; تمامًا مثل جميع أنواع المعاملات الأخرى.</translation>
-    </message>
-    <message>
-        <source>Show popups for mixing transactions</source>
-        <translation>عرض النوافذ المنبثقة لخلط المعاملات</translation>
-    </message>
-    <message>
-        <source>Show warning dialog when the wallet has very low number of keys left.</source>
-        <translation>إظهار مربع حوار التحذير عندما يكون هناك عدد قليل جدًا من المفاتيح المتبقية في المحفظة.</translation>
-    </message>
-    <message>
-        <source>Warn if the wallet is running out of keys</source>
-        <translation>تحذير إذا كانت المحفظة تنفد من المفاتيح</translation>
-    </message>
-    <message>
-        <source>Whether to use experimental mode with multiple mixing sessions per block.&lt;br/&gt;Note: You must use this feature carefully.&lt;br/&gt;Make sure you always have recent wallet (auto)backup in a safe place!</source>
-        <translation>لتحديد ما إذا كنت تريد استخدام وضع الإرسال التجريبي مع جلسات خلط متعددة لكل مقطع.&lt;br/&gt;ملاحظة: يجب عليك استخدام هذه الميزة بعناية. &lt;br/&gt;تأكد من أن لديك دائمًا احتياطي محفظة (تلقائي) حديث في مكان آمن!</translation>
-    </message>
-    <message>
-        <source>Enable &amp;multi-session</source>
-        <translation>تمكين الإرسال متعدد الجلسات</translation>
-    </message>
-    <message>
-        <source>Mixing rounds</source>
-        <translation>جولات الخلط</translation>
-    </message>
-    <message>
-        <source>This amount acts as a threshold to turn off mixing once it's reached.</source>
-        <translation>يعمل هذا المقدار كعتبة لإيقاف تشغيل الخلط بمجرد الوصول إليه.</translation>
     </message>
     <message>
         <source>Target balance</source>
         <translation>الهدف رصيد</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <source>Automatically open the Cosanta Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
         <translation>فتح منفذ عميل داش كور تلقائيًا على جهاز التوجيه. هذا يعمل فقط عندما يدعم جهاز التوجيه الخاص بك UPnP وتمكينه.</translation>
-    </message>
-    <message>
-        <source>Automatically open the Bitcoin client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
-        <translation>افتح منفذ عميل البيتكوين تلقائيًا على جهاز التوجيه. يعمل هذا فقط عندما يدعم جهاز التوجيه الخاص بك NAT-PMP ويتم تمكينه. يمكن أن يكون المنفذ الخارجي عشوائيًا.</translation>
-    </message>
-    <message>
-        <source>Map port using NA&amp;T-PMP</source>
-        <translation>ميناء الخريطة باستخدام NA &amp; T-PMP</translation>
     </message>
     <message>
         <source>Accept connections from outside.</source>
@@ -1607,7 +1331,7 @@
         <translation>السماح بالاتصالات الواردة</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a SOCKS5 proxy.</source>
+        <source>Connect to the Cosanta network through a SOCKS5 proxy.</source>
         <translation>الاتصال بشبكة داش من خلال وكيل SOCKS5.</translation>
     </message>
     <message>
@@ -1621,10 +1345,6 @@
     <message>
         <source>Use separate SOCKS&amp;5 proxy to reach peers via Tor hidden services:</source>
         <translation>استخدم بروكسي SOCKS5 منفصل للوصول إلى الأقران عبر خدمات Tor المخفية:</translation>
-    </message>
-    <message>
-        <source>Options set in this dialog are overridden by the command line or in the configuration file:</source>
-        <translation>يتم تجاوز الخيارات المعينة في مربع الحوار هذا بواسطة سطر الأوامر أو في ملف التكوين:</translation>
     </message>
     <message>
         <source>Hide the icon from the system tray.</source>
@@ -1652,7 +1372,7 @@
     </message>
     <message>
         <source>Automatically start %1 after logging in to the system.</source>
-        <translation>ابدأ تلقائيًا %1  بعد تسجيل الدخول إلى النظام.</translation>
+        <translation>ابدأ تلقائيًا %1 بعد تسجيل الدخول إلى النظام.</translation>
     </message>
     <message>
         <source>&amp;Start %1 on system login</source>
@@ -1673,10 +1393,6 @@
     <message>
         <source>&amp;Network</source>
         <translation>&amp;الشبكة</translation>
-    </message>
-    <message>
-        <source>Enabling pruning significantly reduces the disk space required to store transactions. All blocks are still fully validated. Reverting this setting requires re-downloading the entire blockchain.</source>
-        <translation>يؤدي تمكين التقليم إلى تقليل مساحة القرص المطلوبة بشكل كبير لتخزين المعاملات. لا تزال جميع الكتل مصدق عليها بشكل كامل. تتطلب العودة إلى هذا الإعداد إعادة تنزيل بلوكشين بالكامل.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
@@ -1715,7 +1431,7 @@
         <translation>تور</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a separate SOCKS5 proxy for Tor hidden services.</source>
+        <source>Connect to the Cosanta network through a separate SOCKS5 proxy for Tor hidden services.</source>
         <translation>اتصل بشبكة داش من خلال وكيل SOCKS5 منفصل لخدمات المخفية.</translation>
     </message>
     <message>
@@ -1744,9 +1460,9 @@
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/projects/p/dash/</source>
+https://www.transifex.com/projects/p/cosanta/</source>
         <translation>لغة مفقودة أو ترجمة غير مكتملة؟ مساعدة في المساهمة بالترجمات هنا:
-https://www.transifex.com/projects/p/dash/</translation>
+https://www.transifex.com/projects/p/cosanta/</translation>
     </message>
     <message>
         <source>&amp;Unit to show amounts in:</source>
@@ -1759,6 +1475,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Decimal digits</source>
         <translation>أرقام عشرية</translation>
+    </message>
+    <message>
+        <source>Active command-line options that override above options:</source>
+        <translation>خيارات سطر الأوامر النشطة التي تتجاوز الخيارات أعلاه:</translation>
     </message>
     <message>
         <source>Reset all client options to default.</source>
@@ -1775,10 +1495,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>&amp;Cancel</source>
         <translation>الغاء</translation>
-    </message>
-    <message>
-        <source>Enable %1 features</source>
-        <translation>تمكين %1 الميزات</translation>
     </message>
     <message>
         <source>default</source>
@@ -1812,7 +1528,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>نمودج</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Dash network after a connection is established, but this process has not completed yet.</source>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Cosanta network after a connection is established, but this process has not completed yet.</source>
         <translation>قد تكون المعلومات المعروضة قديمة. تتزامن محفظتك تلقائيًا مع شبكة داش بعد إنشاء الاتصال ، ولكن هذه العملية لم تكتمل بعد.</translation>
     </message>
     <message>
@@ -1892,7 +1608,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>الكمية و الجولات</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
+        <source>0 COSA / 0 Rounds</source>
         <translation>0 داش / 0 جولات</translation>
     </message>
     <message>
@@ -1926,10 +1642,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>No inputs detected</source>
         <translation>لم يتم اكتشاف أي مدخلات</translation>
-    </message>
-    <message>
-        <source>%1 Balance</source>
-        <translation>%1 الرصيد</translation>
     </message>
     <message numerus="yes">
         <source>%n Rounds</source>
@@ -1966,26 +1678,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>keys left: %1</source>
         <translation>المفاتيح المتبقية: %1</translation>
-    </message>
-    <message>
-        <source>Start %1</source>
-        <translation>بدأ  %1</translation>
-    </message>
-    <message>
-        <source>If you don't want to see internal %1 fees/transactions select "Most Common" as Type on the "Transactions" tab.</source>
-        <translation>إذا كنت لا ترغب في رؤية  %1 رسوم / المعاملات الداخلية حدد "الأكثر شيوعًا" كأنواع في علامة شريط "المعاملات".</translation>
-    </message>
-    <message>
-        <source>%1 requires at least %2 to use.</source>
-        <translation>يتطلب%1 استخدام%2 على الأقل.</translation>
-    </message>
-    <message>
-        <source>Wallet is locked and user declined to unlock. Disabling %1.</source>
-        <translation>تم قفل المحفظة ورفض المستخدم فتحها. تعطيل%1.</translation>
-    </message>
-    <message>
-        <source>Stop %1</source>
-        <translation>إيقاف%1</translation>
     </message>
     <message>
         <source>Disabled</source>
@@ -2035,7 +1727,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>خطأ في طلب الدفع</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
+        <source>Cannot start cosanta: click-to-pay handler</source>
         <translation>لا يمكن بدء داش: معالج الدفع مقابل الدفع</translation>
     </message>
     <message>
@@ -2043,23 +1735,15 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>التعامل مع العنوان</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash: //' ليس URI صالحًا. استخدم "شرطة:" بدلاً من ذلك.</translation>
-    </message>
-    <message>
         <source>Payment request fetch URL is invalid: %1</source>
         <translation>عنوان الخاص بجلب طلب الدفع غير صالح: %1</translation>
-    </message>
-    <message>
-        <source>Cannot process payment request because BIP70 support was not compiled in.</source>
-        <translation>لا يمكن معالجة طلب الدفع لأنه لم يتم تجميع دعم BIP70 بتنسيق.</translation>
     </message>
     <message>
         <source>Invalid payment address %1</source>
         <translation>عنوان الدفع غير صالح %1</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Dash address or malformed URI parameters.</source>
+        <source>URI cannot be parsed! This can be caused by an invalid Cosanta address or malformed URI parameters.</source>
         <translation>لا يمكن تحليل العنوان! يمكن أن يكون ذلك بسبب عنوان داش غير صالح أو معلمات العنوان غير صحيحة.</translation>
     </message>
     <message>
@@ -2155,56 +1839,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
 </context>
 <context>
-    <name>Proposal</name>
-    <message>
-        <source>Passing +%1</source>
-        <translation>تمرير +%1</translation>
-    </message>
-    <message>
-        <source>Needs additional %1 votes</source>
-        <translation>يحتاج إلى%1 تصويتات إضافية</translation>
-    </message>
-</context>
-<context>
-    <name>ProposalModel</name>
-    <message>
-        <source>Yes</source>
-        <translation>نعم</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation>لا</translation>
-    </message>
-    <message>
-        <source>Hash</source>
-        <translation>تجزئة</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation>عنوان</translation>
-    </message>
-    <message>
-        <source>Start</source>
-        <translation>ابدأ</translation>
-    </message>
-    <message>
-        <source>End</source>
-        <translation>نهاية</translation>
-    </message>
-    <message>
-        <source>Amount</source>
-        <translation>مبلغ</translation>
-    </message>
-    <message>
-        <source>Active</source>
-        <translation>نشيط</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation>الحالة.</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>Choose data directory on startup (default: %u)</source>
@@ -2247,46 +1881,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>أظهر شاشة البداية عند بدء التشغيل (افتراضي: %u)</translation>
     </message>
     <message>
-        <source>Error: Specified data directory "%1" does not exist.</source>
-        <translation>خطأ: دليل البيانات المحدد "%1" غير موجود.</translation>
-    </message>
-    <message>
-        <source>Error: Cannot parse configuration file: %1.</source>
-        <translation>خطأ: لا يمكن تحليل ملف التكوين:%1.</translation>
-    </message>
-    <message>
-        <source>Error: %1</source>
-        <translation>خطأ: %1</translation>
-    </message>
-    <message>
-        <source>Error: Failed to load application fonts.</source>
-        <translation>خطأ: فشل تحميل خطوط التطبيق.</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-family invalid. Valid values: %1.</source>
-        <translation>خطأ: مجموعة الخطوط المحددة غير صالحة. القيم الصالحة: %1.</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-weight-normal invalid. Valid range %1 to %2.</source>
-        <translation>خطأ: خط الوزن العادي المحدد غير صالح. النطاق الصالح %1 إلى %2.</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-weight-bold invalid. Valid range %1 to %2.</source>
-        <translation>خطأ: خط غامق محدد غير صالح. النطاق الصالح %1 إلى %2.</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-scale invalid. Valid range %1 to %2.</source>
-        <translation>خطأ: مقياس الخط المحدد غير صالح. النطاق الصالح %1 إلى %2.</translation>
-    </message>
-    <message>
-        <source>Error: Invalid -custom-css-dir path.</source>
-        <translation>خطأ: مسار -custom-css-dir غير صالح.</translation>
-    </message>
-    <message>
-        <source>Error: %1 CSS file(s) missing in -custom-css-dir path.</source>
-        <translation>خطأ: يفتقد %1 ملف (ملفات) CSS في المسار -custom-css-dir.</translation>
-    </message>
-    <message>
         <source>%1 didn't yet exit safely...</source>
         <translation>%1 لم يخرج بعد بأمان...</translation>
     </message>
@@ -2295,16 +1889,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>مبلغ</translation>
     </message>
     <message>
-        <source>Enter a Dash address (e.g. %1)</source>
+        <source>Enter a Cosanta address (e.g. %1)</source>
         <translation>أدخل عنوان داش (على سبيل المثال %1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
         <translation>إعداد المظهر</translation>
-    </message>
-    <message>
-        <source>Please choose your preferred settings for the appearance of %1</source>
-        <translation>الرجاء اختيار الإعدادات المفضلة لديك لمظهر%1</translation>
     </message>
     <message>
         <source>This can also be adjusted later in the "Appearance" tab of the preferences.</source>
@@ -2388,6 +1978,49 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
 </context>
 <context>
+    <name>QObject::QObject</name>
+    <message>
+        <source>Error: Specified data directory "%1" does not exist.</source>
+        <translation>خطأ: دليل البيانات المحدد "%1" غير موجود.</translation>
+    </message>
+    <message>
+        <source>Error: Cannot parse configuration file: %1. Only use key=value syntax.</source>
+        <translation>خطأ: لا يمكن تحليل ملف التهيئة: %1. استخدم فقط بناء الجملة = القيمة الأساسية.</translation>
+    </message>
+    <message>
+        <source>Error: %1</source>
+        <translation>خطأ: %1</translation>
+    </message>
+    <message>
+        <source>Error: Failed to load application fonts.</source>
+        <translation>خطأ: فشل تحميل خطوط التطبيق.</translation>
+    </message>
+    <message>
+        <source>Error: Specified font-family invalid. Valid values: %1.</source>
+        <translation>خطأ: مجموعة الخطوط المحددة غير صالحة. القيم الصالحة: %1.</translation>
+    </message>
+    <message>
+        <source>Error: Specified font-weight-normal invalid. Valid range %1 to %2.</source>
+        <translation>خطأ: خط الوزن العادي المحدد غير صالح. النطاق الصالح %1 إلى %2.</translation>
+    </message>
+    <message>
+        <source>Error: Specified font-weight-bold invalid. Valid range %1 to %2.</source>
+        <translation>خطأ: خط غامق محدد غير صالح. النطاق الصالح %1 إلى %2.</translation>
+    </message>
+    <message>
+        <source>Error: Specified font-scale invalid. Valid range %1 to %2.</source>
+        <translation>خطأ: مقياس الخط المحدد غير صالح. النطاق الصالح %1 إلى %2.</translation>
+    </message>
+    <message>
+        <source>Error: Invalid -custom-css-dir path.</source>
+        <translation>خطأ: مسار -custom-css-dir غير صالح.</translation>
+    </message>
+    <message>
+        <source>Error: %1 CSS file(s) missing in -custom-css-dir path.</source>
+        <translation>خطأ: يفتقد %1 ملف (ملفات) CSS في المسار -custom-css-dir.</translation>
+    </message>
+</context>
+<context>
     <name>QRDialog</name>
     <message>
         <source>QR-Code Title</source>
@@ -2434,18 +2067,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>&amp;Copy Image</source>
         <translation>&amp;نسخ الصورة</translation>
-    </message>
-    <message>
-        <source>Resulting URI too long, try to reduce the text for label / message.</source>
-        <translation>العنوان المستخدم طويل جدًا، حاول أن تقوم بتقليل نص التسمية / الرسالة.</translation>
-    </message>
-    <message>
-        <source>Error encoding URI into QR Code.</source>
-        <translation>خطأ في ترميز العنوان إلى الرمز المربع.</translation>
-    </message>
-    <message>
-        <source>QR code support not available.</source>
-        <translation>دعم رمز الاستجابة السريعة غير متاح.</translation>
     </message>
     <message>
         <source>Save QR Code</source>
@@ -2503,8 +2124,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>تصحيح ملف السجل</translation>
     </message>
     <message>
+        <source>Current number of blocks</source>
+        <translation>عدد الكتل الحالي</translation>
+    </message>
+    <message>
         <source>Client version</source>
         <translation>نسخه العميل</translation>
+    </message>
+    <message>
+        <source>Using BerkeleyDB version</source>
+        <translation>باستخدام BerkeleyDB إصدار</translation>
     </message>
     <message>
         <source>Block chain</source>
@@ -2595,18 +2224,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>إعادة فحص ملفات بلوكشين2</translation>
     </message>
     <message>
-        <source>The buttons below will restart the wallet with command-line options to repair the wallet, fix issues with corrupt blockchain files or missing/obsolete transactions.</source>
-        <translation>ستقوم الأزرار الموجودة أدناه بإعادة تشغيل المحفظة باستخدام خيارات سطر الأوامر لإصلاح المحفظة ، وإصلاح المشكلات المتعلقة بملفات بلوكشين الفاسدة أو معاملات مفقودة / قديمة.</translation>
-    </message>
-    <message>
-        <source>-rescan=1: Rescan the block chain for missing wallet transactions starting from wallet creation time.</source>
-        <translation>-rescan = 1: إعادة فحص سلسلة الكتل بحثًا عن معاملات المحفظة المفقودة بدءًا من وقت إنشاء المحفظة.</translation>
-    </message>
-    <message>
-        <source>-rescan=2: Rescan the block chain for missing wallet transactions starting from genesis block.</source>
-        <translation>-rescan = 2: إعادة فحص سلسلة الكتل بحثًا عن معاملات المحفظة المفقودة بدءًا من كتلة التكوين.</translation>
-    </message>
-    <message>
         <source>Wallet Path</source>
         <translation>محفظة path</translation>
     </message>
@@ -2619,32 +2236,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>دليل البيانات</translation>
     </message>
     <message>
-        <source>To specify a non-default location of the data directory use the '%1' option.</source>
-        <translation>لتحديد موقع غير افتراضي لدليل البيانات ، استخدم الخيار "%1".</translation>
-    </message>
-    <message>
-        <source>Blocksdir</source>
-        <translation>Blocksdir</translation>
-    </message>
-    <message>
-        <source>To specify a non-default location of the blocks directory use the '%1' option.</source>
-        <translation>لتحديد موقع غير افتراضي لدليل الكتل ، استخدم الخيار "%1".</translation>
-    </message>
-    <message>
-        <source>Current block height</source>
-        <translation>ارتفاع الكتلة الحالي</translation>
-    </message>
-    <message>
         <source>Last block hash</source>
         <translation>آخر تجزئة كتلة</translation>
-    </message>
-    <message>
-        <source>Latest ChainLocked block hash</source>
-        <translation>أحدث تجزئة كتلة ChainLocked</translation>
-    </message>
-    <message>
-        <source>Latest ChainLocked block height</source>
-        <translation>أحدث ارتفاع كتلة ChainLocked</translation>
     </message>
     <message>
         <source>Open the %1 debug log file from the current data directory. This can take a few seconds for large log files.</source>
@@ -2669,10 +2262,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>&amp;Reset</source>
         <translation>&amp;إعادة تعيين</translation>
-    </message>
-    <message>
-        <source>Node Type</source>
-        <translation>نوع العقدة</translation>
     </message>
     <message>
         <source>PoSe Score</source>
@@ -2723,6 +2312,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>إصلاح المحفظة</translation>
     </message>
     <message>
+        <source>Salvage wallet</source>
+        <translation>محفظة الإنقاذ</translation>
+    </message>
+    <message>
         <source>Recover transactions 1</source>
         <translation>استرداد المعاملات 1</translation>
     </message>
@@ -2733,6 +2326,14 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Upgrade wallet format</source>
         <translation>ترقية تنسيق المحفظة</translation>
+    </message>
+    <message>
+        <source>The buttons below will restart the wallet with command-line options to repair the wallet, fix issues with corrupt blockhain files or missing/obsolete transactions.</source>
+        <translation>ستقوم الأزرار الموجودة أدناه بإعادة تشغيل المحفظة باستخدام خيارات سطر الأوامر لإصلاح المحفظة ، وإصلاح المشكلات المتعلقة بملفات بلوكشين الفاسدة أو معاملات مفقودة / قديمة.</translation>
+    </message>
+    <message>
+        <source>-salvagewallet: Attempt to recover private keys from a corrupt wallet.dat.</source>
+        <translation>محفظة النقود: محاولة استرداد المفاتيح الخاصة من wallet.dat فاسدة.</translation>
     </message>
     <message>
         <source>-zapwallettxes=1: Recover transactions from blockchain (keep meta-data, e.g. account owner).</source>
@@ -2859,16 +2460,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>لا</translation>
     </message>
     <message>
-        <source>Regular</source>
-        <translation>عادي</translation>
-    </message>
-    <message>
         <source>Masternode</source>
         <translation>ماسترنود</translation>
-    </message>
-    <message>
-        <source>Verified Masternode</source>
-        <translation>التحقق من Masternode</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -2878,7 +2471,7 @@ https://www.transifex.com/projects/p/dash/</translation>
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Dash network.</source>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Cosanta network.</source>
         <translation>رسالة اختيارية لإرفاقها بطلب الدفع ، والتي سيتم عرضها عند فتح الطلب. ملاحظة: لن يتم إرسال الرسالة مع الدفع عبر شبكة داش.</translation>
     </message>
     <message>
@@ -2890,7 +2483,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>تسمية اختيارية لربطها بعنوان المستلم الجديد.</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Dash network.</source>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Cosanta network.</source>
         <translation>رسالة اختيارية لإرفاقها بطلب الدفع ، والتي سيتم عرضها عند فتح الطلب.&lt;br&gt; ملاحظة: لن يتم إرسال الرسالة مع الدفع عبر شبكة داش.</translation>
     </message>
     <message>
@@ -2910,8 +2503,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>&amp;القيمة</translation>
     </message>
     <message>
-        <source>&amp;Create new receiving address</source>
-        <translation>&amp; إنشاء عنوان استلام جديد</translation>
+        <source>&amp;Request payment</source>
+        <translation>&amp;طلب دفعة</translation>
     </message>
     <message>
         <source>Clear all fields of the form.</source>
@@ -2952,10 +2545,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Copy URI</source>
         <translation>نسخ العنوان</translation>
-    </message>
-    <message>
-        <source>Copy address</source>
-        <translation>  انسخ عنوان</translation>
     </message>
     <message>
         <source>Copy label</source>
@@ -3019,6 +2608,14 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Wallet</source>
         <translation>محفظة</translation>
+    </message>
+    <message>
+        <source>Resulting URI too long, try to reduce the text for label / message.</source>
+        <translation>العنوان المستخدم طويل جدًا، حاول أن تقوم بتقليل نص التسمية / الرسالة.</translation>
+    </message>
+    <message>
+        <source>Error encoding URI into QR Code.</source>
+        <translation>خطأ في ترميز العنوان إلى الرمز المربع.</translation>
     </message>
 </context>
 <context>
@@ -3119,15 +2716,19 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>إختر …</translation>
     </message>
     <message>
+        <source>collapse fee-settings</source>
+        <translation>خفض الإعدادات الرسوم</translation>
+    </message>
+    <message>
         <source>Confirmation time target:</source>
         <translation>هدف وقت التأكيد:</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <source>If the custom fee is set to 1000 units and the transaction is only 250 bytes, then "per kilobyte" only pays 250 units in fee,&lt;br /&gt;while "at least" pays 1000 units. For transactions bigger than a kilobyte both pay by kilobyte.</source>
         <translation>إذا تم تعيين الرسوم الجمركية على 1000 دافع وكانت المعاملة 250 بايتًا فقط ، فإن "كل كيلوبايت" يدفع 250 جنيهًا فقط رسومًا ،&lt;br /&gt; بينما "على الأقل" يدفع 1000 دفين. لمعاملات أكبر من كيلوبايت تدفع كل من كيلوبايت.</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for Cosanta transactions than the network can process.</source>
         <translation>إن دفع الحد الأدنى فقط من الرسوم يكون على ما يرام طالما أن حجم المعاملات أقل من المساحة الموجودة في الكتل.&lt;br /&gt; ولكن كن على علم بأن هذا يمكن أن ينتهي في معاملة تؤكد أبدا عندما يكون هناك المزيد من الطلب على معاملات اندفاعة مما يمكن أن تعالجه الشبكة.</translation>
     </message>
     <message>
@@ -3141,10 +2742,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Note: Not enough data for fee estimation, using the fallback fee instead.</source>
         <translation>ملاحظة: لا توجد بيانات كافية لتقدير الرسوم ، باستخدام الرسوم الاحتياطية بدلاً من ذلك.</translation>
-    </message>
-    <message>
-        <source>Hide transaction fee settings</source>
-        <translation>إخفاء إعدادات رسوم المعاملات</translation>
     </message>
     <message>
         <source>Hide</source>
@@ -3243,32 +2840,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>هل أنت متأكد من أنك تريد أن ترسل؟</translation>
     </message>
     <message>
+        <source>are added as transaction fee</source>
+        <translation>تضاف كرسوم المعاملة</translation>
+    </message>
+    <message>
+        <source>Total Amount = &lt;b&gt;%1&lt;/b&gt;&lt;br /&gt;= %2</source>
+        <translation>المجموع المبلغ = &lt;b&gt; %1&lt;/b&gt; &lt;br /&gt; = %2</translation>
+    </message>
+    <message>
         <source>&lt;b&gt;(%1 of %2 entries displayed)&lt;/b&gt;</source>
         <translation>&lt;b&gt;( %1 على %2 المداخلات المعروضة)&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>S&amp;end mixed funds</source>
-        <translation>إرسال أموال مختلطة</translation>
-    </message>
-    <message>
-        <source>Confirm the %1 send action</source>
-        <translation>قم بتأكيد إجراء إرسال%1</translation>
-    </message>
-    <message>
-        <source>%1 funds only</source>
-        <translation>%1 أموال فقط</translation>
-    </message>
-    <message>
         <source>any available funds</source>
         <translation>أي أموال متاحة</translation>
-    </message>
-    <message>
-        <source>Transaction fee</source>
-        <translation>رسوم المعاملة</translation>
-    </message>
-    <message>
-        <source>(%1 transactions have higher fees usually due to no change output being allowed)</source>
-        <translation>(%1 معاملات لها رسوم أعلى عادة بسبب عدم السماح بإخراج التغيير)</translation>
     </message>
     <message>
         <source>Transaction size: %1</source>
@@ -3281,22 +2866,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message numerus="yes">
         <source>This transaction will consume %n input(s)</source>
         <translation><numerusform>ستستهلك هذه المعاملة إدخال٪ n</numerusform><numerusform>ستستهلك هذه المعاملة إدخال٪ n</numerusform><numerusform>ستستهلك هذه المعاملة إدخال٪ n</numerusform><numerusform>ستستهلك هذه المعاملة إدخال٪ n</numerusform><numerusform>ستستهلك هذه المعاملة إدخال٪ n</numerusform><numerusform>ستستهلك هذه المعاملة مدخلات %n</numerusform></translation>
-    </message>
-    <message>
-        <source>Warning: Using %1 with %2 or more inputs can harm your privacy and is not recommended</source>
-        <translation>تحذير: قد يؤدي استخدام%1 مع%2 أو أكثر من الإدخالات إلى الإضرار بالخصوصية ولا يوصى بذلك</translation>
-    </message>
-    <message>
-        <source>Click to learn more</source>
-        <translation>اضغط لتتعلم المزيد</translation>
-    </message>
-    <message>
-        <source>Total Amount</source>
-        <translation>المبلغ الإجمالي</translation>
-    </message>
-    <message>
-        <source>or</source>
-        <translation>أو</translation>
     </message>
     <message>
         <source>Confirm send coins</source>
@@ -3327,6 +2896,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>فشل في إنشاء المعاملة!</translation>
     </message>
     <message>
+        <source>The transaction was rejected with the following reason: %1</source>
+        <translation>تم رفض المعاملة للسبب التالي: %1</translation>
+    </message>
+    <message>
         <source>A fee higher than %1 is considered an absurdly high fee.</source>
         <translation>تعتبر الرسوم الأعلى من %1 رسوماً باهظة.</translation>
     </message>
@@ -3343,7 +2916,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation><numerusform>يقدر أن يبدأ التأكيد ضمن %n من الكتل.</numerusform><numerusform>يقدر أن يبدأ التأكيد ضمن %n من الكتل.</numerusform><numerusform>يقدر أن يبدأ التأكيد ضمن %n من الكتل.</numerusform><numerusform>يقدر أن يبدأ التأكيد ضمن %n من الكتل.</numerusform><numerusform>يقدر أن يبدأ التأكيد ضمن %n من الكتل.</numerusform><numerusform>يقدر أن يبدأ التأكيد ضمن %n من الكتل.</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Dash address</source>
+        <source>Warning: Invalid Cosanta address</source>
         <translation>تحذير: عنوان داش غير صالح</translation>
     </message>
     <message>
@@ -3366,11 +2939,15 @@ https://www.transifex.com/projects/p/dash/</translation>
 <context>
     <name>SendCoinsEntry</name>
     <message>
+        <source>This is a normal payment.</source>
+        <translation>هذا دفع اعتيادي</translation>
+    </message>
+    <message>
         <source>Pay &amp;To:</source>
         <translation>ادفع &amp;الى :</translation>
     </message>
     <message>
-        <source>The Dash address to send the payment to</source>
+        <source>The Cosanta address to send the payment to</source>
         <translation>عنوان داش لإرسال الدفعة إلى</translation>
     </message>
     <message>
@@ -3406,11 +2983,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>&amp;القيمة</translation>
     </message>
     <message>
-        <source>The amount to send in the selected unit</source>
-        <translation>المبلغ المراد إرساله في الوحدة المختارة</translation>
-    </message>
-    <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Cosanta than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>سيتم خصم الرسوم من المبلغ الذي يتم إرساله. سوف يتلقى المستلم كمية أقل من الشرطة من إدخالها في حقل المبلغ. في حالة تحديد عدة مستلمين ، يتم تقسيم الرسوم بالتساوي.</translation>
     </message>
     <message>
@@ -3426,7 +2999,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>الرسائل</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Dash network.</source>
+        <source>A message that was attached to the cosanta: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Cosanta network.</source>
         <translation>رسالة تم إرفاقها بخط العطف: عنوان الذي سيتم تخزينه مع المعاملة كمرجع لك. ملاحظة: لن يتم إرسال هذه الرسالة عبر شبكة داش.</translation>
     </message>
     <message>
@@ -3453,8 +3026,8 @@ https://www.transifex.com/projects/p/dash/</translation>
 <context>
     <name>SendConfirmationDialog</name>
     <message>
-        <source>Send</source>
-        <translation>إرسال</translation>
+        <source>Yes</source>
+        <translation>نعم</translation>
     </message>
 </context>
 <context>
@@ -3479,11 +3052,11 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>&amp;توقيع الرسالة</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Dash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <source>You can sign messages/agreements with your addresses to prove you can receive Cosanta sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
         <translation>يمكنك توقيع الرسائل / الاتفاقيات مع العناوين الخاصة بك لإثبات أنك يمكن أن تتلقى داش المرسلة إليهم. احرص على عدم التوقيع على أي شيء غامض أو عشوائي ، حيث إن هجمات التصيد الاحتيالي قد تحاول خداعك لتوقيع هويتك عليها. توقيع فقط عبارات تفصيلية كاملة توافق على.</translation>
     </message>
     <message>
-        <source>The Dash address to sign the message with</source>
+        <source>The Cosanta address to sign the message with</source>
         <translation>عنوان داش للتوقيع على الرسالة</translation>
     </message>
     <message>
@@ -3515,7 +3088,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>نسخ التوقيع الحالي إلى حافظة النظام</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Dash address</source>
+        <source>Sign the message to prove you own this Cosanta address</source>
         <translation>وقع على الرسالة لإثبات أنك تملك عنوان داش هذا</translation>
     </message>
     <message>
@@ -3539,19 +3112,11 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>أدخل عنوان المتلقي ، رسالة (تأكد من نسخ فواصل الأسطر والمسافات وعلامات التبويب وما إلى ذلك تمامًا) والتوقيع أدناه للتحقق من الرسالة. يجب الحرص على عدم قراءة المزيد في التوقيع أكثر مما هو موجود في الرسالة الموقّعة نفسها ، لتجنب التعرض للخداع من خلال هجوم رجل في الوسط. لاحظ أن هذا يثبت فقط أن الطرف المتلقي يتلقى العنوان ، فلا يمكنه إثبات إرسال أي معاملة!</translation>
     </message>
     <message>
-        <source>The Dash address the message was signed with</source>
+        <source>The Cosanta address the message was signed with</source>
         <translation>عنوان داش الذي تم توقيع الرسالة به</translation>
     </message>
     <message>
-        <source>The signed message to verify</source>
-        <translation>الرسالة الموقعة للتحقق</translation>
-    </message>
-    <message>
-        <source>The signature given when the message was signed</source>
-        <translation>التوقيع المعطى عند توقيع الرسالة</translation>
-    </message>
-    <message>
-        <source>Verify the message to ensure it was signed with the specified Dash address</source>
+        <source>Verify the message to ensure it was signed with the specified Cosanta address</source>
         <translation>تحقق من الرسالة للتأكد من توقيعها باستخدام عنوان داش المحدد</translation>
     </message>
     <message>
@@ -3692,10 +3257,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>تأكيد %1</translation>
     </message>
     <message>
-        <source>locked via ChainLocks</source>
-        <translation>مغلق عبر ChainLocks</translation>
-    </message>
-    <message>
         <source>verified via InstantSend</source>
         <translation>محقق من فبل الإرسال الفوري</translation>
     </message>
@@ -3790,10 +3351,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Transaction total size</source>
         <translation>المجموع الكلي للمعاملات</translation>
-    </message>
-    <message>
-        <source> (Certificate was not verified)</source>
-        <translation>(لم يتم التحقق من الشهادة)</translation>
     </message>
     <message>
         <source>Merchant</source>
@@ -3894,20 +3451,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>محقق من فبل الإرسال الفوري</translation>
     </message>
     <message>
-        <source>locked via ChainLocks</source>
-        <translation>مغلق عبر ChainLocks</translation>
-    </message>
-    <message>
         <source>Received with</source>
         <translation>استقبل مع</translation>
     </message>
     <message>
         <source>Received from</source>
         <translation>استقبل من</translation>
-    </message>
-    <message>
-        <source>Received via %1</source>
-        <translation>تم الاستلام عبر%1</translation>
     </message>
     <message>
         <source>Sent to</source>
@@ -3920,26 +3469,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Mined</source>
         <translation>Mined</translation>
-    </message>
-    <message>
-        <source>%1 Mixing</source>
-        <translation>%1 خلط</translation>
-    </message>
-    <message>
-        <source>%1 Collateral Payment</source>
-        <translation>%1 دفعة الضمان</translation>
-    </message>
-    <message>
-        <source>%1 Make Collateral Inputs</source>
-        <translation>%1 قم بعمل إدخالات جانبية</translation>
-    </message>
-    <message>
-        <source>%1 Create Denominations</source>
-        <translation>%1 قم بإنشاء فئة</translation>
-    </message>
-    <message>
-        <source>%1 Send</source>
-        <translation>%1 إرسال</translation>
     </message>
     <message>
         <source>watch-only</source>
@@ -4021,26 +3550,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>أرسل إلى</translation>
     </message>
     <message>
-        <source>%1 Send</source>
-        <translation>%1 إرسال</translation>
-    </message>
-    <message>
-        <source>%1 Make Collateral Inputs</source>
-        <translation>%1 قم بعمل إدخالات جانبية</translation>
-    </message>
-    <message>
-        <source>%1 Create Denominations</source>
-        <translation>%1 قم بإنشاء فئة</translation>
-    </message>
-    <message>
-        <source>%1 Mixing</source>
-        <translation>%1 خلط</translation>
-    </message>
-    <message>
-        <source>%1 Collateral Payment</source>
-        <translation>%1 دفعة الضمان</translation>
-    </message>
-    <message>
         <source>To yourself</source>
         <translation>إليك</translation>
     </message>
@@ -4089,8 +3598,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>نسخ كامل تفاصيل المعاملة</translation>
     </message>
     <message>
-        <source>Edit address label</source>
-        <translation>تحرير تسمية العنوان</translation>
+        <source>Edit label</source>
+        <translation>عدل الوصف</translation>
     </message>
     <message>
         <source>Show transaction details</source>
@@ -4173,21 +3682,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
 </context>
 <context>
-    <name>WalletController</name>
-    <message>
-        <source>Close wallet</source>
-        <translation>أغلق المحفظة</translation>
-    </message>
-    <message>
-        <source>Are you sure you wish to close the wallet &lt;i&gt;%1&lt;/i&gt;?</source>
-        <translation>هل أنت متأكد من رغبتك في إغلاق المحفظة&lt;i&gt;%1&lt;/i&gt;؟</translation>
-    </message>
-    <message>
-        <source>Closing the wallet for too long can result in having to resync the entire chain if pruning is enabled.</source>
-        <translation>قد يؤدي إغلاق المحفظة لفترة طويلة إلى الاضطرار إلى إعادة مزامنة السلسلة بأكملها إذا تم تمكين التقليم.</translation>
-    </message>
-</context>
-<context>
     <name>WalletFrame</name>
     <message>
         <source>No wallet has been loaded.</source>
@@ -4199,10 +3693,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Send Coins</source>
         <translation>إرسال Coins</translation>
-    </message>
-    <message>
-        <source>default wallet</source>
-        <translation>المحفظة الافتراضية</translation>
     </message>
 </context>
 <context>
@@ -4249,18 +3739,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
 </context>
 <context>
-    <name>dash-core</name>
+    <name>cosanta-core</name>
     <message>
         <source>Error: Listening for incoming connections failed (listen returned error %s)</source>
         <translation>خطأ: فشل الاستماع إلى الاتصالات الواردة (تم إرجاع الخطأ %s)</translation>
-    </message>
-    <message>
-        <source>Fee estimation failed. Fallbackfee is disabled. Wait a few blocks or enable -fallbackfee.</source>
-        <translation>فشل تقدير الرسوم. تم تعطيل الرسوم الاحتياطية. انتظر بضع كتل أو قم بتمكين -رسوم التراجع.</translation>
-    </message>
-    <message>
-        <source>This error could occur if this wallet was not shutdown cleanly and was last loaded using a build with a newer version of Berkeley DB. If so, please use the software that last loaded this wallet</source>
-        <translation>يمكن أن يحدث هذا الخطأ إذا لم يتم إغلاق هذه المحفظة بشكل سليم وتم تحميلها مؤخرًا باستخدام إصدار أحدث من Berkeley DB. إذا كان الأمر كذلك ، فالرجاء استخدام البرنامج الذي تم تحميل هذه المحفظة آخر مرة</translation>
     </message>
     <message>
         <source>This is a pre-release test build - use at your own risk - do not use for mining or merchant applications</source>
@@ -4323,6 +3805,14 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>خطأ في القراءة من قاعدة البيانات ، والتوقف.</translation>
     </message>
     <message>
+        <source>Error</source>
+        <translation>خطأ</translation>
+    </message>
+    <message>
+        <source>Error: Disk space is low!</source>
+        <translation>تحذير: مساحة القرص منخفضة</translation>
+    </message>
+    <message>
         <source>Failed to listen on any port. Use -listen=0 if you want this.</source>
         <translation>فشل في الاستماع على أي منفذ. استخدام الاستماع = 0 إذا كنت تريد هذا.</translation>
     </message>
@@ -4359,6 +3849,18 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>يتجاوز الدخول الحد الأقصى للحجم.</translation>
     </message>
     <message>
+        <source>Failed to load fulfilled requests cache from</source>
+        <translation>فشل في تحميل ذاكرة التخزين المؤقت للطلبات التي تم تنفيذها.</translation>
+    </message>
+    <message>
+        <source>Failed to load governance cache from</source>
+        <translation>فشل تحميل ذاكرة التخزين المؤقتة من</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode cache from</source>
+        <translation>فشل تحميل ذاكرة التخزين المؤقتة من</translation>
+    </message>
+    <message>
         <source>Found enough users, signing ( waiting %s )</source>
         <translation>العثور على عدد كافٍ من المستخدمين ، والتوقيع (الانتظار %s)</translation>
     </message>
@@ -4381,6 +3883,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Incorrect or no genesis block found. Wrong datadir for network?</source>
         <translation>لم يتم العثور على كتلة تكوين أو لم تكون صحيحة. datadir خاطئة للشبكة؟</translation>
+    </message>
+    <message>
+        <source>Information</source>
+        <translation>معلومات</translation>
     </message>
     <message>
         <source>Input is not valid.</source>
@@ -4463,6 +3969,18 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>استجابة غير معروفة.</translation>
     </message>
     <message>
+        <source>Unsupported argument -benchmark ignored, use -debug=bench.</source>
+        <translation>الوسيطة غير مدعومة - بامتياز تجاهلها ، استخدم -debug = bench.</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -debugnet ignored, use -debug=net.</source>
+        <translation>تم تجاهل الوسيطة غير المدعومة -debugnet ، استخدم -debug = net.</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -tor found, use -onion.</source>
+        <translation>تم العثور على وسيطة غير مدعومة -tor ، استخدم -onion.</translation>
+    </message>
+    <message>
         <source>User Agent comment (%s) contains unsafe characters.</source>
         <translation>يحتوي تعليق وكيل المستخدم (%s) على أحرف غير آمنة.</translation>
     </message>
@@ -4479,14 +3997,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>لا يمكن العثور على ماسترنود عشوائي.</translation>
     </message>
     <message>
-        <source>%s can't be lower than %s</source>
-        <translation>لا يمكن أن يكون%s أقل من%s</translation>
-    </message>
-    <message>
-        <source>%s is idle.</source>
-        <translation>%s خامل.</translation>
-    </message>
-    <message>
         <source>Can't mix while sync in progress.</source>
         <translation>لا يمكن الدمج  أثناء المزامنة قيد التقدم.</translation>
     </message>
@@ -4501,6 +4011,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>%s file contains all private keys from this wallet. Do not share it with anyone!</source>
         <translation>يحتوي ملف %s على جميع المفاتيح الخاصة من هذه المحفظة. لا تشاركه مع أي شخص!</translation>
+    </message>
+    <message>
+        <source>-masternode option is deprecated and ignored, specifying -masternodeblsprivkey is enough to start this node as a masternode.</source>
+        <translation>تم إهمال خيار -masternode وتجاهله ، مع تحديد -masternodeblsprivkey يكفي لبدء هذه العقدة كعقدة رئيسية.</translation>
     </message>
     <message>
         <source>Failed to create backup, file already exists! This could happen if you restarted wallet in less than 60 seconds. You can continue if you are ok with this.</source>
@@ -4535,12 +4049,24 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>المجموع طول سلسلة إصدار الشبكة (%i) يتجاوز الحد الأقصى للطول (%i). تقليل عدد أو حجم </translation>
     </message>
     <message>
+        <source>Unsupported argument -socks found. Setting SOCKS version isn't possible anymore, only SOCKS5 proxies are supported.</source>
+        <translation>تم العثور على وسيطة غير مدعومة. إعداد SOCKS غير ممكن بعد الآن ، يتم دعم بروكسيات SOCKS5 فقط.</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -whitelistalwaysrelay ignored, use -whitelistrelay and/or -whitelistforcerelay.</source>
+        <translation>الوسيطة غير المدعومة -whitelistalwaysrelay تم تجاهلها واستخدامها - و / أو whitelistforcerelay و / أو -whitelistforcerelay.</translation>
+    </message>
+    <message>
         <source>WARNING! Failed to replenish keypool, please unlock your wallet to do so.</source>
         <translation>تحذير! تعذّر تجديد مفتاح keypool ، يرجى إلغاء قفل محفظتك للقيام بذلك.</translation>
     </message>
     <message>
         <source>Wallet is locked, can't replenish keypool! Automatic backups and mixing are disabled, please unlock your wallet to replenish keypool.</source>
         <translation>المحفظة مؤمّنة ، ولا يمكن تجديد مفتاح keypool! تم تعطيل النسخ الاحتياطي التلقائي والاختلاط ، يرجى فتح محفظتك لتجديد keypool</translation>
+    </message>
+    <message>
+        <source>Warning: Unknown block versions being mined! It's possible unknown rules are in effect</source>
+        <translation>تحذير: يتم نسخ إصدارات الحظر غير المعروفة! من المحتمل أن تكون قواعد غير معروفة سارية المفعول</translation>
     </message>
     <message>
         <source>You need to rebuild the database using -reindex to change -timestampindex</source>
@@ -4551,8 +4077,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>تحتاج إلى إعادة إنشاء قاعدة البيانات باستخدام -reindex للعودة إلى الوضعية الغير مجردة. هذا سوف يعيد تحميل سلسلة الكتل بأكملها</translation>
     </message>
     <message>
-        <source>%s failed</source>
-        <translation>فشل%s</translation>
+        <source>-litemode is deprecated.</source>
+        <translation>تم إهمال الوضع -litemode.</translation>
     </message>
     <message>
         <source>-maxmempool must be at least %d MB</source>
@@ -4563,28 +4089,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>النسخ الاحتياطي التلقائي تعطيل</translation>
     </message>
     <message>
-        <source>Cannot set -peerblockfilters without -blockfilterindex.</source>
-        <translation>لا يمكن تعيين -peerblockfilters بدون -blockfilterindex.</translation>
-    </message>
-    <message>
-        <source>Config setting for %s only applied on %s network when in [%s] section.</source>
-        <translation>يتم تطبيق إعداد التكوين لـ%s فقط على شبكة%s في قسم [%s].</translation>
-    </message>
-    <message>
-        <source>Could not find asmap file %s</source>
-        <translation>تعذر العثور على ملف asmap %s</translation>
-    </message>
-    <message>
-        <source>Could not parse asmap file %s</source>
-        <translation>تعذر تحليل ملف asmap %s</translation>
-    </message>
-    <message>
         <source>ERROR! Failed to create automatic backup</source>
         <translation>خطأ! فشل إنشاء نسخة احتياطية تلقائية</translation>
-    </message>
-    <message>
-        <source>Error loading %s: Private keys can only be disabled during creation</source>
-        <translation>خطأ في تحميل%s: لا يمكن تعطيل المفاتيح الخاصة إلا أثناء الإنشاء</translation>
     </message>
     <message>
         <source>Error upgrading evo database</source>
@@ -4595,16 +4101,24 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>خطأ: حدث خطأ داخلي فادح، راجع debug.log للحصول على التفاصيل</translation>
     </message>
     <message>
-        <source>Error: Disk space is low for %s</source>
-        <translation>خطأ: مساحة القرص منخفضة لـ%s</translation>
-    </message>
-    <message>
         <source>Error: failed to add socket to epollfd (epoll_ctl returned error %s)</source>
         <translation>خطأ: فشل في إضافة مأخذ التوصيل إلى epollfd (أرجع epoll_ctl الخطأ %s)</translation>
     </message>
     <message>
         <source>Exceeded max tries.</source>
         <translation>تم تجاوز الحد الأقصى من المحاولات.</translation>
+    </message>
+    <message>
+        <source>Failed to clear fulfilled requests cache at</source>
+        <translation>فشل مسح ذاكرة التخزين المؤقت للطلبات التي تم الوفاء بها في</translation>
+    </message>
+    <message>
+        <source>Failed to clear governance cache at</source>
+        <translation>فشل مسح ذاكرة التخزين المؤقت للحوكمة في</translation>
+    </message>
+    <message>
+        <source>Failed to clear masternode cache at</source>
+        <translation>فشل مسح ذاكرة التخزين المؤقت للرمز الرئيسي في</translation>
     </message>
     <message>
         <source>Failed to commit EvoDB</source>
@@ -4623,12 +4137,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>أخفق حذف النسخة الاحتياطية ، الخطأ: %s</translation>
     </message>
     <message>
-        <source>Failed to rescan the wallet during initialization</source>
-        <translation>فشل في إعادة فحص المحفظة أثناء التهيئة</translation>
+        <source>Failed to load sporks cache from</source>
+        <translation>فشل تحميل ذاكرة التخزين المؤقت</translation>
     </message>
     <message>
-        <source>Invalid P2P permission: '%s'</source>
-        <translation>إذن P2P غير صالح: '%s'</translation>
+        <source>Failed to rescan the wallet during initialization</source>
+        <translation>فشل في إعادة فحص المحفظة أثناء التهيئة</translation>
     </message>
     <message>
         <source>Invalid amount for -fallbackfee=&lt;amount&gt;: '%s'</source>
@@ -4637,6 +4151,14 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Invalid masternodeblsprivkey. Please see documentation.</source>
         <translation>masternodeblsprivkey غير صالح. يرجى الاطلاع على الوثائق.</translation>
+    </message>
+    <message>
+        <source>It has been replaced by -disablegovernance.</source>
+        <translation>تم استبدالها بـ -disablegovernance.</translation>
+    </message>
+    <message>
+        <source>Its replacement -disablegovernance has been forced instead.</source>
+        <translation>وبدلاً من ذلك ، تم إجبار نظام الحكم البديل المعطل.</translation>
     </message>
     <message>
         <source>Loading block index...</source>
@@ -4691,10 +4213,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>لا يمكن تهيئة التجريد بقيمة سالبة.</translation>
     </message>
     <message>
-        <source>Prune mode is incompatible with -blockfilterindex.</source>
-        <translation>وضع التقليم غير متوافق مع -blockfilterindex.</translation>
-    </message>
-    <message>
         <source>Prune mode is incompatible with -disablegovernance=false.</source>
         <translation>وضع التقليم غير متوافق مع -disablegovernance = false.</translation>
     </message>
@@ -4705,10 +4223,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Pruning blockstore...</source>
         <translation>تجريد مخزن الكتل...</translation>
-    </message>
-    <message>
-        <source>Section [%s] is not recognized.</source>
-        <translation>المقطع [%s] غير معروف.</translation>
     </message>
     <message>
         <source>Specified -walletdir "%s" does not exist</source>
@@ -4725,12 +4239,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Synchronizing blockchain...</source>
         <translation>مزامنة بلوكشين...</translation>
-    </message>
-    <message>
-        <source>The specified config file %s does not exist
-</source>
-        <translation>ملف التكوين المحدد%s غير موجود
-</translation>
     </message>
     <message>
         <source>The wallet will avoid paying less than the minimum relay fee.</source>
@@ -4773,20 +4281,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>يتعذر الربط مع %s على هذا الكمبيوتر. من المحتمل أن %s قيد التشغيل بالفعل.</translation>
     </message>
     <message>
-        <source>Unable to create the PID file '%s': %s</source>
-        <translation>تعذر إنشاء ملف PID '%s':%s</translation>
-    </message>
-    <message>
         <source>Unable to generate initial keys</source>
         <translation>تعذر إنشاء المفاتيح الأولية</translation>
     </message>
     <message>
-        <source>Unknown -blockfilterindex value %s.</source>
-        <translation>قيمة فهرس كتلة التصفية غير معروفة%s.</translation>
-    </message>
-    <message>
         <source>Upgrading UTXO database</source>
         <translation>ترقية قاعدة بيانات UTXO</translation>
+    </message>
+    <message>
+        <source>Wallet %s resides outside wallet directory %s</source>
+        <translation>توجد المحفظة %s خارج دليل الحافظة %s</translation>
     </message>
     <message>
         <source>Wallet needed to be rewritten: restart %s to complete</source>
@@ -4813,6 +4317,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>تحتاج إلى إعادة بناء قاعدة البيانات باستخدام -reindex لتغيير -spentindex</translation>
     </message>
     <message>
+        <source>You need to rebuild the database using -reindex to change -txindex</source>
+        <translation>تحتاج إلى إعادة بناء قاعدة البيانات باستخدام -reindex لتغيير -txindex</translation>
+    </message>
+    <message>
         <source>no mixing available.</source>
         <translation>لا خلط متاح.</translation>
     </message>
@@ -4821,12 +4329,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>انظر debug.log للحصول على التفاصيل.</translation>
     </message>
     <message>
-        <source>The %s developers</source>
-        <translation>%s المبرمجون</translation>
+        <source>Cosanta Core</source>
+        <translation>جوهر الداش</translation>
     </message>
     <message>
-        <source>%s uses exact denominated amounts to send funds, you might simply need to mix some more coins.</source>
-        <translation>يستخدم%s مبالغ محددة بدقة لإرسال الأموال ، قد تحتاج ببساطة إلى خلط بعض العملات المعدنية.</translation>
+        <source>The %s developers</source>
+        <translation>%s المبرمجون</translation>
     </message>
     <message>
         <source>Cannot obtain a lock on data directory %s. %s is probably already running.</source>
@@ -4873,28 +4381,24 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>غير قادر على إعادة الكتل. ستحتاج إلى إعادة بناء قاعدة البيانات باستخدام -reindex-chainstate.</translation>
     </message>
     <message>
-        <source>Warning: Private keys detected in wallet {%s} with disabled private keys</source>
-        <translation>تحذير: تم اكتشاف مفاتيح خاصة في المحفظة {%s} مع تعطيل المفاتيح الخاصة</translation>
+        <source>Warning: Wallet file corrupt, data salvaged! Original %s saved as %s in %s; if your balance or transactions are incorrect you should restore from a backup.</source>
+        <translation>تحذير: ملف المحفظة فاسد ، تم انقاذ البيانات! تم حفظ %s الأصلي ك %s في %s؛ إذا كان رصيدك أو كانت معاملاتك غير صحيحة، فيجب عليك الإستعادة من نسخة احتياطية.</translation>
     </message>
     <message>
         <source>%d of last 100 blocks have unexpected version</source>
         <translation>%d من الـ 100 كتلة الأخيرة بها إصدار غير متوقع</translation>
     </message>
     <message>
+        <source>%s corrupt, salvage failed</source>
+        <translation>%s فاسدة ، فشلت عملية الإنقاذ</translation>
+    </message>
+    <message>
         <source>%s is not a valid backup folder!</source>
         <translation>%s ليس مجلد نسخ احتياطي صالح!</translation>
     </message>
     <message>
-        <source>%s is only allowed with a single wallet file</source>
-        <translation>%s مسموح به مع ملف محفظة واحد فقط</translation>
-    </message>
-    <message>
         <source>%s is set very high!</source>
         <translation>%s عالٍ جداً</translation>
-    </message>
-    <message>
-        <source>%s request incomplete:</source>
-        <translation>طلب%s غير مكتمل:</translation>
     </message>
     <message>
         <source>-devnet can only be specified once</source>
@@ -4909,16 +4413,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>يجب تحديد -ppcport عند تحديد -devnet و -server </translation>
     </message>
     <message>
-        <source>A fatal internal error occurred, see debug.log for details</source>
-        <translation>حدث خطأ داخلي فادح ، راجع debug.log للحصول على التفاصيل</translation>
-    </message>
-    <message>
         <source>Cannot resolve -%s address: '%s'</source>
         <translation>لا يمكن حل - عنوان%s: '%s'</translation>
-    </message>
-    <message>
-        <source>Cannot write to data directory '%s'; check permissions.</source>
-        <translation>لا يمكن الكتابة إلى دليل البيانات '%s' ؛ تحقق من الأذونات.</translation>
     </message>
     <message>
         <source>Change index out of range</source>
@@ -4927,10 +4423,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Copyright (C)</source>
         <translation>حقوق الطبع والنشر (C)</translation>
-    </message>
-    <message>
-        <source>Disk space is too low!</source>
-        <translation>مساحة القرص منخفضة جدًا!</translation>
     </message>
     <message>
         <source>Error loading %s</source>
@@ -4957,48 +4449,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>خطأ في ترقية قاعدة بيانات chainstate</translation>
     </message>
     <message>
-        <source>Error: failed to add socket to kqueuefd (kevent returned error %s)</source>
-        <translation>خطأ: فشل إضافة مأخذ التوصيل إلى kqueuefd (أرجع kevent الخطأ%s)</translation>
-    </message>
-    <message>
-        <source>Failed to clear fulfilled requests cache at %s</source>
-        <translation>فشل مسح ذاكرة التخزين المؤقت للطلبات التي تم الوفاء بها في%s</translation>
-    </message>
-    <message>
-        <source>Failed to clear governance cache at %s</source>
-        <translation>فشل مسح التخزين المؤقت للحوكمة عند%s</translation>
-    </message>
-    <message>
-        <source>Failed to clear masternode cache at %s</source>
-        <translation>فشل مسح ذاكرة التخزين المؤقت لـ Masternode في%s</translation>
-    </message>
-    <message>
         <source>Failed to find mixing queue to join</source>
         <translation>فشل في العثور على قائمة انتظار الخلط للانضمام</translation>
     </message>
     <message>
-        <source>Failed to load fulfilled requests cache from %s</source>
-        <translation>فشل تحميل ذاكرة التخزين المؤقت للطلبات التي تم الوفاء بها من%s</translation>
-    </message>
-    <message>
-        <source>Failed to load governance cache from %s</source>
-        <translation>فشل تحميل ذاكرة التخزين المؤقت للحوكمة من%s</translation>
-    </message>
-    <message>
-        <source>Failed to load masternode cache from %s</source>
-        <translation>فشل تحميل ذاكرة التخزين المؤقت للرمز الرئيسي من%s</translation>
-    </message>
-    <message>
-        <source>Failed to load sporks cache from %s</source>
-        <translation>فشل تحميل ذاكرة التخزين المؤقت لـ sporks من%s</translation>
-    </message>
-    <message>
         <source>Failed to start a new mixing queue</source>
         <translation>فشل في بدء صف مختلط جديد</translation>
-    </message>
-    <message>
-        <source>Incorrect -rescan mode, falling back to default value</source>
-        <translation>وضع المسح غير الصحيح ، والعودة إلى القيمة الافتراضية</translation>
     </message>
     <message>
         <source>Initialization sanity check failed. %s is shutting down.</source>
@@ -5053,26 +4509,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>فشل توقيع المعاملة</translation>
     </message>
     <message>
-        <source>Specified blocks directory "%s" does not exist.</source>
-        <translation>دليل الكتل المحدد "%s" غير موجود.</translation>
-    </message>
-    <message>
-        <source>Last queue was created too recently.</source>
-        <translation>تم إنشاء قائمة الانتظار الأخيرة مؤخرًا.</translation>
-    </message>
-    <message>
-        <source>%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup.</source>
-        <translation>%s تالف. حاول استخدام dash-wallet لأداة المحفظة لإنقاذ أو استعادة نسخة احتياطية.</translation>
-    </message>
-    <message>
-        <source>Can't generate a change-address key. No keys in the internal keypool and can't generate any keys.</source>
-        <translation>لا يمكن إنشاء مفتاح تغيير العنوان. لا توجد مفاتيح في مجموعة المفاتيح الداخلية ولا يمكن إنشاء أي مفاتيح.</translation>
-    </message>
-    <message>
-        <source>Last successful action was too recent.</source>
-        <translation>آخر إجراء ناجح كان حديثًا جدًا.</translation>
-    </message>
-    <message>
         <source>Starting network threads...</source>
         <translation>بدء مؤشرات شبكة الاتصال...</translation>
     </message>
@@ -5109,16 +4545,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>المعاملة غير صالحة.</translation>
     </message>
     <message>
+        <source>Transaction too large for fee policy</source>
+        <translation>قيمة المعاملة كبيرة جدا لسياسة الأجر</translation>
+    </message>
+    <message>
         <source>Unable to bind to %s on this computer (bind returned error %s)</source>
         <translation>يتعذر الربط مع %s على هذا الكمبيوتر (الربط انتج خطأ %s)</translation>
-    </message>
-    <message>
-        <source>Unable to locate enough mixed funds for this transaction.</source>
-        <translation>تعذر تحديد موقع أموال مختلطة كافية لهذه المعاملة.</translation>
-    </message>
-    <message>
-        <source>Unable to locate enough non-denominated funds for this transaction.</source>
-        <translation>غير قادر على تحديد موقع أموال كافية غير مقومة لهذه المعاملة.</translation>
     </message>
     <message>
         <source>Unable to sign spork message, wrong key?</source>
@@ -5137,10 +4569,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>فئة التسجيل غير المعتمدة%s=%s.</translation>
     </message>
     <message>
-        <source>Upgrading txindex database</source>
-        <translation>تحديث قاعدة بيانات txindex</translation>
-    </message>
-    <message>
         <source>Verifying blocks...</source>
         <translation>التحقق من الكتل...</translation>
     </message>
@@ -5153,12 +4581,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>المحفظة مؤمنة.</translation>
     </message>
     <message>
-        <source>Warning: can't use %s and %s together, will prefer %s</source>
-        <translation>تحذير: لا يمكن استخدام%s و%s معًا ، ويفضل%s</translation>
-    </message>
-    <message>
-        <source>Warning: incorrect parameter %s, path must exist! Using default path.</source>
-        <translation>تحذير: معلمة غير صحيحة%s ، يجب أن يكون المسار موجودًا! باستخدام المسار الافتراضي.</translation>
+        <source>Warning</source>
+        <translation>تحذير</translation>
     </message>
     <message>
         <source>You are starting with governance validation disabled.</source>

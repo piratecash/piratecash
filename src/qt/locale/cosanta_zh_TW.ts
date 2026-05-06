@@ -1,4 +1,4 @@
-<TS version="2.1" language="zh_TW">
+<TS language="zh_TW" version="2.1">
 <context>
     <name>AddressBookPage</name>
     <message>
@@ -74,12 +74,12 @@
         <translation>收款位址</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <source>These are your Cosanta addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
         <translation>這些是你要付款過去的達世幣位址。在付錢之前，務必要檢查金額和收款位址是否正確。</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>這些是給您用於接收付款的達世幣位址。 使用接收選項卡中的“創建新接收位址”按鈕來創建新位址。</translation>
+        <source>These are your Cosanta addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>這些是你用來收款的達世幣位址。建議在每次交易時，都使用一個新的收款位址。</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -191,8 +191,12 @@
         <translation>重複新密碼</translation>
     </message>
     <message>
-        <source>Show passphrase</source>
+        <source>Show password</source>
         <translation>顯示密碼</translation>
+    </message>
+    <message>
+        <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
+        <translation>輸入錢包的新密碼。&lt;br/&gt;密碼請用&lt;b&gt;10 個以上的字元&lt;/b&gt;，或是&lt;b&gt;8 個以上的字詞&lt;/b&gt;。</translation>
     </message>
     <message>
         <source>Encrypt wallet</source>
@@ -203,7 +207,7 @@
         <translation>這個動作需要你的錢包密碼來解鎖錢包。</translation>
     </message>
     <message>
-        <source>Unlock wallet for mixing only</source>
+        <source>Unlock wallet for mixing and staking only</source>
         <translation>解鎖錢包用來作混合處理</translation>
     </message>
     <message>
@@ -223,11 +227,15 @@
         <translation>更改密碼</translation>
     </message>
     <message>
+        <source>Enter the old passphrase and new passphrase to the wallet.</source>
+        <translation>輸入舊密碼和新密碼到錢包。</translation>
+    </message>
+    <message>
         <source>Confirm wallet encryption</source>
         <translation>確認錢包加密</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COSA&lt;/b&gt;!</source>
         <translation>警告: 如果把錢包加密後又忘記密碼，你就會從此&lt;b&gt;失去其中所有的達世幣了&lt;/b&gt;！</translation>
     </message>
     <message>
@@ -239,28 +247,8 @@
         <translation>錢包已加密</translation>
     </message>
     <message>
-        <source>Enter the new passphrase for the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
-        <translation>輸入錢包的新密碼。&lt;br/&gt;密碼請用 &lt;b&gt;十個或更多隨機字符&lt;/b&gt;，或是 &lt;b&gt;8 個以上的字詞&lt;/b&gt;。</translation>
-    </message>
-    <message>
-        <source>Enter the old passphrase and new passphrase for the wallet.</source>
-        <translation>輸入錢包的舊密碼和新密碼。</translation>
-    </message>
-    <message>
-        <source>Remember that encrypting your wallet cannot fully protect your funds from being stolen by malware infecting your computer.</source>
-        <translation>請緊記，加密您的錢包並不能完全保護您的資金不被感染您電腦的惡意軟件竊取。</translation>
-    </message>
-    <message>
-        <source>Wallet to be encrypted</source>
-        <translation>錢包要做加密處理</translation>
-    </message>
-    <message>
-        <source>Your wallet is about to be encrypted. </source>
-        <translation>你的錢包即將被加密。</translation>
-    </message>
-    <message>
-        <source>Your wallet is now encrypted. </source>
-        <translation>您的錢包現已經加密了。</translation>
+        <source>%1 will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your funds from being stolen by malware infecting your computer.</source>
+        <translation>%1 現在要關閉，好完成加密程序。請注意，加密錢包不能完全防止入侵你的電腦的惡意程式偷取達世幣。</translation>
     </message>
     <message>
         <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. Previous backups of the unencrypted wallet file contain the same HD seed and still have full access to all your funds just like the new, encrypted wallet.</source>
@@ -324,8 +312,20 @@
 <context>
     <name>BitcoinGUI</name>
     <message>
-        <source>A fatal error occurred. Dash Core can no longer continue safely and will quit.</source>
+        <source>A fatal error occurred. Cosanta Core can no longer continue safely and will quit.</source>
         <translation>發生致命錯誤。達世幣核心軟體不再能安全地繼續運行下去，程式將會關閉。</translation>
+    </message>
+    <message>
+        <source>Cosanta Core</source>
+        <translation>達世幣核心</translation>
+    </message>
+    <message>
+        <source>Wallet</source>
+        <translation>錢包</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation>節點</translation>
     </message>
     <message>
         <source>&amp;Overview</source>
@@ -340,7 +340,7 @@
         <translation>發送(&amp;S)</translation>
     </message>
     <message>
-        <source>Send coins to a Dash address</source>
+        <source>Send coins to a Cosanta address</source>
         <translation>付錢給一個達世幣位址</translation>
     </message>
     <message>
@@ -348,52 +348,8 @@
         <translation>接收(&amp;R)</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
+        <source>Request payments (generates QR codes and cosanta: URIs)</source>
         <translation>要求付款(產生 QR Code 和達世幣付款協議的 URI)</translation>
-    </message>
-    <message>
-        <source>&amp;Sending addresses</source>
-        <translation>發送位址(&amp;S)</translation>
-    </message>
-    <message>
-        <source>&amp;Receiving addresses</source>
-        <translation>收款位址(&amp;R)</translation>
-    </message>
-    <message>
-        <source>Open Wallet</source>
-        <translation>打開錢包</translation>
-    </message>
-    <message>
-        <source>Open a wallet</source>
-        <translation>打開一個錢包</translation>
-    </message>
-    <message>
-        <source>Close Wallet...</source>
-        <translation>關閉錢包...</translation>
-    </message>
-    <message>
-        <source>Close wallet</source>
-        <translation>關閉錢包</translation>
-    </message>
-    <message>
-        <source>No wallets available</source>
-        <translation>沒有可用的錢包</translation>
-    </message>
-    <message>
-        <source>&amp;Window</source>
-        <translation>視窗(&amp;W)</translation>
-    </message>
-    <message>
-        <source>Minimize</source>
-        <translation>最小化</translation>
-    </message>
-    <message>
-        <source>Zoom</source>
-        <translation>放大</translation>
-    </message>
-    <message>
-        <source>Main Window</source>
-        <translation>主窗口</translation>
     </message>
     <message>
         <source>&amp;Transactions</source>
@@ -420,6 +376,10 @@
         <translation>結束應用程式</translation>
     </message>
     <message>
+        <source>Show information about Cosanta Core</source>
+        <translation>顯示達世幣核心的相關資訊</translation>
+    </message>
+    <message>
         <source>About &amp;Qt</source>
         <translation>關於 &amp;Qt</translation>
     </message>
@@ -434,10 +394,6 @@
     <message>
         <source>&amp;About %1</source>
         <translation>關於%1(&amp;A)</translation>
-    </message>
-    <message>
-        <source>Send %1 funds to a Dash address</source>
-        <translation>發送 %1 的款項到一個達世幣位址</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -492,7 +448,7 @@
         <translation>簽署訊息(&amp;M)...</translation>
     </message>
     <message>
-        <source>Sign messages with your Dash addresses to prove you own them</source>
+        <source>Sign messages with your Cosanta addresses to prove you own them</source>
         <translation>用達世幣位址簽署訊息來證明位址是你的</translation>
     </message>
     <message>
@@ -500,7 +456,7 @@
         <translation>驗證訊息(&amp;V)...</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dash addresses</source>
+        <source>Verify messages to ensure they were signed with specified Cosanta addresses</source>
         <translation>驗證訊息是用來確定訊息是用指定的達世幣位址簽署的</translation>
     </message>
     <message>
@@ -560,8 +516,16 @@
         <translation>顯示自動創建的錢包備份檔</translation>
     </message>
     <message>
+        <source>&amp;Sending addresses...</source>
+        <translation>付款位址(&amp;S)...</translation>
+    </message>
+    <message>
         <source>Show the list of used sending addresses and labels</source>
         <translation>顯示已使用過的付款位址和標記的清單</translation>
+    </message>
+    <message>
+        <source>&amp;Receiving addresses...</source>
+        <translation>收款位址(&amp;R)...</translation>
     </message>
     <message>
         <source>Show the list of used receiving addresses and labels</source>
@@ -572,7 +536,7 @@
         <translation>開啓 &amp;URI...</translation>
     </message>
     <message>
-        <source>Open a dash: URI or payment request</source>
+        <source>Open a cosanta: URI or payment request</source>
         <translation>開啓一個達世幣協議的 URI 或付款要求</translation>
     </message>
     <message>
@@ -580,12 +544,8 @@
         <translation>命令列選項(&amp;C)</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Dash command-line options</source>
+        <source>Show the %1 help message to get a list with possible Cosanta command-line options</source>
         <translation>顯示 %1 的說明訊息，來取得可用命令列選項的列表</translation>
-    </message>
-    <message>
-        <source>default wallet</source>
-        <translation>預設錢包</translation>
     </message>
     <message>
         <source>%1 client</source>
@@ -606,28 +566,12 @@
         <translation>檔案(&amp;F)</translation>
     </message>
     <message>
-        <source>Show information about %1</source>
-        <translation>顯示有關%1 的相關信息</translation>
-    </message>
-    <message>
-        <source>Create Wallet...</source>
-        <translation>創建錢包...</translation>
-    </message>
-    <message>
-        <source>Create a new wallet</source>
-        <translation>創建一個新錢包</translation>
-    </message>
-    <message>
-        <source>%1 &amp;information</source>
-        <translation>%1 (&amp;I)資訊</translation>
-    </message>
-    <message>
-        <source>Show the %1 basic information</source>
-        <translation>顯示 %1 的基本信息</translation>
-    </message>
-    <message>
         <source>&amp;Settings</source>
         <translation>設定(&amp;S)</translation>
+    </message>
+    <message>
+        <source>&amp;Tools</source>
+        <translation>工具(&amp;T)</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -637,16 +581,8 @@
         <source>Tabs toolbar</source>
         <translation>分頁工具列</translation>
     </message>
-    <message>
-        <source>&amp;Governance</source>
-        <translation>治理(&amp;G)</translation>
-    </message>
-    <message>
-        <source>View Governance Proposals</source>
-        <translation>查看治理提案</translation>
-    </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Dash network</source>
+        <source>%n active connection(s) to Cosanta network</source>
         <translation><numerusform>%n 個運作中的達世幣網路連線</numerusform></translation>
     </message>
     <message>
@@ -710,16 +646,8 @@
         <translation>錯誤</translation>
     </message>
     <message>
-        <source>Error: %1</source>
-        <translation>錯誤: %1</translation>
-    </message>
-    <message>
         <source>Warning</source>
         <translation>警告</translation>
-    </message>
-    <message>
-        <source>Warning: %1</source>
-        <translation>警告: %1</translation>
     </message>
     <message>
         <source>Information</source>
@@ -803,14 +731,6 @@
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;locked&lt;/b&gt;</source>
         <translation>錢包&lt;b&gt;已加密&lt;/b&gt;目前為&lt;b&gt;鎖定&lt;/b&gt;狀態</translation>
     </message>
-    <message>
-        <source>Proxy is &lt;b&gt;enabled&lt;/b&gt;: %1</source>
-        <translation>代理服務器 &lt;b&gt;已啟用&lt;/b&gt;: %1</translation>
-    </message>
-    <message>
-        <source>Original message:</source>
-        <translation>原始信息:</translation>
-    </message>
 </context>
 <context>
     <name>CoinControlDialog</name>
@@ -877,10 +797,6 @@
     <message>
         <source>Received with address</source>
         <translation>收款位址</translation>
-    </message>
-    <message>
-        <source>Mixing Rounds</source>
-        <translation>混合循環次數</translation>
     </message>
     <message>
         <source>Date</source>
@@ -963,8 +879,8 @@
         <translation>如果任何一個收款人收到的金額比當前零散錢的閾值還小的話，這個標籤將變為紅色。</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 duff(s) per input.</source>
-        <translation>每組輸入可能有 +/- %1 個 duff(s) 的誤差。</translation>
+        <source>Can vary +/- %1 unit(s) per input.</source>
+        <translation>每組輸入可能有 +/- %1 個 unit(s) 的誤差。</translation>
     </message>
     <message>
         <source>Some coins were unselected because they were spent.</source>
@@ -973,22 +889,6 @@
     <message>
         <source>Some coins were unselected because they do not have enough mixing rounds.</source>
         <translation>某些資金被取消選取，因為它們沒有足夠的混合次數。</translation>
-    </message>
-    <message>
-        <source>Show all coins</source>
-        <translation>顯示所有資金</translation>
-    </message>
-    <message>
-        <source>Hide %1 coins</source>
-        <translation>隱藏 %1 的資金</translation>
-    </message>
-    <message>
-        <source>Show all %1 coins</source>
-        <translation>顯示所有 %1 的資金</translation>
-    </message>
-    <message>
-        <source>Show spendable coins only</source>
-        <translation>只顯示可花費的資金</translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -1005,60 +905,6 @@
     <message>
         <source>n/a</source>
         <translation>不適用</translation>
-    </message>
-</context>
-<context>
-    <name>CreateWalletActivity</name>
-    <message>
-        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
-        <translation>正在創建錢包 &lt;b&gt;%1&lt;/b&gt;...</translation>
-    </message>
-    <message>
-        <source>Create wallet failed</source>
-        <translation>創建錢包失敗</translation>
-    </message>
-    <message>
-        <source>Create wallet warning</source>
-        <translation>創建錢包警告</translation>
-    </message>
-</context>
-<context>
-    <name>CreateWalletDialog</name>
-    <message>
-        <source>Create Wallet</source>
-        <translation>創建錢包</translation>
-    </message>
-    <message>
-        <source>Wallet Name</source>
-        <translation>錢包名稱</translation>
-    </message>
-    <message>
-        <source>Encrypt the wallet. The wallet will be encrypted with a passphrase of your choice.</source>
-        <translation>加密錢包。 錢包將使用您選擇的密碼來進行加密。</translation>
-    </message>
-    <message>
-        <source>Encrypt Wallet</source>
-        <translation>加密錢包</translation>
-    </message>
-    <message>
-        <source>Disable private keys for this wallet. Wallets with private keys disabled will have no private keys and cannot have an HD seed or imported private keys. This is ideal for watch-only wallets.</source>
-        <translation>禁用此錢包的私鑰。 禁用私鑰的錢包將沒有私鑰，也不能有 HD 種子或導入的私鑰。 這個選項適用於僅用來檢視交易用的錢包。</translation>
-    </message>
-    <message>
-        <source>Disable Private Keys</source>
-        <translation>禁用私鑰</translation>
-    </message>
-    <message>
-        <source>Make a blank wallet. Blank wallets do not initially have private keys or scripts. Private keys and addresses can be imported, or an HD seed can be set, at a later time.</source>
-        <translation>製作一個空白錢包。 空白錢包最初沒有私鑰或腳本。 稍後可以導入私鑰和位址，或者可以設置 HD 種子。</translation>
-    </message>
-    <message>
-        <source>Make Blank Wallet</source>
-        <translation>製作空白錢包</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation>創造</translation>
     </message>
 </context>
 <context>
@@ -1096,16 +942,12 @@
         <translation>編輯付款位址</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Dash address.</source>
+        <source>The entered address "%1" is not a valid Cosanta address.</source>
         <translation>輸入的位址 %1 並不是有效的達世幣位址。</translation>
     </message>
     <message>
-        <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
-        <translation>位址“%1”已作為帶有標籤“%2”的接收位址存在，因此無法添加為發送地址。</translation>
-    </message>
-    <message>
-        <source>The entered address "%1" is already in the address book with label "%2".</source>
-        <translation>輸入的位址“%1”已經在地址簿中，標籤為“%2”。</translation>
+        <source>The entered address "%1" is already in the address book.</source>
+        <translation>輸入的位址 %1 在位址簿中已經有了。</translation>
     </message>
     <message>
         <source>Could not unlock wallet.</source>
@@ -1140,37 +982,14 @@
     </message>
 </context>
 <context>
-    <name>GovernanceList</name>
-    <message>
-        <source>Form</source>
-        <translation>表單</translation>
-    </message>
-    <message>
-        <source>Filter List:</source>
-        <translation>篩選列表:</translation>
-    </message>
-    <message>
-        <source>Filter propsal list</source>
-        <translation>過濾提案列表</translation>
-    </message>
-    <message>
-        <source>Proposal Count:</source>
-        <translation>提案數量:</translation>
-    </message>
-    <message>
-        <source>Filter by Title</source>
-        <translation>按標題過濾</translation>
-    </message>
-    <message>
-        <source>Proposal Info: %1</source>
-        <translation>提案信息: %1</translation>
-    </message>
-</context>
-<context>
     <name>HelpMessageDialog</name>
     <message>
         <source>version</source>
         <translation>版本</translation>
+    </message>
+    <message>
+        <source>(%1-bit)</source>
+        <translation>(%1 位元)</translation>
     </message>
     <message>
         <source>About %1</source>
@@ -1180,15 +999,7 @@
         <source>Command-line options</source>
         <translation>命令列選項</translation>
     </message>
-    <message>
-        <source>%1 information</source>
-        <translation>%1 資訊</translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Dash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH and 10 DASH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;%1 基礎知識&lt;/h3&gt; %1 通過隱藏您的資金來源為您提供真正的財務隱私。您的錢包中所有的達世幣都由不同的“輸入”組成，您可以將其視為分開的離散硬幣。&lt;br&gt; %1 使用創新的方法將您的輸入與其他兩個人的輸入相結合，而過程中不會讓您的達世幣離開您的錢包。每時每刻，您仍然控制著您的錢。&lt;hr&gt; &lt;b&gt; %1 的運作原理如下:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 首先將您的交易分柝成多個標準面額的交易。這些標準面額分別為 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH 和 10 DASH -- 有點像您每天使用的紙幣。&lt;/li&gt; &lt;li&gt;您的錢包然後發送請求到網絡上有專門配置的軟件節點，稱為“主節點”。這些主節點會收到您希望混合一些資金的通知。沒有可識別的信息發送到主節點，所以他們永遠不會知道你是"誰"。&lt;/li&gt; &lt;li&gt;當另外兩個人發送類似的消息時，表示希望混合相同的面額的話，混合會話就會開始。相關的主節點會混合這些輸入，並指示所有三個用戶的錢包將已經轉換了輸入的交易支付給自己。你的錢包直接支付給自己，但是付給不同的位址 (稱之為找零位址)。&lt;/li&gt; &lt;li&gt;為了完全掩蓋您的資金來源，您的錢包必須以每個面額來重複此過程數次。每次這個過程完成後，都稱之為一個 "循環"。每個循環的 %1 都會令確定您的資金來源的工作倍加困難。&lt;/li&gt; &lt;li&gt;這種混合過程在後台進行，而不需要您進行任何操作。當您想進行交易時，您的資金將已被匿名處理。不需再花額外的時間等待。&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;重要:&lt;/b&gt; 您的錢包只能擁有1000個"找零位址。" 每次混合事件發生時，最多會使用9個找零位址。這意味著這1000個位址可以容許100次的混合事件。當其的中900個已經被使用後，您的錢包必須創建更多的位址。如果您啟用了自動備份，則只能夠這樣做。&lt;br&gt; 因此，禁用備份的用戶也將禁用 %1。&lt;hr&gt;如欲了解更多信息，請參閱 &lt;a style="%2" href="%3"&gt;%1 的文檔&lt;/a&gt;.</translation>
-    </message>
-</context>
+    </context>
 <context>
     <name>Intro</name>
     <message>
@@ -1232,8 +1043,8 @@
         <translation>在這個目錄中大約會存放 %1 GB 的資料。</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Dash block chain.</source>
-        <translation>%1 會下載 Dash 區塊鏈並且儲存一份副本。</translation>
+        <source>%1 will download and store a copy of the Cosanta block chain.</source>
+        <translation>%1 會下載 Cosanta 區塊鏈並且儲存一份副本。</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1265,6 +1076,10 @@
     <message>
         <source>Status</source>
         <translation>狀態</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
     </message>
     <message>
         <source>Filter List:</source>
@@ -1386,11 +1201,11 @@
         <translation>表單</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Cosanta network, as detailed below.</source>
         <translation>最近的交易可能尚未顯示，因此您的錢包的餘額可能不正確。 一旦你的錢包完成與達世幣網絡的同步，這個信息將是正確的，如下所述。</translation>
     </message>
     <message>
-        <source>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <source>Attempting to spend Cosanta that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
         <translation>假如您正在嘗試花費尚未顯示出來的結餘，這個交易將不會被網絡所接受。</translation>
     </message>
     <message>
@@ -1426,8 +1241,8 @@
         <translation>隱藏</translation>
     </message>
     <message>
-        <source>Unknown. Syncing Headers (%1, %2%)...</source>
-        <translation>未知。 正在同步開頭 (%1, %2%)...</translation>
+        <source>Unknown. Syncing Headers (%1)...</source>
+        <translation>未知。 正在同步開頭 (%1)...</translation>
     </message>
 </context>
 <context>
@@ -1454,25 +1269,6 @@
     </message>
 </context>
 <context>
-    <name>OpenWalletActivity</name>
-    <message>
-        <source>Open wallet failed</source>
-        <translation>開啟錢包失敗</translation>
-    </message>
-    <message>
-        <source>Open wallet warning</source>
-        <translation>打開錢包警告</translation>
-    </message>
-    <message>
-        <source>default wallet</source>
-        <translation>預設錢包</translation>
-    </message>
-    <message>
-        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
-        <translation>正在打開錢包 &lt;b&gt;%1&lt;/b&gt;...</translation>
-    </message>
-</context>
-<context>
     <name>OptionsDialog</name>
     <message>
         <source>Options</source>
@@ -1485,6 +1281,10 @@
     <message>
         <source>Size of &amp;database cache</source>
         <translation>資料庫快取大小</translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation>MB (百萬位元組)</translation>
     </message>
     <message>
         <source>Number of script &amp;verification threads</source>
@@ -1503,22 +1303,6 @@
         <translation>外觀(&amp;A)</translation>
     </message>
     <message>
-        <source>Prune &amp;block storage to</source>
-        <translation>修剪區塊存儲到</translation>
-    </message>
-    <message>
-        <source>GB</source>
-        <translation>GB</translation>
-    </message>
-    <message>
-        <source>Reverting this setting requires re-downloading the entire blockchain.</source>
-        <translation>還原此設置需要重新下載整個區塊鏈。</translation>
-    </message>
-    <message>
-        <source>MiB</source>
-        <translation>MiB</translation>
-    </message>
-    <message>
         <source>Show additional tab listing all your masternodes in first sub-tab&lt;br/&gt;and all masternodes on the network in second sub-tab.</source>
         <translation>顯示其他標籤，在第一個子標籤列出所有您的主節點&lt;br/&gt;在第二個子標籤列出所有網絡上的主節點。</translation>
     </message>
@@ -1527,76 +1311,12 @@
         <translation>顯示主節點標籤頁</translation>
     </message>
     <message>
-        <source>Show additional tab listing governance proposals.</source>
-        <translation>顯示列出治理提案的其他選項卡。</translation>
-    </message>
-    <message>
-        <source>Show Governance Tab</source>
-        <translation>顯示治理選項卡</translation>
-    </message>
-    <message>
         <source>If you disable the spending of unconfirmed change, the change from a transaction&lt;br/&gt;cannot be used until that transaction has at least one confirmation.&lt;br/&gt;This also affects how your balance is computed.</source>
         <translation>如果你關掉「可以花還沒確認的零錢」，那麼交易中找零的零錢&lt;br/&gt;就必須要等交易至少有一次確認後，才能夠使用。&lt;br/&gt;這也會影響餘額的計算方式。</translation>
     </message>
     <message>
-        <source>Show mixing interface on Overview screen and reveal an additional screen which allows to spend fully mixed coins only.&lt;br/&gt;A new tab with more settings will also appear in this dialog, please make sure to check them before mixing your coins.</source>
-        <translation>在概覽屏幕上顯示混合界面，並顯示一個僅允許使用完全混合了的資金的屏幕。&lt;br/&gt;該對話框中還將出現一個具有更多設定的新標籤，請確保在混合資金之前檢查這些設定。</translation>
-    </message>
-    <message>
-        <source>Show additional information and buttons on overview screen.</source>
-        <translation>在概述屏幕上顯示其他信息和按鈕。</translation>
-    </message>
-    <message>
-        <source>Enable advanced interface</source>
-        <translation>啟用進階界面</translation>
-    </message>
-    <message>
-        <source>Show system popups for mixing transactions&lt;br/&gt;just like for all other transaction types.</source>
-        <translation>顯示混合交易的系統彈出窗口&lt;br/&gt;就像所有其他交易類型一樣。</translation>
-    </message>
-    <message>
-        <source>Show popups for mixing transactions</source>
-        <translation>顯示混合交易的彈出式窗口</translation>
-    </message>
-    <message>
-        <source>Show warning dialog when the wallet has very low number of keys left.</source>
-        <translation>當檢測到錢包尚餘非常少的公鑰時，就顯示警告對話框。</translation>
-    </message>
-    <message>
-        <source>Warn if the wallet is running out of keys</source>
-        <translation>如果錢包快要用完公鑰就發出警告</translation>
-    </message>
-    <message>
-        <source>Whether to use experimental mode with multiple mixing sessions per block.&lt;br/&gt;Note: You must use this feature carefully.&lt;br/&gt;Make sure you always have recent wallet (auto)backup in a safe place!</source>
-        <translation>是否使用實驗性質的模式，當中每個區塊都會有多個混合會話。注意 : 您必須小心使用此功能。&lt;br/&gt;確保你總是有最近的錢包 (自動) 備份在一個安全的地方！</translation>
-    </message>
-    <message>
-        <source>Enable &amp;multi-session</source>
-        <translation>啟用多重會話的發送</translation>
-    </message>
-    <message>
-        <source>Mixing rounds</source>
-        <translation>混合循環次數</translation>
-    </message>
-    <message>
-        <source>This amount acts as a threshold to turn off mixing once it's reached.</source>
-        <translation>此金額為關閉混合交易的門檻。</translation>
-    </message>
-    <message>
-        <source>Target balance</source>
-        <translation>目標結餘</translation>
-    </message>
-    <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <source>Automatically open the Cosanta Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
         <translation>自動在路由器上開放達世幣核心客戶端的通訊埠。只有在你的路由器支援且開啓「通用即插即用」協定(UPnP)時才有作用。</translation>
-    </message>
-    <message>
-        <source>Automatically open the Bitcoin client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
-        <translation>自動打開路由器上的比特幣客戶端端口。 這僅在您的路由器支持 NAT-PMP 並且已啟用時才有效。 外部端口可以是隨機的。</translation>
-    </message>
-    <message>
-        <source>Map port using NA&amp;T-PMP</source>
-        <translation>使用 NA&amp;T-PMP 映射端口</translation>
     </message>
     <message>
         <source>Accept connections from outside.</source>
@@ -1607,7 +1327,7 @@
         <translation>允許傳入的連接</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a SOCKS5 proxy.</source>
+        <source>Connect to the Cosanta network through a SOCKS5 proxy.</source>
         <translation>透過 SOCKS5 代理伺服器來連線到達世幣網路。</translation>
     </message>
     <message>
@@ -1621,10 +1341,6 @@
     <message>
         <source>Use separate SOCKS&amp;5 proxy to reach peers via Tor hidden services:</source>
         <translation>使用單獨的SOCKS＆5代理通過Tor隱藏服務到達對等用戶群:</translation>
-    </message>
-    <message>
-        <source>Options set in this dialog are overridden by the command line or in the configuration file:</source>
-        <translation>此對話框中設置的選項被命令行或配置文件覆蓋:</translation>
     </message>
     <message>
         <source>Hide the icon from the system tray.</source>
@@ -1675,10 +1391,6 @@
         <translation>網絡(&amp;N)</translation>
     </message>
     <message>
-        <source>Enabling pruning significantly reduces the disk space required to store transactions. All blocks are still fully validated. Reverting this setting requires re-downloading the entire blockchain.</source>
-        <translation>啟用修剪會顯著減少存儲事務所需的磁盤空間。 所有區塊仍然經過充分驗證。 恢復此設置需要重新下載整個區塊鏈。</translation>
-    </message>
-    <message>
         <source>Map port using &amp;UPnP</source>
         <translation>用 &amp;UPnP 設定通訊埠對應</translation>
     </message>
@@ -1715,7 +1427,7 @@
         <translation>Tor</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a separate SOCKS5 proxy for Tor hidden services.</source>
+        <source>Connect to the Cosanta network through a separate SOCKS5 proxy for Tor hidden services.</source>
         <translation>透過另一個SOCKS5 代理伺服器作為Tor隱藏服務來連線到達世幣網路。</translation>
     </message>
     <message>
@@ -1744,9 +1456,9 @@
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/projects/p/dash/</source>
+https://www.transifex.com/projects/p/cosanta/</source>
         <translation>缺少相關語言或翻譯不完整？請到這裡協助翻譯
-https://www.transifex.com/projects/p/dash/</translation>
+https://www.transifex.com/projects/p/cosanta/</translation>
     </message>
     <message>
         <source>&amp;Unit to show amounts in:</source>
@@ -1759,6 +1471,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Decimal digits</source>
         <translation>小數位數</translation>
+    </message>
+    <message>
+        <source>Active command-line options that override above options:</source>
+        <translation>從命令列取代掉以上設定的選項:</translation>
     </message>
     <message>
         <source>Reset all client options to default.</source>
@@ -1775,10 +1491,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>&amp;Cancel</source>
         <translation>取消(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Enable %1 features</source>
-        <translation>啟用 %1 功能</translation>
     </message>
     <message>
         <source>default</source>
@@ -1812,7 +1524,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>表單</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Dash network after a connection is established, but this process has not completed yet.</source>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Cosanta network after a connection is established, but this process has not completed yet.</source>
         <translation>顯示的資訊可能是過期的。跟達世幣網路的連線建立後，你的錢包會自動和網路同步，但是這個步驟還沒完成。</translation>
     </message>
     <message>
@@ -1892,7 +1604,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>金額和循環次數:</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
+        <source>0 COSA / 0 Rounds</source>
         <translation>0 達世幣 / 0 循環次數</translation>
     </message>
     <message>
@@ -1926,10 +1638,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>No inputs detected</source>
         <translation>沒有檢測到任何輸入</translation>
-    </message>
-    <message>
-        <source>%1 Balance</source>
-        <translation>%1 結餘</translation>
     </message>
     <message numerus="yes">
         <source>%n Rounds</source>
@@ -1966,26 +1674,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>keys left: %1</source>
         <translation>餘下鑰: %1</translation>
-    </message>
-    <message>
-        <source>Start %1</source>
-        <translation>啟動 %1</translation>
-    </message>
-    <message>
-        <source>If you don't want to see internal %1 fees/transactions select "Most Common" as Type on the "Transactions" tab.</source>
-        <translation>如果你不希望看到內部 %1 手續費/交易，請在"交易"種類標籤中選擇 "最常用的" 標籤。</translation>
-    </message>
-    <message>
-        <source>%1 requires at least %2 to use.</source>
-        <translation>%1 要求至少有 %2 才能使用。</translation>
-    </message>
-    <message>
-        <source>Wallet is locked and user declined to unlock. Disabling %1.</source>
-        <translation>錢包被鎖定，用戶拒絕解鎖。正在停用 %1。</translation>
-    </message>
-    <message>
-        <source>Stop %1</source>
-        <translation>停用 %1</translation>
     </message>
     <message>
         <source>Disabled</source>
@@ -2035,7 +1723,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>要求付款時發生錯誤</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
+        <source>Cannot start cosanta: click-to-pay handler</source>
         <translation>無法啟動達世幣 : 點擊支付處理程序</translation>
     </message>
     <message>
@@ -2043,23 +1731,15 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>URI 處理</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash://' 不是有效的URI。請用'dash:' 來代替。</translation>
-    </message>
-    <message>
         <source>Payment request fetch URL is invalid: %1</source>
         <translation>取得付款要求的 URL 無效: %1</translation>
-    </message>
-    <message>
-        <source>Cannot process payment request because BIP70 support was not compiled in.</source>
-        <translation>無法處理付款請求，因為未編譯 BIP70 支持。</translation>
     </message>
     <message>
         <source>Invalid payment address %1</source>
         <translation>無效的付款位址 %1</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Dash address or malformed URI parameters.</source>
+        <source>URI cannot be parsed! This can be caused by an invalid Cosanta address or malformed URI parameters.</source>
         <translation>沒辦法解析 URI 位址！可能是因為達世幣位址無效，或是 URI 參數格式錯誤。</translation>
     </message>
     <message>
@@ -2155,56 +1835,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
 </context>
 <context>
-    <name>Proposal</name>
-    <message>
-        <source>Passing +%1</source>
-        <translation>通過 +%1</translation>
-    </message>
-    <message>
-        <source>Needs additional %1 votes</source>
-        <translation>需要額外的 %1 票</translation>
-    </message>
-</context>
-<context>
-    <name>ProposalModel</name>
-    <message>
-        <source>Yes</source>
-        <translation>讚成</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation>反對</translation>
-    </message>
-    <message>
-        <source>Hash</source>
-        <translation>哈希值</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation>標題</translation>
-    </message>
-    <message>
-        <source>Start</source>
-        <translation>啟動</translation>
-    </message>
-    <message>
-        <source>End</source>
-        <translation>結束</translation>
-    </message>
-    <message>
-        <source>Amount</source>
-        <translation>金額</translation>
-    </message>
-    <message>
-        <source>Active</source>
-        <translation>活躍</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation>狀態</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>Choose data directory on startup (default: %u)</source>
@@ -2247,46 +1877,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>顯示啓動畫面(預設值: %u)</translation>
     </message>
     <message>
-        <source>Error: Specified data directory "%1" does not exist.</source>
-        <translation>錯誤: 指定的數據目錄 "%1" 不存在。</translation>
-    </message>
-    <message>
-        <source>Error: Cannot parse configuration file: %1.</source>
-        <translation>錯誤：無法分析配置文件: %1。</translation>
-    </message>
-    <message>
-        <source>Error: %1</source>
-        <translation>錯吳: %1</translation>
-    </message>
-    <message>
-        <source>Error: Failed to load application fonts.</source>
-        <translation>錯誤：無法加載應用程式字體。</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-family invalid. Valid values: %1.</source>
-        <translation>錯誤: 指定的字體系列無效。 有效值: %1.</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-weight-normal invalid. Valid range %1 to %2.</source>
-        <translation>錯誤: 指定的字體粗細正常無效。 有效範圍 %1 到 %2.</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-weight-bold invalid. Valid range %1 to %2.</source>
-        <translation>錯誤: 指定的字體粗體粗體無效。 有效範圍 %1 到 %2。</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-scale invalid. Valid range %1 to %2.</source>
-        <translation>錯誤: 指定的字體比例無效。 有效範圍 %1 到 %2。</translation>
-    </message>
-    <message>
-        <source>Error: Invalid -custom-css-dir path.</source>
-        <translation>錯誤: -custom-css-dir 路徑無效。</translation>
-    </message>
-    <message>
-        <source>Error: %1 CSS file(s) missing in -custom-css-dir path.</source>
-        <translation>錯誤: -custom-css-dir 路徑中缺少 %1 個 CSS 文件。</translation>
-    </message>
-    <message>
         <source>%1 didn't yet exit safely...</source>
         <translation>%1 還沒有安全地結束...</translation>
     </message>
@@ -2295,7 +1885,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>金額</translation>
     </message>
     <message>
-        <source>Enter a Dash address (e.g. %1)</source>
+        <source>Enter a Cosanta address (e.g. %1)</source>
         <translation>輸入達世幣位址 (例如 %1)</translation>
     </message>
     <message>
@@ -2388,6 +1978,49 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
 </context>
 <context>
+    <name>QObject::QObject</name>
+    <message>
+        <source>Error: Specified data directory "%1" does not exist.</source>
+        <translation>錯誤: 不存在指定的資料目錄 "%1" 。</translation>
+    </message>
+    <message>
+        <source>Error: Cannot parse configuration file: %1. Only use key=value syntax.</source>
+        <translation>錯誤: 沒辦法解析設定檔: %1。只能用「名稱=設定值」這種語法。</translation>
+    </message>
+    <message>
+        <source>Error: %1</source>
+        <translation>錯誤: %1</translation>
+    </message>
+    <message>
+        <source>Error: Failed to load application fonts.</source>
+        <translation>錯誤: 無法加載應用程序字體。</translation>
+    </message>
+    <message>
+        <source>Error: Specified font-family invalid. Valid values: %1.</source>
+        <translation>錯誤: 指定的字體系列無效。 有效值: %1。</translation>
+    </message>
+    <message>
+        <source>Error: Specified font-weight-normal invalid. Valid range %1 to %2.</source>
+        <translation>錯誤: 指定的 font-weight-normal 無效。 有效範圍 %1 到 %2。</translation>
+    </message>
+    <message>
+        <source>Error: Specified font-weight-bold invalid. Valid range %1 to %2.</source>
+        <translation>錯誤: 指定的 font-weight-bold 無效。 有效範圍 %1 到%2。</translation>
+    </message>
+    <message>
+        <source>Error: Specified font-scale invalid. Valid range %1 to %2.</source>
+        <translation>錯誤: 指定的字體比例無效。 有效範圍 %1 到 %2。</translation>
+    </message>
+    <message>
+        <source>Error: Invalid -custom-css-dir path.</source>
+        <translation>錯誤: 無效的 -custom-css-dir 路徑。</translation>
+    </message>
+    <message>
+        <source>Error: %1 CSS file(s) missing in -custom-css-dir path.</source>
+        <translation>錯誤:  -custom-css-dir 路徑中缺少 %1 個CSS 文件。</translation>
+    </message>
+</context>
+<context>
     <name>QRDialog</name>
     <message>
         <source>QR-Code Title</source>
@@ -2434,18 +2067,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>&amp;Copy Image</source>
         <translation>複製圖片(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Resulting URI too long, try to reduce the text for label / message.</source>
-        <translation>導致 URI 太長，嘗試減少標籤/消息的文本。</translation>
-    </message>
-    <message>
-        <source>Error encoding URI into QR Code.</source>
-        <translation>將 URI 編碼為 QR 碼時出錯。</translation>
-    </message>
-    <message>
-        <source>QR code support not available.</source>
-        <translation>二維碼支持不可用。</translation>
     </message>
     <message>
         <source>Save QR Code</source>
@@ -2503,8 +2124,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>除錯紀錄檔</translation>
     </message>
     <message>
+        <source>Current number of blocks</source>
+        <translation>目前區塊數</translation>
+    </message>
+    <message>
         <source>Client version</source>
         <translation>客戶端軟體版本</translation>
+    </message>
+    <message>
+        <source>Using BerkeleyDB version</source>
+        <translation>使用 BerkeleyDB 版本</translation>
     </message>
     <message>
         <source>Block chain</source>
@@ -2587,26 +2216,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>己同步的區塊</translation>
     </message>
     <message>
-        <source>Rescan blockchain files 1</source>
-        <translation>重新掃描區塊鏈文件 1</translation>
-    </message>
-    <message>
-        <source>Rescan blockchain files 2</source>
-        <translation>重新掃描區塊鏈文件 2</translation>
-    </message>
-    <message>
-        <source>The buttons below will restart the wallet with command-line options to repair the wallet, fix issues with corrupt blockchain files or missing/obsolete transactions.</source>
-        <translation>下面的按鈕將使用命令行選項重新啟動錢包，以修復錢包、修復損壞的區塊鏈文件或丟失/過時的交易問題。</translation>
-    </message>
-    <message>
-        <source>-rescan=1: Rescan the block chain for missing wallet transactions starting from wallet creation time.</source>
-        <translation>-rescan=1: 從錢包創建時間開始，重新掃描區塊鏈以尋找漏掉的錢包交易。</translation>
-    </message>
-    <message>
-        <source>-rescan=2: Rescan the block chain for missing wallet transactions starting from genesis block.</source>
-        <translation>-rescan=2: 從創世區塊開始重新掃描區塊鏈以尋找漏掉的錢包交易。</translation>
-    </message>
-    <message>
         <source>Wallet Path</source>
         <translation>錢包路徑</translation>
     </message>
@@ -2619,32 +2228,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>數據目錄</translation>
     </message>
     <message>
-        <source>To specify a non-default location of the data directory use the '%1' option.</source>
-        <translation>要指定數據目錄的非預設位置，請使用“%1”選項。</translation>
-    </message>
-    <message>
-        <source>Blocksdir</source>
-        <translation>區塊目錄</translation>
-    </message>
-    <message>
-        <source>To specify a non-default location of the blocks directory use the '%1' option.</source>
-        <translation>要指定區塊目錄的非預設位置，請使用“%1”選項。</translation>
-    </message>
-    <message>
-        <source>Current block height</source>
-        <translation>當前區塊高度</translation>
-    </message>
-    <message>
         <source>Last block hash</source>
         <translation>最後一個區塊的哈希值</translation>
-    </message>
-    <message>
-        <source>Latest ChainLocked block hash</source>
-        <translation>最新的鏈鎖區塊哈希值</translation>
-    </message>
-    <message>
-        <source>Latest ChainLocked block height</source>
-        <translation>最新的鏈鎖區塊高度</translation>
     </message>
     <message>
         <source>Open the %1 debug log file from the current data directory. This can take a few seconds for large log files.</source>
@@ -2669,10 +2254,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>&amp;Reset</source>
         <translation>重置(&amp;R)</translation>
-    </message>
-    <message>
-        <source>Node Type</source>
-        <translation>節點種類</translation>
     </message>
     <message>
         <source>PoSe Score</source>
@@ -2723,6 +2304,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>錢包修復(&amp;W)</translation>
     </message>
     <message>
+        <source>Salvage wallet</source>
+        <translation>搶救錢包</translation>
+    </message>
+    <message>
         <source>Recover transactions 1</source>
         <translation>復原交易 1</translation>
     </message>
@@ -2733,6 +2318,14 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Upgrade wallet format</source>
         <translation>升級錢包格式</translation>
+    </message>
+    <message>
+        <source>The buttons below will restart the wallet with command-line options to repair the wallet, fix issues with corrupt blockhain files or missing/obsolete transactions.</source>
+        <translation>下面的按鈕將重新啟動錢包並使用命令行選項來修復錢包，修復損壞或丟失的區塊鏈文件/過時的交易問題。</translation>
+    </message>
+    <message>
+        <source>-salvagewallet: Attempt to recover private keys from a corrupt wallet.dat.</source>
+        <translation>-salvagewallet: 嘗試從損壞的 wallet.dat 裡恢復私鑰。</translation>
     </message>
     <message>
         <source>-zapwallettxes=1: Recover transactions from blockchain (keep meta-data, e.g. account owner).</source>
@@ -2859,16 +2452,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>不是</translation>
     </message>
     <message>
-        <source>Regular</source>
-        <translation>正常</translation>
-    </message>
-    <message>
         <source>Masternode</source>
         <translation>主節點</translation>
-    </message>
-    <message>
-        <source>Verified Masternode</source>
-        <translation>已驗證的主節點</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -2878,7 +2463,7 @@ https://www.transifex.com/projects/p/dash/</translation>
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Dash network.</source>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Cosanta network.</source>
         <translation>附加在付款要求中的訊息，可以不填，打開要求內容時會顯示。注意: 這個訊息不會隨著付款送到達世幣網路上。</translation>
     </message>
     <message>
@@ -2890,7 +2475,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>跟新收款位址關聯的標記，可以不填。</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Dash network.</source>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Cosanta network.</source>
         <translation>附加在付款要求中的訊息，可以不填，打開要求內容時會顯示。&lt;br&gt;注意: 這個訊息不會隨著付款送到達世幣網路上。</translation>
     </message>
     <message>
@@ -2910,8 +2495,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>金額:(&amp;A)</translation>
     </message>
     <message>
-        <source>&amp;Create new receiving address</source>
-        <translation>創建新的收款位址(&amp;C)</translation>
+        <source>&amp;Request payment</source>
+        <translation>要求付款(&amp;R)</translation>
     </message>
     <message>
         <source>Clear all fields of the form.</source>
@@ -2952,10 +2537,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Copy URI</source>
         <translation>複製 URI</translation>
-    </message>
-    <message>
-        <source>Copy address</source>
-        <translation>複製位址</translation>
     </message>
     <message>
         <source>Copy label</source>
@@ -3019,6 +2600,14 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Wallet</source>
         <translation>錢包</translation>
+    </message>
+    <message>
+        <source>Resulting URI too long, try to reduce the text for label / message.</source>
+        <translation>產生的 URI 過長，請試著縮短標記或訊息的文字內容。</translation>
+    </message>
+    <message>
+        <source>Error encoding URI into QR Code.</source>
+        <translation>把 URI 編碼成 QR Code 時發生錯誤。</translation>
     </message>
 </context>
 <context>
@@ -3119,15 +2708,19 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>選項...</translation>
     </message>
     <message>
+        <source>collapse fee-settings</source>
+        <translation>收起手續費設定</translation>
+    </message>
+    <message>
         <source>Confirmation time target:</source>
         <translation>目標確認時間:</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
-        <translation>如果自訂手續費設定為 1000 duffs ，而交易資料大小只有 250 個位元組的話，那麽選擇「每千位元組」就只會付 250 duffs 的手續費，&lt;br /&gt;而「至少」會支付 1000 duffs。但是如果交易資料大小超過一千個位元組，那麽兩者都是每千位元組的費用。</translation>
+        <source>If the custom fee is set to 1000 units and the transaction is only 250 bytes, then "per kilobyte" only pays 250 units in fee,&lt;br /&gt;while "at least" pays 1000 units. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <translation>如果自訂手續費設定為 1000 units ，而交易資料大小只有 250 個位元組的話，那麽選擇「每千位元組」就只會付 250 units 的手續費，&lt;br /&gt;而「至少」會支付 1000 units。但是如果交易資料大小超過一千個位元組，那麽兩者都是每千位元組的費用。</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for Cosanta transactions than the network can process.</source>
         <translation>當交易量少於區塊可容納的空間時，只付最低手續費不會有什麽問題。&lt;br /&gt;但是當交易量的需求成長到超過整體網路可以處理的量時，可能會造成一筆一直不會被確認的交易。</translation>
     </message>
     <message>
@@ -3141,10 +2734,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Note: Not enough data for fee estimation, using the fallback fee instead.</source>
         <translation>注意: 沒有足夠的數據用於費用估算，使用備用費來代替。</translation>
-    </message>
-    <message>
-        <source>Hide transaction fee settings</source>
-        <translation>隱藏交易費用設定</translation>
     </message>
     <message>
         <source>Hide</source>
@@ -3243,32 +2832,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>你確定要付錢出去嗎？</translation>
     </message>
     <message>
+        <source>are added as transaction fee</source>
+        <translation>加做交易手續費</translation>
+    </message>
+    <message>
+        <source>Total Amount = &lt;b&gt;%1&lt;/b&gt;&lt;br /&gt;= %2</source>
+        <translation>總金額 = &lt;b&gt;%1&lt;/b&gt;&lt;br /&gt;= %2</translation>
+    </message>
+    <message>
         <source>&lt;b&gt;(%1 of %2 entries displayed)&lt;/b&gt;</source>
         <translation>&lt;b&gt;(在 %2 中 %1 個項目顯示出來)&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>S&amp;end mixed funds</source>
-        <translation>(&amp;e) 發送已經混合的資金</translation>
-    </message>
-    <message>
-        <source>Confirm the %1 send action</source>
-        <translation>確認 %1 的發送動作</translation>
-    </message>
-    <message>
-        <source>%1 funds only</source>
-        <translation>只限 %1 的資金</translation>
-    </message>
-    <message>
         <source>any available funds</source>
         <translation>任何可用資金</translation>
-    </message>
-    <message>
-        <source>Transaction fee</source>
-        <translation>交易手續費</translation>
-    </message>
-    <message>
-        <source>(%1 transactions have higher fees usually due to no change output being allowed)</source>
-        <translation>(由於不允許更改輸出的關係，%1 的交易手續費用會較高)</translation>
     </message>
     <message>
         <source>Transaction size: %1</source>
@@ -3281,22 +2858,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message numerus="yes">
         <source>This transaction will consume %n input(s)</source>
         <translation><numerusform>此交易將消耗 %n 個輸入</numerusform></translation>
-    </message>
-    <message>
-        <source>Warning: Using %1 with %2 or more inputs can harm your privacy and is not recommended</source>
-        <translation>警告: 在 %1 中使用 %2 或更多的輸入會損害您的隱私，因此不建議使用</translation>
-    </message>
-    <message>
-        <source>Click to learn more</source>
-        <translation>點擊以了解更多</translation>
-    </message>
-    <message>
-        <source>Total Amount</source>
-        <translation>總金額</translation>
-    </message>
-    <message>
-        <source>or</source>
-        <translation>或</translation>
     </message>
     <message>
         <source>Confirm send coins</source>
@@ -3327,6 +2888,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>製造交易失敗了！</translation>
     </message>
     <message>
+        <source>The transaction was rejected with the following reason: %1</source>
+        <translation>交易因為以下原因被拒絕了: %1</translation>
+    </message>
+    <message>
         <source>A fee higher than %1 is considered an absurdly high fee.</source>
         <translation>手續費高於 %1 的被認為是非常高的費用。</translation>
     </message>
@@ -3343,7 +2908,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation><numerusform>預計可在 %n 個區塊內開始確認。</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Dash address</source>
+        <source>Warning: Invalid Cosanta address</source>
         <translation>警告: 無效的達世幣位址</translation>
     </message>
     <message>
@@ -3366,11 +2931,15 @@ https://www.transifex.com/projects/p/dash/</translation>
 <context>
     <name>SendCoinsEntry</name>
     <message>
+        <source>This is a normal payment.</source>
+        <translation>這是一筆正常的付款。</translation>
+    </message>
+    <message>
         <source>Pay &amp;To:</source>
         <translation>付給:(&amp;T)</translation>
     </message>
     <message>
-        <source>The Dash address to send the payment to</source>
+        <source>The Cosanta address to send the payment to</source>
         <translation>接收付款的達世幣位址</translation>
     </message>
     <message>
@@ -3406,11 +2975,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>金額:(&amp;A)</translation>
     </message>
     <message>
-        <source>The amount to send in the selected unit</source>
-        <translation>在所選單位中發送的金額</translation>
-    </message>
-    <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Cosanta than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>手續費將從發送金額中扣除。接收者將收到的達世幣金額將會比您在金額字段中輸入的金額為少。 如果選擇了多個收款人，該費用將會被平均攤分。</translation>
     </message>
     <message>
@@ -3426,7 +2991,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>訊息:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Dash network.</source>
+        <source>A message that was attached to the cosanta: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Cosanta network.</source>
         <translation>附加在達世幣付款協議 URI 中的訊息，會和交易內容一起存起來，給你自己做參考。注意: 這個訊息不會送到達世幣網路上。</translation>
     </message>
     <message>
@@ -3453,8 +3018,8 @@ https://www.transifex.com/projects/p/dash/</translation>
 <context>
     <name>SendConfirmationDialog</name>
     <message>
-        <source>Send</source>
-        <translation>發送</translation>
+        <source>Yes</source>
+        <translation>是</translation>
     </message>
 </context>
 <context>
@@ -3479,11 +3044,11 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>簽署訊息(&amp;S)</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Dash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <source>You can sign messages/agreements with your addresses to prove you can receive Cosanta sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
         <translation>你可以用自己的位址簽署訊息/協議，來證明你對位址的所有權。但是請小心，不要簽署語意含糊不清的內容，因為釣魚式詐騙可能會用騙你簽署的手法來冒充是你。只有在語句中的細節你都同意時才簽署。</translation>
     </message>
     <message>
-        <source>The Dash address to sign the message with</source>
+        <source>The Cosanta address to sign the message with</source>
         <translation>用來簽署訊息的達世幣位址</translation>
     </message>
     <message>
@@ -3515,7 +3080,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>複製目前的簽章到系統剪貼簿</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Dash address</source>
+        <source>Sign the message to prove you own this Cosanta address</source>
         <translation>簽署這個訊息來證明這個達世幣位址是你的</translation>
     </message>
     <message>
@@ -3539,19 +3104,11 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>請在下面輸入簽署的位址，訊息(請確定完整複製了所包含的換行，空格，跳位符號等等)，以及簽章，來驗證這個訊息。請小心，除了訊息內容以外，不要對簽章本身過度解讀，以避免被用「中間人攻擊法」詐騙。請注意，這僅僅是證明簽名方接收的地址，它不能證明任何交易的發送人！</translation>
     </message>
     <message>
-        <source>The Dash address the message was signed with</source>
+        <source>The Cosanta address the message was signed with</source>
         <translation>簽署這個訊息的達世幣位址</translation>
     </message>
     <message>
-        <source>The signed message to verify</source>
-        <translation>要驗證的簽名消息</translation>
-    </message>
-    <message>
-        <source>The signature given when the message was signed</source>
-        <translation>簽署消息時給出的簽名</translation>
-    </message>
-    <message>
-        <source>Verify the message to ensure it was signed with the specified Dash address</source>
+        <source>Verify the message to ensure it was signed with the specified Cosanta address</source>
         <translation>驗證這個訊息來確定是用指定的達世幣位址簽署的</translation>
     </message>
     <message>
@@ -3692,10 +3249,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>確認 %1 次</translation>
     </message>
     <message>
-        <source>locked via ChainLocks</source>
-        <translation>通過 ChainLocks 鎖定的</translation>
-    </message>
-    <message>
         <source>verified via InstantSend</source>
         <translation>經即時到帳系統核實</translation>
     </message>
@@ -3790,10 +3343,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Transaction total size</source>
         <translation>交易的總大小</translation>
-    </message>
-    <message>
-        <source> (Certificate was not verified)</source>
-        <translation> (證書未驗證)</translation>
     </message>
     <message>
         <source>Merchant</source>
@@ -3894,20 +3443,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>經即時到帳系統核實</translation>
     </message>
     <message>
-        <source>locked via ChainLocks</source>
-        <translation>通過 ChainLocks 鎖定的</translation>
-    </message>
-    <message>
         <source>Received with</source>
         <translation>收款</translation>
     </message>
     <message>
         <source>Received from</source>
         <translation>收款來自</translation>
-    </message>
-    <message>
-        <source>Received via %1</source>
-        <translation>經由 %1 收到的</translation>
     </message>
     <message>
         <source>Sent to</source>
@@ -3920,26 +3461,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Mined</source>
         <translation>開採所得</translation>
-    </message>
-    <message>
-        <source>%1 Mixing</source>
-        <translation>%1 混合中</translation>
-    </message>
-    <message>
-        <source>%1 Collateral Payment</source>
-        <translation>%1 抵押品付款</translation>
-    </message>
-    <message>
-        <source>%1 Make Collateral Inputs</source>
-        <translation>用作 %1 抵押品的輸入</translation>
-    </message>
-    <message>
-        <source>%1 Create Denominations</source>
-        <translation>%1 所產生的除名資金</translation>
-    </message>
-    <message>
-        <source>%1 Send</source>
-        <translation>%1 發送</translation>
     </message>
     <message>
         <source>watch-only</source>
@@ -4021,26 +3542,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>付款給</translation>
     </message>
     <message>
-        <source>%1 Send</source>
-        <translation>%1 發送</translation>
-    </message>
-    <message>
-        <source>%1 Make Collateral Inputs</source>
-        <translation>用作 %1 抵押品的輸入</translation>
-    </message>
-    <message>
-        <source>%1 Create Denominations</source>
-        <translation>%1 所產生的除名資金</translation>
-    </message>
-    <message>
-        <source>%1 Mixing</source>
-        <translation>%1 混合中</translation>
-    </message>
-    <message>
-        <source>%1 Collateral Payment</source>
-        <translation>%1 抵押品付款</translation>
-    </message>
-    <message>
         <source>To yourself</source>
         <translation>給自己</translation>
     </message>
@@ -4089,8 +3590,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>複製完整交易詳情</translation>
     </message>
     <message>
-        <source>Edit address label</source>
-        <translation>編輯位址標籤</translation>
+        <source>Edit label</source>
+        <translation>編輯標記</translation>
     </message>
     <message>
         <source>Show transaction details</source>
@@ -4173,21 +3674,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
 </context>
 <context>
-    <name>WalletController</name>
-    <message>
-        <source>Close wallet</source>
-        <translation>關閉錢包</translation>
-    </message>
-    <message>
-        <source>Are you sure you wish to close the wallet &lt;i&gt;%1&lt;/i&gt;?</source>
-        <translation>你確定要關閉錢包嗎 &lt;i&gt;%1&lt;/i&gt;?</translation>
-    </message>
-    <message>
-        <source>Closing the wallet for too long can result in having to resync the entire chain if pruning is enabled.</source>
-        <translation>如果啟用修剪後，關閉錢包太久可能會導致必須重新同步整個區塊鏈。</translation>
-    </message>
-</context>
-<context>
     <name>WalletFrame</name>
     <message>
         <source>No wallet has been loaded.</source>
@@ -4199,10 +3685,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Send Coins</source>
         <translation>付款</translation>
-    </message>
-    <message>
-        <source>default wallet</source>
-        <translation>預設錢包</translation>
     </message>
 </context>
 <context>
@@ -4249,18 +3731,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
 </context>
 <context>
-    <name>dash-core</name>
+    <name>cosanta-core</name>
     <message>
         <source>Error: Listening for incoming connections failed (listen returned error %s)</source>
         <translation>錯誤: 聽候外來連線失敗(回傳錯誤 %s)</translation>
-    </message>
-    <message>
-        <source>Fee estimation failed. Fallbackfee is disabled. Wait a few blocks or enable -fallbackfee.</source>
-        <translation>費用估算失敗。 後備費用已禁用。 請等待幾個區塊或啟用-fallbackfee。</translation>
-    </message>
-    <message>
-        <source>This error could occur if this wallet was not shutdown cleanly and was last loaded using a build with a newer version of Berkeley DB. If so, please use the software that last loaded this wallet</source>
-        <translation>如果此錢包未完全關閉並且上次使用具有較新版本的 Berkeley DB 的構建加載，則可能會發生此錯誤。 如果是這樣，請使用上次加載此錢包的軟件</translation>
     </message>
     <message>
         <source>This is a pre-release test build - use at your own risk - do not use for mining or merchant applications</source>
@@ -4323,6 +3797,14 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>讀取資料庫時發生錯誤，要關閉了。</translation>
     </message>
     <message>
+        <source>Error</source>
+        <translation>錯誤</translation>
+    </message>
+    <message>
+        <source>Error: Disk space is low!</source>
+        <translation>錯誤: 磁碟空間很少！</translation>
+    </message>
+    <message>
         <source>Failed to listen on any port. Use -listen=0 if you want this.</source>
         <translation>在任意的通訊埠聽候失敗。如果你希望這樣的話，可以設定 -listen=0.</translation>
     </message>
@@ -4359,6 +3841,18 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>條目超過最大大小。</translation>
     </message>
     <message>
+        <source>Failed to load fulfilled requests cache from</source>
+        <translation>無法載入完成請求緩存</translation>
+    </message>
+    <message>
+        <source>Failed to load governance cache from</source>
+        <translation>無法載入治理緩存</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode cache from</source>
+        <translation>無法載入主節點緩存</translation>
+    </message>
+    <message>
         <source>Found enough users, signing ( waiting %s )</source>
         <translation>找到足夠多的用戶，簽署中 (等待  %s )</translation>
     </message>
@@ -4381,6 +3875,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Incorrect or no genesis block found. Wrong datadir for network?</source>
         <translation>創世區塊不正確或找不到。資料目錄錯了嗎？</translation>
+    </message>
+    <message>
+        <source>Information</source>
+        <translation>資訊</translation>
     </message>
     <message>
         <source>Input is not valid.</source>
@@ -4463,6 +3961,18 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>未知回應。</translation>
     </message>
     <message>
+        <source>Unsupported argument -benchmark ignored, use -debug=bench.</source>
+        <translation>忽略了不再支援的 -benchmark 參數，請改用 -debug=bench.</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -debugnet ignored, use -debug=net.</source>
+        <translation>忽略了不再支援的 -debugnet 參數，請改用 -debug=net.</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -tor found, use -onion.</source>
+        <translation>找到不再支援的 -tor 參數，請改用 -onion 參數。</translation>
+    </message>
+    <message>
         <source>User Agent comment (%s) contains unsafe characters.</source>
         <translation>用戶代理註釋 (%s) 包含不安全的字符。</translation>
     </message>
@@ -4479,14 +3989,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>找不到隨機主節點。</translation>
     </message>
     <message>
-        <source>%s can't be lower than %s</source>
-        <translation>%s 付款額不能低於 %s</translation>
-    </message>
-    <message>
-        <source>%s is idle.</source>
-        <translation>%s 處於閒置狀態。</translation>
-    </message>
-    <message>
         <source>Can't mix while sync in progress.</source>
         <translation>在同步進行中時不能進行混合。</translation>
     </message>
@@ -4501,6 +4003,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>%s file contains all private keys from this wallet. Do not share it with anyone!</source>
         <translation>%s 文件包含此錢包中的所有私鑰。 不要與任何人分享!</translation>
+    </message>
+    <message>
+        <source>-masternode option is deprecated and ignored, specifying -masternodeblsprivkey is enough to start this node as a masternode.</source>
+        <translation>-masternode 選項已被棄用並被忽略, 指定 -masternodeblsprivkey 足以將本節點作為主節點啟動。</translation>
     </message>
     <message>
         <source>Failed to create backup, file already exists! This could happen if you restarted wallet in less than 60 seconds. You can continue if you are ok with this.</source>
@@ -4535,12 +4041,24 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>網絡版本字符串的總長度  (%i) 超過最大長度 (%i)。減少uacomments參數的數量或大小。</translation>
     </message>
     <message>
+        <source>Unsupported argument -socks found. Setting SOCKS version isn't possible anymore, only SOCKS5 proxies are supported.</source>
+        <translation>找到不再支援的 -socks 參數。現在只支援 SOCKS5 協定的代理伺服器了，因為不再能夠指定 SOCKS 協定版本。</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -whitelistalwaysrelay ignored, use -whitelistrelay and/or -whitelistforcerelay.</source>
+        <translation>不支持的參數 -whiteelistalwaysrelay 已忽略，請使用-whitelistrelay和/或-whitelistforcerelay。</translation>
+    </message>
+    <message>
         <source>WARNING! Failed to replenish keypool, please unlock your wallet to do so.</source>
         <translation>警告! 無法補充公鑰池，請解鎖您的錢包。</translation>
     </message>
     <message>
         <source>Wallet is locked, can't replenish keypool! Automatic backups and mixing are disabled, please unlock your wallet to replenish keypool.</source>
         <translation>錢包被鎖定，無法補充keypool! 自動備份和混合功能被禁用，請解鎖您的錢包以補充keypool。</translation>
+    </message>
+    <message>
+        <source>Warning: Unknown block versions being mined! It's possible unknown rules are in effect</source>
+        <translation>警告 : 正在開採未知版本的區塊。未知的規則可能正在生效</translation>
     </message>
     <message>
         <source>You need to rebuild the database using -reindex to change -timestampindex</source>
@@ -4551,8 +4069,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>您需要使用-reindex 來重建數據庫以回到未修剪模式。 這將重新下載整個區塊鏈</translation>
     </message>
     <message>
-        <source>%s failed</source>
-        <translation>%s 失敗</translation>
+        <source>-litemode is deprecated.</source>
+        <translation>-litemode 已被棄用。</translation>
     </message>
     <message>
         <source>-maxmempool must be at least %d MB</source>
@@ -4563,28 +4081,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>自動備份已停用</translation>
     </message>
     <message>
-        <source>Cannot set -peerblockfilters without -blockfilterindex.</source>
-        <translation>不能在沒有 -blockfilterindex 的情況下設置 -peerblockfilters。</translation>
-    </message>
-    <message>
-        <source>Config setting for %s only applied on %s network when in [%s] section.</source>
-        <translation>%s 的配置設置僅在 [%s] 部分中應用於 %s 網絡。</translation>
-    </message>
-    <message>
-        <source>Could not find asmap file %s</source>
-        <translation>找不到 asmap 文件 %s</translation>
-    </message>
-    <message>
-        <source>Could not parse asmap file %s</source>
-        <translation>無法解析 asmap 文件 %s</translation>
-    </message>
-    <message>
         <source>ERROR! Failed to create automatic backup</source>
         <translation>錯誤! 無法創建自動備份</translation>
-    </message>
-    <message>
-        <source>Error loading %s: Private keys can only be disabled during creation</source>
-        <translation>加載 %s 時出錯: 私鑰只能在創建期間禁用</translation>
     </message>
     <message>
         <source>Error upgrading evo database</source>
@@ -4595,16 +4093,24 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>錯誤:發生一個致命的內部錯誤，請到debug.log查看更多細節</translation>
     </message>
     <message>
-        <source>Error: Disk space is low for %s</source>
-        <translation>錯誤: %s 的磁盤空間不足</translation>
-    </message>
-    <message>
         <source>Error: failed to add socket to epollfd (epoll_ctl returned error %s)</source>
         <translation>錯誤: 無法將套接字添加到 epollfd (epoll_ctl 傳回錯誤 %s)</translation>
     </message>
     <message>
         <source>Exceeded max tries.</source>
         <translation>超過最大嘗試的次數。</translation>
+    </message>
+    <message>
+        <source>Failed to clear fulfilled requests cache at</source>
+        <translation>無法清除位於緩存中的已完成請求</translation>
+    </message>
+    <message>
+        <source>Failed to clear governance cache at</source>
+        <translation>無法清除位於緩存中的治理項目</translation>
+    </message>
+    <message>
+        <source>Failed to clear masternode cache at</source>
+        <translation>無法清除位於緩存中的主節點資料</translation>
     </message>
     <message>
         <source>Failed to commit EvoDB</source>
@@ -4623,12 +4129,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>無法刪除備份，錯誤: %s</translation>
     </message>
     <message>
-        <source>Failed to rescan the wallet during initialization</source>
-        <translation>初始化期間無法重新掃描錢包</translation>
+        <source>Failed to load sporks cache from</source>
+        <translation>無法載入勺叉緩存</translation>
     </message>
     <message>
-        <source>Invalid P2P permission: '%s'</source>
-        <translation>無效的 P2P 權限: '%s'</translation>
+        <source>Failed to rescan the wallet during initialization</source>
+        <translation>初始化期間無法重新掃描錢包</translation>
     </message>
     <message>
         <source>Invalid amount for -fallbackfee=&lt;amount&gt;: '%s'</source>
@@ -4637,6 +4143,14 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Invalid masternodeblsprivkey. Please see documentation.</source>
         <translation>無效的masternodeblsprivkey。請參閱文檔。</translation>
+    </message>
+    <message>
+        <source>It has been replaced by -disablegovernance.</source>
+        <translation>它已由 -disablegovernance 所代替。</translation>
+    </message>
+    <message>
+        <source>Its replacement -disablegovernance has been forced instead.</source>
+        <translation>替代命令 -disablegovernance 已被強制執行。</translation>
     </message>
     <message>
         <source>Loading block index...</source>
@@ -4691,10 +4205,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>修剪不能設置為負值。</translation>
     </message>
     <message>
-        <source>Prune mode is incompatible with -blockfilterindex.</source>
-        <translation>修剪模式與 -blockfilterindex 不兼容。</translation>
-    </message>
-    <message>
         <source>Prune mode is incompatible with -disablegovernance=false.</source>
         <translation>修剪模式與-disablegovernance = false 並不兼容。</translation>
     </message>
@@ -4705,10 +4215,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Pruning blockstore...</source>
         <translation>修剪儲存區塊...</translation>
-    </message>
-    <message>
-        <source>Section [%s] is not recognized.</source>
-        <translation>無法識別節 [%s] 。</translation>
     </message>
     <message>
         <source>Specified -walletdir "%s" does not exist</source>
@@ -4725,12 +4231,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Synchronizing blockchain...</source>
         <translation>正在同步區塊鏈...</translation>
-    </message>
-    <message>
-        <source>The specified config file %s does not exist
-</source>
-        <translation>指定的配置文件 %s 不存在
-</translation>
     </message>
     <message>
         <source>The wallet will avoid paying less than the minimum relay fee.</source>
@@ -4773,20 +4273,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>沒辦法繫結在這台電腦上的 %s 。%s 可能已經在執行了。</translation>
     </message>
     <message>
-        <source>Unable to create the PID file '%s': %s</source>
-        <translation>無法創建 PID 文件 '%s': %s</translation>
-    </message>
-    <message>
         <source>Unable to generate initial keys</source>
         <translation>無法生成初始密鑰</translation>
     </message>
     <message>
-        <source>Unknown -blockfilterindex value %s.</source>
-        <translation>未知 -blockfilterindex 值 %s。</translation>
-    </message>
-    <message>
         <source>Upgrading UTXO database</source>
         <translation>正在升級 UTXO 資料庫</translation>
+    </message>
+    <message>
+        <source>Wallet %s resides outside wallet directory %s</source>
+        <translation>錢包 %s 位處於錢包目錄 %s 外</translation>
     </message>
     <message>
         <source>Wallet needed to be rewritten: restart %s to complete</source>
@@ -4813,6 +4309,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>您需要使用-reindex  來重建數據庫，並更改-spentindex </translation>
     </message>
     <message>
+        <source>You need to rebuild the database using -reindex to change -txindex</source>
+        <translation>改變 -txindex 參數後，必須要用 -reindex 參數來重建資料庫</translation>
+    </message>
+    <message>
         <source>no mixing available.</source>
         <translation>無法進行混合。</translation>
     </message>
@@ -4821,12 +4321,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>詳細信息請參閱debug.log。</translation>
     </message>
     <message>
-        <source>The %s developers</source>
-        <translation>%s 開發人員</translation>
+        <source>Cosanta Core</source>
+        <translation>達世幣核心</translation>
     </message>
     <message>
-        <source>%s uses exact denominated amounts to send funds, you might simply need to mix some more coins.</source>
-        <translation>%s 需要使用準確的已除名資金來發送，你可能需要再混合一資金來達到所需要求。</translation>
+        <source>The %s developers</source>
+        <translation>%s 開發人員</translation>
     </message>
     <message>
         <source>Cannot obtain a lock on data directory %s. %s is probably already running.</source>
@@ -4873,28 +4373,24 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>無法重播區塊。您將需要使用-reindex-chainstate來重建數據庫。</translation>
     </message>
     <message>
-        <source>Warning: Private keys detected in wallet {%s} with disabled private keys</source>
-        <translation>警告: 在錢包 {%s} 中檢測到已禁用私鑰的私鑰</translation>
+        <source>Warning: Wallet file corrupt, data salvaged! Original %s saved as %s in %s; if your balance or transactions are incorrect you should restore from a backup.</source>
+        <translation>警告: 錢包檔壞掉，但資料被救回來了！原來的檔案 %s 改儲存為 %s，在目錄 %s 下。 如果餘額或交易資料有誤的話，你應該要從備份資料復原回來。</translation>
     </message>
     <message>
         <source>%d of last 100 blocks have unexpected version</source>
         <translation>最近100個區塊中的 %d 個區塊，有意想不到的版本</translation>
     </message>
     <message>
+        <source>%s corrupt, salvage failed</source>
+        <translation>錢包檔 %s 壞掉了，搶救失敗</translation>
+    </message>
+    <message>
         <source>%s is not a valid backup folder!</source>
         <translation>%s 並不是有效的備份資料夾!</translation>
     </message>
     <message>
-        <source>%s is only allowed with a single wallet file</source>
-        <translation>%s 僅允許用於單個錢包文件</translation>
-    </message>
-    <message>
         <source>%s is set very high!</source>
         <translation>%s 的設定值異常大！</translation>
-    </message>
-    <message>
-        <source>%s request incomplete:</source>
-        <translation>%s 請求不完整:</translation>
     </message>
     <message>
         <source>-devnet can only be specified once</source>
@@ -4909,16 +4405,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>當指定 -devnet 和 -server 時，必須指定 -rpcport</translation>
     </message>
     <message>
-        <source>A fatal internal error occurred, see debug.log for details</source>
-        <translation>發生致命的內部錯誤，請參閱 debug.log 了解詳細信息</translation>
-    </message>
-    <message>
         <source>Cannot resolve -%s address: '%s'</source>
         <translation>沒辦法解析 -%s 參數指定的位址: '%s'</translation>
-    </message>
-    <message>
-        <source>Cannot write to data directory '%s'; check permissions.</source>
-        <translation>無法寫入數據到目錄 '%s'; 請檢查相關權限。</translation>
     </message>
     <message>
         <source>Change index out of range</source>
@@ -4927,10 +4415,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Copyright (C)</source>
         <translation>版權 (C)</translation>
-    </message>
-    <message>
-        <source>Disk space is too low!</source>
-        <translation>磁盤空間太小了！</translation>
     </message>
     <message>
         <source>Error loading %s</source>
@@ -4961,44 +4445,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>錯誤: 無法將套接字添加到 kqueuefd (kevent 傳回錯誤 %s)</translation>
     </message>
     <message>
-        <source>Failed to clear fulfilled requests cache at %s</source>
-        <translation>未能在 %s 清除已完成的請求緩存</translation>
-    </message>
-    <message>
-        <source>Failed to clear governance cache at %s</source>
-        <translation>無法清除 %s 的治理緩存</translation>
-    </message>
-    <message>
-        <source>Failed to clear masternode cache at %s</source>
-        <translation>在 %s 清除主節點緩存失敗</translation>
-    </message>
-    <message>
         <source>Failed to find mixing queue to join</source>
         <translation>無法找到混合隊列去加入</translation>
     </message>
     <message>
-        <source>Failed to load fulfilled requests cache from %s</source>
-        <translation>無法從 %s 加載已完成的請求緩存</translation>
-    </message>
-    <message>
-        <source>Failed to load governance cache from %s</source>
-        <translation>無法從 %s 加載治理緩存</translation>
-    </message>
-    <message>
-        <source>Failed to load masternode cache from %s</source>
-        <translation>無法從 %s 加載主節點緩存</translation>
-    </message>
-    <message>
-        <source>Failed to load sporks cache from %s</source>
-        <translation>無法從 %s 加載勺叉緩存</translation>
-    </message>
-    <message>
         <source>Failed to start a new mixing queue</source>
         <translation>無法開始一個新的混合隊列</translation>
-    </message>
-    <message>
-        <source>Incorrect -rescan mode, falling back to default value</source>
-        <translation>不正確的 -rescan 模式，恢復到預設值</translation>
     </message>
     <message>
         <source>Initialization sanity check failed. %s is shutting down.</source>
@@ -5053,26 +4505,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>簽署交易失敗</translation>
     </message>
     <message>
-        <source>Specified blocks directory "%s" does not exist.</source>
-        <translation>指定的區塊目錄 "%s" 不存在。</translation>
-    </message>
-    <message>
-        <source>Last queue was created too recently.</source>
-        <translation>距離上一個隊列的時間過短。</translation>
-    </message>
-    <message>
-        <source>%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup.</source>
-        <translation>%s 已損壞。 請嘗試使用錢包工具 dash-wallet 來挽救或恢復備份。</translation>
-    </message>
-    <message>
-        <source>Can't generate a change-address key. No keys in the internal keypool and can't generate any keys.</source>
-        <translation>無法生成找零位址密鑰。 內部密鑰池中沒有密鑰，也無法生成任何密鑰。</translation>
-    </message>
-    <message>
-        <source>Last successful action was too recent.</source>
-        <translation>距離上一次成功執行的時間過短。</translation>
-    </message>
-    <message>
         <source>Starting network threads...</source>
         <translation>正在啟動網路執行緒...</translation>
     </message>
@@ -5109,16 +4541,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>交易無效。</translation>
     </message>
     <message>
+        <source>Transaction too large for fee policy</source>
+        <translation>根據交易手續費準則，本交易的位元量過大</translation>
+    </message>
+    <message>
         <source>Unable to bind to %s on this computer (bind returned error %s)</source>
         <translation>無法和這台電腦上的 %s 繫結(回傳錯誤 %s)</translation>
-    </message>
-    <message>
-        <source>Unable to locate enough mixed funds for this transaction.</source>
-        <translation>無法為此交易找到足夠的已混合資金。</translation>
-    </message>
-    <message>
-        <source>Unable to locate enough non-denominated funds for this transaction.</source>
-        <translation>無法為此交易找到足夠的未除名資金。</translation>
     </message>
     <message>
         <source>Unable to sign spork message, wrong key?</source>
@@ -5137,10 +4565,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>不支持的日誌記錄類別 %s=%s.</translation>
     </message>
     <message>
-        <source>Upgrading txindex database</source>
-        <translation>正在升級交易指數數據庫</translation>
-    </message>
-    <message>
         <source>Verifying blocks...</source>
         <translation>正在驗證區塊資料...</translation>
     </message>
@@ -5153,12 +4577,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>錢包被鎖定。</translation>
     </message>
     <message>
-        <source>Warning: can't use %s and %s together, will prefer %s</source>
-        <translation>警告: 不能同時使用 %s 和 %s，將會把 %s 作為首選</translation>
-    </message>
-    <message>
-        <source>Warning: incorrect parameter %s, path must exist! Using default path.</source>
-        <translation>警告 : 不正確的參數 %s，路徑必須存在!  請使用預設路徑。</translation>
+        <source>Warning</source>
+        <translation>警告</translation>
     </message>
     <message>
         <source>You are starting with governance validation disabled.</source>

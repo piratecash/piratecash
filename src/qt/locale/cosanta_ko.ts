@@ -1,4 +1,4 @@
-<TS version="2.1" language="ko">
+<TS language="ko" version="2.1">
 <context>
     <name>AddressBookPage</name>
     <message>
@@ -74,12 +74,12 @@
         <translation>받기 주소</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <source>These are your Cosanta addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
         <translation>송금을 위한 대시 주소입니다. 코인을 보내기 전에 항상 금액과 받는 주소를 확인하세요.</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>이것은 지불을 받는 데 사용되는 당신의 대시 주소입니다. 새로운 주소를 생성하기 위해서는 수신 탭의 '새로운 받기 주소 생성하기' 버튼을 클릭하세요.</translation>
+        <source>These are your Cosanta addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>대시를 송금 받기 위한 주소입니다. 매 거래시 새로운 주소를 사용할 것을 권장합니다.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -191,8 +191,12 @@
         <translation>새로운 암호문 확인</translation>
     </message>
     <message>
-        <source>Show passphrase</source>
-        <translation>암호 보이기</translation>
+        <source>Show password</source>
+        <translation>비밀번호 보이기</translation>
+    </message>
+    <message>
+        <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
+        <translation>지갑에 새로운 암호문을 입력하세요.&lt;br/&gt;다음의 요건을 충족하는 암호문을 지정하세요.&lt;b&gt;열 개 이상의 무작위 글자&lt;/b&gt;, 혹은 &lt;b&gt;여덟 개 이상의 무작위 단어 &lt;/b&gt;.</translation>
     </message>
     <message>
         <source>Encrypt wallet</source>
@@ -203,7 +207,7 @@
         <translation>이 작업을 실행하려면 사용자 지갑의 암호문이 필요합니다.</translation>
     </message>
     <message>
-        <source>Unlock wallet for mixing only</source>
+        <source>Unlock wallet for mixing and staking only</source>
         <translation>믹싱만을 위해 지갑 잠금 해제</translation>
     </message>
     <message>
@@ -223,11 +227,15 @@
         <translation>암호문 변경</translation>
     </message>
     <message>
+        <source>Enter the old passphrase and new passphrase to the wallet.</source>
+        <translation>지갑의 기존 암호문과 새로운 암호문을 입력하세요.</translation>
+    </message>
+    <message>
         <source>Confirm wallet encryption</source>
         <translation>지갑 암호화 승인</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COSA&lt;/b&gt;!</source>
         <translation>경고: 지갑을 암호화하고 암호문을 잃어버리는 경우 당신은 &lt;b&gt;모든 대시를 잃게 됩니다&lt;/b&gt;!</translation>
     </message>
     <message>
@@ -239,28 +247,8 @@
         <translation>지갑 암호화 완료</translation>
     </message>
     <message>
-        <source>Enter the new passphrase for the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
-        <translation>지갑에 새로운 암호문을 입력하세요.&lt;br/&gt;다음의 요건을 충족하는 암호문을 지정하세요.&lt;b&gt;열 개 이상의 무작위 글자&lt;/b&gt;, 혹은 &lt;b&gt;여덟 개 이상의 무작위 단어 &lt;/b&gt;.</translation>
-    </message>
-    <message>
-        <source>Enter the old passphrase and new passphrase for the wallet.</source>
-        <translation>지갑의 기존 암호문과 새로운 암호문을 입력하세요.</translation>
-    </message>
-    <message>
-        <source>Remember that encrypting your wallet cannot fully protect your funds from being stolen by malware infecting your computer.</source>
-        <translation>사용자 지갑 암호화를 진행한다고 하더라도 컴퓨터에 영향을 끼치는 맬웨어로부터 자금을 완전히 보호하지 못한다는 점을 기억하세요. </translation>
-    </message>
-    <message>
-        <source>Wallet to be encrypted</source>
-        <translation>암호화할 지갑</translation>
-    </message>
-    <message>
-        <source>Your wallet is about to be encrypted. </source>
-        <translation>당신의 지갑이 암호화됩니다.</translation>
-    </message>
-    <message>
-        <source>Your wallet is now encrypted. </source>
-        <translation>당신의 지갑이 암호화되었습니다.</translation>
+        <source>%1 will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your funds from being stolen by malware infecting your computer.</source>
+        <translation>암호화 진행을 완료하기 위하여 %1 이/가 종료됩니다. 사용자 지갑 암호화를 진행한다고 하더라도 컴퓨터에 영향을 끼치는 맬웨어로부터 자금을 완전히 보호하지 못한다는 점을 기억하세요. </translation>
     </message>
     <message>
         <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. Previous backups of the unencrypted wallet file contain the same HD seed and still have full access to all your funds just like the new, encrypted wallet.</source>
@@ -324,8 +312,20 @@
 <context>
     <name>BitcoinGUI</name>
     <message>
-        <source>A fatal error occurred. Dash Core can no longer continue safely and will quit.</source>
+        <source>A fatal error occurred. Cosanta Core can no longer continue safely and will quit.</source>
         <translation>치명적인 오류가 발생하였습니다. 더 이상 대시 코어가 안전하지 않을 가능성이 있으며 대시 코어는 곧 종료될 예정입니다.</translation>
+    </message>
+    <message>
+        <source>Cosanta Core</source>
+        <translation>대시 코어</translation>
+    </message>
+    <message>
+        <source>Wallet</source>
+        <translation>지갑</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation>노드</translation>
     </message>
     <message>
         <source>&amp;Overview</source>
@@ -340,7 +340,7 @@
         <translation>보내기(&amp;S)</translation>
     </message>
     <message>
-        <source>Send coins to a Dash address</source>
+        <source>Send coins to a Cosanta address</source>
         <translation>대시 주소로 코인 전송</translation>
     </message>
     <message>
@@ -348,52 +348,8 @@
         <translation>받기(&amp;R)</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
+        <source>Request payments (generates QR codes and cosanta: URIs)</source>
         <translation>지불 요청하기 (QR코드와 대시 URI가 생성됩니다.)</translation>
-    </message>
-    <message>
-        <source>&amp;Sending addresses</source>
-        <translation>보내기 주소(&amp;S)</translation>
-    </message>
-    <message>
-        <source>&amp;Receiving addresses</source>
-        <translation>받기 주소(&amp;R)</translation>
-    </message>
-    <message>
-        <source>Open Wallet</source>
-        <translation>지갑 열기</translation>
-    </message>
-    <message>
-        <source>Open a wallet</source>
-        <translation>지갑을 엽니다</translation>
-    </message>
-    <message>
-        <source>Close Wallet...</source>
-        <translation>지갑을 닫습니다...</translation>
-    </message>
-    <message>
-        <source>Close wallet</source>
-        <translation>지갑 닫기</translation>
-    </message>
-    <message>
-        <source>No wallets available</source>
-        <translation>이용할 수 있는 지갑이 없습니다</translation>
-    </message>
-    <message>
-        <source>&amp;Window</source>
-        <translation>창(&amp;W)</translation>
-    </message>
-    <message>
-        <source>Minimize</source>
-        <translation>최소화</translation>
-    </message>
-    <message>
-        <source>Zoom</source>
-        <translation>줌</translation>
-    </message>
-    <message>
-        <source>Main Window</source>
-        <translation>메인 창</translation>
     </message>
     <message>
         <source>&amp;Transactions</source>
@@ -420,6 +376,10 @@
         <translation>어플리케이션 종료</translation>
     </message>
     <message>
+        <source>Show information about Cosanta Core</source>
+        <translation>대시 코어에 관한 정보를 표시합니다.</translation>
+    </message>
+    <message>
         <source>About &amp;Qt</source>
         <translation>&amp;Qt 에 관하여</translation>
     </message>
@@ -434,10 +394,6 @@
     <message>
         <source>&amp;About %1</source>
         <translation>%1 정보(&amp;A)</translation>
-    </message>
-    <message>
-        <source>Send %1 funds to a Dash address</source>
-        <translation>%1 금액을 대시 주소로 전송</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -492,7 +448,7 @@
         <translation>메시지 서명...(&amp;M)</translation>
     </message>
     <message>
-        <source>Sign messages with your Dash addresses to prove you own them</source>
+        <source>Sign messages with your Cosanta addresses to prove you own them</source>
         <translation>본인의 대시 주소임을 증명하기 위하여 메시지에 서명합니다.</translation>
     </message>
     <message>
@@ -500,7 +456,7 @@
         <translation>메시지 검증...(&amp;V)</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dash addresses</source>
+        <source>Verify messages to ensure they were signed with specified Cosanta addresses</source>
         <translation>특정 대시 주소에 서명된 것인지 확인하기 위하여 메시지를 검증합니다.</translation>
     </message>
     <message>
@@ -560,8 +516,16 @@
         <translation>자동으로 생성된 지갑 백업을 보여줍니다.</translation>
     </message>
     <message>
+        <source>&amp;Sending addresses...</source>
+        <translation>보내기 주소...(&amp;S)</translation>
+    </message>
+    <message>
         <source>Show the list of used sending addresses and labels</source>
         <translation>사용한 보내기 주소와 라벨을 보여줍니다.</translation>
+    </message>
+    <message>
+        <source>&amp;Receiving addresses...</source>
+        <translation>받기 주소...(&amp;R)</translation>
     </message>
     <message>
         <source>Show the list of used receiving addresses and labels</source>
@@ -572,20 +536,16 @@
         <translation>URI 열기(&amp;U)...</translation>
     </message>
     <message>
-        <source>Open a dash: URI or payment request</source>
-        <translation>Dash: URI 또는 지불 요청을 엽니다.</translation>
+        <source>Open a cosanta: URI or payment request</source>
+        <translation>Cosanta: URI 또는 지불 요청을 엽니다.</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>명령줄 옵션(&amp;C)</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Dash command-line options</source>
+        <source>Show the %1 help message to get a list with possible Cosanta command-line options</source>
         <translation>사용 가능한 대시 명령줄 옵션 목록을 가져오기 위해 %1 도움말 메시지를 표시합니다.</translation>
-    </message>
-    <message>
-        <source>default wallet</source>
-        <translation>기본 지갑</translation>
     </message>
     <message>
         <source>%1 client</source>
@@ -606,28 +566,12 @@
         <translation>파일(&amp;F)</translation>
     </message>
     <message>
-        <source>Show information about %1</source>
-        <translation>%1에 관한 정보를 표시합니다</translation>
-    </message>
-    <message>
-        <source>Create Wallet...</source>
-        <translation>지갑을 생성합니다...</translation>
-    </message>
-    <message>
-        <source>Create a new wallet</source>
-        <translation>새로운 지갑 생성하기</translation>
-    </message>
-    <message>
-        <source>%1 &amp;information</source>
-        <translation>%1 정보</translation>
-    </message>
-    <message>
-        <source>Show the %1 basic information</source>
-        <translation>%1 기본 정보를 보여줍니다</translation>
-    </message>
-    <message>
         <source>&amp;Settings</source>
         <translation>설정(&amp;S)</translation>
+    </message>
+    <message>
+        <source>&amp;Tools</source>
+        <translation>도구(&amp;T)</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -637,16 +581,8 @@
         <source>Tabs toolbar</source>
         <translation>도구 모음 탭</translation>
     </message>
-    <message>
-        <source>&amp;Governance</source>
-        <translation>거버넌스(&amp;G)</translation>
-    </message>
-    <message>
-        <source>View Governance Proposals</source>
-        <translation>거버넌스 제안서 보기</translation>
-    </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Dash network</source>
+        <source>%n active connection(s) to Cosanta network</source>
         <translation><numerusform>대시 네트워크의 활성 연결 수는 %n 입니다.</numerusform></translation>
     </message>
     <message>
@@ -710,16 +646,8 @@
         <translation>에러</translation>
     </message>
     <message>
-        <source>Error: %1</source>
-        <translation>에러: %1</translation>
-    </message>
-    <message>
         <source>Warning</source>
         <translation>경고</translation>
-    </message>
-    <message>
-        <source>Warning: %1</source>
-        <translation>경고: %1</translation>
     </message>
     <message>
         <source>Information</source>
@@ -803,14 +731,6 @@
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;locked&lt;/b&gt;</source>
         <translation>지갑이 &lt;b&gt;암호화&lt;/b&gt; 되었고 현재 &lt;b&gt;잠겨져&lt;/b&gt; 있습니다</translation>
     </message>
-    <message>
-        <source>Proxy is &lt;b&gt;enabled&lt;/b&gt;: %1</source>
-        <translation>프록시 &lt;b&gt;사용 가능&lt;/b&gt;: %1</translation>
-    </message>
-    <message>
-        <source>Original message:</source>
-        <translation>원본 메시지:</translation>
-    </message>
 </context>
 <context>
     <name>CoinControlDialog</name>
@@ -877,10 +797,6 @@
     <message>
         <source>Received with address</source>
         <translation>함께 수신된 주소</translation>
-    </message>
-    <message>
-        <source>Mixing Rounds</source>
-        <translation>믹싱 라운드</translation>
     </message>
     <message>
         <source>Date</source>
@@ -963,7 +879,7 @@
         <translation>수령인이 현재 더스트 임계값보다 작은 양을 수신하면 이 라벨이 빨간색으로 변합니다.</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 duff(s) per input.</source>
+        <source>Can vary +/- %1 unit(s) per input.</source>
         <translation>입력당 +/- %1 더프가 달라질 수 있습니다.</translation>
     </message>
     <message>
@@ -973,22 +889,6 @@
     <message>
         <source>Some coins were unselected because they do not have enough mixing rounds.</source>
         <translation>일부 코인은 믹싱 라운드가 충분하지 않아 선택되지 않았습니다.</translation>
-    </message>
-    <message>
-        <source>Show all coins</source>
-        <translation>모든 코인을 보여줍니다</translation>
-    </message>
-    <message>
-        <source>Hide %1 coins</source>
-        <translation>%1 코인을 숨깁니다</translation>
-    </message>
-    <message>
-        <source>Show all %1 coins</source>
-        <translation>모든 %1 코인을 보여줍니다</translation>
-    </message>
-    <message>
-        <source>Show spendable coins only</source>
-        <translation>사용할 수 있는 코인만을 보여줍니다</translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -1005,60 +905,6 @@
     <message>
         <source>n/a</source>
         <translation>없음</translation>
-    </message>
-</context>
-<context>
-    <name>CreateWalletActivity</name>
-    <message>
-        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
-        <translation>지갑 &lt;b&gt;%1&lt;/b&gt; 생성중...</translation>
-    </message>
-    <message>
-        <source>Create wallet failed</source>
-        <translation>지갑 생성에 실패하였습니다</translation>
-    </message>
-    <message>
-        <source>Create wallet warning</source>
-        <translation>지갑 생성 경고</translation>
-    </message>
-</context>
-<context>
-    <name>CreateWalletDialog</name>
-    <message>
-        <source>Create Wallet</source>
-        <translation>지갑 생성하기</translation>
-    </message>
-    <message>
-        <source>Wallet Name</source>
-        <translation>지갑 이름</translation>
-    </message>
-    <message>
-        <source>Encrypt the wallet. The wallet will be encrypted with a passphrase of your choice.</source>
-        <translation>지갑을 암호화합니다. 이 지갑은 귀하가 선택한 암호를 통해 암호화됩니다.</translation>
-    </message>
-    <message>
-        <source>Encrypt Wallet</source>
-        <translation>지갑 암호화</translation>
-    </message>
-    <message>
-        <source>Disable private keys for this wallet. Wallets with private keys disabled will have no private keys and cannot have an HD seed or imported private keys. This is ideal for watch-only wallets.</source>
-        <translation>이 지갑에 대한 개인 키를 해제합니다. 개인 키가 해제된 지갑은 더이상 개인 키를 갖지 않게 되며 HD 시드나 불러온 개인 키를 가질 수 없습니다. 해당 기능은 읽기 전용 지갑에 적합합니다.</translation>
-    </message>
-    <message>
-        <source>Disable Private Keys</source>
-        <translation>개인 키 해제</translation>
-    </message>
-    <message>
-        <source>Make a blank wallet. Blank wallets do not initially have private keys or scripts. Private keys and addresses can be imported, or an HD seed can be set, at a later time.</source>
-        <translation>빈 지갑을 만듭니다. 빈 지갑 시작 시에는 개인 키나 스크립트가 없습니다. 나중에 개인 키와 주소를 불러오거나 HD 시드를 설정할 수 있습니다.</translation>
-    </message>
-    <message>
-        <source>Make Blank Wallet</source>
-        <translation>빈 지갑 만들기</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation>생성하기</translation>
     </message>
 </context>
 <context>
@@ -1096,16 +942,12 @@
         <translation>보내기 주소 편집</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Dash address.</source>
+        <source>The entered address "%1" is not a valid Cosanta address.</source>
         <translation>입력한 주소 "%1" 는 올바른 대시 주소가 아닙니다.</translation>
     </message>
     <message>
-        <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
-        <translation>주소 "%1"은 라벨 "%2"와 함께 이미 받기 주소로 설정되어 있어 보내기 주소로 추가할 수 없습니다.</translation>
-    </message>
-    <message>
-        <source>The entered address "%1" is already in the address book with label "%2".</source>
-        <translation>입력된 주소 "%1" 는 라벨 "%2"와 함께 이미 주소록에 있습니다.</translation>
+        <source>The entered address "%1" is already in the address book.</source>
+        <translation>입력된 주소 "%1" 는 이미 주소록에 있습니다.</translation>
     </message>
     <message>
         <source>Could not unlock wallet.</source>
@@ -1140,37 +982,14 @@
     </message>
 </context>
 <context>
-    <name>GovernanceList</name>
-    <message>
-        <source>Form</source>
-        <translation>유형</translation>
-    </message>
-    <message>
-        <source>Filter List:</source>
-        <translation>필터 목록:</translation>
-    </message>
-    <message>
-        <source>Filter propsal list</source>
-        <translation>제안서 목록 필터</translation>
-    </message>
-    <message>
-        <source>Proposal Count:</source>
-        <translation>제안서 수:</translation>
-    </message>
-    <message>
-        <source>Filter by Title</source>
-        <translation>제목으로 필터</translation>
-    </message>
-    <message>
-        <source>Proposal Info: %1</source>
-        <translation>제안서 정보: %1</translation>
-    </message>
-</context>
-<context>
     <name>HelpMessageDialog</name>
     <message>
         <source>version</source>
         <translation>버전</translation>
+    </message>
+    <message>
+        <source>(%1-bit)</source>
+        <translation>(%1-비트)</translation>
     </message>
     <message>
         <source>About %1</source>
@@ -1180,15 +999,7 @@
         <source>Command-line options</source>
         <translation>명령줄 옵션</translation>
     </message>
-    <message>
-        <source>%1 information</source>
-        <translation>%1 정보</translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Dash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH and 10 DASH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;%1 기본 정보&lt;/h3&gt; %1은 당신의 자금 출처를 가려 진정한 재정적 프라이버시를 보장합니다. 당신의 지갑에 보관된 모든 대시는 각기 다른 "입력값"으로 구성되어 있습니다. 쉽게 생각하면 별도의 분리된 동전으로 구성되어 있다고 볼 수 있습니다.&lt;br&gt;  %1은 당신의 코인이 지갑을 떠나지 않고도 그 입력값을 다른 두 사람의 입력값과 섞는 혁신적인 방식을 사용합니다. 이로써 당신의 자금은 언제나 당신의 통제 하에 있습니다.&lt;hr&gt;&lt;b&gt; %1은 다음과 같은 방식으로 작동합니다.&lt;/b&gt;&lt;ol type="1"&gt;&lt;li&gt; %1은 당신의 거래 입력값을 표준 단위로 쪼개는 것으로 시작합니다. 이렇게 분할하는 단위는 0.001대시, 0.01대시, 0.1대시, 1대시 혹은 10대시 입니다 - 귀하가 일상적으로 사용하는 지폐와 비슷하다고 생각하셔도 좋습니다. &lt;/li&gt;&lt;li&gt;이후 당신의 지갑은 "마스터노드"라고 불리는 네트워크의 특수 구성 소프트웨어 노드에 요청을 전송합니다. 이로써 이들 마스터노드는 당신이 특정 금액을 믹싱하고자 한다는 정보를 수신합니다. 마스터노드에는 당신의 개인 정보를 식별할 수 있는 어떤 내용도 전송되지 않습니다. 즉 당신이 "누구"인지 알 수 있는 방법은 없습니다.&lt;/li&gt;&lt;li&gt; 두 명의 다른 사람이 비슷한 메시지를 보내어 그들 역시 같은 단위의 금액을 믹싱하고 싶다는 정보를 나타내면 믹싱 세션이 시작됩니다. 마스터노드는 이들 입력값을 믹싱하여 세 사용자의 지갑에 변환된 입력을 지불하도록 지시합니다. 당신의 지갑은 해당 입력값을 곧바로 스스로에게 지불하지만, 지불되는 주소는 '변경 주소'라고 불리는 다른 주소로 보내집니다.&lt;/li&gt;&lt;li&gt; 당신의 자금을 완전히 가리기 위해서, 당신의 지갑은 이 과정을 각 대시 분할 단위만큼 여러번 반복합니다. 이러한 반복을 ‘라운드’라고 부릅니다. 프라이빗샌드의 각 라운드가 진행됨에 따라 당신이 송금하고자 하는 자금의 출처는 기하급수적으로 높은 수준으로 가려집니다.&lt;/li&gt;&lt;li&gt; 이 믹싱 과정은 당신이 개입할 필요 없이 백그라운드에서 진행됩니다. 당신이 거래를 원하는 경우, 당신의 자금은 이미 믹싱을 거친 것입니다. 추가적으로 대기할 필요 역시 없습니다. &lt;/li&gt;&lt;/ol&gt;&lt;hr&gt;&lt;b&gt;중요:&lt;/b&gt; 당신의 지갑은 1,000개의 ‘변경 주소’만을 가지고 있습니다. 믹싱을 실행할 때마다 최대 9개의 주소가 사용됩니다. 이는 곧 이들 1000개의 주소가 약 100개의 믹싱 작업을 위해 사용될 수 있다는 것을 의미합니다. 전체 1,000개의 주소 중 900개가 사용된 경우 당신의 지갑은 더 많은 주소를 만들어야 합니다. 그러나 이 작업은 당신이 자동 백업을 설정한 경우에만 수행됩니다. &lt;br&gt;따라서 백업이 비활성화된 사용자는 %1 역시 비활성화 됩니다. &lt;hr&gt;더 많은 정보를 위해서는 &lt;a style="%2" href="%3"&gt;%1 문서&lt;/a&gt;를 참조하세요.</translation>
-    </message>
-</context>
+    </context>
 <context>
     <name>Intro</name>
     <message>
@@ -1232,7 +1043,7 @@
         <translation>약 %1 GB의 데이터가 이 디렉토리에 저장됩니다.</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Dash block chain.</source>
+        <source>%1 will download and store a copy of the Cosanta block chain.</source>
         <translation>%1은 비트코인 블록체인의 사본을 다운로드하여 저장합니다.</translation>
     </message>
     <message>
@@ -1265,6 +1076,10 @@
     <message>
         <source>Status</source>
         <translation>상태</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
     </message>
     <message>
         <source>Filter List:</source>
@@ -1386,11 +1201,11 @@
         <translation>유형</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Cosanta network, as detailed below.</source>
         <translation>최근 거래는 아직 표시되지 않을 수 있으며, 따라서 당신 지갑의 잔고 역시 실제와 다를 수 있습니다. 이는 당신의 지갑이 대시 네트워크와 동기화를 마치는대로 아래의 세부 내용과 같이 정확히 표시될 예정입니다.</translation>
     </message>
     <message>
-        <source>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <source>Attempting to spend Cosanta that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
         <translation>'아직 표시 되지 않은 거래'의 영향을 받는 대시를 사용하시려는 경우, 네트워크에 의해 승인되지 않습니다.</translation>
     </message>
     <message>
@@ -1426,8 +1241,8 @@
         <translation>숨기기</translation>
     </message>
     <message>
-        <source>Unknown. Syncing Headers (%1, %2%)...</source>
-        <translation>알 수 없음. 헤더 동기화중 (%1, %2%)...</translation>
+        <source>Unknown. Syncing Headers (%1)...</source>
+        <translation>알 수 없음. 헤더 동기화중 (%1)...</translation>
     </message>
 </context>
 <context>
@@ -1454,25 +1269,6 @@
     </message>
 </context>
 <context>
-    <name>OpenWalletActivity</name>
-    <message>
-        <source>Open wallet failed</source>
-        <translation>지갑 열기에 실패하였습니다</translation>
-    </message>
-    <message>
-        <source>Open wallet warning</source>
-        <translation>지갑 열기 경고</translation>
-    </message>
-    <message>
-        <source>default wallet</source>
-        <translation>기본 지갑</translation>
-    </message>
-    <message>
-        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
-        <translation>지갑 &lt;b&gt;%1&lt;/b&gt; 여는 중...</translation>
-    </message>
-</context>
-<context>
     <name>OptionsDialog</name>
     <message>
         <source>Options</source>
@@ -1485,6 +1281,10 @@
     <message>
         <source>Size of &amp;database cache</source>
         <translation>데이터베이스 캐시 크기(&amp;d)</translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation>MB</translation>
     </message>
     <message>
         <source>Number of script &amp;verification threads</source>
@@ -1503,22 +1303,6 @@
         <translation>외관(&amp;A)</translation>
     </message>
     <message>
-        <source>Prune &amp;block storage to</source>
-        <translation>블록 스토리지 정렬(&amp;b)</translation>
-    </message>
-    <message>
-        <source>GB</source>
-        <translation>GB</translation>
-    </message>
-    <message>
-        <source>Reverting this setting requires re-downloading the entire blockchain.</source>
-        <translation>이 설정을 되돌리면 전체 블록체인을 다시 다운받아야 합니다.</translation>
-    </message>
-    <message>
-        <source>MiB</source>
-        <translation>MiB</translation>
-    </message>
-    <message>
         <source>Show additional tab listing all your masternodes in first sub-tab&lt;br/&gt;and all masternodes on the network in second sub-tab.</source>
         <translation>추가적인 탭 목록을 보여줍니다. 당신의 모든 마스터노드는 첫 번째 서브 탭에 표시되고,&lt;br/&gt; 네트워크상의 전체 마스터노드는 두 번째 서브 탭에 표시됩니다.</translation>
     </message>
@@ -1527,76 +1311,12 @@
         <translation>마스터노드 탭을 보여줍니다.</translation>
     </message>
     <message>
-        <source>Show additional tab listing governance proposals.</source>
-        <translation>추가 탭 열어 거버넌스 제안서 리스트 보기</translation>
-    </message>
-    <message>
-        <source>Show Governance Tab</source>
-        <translation>거버넌스 탭 보기</translation>
-    </message>
-    <message>
         <source>If you disable the spending of unconfirmed change, the change from a transaction&lt;br/&gt;cannot be used until that transaction has at least one confirmation.&lt;br/&gt;This also affects how your balance is computed.</source>
         <translation>확인되지 않은 잔액 사용을 중지하는 경우, 거래로부터 발생하는 잔액은 &lt;br/&gt;최소 한 번의 거래 확인이 발생할 때 까지 사용할 수 없습니다.&lt;br/&gt;이는 또한 당신의 잔고가 계산되는 방식에 영향을 미칠 수 있습니다.</translation>
     </message>
     <message>
-        <source>Show mixing interface on Overview screen and reveal an additional screen which allows to spend fully mixed coins only.&lt;br/&gt;A new tab with more settings will also appear in this dialog, please make sure to check them before mixing your coins.</source>
-        <translation>개요 화면의 믹싱 인터페이스를 보여주고, 완전히 믹싱된 코인만을 지불에 사용할 수 있도록 하는 추가적 스크린을 나타냅니다. &lt;br/&gt;더 많은 설정을 담은 새로운 탭이 이 대화창에 나타나게 되니, 코인을 믹싱하기 전 해당 내용을 확인하십시오.</translation>
-    </message>
-    <message>
-        <source>Show additional information and buttons on overview screen.</source>
-        <translation>개요 화면에 추가적 정보와 버튼을 보여줍니다.</translation>
-    </message>
-    <message>
-        <source>Enable advanced interface</source>
-        <translation>향상된 인터페이스를 활성화합니다</translation>
-    </message>
-    <message>
-        <source>Show system popups for mixing transactions&lt;br/&gt;just like for all other transaction types.</source>
-        <translation>모든 다른 유형의 거래와 마찬가지로&lt;br/&gt;믹싱 거래를 위한 시스템 팝업을 보여줍니다</translation>
-    </message>
-    <message>
-        <source>Show popups for mixing transactions</source>
-        <translation>믹싱 거래를 위한 팝업을 보여줍니다</translation>
-    </message>
-    <message>
-        <source>Show warning dialog when the wallet has very low number of keys left.</source>
-        <translation>지갑에 적은 수의 키가 남아있는 경우 경고 대화창을 보여줍니다</translation>
-    </message>
-    <message>
-        <source>Warn if the wallet is running out of keys</source>
-        <translation>지갑에 키가 부족한 경우 경고합니다</translation>
-    </message>
-    <message>
-        <source>Whether to use experimental mode with multiple mixing sessions per block.&lt;br/&gt;Note: You must use this feature carefully.&lt;br/&gt;Make sure you always have recent wallet (auto)backup in a safe place!</source>
-        <translation>블록당 다양한 믹싱 세션이 있는 실험 모드를 사용할 지 여부를 결정합니다. &lt;br/&gt;참고: 이 기능을 사용할 때는 주의해야 합니다.&lt;br/&gt;언제나 안전한 장소에 최신 지갑 (자동) 백업이 되어 있는 지 확인하세요!</translation>
-    </message>
-    <message>
-        <source>Enable &amp;multi-session</source>
-        <translation>멀티 세션 활성화(&amp;m)</translation>
-    </message>
-    <message>
-        <source>Mixing rounds</source>
-        <translation>믹싱 라운드</translation>
-    </message>
-    <message>
-        <source>This amount acts as a threshold to turn off mixing once it's reached.</source>
-        <translation>이 금액은 도달 시 믹싱을 종료하기 위한 한계점으로 작동합니다.</translation>
-    </message>
-    <message>
-        <source>Target balance</source>
-        <translation>타깃 잔고</translation>
-    </message>
-    <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <source>Automatically open the Cosanta Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
         <translation>라우터에서 대시 코어 클라이언트를 자동으로 엽니다. 이 기능은 당신의 라우터가 UPnP를 지원하고 해당 기능이 작동하는 경우에만 가능합니다.</translation>
-    </message>
-    <message>
-        <source>Automatically open the Bitcoin client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
-        <translation>라우터에서 비트코인 클라이언트를 자동으로 엽니다. 이 기능은 당신의 라우터가 NAT-PMP를 지원하고 해당 기능이 작동하는 경우에만 가능합니다. 외부 포트는 랜덤일 수 있습니다.</translation>
-    </message>
-    <message>
-        <source>Map port using NA&amp;T-PMP</source>
-        <translation>NAT-PMP를 사용하는 맵 포트(&amp;T)</translation>
     </message>
     <message>
         <source>Accept connections from outside.</source>
@@ -1607,7 +1327,7 @@
         <translation>수신 연결 허용</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a SOCKS5 proxy.</source>
+        <source>Connect to the Cosanta network through a SOCKS5 proxy.</source>
         <translation>SOCKS5 프록시를 통해 대시 네트워크 연결</translation>
     </message>
     <message>
@@ -1621,10 +1341,6 @@
     <message>
         <source>Use separate SOCKS&amp;5 proxy to reach peers via Tor hidden services:</source>
         <translation>Tor 숨김 서비스로 피어에 접속하기 위해 별도의 SOCKS&amp;5 프록시 사용:</translation>
-    </message>
-    <message>
-        <source>Options set in this dialog are overridden by the command line or in the configuration file:</source>
-        <translation>이 대화의 옵션 세트는 명령줄에 의해, 혹은 설정 파일에서 중단됩니다:</translation>
     </message>
     <message>
         <source>Hide the icon from the system tray.</source>
@@ -1675,10 +1391,6 @@
         <translation>네트워크(&amp;N)</translation>
     </message>
     <message>
-        <source>Enabling pruning significantly reduces the disk space required to store transactions. All blocks are still fully validated. Reverting this setting requires re-downloading the entire blockchain.</source>
-        <translation>정리를 활성화하면 거래를 저장하는 데 필요한 디스크 공간이 크게 줄어듭니다. 모든 블록은 계속해서 완전히 검증됩니다. 이 설정을 되돌리기 위해서는 전체 블록체인을 다시 다운로드 해야 합니다.</translation>
-    </message>
-    <message>
         <source>Map port using &amp;UPnP</source>
         <translation>UPnP를 사용하는 맵 포트(&amp;U)</translation>
     </message>
@@ -1715,7 +1427,7 @@
         <translation>Tor</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a separate SOCKS5 proxy for Tor hidden services.</source>
+        <source>Connect to the Cosanta network through a separate SOCKS5 proxy for Tor hidden services.</source>
         <translation>Tor 숨김 서비스를 위한 별도의 SOCKS5 프록시를 사용하여 대시 네트워크에 연결</translation>
     </message>
     <message>
@@ -1744,9 +1456,9 @@
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/projects/p/dash/</source>
+https://www.transifex.com/projects/p/cosanta/</source>
         <translation>지정하려는 언어가 목록에 없거나 번역이 완성되지 않았다면? 다음의 주소에서 번역을 도와주세요:
-https://www.transifex.com/projects/p/dash/</translation>
+https://www.transifex.com/projects/p/cosanta/</translation>
     </message>
     <message>
         <source>&amp;Unit to show amounts in:</source>
@@ -1759,6 +1471,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Decimal digits</source>
         <translation>십진수</translation>
+    </message>
+    <message>
+        <source>Active command-line options that override above options:</source>
+        <translation>위 옵션에 우선하여 명령줄 옵션을 활성화합니다.</translation>
     </message>
     <message>
         <source>Reset all client options to default.</source>
@@ -1775,10 +1491,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>&amp;Cancel</source>
         <translation>취소(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Enable %1 features</source>
-        <translation>%1 기능 활성화</translation>
     </message>
     <message>
         <source>default</source>
@@ -1812,7 +1524,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>유형</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Dash network after a connection is established, but this process has not completed yet.</source>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Cosanta network after a connection is established, but this process has not completed yet.</source>
         <translation>표시된 정보가 오래된 것으로 보입니다. 당신의 지갑은 대시 네트워크에 연결되는 대로 동기화 될 예정입니다. 이 과정은 아직 종료되지 않았습니다.</translation>
     </message>
     <message>
@@ -1892,7 +1604,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>금액과 라운드:</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
+        <source>0 COSA / 0 Rounds</source>
         <translation>0 대시 / 0 라운드</translation>
     </message>
     <message>
@@ -1926,10 +1638,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>No inputs detected</source>
         <translation>입력이 감지되지 않습니다.</translation>
-    </message>
-    <message>
-        <source>%1 Balance</source>
-        <translation>%1 잔고</translation>
     </message>
     <message numerus="yes">
         <source>%n Rounds</source>
@@ -1966,26 +1674,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>keys left: %1</source>
         <translation>남은 키의 수: %1</translation>
-    </message>
-    <message>
-        <source>Start %1</source>
-        <translation>%1 시작</translation>
-    </message>
-    <message>
-        <source>If you don't want to see internal %1 fees/transactions select "Most Common" as Type on the "Transactions" tab.</source>
-        <translation>내부 %1 수수료/거래를 보지 않으려면 "거래" 탭의 유형에서 "자주 사용된 항목"을 선택하세요. </translation>
-    </message>
-    <message>
-        <source>%1 requires at least %2 to use.</source>
-        <translation>%1 를 사용하기 위해서는 최소한 %2가 필요합니다.</translation>
-    </message>
-    <message>
-        <source>Wallet is locked and user declined to unlock. Disabling %1.</source>
-        <translation>지갑이 잠겨있으며 사용자가 잠금 해제를 거으며 사용자가 잠금 해제를 거절했습니다. %1를 비활성화 합니다.</translation>
-    </message>
-    <message>
-        <source>Stop %1</source>
-        <translation>%1 정지</translation>
     </message>
     <message>
         <source>Disabled</source>
@@ -2035,7 +1723,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>지불 요청 오류</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
+        <source>Cannot start cosanta: click-to-pay handler</source>
         <translation>대시를 시작할 수 없습니다: 원클릭 지불 핸들러</translation>
     </message>
     <message>
@@ -2043,23 +1731,15 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>URI 처리</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash://' 는 유효하지 않은 URI 입니다. 'dash:' 를 사용하세요.</translation>
-    </message>
-    <message>
         <source>Payment request fetch URL is invalid: %1</source>
         <translation>지불 요청을 위해 불러온 URL이 유효하지 않습니다: %1</translation>
-    </message>
-    <message>
-        <source>Cannot process payment request because BIP70 support was not compiled in.</source>
-        <translation>BIP70 포트가 컴파일되지 않아 지불 요청을 처리할 수 없습니다.</translation>
     </message>
     <message>
         <source>Invalid payment address %1</source>
         <translation>유효하지 않은 지불 주소 %1</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Dash address or malformed URI parameters.</source>
+        <source>URI cannot be parsed! This can be caused by an invalid Cosanta address or malformed URI parameters.</source>
         <translation>URI를 분석할 수 없습니다! 대시 주소가 유효하지 않거나 URI 파라미터 구성에 오류가 존재할 수 있습니다.</translation>
     </message>
     <message>
@@ -2155,56 +1835,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
 </context>
 <context>
-    <name>Proposal</name>
-    <message>
-        <source>Passing +%1</source>
-        <translation>패싱 +%1</translation>
-    </message>
-    <message>
-        <source>Needs additional %1 votes</source>
-        <translation>%1 투표수가 추가로 필요합니다</translation>
-    </message>
-</context>
-<context>
-    <name>ProposalModel</name>
-    <message>
-        <source>Yes</source>
-        <translation>예</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation>아니오</translation>
-    </message>
-    <message>
-        <source>Hash</source>
-        <translation>해시</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation>제목</translation>
-    </message>
-    <message>
-        <source>Start</source>
-        <translation>시작</translation>
-    </message>
-    <message>
-        <source>End</source>
-        <translation>끝</translation>
-    </message>
-    <message>
-        <source>Amount</source>
-        <translation>거래액</translation>
-    </message>
-    <message>
-        <source>Active</source>
-        <translation>활성</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation>상태</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>Choose data directory on startup (default: %u)</source>
@@ -2247,46 +1877,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>실행시 시작 화면 보기 (기본값: %u)</translation>
     </message>
     <message>
-        <source>Error: Specified data directory "%1" does not exist.</source>
-        <translation>에러: 지정된 데이터 디렉토리 "%1" 이 존재하지 않습니다.</translation>
-    </message>
-    <message>
-        <source>Error: Cannot parse configuration file: %1.</source>
-        <translation>에러: 설정 파일을 파싱할 수 없습니다: %1.</translation>
-    </message>
-    <message>
-        <source>Error: %1</source>
-        <translation>에러: %1</translation>
-    </message>
-    <message>
-        <source>Error: Failed to load application fonts.</source>
-        <translation>오류: 어플리케이션 글꼴을 불러오는 데 실패하였습니다.</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-family invalid. Valid values: %1.</source>
-        <translation>오류: 지정된 글꼴 집합이 유효하지 않습니다. 유효한 값: %1</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-weight-normal invalid. Valid range %1 to %2.</source>
-        <translation>오류: 지정된 글꼴-두께-일반이 유효하지 않습니다. 유효 범위는 %1에서 %2 사이입니다.</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-weight-bold invalid. Valid range %1 to %2.</source>
-        <translation>오류: 지정된 글꼴-두께-굵게가 유효하지 않습니다. 유효 범위는 %1에서 %2 사이입니다.</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-scale invalid. Valid range %1 to %2.</source>
-        <translation>오류: 지정된 글꼴 크기가 유효하지 않습니다. 유효 범위는 %1에서 %2 사이입니다.</translation>
-    </message>
-    <message>
-        <source>Error: Invalid -custom-css-dir path.</source>
-        <translation>오류: 유효하지 않은 -custom-css-dir 경로입니다.</translation>
-    </message>
-    <message>
-        <source>Error: %1 CSS file(s) missing in -custom-css-dir path.</source>
-        <translation>오류: %1 CSS 파일이 -custom-css-dir 경로에서 누락되었습니다.</translation>
-    </message>
-    <message>
         <source>%1 didn't yet exit safely...</source>
         <translation>%1가 아직 안전하게 종료되지 않았습니다...</translation>
     </message>
@@ -2295,16 +1885,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>거래액</translation>
     </message>
     <message>
-        <source>Enter a Dash address (e.g. %1)</source>
+        <source>Enter a Cosanta address (e.g. %1)</source>
         <translation>대시 주소 입력 (예: %1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
         <translation>외관 설정</translation>
-    </message>
-    <message>
-        <source>Please choose your preferred settings for the appearance of %1</source>
-        <translation>%1의 외관을 위해 원하는 설정을 선택하세요.</translation>
     </message>
     <message>
         <source>This can also be adjusted later in the "Appearance" tab of the preferences.</source>
@@ -2388,6 +1974,49 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
 </context>
 <context>
+    <name>QObject::QObject</name>
+    <message>
+        <source>Error: Specified data directory "%1" does not exist.</source>
+        <translation>에러: 지정한 데이터 디렉토리 "%1"은/는 존재하지 않습니다.</translation>
+    </message>
+    <message>
+        <source>Error: Cannot parse configuration file: %1. Only use key=value syntax.</source>
+        <translation>에러: 설정 파일 :%1 을/를 분석 할 수 없습니다. key=value syntax 만 사용 가능합니다.</translation>
+    </message>
+    <message>
+        <source>Error: %1</source>
+        <translation>에러: %1</translation>
+    </message>
+    <message>
+        <source>Error: Failed to load application fonts.</source>
+        <translation>오류: 어플리케이션 글꼴을 불러오는 데 실패하였습니다.</translation>
+    </message>
+    <message>
+        <source>Error: Specified font-family invalid. Valid values: %1.</source>
+        <translation>오류: 지정된 글꼴 집합이 유효하지 않습니다. 유효한 값: %1</translation>
+    </message>
+    <message>
+        <source>Error: Specified font-weight-normal invalid. Valid range %1 to %2.</source>
+        <translation>오류: 지정된 글꼴-두께-일반이 유효하지 않습니다. 유효 범위는 %1에서 %2 사이입니다.</translation>
+    </message>
+    <message>
+        <source>Error: Specified font-weight-bold invalid. Valid range %1 to %2.</source>
+        <translation>오류: 지정된 글꼴-두께-굵게가 유효하지 않습니다. 유효 범위는 %1에서 %2 사이입니다.</translation>
+    </message>
+    <message>
+        <source>Error: Specified font-scale invalid. Valid range %1 to %2.</source>
+        <translation>오류: 지정된 글꼴 크기가 유효하지 않습니다. 유효 범위는 %1에서 %2 사이입니다.</translation>
+    </message>
+    <message>
+        <source>Error: Invalid -custom-css-dir path.</source>
+        <translation>오류: 유효하지 않은 -custom-css-dir 경로입니다.</translation>
+    </message>
+    <message>
+        <source>Error: %1 CSS file(s) missing in -custom-css-dir path.</source>
+        <translation>오류: %1 CSS 파일이 -custom-css-dir 경로에서 누락되었습니다.</translation>
+    </message>
+</context>
+<context>
     <name>QRDialog</name>
     <message>
         <source>QR-Code Title</source>
@@ -2434,18 +2063,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>&amp;Copy Image</source>
         <translation>이미지 복사(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Resulting URI too long, try to reduce the text for label / message.</source>
-        <translation>URI 결과가 너무 깁니다. 라벨/메시지의 글을 줄이세요.</translation>
-    </message>
-    <message>
-        <source>Error encoding URI into QR Code.</source>
-        <translation>URI를 QR 코드로 인코딩하는 중 오류가 발생했습니다.</translation>
-    </message>
-    <message>
-        <source>QR code support not available.</source>
-        <translation>QR 코드를 지원할 수 없습니다.</translation>
     </message>
     <message>
         <source>Save QR Code</source>
@@ -2503,8 +2120,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>로그 파일 디버그</translation>
     </message>
     <message>
+        <source>Current number of blocks</source>
+        <translation>현재 블록 수</translation>
+    </message>
+    <message>
         <source>Client version</source>
         <translation>클라이언트 버전</translation>
+    </message>
+    <message>
+        <source>Using BerkeleyDB version</source>
+        <translation>사용 중인 BerkeleyDB 버전</translation>
     </message>
     <message>
         <source>Block chain</source>
@@ -2587,26 +2212,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>동기화 된 블록</translation>
     </message>
     <message>
-        <source>Rescan blockchain files 1</source>
-        <translation>블록체인 파일 1 재스캔</translation>
-    </message>
-    <message>
-        <source>Rescan blockchain files 2</source>
-        <translation>블록체인 파일 2 재스캔</translation>
-    </message>
-    <message>
-        <source>The buttons below will restart the wallet with command-line options to repair the wallet, fix issues with corrupt blockchain files or missing/obsolete transactions.</source>
-        <translation>하단의 버튼은 지갑을 복구하고, 손상된 블록체인 파일 및 누락/오래된 거래로 인한 문제를 해결하기 위하여 명령줄 옵션을 통해 지갑을 재시작합니다.</translation>
-    </message>
-    <message>
-        <source>-rescan=1: Rescan the block chain for missing wallet transactions starting from wallet creation time.</source>
-        <translation>-rescan=1: 지갑 생성시부터 누락된 지갑 거래를 위해 블록체인을 다시 스캔합니다.</translation>
-    </message>
-    <message>
-        <source>-rescan=2: Rescan the block chain for missing wallet transactions starting from genesis block.</source>
-        <translation>-rescan=2: 제네시스 블록에서부터 누락된 지갑 거래를 위해 블록체인을 다시 스캔합니다.</translation>
-    </message>
-    <message>
         <source>Wallet Path</source>
         <translation>지갑 경로</translation>
     </message>
@@ -2619,32 +2224,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>데이터 폴더</translation>
     </message>
     <message>
-        <source>To specify a non-default location of the data directory use the '%1' option.</source>
-        <translation>데이터 디렉토리의 지정되지 않은 로케이션을 특정하기 위해서는 '%1' 옵션을 사용하세요.</translation>
-    </message>
-    <message>
-        <source>Blocksdir</source>
-        <translation>Blocksdir</translation>
-    </message>
-    <message>
-        <source>To specify a non-default location of the blocks directory use the '%1' option.</source>
-        <translation>블록 디렉토리의 지정되지 않은 로케이션을 특정하기 위해서는 '%1' 옵션을 사용하세요.</translation>
-    </message>
-    <message>
-        <source>Current block height</source>
-        <translation>현재의 블록 높이</translation>
-    </message>
-    <message>
         <source>Last block hash</source>
         <translation>최종 블록 해시</translation>
-    </message>
-    <message>
-        <source>Latest ChainLocked block hash</source>
-        <translation>최신 체인락스 블록 해시</translation>
-    </message>
-    <message>
-        <source>Latest ChainLocked block height</source>
-        <translation>최신 체인락스 블록 높이</translation>
     </message>
     <message>
         <source>Open the %1 debug log file from the current data directory. This can take a few seconds for large log files.</source>
@@ -2669,10 +2250,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>&amp;Reset</source>
         <translation>&amp;재설정(&amp;R)</translation>
-    </message>
-    <message>
-        <source>Node Type</source>
-        <translation>노드 유형</translation>
     </message>
     <message>
         <source>PoSe Score</source>
@@ -2723,6 +2300,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>지갑 복구(&amp;W)</translation>
     </message>
     <message>
+        <source>Salvage wallet</source>
+        <translation>지갑 복원</translation>
+    </message>
+    <message>
         <source>Recover transactions 1</source>
         <translation>거래 1 복구</translation>
     </message>
@@ -2733,6 +2314,14 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Upgrade wallet format</source>
         <translation>지갑 포맷 업그레이드</translation>
+    </message>
+    <message>
+        <source>The buttons below will restart the wallet with command-line options to repair the wallet, fix issues with corrupt blockhain files or missing/obsolete transactions.</source>
+        <translation>하단의 버튼은 지갑을 복구하고, 손상된 블록체인 파일 및 누락/오래된 거래로 인한 문제를 해결하기 위하여 명령줄 옵션을 통해 지갑을 재시작합니다.</translation>
+    </message>
+    <message>
+        <source>-salvagewallet: Attempt to recover private keys from a corrupt wallet.dat.</source>
+        <translation>-salvagewallet: 손상된 wallet.dat에서 개인 키 복원을 시도합니다.</translation>
     </message>
     <message>
         <source>-zapwallettxes=1: Recover transactions from blockchain (keep meta-data, e.g. account owner).</source>
@@ -2859,16 +2448,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>아니오</translation>
     </message>
     <message>
-        <source>Regular</source>
-        <translation>일반</translation>
-    </message>
-    <message>
         <source>Masternode</source>
         <translation>마스터노드</translation>
-    </message>
-    <message>
-        <source>Verified Masternode</source>
-        <translation>인증된 마스터노드</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -2878,7 +2459,7 @@ https://www.transifex.com/projects/p/dash/</translation>
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Dash network.</source>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Cosanta network.</source>
         <translation>지불 요청에 메시지를 첨부할 지 선택할 수 있습니다. 해당 메세지는 지불 요청이 열릴 때 표시될 것 입니다. 메모: 이 메시지는 대시 네트워크로 전송되지 않습니다.</translation>
     </message>
     <message>
@@ -2890,7 +2471,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>새로운 받기 주소와 결합하는 임의의 라벨</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Dash network.</source>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Cosanta network.</source>
         <translation>지불 요청에 메시지를 첨부할 지 선택할 수 있습니다. 해당 메세지는 지불 요청이 열릴 때 표시될 것 입니다. 메모: 이 메시지는 대시 네트워크로 전송되지 않습니다.</translation>
     </message>
     <message>
@@ -2910,8 +2491,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>거래액:(&amp;A)</translation>
     </message>
     <message>
-        <source>&amp;Create new receiving address</source>
-        <translation>새로운 받기 주소 생성(&amp;C)</translation>
+        <source>&amp;Request payment</source>
+        <translation>지불 요청(&amp;R)</translation>
     </message>
     <message>
         <source>Clear all fields of the form.</source>
@@ -2952,10 +2533,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Copy URI</source>
         <translation>URI 복사</translation>
-    </message>
-    <message>
-        <source>Copy address</source>
-        <translation>주소 복사</translation>
     </message>
     <message>
         <source>Copy label</source>
@@ -3019,6 +2596,14 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Wallet</source>
         <translation>지갑</translation>
+    </message>
+    <message>
+        <source>Resulting URI too long, try to reduce the text for label / message.</source>
+        <translation>URI 결과가 너무 깁니다. 라벨/메세지의 글을 줄이세요.</translation>
+    </message>
+    <message>
+        <source>Error encoding URI into QR Code.</source>
+        <translation>URI를 QR 코드로 인코딩하는 중 오류가 발생했습니다.</translation>
     </message>
 </context>
 <context>
@@ -3119,15 +2704,19 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>선택...</translation>
     </message>
     <message>
+        <source>collapse fee-settings</source>
+        <translation>수수료 설정 접기</translation>
+    </message>
+    <message>
         <source>Confirmation time target:</source>
         <translation>승인 시간 목표:</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <source>If the custom fee is set to 1000 units and the transaction is only 250 bytes, then "per kilobyte" only pays 250 units in fee,&lt;br /&gt;while "at least" pays 1000 units. For transactions bigger than a kilobyte both pay by kilobyte.</source>
         <translation>만일 사용자 지정 수수료가 1000 더프로 설정되어 있으나 거래는 250바이트에 불과한 경우, 'KB 당'은 오직 250 더프를 수수료로 지불하는 한편 &lt;br /&gt;'최소'는 1000더프를 지불합니다. 1 KB보다 큰 거래를 진행하는 경우 두 옵션 모두 KB 당으로 지불합니다.</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for Cosanta transactions than the network can process.</source>
         <translation>최소한의 수수료만 지불하기는 블록체인 내의 공간보다 적은 거래가 진행 중인 경우에만 제대로 작동합니다.&lt;br /&gt;이 옵션을 선택하면 대시 네트워크가 처리할 수 있는 것 보다 많은 거래가 진행되는 경우 거래 확인이 이루어지지 않을 수도 있다는 점을 주의하세요.</translation>
     </message>
     <message>
@@ -3141,10 +2730,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Note: Not enough data for fee estimation, using the fallback fee instead.</source>
         <translation>주의: 수수료 추정에 필요한 데이터가 부족하여 대체 수수료를 이용합니다.</translation>
-    </message>
-    <message>
-        <source>Hide transaction fee settings</source>
-        <translation>거래 수수료 설정 숨기기</translation>
     </message>
     <message>
         <source>Hide</source>
@@ -3243,32 +2828,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>정말로 보내시겠습니까?</translation>
     </message>
     <message>
+        <source>are added as transaction fee</source>
+        <translation>이/가 수수료로 추가되었습니다.</translation>
+    </message>
+    <message>
+        <source>Total Amount = &lt;b&gt;%1&lt;/b&gt;&lt;br /&gt;= %2</source>
+        <translation>총 금액 = &lt;b&gt;%1&lt;/b&gt;&lt;br /&gt; = %2</translation>
+    </message>
+    <message>
         <source>&lt;b&gt;(%1 of %2 entries displayed)&lt;/b&gt;</source>
         <translation>&lt;b&gt;(%2 중 %1 입력값 표시됨)&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>S&amp;end mixed funds</source>
-        <translation>믹싱된 자금 보내기(&amp;e)</translation>
-    </message>
-    <message>
-        <source>Confirm the %1 send action</source>
-        <translation>%1 전송 액션 확인</translation>
-    </message>
-    <message>
-        <source>%1 funds only</source>
-        <translation>%1 자금만</translation>
-    </message>
-    <message>
         <source>any available funds</source>
         <translation>이용이 가능한 모든 자금</translation>
-    </message>
-    <message>
-        <source>Transaction fee</source>
-        <translation>거래 수수료</translation>
-    </message>
-    <message>
-        <source>(%1 transactions have higher fees usually due to no change output being allowed)</source>
-        <translation>(%1 거래는 잔돈 아웃풋이 허용되지 않아 보다 높은 수수료가 책정됩니다)</translation>
     </message>
     <message>
         <source>Transaction size: %1</source>
@@ -3281,22 +2854,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message numerus="yes">
         <source>This transaction will consume %n input(s)</source>
         <translation><numerusform>이 거래는 %n 입력값을 소모합니다</numerusform></translation>
-    </message>
-    <message>
-        <source>Warning: Using %1 with %2 or more inputs can harm your privacy and is not recommended</source>
-        <translation>경고: %1를 %2 혹은 그 이상의 인풋으로 이용하게 되면 당신의 프라이버시가 침해될 수 있어 권장하지 않습니다.</translation>
-    </message>
-    <message>
-        <source>Click to learn more</source>
-        <translation>클릭하여 더 알아보기</translation>
-    </message>
-    <message>
-        <source>Total Amount</source>
-        <translation>총 금액</translation>
-    </message>
-    <message>
-        <source>or</source>
-        <translation>혹은</translation>
     </message>
     <message>
         <source>Confirm send coins</source>
@@ -3327,6 +2884,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>거래 생성에 실패하였습니다!</translation>
     </message>
     <message>
+        <source>The transaction was rejected with the following reason: %1</source>
+        <translation>거래가 다음과 같은 이유로 거절 되었습니다: %1</translation>
+    </message>
+    <message>
         <source>A fee higher than %1 is considered an absurdly high fee.</source>
         <translation>%1 보다 높은 수수료는 너무 높은 수수료 입니다.</translation>
     </message>
@@ -3343,7 +2904,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation><numerusform>%n 블록 내 거래 확인을 시작하기 위해 추정 완료</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Dash address</source>
+        <source>Warning: Invalid Cosanta address</source>
         <translation>경고: 잘못된 대시 주소입니다</translation>
     </message>
     <message>
@@ -3366,11 +2927,15 @@ https://www.transifex.com/projects/p/dash/</translation>
 <context>
     <name>SendCoinsEntry</name>
     <message>
+        <source>This is a normal payment.</source>
+        <translation>이것은 정상적인 지불입니다.</translation>
+    </message>
+    <message>
         <source>Pay &amp;To:</source>
         <translation>송금할 대상(&amp;T):</translation>
     </message>
     <message>
-        <source>The Dash address to send the payment to</source>
+        <source>The Cosanta address to send the payment to</source>
         <translation>이 대시 주소로 송금합니다.</translation>
     </message>
     <message>
@@ -3406,11 +2971,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>금액:(&amp;m)</translation>
     </message>
     <message>
-        <source>The amount to send in the selected unit</source>
-        <translation>선택한 단위로 표시한 송금 금액</translation>
-    </message>
-    <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Cosanta than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>수수료는 보내는 금액에서 차감됩니다. 수령인은 당신이 수량란에 입력한 것 보다 적은 금액을 받게 됩니다. 만일 다중의 수령인이 선택되었다면 수수료는 수령인간에 동일하게 분할됩니다.</translation>
     </message>
     <message>
@@ -3426,7 +2987,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>메시지:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Dash network.</source>
+        <source>A message that was attached to the cosanta: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Cosanta network.</source>
         <translation>대시: URI에 첨부된 메시지는 거래와 함께 참고용으로 저장됩니다. 주의: 이 메시지는 대시 네트워크로 전송되지 않습니다.</translation>
     </message>
     <message>
@@ -3453,8 +3014,8 @@ https://www.transifex.com/projects/p/dash/</translation>
 <context>
     <name>SendConfirmationDialog</name>
     <message>
-        <source>Send</source>
-        <translation>보내기</translation>
+        <source>Yes</source>
+        <translation>예</translation>
     </message>
 </context>
 <context>
@@ -3479,11 +3040,11 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>메시지 서명(&amp;S)</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Dash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <source>You can sign messages/agreements with your addresses to prove you can receive Cosanta sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
         <translation>당신의 주소로 대시를 받을 수 있다는 점을 증명하기 위하여 메시지/계약서에 서명할 수 있습니다. 내용이 분명하지 않거나 무작위인 경우 서명하지 않도록 주의하세요. 피싱 공격이 당신의 서명을 얻기 위해 유도하는 것일 수 있습니다. 오직 완전한 세부 내용을 갖추고 당신이 동의하는 내용에만 서명하세요.</translation>
     </message>
     <message>
-        <source>The Dash address to sign the message with</source>
+        <source>The Cosanta address to sign the message with</source>
         <translation>메시지에 서명하기 위한 대시 주소</translation>
     </message>
     <message>
@@ -3515,7 +3076,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>현재 서명을 시스템 클립보드에 복사</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Dash address</source>
+        <source>Sign the message to prove you own this Cosanta address</source>
         <translation>이 대시 주소가 당신의 소유임을 증명하기 위해 메시지에 서명하세요.</translation>
     </message>
     <message>
@@ -3539,19 +3100,11 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>메시지를 검증하기 위하여 아래에 수신인의 주소, 메시지(띄어쓰기, 들여쓰기, 행 나눔 등을 정확히 입력하기 위해 복사하여 입력) 및 서명을 입력하세요. 중간자 공격에 의한 피해를 피하기 위해 서명된 메시지 자체에 필요한 것 보다 많은 정보를 읽어 들이지 않도록 주의하세요. 이 기능은 서명 당사자가 해당 주소로 수신하였다는 점을 증명할 뿐이며, 거래의 발송 정보를 담지 않습니다.</translation>
     </message>
     <message>
-        <source>The Dash address the message was signed with</source>
+        <source>The Cosanta address the message was signed with</source>
         <translation>메시지에 서명된 대시 주소</translation>
     </message>
     <message>
-        <source>The signed message to verify</source>
-        <translation>검증할 서명 메시지</translation>
-    </message>
-    <message>
-        <source>The signature given when the message was signed</source>
-        <translation>메시지가 서명된 때 특정된 서명</translation>
-    </message>
-    <message>
-        <source>Verify the message to ensure it was signed with the specified Dash address</source>
+        <source>Verify the message to ensure it was signed with the specified Cosanta address</source>
         <translation>특정 대시 주소에 서명된 것인지 확인하기 위하여 메시지를 검증합니다.</translation>
     </message>
     <message>
@@ -3692,10 +3245,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>%1 확인</translation>
     </message>
     <message>
-        <source>locked via ChainLocks</source>
-        <translation>체인락스로 잠김</translation>
-    </message>
-    <message>
         <source>verified via InstantSend</source>
         <translation>인스턴트샌드를 통해 검증됨</translation>
     </message>
@@ -3790,10 +3339,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Transaction total size</source>
         <translation>총 거래 크기</translation>
-    </message>
-    <message>
-        <source> (Certificate was not verified)</source>
-        <translation>(인증서가 검증되지 않음)</translation>
     </message>
     <message>
         <source>Merchant</source>
@@ -3894,20 +3439,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>인스턴트샌드를 통해 검증됨</translation>
     </message>
     <message>
-        <source>locked via ChainLocks</source>
-        <translation>체인락스로 잠김</translation>
-    </message>
-    <message>
         <source>Received with</source>
         <translation>받은 주소</translation>
     </message>
     <message>
         <source>Received from</source>
         <translation>보낸 주소</translation>
-    </message>
-    <message>
-        <source>Received via %1</source>
-        <translation>%1을 통해 받음</translation>
     </message>
     <message>
         <source>Sent to</source>
@@ -3920,26 +3457,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Mined</source>
         <translation>채굴</translation>
-    </message>
-    <message>
-        <source>%1 Mixing</source>
-        <translation>%1 믹싱</translation>
-    </message>
-    <message>
-        <source>%1 Collateral Payment</source>
-        <translation>%1 콜래트럴 지불</translation>
-    </message>
-    <message>
-        <source>%1 Make Collateral Inputs</source>
-        <translation>%1 콜래트럴 입력값 생성</translation>
-    </message>
-    <message>
-        <source>%1 Create Denominations</source>
-        <translation>%1 분할 단위 생성</translation>
-    </message>
-    <message>
-        <source>%1 Send</source>
-        <translation>%1 전송</translation>
     </message>
     <message>
         <source>watch-only</source>
@@ -4021,26 +3538,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>보낸 주소</translation>
     </message>
     <message>
-        <source>%1 Send</source>
-        <translation>%1 전송</translation>
-    </message>
-    <message>
-        <source>%1 Make Collateral Inputs</source>
-        <translation>%1 콜래트럴 입력값 생성</translation>
-    </message>
-    <message>
-        <source>%1 Create Denominations</source>
-        <translation>%1 분할 단위 생성</translation>
-    </message>
-    <message>
-        <source>%1 Mixing</source>
-        <translation>%1 믹싱</translation>
-    </message>
-    <message>
-        <source>%1 Collateral Payment</source>
-        <translation>%1 콜래트럴 지불</translation>
-    </message>
-    <message>
         <source>To yourself</source>
         <translation>나에게</translation>
     </message>
@@ -4089,8 +3586,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>거래 세부 내역 복사</translation>
     </message>
     <message>
-        <source>Edit address label</source>
-        <translation>주소 라벨 편집</translation>
+        <source>Edit label</source>
+        <translation>라벨 수정</translation>
     </message>
     <message>
         <source>Show transaction details</source>
@@ -4173,21 +3670,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
 </context>
 <context>
-    <name>WalletController</name>
-    <message>
-        <source>Close wallet</source>
-        <translation>지갑 닫기</translation>
-    </message>
-    <message>
-        <source>Are you sure you wish to close the wallet &lt;i&gt;%1&lt;/i&gt;?</source>
-        <translation>지갑 &lt;i&gt;%1&lt;/i&gt;을 정말 닫으시겠습니까?</translation>
-    </message>
-    <message>
-        <source>Closing the wallet for too long can result in having to resync the entire chain if pruning is enabled.</source>
-        <translation>지갑을 닫는 데 너무 오랜 시간이 걸리는 경우 정리가 활성화될 때 전체 체인을 다시 동기화해야 할 수 있습니다.</translation>
-    </message>
-</context>
-<context>
     <name>WalletFrame</name>
     <message>
         <source>No wallet has been loaded.</source>
@@ -4199,10 +3681,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Send Coins</source>
         <translation>코인 보내기</translation>
-    </message>
-    <message>
-        <source>default wallet</source>
-        <translation>기본 지갑</translation>
     </message>
 </context>
 <context>
@@ -4249,18 +3727,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
 </context>
 <context>
-    <name>dash-core</name>
+    <name>cosanta-core</name>
     <message>
         <source>Error: Listening for incoming connections failed (listen returned error %s)</source>
         <translation>오류: 들어오는 연결을 수신하는 데 실패했습니다 (수신 반환 오류 %s)</translation>
-    </message>
-    <message>
-        <source>Fee estimation failed. Fallbackfee is disabled. Wait a few blocks or enable -fallbackfee.</source>
-        <translation>수수료 측정에 실패했습니다. Fallbackfee가 비활성화 되었습니다. 수 블록을 기다리거나 Fallbackfee를 활성화하세요.</translation>
-    </message>
-    <message>
-        <source>This error could occur if this wallet was not shutdown cleanly and was last loaded using a build with a newer version of Berkeley DB. If so, please use the software that last loaded this wallet</source>
-        <translation>이 오류는 이 지갑이 완전히 종료되지 않은 채 마지막으로 로딩하면서 최신 버전의 Berkeley DB로 빌드를 사용한 경우 발생할 수 있습니다. 이와 같은 경우 이 지갑을 마지막으로 로딩한 소프트웨어를 사용하십시오.</translation>
     </message>
     <message>
         <source>This is a pre-release test build - use at your own risk - do not use for mining or merchant applications</source>
@@ -4323,6 +3793,14 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>데이터베이스를 불러오는 데 오류가 발생하였습니다. 곧 종료됩니다.</translation>
     </message>
     <message>
+        <source>Error</source>
+        <translation>에러</translation>
+    </message>
+    <message>
+        <source>Error: Disk space is low!</source>
+        <translation>에러: 디스크 공간이 부족합니다!</translation>
+    </message>
+    <message>
         <source>Failed to listen on any port. Use -listen=0 if you want this.</source>
         <translation>포트를 감지하는 데 실패하였습니다. 이를 진행하시려면 -listen=0 을 사용하세요.</translation>
     </message>
@@ -4359,6 +3837,18 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>입력값이 최대치를 초과하였습니다.</translation>
     </message>
     <message>
+        <source>Failed to load fulfilled requests cache from</source>
+        <translation>다음으로부터 수행된 요청 캐시를 불러오는 데 실패하였습니다.</translation>
+    </message>
+    <message>
+        <source>Failed to load governance cache from</source>
+        <translation>다음으로부터 거버넌스 캐시를 불러오는 데 실패하였습니다.</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode cache from</source>
+        <translation>다음으로부터 마스터노드 캐시를 불러오는 데 실패하였습니다.</translation>
+    </message>
+    <message>
         <source>Found enough users, signing ( waiting %s )</source>
         <translation>충분한 사용자를 감지하였습니다. 신호를 보내는 중입니다. ( %s 기다리기 )</translation>
     </message>
@@ -4381,6 +3871,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Incorrect or no genesis block found. Wrong datadir for network?</source>
         <translation>올바르지 않거나 생성된 블록을 찾을 수 없습니다. 네트워크 데이터 디렉토리가 잘못된 것일 수 있습니다.</translation>
+    </message>
+    <message>
+        <source>Information</source>
+        <translation>정보</translation>
     </message>
     <message>
         <source>Input is not valid.</source>
@@ -4463,6 +3957,18 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>알 수 없는 반응.</translation>
     </message>
     <message>
+        <source>Unsupported argument -benchmark ignored, use -debug=bench.</source>
+        <translation>지원하지 않는 인수 -benchmark 은 무시됩니다, -debug=bench 형태로 사용하세요.</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -debugnet ignored, use -debug=net.</source>
+        <translation>지원하지 않는 인수 -debugnet 은 무시됩니다, -debug=net 형태로 사용하세요.</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -tor found, use -onion.</source>
+        <translation>지원하지 않는 인수 -tor를 찾았습니다. -onion를 사용해주세요.</translation>
+    </message>
+    <message>
         <source>User Agent comment (%s) contains unsafe characters.</source>
         <translation>사용자 정의 코멘트 (%s)에 안전하지 못한 글자가 포함되어 있습니다.</translation>
     </message>
@@ -4479,14 +3985,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>임의의 마스터노드를 찾을 수 없습니다.</translation>
     </message>
     <message>
-        <source>%s can't be lower than %s</source>
-        <translation>%s는 %s보다 작을 수 없습니다</translation>
-    </message>
-    <message>
-        <source>%s is idle.</source>
-        <translation>%s를 사용되지 않고 있습니다.</translation>
-    </message>
-    <message>
         <source>Can't mix while sync in progress.</source>
         <translation>동기화가 진행되는 동안 믹싱할 수 없습니다.</translation>
     </message>
@@ -4501,6 +3999,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>%s file contains all private keys from this wallet. Do not share it with anyone!</source>
         <translation>%s 파일에는이 지갑의 모든 프라이빗키가 들어 있습니다. 절대 공유하지 마십시오!</translation>
+    </message>
+    <message>
+        <source>-masternode option is deprecated and ignored, specifying -masternodeblsprivkey is enough to start this node as a masternode.</source>
+        <translation>-masternode 옵션은 중요도가 하락하여 무시되고 -masternodeblsprivkey는 마스터노드로서 이 노드를 시작하기에 충분합니다.</translation>
     </message>
     <message>
         <source>Failed to create backup, file already exists! This could happen if you restarted wallet in less than 60 seconds. You can continue if you are ok with this.</source>
@@ -4535,12 +4037,24 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>네트워크 버전의 총 문자 길이(%i)가 최대 길이(%i)를 초과합니다. UA코멘트의 갯수나 길이를 줄이십시오.</translation>
     </message>
     <message>
+        <source>Unsupported argument -socks found. Setting SOCKS version isn't possible anymore, only SOCKS5 proxies are supported.</source>
+        <translation>지원하지 않는 인수 -socks를 찾았습니다. 설정된 SOCKS의 버전은 더이상 사용할 수 없으며, SOCK5 프록시만을 지원합니다.</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -whitelistalwaysrelay ignored, use -whitelistrelay and/or -whitelistforcerelay.</source>
+        <translation>지원하지 않는 인수 -whitelistalwaysrelay 는 무시됩니다,  -whitelistrelay 나 -whitelistforcerelay 를 사용해 주세요.</translation>
+    </message>
+    <message>
         <source>WARNING! Failed to replenish keypool, please unlock your wallet to do so.</source>
         <translation>경고! 키풀을 보충하는 데 실패하였습니다. 키풀 보충을 위해서는 지갑을 잠금 해제 하세요.</translation>
     </message>
     <message>
         <source>Wallet is locked, can't replenish keypool! Automatic backups and mixing are disabled, please unlock your wallet to replenish keypool.</source>
         <translation>지갑이 잠금 상태 입니다. 키풀을 보충할 수 없습니다! 자동 백업과 믹싱이 비활성화 됩니다. 키풀 보충을 위해서는 지갑을 잠금 해제 하세요.</translation>
+    </message>
+    <message>
+        <source>Warning: Unknown block versions being mined! It's possible unknown rules are in effect</source>
+        <translation>경고: 알려지지 않은 버전의 블록이 채굴되었습니다! 알려지지 않은 규칙이 적용되었을 가능성이 있습니다.</translation>
     </message>
     <message>
         <source>You need to rebuild the database using -reindex to change -timestampindex</source>
@@ -4551,8 +4065,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>축소 모드를 해제하고 데이터베이스를 재구성 하기 위해 -reindex를 사용해야 합니다. 이 명령은 모든 블록체인을 다시 다운로드 할 것 입니다.</translation>
     </message>
     <message>
-        <source>%s failed</source>
-        <translation>%s 실패함</translation>
+        <source>-litemode is deprecated.</source>
+        <translation>-litemode는 앞으로 사라지게 됩니다.</translation>
     </message>
     <message>
         <source>-maxmempool must be at least %d MB</source>
@@ -4563,28 +4077,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>자동 백업 해제</translation>
     </message>
     <message>
-        <source>Cannot set -peerblockfilters without -blockfilterindex.</source>
-        <translation>-blockfilterindex 없이 -peerblockfilters를 설정할 수 없습니다.</translation>
-    </message>
-    <message>
-        <source>Config setting for %s only applied on %s network when in [%s] section.</source>
-        <translation>%s에 대한 구성 설정은 [%s] 분야의 %s 네트워크에만 적용됩니다.</translation>
-    </message>
-    <message>
-        <source>Could not find asmap file %s</source>
-        <translation>asmap 파일 %s 를 찾을 수 없습니다</translation>
-    </message>
-    <message>
-        <source>Could not parse asmap file %s</source>
-        <translation>asmap 파일 %s 를 파싱할 수 없습니다</translation>
-    </message>
-    <message>
         <source>ERROR! Failed to create automatic backup</source>
         <translation>오류! 자동 백업 생성에 실패하였습니다.</translation>
-    </message>
-    <message>
-        <source>Error loading %s: Private keys can only be disabled during creation</source>
-        <translation>%s 로딩 오류: 개인 키는 생성 중에만 해제될 수 있습니다</translation>
     </message>
     <message>
         <source>Error upgrading evo database</source>
@@ -4595,16 +4089,24 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>에러: 치명적인 내부 오류가 발생했습니다, 자세한 내용은 debug.log 를 확인해주세요.</translation>
     </message>
     <message>
-        <source>Error: Disk space is low for %s</source>
-        <translation>에러: %s를 위한 디스크 공간이 부족합니다</translation>
-    </message>
-    <message>
         <source>Error: failed to add socket to epollfd (epoll_ctl returned error %s)</source>
         <translation>오류: epollfd에 소켓을 추가하는 데 실패하였습니다 (epoll_ctl 반환 오류 %s)</translation>
     </message>
     <message>
         <source>Exceeded max tries.</source>
         <translation>최대 시도 횟수를 초과하였습니다.</translation>
+    </message>
+    <message>
+        <source>Failed to clear fulfilled requests cache at</source>
+        <translation>다음의 수행된 요청 캐시를 비우는 데 실패하였습니다</translation>
+    </message>
+    <message>
+        <source>Failed to clear governance cache at</source>
+        <translation>다음의 거버넌스 캐시를 비우는 데 실패하였습니다</translation>
+    </message>
+    <message>
+        <source>Failed to clear masternode cache at</source>
+        <translation>다음의 마스터노드 캐시를 비우는 데 실패하였습니다</translation>
     </message>
     <message>
         <source>Failed to commit EvoDB</source>
@@ -4623,12 +4125,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>백업 삭제에 실패하였습니다. 에러: %s</translation>
     </message>
     <message>
-        <source>Failed to rescan the wallet during initialization</source>
-        <translation>초기치 설정 중 지갑을 재 스캔하는 데 실패하였습니다</translation>
+        <source>Failed to load sporks cache from</source>
+        <translation>스포크 캐시 로딩 실패</translation>
     </message>
     <message>
-        <source>Invalid P2P permission: '%s'</source>
-        <translation>유효하지 않은 P2P 허용: '%s'</translation>
+        <source>Failed to rescan the wallet during initialization</source>
+        <translation>초기치 설정 중 지갑을 재 스캔하는 데 실패하였습니다</translation>
     </message>
     <message>
         <source>Invalid amount for -fallbackfee=&lt;amount&gt;: '%s'</source>
@@ -4637,6 +4139,14 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Invalid masternodeblsprivkey. Please see documentation.</source>
         <translation>유효하지 않은 masternodeblsprivkey 입니다. 문서를 확인하세요.</translation>
+    </message>
+    <message>
+        <source>It has been replaced by -disablegovernance.</source>
+        <translation>-disablegovernance가 대체하였습니다.</translation>
+    </message>
+    <message>
+        <source>Its replacement -disablegovernance has been forced instead.</source>
+        <translation>대체한 -disablegovernance가 대신 강제되었습니다.</translation>
     </message>
     <message>
         <source>Loading block index...</source>
@@ -4691,10 +4201,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>블록 축소는 음수로 설정할 수 없습니다.</translation>
     </message>
     <message>
-        <source>Prune mode is incompatible with -blockfilterindex.</source>
-        <translation>블록 축소 모드는 -blockfilterindex와 호환되지 않습니다.</translation>
-    </message>
-    <message>
         <source>Prune mode is incompatible with -disablegovernance=false.</source>
         <translation>블록 축소 모드는 -disablegovernance=false와 호환되지 않습니다.</translation>
     </message>
@@ -4705,10 +4211,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Pruning blockstore...</source>
         <translation>블록 데이터를 축소 중입니다..</translation>
-    </message>
-    <message>
-        <source>Section [%s] is not recognized.</source>
-        <translation>섹션 [%s]이 인식되지 않습니다.</translation>
     </message>
     <message>
         <source>Specified -walletdir "%s" does not exist</source>
@@ -4725,12 +4227,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Synchronizing blockchain...</source>
         <translation>블록체인 동기화 중...</translation>
-    </message>
-    <message>
-        <source>The specified config file %s does not exist
-</source>
-        <translation>선택된 설정 파일 %s가 존재하지 않습니다
-</translation>
     </message>
     <message>
         <source>The wallet will avoid paying less than the minimum relay fee.</source>
@@ -4773,20 +4269,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>이 컴퓨터의 %s에 바인딩 할 수 없습니다. %s이 이미 실행 중인 것으로 보입니다.</translation>
     </message>
     <message>
-        <source>Unable to create the PID file '%s': %s</source>
-        <translation>PID 파일 '%s'를 생성할 수 없습니다: %s</translation>
-    </message>
-    <message>
         <source>Unable to generate initial keys</source>
         <translation>초기 키를 생성할 수 없습니다.</translation>
     </message>
     <message>
-        <source>Unknown -blockfilterindex value %s.</source>
-        <translation>알 수 없는 -blockfilterindex 값 %s.</translation>
-    </message>
-    <message>
         <source>Upgrading UTXO database</source>
         <translation>UTXO 데이터베이스 업그레이드</translation>
+    </message>
+    <message>
+        <source>Wallet %s resides outside wallet directory %s</source>
+        <translation>지갑 %s 이 지갑 디렉토리 %s 외부에 위치합니다.</translation>
     </message>
     <message>
         <source>Wallet needed to be rewritten: restart %s to complete</source>
@@ -4813,6 +4305,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>-spentindex를 변경하기 위해서는 -reindex 체인 상태를 사용하여 데이터를 재구성해야 합니다.</translation>
     </message>
     <message>
+        <source>You need to rebuild the database using -reindex to change -txindex</source>
+        <translation>-txindex를 변경하기 위해서는 -reindex 체인 상태를 사용하여 데이터를 재구성해야 합니다.</translation>
+    </message>
+    <message>
         <source>no mixing available.</source>
         <translation>믹싱을 할 수 없습니다.</translation>
     </message>
@@ -4821,12 +4317,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>세부 사항을 확인하시려면 debug.log를 참조하세요.</translation>
     </message>
     <message>
-        <source>The %s developers</source>
-        <translation>%s 개발자</translation>
+        <source>Cosanta Core</source>
+        <translation>대시 코어</translation>
     </message>
     <message>
-        <source>%s uses exact denominated amounts to send funds, you might simply need to mix some more coins.</source>
-        <translation>%s는 송금을 위하여 정확한 분할 단위 금액을 사용합니다. 단순히 더 많은 코인을 믹싱함으로써 문제를 해결할 수 있을 지도 모릅니다.</translation>
+        <source>The %s developers</source>
+        <translation>%s 개발자</translation>
     </message>
     <message>
         <source>Cannot obtain a lock on data directory %s. %s is probably already running.</source>
@@ -4873,28 +4369,24 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>블록을 재실행 할 수 없습니다. -reindex-chainstate를 이용해 데이터베이스를 재구성해야 합니다.</translation>
     </message>
     <message>
-        <source>Warning: Private keys detected in wallet {%s} with disabled private keys</source>
-        <translation>경고: 비활성화된 개인 키가 있는 지갑 {%s}에서 개인 키가 감지되었습니다.</translation>
+        <source>Warning: Wallet file corrupt, data salvaged! Original %s saved as %s in %s; if your balance or transactions are incorrect you should restore from a backup.</source>
+        <translation>경고: 지갑 파일이 손상, 데이터가 복구되었습니다! 기존의 %s 파일은 %s에 %s라는 이름으로 저장됩니다. 잔액과 거래 내역이 정확하지 않다면 백업 파일로 복원해야 합니다. </translation>
     </message>
     <message>
         <source>%d of last 100 blocks have unexpected version</source>
         <translation>지난 100 블록 중 %d가 예상치 못한 버전을 지니고 있습니다</translation>
     </message>
     <message>
+        <source>%s corrupt, salvage failed</source>
+        <translation>%s 손상, 복구에 실패하였습니다.</translation>
+    </message>
+    <message>
         <source>%s is not a valid backup folder!</source>
         <translation>%s는 올바른 백업 폴더가 아닙니다!</translation>
     </message>
     <message>
-        <source>%s is only allowed with a single wallet file</source>
-        <translation>%s는 단일 지갑 파일에서만 허용됩니다.</translation>
-    </message>
-    <message>
         <source>%s is set very high!</source>
         <translation>%s가 매우 높게 설정되었습니다!</translation>
-    </message>
-    <message>
-        <source>%s request incomplete:</source>
-        <translation>%s 요청 완료되지 않음:</translation>
     </message>
     <message>
         <source>-devnet can only be specified once</source>
@@ -4909,16 +4401,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>-devnet과 -server가 지정될 때에는 -rpcport도 지정되어야 합니다.</translation>
     </message>
     <message>
-        <source>A fatal internal error occurred, see debug.log for details</source>
-        <translation>치명적인 내부 오류가 발생했습니다. 자세한 내용은 debug.log 에서 확인하십시오.</translation>
-    </message>
-    <message>
         <source>Cannot resolve -%s address: '%s'</source>
         <translation>%s주소: '%s'를 확인할 수 없습니다.</translation>
-    </message>
-    <message>
-        <source>Cannot write to data directory '%s'; check permissions.</source>
-        <translation>'%s' 데이터 디렉토리를 생성할 수 없습니다: 허용 내역을 확인하십시오.</translation>
     </message>
     <message>
         <source>Change index out of range</source>
@@ -4927,10 +4411,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Copyright (C)</source>
         <translation>Copyright (C)</translation>
-    </message>
-    <message>
-        <source>Disk space is too low!</source>
-        <translation>디스크 공간이 부족합니다!</translation>
     </message>
     <message>
         <source>Error loading %s</source>
@@ -4957,48 +4437,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>체인 상태 데이터베이스 업그레이드 중 오류가 발생했습니다.</translation>
     </message>
     <message>
-        <source>Error: failed to add socket to kqueuefd (kevent returned error %s)</source>
-        <translation>오류: kqeuefd에 소켓을 추가하는 데 실패하였습니다 (kevent 반환 오류 %s)</translation>
-    </message>
-    <message>
-        <source>Failed to clear fulfilled requests cache at %s</source>
-        <translation>%s의 수행된 요청 캐시를 비우는 데 실패하였습니다</translation>
-    </message>
-    <message>
-        <source>Failed to clear governance cache at %s</source>
-        <translation>%s의 거버넌스 캐시를 비우는 데 실패하였습니다</translation>
-    </message>
-    <message>
-        <source>Failed to clear masternode cache at %s</source>
-        <translation>%s의 마스터노드 캐시를 비우는 데 실패하였습니다</translation>
-    </message>
-    <message>
         <source>Failed to find mixing queue to join</source>
         <translation>참여할 수 있는 믹싱 대기열을 찾는 데 실패하였습니다.</translation>
     </message>
     <message>
-        <source>Failed to load fulfilled requests cache from %s</source>
-        <translation>%s로부터 수행된 요청 캐시를 불러오는 데 실패하였습니다.</translation>
-    </message>
-    <message>
-        <source>Failed to load governance cache from %s</source>
-        <translation>%s로부터 거버넌스 캐시를 불러오는 데 실패하였습니다.</translation>
-    </message>
-    <message>
-        <source>Failed to load masternode cache from %s</source>
-        <translation>%s로부터 마스터노드 캐시를 불러오는 데 실패하였습니다.</translation>
-    </message>
-    <message>
-        <source>Failed to load sporks cache from %s</source>
-        <translation>%s로부터 스포크 캐시를 불러오는 데 실패하였습니다.</translation>
-    </message>
-    <message>
         <source>Failed to start a new mixing queue</source>
         <translation>새로운 믹싱 대기열을 시작하는 데 실패하였습니다.</translation>
-    </message>
-    <message>
-        <source>Incorrect -rescan mode, falling back to default value</source>
-        <translation>잘못된 -rescan 모드, 기본 값으로 돌아갑니다</translation>
     </message>
     <message>
         <source>Initialization sanity check failed. %s is shutting down.</source>
@@ -5053,26 +4497,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>거래에 서명하는 데 실패하였습니다.</translation>
     </message>
     <message>
-        <source>Specified blocks directory "%s" does not exist.</source>
-        <translation>지정한 데이터 디렉토리 "%s"가 존재하지 않습니다.</translation>
-    </message>
-    <message>
-        <source>Last queue was created too recently.</source>
-        <translation>지난 큐가 너무 최근 생성되었습니다.</translation>
-    </message>
-    <message>
-        <source>%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup.</source>
-        <translation>%s이(가) 손상되었습니다. 지갑 도구 dash-wallet을 사용하여 백업을 복구하거나 복원하십시오.</translation>
-    </message>
-    <message>
-        <source>Can't generate a change-address key. No keys in the internal keypool and can't generate any keys.</source>
-        <translation>change-address 키를 생성할 수 없습니다. 내부 키풀에 키가 없어 더이상 생성할 수 없습니다.</translation>
-    </message>
-    <message>
-        <source>Last successful action was too recent.</source>
-        <translation>지난 성공적 액션이 너무 최신입니다.</translation>
-    </message>
-    <message>
         <source>Starting network threads...</source>
         <translation>네트워크 스레드 시작중...</translation>
     </message>
@@ -5109,16 +4533,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>거래가 유효하지 않습니다.</translation>
     </message>
     <message>
+        <source>Transaction too large for fee policy</source>
+        <translation>수수료 정책에 비해 거래 액수가 너무 큽니다</translation>
+    </message>
+    <message>
         <source>Unable to bind to %s on this computer (bind returned error %s)</source>
         <translation>이 컴퓨터의 %s에 바인딩할 수 없습니다 (바인딩 과정에 %s 오류 발생)</translation>
-    </message>
-    <message>
-        <source>Unable to locate enough mixed funds for this transaction.</source>
-        <translation>이 거래에 필요한 믹싱 자금을 찾을 수 없습니다.</translation>
-    </message>
-    <message>
-        <source>Unable to locate enough non-denominated funds for this transaction.</source>
-        <translation>이 거래에 필요한 비 분할단위 자금을 찾을 수 없습니다.</translation>
     </message>
     <message>
         <source>Unable to sign spork message, wrong key?</source>
@@ -5137,10 +4557,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>지원되지 않는 로깅 카테고리 %s=%s.</translation>
     </message>
     <message>
-        <source>Upgrading txindex database</source>
-        <translation>txindex 데이터베이스 업그레이드</translation>
-    </message>
-    <message>
         <source>Verifying blocks...</source>
         <translation>블록 검증 중...</translation>
     </message>
@@ -5153,12 +4569,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>지갑이 잠금 상태입니다.</translation>
     </message>
     <message>
-        <source>Warning: can't use %s and %s together, will prefer %s</source>
-        <translation>경고: %s와 %s를 함께 사용할 수 ㅇ벗습니다. %s를 우선 사용합니다.</translation>
-    </message>
-    <message>
-        <source>Warning: incorrect parameter %s, path must exist! Using default path.</source>
-        <translation>경고: 잘못된 %s 파라미터입니다. 경로가 필요합니다! 디폴트 경로를 이용합니다.</translation>
+        <source>Warning</source>
+        <translation>경고</translation>
     </message>
     <message>
         <source>You are starting with governance validation disabled.</source>

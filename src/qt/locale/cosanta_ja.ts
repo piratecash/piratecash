@@ -1,10 +1,6 @@
-<TS version="2.1" language="ja">
+<TS language="ja" version="2.1">
 <context>
     <name>AddressBookPage</name>
-    <message>
-        <source>Enter address or label to search</source>
-        <translation>アドレスかラベルを入力して検索</translation>
-    </message>
     <message>
         <source>Right-click to edit address or label</source>
         <translation>右クリックでアドレスまたはラベルを編集</translation>
@@ -74,12 +70,12 @@
         <translation>受取アドレス</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>これらは送金するためのあなたの Dash アドレスです。送金する前に常に金額と受取アドレスを確認してください。</translation>
+        <source>These are your Cosanta addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>これらは送金するためのあなたの Cosanta アドレスです。送金する前に常に金額と受取アドレスを確認してください。</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>これらは、支払いを受け取るためのお客様のDashアドレスです。受取タブにある「新しい受取アドレスを作成」のボタンを使用し、新しいアドレスを作成します。</translation>
+        <source>These are your Cosanta addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>これらは送金を受取用のあなたのCosantaアドレスです。トランザクションごとに新しい受け取り用アドレスの作成を推奨します。</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -135,43 +131,7 @@
 </context>
 <context>
     <name>AppearanceWidget</name>
-    <message>
-        <source>Lighter</source>
-        <translation>細くする</translation>
-    </message>
-    <message>
-        <source>Bolder</source>
-        <translation>太くする</translation>
-    </message>
-    <message>
-        <source>Font Weight Normal:</source>
-        <translation>文字の太さ（通常）：</translation>
-    </message>
-    <message>
-        <source>Smaller</source>
-        <translation>小さくする</translation>
-    </message>
-    <message>
-        <source>Bigger</source>
-        <translation>大きくする</translation>
-    </message>
-    <message>
-        <source>Font Scale:</source>
-        <translation>文字の大きさ：</translation>
-    </message>
-    <message>
-        <source>Font Family:</source>
-        <translation>フォントファミリー：</translation>
-    </message>
-    <message>
-        <source>Theme:</source>
-        <translation>テーマ：</translation>
-    </message>
-    <message>
-        <source>Font Weight Bold:</source>
-        <translation>文字の太さ（太字）：</translation>
-    </message>
-</context>
+    </context>
 <context>
     <name>AskPassphraseDialog</name>
     <message>
@@ -191,8 +151,8 @@
         <translation>新しいパスフレーズを再入力</translation>
     </message>
     <message>
-        <source>Show passphrase</source>
-        <translation>パスフレーズを表示</translation>
+        <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
+        <translation>ウォレット用の新しいパスフレーズを入力してください。&lt;br/&gt;&lt;b&gt;10文字以上のランダムな文字&lt;/b&gt;か、または&lt;b&gt;8単語以上&lt;/b&gt;で構成されたパスフレーズを使用してください。</translation>
     </message>
     <message>
         <source>Encrypt wallet</source>
@@ -203,7 +163,7 @@
         <translation>この操作にはウォレットをアンロックするためのパスフレーズが必要です。</translation>
     </message>
     <message>
-        <source>Unlock wallet for mixing only</source>
+        <source>Unlock wallet for mixing and staking only</source>
         <translation>ミキシングのためだけにウォレットをアンロック</translation>
     </message>
     <message>
@@ -223,12 +183,16 @@
         <translation>パスフレーズの変更</translation>
     </message>
     <message>
+        <source>Enter the old passphrase and new passphrase to the wallet.</source>
+        <translation>ウォレットの古いパスフレーズと新しいパスフレーズを入力してください。</translation>
+    </message>
+    <message>
         <source>Confirm wallet encryption</source>
         <translation>ウォレットの暗号化を確認</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
-        <translation>警告: ウォレットを暗号化しパスフレーズを紛失した場合、あなたは &lt;b&gt;すべてのDash&lt;/b&gt;を失います!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COSA&lt;/b&gt;!</source>
+        <translation>警告: ウォレットを暗号化しパスフレーズを紛失した場合、あなたは &lt;b&gt;すべてのCosanta&lt;/b&gt;を失います!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -239,28 +203,8 @@
         <translation>ウォレットは暗号化されました</translation>
     </message>
     <message>
-        <source>Enter the new passphrase for the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;ten or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
-        <translation>ウォレットの新しいパスフレーズを入力します。&lt;br/&gt;パスフレーズには&lt;b&gt;10文字以上のランダムな文字&lt;/b&gt;、または&lt;b&gt;8文字以上の単語&lt;/b&gt;を使用してください。</translation>
-    </message>
-    <message>
-        <source>Enter the old passphrase and new passphrase for the wallet.</source>
-        <translation>ウォレットの前のパスフレーズと新しいパスフレーズを入力します。</translation>
-    </message>
-    <message>
-        <source>Remember that encrypting your wallet cannot fully protect your funds from being stolen by malware infecting your computer.</source>
-        <translation>ウォレットを暗号化しても、コンピュータに感染したマルウェアから資金を完全に保護することはできませんので、ご注意ください。</translation>
-    </message>
-    <message>
-        <source>Wallet to be encrypted</source>
-        <translation>暗号化するウォレット</translation>
-    </message>
-    <message>
-        <source>Your wallet is about to be encrypted. </source>
-        <translation>お客様のウォレットが暗号化されます。</translation>
-    </message>
-    <message>
-        <source>Your wallet is now encrypted. </source>
-        <translation>お客様のウォレットは暗号化されました。</translation>
+        <source>%1 will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your funds from being stolen by malware infecting your computer.</source>
+        <translation>%1 は暗号化プロセスを終了するために閉じます。ウォレットの暗号化だけでは充分ではなく、使用しているコンピューターがマルウェアに感染して盗難される可能性があります。 </translation>
     </message>
     <message>
         <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. Previous backups of the unencrypted wallet file contain the same HD seed and still have full access to all your funds just like the new, encrypted wallet.</source>
@@ -316,16 +260,24 @@
 </context>
 <context>
     <name>BitcoinAmountField</name>
-    <message>
-        <source>Amount in %1</source>
-        <translation>%1にある金額</translation>
-    </message>
-</context>
+    </context>
 <context>
     <name>BitcoinGUI</name>
     <message>
-        <source>A fatal error occurred. Dash Core can no longer continue safely and will quit.</source>
-        <translation>重大なエラーが発生しました。 Dash Coreは安全に続行できなくなり終了します。</translation>
+        <source>A fatal error occurred. Cosanta Core can no longer continue safely and will quit.</source>
+        <translation>重大なエラーが発生しました。 Cosanta Coreは安全に続行できなくなり終了します。</translation>
+    </message>
+    <message>
+        <source>Cosanta Core</source>
+        <translation>Cosanta Core</translation>
+    </message>
+    <message>
+        <source>Wallet</source>
+        <translation>ウォレット</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation>ノード</translation>
     </message>
     <message>
         <source>&amp;Overview</source>
@@ -340,60 +292,16 @@
         <translation>送金 (&amp;S)</translation>
     </message>
     <message>
-        <source>Send coins to a Dash address</source>
-        <translation>Dash アドレスに送金</translation>
+        <source>Send coins to a Cosanta address</source>
+        <translation>Cosanta アドレスに送金</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>受取 (&amp;R)</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
-        <translation>送金を要求 (QRコードとdash:URIを生成)</translation>
-    </message>
-    <message>
-        <source>&amp;Sending addresses</source>
-        <translation>アドレスを送信 (&amp;S)</translation>
-    </message>
-    <message>
-        <source>&amp;Receiving addresses</source>
-        <translation>アドレスを受信 (&amp;R)</translation>
-    </message>
-    <message>
-        <source>Open Wallet</source>
-        <translation>ウォレットを開く</translation>
-    </message>
-    <message>
-        <source>Open a wallet</source>
-        <translation>ウォレットを開く</translation>
-    </message>
-    <message>
-        <source>Close Wallet...</source>
-        <translation>ウォレットを閉じる...</translation>
-    </message>
-    <message>
-        <source>Close wallet</source>
-        <translation>ウォレットを閉じる</translation>
-    </message>
-    <message>
-        <source>No wallets available</source>
-        <translation>利用可能なウォレットはありません</translation>
-    </message>
-    <message>
-        <source>&amp;Window</source>
-        <translation>ウインドウ (&amp;W)</translation>
-    </message>
-    <message>
-        <source>Minimize</source>
-        <translation>最小化する</translation>
-    </message>
-    <message>
-        <source>Zoom</source>
-        <translation>ズーム</translation>
-    </message>
-    <message>
-        <source>Main Window</source>
-        <translation>メインウィンドウ</translation>
+        <source>Request payments (generates QR codes and cosanta: URIs)</source>
+        <translation>送金を要求 (QRコードとcosanta:URIを生成)</translation>
     </message>
     <message>
         <source>&amp;Transactions</source>
@@ -420,6 +328,10 @@
         <translation>アプリケーションを終了</translation>
     </message>
     <message>
+        <source>Show information about Cosanta Core</source>
+        <translation>Cosanta Coreについての情報を表示</translation>
+    </message>
+    <message>
         <source>About &amp;Qt</source>
         <translation>Qtについて(&amp;Q)</translation>
     </message>
@@ -434,10 +346,6 @@
     <message>
         <source>&amp;About %1</source>
         <translation>%1 について (&amp;A)</translation>
-    </message>
-    <message>
-        <source>Send %1 funds to a Dash address</source>
-        <translation>Dashアドレスに%1の資金を送金します</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -492,16 +400,16 @@
         <translation>メッセージの署名… (&amp;M)</translation>
     </message>
     <message>
-        <source>Sign messages with your Dash addresses to prove you own them</source>
-        <translation>あなたがDash アドレスを所有していることを証明するために、あなたのDashアドレスでメッセージに署名してください。</translation>
+        <source>Sign messages with your Cosanta addresses to prove you own them</source>
+        <translation>あなたがCosanta アドレスを所有していることを証明するために、あなたのCosantaアドレスでメッセージに署名してください。</translation>
     </message>
     <message>
         <source>&amp;Verify message...</source>
         <translation>メッセージの検証… (&amp;V)</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dash addresses</source>
-        <translation>指定されたDashアドレスで署名されたことを確認するためにメッセージを検証してください。</translation>
+        <source>Verify messages to ensure they were signed with specified Cosanta addresses</source>
+        <translation>指定されたCosantaアドレスで署名されたことを確認するためにメッセージを検証してください。</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -560,8 +468,16 @@
         <translation>自動で生成されたウォレットのバックアップを表示</translation>
     </message>
     <message>
+        <source>&amp;Sending addresses...</source>
+        <translation>送金先アドレス… (&amp;S)</translation>
+    </message>
+    <message>
         <source>Show the list of used sending addresses and labels</source>
         <translation>過去に使用した送金先アドレスとラベルの一覧を表示</translation>
+    </message>
+    <message>
+        <source>&amp;Receiving addresses...</source>
+        <translation>受取用アドレス… (&amp;R)</translation>
     </message>
     <message>
         <source>Show the list of used receiving addresses and labels</source>
@@ -572,61 +488,40 @@
         <translation>URIを開く… (&amp;U)</translation>
     </message>
     <message>
-        <source>Open a dash: URI or payment request</source>
-        <translation>dash: URIまたは送金リクエストを開く</translation>
+        <source>Open a cosanta: URI or payment request</source>
+        <translation>cosanta: URIまたは送金リクエストを開く</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>コマンドラインオプション (&amp;C)</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Dash command-line options</source>
-        <translation>有効なDashのコマンドラインオプションのリストを見るために %1 のヘルプメッセージを表示</translation>
-    </message>
-    <message>
-        <source>default wallet</source>
-        <translation>デフォルトのウォレット</translation>
+        <source>Show the %1 help message to get a list with possible Cosanta command-line options</source>
+        <translation>有効なCosantaのコマンドラインオプションのリストを見るために %1 のヘルプメッセージを表示</translation>
     </message>
     <message>
         <source>%1 client</source>
         <translation>%1 クライアント</translation>
     </message>
     <message>
-        <source>Wallet: %1
-</source>
-        <translation>ウォレット：%1</translation>
+        <source>&amp;PrivateSend information</source>
+        <translation>プライベートセンドの情報(&amp;P)</translation>
     </message>
     <message>
-        <source>Wallet is &lt;b&gt;unencrypted&lt;/b&gt;</source>
-        <translation>ウォレットは&lt;b&gt;暗号化されていません&lt;/b&gt;</translation>
+        <source>Show the PrivateSend basic information</source>
+        <translation>プライベートセンドの基本的な情報を表示</translation>
     </message>
     <message>
         <source>&amp;File</source>
         <translation>ファイル(&amp;F)</translation>
     </message>
     <message>
-        <source>Show information about %1</source>
-        <translation>%1の情報を表示する</translation>
-    </message>
-    <message>
-        <source>Create Wallet...</source>
-        <translation>ウォレットを作成する...</translation>
-    </message>
-    <message>
-        <source>Create a new wallet</source>
-        <translation>新しいウォレットを作成する</translation>
-    </message>
-    <message>
-        <source>%1 &amp;information</source>
-        <translation>%1と情報</translation>
-    </message>
-    <message>
-        <source>Show the %1 basic information</source>
-        <translation>%1の基本情報を表示する</translation>
-    </message>
-    <message>
         <source>&amp;Settings</source>
         <translation>設定(&amp;S)</translation>
+    </message>
+    <message>
+        <source>&amp;Tools</source>
+        <translation>ツール(&amp;T)</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -636,16 +531,8 @@
         <source>Tabs toolbar</source>
         <translation>タブツールバー</translation>
     </message>
-    <message>
-        <source>&amp;Governance</source>
-        <translation>ガバナンス(&amp;G)</translation>
-    </message>
-    <message>
-        <source>View Governance Proposals</source>
-        <translation>ガバナンス提案を見る</translation>
-    </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Dash network</source>
+        <source>%n active connection(s) to Cosanta network</source>
         <translation><numerusform>%n アクティブコネクション</numerusform></translation>
     </message>
     <message>
@@ -709,44 +596,12 @@
         <translation>エラー</translation>
     </message>
     <message>
-        <source>Error: %1</source>
-        <translation>エラー：%1</translation>
-    </message>
-    <message>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <source>Warning: %1</source>
-        <translation>警告：%1</translation>
-    </message>
-    <message>
         <source>Information</source>
         <translation>情報</translation>
-    </message>
-    <message>
-        <source>Received and sent multiple transactions</source>
-        <translation>送受信した複数のトランザクション</translation>
-    </message>
-    <message>
-        <source>Sent multiple transactions</source>
-        <translation>送信した複数のトランザクション</translation>
-    </message>
-    <message>
-        <source>Received multiple transactions</source>
-        <translation>受信した複数のトランザクション</translation>
-    </message>
-    <message>
-        <source>Sent Amount: %1
-</source>
-        <translation>送金金額：%1
-</translation>
-    </message>
-    <message>
-        <source>Received Amount: %1
-</source>
-        <translation>受取金額：%1
-</translation>
     </message>
     <message>
         <source>Date: %1
@@ -801,14 +656,6 @@
     <message>
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;locked&lt;/b&gt;</source>
         <translation>ウォレットは&lt;b&gt;暗号化&lt;/b&gt;され、現在 &lt;b&gt;ロック&lt;/b&gt;されています。</translation>
-    </message>
-    <message>
-        <source>Proxy is &lt;b&gt;enabled&lt;/b&gt;: %1</source>
-        <translation>プロキシが&lt;b&gt;有効&lt;/b&gt;：%1</translation>
-    </message>
-    <message>
-        <source>Original message:</source>
-        <translation>元のメッセージ：</translation>
     </message>
 </context>
 <context>
@@ -876,10 +723,6 @@
     <message>
         <source>Received with address</source>
         <translation>アドレスに対する入金一覧</translation>
-    </message>
-    <message>
-        <source>Mixing Rounds</source>
-        <translation>ミキシングのラウンド</translation>
     </message>
     <message>
         <source>Date</source>
@@ -962,32 +805,8 @@
         <translation>受取額が現在のダスト閾値を下回る場合にはこのラベルは赤くなります。</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 duff(s) per input.</source>
-        <translation>インプットごとに +/- %1 duff(s) が変更可能 </translation>
-    </message>
-    <message>
-        <source>Some coins were unselected because they were spent.</source>
-        <translation>使用済みのため、非選択のコインもありました。</translation>
-    </message>
-    <message>
-        <source>Some coins were unselected because they do not have enough mixing rounds.</source>
-        <translation>一部のコインは、ミキシングラウンドが不十分なため、非選択としました。</translation>
-    </message>
-    <message>
-        <source>Show all coins</source>
-        <translation>全てのコインを表示する</translation>
-    </message>
-    <message>
-        <source>Hide %1 coins</source>
-        <translation>%1のコインを非表示にする</translation>
-    </message>
-    <message>
-        <source>Show all %1 coins</source>
-        <translation>%1全額のコインを表示する</translation>
-    </message>
-    <message>
-        <source>Show spendable coins only</source>
-        <translation>使用可能なコインのみを表示する</translation>
+        <source>Can vary +/- %1 unit(s) per input.</source>
+        <translation>インプットごとに +/- %1 unit(s) が変更可能 </translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -1004,60 +823,6 @@
     <message>
         <source>n/a</source>
         <translation>n/a</translation>
-    </message>
-</context>
-<context>
-    <name>CreateWalletActivity</name>
-    <message>
-        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
-        <translation>ウォレット&lt;b&gt;%1&lt;/b&gt;を作成...</translation>
-    </message>
-    <message>
-        <source>Create wallet failed</source>
-        <translation>ウォレットの作成に失敗しました</translation>
-    </message>
-    <message>
-        <source>Create wallet warning</source>
-        <translation>ウォレット作成の警告</translation>
-    </message>
-</context>
-<context>
-    <name>CreateWalletDialog</name>
-    <message>
-        <source>Create Wallet</source>
-        <translation>ウォレットを作成する</translation>
-    </message>
-    <message>
-        <source>Wallet Name</source>
-        <translation>ウォレット名</translation>
-    </message>
-    <message>
-        <source>Encrypt the wallet. The wallet will be encrypted with a passphrase of your choice.</source>
-        <translation>ウォレットを暗号化します。ウォレットは、お客様が選んだパスフレーズで暗号化されます。</translation>
-    </message>
-    <message>
-        <source>Encrypt Wallet</source>
-        <translation>ウォレットを暗号化する</translation>
-    </message>
-    <message>
-        <source>Disable private keys for this wallet. Wallets with private keys disabled will have no private keys and cannot have an HD seed or imported private keys. This is ideal for watch-only wallets.</source>
-        <translation>このウォレットのプライベートキーを無効にします。プライベートキーを無効にしたウォレットは、プライベートキーを持たず、HDシードやインポートされたプライベートキーを持つことができなくなります。これは時計専用のウォレットに最適です。</translation>
-    </message>
-    <message>
-        <source>Disable Private Keys</source>
-        <translation>プライベートキーを無効化する</translation>
-    </message>
-    <message>
-        <source>Make a blank wallet. Blank wallets do not initially have private keys or scripts. Private keys and addresses can be imported, or an HD seed can be set, at a later time.</source>
-        <translation>ブランクウォレットを作成します。ブランクウォレットは、初期状態ではプライベートキーやスクリプトを持ちません。プライベートキーやアドレスは、後からインポートしたり、HDシードを設定したりすることができます。</translation>
-    </message>
-    <message>
-        <source>Make Blank Wallet</source>
-        <translation>ブランクウォレットを作成する</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation>作成</translation>
     </message>
 </context>
 <context>
@@ -1095,16 +860,12 @@
         <translation>送金アドレスを編集</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Dash address.</source>
-        <translation>入力されたアドレス "%1" は有効なDashアドレスではありません。</translation>
+        <source>The entered address "%1" is not a valid Cosanta address.</source>
+        <translation>入力されたアドレス "%1" は有効なCosantaアドレスではありません。</translation>
     </message>
     <message>
-        <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
-        <translation>アドレス「%1」はラベル「%2」の受信アドレスとして既に存在するため、送信アドレスとして追加することはできません。</translation>
-    </message>
-    <message>
-        <source>The entered address "%1" is already in the address book with label "%2".</source>
-        <translation>入力されたアドレス「%1」は、ラベル「%2」のアドレス帳に既に登録されています。</translation>
+        <source>The entered address "%1" is already in the address book.</source>
+        <translation>入力されたアドレス "%1" は既にアドレス帳にあります。</translation>
     </message>
     <message>
         <source>Could not unlock wallet.</source>
@@ -1139,37 +900,14 @@
     </message>
 </context>
 <context>
-    <name>GovernanceList</name>
-    <message>
-        <source>Form</source>
-        <translation>フォーム</translation>
-    </message>
-    <message>
-        <source>Filter List:</source>
-        <translation>フィルターリスト：</translation>
-    </message>
-    <message>
-        <source>Filter propsal list</source>
-        <translation>フィルター提案リスト</translation>
-    </message>
-    <message>
-        <source>Proposal Count:</source>
-        <translation>提案回数：</translation>
-    </message>
-    <message>
-        <source>Filter by Title</source>
-        <translation>タイトルで絞り込む</translation>
-    </message>
-    <message>
-        <source>Proposal Info: %1</source>
-        <translation>提案情報：%1</translation>
-    </message>
-</context>
-<context>
     <name>HelpMessageDialog</name>
     <message>
         <source>version</source>
         <translation>バージョン</translation>
+    </message>
+    <message>
+        <source>(%1-bit)</source>
+        <translation>(%1-ビット)</translation>
     </message>
     <message>
         <source>About %1</source>
@@ -1180,14 +918,46 @@
         <translation>コマンドラインオプション</translation>
     </message>
     <message>
-        <source>%1 information</source>
-        <translation>%1の情報</translation>
+        <source>Usage:</source>
+        <translation>使用法：</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Dash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH and 10 DASH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;%1の基本内容&lt;/h3&gt; %1は、お客様の資金の出所を隠すことで、本当の意味での金融プライバシーを提供します。お客様のウォレットにあるすべてのDashは、異なる「入力」で構成されており、別個の独立したコインと考えることができます。&lt;br&gt;%1は、革新的なプロセスによって、お客様のインプットと他の2人以上のインプットをミキシングしますが、お客様のウォレットからコインが出ることはありません。お客様はいつでも自分のお金を管理できます。&lt;hr&gt; &lt;b&gt;%1のプロセスは次のように機能します。&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1は最初に取引の入力を標準的な金額に分解します。0.001 DASH、0.01 DASH、0.1 DASH、1 DASH、10 DASHなど、あなたが毎日使っている紙幣と同じような金額になります。&lt;/li&gt; &lt;li&gt;お客様のウォレットは、ネットワーク上にある「マスターノード」と呼ばれる特別に設定されたソフトウェアノードにリクエストを送ります。このとき、これらのマスタノードには、お客様が特定の金額を混合することに関心があると伝えられます。個人を特定できるような情報はマスタノードに送られないため、お客様が「誰」であるか知られることはありません。&lt;/li&gt; &lt;li&gt;他の2人以上の人物が同じようなメッセージを送り、同じ金額のミキシングを希望すると、ミキシングセッションが開始されます。マスターノードは入力をミキシングし、3人のユーザー全員のウォレットに、その時点で変換された入力を3人全員に支払うように指示します。お客様のウォレットは、その金額をウォレット自体に直接支払いますが、別のアドレス（変更アドレスと呼ぶ）になります。&lt;/li&gt; &lt;li&gt;お客様の資金を完全に隠すために、お客様のウォレットではこのプロセスを各金額で何度も繰り返される必要があります。このプロセスが完了する度に、「ラウンド」と呼ばれます。%1の各ラウンドは、お客様の資金が発生した場所を判断するのを指数関数的に難しくします。&lt;/li&gt; &lt;li&gt;このミキシングプロセスはバックグラウンドで行われ、お客様側の介入は一切ありません。お客様が取引をしたいときは、お客様の資金はすでにミキシングされています。さらに待つ必要はありません。&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;重要事項：&lt;/b&gt; お客様のウォレットには、この「変更アドレス」が1000個しか入っていません。ミキシング作業が発生する度に、お客様のアドレスのうち最大9個が使用されます。したがって、この1000個のアドレスは、約100回までのミキシング作業に使えるということです。そのうち900個を使い切ると、お客様はご自身のウォレットにさらにアドレスを作成する必要があります。ただし、これは自動バックアップを有効にしている場合に限ります。&lt;br&gt;そのため、バックアップを無効にしているユーザーは、%1も無効になります。&lt;hr&gt;詳細は、&lt;a style="%2" href="%3"&gt;%1のドキュメント&lt;/a&gt;を参照してください。</translation>
+        <source>command-line options</source>
+        <translation>コマンドラインオプション</translation>
     </message>
-</context>
+    <message>
+        <source>UI Options:</source>
+        <translation>UIオプション:</translation>
+    </message>
+    <message>
+        <source>Choose data directory on startup (default: %u)</source>
+        <translation>起動時にデータディレクトリを選ぶ (初期設定: %u)</translation>
+    </message>
+    <message>
+        <source>Set language, for example "de_DE" (default: system locale)</source>
+        <translation>言語を設定 例： "de_DE" (デフォルト設定： システムの言語)</translation>
+    </message>
+    <message>
+        <source>Start minimized</source>
+        <translation>最小化された状態で起動</translation>
+    </message>
+    <message>
+        <source>Set SSL root certificates for payment request (default: -system-)</source>
+        <translation>送金リクエスト用にSSLルート証明書を設定（初期設定：-system-）</translation>
+    </message>
+    <message>
+        <source>Show splash screen on startup (default: %u)</source>
+        <translation>起動時にスプラッシュ画面を表示 (初期設定: %u)</translation>
+    </message>
+    <message>
+        <source>Reset all settings changed in the GUI</source>
+        <translation>GUI で行われた設定の変更を全てリセット</translation>
+    </message>
+    <message>
+        <source>PrivateSend information</source>
+        <translation>プライベートセンドの情報</translation>
+    </message>
+    </context>
 <context>
     <name>Intro</name>
     <message>
@@ -1232,8 +1002,8 @@
         <translation>おおむね%1GBのデータがこのディレクトリに保存されます。</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Dash block chain.</source>
-        <translation>%1はDashのブロックチェーンの複製をダウンロードし保存します。</translation>
+        <source>%1 will download and store a copy of the Cosanta block chain.</source>
+        <translation>%1はCosantaのブロックチェーンの複製をダウンロードし保存します。</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1267,6 +1037,10 @@
         <translation>ステータス</translation>
     </message>
     <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
         <source>Filter List:</source>
         <translation>フィルターリスト:</translation>
     </message>
@@ -1287,10 +1061,6 @@
         <translation>自分のマスターノードのみ</translation>
     </message>
     <message>
-        <source>Service</source>
-        <translation>サービス</translation>
-    </message>
-    <message>
         <source>PoSe Score</source>
         <translation>PoSeスコア</translation>
     </message>
@@ -1307,24 +1077,8 @@
         <translation>次の支払い</translation>
     </message>
     <message>
-        <source>Payout Address</source>
-        <translation>支払いアドレス</translation>
-    </message>
-    <message>
         <source>Operator Reward</source>
         <translation>オペレーター報酬</translation>
-    </message>
-    <message>
-        <source>Collateral Address</source>
-        <translation>担保アドレス</translation>
-    </message>
-    <message>
-        <source>Owner Address</source>
-        <translation>所有者アドレス</translation>
-    </message>
-    <message>
-        <source>Voting Address</source>
-        <translation>投票アドレス</translation>
     </message>
     <message>
         <source>Copy ProTx Hash</source>
@@ -1332,15 +1086,11 @@
     </message>
     <message>
         <source>Copy Collateral Outpoint</source>
-        <translation>担保のアウトポイントをコピー</translation>
-    </message>
-    <message>
-        <source>Updating...</source>
-        <translation>更新中...</translation>
+        <translation>Collateral Outpointをコピー</translation>
     </message>
     <message>
         <source>ENABLED</source>
-        <translation>有効</translation>
+        <translation>使用可能</translation>
     </message>
     <message>
         <source>POSE_BANNED</source>
@@ -1352,31 +1102,23 @@
     </message>
     <message>
         <source>to %1</source>
-        <translation>%1に</translation>
+        <translation>to %1</translation>
     </message>
     <message>
         <source>to UNKNOWN</source>
-        <translation>不明者に</translation>
+        <translation>to UNKNOWN</translation>
     </message>
     <message>
         <source>but not claimed</source>
-        <translation>しかし、請求されていません</translation>
+        <translation>but not claimed</translation>
     </message>
     <message>
         <source>NONE</source>
-        <translation>なし</translation>
-    </message>
-    <message>
-        <source>Filter by any property (e.g. address or protx hash)</source>
-        <translation>プロパティでのフィルタリング（例：アドレスやProTxハッシュなど）</translation>
-    </message>
-    <message>
-        <source>Please wait...</source>
-        <translation>お待ちください...</translation>
+        <translation>無し</translation>
     </message>
     <message>
         <source>Additional information for DIP3 Masternode %1</source>
-        <translation>DIP3のマスターノード%1の追加情報</translation>
+        <translation>DIP3 Masternode %1の追加情報</translation>
     </message>
 </context>
 <context>
@@ -1386,12 +1128,12 @@
         <translation>フォーム</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
-        <translation>確認できない最新のトランザクションがあるかもしれません。これによりウォレットの残高は不正確なものである可能性があります。この情報はウォレットが一度Dashのネットワークへの同期が完了すると正確なものとなります。詳細は下記を参照してください。</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Cosanta network, as detailed below.</source>
+        <translation>確認できない最新のトランザクションがあるかもしれません。これによりウォレットの残高は不正確なものである可能性があります。この情報はウォレットが一度Cosantaのネットワークへの同期が完了すると正確なものとなります。詳細は下記を参照してください。</translation>
     </message>
     <message>
-        <source>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>表示されてないトランザクションに影響を受けたDashを使用しようとするとネットワークに承認されません。</translation>
+        <source>Attempting to spend Cosanta that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>表示されてないトランザクションに影響を受けたCosantaを使用しようとするとネットワークに承認されません。</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -1426,8 +1168,8 @@
         <translation>非表示</translation>
     </message>
     <message>
-        <source>Unknown. Syncing Headers (%1, %2%)...</source>
-        <translation>不明。ヘッダー(%1、%2%)を同期中...</translation>
+        <source>Unknown. Syncing Headers (%1)...</source>
+        <translation>不明。ヘッダーを同期中 (%1)...</translation>
     </message>
 </context>
 <context>
@@ -1454,25 +1196,6 @@
     </message>
 </context>
 <context>
-    <name>OpenWalletActivity</name>
-    <message>
-        <source>Open wallet failed</source>
-        <translation>ウォレットを開くのに失敗しました</translation>
-    </message>
-    <message>
-        <source>Open wallet warning</source>
-        <translation>ウォレット開示の警告</translation>
-    </message>
-    <message>
-        <source>default wallet</source>
-        <translation>デフォルトのウォレット</translation>
-    </message>
-    <message>
-        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
-        <translation>&lt;b&gt;%1&lt;/b&gt;のウォレットを開封中...</translation>
-    </message>
-</context>
-<context>
     <name>OptionsDialog</name>
     <message>
         <source>Options</source>
@@ -1487,6 +1210,10 @@
         <translation>データベースキャッシュのサイズ (&amp;D)</translation>
     </message>
     <message>
+        <source>MB</source>
+        <translation>MB</translation>
+    </message>
+    <message>
         <source>Number of script &amp;verification threads</source>
         <translation>スクリプト検証用スレッド数 (&amp;V)</translation>
     </message>
@@ -1499,26 +1226,6 @@
         <translation>ウォレット (&amp;A)</translation>
     </message>
     <message>
-        <source>&amp;Appearance</source>
-        <translation>アピアランス(&amp;A)</translation>
-    </message>
-    <message>
-        <source>Prune &amp;block storage to</source>
-        <translation>へのプルーンとブロックストレージ</translation>
-    </message>
-    <message>
-        <source>GB</source>
-        <translation>GB</translation>
-    </message>
-    <message>
-        <source>Reverting this setting requires re-downloading the entire blockchain.</source>
-        <translation>この設定を元に戻すには、ブロックチェーン全体を再ダウンロードする必要があります。</translation>
-    </message>
-    <message>
-        <source>MiB</source>
-        <translation>MiB</translation>
-    </message>
-    <message>
         <source>Show additional tab listing all your masternodes in first sub-tab&lt;br/&gt;and all masternodes on the network in second sub-tab.</source>
         <translation>あなたのすべてのマスターノードをリストしている追加のタブを最初のサブタブに表示し&lt;br/&gt;すべてのマスターノードを次のサブタブに表示</translation>
     </message>
@@ -1527,112 +1234,56 @@
         <translation>マスターノードタブを表示する</translation>
     </message>
     <message>
-        <source>Show additional tab listing governance proposals.</source>
-        <translation>ガバナンス提案の一覧を追加タブで表示します。</translation>
+        <source>Show additional information and buttons for PrivateSend on overview screen.</source>
+        <translation>プライベートセンドの追加の情報とボタンを概要に表示</translation>
     </message>
     <message>
-        <source>Show Governance Tab</source>
-        <translation>ガバナンスタブを表示する</translation>
+        <source>Enable advanced PrivateSend interface</source>
+        <translation>高度なプライベートセンドのインターフェイスを有効にする</translation>
+    </message>
+    <message>
+        <source>Show warning dialog when PrivateSend detects that wallet has very low number of keys left.</source>
+        <translation>プライベートセンドがウォレットに非常に少ないキーしか残されてないことを検知したとき警告を表示</translation>
+    </message>
+    <message>
+        <source>Warn if PrivateSend is running out of keys</source>
+        <translation>プライベートセンドがキーを使い果たしているとき警告する</translation>
+    </message>
+    <message>
+        <source>Whether to use experimental PrivateSend mode with multiple mixing sessions per block.&lt;br/&gt;Note: You must use this feature carefully.&lt;br/&gt;Make sure you always have recent wallet (auto)backup in a safe place!</source>
+        <translation>プライベートセンドモードを１ブロックあたり複数のミキシングセッションで実験的に使用する場合&lt;br/&gt;注意: この機能を十分に注意して使用してください。&lt;br/&gt;常に最新のウォレットバックアップを安全な場所に保管してください。</translation>
+    </message>
+    <message>
+        <source>Enable PrivateSend &amp;multi-session</source>
+        <translation>プライベートセンドとマルチセッションを有効にする(&amp;M)</translation>
     </message>
     <message>
         <source>If you disable the spending of unconfirmed change, the change from a transaction&lt;br/&gt;cannot be used until that transaction has at least one confirmation.&lt;br/&gt;This also affects how your balance is computed.</source>
         <translation>もし未確認のチェンジを使用することを無効にする場合&lt;br/&gt;トランザクションから生じたチェンジはそのトランザクションが少なくとも一回コンファメーションがないと使用できません。&lt;br/&gt;これはまたあなたのウォレットの残高の計算にも影響を与えます。</translation>
     </message>
     <message>
-        <source>Show mixing interface on Overview screen and reveal an additional screen which allows to spend fully mixed coins only.&lt;br/&gt;A new tab with more settings will also appear in this dialog, please make sure to check them before mixing your coins.</source>
-        <translation>概要画面にミキシングインターフェースを表示し、完全にミキシングされたコインのみを使用できる追加画面を表示します。&lt;br/&gt;このダイアログには、他の設定ができる新しいタブも表示されますので、コインをミキシングする前に必ず確認してください。</translation>
+        <source>PrivateSend rounds to use</source>
+        <translation>プライベートセンドを利用する際のラウンド回数</translation>
     </message>
     <message>
-        <source>Show additional information and buttons on overview screen.</source>
-        <translation>概要画面に追加情報とボタンを表示します。</translation>
+        <source>This amount acts as a threshold to turn off PrivateSend once it's reached.</source>
+        <translation>この設定は閾値として機能し、この量に達するとプライベートセンドが無効になります。</translation>
     </message>
     <message>
-        <source>Enable advanced interface</source>
-        <translation>高度なインターフェイスを有効にする</translation>
+        <source>Automatically open the Cosanta Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>自動的にルーターのCosanta Core クライアントポートを開放します。これはルーターがUPnP機能をサポートしておりUPnP機能が有効な場合にのみ機能します。</translation>
     </message>
     <message>
-        <source>Show system popups for mixing transactions&lt;br/&gt;just like for all other transaction types.</source>
-        <translation>他の全ての取引タイプと同様に、&lt;br/&gt;ミキシング取引にもシステムポップアップを表示します。</translation>
-    </message>
-    <message>
-        <source>Show popups for mixing transactions</source>
-        <translation>ミキシング取引のポップアップを表示する</translation>
-    </message>
-    <message>
-        <source>Show warning dialog when the wallet has very low number of keys left.</source>
-        <translation>ウォレットのキーの残量が非常に少なくなった場合に、警告ダイアログを表示するようにします。</translation>
-    </message>
-    <message>
-        <source>Warn if the wallet is running out of keys</source>
-        <translation>ウォレットのキーが不足している場合に警告を表示する</translation>
-    </message>
-    <message>
-        <source>Whether to use experimental mode with multiple mixing sessions per block.&lt;br/&gt;Note: You must use this feature carefully.&lt;br/&gt;Make sure you always have recent wallet (auto)backup in a safe place!</source>
-        <translation>ブロックごとに複数のミキシングセッションを行う実験モードを使用する場合。&lt;br/&gt;注意事項：この機能は慎重に使用する必要があります。&lt;br/&gt;常に安全な場所に最新のウォレットの（自動）バックアップをとっておくようにしてください。</translation>
-    </message>
-    <message>
-        <source>Enable &amp;multi-session</source>
-        <translation>マルチセッションを有効にする</translation>
-    </message>
-    <message>
-        <source>Mixing rounds</source>
-        <translation>ミキシングラウンド</translation>
-    </message>
-    <message>
-        <source>This amount acts as a threshold to turn off mixing once it's reached.</source>
-        <translation>この量に達すると、ミキシングがオフになる閾値として機能します。</translation>
-    </message>
-    <message>
-        <source>Target balance</source>
-        <translation>対象残高</translation>
-    </message>
-    <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>自動的にルーターのDash Core クライアントポートを開放します。これはルーターがUPnP機能をサポートしておりUPnP機能が有効な場合にのみ機能します。</translation>
-    </message>
-    <message>
-        <source>Automatically open the Bitcoin client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
-        <translation>ルーターでBitcoinクライアントポートを自動的に開きます。これは、ルーターがNAT-PMPをサポートし、それが有効になっている場合にのみ機能します。外部ポートはランダムになる可能性があります。</translation>
-    </message>
-    <message>
-        <source>Map port using NA&amp;T-PMP</source>
-        <translation>NA&amp;T-PMPを使用したマップポート</translation>
-    </message>
-    <message>
-        <source>Accept connections from outside.</source>
-        <translation>外部からの接続を許可する。</translation>
-    </message>
-    <message>
-        <source>Allow incomin&amp;g connections</source>
-        <translation>受信接続を許可する</translation>
-    </message>
-    <message>
-        <source>Connect to the Dash network through a SOCKS5 proxy.</source>
-        <translation>SOCKS5プロキシ経由でDashネットワークに接続します。</translation>
+        <source>Connect to the Cosanta network through a SOCKS5 proxy.</source>
+        <translation>SOCKS5プロキシ経由でCosantaネットワークに接続</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
-        <translation>SOCKS5プロキシ（デフォルトプロキシ）経由で接続： (&amp;C)</translation>
+        <translation>SOCKS5プロキシ経由で接続 (デフォルトプロキシ)： (&amp;C)</translation>
     </message>
     <message>
         <source>Shows if the supplied default SOCKS5 proxy is used to reach peers via this network type.</source>
         <translation>指定されたデフォルトのSOCKS5プロキシを使用して、このネットワークタイプ経由でピアに到達するかどうかを表示。</translation>
-    </message>
-    <message>
-        <source>Use separate SOCKS&amp;5 proxy to reach peers via Tor hidden services:</source>
-        <translation>Torの非表示サービスを経由してピアに到達するために、別のSOCKS&amp;5プロキシを使用します。</translation>
-    </message>
-    <message>
-        <source>Options set in this dialog are overridden by the command line or in the configuration file:</source>
-        <translation>このダイアログで設定されたオプションは、コマンドラインまたは設定ファイルによって上書きされます。</translation>
-    </message>
-    <message>
-        <source>Hide the icon from the system tray.</source>
-        <translation>システムトレイからアイコンを非表示にします。</translation>
-    </message>
-    <message>
-        <source>&amp;Hide tray icon</source>
-        <translation>トレイアイコンを非表示にする(&amp;H)</translation>
     </message>
     <message>
         <source>Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Exit in the menu.</source>
@@ -1641,10 +1292,6 @@
     <message>
         <source>Third party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items.&lt;br/&gt;%s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</source>
         <translation>メニューアイテムとしてトランザクションタブに表示されるサードパーティのURL (例 ブロックエクスプローラー) :&lt;br/&gt;%s はトランザクションハッシュに置き換えられます。複数のURLは"|"によって区切られます。</translation>
-    </message>
-    <message>
-        <source>&amp;Third party transaction URLs</source>
-        <translation>サードパーティのトランザクションURL(&amp;T)</translation>
     </message>
     <message>
         <source>Whether to show coin control features or not.</source>
@@ -1663,20 +1310,20 @@
         <translation>コインコントロール機能を有効化 (&amp;C)</translation>
     </message>
     <message>
+        <source>Show system popups for PrivateSend mixing transactions&lt;br/&gt;just like for all other transaction types.</source>
+        <translation>守秘送金［プライベートセンド］のミキシングトランザクション&lt;br/&gt;を他のすべてのトランザクションタイプと同じようにポップアップ表示します。</translation>
+    </message>
+    <message>
+        <source>Show popups for PrivateSend transactions</source>
+        <translation>守秘送金［プライベートセンド］トランザクションのポップアップを表示する</translation>
+    </message>
+    <message>
         <source>&amp;Spend unconfirmed change</source>
         <translation>未検証のチェンジを使用 (&amp;S)</translation>
     </message>
     <message>
-        <source>This setting determines the amount of individual masternodes that an input will be mixed through.&lt;br/&gt;More rounds of mixing gives a higher degree of privacy, but also costs more in fees.</source>
-        <translation>この設定は、入力がミキシングされる個々のマスターノードの量を指定します。&lt;br/&gt;ミキシングのラウンド数を増やすと、より高度なプライバシーが得られますが、その分料金も高くなります。</translation>
-    </message>
-    <message>
         <source>&amp;Network</source>
         <translation>ネットワーク (&amp;N)</translation>
-    </message>
-    <message>
-        <source>Enabling pruning significantly reduces the disk space required to store transactions. All blocks are still fully validated. Reverting this setting requires re-downloading the entire blockchain.</source>
-        <translation>プルーニングを有効にすると、取引を保存するのに必要なディスク容量が大幅に削減されます。すべてのブロックは完全に検証されたままです。この設定を元に戻すには、ブロックチェーン全体を再ダウンロードする必要があります。</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
@@ -1715,8 +1362,8 @@
         <translation>Tor</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a separate SOCKS5 proxy for Tor hidden services.</source>
-        <translation>Tor秘匿サービスを利用するため独立なSOCKS5プロキシ経由でDashネットワークに接続</translation>
+        <source>Connect to the Cosanta network through a separate SOCKS5 proxy for Tor hidden services.</source>
+        <translation>Tor秘匿サービスを利用するため独立なSOCKS5プロキシ経由でCosantaネットワークに接続</translation>
     </message>
     <message>
         <source>Show only a tray icon after minimizing the window.</source>
@@ -1744,9 +1391,9 @@
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/projects/p/dash/</source>
+https://www.transifex.com/projects/p/cosanta/</source>
         <translation>希望の言語がない場合または翻訳に問題がある場合はこちらで翻訳にご協力ください。:
-https://www.transifex.com/projects/p/dash/</translation>
+https://www.transifex.com/projects/p/cosanta/</translation>
     </message>
     <message>
         <source>&amp;Unit to show amounts in:</source>
@@ -1759,6 +1406,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Decimal digits</source>
         <translation>10進数</translation>
+    </message>
+    <message>
+        <source>Active command-line options that override above options:</source>
+        <translation>上のオプションを置き換えることのできる有効なコマンドラインオプションの一覧：</translation>
     </message>
     <message>
         <source>Reset all client options to default.</source>
@@ -1775,10 +1426,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>&amp;Cancel</source>
         <translation>キャンセル (&amp;C)</translation>
-    </message>
-    <message>
-        <source>Enable %1 features</source>
-        <translation>%1の機能を有効にする</translation>
     </message>
     <message>
         <source>default</source>
@@ -1812,8 +1459,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>フォーム</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Dash network after a connection is established, but this process has not completed yet.</source>
-        <translation>表示された情報は古いかもしれません。接続が確立されればあなたのウォレットは Dashネットワークと自動的に同期しますが、このプロセスはまだ完了していません。</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Cosanta network after a connection is established, but this process has not completed yet.</source>
+        <translation>表示された情報は古いかもしれません。接続が確立されればあなたのウォレットは Cosantaネットワークと自動的に同期しますが、このプロセスはまだ完了していません。</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -1876,6 +1523,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>使用可能：</translation>
     </message>
     <message>
+        <source>PrivateSend</source>
+        <translation>プライベートセンド</translation>
+    </message>
+    <message>
         <source>Status:</source>
         <translation>ステータス：</translation>
     </message>
@@ -1892,8 +1543,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>金額とラウンド</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
-        <translation>0 DASH / 0 ラウンド</translation>
+        <source>0 COSA / 0 Rounds</source>
+        <translation>0 COSA / 0 ラウンド</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -1912,6 +1563,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>ミキシング開始/停止 </translation>
     </message>
     <message>
+        <source>PrivateSend Balance:</source>
+        <translation>プライベートセンド残高:</translation>
+    </message>
+    <message>
         <source>The denominations you submitted to the Masternode.&lt;br&gt;To mix, other users must submit the exact same denominations.</source>
         <translation>マスターノードに送った通貨単位&lt;br&gt;ミキシングをするには他のユーザーが正確に同じ通貨単位を送る必要があります。</translation>
     </message>
@@ -1924,24 +1579,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>自動バックアップが無効でミキシングは利用不可能です！</translation>
     </message>
     <message>
-        <source>No inputs detected</source>
-        <translation>インプットが検知できません</translation>
+        <source>Start Mixing</source>
+        <translation>ミキシング開始</translation>
     </message>
     <message>
-        <source>%1 Balance</source>
-        <translation>%1の残額</translation>
+        <source>Stop Mixing</source>
+        <translation>ミキシング停止</translation>
+    </message>
+    <message>
+        <source>No inputs detected</source>
+        <translation>インプットが検知できません</translation>
     </message>
     <message numerus="yes">
         <source>%n Rounds</source>
         <translation><numerusform>%n ラウンド</numerusform></translation>
-    </message>
-    <message>
-        <source>Found enough compatible inputs to mix %1</source>
-        <translation>%1をミキシングするのに十分な互換性のある入力が見つかりました。</translation>
-    </message>
-    <message>
-        <source>Not enough compatible inputs to mix &lt;span style='%1'&gt;%2&lt;/span&gt;,&lt;br&gt;will mix &lt;span style='%1'&gt;%3&lt;/span&gt; instead</source>
-        <translation>&lt;span style='%1'&gt;%2&lt;/span&gt;をミキシングするのに十分な互換性のある入力がないため、&lt;br&gt;代わりに&lt;span style='%1'&gt;%3&lt;/span&gt;をミキシングします。</translation>
     </message>
     <message>
         <source>Overall progress</source>
@@ -1950,10 +1601,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Denominated</source>
         <translation>ミキシング準備完了</translation>
-    </message>
-    <message>
-        <source>Partially mixed</source>
-        <translation>ミキシング一部完了</translation>
     </message>
     <message>
         <source>Mixed</source>
@@ -1968,36 +1615,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>残されたキー: %1</translation>
     </message>
     <message>
-        <source>Start %1</source>
-        <translation>%1を開始する</translation>
-    </message>
-    <message>
-        <source>If you don't want to see internal %1 fees/transactions select "Most Common" as Type on the "Transactions" tab.</source>
-        <translation>内部にある%1の料金や取引を表示しない場合は、「取引」タブでタイプとして「最も一般的なもの」を選択します。</translation>
-    </message>
-    <message>
-        <source>%1 requires at least %2 to use.</source>
-        <translation>%1を使用するには、最低%2が必要です。</translation>
-    </message>
-    <message>
-        <source>Wallet is locked and user declined to unlock. Disabling %1.</source>
-        <translation>ウォレットがロックされ、ユーザーがロック解除を拒否しました。%1を無効にしています。</translation>
-    </message>
-    <message>
-        <source>Stop %1</source>
-        <translation>%1を停止する</translation>
-    </message>
-    <message>
         <source>Disabled</source>
         <translation>無効</translation>
     </message>
     <message>
         <source>Very low number of keys left since last automatic backup!</source>
         <translation>前回の自動バックアップから残されたキーの数がほとんどありません！</translation>
-    </message>
-    <message>
-        <source>We are about to create a new automatic backup for you, however &lt;span style='%1'&gt; you should always make sure you have backups saved in some safe place&lt;/span&gt;!</source>
-        <translation>今から新しい自動バックアップを作成しますが、&lt;span style='%1'&gt;常に安全な場所にバックアップが保存されていることを確認してください&lt;/span&gt;。</translation>
     </message>
     <message>
         <source>Note: You can turn this message off in options.</source>
@@ -2027,6 +1650,18 @@ https://www.transifex.com/projects/p/dash/</translation>
         <source>WARNING! Failed to replenish keypool, please unlock your wallet to do so.</source>
         <translation>警告! キープールの補充に失敗しました。ウォレットをアンロックしてキープールを補充してください</translation>
     </message>
+    <message>
+        <source>If you don't want to see internal PrivateSend fees/transactions select "Most Common" as Type on the "Transactions" tab.</source>
+        <translation>プライベートセンドのトランザクションや手数料を非表示にしたい場合はトランザクションタブ上で”通常”をタイプとして選択してください。</translation>
+    </message>
+    <message>
+        <source>PrivateSend requires at least %1 to use.</source>
+        <translation>プライベートセンドは最低 %1 使用します。</translation>
+    </message>
+    <message>
+        <source>Wallet is locked and user declined to unlock. Disabling PrivateSend.</source>
+        <translation>ウォレットはロックされ、ユーザーはアンロックを拒否しました。プライベートセンドを無効にします。</translation>
+    </message>
 </context>
 <context>
     <name>PaymentServer</name>
@@ -2035,32 +1670,24 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>支払いリクエストのエラー</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
-        <translation>Dash を起動できません: click-to-pay ハンドラー</translation>
+        <source>Cannot start cosanta: click-to-pay handler</source>
+        <translation>Cosanta を起動できません: click-to-pay ハンドラー</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>URI のハンドリング</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>「dash://」は有効なURIではありません。代わりに「dash:」を使ってください。</translation>
-    </message>
-    <message>
         <source>Payment request fetch URL is invalid: %1</source>
         <translation>支払いリクエストの取得先URLが無効です： %1</translation>
-    </message>
-    <message>
-        <source>Cannot process payment request because BIP70 support was not compiled in.</source>
-        <translation>BIP70のサポートがコンパイルされていないため、支払いリクエストを処理できません。</translation>
     </message>
     <message>
         <source>Invalid payment address %1</source>
         <translation>支払いのアドレス　%1　は無効です</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Dash address or malformed URI parameters.</source>
-        <translation>URI を解析できません! これは無効な Dash アドレスあるいは不正な形式の URI パラメーターによって引き起こされた可能性があります。</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid Cosanta address or malformed URI parameters.</source>
+        <translation>URI を解析できません! これは無効な Cosanta アドレスあるいは不正な形式の URI パラメーターによって引き起こされた可能性があります。</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -2100,7 +1727,7 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
     <message>
         <source>Refund from %1</source>
-        <translation>%1 からの返金</translation>
+        <translation>%1 からのリファンド</translation>
     </message>
     <message>
         <source>Payment request %1 is too large (%2 bytes, allowed %3 bytes).</source>
@@ -2145,147 +1772,9 @@ https://www.transifex.com/projects/p/dash/</translation>
         <source>Ping</source>
         <translation>Ping</translation>
     </message>
-    <message>
-        <source>Sent</source>
-        <translation>送金しました</translation>
-    </message>
-    <message>
-        <source>Received</source>
-        <translation>受け取りました</translation>
-    </message>
-</context>
-<context>
-    <name>Proposal</name>
-    <message>
-        <source>Passing +%1</source>
-        <translation>+%1のパッシング</translation>
-    </message>
-    <message>
-        <source>Needs additional %1 votes</source>
-        <translation>%1の追加投票が必要です</translation>
-    </message>
-</context>
-<context>
-    <name>ProposalModel</name>
-    <message>
-        <source>Yes</source>
-        <translation>はい</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation>いいえ</translation>
-    </message>
-    <message>
-        <source>Hash</source>
-        <translation>ハッシュ</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation>タイトル</translation>
-    </message>
-    <message>
-        <source>Start</source>
-        <translation>起動</translation>
-    </message>
-    <message>
-        <source>End</source>
-        <translation>終了</translation>
-    </message>
-    <message>
-        <source>Amount</source>
-        <translation>金額</translation>
-    </message>
-    <message>
-        <source>Active</source>
-        <translation>アクティブ</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation>ステータス</translation>
-    </message>
-</context>
+    </context>
 <context>
     <name>QObject</name>
-    <message>
-        <source>Choose data directory on startup (default: %u)</source>
-        <translation>起動時にデータディレクトリを選択する（デフォルト：%u）</translation>
-    </message>
-    <message>
-        <source>Set the font family. Possible values: %1. (default: %2)</source>
-        <translation>フォントファミリを設定する。設定可能な値：%1。(デフォルト：%2)</translation>
-    </message>
-    <message>
-        <source>Set a scale factor which gets applied to the base font size. Possible range %1 (smallest fonts) to %2 (largest fonts). (default: %3)</source>
-        <translation>基本の文字サイズに適用されるスケールファクターを設定します。設定可能な範囲は、%1（最小の文字）〜%2（最大の文字）です。（デフォルト：%3）</translation>
-    </message>
-    <message>
-        <source>Set the font weight for bold texts. Possible range %1 to %2 (default: %3)</source>
-        <translation>太字の文字の太さを設定します。設定可能範囲：%1〜%2（デフォルト：%3）</translation>
-    </message>
-    <message>
-        <source>Set the font weight for normal texts. Possible range %1 to %2 (default: %3)</source>
-        <translation>通常の文字に対する文字の太さを設定します。設定可能範囲：%1〜%2（デフォルト：%3）</translation>
-    </message>
-    <message>
-        <source>Set language, for example "de_DE" (default: system locale)</source>
-        <translation>言語を設定します。例：「de_DE」（デフォルト：システムロケール）</translation>
-    </message>
-    <message>
-        <source>Start minimized</source>
-        <translation>最小化を開始する</translation>
-    </message>
-    <message>
-        <source>Reset all settings changed in the GUI</source>
-        <translation>GUIで変更した設定をすべてリセットする</translation>
-    </message>
-    <message>
-        <source>Set SSL root certificates for payment request (default: -system-)</source>
-        <translation>支払いリクエストのSSLルート証明書を設定する（デフォルト：-system-）</translation>
-    </message>
-    <message>
-        <source>Show splash screen on startup (default: %u)</source>
-        <translation>起動時にスプラッシュ・スクリーンを表示（デフォルト：%u）</translation>
-    </message>
-    <message>
-        <source>Error: Specified data directory "%1" does not exist.</source>
-        <translation>エラー：指定されたデータ・ディレクトリ「%1」は存在しません。</translation>
-    </message>
-    <message>
-        <source>Error: Cannot parse configuration file: %1.</source>
-        <translation>エラー：%1の構成ファイルを解析できません。</translation>
-    </message>
-    <message>
-        <source>Error: %1</source>
-        <translation>エラー：%1</translation>
-    </message>
-    <message>
-        <source>Error: Failed to load application fonts.</source>
-        <translation>エラー：アプリケーションフォントの読み込みに失敗しました。</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-family invalid. Valid values: %1.</source>
-        <translation>エラー：指定されたフォントファミリが無効です。有効値：%1。</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-weight-normal invalid. Valid range %1 to %2.</source>
-        <translation>エラー：指定された文字の太さ（通常）は無効です。有効範囲は、%1～%2です。</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-weight-bold invalid. Valid range %1 to %2.</source>
-        <translation>エラー：指定された文字の太さ（太字）は無効です。有効範囲は、%1～%2です。</translation>
-    </message>
-    <message>
-        <source>Error: Specified font-scale invalid. Valid range %1 to %2.</source>
-        <translation>エラー：指定された文字の大きさは無効です。有効範囲は、%1～%2です。</translation>
-    </message>
-    <message>
-        <source>Error: Invalid -custom-css-dir path.</source>
-        <translation>エラー：無効な-custom-css-dirパスです。</translation>
-    </message>
-    <message>
-        <source>Error: %1 CSS file(s) missing in -custom-css-dir path.</source>
-        <translation>エラー：%1のCSSファイルが-custom-css-dirパスにありません。</translation>
-    </message>
     <message>
         <source>%1 didn't yet exit safely...</source>
         <translation>%1 はまだ安全に終了していません</translation>
@@ -2295,20 +1784,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>総額</translation>
     </message>
     <message>
-        <source>Enter a Dash address (e.g. %1)</source>
-        <translation>Dashアドレスを入力してください (例 %1)</translation>
-    </message>
-    <message>
-        <source>Appearance Setup</source>
-        <translation>アピアランスのセットアップ</translation>
-    </message>
-    <message>
-        <source>Please choose your preferred settings for the appearance of %1</source>
-        <translation>%1の表示に関して、お好みの設定をお選びください。</translation>
-    </message>
-    <message>
-        <source>This can also be adjusted later in the "Appearance" tab of the preferences.</source>
-        <translation>これは、初期設定の「表示」タブで後で調整することも可能です。</translation>
+        <source>Enter a Cosanta address (e.g. %1)</source>
+        <translation>Cosantaアドレスを入力してください (例 %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -2367,26 +1844,25 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>%1 と %2</translation>
     </message>
     <message>
-        <source>%1 B</source>
-        <translation>%1 B</translation>
-    </message>
-    <message>
-        <source>%1 KB</source>
-        <translation>%1 KB</translation>
-    </message>
-    <message>
-        <source>%1 MB</source>
-        <translation>%1 MB</translation>
-    </message>
-    <message>
-        <source>%1 GB</source>
-        <translation>%1 GB</translation>
-    </message>
-    <message>
         <source>unknown</source>
-        <translation>不明</translation>
+        <translation>未確認</translation>
     </message>
 </context>
+<context>
+    <name>QObject::QObject</name>
+    <message>
+        <source>Error: Specified data directory "%1" does not exist.</source>
+        <translation>エラー: 指定のデータディレクトリ "%1" は存在しません</translation>
+    </message>
+    <message>
+        <source>Error: Cannot parse configuration file: %1. Only use key=value syntax.</source>
+        <translation>エラー: 設定ファイル: %1をパースできません。key=value という記法のみを利用してください。</translation>
+    </message>
+    <message>
+        <source>Error: %1</source>
+        <translation>エラー: %1</translation>
+    </message>
+    </context>
 <context>
     <name>QRDialog</name>
     <message>
@@ -2434,18 +1910,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>&amp;Copy Image</source>
         <translation>画像をコピー(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Resulting URI too long, try to reduce the text for label / message.</source>
-        <translation>結果のURIが長すぎるため、ラベル/メッセージのテキストを減らしてみてください。</translation>
-    </message>
-    <message>
-        <source>Error encoding URI into QR Code.</source>
-        <translation>URIをQRコードにエンコードする際にエラーが発生しました。</translation>
-    </message>
-    <message>
-        <source>QR code support not available.</source>
-        <translation>QRコードには対応していません。</translation>
     </message>
     <message>
         <source>Save QR Code</source>
@@ -2503,8 +1967,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>デバッグ用ログファイル</translation>
     </message>
     <message>
+        <source>Current number of blocks</source>
+        <translation>現在のブロック数</translation>
+    </message>
+    <message>
         <source>Client version</source>
         <translation>クライアントのバージョン</translation>
+    </message>
+    <message>
+        <source>Using BerkeleyDB version</source>
+        <translation>使用中のBerkleyDBバージョン</translation>
     </message>
     <message>
         <source>Block chain</source>
@@ -2551,10 +2023,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>ピア (&amp;P)</translation>
     </message>
     <message>
-        <source>Wallet:</source>
-        <translation>ウォレット：</translation>
-    </message>
-    <message>
         <source>Banned peers</source>
         <translation>Banされたピア</translation>
     </message>
@@ -2587,26 +2055,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>同期済みブロック</translation>
     </message>
     <message>
-        <source>Rescan blockchain files 1</source>
-        <translation>ブロックチェーンファイル1の再スキャンをする</translation>
-    </message>
-    <message>
-        <source>Rescan blockchain files 2</source>
-        <translation>ブロックチェーンファイル2の再スキャンをする</translation>
-    </message>
-    <message>
-        <source>The buttons below will restart the wallet with command-line options to repair the wallet, fix issues with corrupt blockchain files or missing/obsolete transactions.</source>
-        <translation>下記のボタンは、ウォレットを修復し、破損したブロックチェーンファイルや欠落または削除された取引の問題を修正するためのコマンドラインオプションを使用してウォレットを再起動します。</translation>
-    </message>
-    <message>
-        <source>-rescan=1: Rescan the block chain for missing wallet transactions starting from wallet creation time.</source>
-        <translation>-rescan=1：ウォレット作成時から始まるウォレット取引の欠落のために、ブロックチェーンを再スキャンします。</translation>
-    </message>
-    <message>
-        <source>-rescan=2: Rescan the block chain for missing wallet transactions starting from genesis block.</source>
-        <translation>-rescan=2：ジェネシスブロックから始まるウォレット取引の欠落のために、ブロックチェーンを再スキャンします。</translation>
-    </message>
-    <message>
         <source>Wallet Path</source>
         <translation>ウォレットパス</translation>
     </message>
@@ -2619,44 +2067,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>データディレクトリ</translation>
     </message>
     <message>
-        <source>To specify a non-default location of the data directory use the '%1' option.</source>
-        <translation>データディレクトリのデフォルトでない場所を指定するには、「%1」のオプションを使用します。</translation>
-    </message>
-    <message>
-        <source>Blocksdir</source>
-        <translation>ブロックディレクトリ</translation>
-    </message>
-    <message>
-        <source>To specify a non-default location of the blocks directory use the '%1' option.</source>
-        <translation>ブロックディレクトリのデフォルトでない場所を指定するには、「%1」のオプションを使用します。</translation>
-    </message>
-    <message>
-        <source>Current block height</source>
-        <translation>現在のブロックの高さ</translation>
-    </message>
-    <message>
-        <source>Last block hash</source>
-        <translation>直近のブロックハッシュ</translation>
-    </message>
-    <message>
-        <source>Latest ChainLocked block hash</source>
-        <translation>最新のチェーンロックされたブロックハッシュ</translation>
-    </message>
-    <message>
-        <source>Latest ChainLocked block height</source>
-        <translation>最新のチェーンロックされたブロックの高さ</translation>
-    </message>
-    <message>
         <source>Open the %1 debug log file from the current data directory. This can take a few seconds for large log files.</source>
         <translation>現在のデータディレクトリから %1 デバッグ用ログファイルを開きます。ログファイルが巨大な場合数秒かかることがあります。</translation>
     </message>
     <message>
         <source>InstantSend locks</source>
         <translation>インスタントセンドロック</translation>
-    </message>
-    <message>
-        <source>(none)</source>
-        <translation>(なし)</translation>
     </message>
     <message>
         <source>Decrease font size</source>
@@ -2669,14 +2085,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>&amp;Reset</source>
         <translation>&amp;リセット</translation>
-    </message>
-    <message>
-        <source>Node Type</source>
-        <translation>ノードの種類</translation>
-    </message>
-    <message>
-        <source>PoSe Score</source>
-        <translation>PoSeスコア</translation>
     </message>
     <message>
         <source>Services</source>
@@ -2723,6 +2131,14 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>ウォレット修復（&amp;W)</translation>
     </message>
     <message>
+        <source>Salvage wallet</source>
+        <translation>ウォレットの救出</translation>
+    </message>
+    <message>
+        <source>Rescan blockchain files</source>
+        <translation>ブロックチェーンファイルの再スキャン</translation>
+    </message>
+    <message>
         <source>Recover transactions 1</source>
         <translation>トランザクション1のリカバー</translation>
     </message>
@@ -2733,6 +2149,18 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Upgrade wallet format</source>
         <translation>ウォレットフォーマットのアップグレード</translation>
+    </message>
+    <message>
+        <source>The buttons below will restart the wallet with command-line options to repair the wallet, fix issues with corrupt blockhain files or missing/obsolete transactions.</source>
+        <translation>このボタンは、過去の不明なトランザクションや問題のあるブロックチェーンファイルによるバグを修復するためコマンドラインオプションを使用してウォレットをリスタートします。</translation>
+    </message>
+    <message>
+        <source>-salvagewallet: Attempt to recover private keys from a corrupt wallet.dat.</source>
+        <translation>-salvagewallet: 問題のある wallet.dat からプライベートキーをリカバーします</translation>
+    </message>
+    <message>
+        <source>-rescan: Rescan the block chain for missing wallet transactions.</source>
+        <translation>-rescan: 不明なウォレットトランザクションがあるためブロックチェーンを再スキャンします</translation>
     </message>
     <message>
         <source>-zapwallettxes=1: Recover transactions from blockchain (keep meta-data, e.g. account owner).</source>
@@ -2795,14 +2223,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>上下の矢印を使用して履歴をナビゲートし、 %1 を使用して画面をクリアします。</translation>
     </message>
     <message>
-        <source>Type %1 for an overview of available commands.</source>
-        <translation>利用可能なコマンドの概要については、%1と入力してください。</translation>
-    </message>
-    <message>
-        <source>For more information on using this console type %1.</source>
-        <translation>このコンソールの使用に関する詳細は、%1と入力してください。</translation>
-    </message>
-    <message>
         <source>WARNING: Scammers have been active, telling users to type commands here, stealing their wallet contents. Do not use this console without fully understanding the ramifications of a command.</source>
         <translation>警告：詐欺師は常にアクティブであり、ユーザーにここへのコマンドを入力させ、ウォレットの中身を盗みます。 コマンドの影響を完全に理解せずにこのコンソールを使用しないでください。</translation>
     </message>
@@ -2821,14 +2241,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Total: %1 (Enabled: %2)</source>
         <translation>合計: %1 (有効: %2)</translation>
-    </message>
-    <message>
-        <source>Executing command without any wallet</source>
-        <translation>ウォレットなしでコマンドを実行する</translation>
-    </message>
-    <message>
-        <source>Executing command using "%1" wallet</source>
-        <translation>「%1」のウォレットを使用してコマンドを実行する</translation>
     </message>
     <message>
         <source>(node id: %1)</source>
@@ -2859,27 +2271,15 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>いいえ</translation>
     </message>
     <message>
-        <source>Regular</source>
-        <translation>通常</translation>
-    </message>
-    <message>
-        <source>Masternode</source>
-        <translation>マスターノード</translation>
-    </message>
-    <message>
-        <source>Verified Masternode</source>
-        <translation>認証済のマスターノード</translation>
-    </message>
-    <message>
         <source>Unknown</source>
-        <translation>不明</translation>
+        <translation>未知</translation>
     </message>
 </context>
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>支払いリクエストが開始された時に表示される、支払いリクエストに添付される任意のメッセージです。注意：このメッセージはDashネットワークを通じて支払いと共に送信されるわけではありません。</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Cosanta network.</source>
+        <translation>支払いリクエストが開始された時に表示される、支払いリクエストに添付される任意のメッセージです。注意：このメッセージはCosantaネットワークを通じて支払いと共に送信されるわけではありません。</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -2890,8 +2290,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>新しい受け取り用アドレスに紐づく任意のラベル。</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>支払いリクエストが開始された時に表示される、支払いリクエストに添付される任意のメッセージです。注意：このメッセージはDashネットワークを通じて支払いと共に送信されるわけではありません。</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Cosanta network.</source>
+        <translation>支払いリクエストが開始された時に表示される、支払いリクエストに添付される任意のメッセージです。注意：このメッセージはCosantaネットワークを通じて支払いと共に送信されるわけではありません。</translation>
     </message>
     <message>
         <source>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</source>
@@ -2910,8 +2310,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>総額 (&amp;A)</translation>
     </message>
     <message>
-        <source>&amp;Create new receiving address</source>
-        <translation>新しい受取アドレスを作成(&amp;C)</translation>
+        <source>&amp;Request payment</source>
+        <translation>支払いをリクエストする (&amp;R)</translation>
     </message>
     <message>
         <source>Clear all fields of the form.</source>
@@ -2942,20 +2342,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>削除</translation>
     </message>
     <message>
-        <source>Enter a label to associate with the new receiving address</source>
-        <translation>新しい受信アドレスと関連付けるラベルを入力します。</translation>
-    </message>
-    <message>
-        <source>Enter a message to attach to the payment request</source>
-        <translation>支払いリクエストに添付するメッセージを入力します</translation>
-    </message>
-    <message>
         <source>Copy URI</source>
         <translation>URI をコピー</translation>
-    </message>
-    <message>
-        <source>Copy address</source>
-        <translation>アドレスをコピー</translation>
     </message>
     <message>
         <source>Copy label</source>
@@ -3017,8 +2405,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>メッセージ</translation>
     </message>
     <message>
-        <source>Wallet</source>
-        <translation>ウォレット</translation>
+        <source>Resulting URI too long, try to reduce the text for label / message.</source>
+        <translation>URI が長過ぎます。ラベルやメッセージのテキストを短くしてください。</translation>
+    </message>
+    <message>
+        <source>Error encoding URI into QR Code.</source>
+        <translation>QRコード用のURIエンコードエラー</translation>
     </message>
 </context>
 <context>
@@ -3119,16 +2511,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>選択…</translation>
     </message>
     <message>
+        <source>collapse fee-settings</source>
+        <translation>手数料設定を非表示</translation>
+    </message>
+    <message>
         <source>Confirmation time target:</source>
         <translation>検証時間ターゲット:</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
-        <translation>カスタマイズされた手数料が1000duffsに設定され、トランザクションが250 bytesしかなかった場合、キロバイトあたりでは250 duffsしか手数料を支払いませんが&lt;br /&gt;最低でも1000 duffs支払います。1キロバイト以上のトランザクションに対しては、1キロバイトあたり1000duffs支払います。</translation>
+        <source>If the custom fee is set to 1000 units and the transaction is only 250 bytes, then "per kilobyte" only pays 250 units in fee,&lt;br /&gt;while "at least" pays 1000 units. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <translation>カスタマイズされた手数料が1000unitsに設定され、トランザクションが250 bytesしかなかった場合、キロバイトあたりでは250 unitsしか手数料を支払いませんが&lt;br /&gt;最低でも1000 units支払います。1キロバイト以上のトランザクションに対しては、1キロバイトあたり1000units支払います。</translation>
     </message>
     <message>
-        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
-        <translation>最低限の手数料しか支払わなくても、トランザクション量以上のスペースが対象ブロックにあれば問題ありません。&lt;br /&gt;しかし、ネットワークが処理できる以上のDashのトランザクション需要があれば、処理されないトランザクションになり得ることに注意してください。</translation>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for Cosanta transactions than the network can process.</source>
+        <translation>最低限の手数料しか支払わなくても、トランザクション量以上のスペースが対象ブロックにあれば問題ありません。&lt;br /&gt;しかし、ネットワークが処理できる以上のCosantaのトランザクション需要があれば、処理されないトランザクションになり得ることに注意してください。</translation>
     </message>
     <message>
         <source>per kilobyte</source>
@@ -3141,10 +2537,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Note: Not enough data for fee estimation, using the fallback fee instead.</source>
         <translation>注：フォールバックフィーを代わりに使用しているので、手数料の見積もりに十分なデータがありません。</translation>
-    </message>
-    <message>
-        <source>Hide transaction fee settings</source>
-        <translation>取引手数料設定の非表示</translation>
     </message>
     <message>
         <source>Hide</source>
@@ -3227,10 +2619,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>%1 (%2 ブロック)</translation>
     </message>
     <message>
-        <source>from wallet %1</source>
-        <translation>%1のウォレットから</translation>
-    </message>
-    <message>
         <source>using</source>
         <translation>使用中</translation>
     </message>
@@ -3243,60 +2631,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>送ってよろしいですか？</translation>
     </message>
     <message>
+        <source>are added as transaction fee</source>
+        <translation>：トランザクション手数料として追加されます</translation>
+    </message>
+    <message>
+        <source>Total Amount = &lt;b&gt;%1&lt;/b&gt;&lt;br /&gt;= %2</source>
+        <translation>トータルの金額 = &lt;b&gt;%1&lt;/b&gt;&lt;br /&gt;= %2</translation>
+    </message>
+    <message>
         <source>&lt;b&gt;(%1 of %2 entries displayed)&lt;/b&gt;</source>
         <translation>&lt;b&gt;(%1 ／%2 項目を表示)&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>S&amp;end mixed funds</source>
-        <translation>ミックスファンドを送金する</translation>
-    </message>
-    <message>
-        <source>Confirm the %1 send action</source>
-        <translation>%1の送金処理を確認</translation>
-    </message>
-    <message>
-        <source>%1 funds only</source>
-        <translation>%1の資金のみ</translation>
-    </message>
-    <message>
         <source>any available funds</source>
         <translation>利用可能なファンド </translation>
-    </message>
-    <message>
-        <source>Transaction fee</source>
-        <translation>取引手数料</translation>
-    </message>
-    <message>
-        <source>(%1 transactions have higher fees usually due to no change output being allowed)</source>
-        <translation>（%1の取引は、通常変更出力が許可されていないため、手数料が高くなります）</translation>
-    </message>
-    <message>
-        <source>Transaction size: %1</source>
-        <translation>取引額：%1</translation>
-    </message>
-    <message>
-        <source>Fee rate: %1</source>
-        <translation>料金レート：%1</translation>
-    </message>
-    <message numerus="yes">
-        <source>This transaction will consume %n input(s)</source>
-        <translation><numerusform>この取引は、%n個の入力を消費します。</numerusform></translation>
-    </message>
-    <message>
-        <source>Warning: Using %1 with %2 or more inputs can harm your privacy and is not recommended</source>
-        <translation>警告：%1を%2以上の入力で使用すると、プライバシーが侵害される可能性があり、推奨できません。</translation>
-    </message>
-    <message>
-        <source>Click to learn more</source>
-        <translation>クリックしてさらに詳しく</translation>
-    </message>
-    <message>
-        <source>Total Amount</source>
-        <translation>総額</translation>
-    </message>
-    <message>
-        <source>or</source>
-        <translation>または</translation>
     </message>
     <message>
         <source>Confirm send coins</source>
@@ -3327,6 +2675,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>トラザクションの作成に失敗しました!</translation>
     </message>
     <message>
+        <source>The transaction was rejected with the following reason: %1</source>
+        <translation>トランザクションは以下の理由によりリジェクトされました: %1</translation>
+    </message>
+    <message>
         <source>A fee higher than %1 is considered an absurdly high fee.</source>
         <translation>%1 よりも高い手数料の場合手数料が異常に高すぎると判断されます。</translation>
     </message>
@@ -3343,8 +2695,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation><numerusform>%n ブロック以内に検証が開始されると予想されます</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Dash address</source>
-        <translation>警告：Dashアドレスが無効です</translation>
+        <source>Warning: Invalid Cosanta address</source>
+        <translation>警告：Cosantaアドレスが無効です</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -3366,12 +2718,16 @@ https://www.transifex.com/projects/p/dash/</translation>
 <context>
     <name>SendCoinsEntry</name>
     <message>
+        <source>This is a normal payment.</source>
+        <translation>これは通常の支払いです。</translation>
+    </message>
+    <message>
         <source>Pay &amp;To:</source>
         <translation>送り先: (&amp;T)</translation>
     </message>
     <message>
-        <source>The Dash address to send the payment to</source>
-        <translation>送金先Dashアドレス</translation>
+        <source>The Cosanta address to send the payment to</source>
+        <translation>送金先Cosantaアドレス</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3406,28 +2762,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>金額： (&amp;M)</translation>
     </message>
     <message>
-        <source>The amount to send in the selected unit</source>
-        <translation>選択した単位で送金する金額</translation>
-    </message>
-    <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>手数料は総額から差し引かれます。受取人は入力した金額より少ないDashを受け取ります。複数の受取人を選択した場合、手数料は等しく分割されます。</translation>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Cosanta than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <translation>手数料は総額から差し引かれます。受取人は入力した金額より少ないCosantaを受け取ります。複数の受取人を選択した場合、手数料は等しく分割されます。</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
         <translation>総額から手数料を差し引いて送金(&amp;U)</translation>
     </message>
     <message>
-        <source>Use available balance</source>
-        <translation>利用可能な残高を使用する</translation>
-    </message>
-    <message>
         <source>Message:</source>
         <translation>メッセージ：</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Dash network.</source>
-        <translation>Dash: URIに添付されていたメッセージです。これは参照用としてトランザクションとともに保存されます。注意：このメッセージはDashネットワークを経由して送信されるわけではありません。</translation>
+        <source>A message that was attached to the cosanta: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Cosanta network.</source>
+        <translation>Cosanta: URIに添付されていたメッセージです。これは参照用としてトランザクションとともに保存されます。注意：このメッセージはCosantaネットワークを経由して送信されるわけではありません。</translation>
     </message>
     <message>
         <source>This is an unauthenticated payment request.</source>
@@ -3453,8 +2801,8 @@ https://www.transifex.com/projects/p/dash/</translation>
 <context>
     <name>SendConfirmationDialog</name>
     <message>
-        <source>Send</source>
-        <translation>送金</translation>
+        <source>Yes</source>
+        <translation>はい</translation>
     </message>
 </context>
 <context>
@@ -3479,12 +2827,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>メッセージの署名 (&amp;S)</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Dash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>あなたのアドレスを使用してあなたがDashを受け取ることができるようにメッセージやアグリーメントに署名できます。充分に詳細が判明していてあなたが確認しているものだけに署名してください。フィッシングによってあなたの署名を読み取られないように注意してください。</translation>
+        <source>You can sign messages/agreements with your addresses to prove you can receive Cosanta sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <translation>あなたのアドレスを使用してあなたがCosantaを受け取ることができるようにメッセージやアグリーメントに署名できます。充分に詳細が判明していてあなたが確認しているものだけに署名してください。フィッシングによってあなたの署名を読み取られないように注意してください。</translation>
     </message>
     <message>
-        <source>The Dash address to sign the message with</source>
-        <translation>メッセージを署名する際に使用するDashアドレス</translation>
+        <source>The Cosanta address to sign the message with</source>
+        <translation>メッセージを署名する際に使用するCosantaアドレス</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3515,8 +2863,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>現在の署名をシステムのクリップボードにコピー</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Dash address</source>
-        <translation>この Dash アドレスを所有していることを証明するためにメッセージに署名</translation>
+        <source>Sign the message to prove you own this Cosanta address</source>
+        <translation>この Cosanta アドレスを所有していることを証明するためにメッセージに署名</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -3539,20 +2887,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>受取人のアドレスとメッセージ（改行やスペース、タブなども完全に一致するよう注意してください）および署名を以下に入力し、メッセージを検証してください。中間者攻撃により騙されるのを防ぐため、署名対象のメッセージに書かれていること以上の意味を署名から読み取ろうとしないよう注意してください。これは署名作成者がこのアドレスで受け取ることを証明するだけであり、トランザクションの送信者を証明するものではないことに注意してください！</translation>
     </message>
     <message>
-        <source>The Dash address the message was signed with</source>
-        <translation>メッセージの署名に使用されたDashアドレス</translation>
+        <source>The Cosanta address the message was signed with</source>
+        <translation>メッセージの署名に使用されたCosantaアドレス</translation>
     </message>
     <message>
-        <source>The signed message to verify</source>
-        <translation>検証する署名付きメッセージ</translation>
-    </message>
-    <message>
-        <source>The signature given when the message was signed</source>
-        <translation>メッセージの署名時に付与された署名</translation>
-    </message>
-    <message>
-        <source>Verify the message to ensure it was signed with the specified Dash address</source>
-        <translation>指定されたDashアドレスで署名されたことを確認するためメッセージを検証</translation>
+        <source>Verify the message to ensure it was signed with the specified Cosanta address</source>
+        <translation>指定されたCosantaアドレスで署名されたことを確認するためメッセージを検証</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -3563,20 +2903,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>入力項目の内容をすべて消去</translation>
     </message>
     <message>
-        <source>Enter a message to be signed</source>
-        <translation>署名するメッセージを入力する</translation>
-    </message>
-    <message>
         <source>Click "Sign Message" to generate signature</source>
         <translation>署名を作成するには"メッセージの署名"をクリックしてください</translation>
-    </message>
-    <message>
-        <source>Enter a message to be verified</source>
-        <translation>検証するメッセージを入力する</translation>
-    </message>
-    <message>
-        <source>Enter a signature for the message to be verified</source>
-        <translation>検証するメッセージに署名を入力する</translation>
     </message>
     <message>
         <source>The entered address is invalid.</source>
@@ -3638,21 +2966,9 @@ https://www.transifex.com/projects/p/dash/</translation>
     <name>TrafficGraphWidget</name>
     <message>
         <source>KB/s</source>
-        <translation>KB/秒</translation>
+        <translation>KB/s</translation>
     </message>
-    <message>
-        <source>Total</source>
-        <translation>合計</translation>
-    </message>
-    <message>
-        <source>Received</source>
-        <translation>受取済</translation>
-    </message>
-    <message>
-        <source>Sent</source>
-        <translation>送金済</translation>
-    </message>
-</context>
+    </context>
 <context>
     <name>TransactionDesc</name>
     <message numerus="yes">
@@ -3669,7 +2985,7 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
     <message>
         <source>0/unconfirmed, %1</source>
-        <translation>0/未確認、%1</translation>
+        <translation>0/未検証, %1</translation>
     </message>
     <message>
         <source>in memory pool</source>
@@ -3685,19 +3001,11 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
     <message>
         <source>%1/unconfirmed</source>
-        <translation>%1/未確認</translation>
+        <translation>%1/未検証</translation>
     </message>
     <message>
         <source>%1 confirmations</source>
-        <translation>%1の確認</translation>
-    </message>
-    <message>
-        <source>locked via ChainLocks</source>
-        <translation>チェーンロックでロック中</translation>
-    </message>
-    <message>
-        <source>verified via InstantSend</source>
-        <translation>InstantSendで検証済み</translation>
+        <translation>%1 確認</translation>
     </message>
     <message>
         <source>Status</source>
@@ -3792,10 +3100,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>トランザクションの全体サイズ</translation>
     </message>
     <message>
-        <source> (Certificate was not verified)</source>
-        <translation>（証明書は未確認です）</translation>
-    </message>
-    <message>
         <source>Merchant</source>
         <translation>マーチャント</translation>
     </message>
@@ -3809,11 +3113,11 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
     <message>
         <source>Transaction</source>
-        <translation>取引</translation>
+        <translation>トランザクション</translation>
     </message>
     <message>
         <source>Inputs</source>
-        <translation>入力</translation>
+        <translation>インプット</translation>
     </message>
     <message>
         <source>Amount</source>
@@ -3832,7 +3136,7 @@ https://www.transifex.com/projects/p/dash/</translation>
     <name>TransactionDescDialog</name>
     <message>
         <source>This pane shows a detailed description of the transaction</source>
-        <translation>ここでは取引の詳細を表示しています</translation>
+        <translation>ここではトランザクションの詳細を表示しています</translation>
     </message>
     <message>
         <source>Details for %1</source>
@@ -3890,14 +3194,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>生成されましたが承認されませんでした</translation>
     </message>
     <message>
-        <source>verified via InstantSend</source>
-        <translation>InstantSendで検証済み</translation>
-    </message>
-    <message>
-        <source>locked via ChainLocks</source>
-        <translation>チェーンロックでロック中</translation>
-    </message>
-    <message>
         <source>Received with</source>
         <translation>受信元</translation>
     </message>
@@ -3906,8 +3202,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>送信元</translation>
     </message>
     <message>
-        <source>Received via %1</source>
-        <translation>%1から受取済</translation>
+        <source>Received via PrivateSend</source>
+        <translation>プライベートセンド経由で受け取り</translation>
     </message>
     <message>
         <source>Sent to</source>
@@ -3919,27 +3215,23 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
     <message>
         <source>Mined</source>
-        <translation>マイニング済</translation>
+        <translation>発掘済</translation>
     </message>
     <message>
-        <source>%1 Mixing</source>
-        <translation>%1 ミキシング</translation>
+        <source>PrivateSend Denominate</source>
+        <translation>プライベートセンド：分割開始</translation>
     </message>
     <message>
-        <source>%1 Collateral Payment</source>
-        <translation>%1 担保の支払い</translation>
+        <source>PrivateSend Collateral Payment</source>
+        <translation>プライベートセンド：コラテラル支払い</translation>
     </message>
     <message>
-        <source>%1 Make Collateral Inputs</source>
-        <translation>%1 担保の情報を入力する</translation>
+        <source>PrivateSend Make Collateral Inputs</source>
+        <translation>プライベートセンド：コラテラル入力</translation>
     </message>
     <message>
-        <source>%1 Create Denominations</source>
-        <translation>%1 デノミネーションを作成する</translation>
-    </message>
-    <message>
-        <source>%1 Send</source>
-        <translation>%1 送金する</translation>
+        <source>PrivateSend Create Denominations</source>
+        <translation>プライベートセンド：デノミネーション生成</translation>
     </message>
     <message>
         <source>watch-only</source>
@@ -4021,24 +3313,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>送金先</translation>
     </message>
     <message>
-        <source>%1 Send</source>
-        <translation>%1 送金する</translation>
+        <source>PrivateSend Make Collateral Inputs</source>
+        <translation>プライベートセンド：コラテラル入力</translation>
     </message>
     <message>
-        <source>%1 Make Collateral Inputs</source>
-        <translation>%1 担保の情報を入力する</translation>
+        <source>PrivateSend Create Denominations</source>
+        <translation>プライベートセンド：デノミネーション作成</translation>
     </message>
     <message>
-        <source>%1 Create Denominations</source>
-        <translation>%1 デノミネーションを作成する</translation>
+        <source>PrivateSend Denominate</source>
+        <translation>プライベートセンド：分割開始</translation>
     </message>
     <message>
-        <source>%1 Mixing</source>
-        <translation>%1 ミキシング</translation>
-    </message>
-    <message>
-        <source>%1 Collateral Payment</source>
-        <translation>%1 担保の支払い</translation>
+        <source>PrivateSend Collateral Payment</source>
+        <translation>プライベートセンド：コラテラル支払い</translation>
     </message>
     <message>
         <source>To yourself</source>
@@ -4051,10 +3339,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Other</source>
         <translation>その他</translation>
-    </message>
-    <message>
-        <source>Enter address, transaction id, or label to search</source>
-        <translation>アドレス、取引ID、ラベルを入力して検索する</translation>
     </message>
     <message>
         <source>Min amount</source>
@@ -4089,8 +3373,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>トランザクションの詳細すべてをコピー</translation>
     </message>
     <message>
-        <source>Edit address label</source>
-        <translation>アドレスのラベルを編集</translation>
+        <source>Edit label</source>
+        <translation>ラベルの編集</translation>
     </message>
     <message>
         <source>Show transaction details</source>
@@ -4173,21 +3457,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
 </context>
 <context>
-    <name>WalletController</name>
-    <message>
-        <source>Close wallet</source>
-        <translation>ウォレットを閉じる</translation>
-    </message>
-    <message>
-        <source>Are you sure you wish to close the wallet &lt;i&gt;%1&lt;/i&gt;?</source>
-        <translation>&lt;i&gt;%1&lt;/i&gt;のウォレットを本当に閉じますか。</translation>
-    </message>
-    <message>
-        <source>Closing the wallet for too long can result in having to resync the entire chain if pruning is enabled.</source>
-        <translation>ウォレットを長時間閉じると、プルーニングが有効な場合、チェーン全体を再同期しなければならないことがあります。</translation>
-    </message>
-</context>
-<context>
     <name>WalletFrame</name>
     <message>
         <source>No wallet has been loaded.</source>
@@ -4199,10 +3468,6 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Send Coins</source>
         <translation>送金</translation>
-    </message>
-    <message>
-        <source>default wallet</source>
-        <translation>デフォルトのウォレット</translation>
     </message>
 </context>
 <context>
@@ -4243,24 +3508,36 @@ https://www.transifex.com/projects/p/dash/</translation>
         <source>The wallet data was successfully saved to %1.</source>
         <translation>ウォレットデータは正常に%1に保存されました</translation>
     </message>
-    <message>
-        <source>Cancel</source>
-        <translation>キャンセル</translation>
-    </message>
 </context>
 <context>
-    <name>dash-core</name>
+    <name>cosanta-core</name>
+    <message>
+        <source>Bind to given address and always listen on it. Use [host]:port notation for IPv6</source>
+        <translation>指定のアドレスへバインドし、その上で常にリッスンします。IPv6 は [host]:port 番号と表記します</translation>
+    </message>
     <message>
         <source>Error: Listening for incoming connections failed (listen returned error %s)</source>
         <translation>エラー： 受信中の接続をリッスンするのに失敗しました (エラー %s )</translation>
     </message>
     <message>
-        <source>Fee estimation failed. Fallbackfee is disabled. Wait a few blocks or enable -fallbackfee.</source>
-        <translation>料金の見積もりに失敗しました。フォールバックフィーは無効です。数ブロック待つか、-fallbackfeeを有効にしてください。</translation>
+        <source>Execute command when a relevant alert is received or we see a really long fork (%s in cmd is replaced by message)</source>
+        <translation>関連のアラートを受け取るか非常に長いのフォークを確認した場合コマンドを実行 (コマンド中の%sはメッセージに置換される)</translation>
     </message>
     <message>
-        <source>This error could occur if this wallet was not shutdown cleanly and was last loaded using a build with a newer version of Berkeley DB. If so, please use the software that last loaded this wallet</source>
-        <translation>このエラーは、このウォレットが正常にシャットダウンされず、Berkeley DBの新しいバージョンを含むビルドを使用して直前にロードされた場合に発生する可能性があります。その場合は、このウォレットを直前にロードしたソフトウェアを使用してください。</translation>
+        <source>Execute command when a wallet transaction changes (%s in cmd is replaced by TxID)</source>
+        <translation>ウォレットのトランザクションを変更する際にコマンドを実行 (cmd の %s は TxID に置換される)</translation>
+    </message>
+    <message>
+        <source>Execute command when the best block changes (%s in cmd is replaced by block hash)</source>
+        <translation>最良のブロックが変更する際にコマンドを実行 (cmd の %s はブロックハッシュに置換される)</translation>
+    </message>
+    <message>
+        <source>Name to construct url for KeePass entry that stores the wallet passphrase</source>
+        <translation>ウォレットのパスフレーズを保管するKeePass入力のurlを作成</translation>
+    </message>
+    <message>
+        <source>Set the number of script verification threads (%u to %d, 0 = auto, &lt;0 = leave that many cores free, default: %d)</source>
+        <translation>スクリプト検証スレッドを設定 (%uから%dの間, 0 = 自動, &lt;0 = たくさんのコアを自由にしておく, 初期設定： %d)</translation>
     </message>
     <message>
         <source>This is a pre-release test build - use at your own risk - do not use for mining or merchant applications</source>
@@ -4275,8 +3552,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>警告： ピアと完全に同意しないようです！あなたはアップグレードする必要があるかもしれません。または他のノードがアップグレードする必要があるかもしれません。</translation>
     </message>
     <message>
+        <source>Accept command line and JSON-RPC commands</source>
+        <translation>コマンドラインと JSON-RPC コマンドを許可</translation>
+    </message>
+    <message>
+        <source>Allow DNS lookups for -addnode, -seednode and -connect</source>
+        <translation>-addnode, -seednode と -connect で DNS ルックアップを許可</translation>
+    </message>
+    <message>
         <source>Already have that input.</source>
         <translation>常時そのインプットを保持</translation>
+    </message>
+    <message>
+        <source>Block creation options:</source>
+        <translation>ブロック作成オプション：</translation>
     </message>
     <message>
         <source>Cannot downgrade wallet</source>
@@ -4287,8 +3576,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>コラテラルが無効です</translation>
     </message>
     <message>
+        <source>Connection options:</source>
+        <translation>接続オプション：</translation>
+    </message>
+    <message>
         <source>Corrupted block database detected</source>
         <translation>破損したブロックデータベースが検知されました</translation>
+    </message>
+    <message>
+        <source>Debugging/Testing options:</source>
+        <translation>デバッグ／テスト用オプション：</translation>
+    </message>
+    <message>
+        <source>Do not load the wallet and disable wallet RPC calls</source>
+        <translation>ウォレットは読み込まず、ウォレットRPCコールを無効化する</translation>
     </message>
     <message>
         <source>Do you want to rebuild the block database now?</source>
@@ -4323,40 +3624,156 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>データベースの読み込みエラー。シャットダウンします。</translation>
     </message>
     <message>
+        <source>Error</source>
+        <translation>エラー</translation>
+    </message>
+    <message>
+        <source>Error: Disk space is low!</source>
+        <translation>エラー： ディスク容量不足!</translation>
+    </message>
+    <message>
         <source>Failed to listen on any port. Use -listen=0 if you want this.</source>
         <translation>ポートのリッスンに失敗しました。必要であれば -listen=0 を使用してください。</translation>
+    </message>
+    <message>
+        <source>(1 = keep tx meta data e.g. account owner and payment request information, 2 = drop tx meta data)</source>
+        <translation>(1 = トランザクションのメタデータ、例えばアカウントの所有者や支払いリクエストの内容を保持する, 2 = トランザクションのメタデータを破棄する)</translation>
     </message>
     <message>
         <source>-maxtxfee is set very high! Fees this large could be paid on a single transaction.</source>
         <translation>-maxtxfee が非常に高く設定されています！ひとつのトランザクションでこの量の手数料が支払われてしまうことがあります。</translation>
     </message>
     <message>
-        <source>Cannot provide specific connections and have addrman find outgoing connections at the same.</source>
-        <translation>特定の接続を提供し、同時にアドルマンに発信接続を探させることができません。</translation>
+        <source>A fee rate (in %s/kB) that will be used when fee estimation has insufficient data (default: %s)</source>
+        <translation>十分なデータが蓄積されていない場合に手数料推定機能が利用する手数料レート (%s/kB) (初期設定: %s)</translation>
+    </message>
+    <message>
+        <source>Accept relayed transactions received from whitelisted peers even when not relaying transactions (default: %d)</source>
+        <translation>トランザクションの中継を行っていない場合でも、ホワイトリストのピアから受け取った中継トランザクションは受け取るようにする (初期設定: %d)</translation>
+    </message>
+    <message>
+        <source>Allow JSON-RPC connections from specified source. Valid for &lt;ip&gt; are a single IP (e.g. 1.2.3.4), a network/netmask (e.g. 1.2.3.4/255.255.255.0) or a network/CIDR (e.g. 1.2.3.4/24). This option can be specified multiple times</source>
+        <translation>指定したアクセス元からのJSON-RPC接続を許可する。有効な&lt;ip&gt;は、単一のIP (例　1.2.3.4)、ネットワーク/ネットマスク (例　1.2.3.4/255.255.255.0)、またはネットワーク/CIDR (例　1.2.3.4/24)です。このオプションは複数回指定できます。</translation>
+    </message>
+    <message>
+        <source>Bind to given address and whitelist peers connecting to it. Use [host]:port notation for IPv6</source>
+        <translation>指定されたアドレスおよび、そこに接続を行ってきたホワイトリストのピアに対してバインドを行います。IPv6の場合には [host]:port 表記を使用してください</translation>
+    </message>
+    <message>
+        <source>Create new files with system default permissions, instead of umask 077 (only effective with disabled wallet functionality)</source>
+        <translation>umask 077 ではなく、システムのデフォルトパーミッションで新規ファイルを作成する (ウォレット機能が無効化されていた場合にのみ有効)</translation>
+    </message>
+    <message>
+        <source>Delete all wallet transactions and only recover those parts of the blockchain through -rescan on startup</source>
+        <translation>ウォレットの全トランザクションを削除し、これらを-rescanオプションを用いることで起動時にブロックチェインのデータのみからリカバリします。</translation>
+    </message>
+    <message>
+        <source>Enable publish raw transactions of attempted InstantSend double spend in &lt;address&gt;</source>
+        <translation>試行中のインスタントセンド二重支払い &lt;address&gt; の未確定トランザクションの生成を有効にする</translation>
+    </message>
+    <message>
+        <source>Enable publish transaction hashes of attempted InstantSend double spend in &lt;address&gt;</source>
+        <translation>&lt;address&gt;で試行されたインスタントセンド二重支払いのトランザクションハッシュの生成を有効にする</translation>
     </message>
     <message>
         <source>Found unconfirmed denominated outputs, will wait till they confirm to continue.</source>
         <translation>未確認の分割されたアウトプットを検出しました。継続を確認するまで待機します。</translation>
     </message>
     <message>
-        <source>Invalid -socketevents ('%s') specified. Only these modes are supported: %s</source>
-        <translation>無効な-socketevents（「%s」）が指定されました。これらのモード（%s）のみサポートされています。</translation>
+        <source>How thorough the block verification of -checkblocks is (0-4, default: %u)</source>
+        <translation>-checkblocks のブロックの検証レベル (0-4, 初期設定： %u)</translation>
+    </message>
+    <message>
+        <source>If paytxfee is not set, include enough fee so transactions begin confirmation on average within n blocks (default: %u)</source>
+        <translation>paytxfee が設定されていなかった場合、平均して n ブロック以内にトランザクションが検証され始めるのに十分な手数料を含める (初期設定： %u)</translation>
+    </message>
+    <message>
+        <source>If this block is in the chain assume that it and its ancestors are valid and potentially skip their script verification (0 to verify all, default: %s, testnet: %s)</source>
+        <translation>このブロックがブロックチェーン内に含まれていた場合には、このブロックおよびそれ以前のすべてのブロックを有効であるとみなし、スクリプトの検証を省略する (0ならすべてを検証、初期設定: %s、テストネット: %s)</translation>
     </message>
     <message>
         <source>Invalid amount for -maxtxfee=&lt;amount&gt;: '%s' (must be at least the minrelay fee of %s to prevent stuck transactions)</source>
         <translation>-maxtxfee=&lt;amount&gt; の数量の指定が無効です: '%s' (トランザクションが詰まってしまうのを防ぐため、少なくとも %s の最小中継手数料を指定しなければいけません)</translation>
     </message>
     <message>
-        <source>Transaction index can't be disabled with governance validation enabled. Either start with -disablegovernance command line switch or enable transaction index.</source>
-        <translation>ガバナンス検証を有効にした状態で、取引インデックスを無効化することはできません。-disablegovernanceのコマンドラインスイッチで開始するか、取引インデックスを有効にしてください。</translation>
+        <source>Maintain a full transaction index, used by the getrawtransaction rpc call (default: %u)</source>
+        <translation>getrawtransaction rpc 呼び出し時に用いる、完全なトランザクションインデックスを保持する (初期設定： %u)</translation>
+    </message>
+    <message>
+        <source>Maximum size of data in data carrier transactions we relay and mine (default: %u)</source>
+        <translation>中継およびマイニングを行う際の、データ運送トランザクションの中のデータの最大サイズ (初期設定： %u)</translation>
+    </message>
+    <message>
+        <source>Number of seconds to keep misbehaving peers from reconnecting (default: %u)</source>
+        <translation>不正なピアを再接続するまでの秒数 (初期設定： %u)</translation>
+    </message>
+    <message>
+        <source>Output debugging information (default: %u, supplying &lt;category&gt; is optional)</source>
+        <translation>デバッグ情報を出力する (初期設定： %u, &lt;category&gt; の指定は任意です)</translation>
+    </message>
+    <message>
+        <source>Overrides minimum spork signers to change spork value. Only useful for regtest and devnet. Using this on mainnet or testnet will ban you.</source>
+        <translation>スポーク値を変更するために最小のスポーク署名者を無視します。 regtestとdevnetでのみ使用可能です。これをmainnetやtestnetで使うとあなたは追放されます。</translation>
+    </message>
+    <message>
+        <source>Use N separate masternodes in parallel to mix funds (%u-%u, default: %u)</source>
+        <translation>資金を混合するためにN個の別々のマスターノードを並行して使用する (%u-%u, default: %u)</translation>
+    </message>
+    <message>
+        <source>Use separate SOCKS5 proxy to reach peers via Tor hidden services (default: %s)</source>
+        <translation>Tor 秘匿サービスを経由して別々の SOCKS5 プロキシを用いることでピアに到達する (初期設定： %s)</translation>
+    </message>
+    <message>
+        <source>User defined mnemonic for HD wallet (bip39). Only has effect during wallet creation/first start (default: randomly generated)</source>
+        <translation>HDウォレット用のユーザー定義ニーモニック。ウォレット生成時にしか有効でない（初期設定：ランダムに生成）</translation>
+    </message>
+    <message>
+        <source>User defined seed for HD wallet (should be in hex). Only has effect during wallet creation/first start (default: randomly generated)</source>
+        <translation>HDウォレット用のユーザー定義シード。ウォレット生成時にしか有効でない（初期設定：ランダムに生成）</translation>
+    </message>
+    <message>
+        <source>Whitelisted peers cannot be DoS banned and their transactions are always relayed, even if they are already in the mempool, useful e.g. for a gateway</source>
+        <translation>ホワイトリストのピアはDoSによるアクセス禁止処理が無効化され、トランザクションは例えmempool内に既に存在していたとしても常にリレーされます。これは例えばゲートウェイに対して有用です</translation>
+    </message>
+    <message>
+        <source>Accept public REST requests (default: %u)</source>
+        <translation>公開 REST リクエストを許可する (初期設定： %u)</translation>
+    </message>
+    <message>
+        <source>Always query for peer addresses via DNS lookup (default: %u)</source>
+        <translation>DNS ルックアップを通してピアアドレスを常に問い合わせる (初期設定： %u)</translation>
     </message>
     <message>
         <source>Can't mix: no compatible inputs found!</source>
         <translation>ミキシング不可: 互換性のあるインプットが見つかりません</translation>
     </message>
     <message>
+        <source>Chain selection options:</source>
+        <translation>チェーン選択オプション:</translation>
+    </message>
+    <message>
+        <source>Connect through SOCKS5 proxy</source>
+        <translation>SOCKS5 プロキシ経由で接続</translation>
+    </message>
+    <message>
+        <source>Connect to KeePassHttp on port &lt;port&gt; (default: %u)</source>
+        <translation>Connect to KeePassHttp に接続：ポート &lt;port&gt; (初期設定: %u)</translation>
+    </message>
+    <message>
         <source>Entry exceeds maximum size.</source>
         <translation>エントリーが最大サイズを超えました。</translation>
+    </message>
+    <message>
+        <source>Failed to load fulfilled requests cache from</source>
+        <translation>リクエストキャッシュの読み込み失敗：</translation>
+    </message>
+    <message>
+        <source>Failed to load governance cache from</source>
+        <translation>ガバナンスキャッシュの読み込み失敗：</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode cache from</source>
+        <translation>マスターノードキャッシュの読み込み失敗：</translation>
     </message>
     <message>
         <source>Found enough users, signing ( waiting %s )</source>
@@ -4367,8 +3784,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>充分なユーザーを発見しました、サインしています </translation>
     </message>
     <message>
+        <source>How many blocks to check at startup (default: %u, 0 = all)</source>
+        <translation>起動時に点検するブロック数 (初期設定： %u, 0=すべて)</translation>
+    </message>
+    <message>
         <source>Importing...</source>
         <translation>インポートしています…</translation>
+    </message>
+    <message>
+        <source>Include IP addresses in debug output (default: %u)</source>
+        <translation>デバッグ出力にIPアドレスを含める (初期設定： %u)</translation>
     </message>
     <message>
         <source>Incompatible mode.</source>
@@ -4381,6 +3806,10 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Incorrect or no genesis block found. Wrong datadir for network?</source>
         <translation>不正なブロックが発見されたか、またはジェネシスブロックが発見されませんでした。ネットワークの datadir が間違っていませんか?</translation>
+    </message>
+    <message>
+        <source>Information</source>
+        <translation>インフォメーション</translation>
     </message>
     <message>
         <source>Input is not valid.</source>
@@ -4407,6 +3836,14 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>キープールが枯渇しました。まずはじめに keypoolrefill を呼び出してください。</translation>
     </message>
     <message>
+        <source>Listen for JSON-RPC connections on &lt;port&gt; (default: %u or testnet: %u)</source>
+        <translation>&lt;port&gt; で JSON-RPC 接続をリッスン (初期設定： %u、テストネット： %u)</translation>
+    </message>
+    <message>
+        <source>Listen for connections on &lt;port&gt; (default: %u or testnet: %u)</source>
+        <translation>接続のリッスンを &lt;port&gt; で行う (初期設定： %u、テストネット: %u)</translation>
+    </message>
+    <message>
         <source>Loading banlist...</source>
         <translation>banリストを読み込んでいます...</translation>
     </message>
@@ -4423,8 +3860,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>すでにロックされています</translation>
     </message>
     <message>
+        <source>Maximum per-connection receive buffer, &lt;n&gt;*1000 bytes (default: %u)</source>
+        <translation>接続毎の最大受信バッファ &lt;n&gt;*1000 バイト (初期設定： %u)</translation>
+    </message>
+    <message>
+        <source>Maximum per-connection send buffer, &lt;n&gt;*1000 bytes (default: %u)</source>
+        <translation>接続毎の最大送信バッファ &lt;n&gt;*1000 バイト (初期設定： %u)</translation>
+    </message>
+    <message>
         <source>Mixing in progress...</source>
         <translation>ミキシング中...</translation>
+    </message>
+    <message>
+        <source>Mnemonic passphrase is too long, must be at most 256 characters</source>
+        <translation>ニーモニックパスフレーズが長すぎます。最長で256文字です。</translation>
     </message>
     <message>
         <source>Need to specify a port with -whitebind: '%s'</source>
@@ -4439,12 +3888,40 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>互換性のあるマスターノードが検出されません</translation>
     </message>
     <message>
-        <source>Not enough funds to mix.</source>
-        <translation>ミキシングの資金が足りません</translation>
-    </message>
-    <message>
         <source>Not in the Masternode list.</source>
         <translation>マスターノードリストにありません</translation>
+    </message>
+    <message>
+        <source>Prepend debug output with timestamp (default: %u)</source>
+        <translation>デバッグ出力にタイムスタンプを付ける (初期設定： %u)</translation>
+    </message>
+    <message>
+        <source>Rebuild chain state and block index from the blk*.dat files on disk</source>
+        <translation>チェーン状態およびブロックインデックスをディスク上の blk*.dat ファイルから再構築する</translation>
+    </message>
+    <message>
+        <source>Rebuild chain state from the currently indexed blocks</source>
+        <translation>既にインデックスされたブロックからチェイン状態を再構築する</translation>
+    </message>
+    <message>
+        <source>Send trace/debug info to debug.log file (default: %u)</source>
+        <translation>トレース/デバッグ情報を debug.logファイルに送信 (初期設定: %u)</translation>
+    </message>
+    <message>
+        <source>Set key pool size to &lt;n&gt; (default: %u)</source>
+        <translation>key pool のサイズを &lt;n&gt; (初期設定： %u) にセット</translation>
+    </message>
+    <message>
+        <source>Set the number of threads to service RPC calls (default: %d)</source>
+        <translation>RPC 呼び出しのスレッド数を設定 (初期設定： %d)</translation>
+    </message>
+    <message>
+        <source>Specify connection timeout in milliseconds (minimum: 1, default: %d)</source>
+        <translation>接続のタイムアウトをミリ秒単位で指定 (最小値： 1, 初期設定：: %d)</translation>
+    </message>
+    <message>
+        <source>Spend unconfirmed change when sending transactions (default: %u)</source>
+        <translation>トランザクション送信時に未検証のチェンジを使用する (初期設定： %u)</translation>
     </message>
     <message>
         <source>Submitted to masternode, waiting in queue %s</source>
@@ -4455,12 +3932,52 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>同期完了</translation>
     </message>
     <message>
+        <source>Threshold for disconnecting misbehaving peers (default: %u)</source>
+        <translation>不正なピアを切断するためのしきい値 (初期設定： %u)</translation>
+    </message>
+    <message>
+        <source>Tor control port password (default: empty)</source>
+        <translation>Tor管理ポートのパスワード (初期値: 空文字)</translation>
+    </message>
+    <message>
+        <source>Tor control port to use if onion listening enabled (default: %s)</source>
+        <translation>Onion のリッスンが有効になっている場合に使用するTor管理ポート (初期値: %s)</translation>
+    </message>
+    <message>
         <source>Unable to start HTTP server. See debug log for details.</source>
         <translation>HTTPサーバを開始できませんでした。詳細はデバッグログをご確認ください。</translation>
     </message>
     <message>
         <source>Unknown response.</source>
         <translation>不明なレスポンス</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -benchmark ignored, use -debug=bench.</source>
+        <translation>サポートされていない引数 -benchmark は無視されました。-debug=bench を使用してください。</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -debugnet ignored, use -debug=net.</source>
+        <translation>サポートされていない引数 -debugnet は無視されました。-debug=net を使用してください。</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -tor found, use -onion.</source>
+        <translation>サポートされていない引数 -tor が見つかりました。-onion を使用してください。</translation>
+    </message>
+    <message>
+        <source>Upgrade wallet to latest format on startup</source>
+        <translation>起動時にウォレットを最新のフォーマットにアップグレード</translation>
+    </message>
+    <message>
+        <source>Use KeePass 2 integration using KeePassHttp plugin (default: %u)</source>
+        <translation>KeePassHttp プラグインを使用してKeePass 2 インテグレーションを使用 (初期設定: %u)</translation>
+    </message>
+    <message>
+        <source>Use UPnP to map the listening port (default: %u)</source>
+        <translation>リッスンポートの割当に UPnP を使用 (初期設定： %u)</translation>
+    </message>
+    <message>
+        <source>Use the test chain</source>
+        <translation>テストチェーンを使用</translation>
     </message>
     <message>
         <source>User Agent comment (%s) contains unsafe characters.</source>
@@ -4479,14 +3996,6 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>ランダムなマスターノードを発見できません</translation>
     </message>
     <message>
-        <source>%s can't be lower than %s</source>
-        <translation>%sは%sより低くできません。</translation>
-    </message>
-    <message>
-        <source>%s is idle.</source>
-        <translation>%sはアイドル状態です。</translation>
-    </message>
-    <message>
         <source>Can't mix while sync in progress.</source>
         <translation>同期中はミキシングできません</translation>
     </message>
@@ -4499,16 +4008,68 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>無効なスクリプトが検出されました</translation>
     </message>
     <message>
+        <source>KeePassHttp id for the established association</source>
+        <translation>確立された接続用のKeePassHttp ID </translation>
+    </message>
+    <message>
+        <source>KeePassHttp key for AES encrypted communication with KeePass</source>
+        <translation>KeePassとの AES 暗号化接続用のKeePassHttp キー </translation>
+    </message>
+    <message>
         <source>%s file contains all private keys from this wallet. Do not share it with anyone!</source>
         <translation>%s ファイルはこのウォレットのプライベートキーをすべて保有しています。誰ともシェアしないでください。</translation>
+    </message>
+    <message>
+        <source>Discover own IP addresses (default: 1 when listening and no -externalip or -proxy)</source>
+        <translation>自分のIPアドレスを解決する (初期値: リッスンをしており、-externalipまたは-proxyオプションが指定されていない場合は1)</translation>
+    </message>
+    <message>
+        <source>Do not keep transactions in the mempool longer than &lt;n&gt; hours (default: %u)</source>
+        <translation>mempool内でトランザクションを &lt;n&gt; 時間以上保持しない (初期値: %u)</translation>
+    </message>
+    <message>
+        <source>Enable multiple PrivateSend mixing sessions per block, experimental (0-1, default: %u)</source>
+        <translation>ブロック毎に複数のミキシングセッションを有効化する、実験的 (0-1, 初期値: %u)</translation>
+    </message>
+    <message>
+        <source>Execute command when a wallet InstantSend transaction is successfully locked (%s in cmd is replaced by TxID)</source>
+        <translation>インスタントセンドのトランザクションのロックに成功したとき、コマンドを実行 (コマンドの%sは TxIDに置換)</translation>
+    </message>
+    <message>
+        <source>Extra transactions to keep in memory for compact block reconstructions (default: %u)</source>
+        <translation>コンパクトなブロック再構築のために追加のトランザクションをメモリーに保管 (初期設定: %u)</translation>
     </message>
     <message>
         <source>Failed to create backup, file already exists! This could happen if you restarted wallet in less than 60 seconds. You can continue if you are ok with this.</source>
         <translation>バックアップ作成失敗、ファイルは既に存在します！これはウォレットを60秒以内にリスタートしたときに発生することがあります。これで問題なければ先に進むことができます。</translation>
     </message>
     <message>
-        <source>Make sure to encrypt your wallet and delete all non-encrypted backups after you have verified that the wallet works!</source>
-        <translation>ウォレットが動作することを確認したら、必ずウォレットを暗号化し、暗号化されていないバックアップをすべて削除してください！</translation>
+        <source>Fees (in %s/kB) smaller than this are considered zero fee for relaying, mining and transaction creation (default: %s)</source>
+        <translation>トランザクションの中継、採掘および作成の際には、この値未満の手数料 (%s/kB単位) はゼロであるとみなす (初期設定: %s)</translation>
+    </message>
+    <message>
+        <source>Fees (in %s/kB) smaller than this are considered zero fee for transaction creation (default: %s)</source>
+        <translation>トランザクション作成の際、この値未満の手数料 (%s/kB単位) はゼロであるとみなす (デフォルト: %s)</translation>
+    </message>
+    <message>
+        <source>If &lt;category&gt; is not supplied or if &lt;category&gt; = 1, output all debugging information.</source>
+        <translation>&lt;category&gt; が与えられなかった場合や &lt;category&gt; = 1 の場合には、すべてのデバッグ情報が出力されます。</translation>
+    </message>
+    <message>
+        <source>Maintain a full address index, used to query for the balance, txids and unspent outputs for addresses (default: %u)</source>
+        <translation>残高、txids、未使用のアウトプットへの問い合わせに使用される、フルアドレスインデックスを保持 (初期設定: %u)</translation>
+    </message>
+    <message>
+        <source>Maintain a full spent index, used to query the spending txid and input index for an outpoint (default: %u)</source>
+        <translation>txidとインプットインデックスの問い合わせに使用される、フルスペントインデックス (初期設定: %u)</translation>
+    </message>
+    <message>
+        <source>Maintain a timestamp index for block hashes, used to query blocks hashes by a range of timestamps (default: %u)</source>
+        <translation>ブロックハッシュの問い合わせに使用される、ブロックハッシュ用のタイムスタンプインデックスを保持(初期設定: %u)</translation>
+    </message>
+    <message>
+        <source>Maintain at most &lt;n&gt; connections to peers (temporary service connections excluded) (default: %u)</source>
+        <translation>最大 &lt;n&gt; 接続を保持 (一時的な接続を除外) (初期設定: %u)</translation>
     </message>
     <message>
         <source>Prune configured below the minimum of %d MiB.  Please use a higher number.</source>
@@ -4519,8 +4080,24 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>剪定: 最後のウォレット同期ポイントは、剪定されたデータよりも過去のものとなっています。-reindexをする必要があります (剪定されたノードの場合、ブロックチェイン全体をダウンロードしてください)</translation>
     </message>
     <message>
+        <source>Query for peer addresses via DNS lookup, if low on addresses (default: 1 unless -connect used)</source>
+        <translation>アドレスが少ない場合、DNSルックアップを介してピアアドレスを照会します（デフォルト：1 -connectを使用しない限り）</translation>
+    </message>
+    <message>
+        <source>Randomize credentials for every proxy connection. This enables Tor stream isolation (default: %u)</source>
+        <translation>認証情報をプロキシー接続ごとにランダム化する。これによりTorストリーム分離をすることができます (初期設定: %u)</translation>
+    </message>
+    <message>
         <source>Rescans are not possible in pruned mode. You will need to use -reindex which will download the whole blockchain again.</source>
         <translation>剪定モードでは再スキャンを行うことはできません。-reindexを使用し、ブロックチェーン全体を再ダウンロードする必要があります。</translation>
+    </message>
+    <message>
+        <source>Specify full path to directory for automatic wallet backups (must exist)</source>
+        <translation>自動ウォレットバックアップ用のディレクトリへのフルパスを指定してください</translation>
+    </message>
+    <message>
+        <source>Support filtering of blocks and transaction with bloom filters (default: %u)</source>
+        <translation>Bloomフィルタによる、ブロックおよびトランザクションのフィルタリングをサポート (初期値: %u)</translation>
     </message>
     <message>
         <source>The block database contains a block which appears to be from the future. This may be due to your computer's date and time being set incorrectly. Only rebuild the block database if you are sure that your computer's date and time are correct</source>
@@ -4535,6 +4112,26 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>ネットワークバージョン文字 (%i) の長さが最大の長さ (%i) を超えています。UAコメントの数や長さを削減してください。</translation>
     </message>
     <message>
+        <source>Tries to keep outbound traffic under the given target (in MiB per 24h), 0 = no limit (default: %d)</source>
+        <translation>送信転送量を与えられた目標値以下に維持するようにする (24時間あたり何MiBかで指定)。0 の場合は無制限 (初期値: %d)</translation>
+    </message>
+    <message>
+        <source>Unable to locate enough PrivateSend denominated funds for this transaction.</source>
+        <translation>このトランザクションのためのプライベートセンド用の分割された充分なファンドが見つかりません。</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -socks found. Setting SOCKS version isn't possible anymore, only SOCKS5 proxies are supported.</source>
+        <translation>サポートされていない引数 -socks が見つかりました。SOCKSバージョンの設定はできないようになりました。SOCKS5プロキシのみがサポートされています。</translation>
+    </message>
+    <message>
+        <source>Unsupported argument -whitelistalwaysrelay ignored, use -whitelistrelay and/or -whitelistforcerelay.</source>
+        <translation>サポートされていない引数 -whitelistalwaysrelay は無視されました。-whitelistrelay または -whitelistforcerelay を利用してください</translation>
+    </message>
+    <message>
+        <source>Use UPnP to map the listening port (default: 1 when listening and no -proxy)</source>
+        <translation>リッスン ポートの割当に UPnP を使用 (初期値: リッスン中および-proxy が指定されていない場合は1)</translation>
+    </message>
+    <message>
         <source>WARNING! Failed to replenish keypool, please unlock your wallet to do so.</source>
         <translation>警告! キープールの補充に失敗しました、ウォレットをアンロックしてキープールを補充してください</translation>
     </message>
@@ -4543,72 +4140,76 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>ウォレットがロックされているのでキープールを補充できません!自動バックアップとミキシングが無効なので、ウォレットをアンロックしてキープールを補充してください。</translation>
     </message>
     <message>
-        <source>You need to rebuild the database using -reindex to change -timestampindex</source>
-        <translation>-timestampindexを変更するには、-reindexを使用してデータベースを再構築する必要があります。</translation>
+        <source>Warning: Unknown block versions being mined! It's possible unknown rules are in effect</source>
+        <translation>警告: 未知のバージョンのブロックが採掘されました。未知のルールが導入された可能性があります。</translation>
     </message>
     <message>
         <source>You need to rebuild the database using -reindex to go back to unpruned mode.  This will redownload the entire blockchain</source>
         <translation>非剪定モードに戻るためには-reindexオプションを使用してデータベースを再構築する必要があります。これによりブロックチェーン全体の再ダウンロードが行われます。</translation>
     </message>
     <message>
-        <source>%s failed</source>
-        <translation>%sは失敗しました</translation>
+        <source>(default: %u)</source>
+        <translation>(初期値: %u)</translation>
     </message>
     <message>
         <source>-maxmempool must be at least %d MB</source>
         <translation>-maxmempoolは最低でも %d MB必要です</translation>
     </message>
     <message>
+        <source>&lt;category&gt; can be:</source>
+        <translation>&lt;category&gt;は以下の値を指定できます：</translation>
+    </message>
+    <message>
+        <source>Append comment to the user agent string</source>
+        <translation>ユーザエージェント文字列にコメントを追加</translation>
+    </message>
+    <message>
         <source>Automatic backups disabled</source>
         <translation>自動バックアップ無効</translation>
     </message>
     <message>
-        <source>Cannot set -peerblockfilters without -blockfilterindex.</source>
-        <translation>-peerblockfiltersを-blockfilterindexなしで設定することはできません。</translation>
-    </message>
-    <message>
-        <source>Config setting for %s only applied on %s network when in [%s] section.</source>
-        <translation>%sの構成設定は、[%s]セクションにある場合、%sネットワークにのみ適用されます。</translation>
-    </message>
-    <message>
-        <source>Could not find asmap file %s</source>
-        <translation>%sのasmapファイルが見つかりませんでした</translation>
-    </message>
-    <message>
-        <source>Could not parse asmap file %s</source>
-        <translation>%sのasmapファイルを解析できませんでした</translation>
+        <source>Automatically create Tor hidden service (default: %d)</source>
+        <translation>Tor秘匿サービスを自動的に作成する (初期値: %d)</translation>
     </message>
     <message>
         <source>ERROR! Failed to create automatic backup</source>
         <translation>エラー! 自動バックアップ作成失敗</translation>
     </message>
     <message>
-        <source>Error loading %s: Private keys can only be disabled during creation</source>
-        <translation>%sの読み込みエラー：プライベートキーは作成時にのみ無効化できます。</translation>
+        <source>Enable publish hash block in &lt;address&gt;</source>
+        <translation>&lt;address&gt;に対し、ハッシュブロックの公開を有効にする</translation>
     </message>
     <message>
-        <source>Error upgrading evo database</source>
-        <translation>Evoデータベースのアップグレードエラー</translation>
+        <source>Enable publish hash of governance objects (like proposals) in &lt;address&gt;</source>
+        <translation> &lt;address&gt;に対し、ガバナンスオブジェクトのハッシュの公開を有効にする (プロポーザル等)</translation>
+    </message>
+    <message>
+        <source>Enable publish hash of governance votes in &lt;address&gt;</source>
+        <translation> &lt;address&gt;に対し、ガバナンスの投票のハッシュの公開を有効にする</translation>
+    </message>
+    <message>
+        <source>Enable publish hash transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>&lt;address&gt;に対し、ハッシュトランザクションの公開を有効にする (インスタントセンド経由でロック済)</translation>
+    </message>
+    <message>
+        <source>Enable publish hash transaction in &lt;address&gt;</source>
+        <translation>&lt;address&gt; に対し、ハッシュトランザクションの公開を有効にする</translation>
+    </message>
+    <message>
+        <source>Enable publish raw block in &lt;address&gt;</source>
+        <translation>&lt;address&gt; に対し、原ブロックの公開を有効にする</translation>
+    </message>
+    <message>
+        <source>Enable publish raw transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>&lt;address&gt;に対し、原トランザクションの公開を有効にする (インスタントセンド経由でロック済)</translation>
+    </message>
+    <message>
+        <source>Enable publish raw transaction in &lt;address&gt;</source>
+        <translation>&lt;address&gt; に対し、原トランザクションの公開を有効にする</translation>
     </message>
     <message>
         <source>Error: A fatal internal error occurred, see debug.log for details</source>
         <translation>エラー：致命的な内部エラーが発生しました。詳細はdebug.logを参照してください</translation>
-    </message>
-    <message>
-        <source>Error: Disk space is low for %s</source>
-        <translation>エラー：%sのディスク容量が不足しています</translation>
-    </message>
-    <message>
-        <source>Error: failed to add socket to epollfd (epoll_ctl returned error %s)</source>
-        <translation>エラー：epollfdへのソケットの追加に失敗しました（epoll_ctlは、%sのエラーを返しました）</translation>
-    </message>
-    <message>
-        <source>Exceeded max tries.</source>
-        <translation>最大試行回数を超えました。</translation>
-    </message>
-    <message>
-        <source>Failed to commit EvoDB</source>
-        <translation>EvoDBのコミットに失敗しました</translation>
     </message>
     <message>
         <source>Failed to create backup %s!</source>
@@ -4623,12 +4224,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>バックアップ削除失敗、エラー: %s</translation>
     </message>
     <message>
-        <source>Failed to rescan the wallet during initialization</source>
-        <translation>初期化中にウォレットの再スキャンに失敗しました</translation>
+        <source>Failed to load sporks cache from</source>
+        <translation>スポークキャッシュの読み込み失敗：</translation>
     </message>
     <message>
-        <source>Invalid P2P permission: '%s'</source>
-        <translation>無効なP2P許可：「%s」</translation>
+        <source>Fee (in %s/kB) to add to transactions you send (default: %s)</source>
+        <translation>送信するトランザクションに付加する手数料 (%s/kB単位) (初期値: %s)</translation>
+    </message>
+    <message>
+        <source>Imports blocks from external blk000??.dat file on startup</source>
+        <translation>起動時に外部の blk000??.dat ファイルからブロックをインポート</translation>
+    </message>
+    <message>
+        <source>InstantSend options:</source>
+        <translation>インスタントセンドオプション:</translation>
     </message>
     <message>
         <source>Invalid amount for -fallbackfee=&lt;amount&gt;: '%s'</source>
@@ -4637,6 +4246,18 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Invalid masternodeblsprivkey. Please see documentation.</source>
         <translation>マスターノードBLS秘密鍵が無効です。ドキュメントをお読み下さい。</translation>
+    </message>
+    <message>
+        <source>Keep the transaction memory pool below &lt;n&gt; megabytes (default: %u)</source>
+        <translation>トランザクションのメモリープールの総量を &lt;n&gt; メガバイト以下に維持する (初期値: %u)</translation>
+    </message>
+    <message>
+        <source>Last PrivateSend was too recent.</source>
+        <translation>最後のプライベートセンドを実行してから充分な時間が経っていません。</translation>
+    </message>
+    <message>
+        <source>Last successful PrivateSend action was too recent.</source>
+        <translation>最後の成功したプライベートセンドを実行してから充分な時間が経っていません。</translation>
     </message>
     <message>
         <source>Loading block index...</source>
@@ -4659,12 +4280,24 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>ウォレットを読み込んでいます…</translation>
     </message>
     <message>
+        <source>Make the wallet broadcast transactions</source>
+        <translation>ウォレットにトランザクションをブロードキャストさせる</translation>
+    </message>
+    <message>
+        <source>Masternode options:</source>
+        <translation>マスターノードオプション:</translation>
+    </message>
+    <message>
         <source>Masternode queue is full.</source>
         <translation>マスターノードキューがいっぱいです</translation>
     </message>
     <message>
         <source>Masternode:</source>
         <translation>マスターノード:</translation>
+    </message>
+    <message>
+        <source>Minimum bytes per sigop in transactions we relay and mine (default: %u)</source>
+        <translation>中継またはマイニングするトランザクションのsigop毎の最小バイト (初期設定: %u)</translation>
     </message>
     <message>
         <source>Missing input transaction information.</source>
@@ -4679,6 +4312,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>ミキシング用の分割がマッチしていません。</translation>
     </message>
     <message>
+        <source>Node relay options:</source>
+        <translation>ノード中継オプション：</translation>
+    </message>
+    <message>
         <source>Not compatible with existing transactions.</source>
         <translation>既存のトランザクションと互換性がありません。</translation>
     </message>
@@ -4687,16 +4324,36 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>使用可能なファイルディスクリプタが不足しています。</translation>
     </message>
     <message>
+        <source>Number of automatic wallet backups (default: %u)</source>
+        <translation>自動ウォレットバックアップの数 (初期設定: %u)</translation>
+    </message>
+    <message>
+        <source>Options:</source>
+        <translation>オプション：</translation>
+    </message>
+    <message>
+        <source>Password for JSON-RPC connections</source>
+        <translation>JSON-RPC 接続のパスワード</translation>
+    </message>
+    <message>
+        <source>Print version and exit</source>
+        <translation>バージョンを表示し終了</translation>
+    </message>
+    <message>
+        <source>PrivateSend is idle.</source>
+        <translation>プライベートセンドはアイドル状態です。</translation>
+    </message>
+    <message>
+        <source>PrivateSend options:</source>
+        <translation>プライベートセンドオプション:</translation>
+    </message>
+    <message>
+        <source>PrivateSend request incomplete:</source>
+        <translation>プライベートセンドリクエスト未完了:</translation>
+    </message>
+    <message>
         <source>Prune cannot be configured with a negative value.</source>
         <translation>剪定値は負の値に設定できません。</translation>
-    </message>
-    <message>
-        <source>Prune mode is incompatible with -blockfilterindex.</source>
-        <translation>プルーンモードは、-blockfilterindexと互換性がありません。</translation>
-    </message>
-    <message>
-        <source>Prune mode is incompatible with -disablegovernance=false.</source>
-        <translation>プルーンモードは、-disablegovernance=falseと互換性がありません。</translation>
     </message>
     <message>
         <source>Prune mode is incompatible with -txindex.</source>
@@ -4707,37 +4364,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>ブロックストアを剪定しています…</translation>
     </message>
     <message>
-        <source>Section [%s] is not recognized.</source>
-        <translation>[%s]のセクションは認識されません。</translation>
-    </message>
-    <message>
-        <source>Specified -walletdir "%s" does not exist</source>
-        <translation>指定された-walletdirの「%s」は存在しません</translation>
-    </message>
-    <message>
-        <source>Specified -walletdir "%s" is a relative path</source>
-        <translation>指定された-walletdirの「%s」は相対パスです</translation>
-    </message>
-    <message>
-        <source>Specified -walletdir "%s" is not a directory</source>
-        <translation>指定された-walletdirの「%s」はディレクトリではありません</translation>
+        <source>Rescan the block chain for missing wallet transactions on startup</source>
+        <translation>起動時に失ったウォレットのトランザクションのブロックチェーンを再スキャン</translation>
     </message>
     <message>
         <source>Synchronizing blockchain...</source>
         <translation>ブロックチェーンの同期中…</translation>
     </message>
     <message>
-        <source>The specified config file %s does not exist
-</source>
-        <translation>指定された構成ファイルの%sは存在しません</translation>
-    </message>
-    <message>
         <source>The wallet will avoid paying less than the minimum relay fee.</source>
         <translation>ウォレットは最小中継手数料を下回る額の支払を拒否します。</translation>
-    </message>
-    <message>
-        <source>This is expected because you are running a pruned node.</source>
-        <translation>これは、プルーニングされたノードを実行しているため、予想されます。</translation>
     </message>
     <message>
         <source>This is the minimum transaction fee you pay on every transaction.</source>
@@ -4772,20 +4408,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>このコンピュータの %s にバインドすることができません。おそらく %s は既に実行されています。</translation>
     </message>
     <message>
-        <source>Unable to create the PID file '%s': %s</source>
-        <translation>PIDファイルの「%s」を作成できません：%s</translation>
-    </message>
-    <message>
-        <source>Unable to generate initial keys</source>
-        <translation>初期キーが生成できません</translation>
-    </message>
-    <message>
-        <source>Unknown -blockfilterindex value %s.</source>
-        <translation>%sは、不明な-blockfilterindexの値です。</translation>
-    </message>
-    <message>
         <source>Upgrading UTXO database</source>
         <translation>UTXOデータベースを更新しています</translation>
+    </message>
+    <message>
+        <source>Use devnet chain with provided name</source>
+        <translation>devnet チェーンを与えられた名前とともに使用します。</translation>
+    </message>
+    <message>
+        <source>Wallet debugging/testing options:</source>
+        <translation>ウォレットのデバッグ／テスト用オプション:</translation>
     </message>
     <message>
         <source>Wallet needed to be rewritten: restart %s to complete</source>
@@ -4800,16 +4432,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>ウォレットバックアップフォルダー作成不可 %s!</translation>
     </message>
     <message>
+        <source>Whether to operate in a blocks only mode (default: %u)</source>
+        <translation>ブロック限定モードにおいて動作を行うかどうか (初期値: %u)</translation>
+    </message>
+    <message>
         <source>You can not start a masternode with wallet enabled.</source>
         <translation>ウォレットを有効にした状態でマスターノードを起動することはできません。</translation>
     </message>
     <message>
-        <source>You need to rebuild the database using -reindex to change -addressindex</source>
-        <translation>-addressindexを変更するために、-reindexを使用してデータベースを再構築する必要があります</translation>
+        <source>You need to rebuild the database using -reindex to change -txindex</source>
+        <translation>-txindexを変更するために -reindexを使用してデータベースを再構築する必要があります。</translation>
     </message>
     <message>
-        <source>You need to rebuild the database using -reindex to change -spentindex</source>
-        <translation>-spentindexを変更するために、-reindexを使用してデータベースを再構築する必要があります</translation>
+        <source>ZeroMQ notification options:</source>
+        <translation>ZeroMQ通知オプション:</translation>
     </message>
     <message>
         <source>no mixing available.</source>
@@ -4820,12 +4456,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>詳細はdebug.logを参照してください。</translation>
     </message>
     <message>
-        <source>The %s developers</source>
-        <translation>%s の開発者</translation>
+        <source>RPC server options:</source>
+        <translation>RPCサーバのオプション：</translation>
     </message>
     <message>
-        <source>%s uses exact denominated amounts to send funds, you might simply need to mix some more coins.</source>
-        <translation>%sは正確に換算した金額を送金するため、単純にいくらかのコインをミキシングする必要があるかもしれません。</translation>
+        <source>Cosanta Core</source>
+        <translation>Cosantaコア</translation>
+    </message>
+    <message>
+        <source>The %s developers</source>
+        <translation>%s の開発者</translation>
     </message>
     <message>
         <source>Cannot obtain a lock on data directory %s. %s is probably already running.</source>
@@ -4836,6 +4476,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>MITソフトウェアライセンスのもとで配布されています。付属のファイル %s または %s を参照してください</translation>
     </message>
     <message>
+        <source>Enable use of PrivateSend for funds stored in this wallet (0-1, default: %u)</source>
+        <translation>このウォレットに保管されている資金に対してプライベートセンドの使用を有効にします(0-1, 初期設定: %u)</translation>
+    </message>
+    <message>
         <source>Error loading %s: You can't enable HD on an already existing non-HD wallet</source>
         <translation>%s読み込みエラー: 既存の非HDウォレット上でHDを有効化できません</translation>
     </message>
@@ -4844,8 +4488,28 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>%s の読み込みエラー! すべてのキーは正しく読み取れますが、トランザクションデータやアドレス帳のエントリが失われたか、正しくない可能性があります。</translation>
     </message>
     <message>
+        <source>Exclude debugging information for a category. Can be used in conjunction with -debug=1 to output debug logs for all categories except one or more specified categories.</source>
+        <translation>カテゴリのデバッグ情報を除外します。 -debug=1 と組み合わせて使用して、1つ以上の指定されたカテゴリを除くすべてのカテゴリのデバッグログを出力できます。</translation>
+    </message>
+    <message>
+        <source>Force relay of transactions from whitelisted peers even if they violate local relay policy (default: %d)</source>
+        <translation>ホワイトリストのピアから受け取ったトランザクションに関しては、たとえローカルの中継ポリシーに違反しているとしても中継を行うようにする (初期設定: %d)</translation>
+    </message>
+    <message>
         <source>Incorrect or no devnet genesis block found. Wrong datadir for devnet specified?</source>
         <translation>無効なdevnetジェネシスブロックが発見されたか、またはdevnetジェネシスブロックが発見されません。 特定のdevnet用のデータディレクトリが間違ってませんか?</translation>
+    </message>
+    <message>
+        <source>Maximum allowed median peer time offset adjustment. Local perspective of time may be influenced by peers forward or backward by this amount. (default: %u seconds)</source>
+        <translation>時間オフセット調整値のピア中央値に対する最大の許容値。ローカル時間の見込み値は、接続するピアにより前方ないし後方へ影響されます。(初期値: %u 秒)</translation>
+    </message>
+    <message>
+        <source>Maximum total fees (in %s) to use in a single wallet transaction or raw transaction; setting this too low may abort large transactions (default: %s)</source>
+        <translation>ひとつのウォレットトランザクションまたは原トランザクションで使用する合計手数料の最大値 (%s 単位)。低すぎる値を指定すると巨大なトランザクションの作成ができなくなります (初期設定: %s)</translation>
+    </message>
+    <message>
+        <source>Override spork address. Only useful for regtest and devnet. Using this on mainnet or testnet will ban you.</source>
+        <translation>スポークアドレスを上書きします。regtest または devnetでのみ有効です。mainnet または testnet で使用した場合Banされます。</translation>
     </message>
     <message>
         <source>Please check that your computer's date and time are correct! If your clock is wrong, %s will not work properly.</source>
@@ -4854,6 +4518,14 @@ https://www.transifex.com/projects/p/dash/</translation>
     <message>
         <source>Please contribute if you find %s useful. Visit %s for further information about the software.</source>
         <translation>%s が有用だと感じられた方はぜひプロジェクトへの貢献をお願いします。ソフトウェアのより詳細な情報については %s をご覧ください。</translation>
+    </message>
+    <message>
+        <source>Set lowest fee rate (in %s/kB) for transactions to be included in block creation. (default: %s)</source>
+        <translation>ブロック生成時に取り込まれるトランザクションの最低手数料率 (%s/kB 単位)。(初期設定: %s)</translation>
+    </message>
+    <message>
+        <source>The fee rate (in %s/kB) that indicates your tolerance for discarding change by adding it to the fee (default: %s). Note: An output is discarded if it is dust at this rate, but we will always discard up to the dust relay fee and a discard fee above that is limited by the fee estimate for the longest target</source>
+        <translation>お釣りを手数料(default: %s)に追加することによりお釣りを破棄する許容範囲を示す手数料率 (in %s/kB) 。注意：アウトプットがこのレートでダストである場合、アウトプットは破棄されますが、常にダストリレー手数料まで破棄し、それを超える破棄料金は最長ターゲットの手数料見積もりによって制限されます</translation>
     </message>
     <message>
         <source>This is the transaction fee you may discard if change is smaller than dust at this level</source>
@@ -4868,32 +4540,56 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>この製品はOpenSSLプロジェクトにより開発されたソフトウェアをOpenSSLツールキット %s として利用しています &lt;https://www.openssl.org/&gt;。また、Eric Young氏により開発された暗号ソフトウェア、Thomas Bernard氏により書かれたUPnPソフトウェアを用いています。</translation>
     </message>
     <message>
+        <source>Unable to locate enough PrivateSend non-denominated funds for this transaction.</source>
+        <translation>このトランザクションに対してプライベートセンド用の分割されてない充分なファンドが検出できません。</translation>
+    </message>
+    <message>
         <source>Unable to replay blocks. You will need to rebuild the database using -reindex-chainstate.</source>
         <translation>ブロックを再生できません。 -reindex-chainstateを使用してデータベースを再構築する必要があります。</translation>
     </message>
     <message>
-        <source>Warning: Private keys detected in wallet {%s} with disabled private keys</source>
-        <translation>警告：プライベートキーが、無効化されたものと一緒にウォレット{%s}で検出されました</translation>
+        <source>Use N separate masternodes for each denominated input to mix funds (%u-%u, default: %u)</source>
+        <translation>それぞれの分割されたインプットに対してN 個の別々のマスターノードを使用してファンドをミキシングします。(%u-%u, 初期設定: %u)</translation>
+    </message>
+    <message>
+        <source>Use hierarchical deterministic key generation (HD) after BIP39/BIP44. Only has effect during wallet creation/first start</source>
+        <translation>BIP39/BIP44のあとにHDキー生成を使用します。ウォレット作成時にのみ有効です。</translation>
+    </message>
+    <message>
+        <source>User defined mnemonic passphrase for HD wallet (BIP39). Only has effect during wallet creation/first start (default: empty string)</source>
+        <translation>ユーザー定義ニーモニックパスフレーズをHDウォレットに使用します (BIP39)。ウォレット作成時にのみ有効です。(初期設定: 空文字)</translation>
+    </message>
+    <message>
+        <source>Wallet will not create transactions that violate mempool chain limits (default: %u)</source>
+        <translation>ウォレットがmempoolチェーン制限数を超えてトランザクションを作らないようにする (初期値: %u)</translation>
+    </message>
+    <message>
+        <source>Warning: Wallet file corrupt, data salvaged! Original %s saved as %s in %s; if your balance or transactions are incorrect you should restore from a backup.</source>
+        <translation>警告: ウォレットファイルが破損していましたのでデータを復旧しました！元の %s は %s として %s に保存されました; 残高やトランザクションが正しくない場合にはバックアップから復元してください。</translation>
+    </message>
+    <message>
+        <source>Whether to save the mempool on shutdown and load on restart (default: %u)</source>
+        <translation>シャットダウン時にメモリプールを保存し、再起動時にロードするかどうか(初期設定: %u)</translation>
+    </message>
+    <message>
+        <source>Whitelist peers connecting from the given IP address (e.g. 1.2.3.4) or CIDR notated network (e.g. 1.2.3.0/24). Can be specified multiple times.</source>
+        <translation>ホワイトリストとして登録するピア、接続元の IP アドレス (例: 1.2.3.4) または CIDR 表現のネットワーク (例: 1.2.3.0/24)。複数回指定することも可能。</translation>
     </message>
     <message>
         <source>%d of last 100 blocks have unexpected version</source>
         <translation>最新の100ブロックの %d で予期しないバージョンがあります。</translation>
     </message>
     <message>
+        <source>%s corrupt, salvage failed</source>
+        <translation>%s が壊れています。復旧にも失敗しました</translation>
+    </message>
+    <message>
         <source>%s is not a valid backup folder!</source>
         <translation>%s は無効なバックアップフォルダーです!</translation>
     </message>
     <message>
-        <source>%s is only allowed with a single wallet file</source>
-        <translation>%sは、単一のウォレットファイルでのみ許可されます</translation>
-    </message>
-    <message>
         <source>%s is set very high!</source>
         <translation>%s の設定値は高すぎます！</translation>
-    </message>
-    <message>
-        <source>%s request incomplete:</source>
-        <translation>%sのリクエストが未完了です。</translation>
     </message>
     <message>
         <source>-devnet can only be specified once</source>
@@ -4908,16 +4604,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>-rpcport は、 -devnet と -server が指定されたとき指定しなければなりません。</translation>
     </message>
     <message>
-        <source>A fatal internal error occurred, see debug.log for details</source>
-        <translation>致命的な内部エラーが発生しました。詳細は、debug.logを参照してください。</translation>
+        <source>Accept connections from outside (default: 1 if no -proxy or -connect)</source>
+        <translation>外部からの接続を許可（初期設定: 1 no -proxyまたは-connectの場合）</translation>
+    </message>
+    <message>
+        <source>Allow RFC1918 addresses to be relayed and connected to (default: %u)</source>
+        <translation>RFC1918 アドレスが中継され接続されるのを許可 (初期設定: %u)</translation>
+    </message>
+    <message>
+        <source>Attempt to recover private keys from a corrupt wallet on startup</source>
+        <translation>起動時に壊れたウォレットから秘密鍵を復旧することを試す</translation>
     </message>
     <message>
         <source>Cannot resolve -%s address: '%s'</source>
         <translation>-%s アドレス '%s' を解決できません</translation>
-    </message>
-    <message>
-        <source>Cannot write to data directory '%s'; check permissions.</source>
-        <translation>「%s」のデータディレクトリに書き込めません。権限を確認してください。</translation>
     </message>
     <message>
         <source>Change index out of range</source>
@@ -4928,8 +4628,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>Copyright (C)</translation>
     </message>
     <message>
-        <source>Disk space is too low!</source>
-        <translation>ディスク容量が少なすぎます。</translation>
+        <source>Create up to N inputs of each denominated amount (%u-%u, default: %u)</source>
+        <translation>各金種の額 (%u-%u, default: %u)のN個までのインプットを作成</translation>
     </message>
     <message>
         <source>Error loading %s</source>
@@ -4956,48 +4656,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>チェーンステートデータベースのアップグレードエラー</translation>
     </message>
     <message>
-        <source>Error: failed to add socket to kqueuefd (kevent returned error %s)</source>
-        <translation>エラー：kqueuefdへのソケットの追加に失敗しました (keventが、%sのエラーを返しました）</translation>
-    </message>
-    <message>
-        <source>Failed to clear fulfilled requests cache at %s</source>
-        <translation>%sで、完了したリクエストのキャッシュの削除に失敗しました</translation>
-    </message>
-    <message>
-        <source>Failed to clear governance cache at %s</source>
-        <translation>%sで、ガバナンスのキャッシュの削除に失敗しました</translation>
-    </message>
-    <message>
-        <source>Failed to clear masternode cache at %s</source>
-        <translation>%sで、マスタノードのキャッシュの削除に失敗しました</translation>
-    </message>
-    <message>
         <source>Failed to find mixing queue to join</source>
         <translation>ミキシングキューの検出に失敗</translation>
     </message>
     <message>
-        <source>Failed to load fulfilled requests cache from %s</source>
-        <translation>%sから完了したリクエストのキャッシュをロードするのに失敗しました</translation>
-    </message>
-    <message>
-        <source>Failed to load governance cache from %s</source>
-        <translation>%sからガバナンスのキャッシュをロードするのに失敗しました</translation>
-    </message>
-    <message>
-        <source>Failed to load masternode cache from %s</source>
-        <translation>%sからマスターノードのキャッシュをロードするのに失敗しました</translation>
-    </message>
-    <message>
-        <source>Failed to load sporks cache from %s</source>
-        <translation>%sからスポークのキャッシュをロードするのに失敗しました</translation>
-    </message>
-    <message>
         <source>Failed to start a new mixing queue</source>
         <translation>新しいミキシングキューの開始に失敗</translation>
-    </message>
-    <message>
-        <source>Incorrect -rescan mode, falling back to default value</source>
-        <translation>再スキャンモードが正しくないため、デフォルト値に戻ります</translation>
     </message>
     <message>
         <source>Initialization sanity check failed. %s is shutting down.</source>
@@ -5028,8 +4692,20 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>P2Pアドレスを読み込んでいます...</translation>
     </message>
     <message>
+        <source>Print this help message and exit</source>
+        <translation>このヘルプメッセージを表示し終了する</translation>
+    </message>
+    <message>
         <source>Reducing -maxconnections from %d to %d, because of system limitations.</source>
         <translation>システム上の制約から、-maxconnections を %d から %d に削減します。</translation>
+    </message>
+    <message>
+        <source>Relay and mine data carrier transactions (default: %u)</source>
+        <translation>データ運送トランザクションのリレーおよび採掘を行う (初期設定： %u)</translation>
+    </message>
+    <message>
+        <source>Relay non-P2SH multisig (default: %u)</source>
+        <translation>P2SHでないマルチシグトランザクションをリレーする (初期設定： %u)</translation>
     </message>
     <message>
         <source>Replaying blocks...</source>
@@ -5040,6 +4716,10 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>再スキャン中…</translation>
     </message>
     <message>
+        <source>Run in the background as a daemon and accept commands</source>
+        <translation>デーモンとしてバックグランドで実行しコマンドを許可</translation>
+    </message>
+    <message>
         <source>Session not complete!</source>
         <translation>セッション未完了！</translation>
     </message>
@@ -5048,28 +4728,36 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>セッションタイムアウト</translation>
     </message>
     <message>
+        <source>Set database cache size in megabytes (%d to %d, default: %d)</source>
+        <translation>データベースのキャッシュサイズをメガバイトで設定 (%d から %d。初期設定： %d)</translation>
+    </message>
+    <message>
+        <source>Set maximum block size in bytes (default: %d)</source>
+        <translation>最大ブロックサイズをバイトで設定 (初期設定： %d)</translation>
+    </message>
+    <message>
+        <source>Show all debugging options (usage: --help -help-debug)</source>
+        <translation>すべてのデバッグオプションを表示する (使い方： --help -help-debug)</translation>
+    </message>
+    <message>
+        <source>Shrink debug.log file on client startup (default: 1 when no -debug)</source>
+        <translation>クライアント起動時に debug.log ファイルを縮小 (初期設定：1 -debug オプションを指定しない場合)</translation>
+    </message>
+    <message>
         <source>Signing transaction failed</source>
         <translation>トランザクションの署名に失敗</translation>
     </message>
     <message>
-        <source>Specified blocks directory "%s" does not exist.</source>
-        <translation>指定されたブロックディレクトリの「%s」は存在しません。</translation>
+        <source>Specify data directory</source>
+        <translation>データ ディレクトリの指定</translation>
     </message>
     <message>
-        <source>Last queue was created too recently.</source>
-        <translation>直近のキューがかなり最近に作成されました。</translation>
+        <source>Specify your own public address</source>
+        <translation>あなた自身のパブリックなアドレスを指定</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup.</source>
-        <translation>%sが破損しています。ウォレットツールのdash-walletを使用してサルベージするか、バックアップを復元してみてください。</translation>
-    </message>
-    <message>
-        <source>Can't generate a change-address key. No keys in the internal keypool and can't generate any keys.</source>
-        <translation>change-addressキーを生成できません。内部キープールにキーがなく、キーを生成できません。</translation>
-    </message>
-    <message>
-        <source>Last successful action was too recent.</source>
-        <translation>直近の成功したアクションが最新過ぎでした。</translation>
+        <source>Start PrivateSend automatically (0-1, default: %u)</source>
+        <translation>自動的にプライベートセンドを開始 (0-1, デフォルト: %u)</translation>
     </message>
     <message>
         <source>Starting network threads...</source>
@@ -5108,16 +4796,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>トランザクションが無効です</translation>
     </message>
     <message>
+        <source>Transaction too large for fee policy</source>
+        <translation>手数料ポリシーに対してトランザクションが大きすぎます</translation>
+    </message>
+    <message>
         <source>Unable to bind to %s on this computer (bind returned error %s)</source>
         <translation>このコンピュータの %s にバインドすることができません (バインドが返したエラーは %s)</translation>
-    </message>
-    <message>
-        <source>Unable to locate enough mixed funds for this transaction.</source>
-        <translation>この取引に十分なミキシング資金を確保できません。</translation>
-    </message>
-    <message>
-        <source>Unable to locate enough non-denominated funds for this transaction.</source>
-        <translation>この取引に十分な外貨建ての資金を確保できません。</translation>
     </message>
     <message>
         <source>Unable to sign spork message, wrong key?</source>
@@ -5136,8 +4820,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>サポートされていないロギングカテゴリ %s=%s.</translation>
     </message>
     <message>
-        <source>Upgrading txindex database</source>
-        <translation>txindexデータベースのアップグレード</translation>
+        <source>Username for JSON-RPC connections</source>
+        <translation>JSON-RPC 接続のユーザー名</translation>
     </message>
     <message>
         <source>Verifying blocks...</source>
@@ -5152,20 +4836,12 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>ウォレットはロックされています。</translation>
     </message>
     <message>
-        <source>Warning: can't use %s and %s together, will prefer %s</source>
-        <translation>警告：%sと%sを一緒に使うことはできません。%sを優先します。</translation>
+        <source>Wallet options:</source>
+        <translation>ウォレットオプション：</translation>
     </message>
     <message>
-        <source>Warning: incorrect parameter %s, path must exist! Using default path.</source>
-        <translation>警告：パラメータの%sが正しくありません。パスは必須となります。デフォルトのパスを使用しています。</translation>
-    </message>
-    <message>
-        <source>You are starting with governance validation disabled.</source>
-        <translation>お客様はガバナンスの検証を無効にした状態で開始しています。</translation>
-    </message>
-    <message>
-        <source>You can not disable governance validation on a masternode.</source>
-        <translation>マスターノードでガバナンスの検証を無効化することはできません。</translation>
+        <source>Warning</source>
+        <translation>警告</translation>
     </message>
     <message>
         <source>Your entries added successfully.</source>
