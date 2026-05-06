@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
     // Don't remove this, it's needed to access
     // QApplication:: and QCoreApplication:: in the tests
     BitcoinApplication app(*node);
-    app.setApplicationName("Dash-Qt-test");
+    app.setApplicationName("Cosanta-Qt-test");
 
     node->setupServerArgs();            // Make gArgs available in the NodeContext
     node->context()->args->ClearArgs(); // Clear added args again

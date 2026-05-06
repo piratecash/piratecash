@@ -3223,7 +3223,6 @@ void CConnman::Stop()
         threadDNSAddressSeed.join();
     if (threadSocketHandler.joinable())
         threadSocketHandler.join();
-
     if (fAddressesInitialized)
     {
         DumpAddresses();

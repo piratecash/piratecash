@@ -182,7 +182,7 @@ static RPCHelpMan stop()
     // Also accept the hidden 'wait' integer argument (milliseconds)
     // For instance, 'stop 1000' makes the call wait 1 second before returning
     // to the client (intended for testing)
-        "\nStop Dash Core server.",
+        "\nStop Cosanta Core server.",
         {
             {"wait", RPCArg::Type::NUM, RPCArg::Optional::OMITTED_NAMED_ARG, "how long to wait in ms", "", {}, /* hidden */ true},
         },

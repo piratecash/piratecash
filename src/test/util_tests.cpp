@@ -2195,7 +2195,7 @@ BOOST_AUTO_TEST_CASE(message_sign)
 {
     const std::array<unsigned char, 32> privkey_bytes = {
         // just some random data
-        // derived address from this private key: XetGnWHsPXV9VSkWzB6Wn2KhZLD24gqa5j
+        // derived address from this private key: CLfKXHz3JsF6Ee4Mp37DW1FwM7qk1SaeC6
         0xD9, 0x7F, 0x51, 0x08, 0xF1, 0x1C, 0xDA, 0x6E,
         0xEE, 0xBA, 0xAA, 0x42, 0x0F, 0xEF, 0x07, 0x26,
         0xB1, 0xF8, 0x98, 0x06, 0x0B, 0x98, 0x48, 0x9F,
@@ -2238,42 +2238,42 @@ BOOST_AUTO_TEST_CASE(message_verify)
 
     BOOST_CHECK_EQUAL(
         MessageVerify(
-            "7iRPy8FEHBzbChrktsG85YbDZ3SuiCxsNq",
+            "6WQb1oMN9ebxkQSVpcGAdAmrfXg5WBwefM",
             "signature should be irrelevant",
             "message too"),
         MessageVerificationResult::ERR_ADDRESS_NO_KEY);
 
     BOOST_CHECK_EQUAL(
         MessageVerify(
-            "XuXS24zs2xP1vPynvNt14kWLa64csH8Mur",
+            "CbJUkrh2xJ8xfbHdkEthnjSaMshLgPiZdp",
             "invalid signature, not in base64 encoding",
             "message should be irrelevant"),
         MessageVerificationResult::ERR_MALFORMED_SIGNATURE);
 
     BOOST_CHECK_EQUAL(
         MessageVerify(
-            "XuXS24zs2xP1vPynvNt14kWLa64csH8Mur",
+            "CbJUkrh2xJ8xfbHdkEthnjSaMshLgPiZdp",
             "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
             "message should be irrelevant"),
         MessageVerificationResult::ERR_PUBKEY_NOT_RECOVERED);
 
     BOOST_CHECK_EQUAL(
         MessageVerify(
-            "XetGnWHsPXV9VSkWzB6Wn2KhZLD24gqa5j",
+            "CLfKXHz3JsF6Ee4Mp37DW1FwM7qk1SaeC6",
             "IPojfrX2dfPnH26UegfbGQQLrdK844DlHq5157/P6h57WyuS/Qsl+h/WSVGDF4MUi4rWSswW38oimDYfNNUBUOk=",
             "I never signed this"),
         MessageVerificationResult::ERR_NOT_SIGNED);
 
     BOOST_CHECK_EQUAL(
         MessageVerify(
-            "XetGnWHsPXV9VSkWzB6Wn2KhZLD24gqa5j",
+            "CLfKXHz3JsF6Ee4Mp37DW1FwM7qk1SaeC6",
             "IIOzMDkvw3GtLWXkeEYRRRH53MOLHM44sJ428Nu4NNacTPJTGcKesMJ+3s3OadYK34tpSQIhu922EviNNWTsiQg=",
             "Trust no one"),
         MessageVerificationResult::OK);
 
     BOOST_CHECK_EQUAL(
         MessageVerify(
-            "XenV77v8QQ3rwjyCb3j2fCwfvgbkC4Vwaj",
+            "CLZXqucJKjoogwH3QujjPBsuiUEU6aMNnZ",
             "IOACalWiJTLJ2U7wTKICx5mQ2tOAJ3to8dko8FMb2XSYbmvL+yMWedyfSfaK6V8jwoociyYx628nkXXnrOhPFIY=",
             "Trust me"),
         MessageVerificationResult::OK);

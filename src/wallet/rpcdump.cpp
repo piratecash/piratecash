@@ -193,7 +193,7 @@ UniValue importaddress(const JSONRPCRequest& request)
     "\nNote: If you import a non-standard raw script in hex form, outputs sending to it will be treated\n"
     "as change, and not show up in many RPCs.\n",
         {
-            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Dash address (or hex-encoded script)"},
+            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Cosanta address (or hex-encoded script)"},
             {"label", RPCArg::Type::STR, /* default */ "\"\"", "An optional label"},
             {"rescan", RPCArg::Type::BOOL, /* default */ "true", "Rescan the wallet for transactions"},
             {"p2sh", RPCArg::Type::BOOL, /* default */ "false", "Add the P2SH version of the script as well"},
@@ -265,7 +265,7 @@ UniValue importaddress(const JSONRPCRequest& request)
 
             pwallet->ImportScriptPubKeys(strLabel, scripts, false /* have_solving_data */, true /* apply_label */, 1 /* timestamp */);
         } else {
-            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Dash address or script");
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Cosanta address or script");
         }
     }
     if (fRescan)
@@ -801,7 +801,7 @@ UniValue dumpprivkey(const JSONRPCRequest& request)
         "\nReveals the private key corresponding to 'address'.\n"
         "Then the importprivkey can be used with this output\n",
         {
-            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The dash address for the private key"},
+            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Cosanta address for the private key"},
         },
         RPCResult{
             RPCResult::Type::STR, "key", "The private key"
@@ -826,7 +826,7 @@ UniValue dumpprivkey(const JSONRPCRequest& request)
     std::string strAddress = request.params[0].get_str();
     CTxDestination dest = DecodeDestination(strAddress);
     if (!IsValidDestination(dest)) {
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Dash address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Cosanta address");
     }
     const PKHash *pkhash= std::get_if<PKHash>(&dest);
     if (!pkhash) {
@@ -894,7 +894,7 @@ UniValue dumpwallet(const JSONRPCRequest& request)
         "Note that if your wallet contains keys which are not derived from your HD seed (e.g. imported keys), these are not covered by\n"
         "only backing up the seed itself, and must be backed up too (e.g. ensure you back up the whole dumpfile).\n",
         {
-            {"filename", RPCArg::Type::STR, RPCArg::Optional::NO, "The filename with path (either absolute or relative to dashd)"},
+            {"filename", RPCArg::Type::STR, RPCArg::Optional::NO, "The filename with path (either absolute or relative to cosantad)"},
         },
         RPCResult{
                 RPCResult::Type::OBJ, "", "",
@@ -953,7 +953,7 @@ UniValue dumpwallet(const JSONRPCRequest& request)
     std::sort(vKeyBirth.begin(), vKeyBirth.end());
 
     // produce output
-    file << strprintf("# Wallet dump created by Dash Core %s\n", CLIENT_BUILD);
+    file << strprintf("# Wallet dump created by Cosanta Core %s\n", CLIENT_BUILD);
     file << strprintf("# * Created on %s\n", FormatISO8601DateTime(GetTime()));
     const std::optional<int> tip_height = pwallet->chain().getHeight();
     file << strprintf("# * Best block at time of backup was %i (%s),\n", tip_height.value_or(-1), tip_height ? pwallet->chain().getBlockHash(*tip_height).ToString() : "(missing block hash)");
@@ -961,7 +961,7 @@ UniValue dumpwallet(const JSONRPCRequest& request)
     file << "\n";
 
     UniValue obj(UniValue::VOBJ);
-    obj.pushKV("dashcoreversion", CLIENT_BUILD);
+    obj.pushKV("cosantacoreversion", CLIENT_BUILD);
     obj.pushKV("lastblockheight", tip_height.value_or(-1));
     obj.pushKV("lastblockhash", tip_height ? pwallet->chain().getBlockHash(*tip_height).ToString() : NullUniValue);
     obj.pushKV("lastblocktime", tip_height ? FormatISO8601DateTime(pwallet->chain().getBlockTime(*tip_height)) : NullUniValue);
@@ -1602,7 +1602,7 @@ UniValue importmulti(const JSONRPCRequest& mainRequest)
                                       "block from time %d, which is after or within %d seconds of key creation, and "
                                       "could contain transactions pertaining to the key. As a result, transactions "
                                       "and coins using this key may not appear in the wallet. This error could be "
-                                      "caused by pruning or data corruption (see dashd log for details) and could "
+                                      "caused by pruning or data corruption (see cosantad log for details) and could "
                                       "be dealt with by downloading and rescanning the relevant blocks (see -reindex "
                                       "and -rescan options).",
                                 GetImportTimestamp(request, now), scannedTime - TIMESTAMP_WINDOW - 1, TIMESTAMP_WINDOW)));

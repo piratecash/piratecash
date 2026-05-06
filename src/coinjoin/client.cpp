@@ -1870,4 +1870,3 @@ void DoCoinJoinMaintenance(CTxMemPool& mempool, CConnman& connman)
         pair.second->DoMaintenance(mempool, connman);
     }
 }
-

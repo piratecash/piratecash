@@ -81,9 +81,9 @@ std::shared_ptr<CBlock> PrepareBlock(const NodeContext& node, const CScript& coi
 {
     assert(node.mempool);
     auto block = std::make_shared<CBlock>(
-        BlockAssembler{*sporkManager, *governance, *node.llmq_ctx->quorum_block_processor, *node.llmq_ctx->clhandler, *node.llmq_ctx->isman, *node.evodb, *node.mempool, Params()}
-            .CreateNewBlock(coinbase_scriptPubKey)
-            ->block);
+        *BlockAssembler{*sporkManager, *governance, *node.llmq_ctx->quorum_block_processor, *node.llmq_ctx->clhandler, *node.llmq_ctx->isman, *node.evodb, *node.mempool, Params()}
+             .CreateNewBlock(coinbase_scriptPubKey, nullptr)
+             ->block);
 
     block->nTime = ::ChainActive().Tip()->GetMedianTimePast() + 1;
     block->hashMerkleRoot = BlockMerkleRoot(*block);

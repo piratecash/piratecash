@@ -54,7 +54,6 @@ struct NodeContext {
     std::unique_ptr<LLMQContext> llmq_ctx;
 
     std::unique_ptr<CEvoDB> evodb;
-
     //! Declare default constructor and destructor that are not inline, so code
     //! instantiating the NodeContext struct doesn't need to #include class
     //! definitions for all the unique_ptr members.
