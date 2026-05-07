@@ -11,7 +11,7 @@ We achieve bootstrappability by using Guix as a functional package manager.
 
 # Requirements
 
-Conservatively, you will need an x86_64 machine with:
+Conservatively, you will need:
 
 - 16GB of free disk space on the partition that /gnu/store will reside in
 - 8GB of free disk space **per platform triple** you're planning on building
@@ -259,7 +259,7 @@ details.
   Override the number of jobs to run simultaneously, you might want to do so on
   a memory-limited machine. This may be passed to:
 
-  - `guix` build commands as in `guix environment --cores="$JOBS"`
+  - `guix` build commands as in `guix shell --cores="$JOBS"`
   - `make` as in `make --jobs="$JOBS"`
   - `xargs` as in `xargs -P"$JOBS"`
 
@@ -301,7 +301,7 @@ details.
 
 * _**ADDITIONAL_GUIX_ENVIRONMENT_FLAGS**_
 
-  Additional flags to be passed to the invocation of `guix environment` inside
+  Additional flags to be passed to the invocation of `guix shell` inside
   `guix time-machine`.
 
 # Choosing your security model
@@ -364,12 +364,6 @@ Where `<PREFIX>` is likely:
 - `/usr/local` if you installed Guix from source and didn't supply any
   prefix-modifying flags to Guix's `./configure`
 
-For dongcarl's substitute server at https://guix.carldong.io, run as root:
-
-```sh
-wget -qO- 'https://guix.carldong.io/signing-key.pub' | guix archive --authorize
-```
-
 #### Removing authorized keys
 
 To remove previously authorized keys, simply edit `/etc/guix/acl` and remove the
@@ -381,28 +375,28 @@ Once its key is authorized, the official Guix build farm at
 https://ci.guix.gnu.org is automatically used unless the `--no-substitutes` flag
 is supplied. This default list of substitute servers is overridable both on a
 `guix-daemon` level and when you invoke `guix` commands. See examples below for
-the various ways of adding dongcarl's substitute server after having [authorized
-his signing key](#step-1-authorize-the-signing-keys).
+the various ways of adding a substitute server after having [authorized
+its signing key](#step-1-authorize-the-signing-keys).
 
 Change the **default list** of substitute servers by starting `guix-daemon` with
 the `--substitute-urls` option (you will likely need to edit your init script):
 
 ```sh
-guix-daemon <cmd> --substitute-urls='https://guix.carldong.io https://ci.guix.gnu.org'
+guix-daemon <cmd> --substitute-urls='https://bordeaux.guix.gnu.org https://ci.guix.gnu.org'
 ```
 
 Override the default list of substitute servers by passing the
 `--substitute-urls` option for invocations of `guix` commands:
 
 ```sh
-guix <cmd> --substitute-urls='https://guix.carldong.io https://ci.guix.gnu.org'
+guix <cmd> --substitute-urls='https://bordeaux.guix.gnu.org https://ci.guix.gnu.org'
 ```
 
 For scripts under `./contrib/guix`, set the `SUBSTITUTE_URLS` environment
 variable:
 
 ```sh
-export SUBSTITUTE_URLS='https://guix.carldong.io https://ci.guix.gnu.org'
+export SUBSTITUTE_URLS='https://bordeaux.guix.gnu.org https://ci.guix.gnu.org'
 ```
 
 ## Option 2: Disabling substitutes on an ad-hoc basis
@@ -430,6 +424,6 @@ used.
 If you start `guix-daemon` using an init script, you can edit said script to
 supply this flag.
 
-[b17e]: http://bootstrappable.org/
+[b17e]: https://bootstrappable.org/
 [r12e/source-date-epoch]: https://reproducible-builds.org/docs/source-date-epoch/
 [env-vars-list]: #recognized-environment-variables

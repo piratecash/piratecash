@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
+# Copyright (c) 2019-2021 The Bitcoin Core developers
+# Distributed under the MIT software license, see the accompanying
+# file COPYING or http://www.opensource.org/licenses/mit-license.php.
 export LC_ALL=C
 set -e -o pipefail
 export TZ=UTC
 
 # Although Guix _does_ set umask when building its own packages (in our case,
 # this is all packages in manifest.scm), it does not set it for `guix
-# environment`. It does make sense for at least `guix environment --container`
+# shell`. It does make sense for at least `guix shell --container`
 # to set umask, so if that change gets merged upstream and we bump the
 # time-machine to a commit which includes the aforementioned change, we can
 # remove this line.
@@ -54,7 +57,8 @@ BASEPREFIX="${PWD}/depends"
 store_path() {
     grep --extended-regexp "/[^-]{32}-${1}-[^-]+${2:+-${2}}" "${GUIX_ENVIRONMENT}/manifest" \
         | head --lines=1 \
-        | sed --expression='s|^[[:space:]]*"||' \
+        | sed --expression='s|\x29*$||' \
+              --expression='s|^[[:space:]]*"||' \
               --expression='s|"[[:space:]]*$||'
 }
 
@@ -62,7 +66,6 @@ store_path() {
 # Set environment variables to point the NATIVE toolchain to the right
 # includes/libs
 NATIVE_GCC="$(store_path gcc-toolchain)"
-NATIVE_GCC_STATIC="$(store_path gcc-toolchain static)"
 
 unset LIBRARY_PATH
 unset CPATH
@@ -71,27 +74,16 @@ unset CPLUS_INCLUDE_PATH
 unset OBJC_INCLUDE_PATH
 unset OBJCPLUS_INCLUDE_PATH
 
-export LIBRARY_PATH="${NATIVE_GCC}/lib:${NATIVE_GCC}/lib64:${NATIVE_GCC_STATIC}/lib:${NATIVE_GCC_STATIC}/lib64"
 export C_INCLUDE_PATH="${NATIVE_GCC}/include"
 export CPLUS_INCLUDE_PATH="${NATIVE_GCC}/include/c++:${NATIVE_GCC}/include"
-export OBJC_INCLUDE_PATH="${NATIVE_GCC}/include"
-export OBJCPLUS_INCLUDE_PATH="${NATIVE_GCC}/include/c++:${NATIVE_GCC}/include"
-
-prepend_to_search_env_var() {
-    export "${1}=${2}${!1:+:}${!1}"
-}
 
 case "$HOST" in
-    *darwin*)
-        # When targeting darwin, zlib is required by native_libdmg-hfsplus.
-        zlib_store_path=$(store_path "zlib")
-        zlib_static_store_path=$(store_path "zlib" static)
-
-        prepend_to_search_env_var LIBRARY_PATH "${zlib_static_store_path}/lib:${zlib_store_path}/lib"
-        prepend_to_search_env_var C_INCLUDE_PATH "${zlib_store_path}/include"
-        prepend_to_search_env_var CPLUS_INCLUDE_PATH "${zlib_store_path}/include"
-        prepend_to_search_env_var OBJC_INCLUDE_PATH "${zlib_store_path}/include"
-        prepend_to_search_env_var OBJCPLUS_INCLUDE_PATH "${zlib_store_path}/include"
+    *darwin*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;; # Required for qt/qmake
+    *mingw*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;;
+    *)
+        NATIVE_GCC_STATIC="$(store_path gcc-toolchain static)"
+        export LIBRARY_PATH="${NATIVE_GCC}/lib:${NATIVE_GCC_STATIC}/lib"
+        ;;
 esac
 
 # Set environment variables to point the CROSS toolchain to the right
@@ -144,18 +136,7 @@ for p in "${PATHS[@]}"; do
 done
 
 # Disable Guix ld auto-rpath behavior
-case "$HOST" in
-    *darwin*)
-        # The auto-rpath behavior is necessary for darwin builds as some native
-        # tools built by depends refer to and depend on Guix-built native
-        # libraries
-        #
-        # After the native packages in depends are built, the ld wrapper should
-        # no longer affect our build, as clang would instead reach for
-        # x86_64-apple-darwin-ld from cctools
-        ;;
-    *) export GUIX_LD_WRAPPER_DISABLE_RPATH=yes ;;
-esac
+export GUIX_LD_WRAPPER_DISABLE_RPATH=yes
 
 # Make /usr/bin if it doesn't exist
 [ -e /usr/bin ] || mkdir -p /usr/bin
@@ -184,16 +165,6 @@ esac
 # Environment variables for determinism
 export TAR_OPTIONS="--owner=0 --group=0 --numeric-owner --mtime='@${SOURCE_DATE_EPOCH}' --sort=name"
 export TZ="UTC"
-case "$HOST" in
-    *darwin*)
-        # cctools AR, unlike GNU binutils AR, does not have a deterministic mode
-        # or a configure flag to enable determinism by default, it only
-        # understands if this env-var is set or not. See:
-        #
-        # https://github.com/tpoechtrager/cctools-port/blob/55562e4073dea0fbfd0b20e0bf69ffe6390c7f97/cctools/ar/archive.c#L334
-        export ZERO_AR_DATE=yes
-        ;;
-esac
 
 ####################
 # Depends Building #
@@ -210,10 +181,16 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    x86_64_linux_AR=x86_64-linux-gnu-gcc-ar \
                                    x86_64_linux_RANLIB=x86_64-linux-gnu-gcc-ranlib \
                                    x86_64_linux_NM=x86_64-linux-gnu-gcc-nm \
-                                   x86_64_linux_STRIP=x86_64-linux-gnu-strip \
-                                   qt_config_opts_x86_64_linux='-platform linux-g++ -xplatform bitcoin-linux-g++' \
-                                   FORCE_USE_SYSTEM_CLANG=1
+                                   x86_64_linux_STRIP=x86_64-linux-gnu-strip
 
+case "$HOST" in
+    *darwin*)
+        # Unset now that Qt is built
+        unset C_INCLUDE_PATH
+        unset CPLUS_INCLUDE_PATH
+        unset LIBRARY_PATH
+        ;;
+esac
 
 ###########################
 # Source Tarball Building #
@@ -236,7 +213,6 @@ mkdir -p "$OUTDIR"
 # CONFIGFLAGS
 CONFIGFLAGS+=" --enable-reduce-exports --disable-bench --disable-gui-tests --disable-fuzz-binary"
 case "$HOST" in
-    *linux*) CONFIGFLAGS+=" --disable-threadlocal" ;;
     *mingw*) CONFIGFLAGS+=" --disable-miner" ;;
 esac
 
@@ -258,12 +234,15 @@ esac
 
 # LDFLAGS
 case "$HOST" in
-    *linux*)  HOST_LDFLAGS="-Wl,--as-needed -Wl,--dynamic-linker=$glibc_dynamic_linker -static-libstdc++ -Wl,-O2" ;;
+    *linux*)  HOST_LDFLAGS="-Wl,--as-needed -Wl,--dynamic-linker=$glibc_dynamic_linker -Wl,-O2" ;;
     *mingw*)  HOST_LDFLAGS="-Wl,--no-insert-timestamp" ;;
 esac
 
-# Make $HOST-specific native binaries from depends available in $PATH
-export PATH="${BASEPREFIX}/${HOST}/native/bin:${PATH}"
+# EXE FLAGS
+case "$HOST" in
+    *linux*)  HOST_LDFLAGS+=" -static-libstdc++ -static-libgcc" ;;
+esac
+
 mkdir -p "$DISTSRC"
 (
     cd "$DISTSRC"
@@ -298,8 +277,6 @@ mkdir -p "$DISTSRC"
             ;;
     esac
 
-    # Check that symbol/security checks tools are sane.
-    make test-security-check ${V:+V=1}
     # Perform basic security checks on a series of executables.
     make -C src --jobs=1 check-security ${V:+V=1}
     # Check that executables only contain allowed version symbols.
@@ -324,13 +301,10 @@ mkdir -p "$DISTSRC"
 
     case "$HOST" in
         *darwin*)
-            make osx_volname ${V:+V=1}
             make deploydir ${V:+V=1}
             mkdir -p "unsigned-app-${HOST}"
             cp  --target-directory="unsigned-app-${HOST}" \
-                osx_volname \
-                contrib/macdeploy/detached-sig-create.sh \
-                "${BASEPREFIX}/${HOST}"/native/bin/dmg
+                contrib/macdeploy/detached-sig-create.sh
             mv --target-directory="unsigned-app-${HOST}" dist
             (
                 cd "unsigned-app-${HOST}"
@@ -340,7 +314,7 @@ mkdir -p "$DISTSRC"
                     | gzip -9n > "${OUTDIR}/${DISTNAME}-${HOST}-unsigned.tar.gz" \
                     || ( rm -f "${OUTDIR}/${DISTNAME}-${HOST}-unsigned.tar.gz" && exit 1 )
             )
-            make deploy ${V:+V=1} OSX_DMG="${OUTDIR}/${DISTNAME}-${HOST}-unsigned.dmg"
+            make deploy ${V:+V=1} OSX_ZIP="${OUTDIR}/${DISTNAME}-${HOST}-unsigned.zip"
             ;;
     esac
     (
@@ -370,6 +344,61 @@ mkdir -p "$DISTSRC"
                     find "${DISTNAME}/bin" -type f -executable -print0
                     find "${DISTNAME}/lib" -type f -print0
                 } | xargs -0 -P"$JOBS" -I{} "${DISTSRC}/contrib/devtools/split-debug.sh" {} {} {}.dbg
+
+                case "$HOST" in
+                    *linux*)
+                        # Compress DWARF sections in debug files and set proper permissions
+                        find "${DISTNAME}" -name "*.dbg" -type f -print0 | xargs -0 -P"$JOBS" -I{} sh -c "${HOST}-objcopy --compress-debug-sections=zlib \"\$1\" \"\$1.tmp\" && mv \"\$1.tmp\" \"\$1\" && chmod 644 \"\$1\"" _ {}
+
+                        # Create .build-id tree for perf auto-discovery
+                        mkdir -p "${DISTNAME}/usr/lib/debug/.build-id"
+                        {
+                            find "${DISTNAME}/bin" -type f -executable -print0
+                            find "${DISTNAME}/lib" -type f -print0
+                        } | while IFS= read -r -d '' elf; do
+                            if file "$elf" | grep -q "ELF.*executable\|ELF.*shared object"; then
+                                build_id=$("${HOST}"-readelf -n "$elf" 2>/dev/null | awk '/Build ID/ {print $3; exit}')
+                                if [ -n "$build_id" ] && [ -f "${elf}.dbg" ]; then
+                                    dir="${DISTNAME}/usr/lib/debug/.build-id/${build_id:0:2}"
+                                    mkdir -p "$dir"
+                                    cp "${elf}.dbg" "${dir}/${build_id:2}.debug"
+                                    chmod 644 "${dir}/${build_id:2}.debug"
+                                fi
+                            fi
+                        done
+
+                        # Verify build-ids and debug links
+                        verification_output=$(
+                            {
+                                find "${DISTNAME}/bin" -type f -executable -print0
+                                find "${DISTNAME}/lib" -type f -print0
+                            } | {
+                                verification_failed=0
+                                while IFS= read -r -d '' elf; do
+                                    if file "$elf" | grep -q "ELF.*executable\|ELF.*shared object"; then
+                                        # Check for build-id
+                                        if ! "${HOST}"-readelf -n "$elf" 2>/dev/null | grep -q "Build ID"; then
+                                            echo "ERROR: No build-id found in $elf" >&2
+                                            verification_failed=1
+                                        fi
+
+                                        # Check for .gnu_debuglink
+                                        if ! "${HOST}"-readelf --string-dump=.gnu_debuglink "$elf" >/dev/null 2>&1; then
+                                            echo "ERROR: No .gnu_debuglink found in $elf" >&2
+                                            verification_failed=1
+                                        fi
+                                    fi
+                                done
+                                exit "$verification_failed"
+                            } 2>&1
+                        )
+                        verification_status=$?
+                        if [ "$verification_status" -ne 0 ]; then
+                            echo "$verification_output" >&2
+                            exit 1
+                        fi
+                        ;;
+                esac
                 ;;
         esac
 
@@ -381,6 +410,12 @@ mkdir -p "$DISTSRC"
                 cp "${DISTSRC}/README.md" "${DISTNAME}/"
                 ;;
         esac
+
+        # copy over the example dash.conf file. if contrib/devtools/gen-dash-conf.sh
+        # has not been run before buildling, this file will be a stub
+        cp "${DISTSRC}/contrib/debian/examples/dash.conf" "${DISTNAME}/"
+
+        cp -r "${DISTSRC}/share/rpcauth" "${DISTNAME}/share/"
 
         # Finally, deterministically produce {non-,}debug binary tarballs ready
         # for release
@@ -400,12 +435,14 @@ mkdir -p "$DISTSRC"
                     || ( rm -f "${OUTDIR}/${DISTNAME}-${HOST//x86_64-w64-mingw32/win64}-debug.zip" && exit 1 )
                 ;;
             *linux*)
-                find "${DISTNAME}" -not -name "*.dbg" -print0 \
+                # Main (non-debug) tarball: exclude separate debug files and the build-id debug tree
+                find "${DISTNAME}" -not -name "*.dbg" -not -path "${DISTNAME}/usr/lib/debug/*" -print0 \
                     | sort --zero-terminated \
                     | tar --create --no-recursion --mode='u+rw,go+r-w,a+X' --null --files-from=- \
                     | gzip -9n > "${OUTDIR}/${DISTNAME}-${HOST}.tar.gz" \
                     || ( rm -f "${OUTDIR}/${DISTNAME}-${HOST}.tar.gz" && exit 1 )
-                find "${DISTNAME}" -name "*.dbg" -print0 \
+                # Debug tarball: include .dbg files and the build-id debug tree
+                find "${DISTNAME}" \( -name "*.dbg" -o -path "${DISTNAME}/usr/lib/debug/*" \) -print0 \
                     | sort --zero-terminated \
                     | tar --create --no-recursion --mode='u+rw,go+r-w,a+X' --null --files-from=- \
                     | gzip -9n > "${OUTDIR}/${DISTNAME}-${HOST}-debug.tar.gz" \

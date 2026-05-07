@@ -2,10 +2,10 @@
 export LC_ALL=C
 set -e -o pipefail
 
-# shellcheck source=../../shell/realpath.bash
+# shellcheck source=contrib/shell/realpath.bash
 source contrib/shell/realpath.bash
 
-# shellcheck source=../../shell/git-utils.bash
+# shellcheck source=contrib/shell/git-utils.bash
 source contrib/shell/git-utils.bash
 
 ################
@@ -19,6 +19,26 @@ check_tools() {
             exit 1
         fi
     done
+}
+
+################
+# SOURCE_DATE_EPOCH should not unintentionally be set
+################
+
+check_source_date_epoch() {
+    if [ -n "$SOURCE_DATE_EPOCH" ] && [ -z "$FORCE_SOURCE_DATE_EPOCH" ]; then
+        cat << EOF
+ERR: Environment variable SOURCE_DATE_EPOCH is set which may break reproducibility.
+
+     Aborting...
+
+Hint: You may want to:
+      1. Unset this variable: \`unset SOURCE_DATE_EPOCH\` before rebuilding
+      2. Set the 'FORCE_SOURCE_DATE_EPOCH' environment variable if you insist on
+         using your own epoch
+EOF
+        exit 1
+    fi
 }
 
 check_tools cat env readlink dirname basename git
@@ -50,8 +70,8 @@ fi
 # across time.
 time-machine() {
     # shellcheck disable=SC2086
-    guix time-machine --url=https://git.savannah.gnu.org/git/guix.git \
-                      --commit=998eda3067c7d21e0d9bb3310d2f5a14b8f1c681 \
+    guix time-machine --url=https://codeberg.org/guix/guix.git \
+                      --commit=5cb84f2013c5b1e48a7d0e617032266f1e6059e2 \
                       --cores="$JOBS" \
                       --keep-failed \
                       --fallback \
