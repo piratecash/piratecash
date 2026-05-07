@@ -704,6 +704,7 @@ libbitcoin_consensus_a_SOURCES = \
   script/script.h \
   script/script_error.cpp \
   script/script_error.h \
+  script/standard.cpp \
   serialize.h \
   span.h \
   streams.h \
@@ -748,7 +749,6 @@ libbitcoin_common_a_SOURCES = \
   script/descriptor.cpp \
   script/sign.cpp \
   script/signingprovider.cpp \
-  script/standard.cpp \
   warnings.cpp \
   $(BITCOIN_CORE_H)
 
@@ -821,7 +821,7 @@ nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 bitcoin_daemon_sources = bitcoind.cpp
 bitcoin_bin_cppflags = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 bitcoin_bin_cxxflags = $(AM_CXXFLAGS) $(PIE_FLAGS)
-bitcoin_bin_ldflags = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(PTHREAD_FLAGS)
+bitcoin_bin_ldflags = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
 bitcoin_daemon_sources += cosantad-res.rc
