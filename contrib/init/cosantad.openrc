@@ -2,41 +2,41 @@
 
 # backward compatibility for existing gentoo layout 
 #
-if [ -d "/var/lib/dashcore/.dashcore" ]; then
-	BITCOIND_DEFAULT_DATADIR="/var/lib/dashcore/.dashcore"
+if [ -d "/var/lib/cosantacore/.cosantacore" ]; then
+	COSANTAD_DEFAULT_DATADIR="/var/lib/cosantacore/.cosantacore"
 else
-	BITCOIND_DEFAULT_DATADIR="/var/lib/dashd"
+	COSANTAD_DEFAULT_DATADIR="/var/lib/cosantad"
 fi
 
-BITCOIND_CONFIGFILE=${BITCOIND_CONFIGFILE:-/etc/dashcore/dash.conf}
-BITCOIND_PIDDIR=${BITCOIND_PIDDIR:-/var/run/dashd}
-BITCOIND_PIDFILE=${BITCOIND_PIDFILE:-${BITCOIND_PIDDIR}/dashd.pid}
-BITCOIND_DATADIR=${BITCOIND_DATADIR:-${BITCOIND_DEFAULT_DATADIR}}
-BITCOIND_USER=${BITCOIND_USER:-${BITCOIN_USER:-dashcore}}
-BITCOIND_GROUP=${BITCOIND_GROUP:-dashcore}
-BITCOIND_BIN=${BITCOIND_BIN:-/usr/bin/dashd}
-BITCOIND_NICE=${BITCOIND_NICE:-${NICELEVEL:-0}}
-BITCOIND_OPTS="${BITCOIND_OPTS:-${BITCOIN_OPTS}}"
+COSANTAD_CONFIGFILE=${COSANTAD_CONFIGFILE:-/etc/cosantacore/cosanta.conf}
+COSANTAD_PIDDIR=${COSANTAD_PIDDIR:-/var/run/cosantad}
+COSANTAD_PIDFILE=${COSANTAD_PIDFILE:-${COSANTAD_PIDDIR}/cosantad.pid}
+COSANTAD_DATADIR=${COSANTAD_DATADIR:-${COSANTAD_DEFAULT_DATADIR}}
+COSANTAD_USER=${COSANTAD_USER:-${COSANTA_USER:-cosantacore}}
+COSANTAD_GROUP=${COSANTAD_GROUP:-cosantacore}
+COSANTAD_BIN=${COSANTAD_BIN:-/usr/bin/cosantad}
+COSANTAD_NICE=${COSANTAD_NICE:-${NICELEVEL:-0}}
+COSANTAD_OPTS="${COSANTAD_OPTS:-${COSANTA_OPTS}}"
 
-name="Dash Core Daemon"
-description="Dash cryptocurrency P2P network daemon"
+name="Cosanta Core Daemon"
+description="Cosanta cryptocurrency P2P network daemon"
 
-command="/usr/bin/dashd"
-command_args="-pid=\"${BITCOIND_PIDFILE}\" \
-		-conf=\"${BITCOIND_CONFIGFILE}\" \
-		-datadir=\"${BITCOIND_DATADIR}\" \
+command="/usr/bin/cosantad"
+command_args="-pid=\"${COSANTAD_PIDFILE}\" \
+		-conf=\"${COSANTAD_CONFIGFILE}\" \
+		-datadir=\"${COSANTAD_DATADIR}\" \
 		-daemon \
-		${BITCOIND_OPTS}"
+		${COSANTAD_OPTS}"
 
-required_files="${BITCOIND_CONFIGFILE}"
-start_stop_daemon_args="-u ${BITCOIND_USER} \
-			-N ${BITCOIND_NICE} -w 2000"
-pidfile="${BITCOIND_PIDFILE}"
+required_files="${COSANTAD_CONFIGFILE}"
+start_stop_daemon_args="-u ${COSANTAD_USER} \
+			-N ${COSANTAD_NICE} -w 2000"
+pidfile="${COSANTAD_PIDFILE}"
 
 # The retry schedule to use when stopping the daemon. Could be either
 # a timeout in seconds or multiple signal/timeout pairs (like
 # "SIGKILL/180 SIGTERM/300")
-retry="${BITCOIND_SIGTERM_TIMEOUT}"
+retry="${COSANTAD_SIGTERM_TIMEOUT}"
 
 depend() {
 	need localmount net
@@ -50,30 +50,29 @@ start_pre() {
 	checkpath \
 	-d \
 	--mode 0750 \
-	--owner "${BITCOIND_USER}:${BITCOIND_GROUP}" \
-	"${BITCOIND_DATADIR}"
+	--owner "${COSANTAD_USER}:${COSANTAD_GROUP}" \
+	"${COSANTAD_DATADIR}"
 
 	checkpath \
 	-d \
 	--mode 0755 \
-	--owner "${BITCOIND_USER}:${BITCOIND_GROUP}" \
-	"${BITCOIND_PIDDIR}"
+	--owner "${COSANTAD_USER}:${COSANTAD_GROUP}" \
+	"${COSANTAD_PIDDIR}"
 
 	checkpath -f \
-	-o "${BITCOIND_USER}:${BITCOIND_GROUP}" \
+	-o ${COSANTAD_USER}:${COSANTAD_GROUP} \
 	-m 0660 \
-	"${BITCOIND_CONFIGFILE}"
+	${COSANTAD_CONFIGFILE}
 
 	checkconfig || return 1
 }
 
 checkconfig()
 {
-	if grep -qs '^rpcuser=' "${BITCOIND_CONFIGFILE}" && \
-		! grep -qs '^rpcpassword=' "${BITCOIND_CONFIGFILE}" ; then
+	if ! grep -qs '^rpcpassword=' "${COSANTAD_CONFIGFILE}" ; then
 		eerror ""
-		eerror "ERROR: You must set a secure rpcpassword to run dashd."
-		eerror "The setting must appear in ${BITCOIND_CONFIGFILE}"
+		eerror "ERROR: You must set a secure rpcpassword to run cosantad."
+		eerror "The setting must appear in ${COSANTAD_CONFIGFILE}"
 		eerror ""
 		eerror "This password is security critical to securing wallets "
 		eerror "and must not be the same as the rpcuser setting."
@@ -85,7 +84,7 @@ checkconfig()
 		eerror "It is recommended that you also set alertnotify so you are "
 		eerror "notified of problems:"
 		eerror ""
-		eerror "ie: alertnotify=echo %%s | mail -s \"Dash Core Alert\"" \
+		eerror "ie: alertnotify=echo %%s | mail -s \"Cosanta Core Alert\"" \
 			"admin@foo.com"
 		eerror ""
 		return 1

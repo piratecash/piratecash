@@ -1,57 +1,57 @@
 # It is not recommended to modify this file in-place, because it will
 # be overwritten during package upgrades. If you want to add further
 # options or overwrite existing ones then use
-# $ systemctl edit dashd.service
+# $ systemctl edit cosantad.service
 # See "man systemd.service" for details.
 
 # Note that almost all daemon options could be specified in
-# /etc/dash/dash.conf, but keep in mind those explicitly
+# /etc/cosantacore/cosanta.conf, but keep in mind those explicitly
 # specified as arguments in ExecStart= will override those in the
 # config file.
 
 [Unit]
-Description=Dash daemon
-Documentation=https://github.com/dashpay/dash/blob/master/doc/init.md
+Description=Cosanta daemon
+Documentation=https://github.com/cosanta/cosanta-core/blob/master/doc/init.md
 
 # https://www.freedesktop.org/wiki/Software/systemd/NetworkTarget/
 After=network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStart=/usr/bin/dashd -daemon \
-                                                            -pid=/run/dashd/dashd.pid \
-                                                            -conf=/etc/dash/dash.conf  \
-                                                            -datadir=/var/lib/dashd
+ExecStart=/usr/bin/cosantad -daemon \
+                                                            -pid=/run/cosantad/cosantad.pid \
+                                                            -conf=/etc/cosantacore/cosanta.conf  \
+                                                            -datadir=/var/lib/cosantad
 
 # Make sure the config directory is readable by the service user
 PermissionsStartOnly=true
-ExecStartPre=/bin/chgrp dashcore /etc/dash
+ExecStartPre=/bin/chgrp cosantacore /etc/cosantacore
 
 # Process management
 ####################
 
 Type=forking
-PIDFile=/run/dashd/dashd.pid
+PIDFile=/run/cosantad/cosantad.pid
 Restart=on-failure
 TimeoutStopSec=600
 
 # Directory creation and permissions
 ####################################
 
-# Run as dash:dash
-User=dashcore
-Group=dashcore
+# Run as cosantacore:cosantacore
+User=cosantacore
+Group=cosantacore
 
-# /run/dashd
-RuntimeDirectory=dashd
+# /run/cosantad
+RuntimeDirectory=cosantad
 RuntimeDirectoryMode=0710
 
-# /etc/dash
-ConfigurationDirectory=dash
+# /etc/cosantacore
+ConfigurationDirectory=cosantacore
 ConfigurationDirectoryMode=0710
 
-# /var/lib/dashd
-StateDirectory=dashd
+# /var/lib/cosantad
+StateDirectory=cosantad
 StateDirectoryMode=0710
 
 # Hardening measures
