@@ -1,9 +1,9 @@
 # Linearize
-Construct a linear, no-fork, best version of the Cosanta blockchain.
+Construct a linear, no-fork, best version of the PirateCash blockchain.
 
 ## Step 0: Install cosanta_hash
 
-https://github.com/cosanta/cosanta_hash
+https://github.com/dashpay/cosanta_hash
 
 ## Step 1: Download hash list
 
@@ -15,7 +15,7 @@ Required configuration file settings for linearize-hashes:
 
 Optional config file setting for linearize-hashes:
 * RPC: `host`  (Default: `127.0.0.1`)
-* RPC: `port`  (Default: `9606`)
+* RPC: `port`  (Default: `9998`)
 * Blockchain: `min_height`, `max_height`
 * `rev_hash_bytes`: If true, the written block hash list will be
 byte-reversed. (In other words, the hash returned by getblockhash will have its

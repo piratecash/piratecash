@@ -24,3 +24,4 @@ END_FOLD () {
     echo "${CURRENT_FOLD_NAME} failed with status code ${RET}"
   fi
 }
+

@@ -1,39 +1,36 @@
-Cosanta Core
+PirateCash Core
 ==========
 
-This is the official reference wallet for Cosanta digital currency and comprises the backbone of the Cosanta peer-to-peer network. You can [download Cosanta Core](https://cosa.is/downloads/) or [build it yourself](#building) using the guides below.
+This is the official reference wallet for PirateCash digital currency and comprises the backbone of the PirateCash peer-to-peer network. You can [download PirateCash Core](https://p.cash/en/download/) or [build it yourself](#building) using the guides below.
 
 Running
 ---------------------
-The following are some helpful notes on how to run Dash on your native platform.
+The following are some helpful notes on how to run PirateCash on your native platform.
 
 ### Unix
 
 Unpack the files into a directory and run:
 
-- `bin/cosanta-qt` (GUI) or
-- `bin/cosantad` (headless)
+- `bin/piratecash-qt` (GUI) or
+- `bin/piratecashd` (headless)
 
 ### Windows
 
-Unpack the files into a directory, and then run cosanta-qt.exe.
+Unpack the files into a directory, and then run piratecash-qt.exe.
 
 ### macOS
 
-Drag Cosanta-Qt to your applications folder, and then run Cosanta-Qt.
+Drag PirateCash-Qt to your applications folder, and then run PirateCash-Qt.
 
 ### Need Help?
 
-* See the [Cosanta documentation](https://cosa.is/docs)
+* See the [PirateCash documentation](https://p.cash/)
 for help and more information.
-* See the [Dash Developer Documentation](https://dash-docs.github.io/)
-for technical specifications and implementation details.
-* Ask for help on [Dash Nation Discord](http://dashchat.org)
-* Ask for help on the [Cosanta Forum](https://cosa.is/forum)
+* Ask for help on the [PirateCash Forum](https://p.cash/)
 
 Building
 ---------------------
-The following are developer notes on how to build Cosanta Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build PirateCash Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
 - [Dependencies](dependencies.md)
 - [macOS Build Notes](build-osx.md)
@@ -44,7 +41,7 @@ The following are developer notes on how to build Cosanta Core on your native pl
 
 Development
 ---------------------
-The Cosanta Core repo's [root README](/README.md) contains relevant information on the development process and automated testing.
+The PirateCash Core repo's [root README](/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Release Notes](release-notes.md)
@@ -56,12 +53,12 @@ The Cosanta Core repo's [root README](/README.md) contains relevant information 
 - [Unauthenticated REST Interface](REST-interface.md)
 - [Shared Libraries](shared-libraries.md)
 - [BIPS](bips.md)
+- [PIPs](pips.md)
 - [Dnsseed Policy](dnsseed-policy.md)
 - [Benchmarking](benchmarking.md)
 
 ### Resources
-* Discuss on the [Cosanta Forum](https://cosa.is/forum), in the Development & Technical Discussion board.
-* Discuss on [Dash Nation Discord](http://dashchat.org)
+* Discuss on the [PirateCash Forum](https://p.cash/), in the Development & Technical Discussion board.
 
 ### Miscellaneous
 - [Assets Attribution](assets-attribution.md)

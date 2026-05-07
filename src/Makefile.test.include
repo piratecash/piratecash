@@ -1,16 +1,16 @@
 # Copyright (c) 2013-2016 The Bitcoin Core developers
-# Copyright (c) 2014-2018 The Cosanta Core developers
+# Copyright (c) 2014-2018 The Dash Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 if ENABLE_FUZZ
 noinst_PROGRAMS += test/fuzz/fuzz
 else
-bin_PROGRAMS += test/test_cosanta
+bin_PROGRAMS += test/test_piratecash
 endif
 
 TEST_SRCDIR = test
-TEST_BINARY=test/test_cosanta$(EXEEXT)
+TEST_BINARY=test/test_piratecash$(EXEEXT)
 FUZZ_BINARY=test/fuzz/fuzz$(EXEEXT)
 
 JSON_TEST_FILES = \
@@ -61,7 +61,7 @@ FUZZ_SUITE_LD_COMMON = \
  $(GMP_LIBS) \
  $(BACKTRACE_LIB)
 
-# test_cosanta binary #
+# test_piratecash binary #
 BITCOIN_TESTS =\
   test/arith_uint256_tests.cpp \
   test/scriptnum10.h \
@@ -187,21 +187,21 @@ BITCOIN_TEST_SUITE += \
   wallet/test/init_test_fixture.h
 endif
 
-test_test_cosanta_SOURCES = $(BITCOIN_TEST_SUITE) $(BITCOIN_TESTS) $(JSON_TEST_FILES) $(RAW_TEST_FILES)
-test_test_cosanta_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(TESTDEFS) $(EVENT_CFLAGS)
-test_test_cosanta_LDADD = $(LIBTEST_UTIL)
+test_test_piratecash_SOURCES = $(BITCOIN_TEST_SUITE) $(BITCOIN_TESTS) $(JSON_TEST_FILES) $(RAW_TEST_FILES)
+test_test_piratecash_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(TESTDEFS) $(EVENT_CFLAGS)
+test_test_piratecash_LDADD = $(LIBTEST_UTIL)
 if ENABLE_WALLET
-test_test_cosanta_LDADD += $(LIBBITCOIN_WALLET)
+test_test_piratecash_LDADD += $(LIBBITCOIN_WALLET)
 endif
-test_test_cosanta_LDADD += $(LIBBITCOIN_SERVER) $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CONSENSUS) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) \
+test_test_piratecash_LDADD += $(LIBBITCOIN_SERVER) $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CONSENSUS) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) \
   $(LIBDASHBLS) $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) $(BACKTRACE_LIB) $(BOOST_LIBS) $(BOOST_UNIT_TEST_FRAMEWORK_LIB) $(LIBSECP256K1) $(EVENT_LIBS) $(EVENT_PTHREADS_LIBS)
-test_test_cosanta_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+test_test_piratecash_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 
-test_test_cosanta_LDADD += $(BDB_LIBS) $(MINIUPNPC_LIBS) $(SQLITE_LIBS) $(NATPMP_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(GMP_LIBS)
-test_test_cosanta_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(PTHREAD_FLAGS) -static
+test_test_piratecash_LDADD += $(BDB_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(SQLITE_LIBS) $(NATPMP_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(GMP_LIBS)
+test_test_piratecash_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(PTHREAD_FLAGS) -static
 
 if ENABLE_ZMQ
-test_test_cosanta_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
+test_test_piratecash_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
 endif
 
 if ENABLE_FUZZ
@@ -304,7 +304,7 @@ test_fuzz_fuzz_SOURCES = \
 
 endif # ENABLE_FUZZ
 
-nodist_test_test_cosanta_SOURCES = $(GENERATED_TEST_FILES)
+nodist_test_test_piratecash_SOURCES = $(GENERATED_TEST_FILES)
 
 $(BITCOIN_TESTS): $(GENERATED_TEST_FILES)
 
@@ -313,20 +313,20 @@ CLEAN_BITCOIN_TEST = test/*.gcda test/*.gcno test/fuzz/*.gcda test/fuzz/*.gcno t
 CLEANFILES += $(CLEAN_BITCOIN_TEST)
 
 if TARGET_WINDOWS
-cosanta_test: $(TEST_BINARY)
+piratecash_test: $(TEST_BINARY)
 else
 if ENABLE_BENCH
-cosanta_test: $(TEST_BINARY) $(BENCH_BINARY)
+piratecash_test: $(TEST_BINARY) $(BENCH_BINARY)
 else
-cosanta_test: $(TEST_BINARY)
+piratecash_test: $(TEST_BINARY)
 endif
 endif
 
-cosanta_test_check: $(TEST_BINARY) FORCE
+piratecash_test_check: $(TEST_BINARY) FORCE
 	$(MAKE) check-TESTS TESTS=$^
 
-cosanta_test_clean : FORCE
-	rm -f $(CLEAN_BITCOIN_TEST) $(test_test_cosanta_OBJECTS) $(TEST_BINARY)
+piratecash_test_clean : FORCE
+	rm -f $(CLEAN_BITCOIN_TEST) $(test_test_piratecash_OBJECTS) $(TEST_BINARY)
 
 check-local: $(BITCOIN_TESTS:.cpp=.cpp.test)
 if BUILD_BITCOIN_TX
@@ -338,8 +338,8 @@ endif
 if TARGET_WINDOWS
 else
 if ENABLE_BENCH
-# Disabled because benchmarks are too heavy in Cosanta
-#	@echo "Running bench/bench_cosanta"
+# Disabled because benchmarks are too heavy in Dash
+#	@echo "Running bench/bench_dash"
 #	$(BENCH_BINARY)
 endif
 endif

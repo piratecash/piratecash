@@ -16,6 +16,8 @@
 #include <cstddef>
 #include <type_traits>
 
+#define BEGIN(a)	((char*)&(a))
+
 /** Nodes collect new transactions into a block, hash them into a hash tree,
  * and scan through nonce values to make the block's hash satisfy proof-of-work
  * requirements.  When they solve the proof-of-work, they broadcast the block
@@ -28,7 +30,6 @@ class CBlockHeader
 public:
     static constexpr uint32_t POS_BIT = 0x10000000UL;
     static constexpr uint32_t POSV2_BITS = POS_BIT | 0x08000000UL;
-
 
     // header
     int32_t nVersion;
@@ -44,6 +45,8 @@ public:
     uint256 posStakeHash; // stake primary input tx
     uint32_t posStakeN; // stake primary input tx output
     std::vector<unsigned char> posBlockSig; // to be signed by coinbase/coinstake primary out
+    // PirateCash: A copy from CBlockIndex.nFlags from other clients. We need this information because we are using headers-first syncronization.
+    uint32_t nFlags;
 
     // Memory-only
     mutable CPubKey posPubKey;
@@ -55,15 +58,20 @@ public:
 
     SERIALIZE_METHODS(CBlockHeader, obj) {
         READWRITE(obj.nVersion, obj.hashPrevBlock, obj.hashMerkleRoot, obj.nTime, obj.nBits, obj.nNonce);
-        if (obj.IsProofOfStake()) {
+        if (obj.IsProofOfStakeV2()) {
             READWRITE(obj.posStakeHash);
             READWRITE(obj.posStakeN);
-            READWRITE(obj.posBlockSig);
+            if (!(s.GetType() & SER_GETHASH)) {
+                READWRITE(obj.posBlockSig);
+            }
 
             SER_READ(obj, {
                 obj.posPubKey = CPubKey();
             });
         }
+        // piratecash: do not serialize nFlags when computing hash
+        if (!(s.GetType() & SER_GETHASH) && s.GetType() & SER_POSMARKER)
+            READWRITE(obj.nFlags);
     }
 
     void SetNull()
@@ -77,6 +85,7 @@ public:
         posStakeHash.SetNull();
         posStakeN = 0;
         posBlockSig.clear();
+        nFlags = 0;
         posPubKey = CPubKey();
     }
 
@@ -87,12 +96,14 @@ public:
 
     uint256 GetHash() const;
 
+    uint256 GetPoWHash() const;
+
+    uint256 hashProofOfStake() const;
+
     int64_t GetBlockTime() const
     {
         return (int64_t)nTime;
     }
-
-    uint256 hashProofOfStake() const;
 
     uint32_t& nStakeModifier() {
         return nNonce;
@@ -103,7 +114,7 @@ public:
 
     bool IsProofOfStake() const
     {
-        return (nVersion & CBlockHeader::POS_BIT) == CBlockHeader::POS_BIT;
+        return ((nFlags & 1) || ((nVersion & CBlockHeader::POS_BIT) != 0));
     }
 
     bool IsProofOfStakeV2() const
@@ -118,9 +129,9 @@ public:
 
     bool CheckBlockSignature(const CKeyID&) const;
     const CPubKey& BlockPubKey() const;
-     COutPoint StakeInput() const {
-         return COutPoint(posStakeHash, posStakeN);
-     }
+    COutPoint StakeInput() const {
+        return COutPoint(posStakeHash, posStakeN);
+    }
 };
 
 class CompressedHeaderBitField
@@ -280,6 +291,9 @@ public:
     // network and disk
     std::vector<CTransactionRef> vtx;
 
+    // PirateCash: block signature - signed by coin base txout[0]'s owner
+    std::vector<unsigned char> oldVchBlockSig;
+
     // memory only
     mutable bool fChecked;
 
@@ -298,6 +312,8 @@ public:
     {
         READWRITEAS(CBlockHeader, obj);
         READWRITE(obj.vtx);
+        if (!obj.IsProofOfStakeV2())
+            READWRITE(obj.oldVchBlockSig);
     }
 
     void SetNull()
@@ -305,6 +321,7 @@ public:
         CBlockHeader::SetNull();
         vtx.clear();
         fChecked = false;
+        oldVchBlockSig.clear();
     }
 
     CBlockHeader GetBlockHeader() const
@@ -316,6 +333,7 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
+        block.nFlags         = nFlags;
         block.posStakeHash   = posStakeHash;
         block.posStakeN      = posStakeN;
         block.posBlockSig    = posBlockSig;
@@ -324,6 +342,10 @@ public:
 
     bool HasCoinBase() const;
     bool HasStake() const;
+
+    bool IsProofOfStakeTX() const {
+        return (vtx.size() > 1 && vtx[1]->IsCoinStake());
+    }
 
     const CTransactionRef& CoinBase() const {
         return vtx[COINBASE_INDEX];

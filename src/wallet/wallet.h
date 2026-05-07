@@ -82,9 +82,9 @@ static const bool DEFAULT_WALLETBROADCAST = true;
 static const bool DEFAULT_DISABLE_WALLET = false;
 //! -maxtxfee default
 static const CAmount DEFAULT_TRANSACTION_MAXFEE = COIN / 10;
-//! Discourage users to set fees higher than this amount (in duffs) per kB
+//! Discourage users to set fees higher than this amount (in corsars) per kB
 static const CAmount HIGH_TX_FEE_PER_KB = COIN / 100;
-//! -maxtxfee will warn if called with a higher fee than this amount (in duffs)
+//! -maxtxfee will warn if called with a higher fee than this amount (in corsars)
 static const CAmount HIGH_MAX_TX_FEE = 100 * HIGH_TX_FEE_PER_KB;
 
 //! if set, all keys will be derived by using BIP39/BIP44
@@ -837,6 +837,20 @@ public:
         assert(NotifyUnload.empty());
     }
 
+    void SetNull()
+    {
+        // Stake Settings
+        nHashDrift = gArgs.GetArg("-poshashdrift", 30);
+        nStakeSplitThreshold = gArgs.GetArg("-stakesplitthreshold", DEFAULT_STAKE_SPLIT_THRESHOLD);
+        nStakeMaxSplit = gArgs.GetArg("-stakemaxsplit", DEFAULT_STAKE_MAX_SPLIT);
+        fAutocombine = gArgs.GetArg("-stakeautocombine", DEFAULT_STAKE_AUTOCOMBINE);
+        nHashInterval = gArgs.GetArg("-poshashinterval", 16);
+        inputStakeProtect = gArgs.GetBoolArg("-inputstakeprotect", true);
+        nStakeSetUpdateTime = 300; // 5 minutes
+        setStakeCoins.clear();
+        nLastStakeSetUpdate = 0;
+    }
+
     /** Interface to assert chain access */
     bool HaveChain() const { return m_chain ? true : false; }
     bool IsCrypted() const;
@@ -899,6 +913,12 @@ public:
     std::vector<CompactTallyItem> SelectCoinsGroupedByAddresses(bool fSkipDenominated = true, bool fAnonymizable = true, bool fSkipUnconfirmed = true, int nMaxOupointsPerAddress = -1) const;
 
     bool SelectStakeCoins(StakeCandidates& setCoins, CAmount nTargetAmount) const;
+
+    /// Get 1000PIRATECASH output and keys which can be used for the Masternode
+    bool GetMasternodeOutpointAndKeys(COutPoint& outpointRet, CPubKey& pubKeyRet, CKey& keyRet, const std::string& strTxHash = "", const std::string& strOutputIndex = "");
+    /// Extract txin information and keys from output
+    bool GetOutpointAndKeysFromOutput(const COutput& out, COutPoint& outpointRet, CPubKey& pubKeyRet, CKey& keyRet);
+
     bool MintableCoins();
     bool HasCollateralInputs(bool fOnlyConfirmed = true) const;
     int  CountInputsWithAmount(CAmount nInputAmount) const;

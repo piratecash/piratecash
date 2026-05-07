@@ -1,4 +1,4 @@
-Cosanta Core version 0.13.0.0
+PirateCash Core version 0.13.0.0
 ==========================
 
 Release is now available from:
@@ -20,8 +20,8 @@ How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), then run the
-installer (on Windows) or just copy over /Applications/Cosanta-Qt (on Mac) or
-cosantad/cosanta-qt (on Linux). If you upgrade after DIP0003 activation you will
+installer (on Windows) or just copy over /Applications/PirateCash-Qt (on Mac) or
+piratecashd/piratecash-qt (on Linux). If you upgrade after DIP0003 activation you will
 have to reindex (start with -reindex-chainstate or -reindex) to make sure
 your wallet has all the new data synced.
 
@@ -41,7 +41,7 @@ DIP0002 - Special Transactions
 ------------------------------
 Currently, new features and consensus mechanisms have to be implemented on top of the restrictions
 imposed by the simple nature of transactions. Since classical transactions can only carry inputs
-and outputs, they are most useful for financial transactions (i.e. transfers of quantities of Cosanta
+and outputs, they are most useful for financial transactions (i.e. transfers of quantities of PirateCash
 between addresses on the distributed ledger). These inputs and outputs carry scripts and signatures
 which are used to authorize and validate the transaction.
 
@@ -67,7 +67,7 @@ This DIP provides on-chain consensus for masternode lists that in turn allow for
 derivation and service scoring of masternode rewards.
 
 In the previous system, each node maintained its own individual masternode list. Masternodes gained
-entry to that masternode list after the owner created a 1000 Cosanta UTXO and the masternode broadcast
+entry to that masternode list after the owner created a 1000 PirateCash UTXO and the masternode broadcast
 a "masternode broadcast/announcement" P2P message. This in turn set the masternode to a PRE_ENABLED
 state in the list maintained by each node. Masternodes then regularly broadcasted ping messages to
 keep the masternode in ENABLED state.
@@ -99,7 +99,7 @@ Upgrade instructions: https://docs.dash.org/DIP3-masternode-upgrade
 
 DIP0004 - Simplified Verification of Deterministic Masternode Lists
 -------------------------------------------------------------------
-A verifiable and correct masternode list is foundational to many Cosanta features, including verification
+A verifiable and correct masternode list is foundational to many PirateCash features, including verification
 of an InstantSend transaction, mixing in PrivateSend and many features of Evolution. The deterministic
 masternode lists introduced by DIP0003 enable full derivation and verification of a masternode list via
 on-chain data. This, however, requires the full chain to be available to construct or verify this list.
@@ -128,13 +128,13 @@ PrivateSend
 -----------
 With further refactoring of PrivateSend code it became possible to implement mixing in few parallel
 mixing sessions at once from one single wallet. You can set number of mixing sessions via
-`privatesendsessions` cmd-line option or cosanta.conf. You can pick any number of sessions between 1 and 10,
+`privatesendsessions` cmd-line option or piratecash.conf. You can pick any number of sessions between 1 and 10,
 default is 4 which should be good enough for most users. For this feature to work you should also make
 sure that `privatesendmultisession` is set to `1` via cmd-line or `Enable PrivateSend multi-session` is
 enabled in GUI.
 
 Introducing parallel mixing sessions should speed mixing up which makes it reasonable to add a new
-mixing denom (0.00100001 COSANTA) now while keeping all the old ones too. It also makes sense to allow more
+mixing denom (0.00100001 PIRATE) now while keeping all the old ones too. It also makes sense to allow more
 mixing rounds now, so the new default number of rounds is 4 and the maximum number of rounds is 16 now.
 
 You can also adjust rounds and amount via `setprivatesendrounds` and `setprivatesendamount` RPC commands
@@ -255,7 +255,7 @@ Few cmd-line options are no longer supported:
 - `instantsenddepth`;
 - `mempoolreplacement`.
 
-See `Help -> Command-line options` in Qt wallet or `cosantad --help` for more info.
+See `Help -> Command-line options` in Qt wallet or `piratecashd --help` for more info.
 
 Lots of refactoring and bug fixes
 ---------------------------------
@@ -591,7 +591,7 @@ See detailed [set of changes](https://github.com/dashpay/dash/compare/v0.12.3.4.
 - [`8f9b004ca`](https://github.com/dashpay/dash/commit/8f9b004ca) Support "fast" mode when calling sync_masternodes (#2383)
 - [`fcea333ba`](https://github.com/dashpay/dash/commit/fcea333ba) Rewrite handling of too long depends builds in .travis.yml (#2385)
 - [`d1debfc26`](https://github.com/dashpay/dash/commit/d1debfc26) Implement mt_pooled_secure_allocator and use it for BLS secure allocation (#2375)
-- [`0692de1c5`](https://github.com/dashpay/dash/commit/0692de1c5) Fix prepare_masternodes/create_masternodes in CosantaTestFramework (#2382)
+- [`0692de1c5`](https://github.com/dashpay/dash/commit/0692de1c5) Fix prepare_masternodes/create_masternodes in PirateCashTestFramework (#2382)
 - [`6433a944a`](https://github.com/dashpay/dash/commit/6433a944a) [Trivial] typo Groupped -> Grouped (#2374)
 - [`59932401b`](https://github.com/dashpay/dash/commit/59932401b) Change internal references of Darksend to PrivateSend (#2372)
 - [`e3046adb3`](https://github.com/dashpay/dash/commit/e3046adb3) Clear devNetParams and mimic behavior of other param types (#2367)
@@ -599,7 +599,7 @@ See detailed [set of changes](https://github.com/dashpay/dash/compare/v0.12.3.4.
 - [`0402240a2`](https://github.com/dashpay/dash/commit/0402240a2) Bump CMAKE_CXX_STANDARD to 14 in CMakeLists.txt (#2377)
 - [`3c9237aa4`](https://github.com/dashpay/dash/commit/3c9237aa4) Use VersionBitsState instead of VersionBitsTipState to avoid cs_main lock (#2370)
 - [`c4351fd32`](https://github.com/dashpay/dash/commit/c4351fd32) revert 737, DEFAULT_TRANSACTION_MAXFEE = 0.1 * COIN (#2362)
-- [`1c9ed7806`](https://github.com/dashpay/dash/commit/1c9ed7806) GDB automation with Python script to measure memory usage in cosantad (#1609)
+- [`1c9ed7806`](https://github.com/dashpay/dash/commit/1c9ed7806) GDB automation with Python script to measure memory usage in piratecashd (#1609)
 - [`d998dc13e`](https://github.com/dashpay/dash/commit/d998dc13e) Add cmake to non-mac gitian descriptors (#2360)
 - [`266dd3232`](https://github.com/dashpay/dash/commit/266dd3232) mkdir -p to allow re-start of failed chia build (#2359)
 - [`11a0cbf84`](https://github.com/dashpay/dash/commit/11a0cbf84) InstantSend-related tests refactoring (#2333)
@@ -651,7 +651,7 @@ See detailed [set of changes](https://github.com/dashpay/dash/compare/v0.12.3.4.
 - [`5295c78cc`](https://github.com/dashpay/dash/commit/5295c78cc) Fix typo in "penalty" (#2247)
 - [`c566ce75d`](https://github.com/dashpay/dash/commit/c566ce75d) Update copyright in specialtx.h/cpp
 - [`e002c50b0`](https://github.com/dashpay/dash/commit/e002c50b0) Add "immer" functional/immutable containers library (#2244)
-- [`799e3c312`](https://github.com/dashpay/dash/commit/799e3c312) Perform Jenkins builds in /cosanta-src all the time to fix caching issues (#2242)
+- [`799e3c312`](https://github.com/dashpay/dash/commit/799e3c312) Perform Jenkins builds in /piratecash-src all the time to fix caching issues (#2242)
 - [`b6896387a`](https://github.com/dashpay/dash/commit/b6896387a) Move DIP1 transaction size checks out of ContextualCheckBlock and use ContextualCheckTransaction instead (#2238)
 - [`e415fd049`](https://github.com/dashpay/dash/commit/e415fd049) Revert CMasternodePayments::IsTransactionValid to the logic before the recent refactorings (#2237)
 - [`8da88ecf6`](https://github.com/dashpay/dash/commit/8da88ecf6) Don't crash when formatting in logging throws exceptions (#2231)
@@ -670,19 +670,19 @@ See detailed [set of changes](https://github.com/dashpay/dash/compare/v0.12.3.4.
 - [`eb202e812`](https://github.com/dashpay/dash/commit/eb202e812) Use ccache in gitian builds (#2185)
 - [`b47617325`](https://github.com/dashpay/dash/commit/b47617325) Install python3 in gitian builds (#2182)
 - [`7a85e24c3`](https://github.com/dashpay/dash/commit/7a85e24c3) Remove deprecated gitian-rpi2.yml descriptor (#2183)
-- [`1681d6366`](https://github.com/dashpay/dash/commit/1681d6366) Replace Cosanta-specific threads with Cosanta-specific scheduled tasks (#2043)
+- [`1681d6366`](https://github.com/dashpay/dash/commit/1681d6366) Replace PirateCash-specific threads with PirateCash-specific scheduled tasks (#2043)
 - [`dac090964`](https://github.com/dashpay/dash/commit/dac090964) remove dashpay.io dns seed entry (#2181)
 - [`753c2436b`](https://github.com/dashpay/dash/commit/753c2436b) Fix MissingPropertyException on Jenkins when no cache was found (#2180)
 - [`f3e380659`](https://github.com/dashpay/dash/commit/f3e380659) Move to in-docker CI builds and add Jenkins support (#2178)
 - [`23dde9f12`](https://github.com/dashpay/dash/commit/23dde9f12) Remove a few annoying debug prints from CMasternodeMan (#2179)
 - [`5036d7dfc`](https://github.com/dashpay/dash/commit/5036d7dfc) depends: Update Qt download url (#2177)
-- [`e23339d6f`](https://github.com/dashpay/dash/commit/e23339d6f) use nullptr in Cosanta-specific code (#2166)
+- [`e23339d6f`](https://github.com/dashpay/dash/commit/e23339d6f) use nullptr in PirateCash-specific code (#2166)
 - [`42c193df0`](https://github.com/dashpay/dash/commit/42c193df0) replace map count/insert w/emplace in instantx.cpp (#2165)
 - [`fd70a1eb9`](https://github.com/dashpay/dash/commit/fd70a1eb9) iterator cleanup in several places (#2164)
 - [`df1be90ce`](https://github.com/dashpay/dash/commit/df1be90ce)  Update links to obsolete documentation (#2162)
 - [`448e92f4a`](https://github.com/dashpay/dash/commit/448e92f4a) GetOutPointPrivateSendRounds readability (#2149)
 - [`6da2837bd`](https://github.com/dashpay/dash/commit/6da2837bd) InstantSend Integration tests (#2141)
-- [`8ee9333bc`](https://github.com/dashpay/dash/commit/8ee9333bc) remove boost dependency from Cosanta-specific code (#2072)
+- [`8ee9333bc`](https://github.com/dashpay/dash/commit/8ee9333bc) remove boost dependency from PirateCash-specific code (#2072)
 - [`a527845e4`](https://github.com/dashpay/dash/commit/a527845e4) Bump to 0.12.4.0 pre-release (#2167)
 
 Credits
@@ -723,12 +723,12 @@ the 0.8.x tree and was first released on Mar/13/2014.
 Darkcoin tree 0.10.x used to be the closed source implementation of Darksend
 which was released open source on Sep/25/2014.
 
-Cosanta Core tree 0.11.x was a fork of Bitcoin Core tree 0.9,
+PirateCash Core tree 0.11.x was a fork of Bitcoin Core tree 0.9,
 Darkcoin was rebranded to Dash.
 
-Cosanta Core tree 0.12.0.x was a fork of Bitcoin Core tree 0.10.
+PirateCash Core tree 0.12.0.x was a fork of Bitcoin Core tree 0.10.
 
-Cosanta Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
+PirateCash Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
 
 These release are considered obsolete. Old release notes can be found here:
 

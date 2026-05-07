@@ -11,7 +11,7 @@
   </array>
 
   <key>CFBundleIconFile</key>
-  <string>cosanta.icns</string>
+  <string>piratecash.icns</string>
 
   <key>CFBundlePackageType</key>
   <string>APPL</string>
@@ -26,15 +26,15 @@
   <string>????</string>
 
   <key>CFBundleExecutable</key>
-  <string>Cosanta-Qt</string>
+  <string>PirateCash-Qt</string>
   <key>CFBundleName</key>
-  <string>Cosanta-Qt</string>
+  <string>PirateCash-Qt</string>
 
   <key>LSHasLocalizedDisplayName</key>
   <true/>
 
   <key>CFBundleIdentifier</key>
-  <string>org.cosanta.Cosanta-Qt</string>
+  <string>cash.p.PirateCash-Qt</string>
 
   <key>CFBundleURLTypes</key>
   <array>
@@ -42,10 +42,10 @@
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
       <key>CFBundleURLName</key>
-      <string>net.cosanta</string>
+      <string>cash.p</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>cosanta</string>
+        <string>piratecash</string>
       </array>
     </dict>
   </array>

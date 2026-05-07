@@ -105,7 +105,15 @@ struct Params {
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     int64_t nPowTargetSpacing;
+    int64_t nPosTargetSpacingV1;
+    int64_t nPosTargetSpacingV2;
+    int64_t nSpecTargetFix;
     int64_t nPowTargetTimespan;
+    int64_t nRewForkDecreaseV18;  // The block height when reward will be 150 satoshi
+    int64_t nRestoreRewardV18;    // The block height when reward will be restored
+    int64_t nForkHeight;          // The block height when we'll swap old PirateCash to new code base
+    int64_t nSkipTimeUntil;
+    int64_t nLastPowBlock;        // Last Proof-of-work block
     int nPowKGWHeight;
     int nPowDGWHeight;
     int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }

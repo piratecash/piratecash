@@ -1,4 +1,4 @@
-Cosanta Core version 0.14.0.4
+PirateCash Core version 0.14.0.4
 ==========================
 
 Release is now available from:
@@ -20,14 +20,14 @@ How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), then run the
-installer (on Windows) or just copy over /Applications/Cosanta-Qt (on Mac) or
-cosantad/cosanta-qt (on Linux). If you upgrade after DIP0003 activation and you were
+installer (on Windows) or just copy over /Applications/PirateCash-Qt (on Mac) or
+piratecashd/piratecash-qt (on Linux). If you upgrade after DIP0003 activation and you were
 using version < 0.13 you will have to reindex (start with -reindex-chainstate
 or -reindex) to make sure your wallet has all the new data synced. Upgrading from
 version 0.13 should not require any additional actions.
 
 When upgrading from a version prior to 0.14.0.3, the
-first startup of Cosanta Core will run a migration process which can take a few minutes
+first startup of PirateCash Core will run a migration process which can take a few minutes
 to finish. After the migration, a downgrade to an older version is only possible with
 a reindex (or reindex-chainstate).
 
@@ -46,9 +46,9 @@ Notable changes
 Fix respends of freshly received InstantSend transactions
 ---------------------------------------------------------
 
-A bug in Cosanta Core caused respends to not work before a received InstantSend transaction was confirmed in at least
+A bug in PirateCash Core caused respends to not work before a received InstantSend transaction was confirmed in at least
 one block. This is fixed in this release, so that InstantSend locked mempool transactions can be
-respent immediately in Cosanta Core (other wallets were not affected).
+respent immediately in PirateCash Core (other wallets were not affected).
 
 Deprecation of SPORK_16_INSTANTSEND_AUTOLOCKS
 ---------------------------------------------
@@ -88,7 +88,7 @@ Fix for CVE-2017-18350
 ----------------------
 
 Bitcoin silently implemented a hidden fix for [CVE-2017-18350](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2019-November/017453.html).
-in Bitcoin v0.15.1. This release of Cosanta Core includes a backport of this fix.
+in Bitcoin v0.15.1. This release of PirateCash Core includes a backport of this fix.
 
 
 0.14.0.4 Change log
@@ -143,12 +143,12 @@ the 0.8.x tree and was first released on Mar/13/2014.
 Darkcoin tree 0.10.x used to be the closed source implementation of Darksend
 which was released open source on Sep/25/2014.
 
-Cosanta Core tree 0.11.x was a fork of Bitcoin Core tree 0.9,
+PirateCash Core tree 0.11.x was a fork of Bitcoin Core tree 0.9,
 Darkcoin was rebranded to Dash.
 
-Cosanta Core tree 0.12.0.x was a fork of Bitcoin Core tree 0.10.
+PirateCash Core tree 0.12.0.x was a fork of Bitcoin Core tree 0.10.
 
-Cosanta Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
+PirateCash Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
 
 These release are considered obsolete. Old release notes can be found here:
 

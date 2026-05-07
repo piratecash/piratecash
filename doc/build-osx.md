@@ -40,7 +40,7 @@ Next, follow the instructions in [build-generic](build-generic.md)
 
 Disable-wallet mode
 --------------------
-When the intention is to run only a P2P node without a wallet, Cosanta Core may be compiled in
+When the intention is to run only a P2P node without a wallet, PirateCash Core may be compiled in
 disable-wallet mode with:
 
     ./configure --disable-wallet
@@ -52,25 +52,25 @@ Mining is also possible in disable-wallet mode using the `getblocktemplate` RPC 
 Running
 -------
 
-Cosanta Core is now available at `./src/cosantad`
+PirateCash Core is now available at `./src/piratecashd`
 
 Before running, you may create an empty configuration file:
 
-    mkdir -p "/Users/${USER}/Library/Application Support/CosantaCore"
+    mkdir -p "/Users/${USER}/Library/Application Support/PirateCashCore"
 
-    touch "/Users/${USER}/Library/Application Support/CosantaCore/cosanta.conf"
+    touch "/Users/${USER}/Library/Application Support/PirateCashCore/piratecash.conf"
 
-    chmod 600 "/Users/${USER}/Library/Application Support/CosantaCore/cosanta.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/PirateCashCore/piratecash.conf"
 
-The first time you run cosantad, it will start downloading the blockchain. This process could take many hours, or even days on slower than average systems.
+The first time you run piratecashd, it will start downloading the blockchain. This process could take many hours, or even days on slower than average systems.
 
 You can monitor the download process by looking at the debug.log file:
 
-    tail -f $HOME/Library/Application\ Support/CosantaCore/debug.log
+    tail -f $HOME/Library/Application\ Support/PirateCashCore/debug.log
 
 Other commands:
 -------
 
-    ./src/cosantad -daemon # Starts the cosanta daemon.
-    ./src/cosanta-cli --help # Outputs a list of command-line options.
-    ./src/cosanta-cli help # Outputs a list of RPC commands when the daemon is running.
+    ./src/piratecashd -daemon # Starts the piratecash daemon.
+    ./src/piratecash-cli --help # Outputs a list of command-line options.
+    ./src/piratecash-cli help # Outputs a list of RPC commands when the daemon is running.

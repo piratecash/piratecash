@@ -1,12 +1,12 @@
 WINDOWS BUILD NOTES
 ====================
 
-Below are some notes on how to build Cosanta Core for Windows.
+Below are some notes on how to build PirateCash Core for Windows.
 
-The options known to work for building Cosanta Core on Windows are:
+The options known to work for building PirateCash Core on Windows are:
 
 * On Linux, using the [Mingw-w64](https://mingw-w64.org/doku.php) cross compiler tool chain. Ubuntu Bionic 18.04 is required
-and is the platform used to build the Cosanta Core Windows release binaries.
+and is the platform used to build the PirateCash Core Windows release binaries.
 * On Windows, using [Windows
 Subsystem for Linux (WSL)](https://docs.microsoft.com/windows/wsl/about) and the Mingw-w64 cross compiler tool chain.
 * On Windows, using a native compiler tool chain such as [Visual Studio](https://www.visualstudio.com).
@@ -59,9 +59,9 @@ Installation
 After building using the Windows subsystem it can be useful to copy the compiled
 executables to a directory on the Windows drive in the same directory structure
 as they appear in the release `.zip` archive. This can be done in the following
-way. This will install to `c:\workspace\cosanta`, for example:
+way. This will install to `c:\workspace\piratecash`, for example:
 
-    make install DESTDIR=/mnt/c/workspace/cosanta
+    make install DESTDIR=/mnt/c/workspace/piratecash
 
 You can also create an installer using:
 

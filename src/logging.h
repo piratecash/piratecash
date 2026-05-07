@@ -57,9 +57,9 @@ namespace BCLog {
         QT          = (1 << 19),
         LEVELDB     = (1 << 20),
 
-        //Start Cosanta
+        //Start PirateCash
         STAKING  = ((uint64_t)1 << 31),
-        //End Cosanta
+        //End PirateCash
 
         //Start Dash
         CHAINLOCKS  = ((uint64_t)1 << 32),

@@ -1,9 +1,9 @@
 Release Process
 ====================
 
-* Update translations, see [translation_process.md](https://github.com/cosanta/cosanta-core/blob/master/doc/translation_process.md#synchronising-translations).
+* Update translations, see [translation_process.md](https://github.com/piratecash/piratecash-core/blob/master/doc/translation_process.md#synchronising-translations).
 
-* Update manpages, see [gen-manpages.sh](https://github.com/cosanta/cosanta-core/blob/master/contrib/devtools/README.md#gen-manpagessh).
+* Update manpages, see [gen-manpages.sh](https://github.com/piratecash/piratecash-core/blob/master/contrib/devtools/README.md#gen-manpagessh).
 * Update release candidate version in `configure.ac` (`CLIENT_VERSION_RC`)
 
 Before every minor and major release:
@@ -20,7 +20,7 @@ Before every minor and major release:
 
 Before every major release:
 
-* Update hardcoded [seeds](/contrib/seeds/README.md). TODO: Give example PR for Cosanta
+* Update hardcoded [seeds](/contrib/seeds/README.md). TODO: Give example PR for PirateCash
 * Update [`src/chainparams.cpp`](/src/chainparams.cpp) m_assumed_blockchain_size and m_assumed_chain_state_size with the current size plus some overhead (see [this](#how-to-calculate-m_assumed_blockchain_size-and-m_assumed_chain_state_size) for information on how to calculate them).
 * Update `src/chainparams.cpp` chainTxData with statistics about the transaction count and rate. Use the output of the RPC `getchaintxstats`, see
   [this pull request](https://github.com/bitcoin/bitcoin/pull/12270) for an example. Reviewers can verify the results by running `getchaintxstats <window_block_count> <window_last_block_hash>` with the `window_block_count` and `window_last_block_hash` from your output.
@@ -33,12 +33,12 @@ If you're using the automated script (found in [contrib/gitian-build.py](/contri
 Check out the source code in the following directory hierarchy.
 
 	cd /path/to/your/toplevel/build
-	git clone https://github.com/cosanta/gitian.sigs.git
-	git clone https://github.com/cosanta/dash-detached-sigs.git
+	git clone https://github.com/piratecash/gitian.sigs.git
+	git clone https://github.com/piratecash/dash-detached-sigs.git
 	git clone https://github.com/devrandom/gitian-builder.git
-	git clone https://github.com/cosanta/cosanta-core.git
+	git clone https://github.com/piratecash/piratecash-core.git
 
-### Cosanta Core maintainers/release engineers, suggestion for writing release notes
+### PirateCash Core maintainers/release engineers, suggestion for writing release notes
 
 Write release notes. git shortlog helps a lot, for example:
 
@@ -58,7 +58,7 @@ If you're using the automated script (found in [contrib/gitian-build.py](/contri
 
 Setup Gitian descriptors:
 
-    pushd ./cosanta
+    pushd ./piratecash
     export SIGNER="(your Gitian key, ie UdjinM6, Pasta, etc)"
     export VERSION=(new version, e.g. 0.12.3)
     git fetch
@@ -92,10 +92,10 @@ Create the macOS SDK tarball, see the [macOS build instructions](build-osx.md#de
 
 NOTE: Gitian is sometimes unable to download files. If you have errors, try the step below.
 
-By default, Gitian will fetch source files as needed. To cache them ahead of time, make sure you have checked out the tag you want to build in cosanta, then:
+By default, Gitian will fetch source files as needed. To cache them ahead of time, make sure you have checked out the tag you want to build in piratecash, then:
 
     pushd ./gitian-builder
-    make -C ../cosanta/depends download SOURCES_PATH=`pwd`/cache/common
+    make -C ../piratecash/depends download SOURCES_PATH=`pwd`/cache/common
     popd
 
 Only missing files will be fetched, so this is safe to re-run for each build.
@@ -103,50 +103,50 @@ Only missing files will be fetched, so this is safe to re-run for each build.
 NOTE: Offline builds must use the --url flag to ensure Gitian fetches only from local URLs. For example:
 
     pushd ./gitian-builder
-    ./bin/gbuild --url cosanta=/path/to/cosanta,signature=/path/to/sigs {rest of arguments}
+    ./bin/gbuild --url piratecash=/path/to/piratecash,signature=/path/to/sigs {rest of arguments}
     popd
 
 The gbuild invocations below <b>DO NOT DO THIS</b> by default.
 
-### Build and sign Cosanta Core for Linux, Windows, and macOS:
+### Build and sign PirateCash Core for Linux, Windows, and macOS:
 
     pushd ./gitian-builder
-    ./bin/gbuild --num-make 2 --memory 3000 --commit cosanta=v${VERSION} ../cosanta/contrib/gitian-descriptors/gitian-linux.yml
-    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-linux --destination ../gitian.sigs/ ../cosanta/contrib/gitian-descriptors/gitian-linux.yml
-    mv build/out/cosanta-*.tar.gz build/out/src/cosanta-*.tar.gz ../
+    ./bin/gbuild --num-make 2 --memory 3000 --commit piratecash=v${VERSION} ../piratecash/contrib/gitian-descriptors/gitian-linux.yml
+    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-linux --destination ../gitian.sigs/ ../piratecash/contrib/gitian-descriptors/gitian-linux.yml
+    mv build/out/piratecash-*.tar.gz build/out/src/piratecash-*.tar.gz ../
 
-    ./bin/gbuild --num-make 2 --memory 3000 --commit cosanta=v${VERSION} ../cosanta/contrib/gitian-descriptors/gitian-win.yml
-    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../cosanta/contrib/gitian-descriptors/gitian-win.yml
-    mv build/out/cosanta-*-win-unsigned.tar.gz inputs/cosanta-win-unsigned.tar.gz
-    mv build/out/cosanta-*.zip build/out/cosanta-*.exe ../
+    ./bin/gbuild --num-make 2 --memory 3000 --commit piratecash=v${VERSION} ../piratecash/contrib/gitian-descriptors/gitian-win.yml
+    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../piratecash/contrib/gitian-descriptors/gitian-win.yml
+    mv build/out/piratecash-*-win-unsigned.tar.gz inputs/piratecash-win-unsigned.tar.gz
+    mv build/out/piratecash-*.zip build/out/piratecash-*.exe ../
 
-    ./bin/gbuild --num-make 2 --memory 3000 --commit cosanta=v${VERSION} ../cosanta/contrib/gitian-descriptors/gitian-osx.yml
-    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../cosanta/contrib/gitian-descriptors/gitian-osx.yml
-    mv build/out/cosanta-*-osx-unsigned.tar.gz inputs/cosanta-osx-unsigned.tar.gz
-    mv build/out/cosanta-*.tar.gz build/out/cosanta-*.dmg ../
+    ./bin/gbuild --num-make 2 --memory 3000 --commit piratecash=v${VERSION} ../piratecash/contrib/gitian-descriptors/gitian-osx.yml
+    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../piratecash/contrib/gitian-descriptors/gitian-osx.yml
+    mv build/out/piratecash-*-osx-unsigned.tar.gz inputs/piratecash-osx-unsigned.tar.gz
+    mv build/out/piratecash-*.tar.gz build/out/piratecash-*.dmg ../
     popd
 
 Build output expected:
 
-  1. source tarball (`cosanta-${VERSION}.tar.gz`)
-  2. linux 32-bit and 64-bit dist tarballs (`cosanta-${VERSION}-linux[32|64].tar.gz`)
-  3. windows 32-bit and 64-bit unsigned installers and dist zips (`cosanta-${VERSION}-win[32|64]-setup-unsigned.exe`, `cosanta-${VERSION}-win[32|64].zip`)
-  4. macOS unsigned installer and dist tarball (`cosanta-${VERSION}-osx-unsigned.dmg`, `cosanta-${VERSION}-osx64.tar.gz`)
+  1. source tarball (`piratecash-${VERSION}.tar.gz`)
+  2. linux 32-bit and 64-bit dist tarballs (`piratecash-${VERSION}-linux[32|64].tar.gz`)
+  3. windows 32-bit and 64-bit unsigned installers and dist zips (`piratecash-${VERSION}-win[32|64]-setup-unsigned.exe`, `piratecash-${VERSION}-win[32|64].zip`)
+  4. macOS unsigned installer and dist tarball (`piratecash-${VERSION}-osx-unsigned.dmg`, `piratecash-${VERSION}-osx64.tar.gz`)
   5. Gitian signatures (in `gitian.sigs/${VERSION}-<linux|{win,osx}-unsigned>/(your Gitian key)/`)
 
 ### Verify other gitian builders signatures to your own. (Optional)
 
 Add other gitian builders keys to your gpg keyring, and/or refresh keys.
 
-    gpg --import cosanta/contrib/gitian-keys/*.pgp
+    gpg --import piratecash/contrib/gitian-keys/*.pgp
     gpg --refresh-keys
 
 Verify the signatures
 
     pushd ./gitian-builder
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../cosanta/contrib/gitian-descriptors/gitian-linux.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../cosanta/contrib/gitian-descriptors/gitian-win.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../cosanta/contrib/gitian-descriptors/gitian-osx.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../piratecash/contrib/gitian-descriptors/gitian-linux.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../piratecash/contrib/gitian-descriptors/gitian-win.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../piratecash/contrib/gitian-descriptors/gitian-osx.yml
     popd
 
 ### Next steps:
@@ -167,22 +167,22 @@ Codesigner only: Create Windows/macOS detached signatures:
 
 Codesigner only: Sign the macOS binary:
 
-    transfer cosantacore-osx-unsigned.tar.gz to macOS for signing
-    tar xf cosantacore-osx-unsigned.tar.gz
+    transfer piratecashcore-osx-unsigned.tar.gz to macOS for signing
+    tar xf piratecashcore-osx-unsigned.tar.gz
     ./detached-sig-create.sh -s "Key ID" -o runtime
     Enter the keychain password and authorize the signature
     Move signature-osx.tar.gz back to the gitian host
 
 Codesigner only: Sign the windows binaries:
 
-    tar xf cosantacore-win-unsigned.tar.gz
+    tar xf piratecashcore-win-unsigned.tar.gz
     ./detached-sig-create.sh -key /path/to/codesign.key
     Enter the passphrase for the key when prompted
     signature-win.tar.gz will be created
 
 Codesigner only: Commit the detached codesign payloads:
 
-    cd ~/cosantacore-detached-sigs
+    cd ~/piratecashcore-detached-sigs
     checkout the appropriate branch for this release series
     rm -rf *
     tar xf signature-osx.tar.gz
@@ -195,15 +195,15 @@ Codesigner only: Commit the detached codesign payloads:
 Non-codesigners: wait for Windows/macOS detached signatures:
 
 - Once the Windows/macOS builds each have 3 matching signatures, they will be signed with their respective release keys.
-- Detached signatures will then be committed to the [cosanta-detached-sigs](https://github.com/cosanta/cosanta-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
+- Detached signatures will then be committed to the [piratecash-detached-sigs](https://github.com/piratecash/piratecash-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
 
 Create (and optionally verify) the signed macOS binary:
 
     pushd ./gitian-builder
-    ./bin/gbuild -i --commit signature=v${VERSION} ../cosanta/contrib/gitian-descriptors/gitian-osx-signer.yml
-    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../cosanta/contrib/gitian-descriptors/gitian-osx-signer.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../cosanta/contrib/gitian-descriptors/gitian-osx-signer.yml
-    mv build/out/cosanta-osx-signed.dmg ../cosanta-${VERSION}-osx.dmg
+    ./bin/gbuild -i --commit signature=v${VERSION} ../piratecash/contrib/gitian-descriptors/gitian-osx-signer.yml
+    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../piratecash/contrib/gitian-descriptors/gitian-osx-signer.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../piratecash/contrib/gitian-descriptors/gitian-osx-signer.yml
+    mv build/out/piratecash-osx-signed.dmg ../piratecash-${VERSION}-osx.dmg
     popd
 
 Create (and optionally verify) the signed Windows binaries:
@@ -234,21 +234,21 @@ sha256sum * > SHA256SUMS
 
 The list of files should be:
 ```
-cosanta-${VERSION}-aarch64-linux-gnu.tar.gz
-cosanta-${VERSION}-arm-linux-gnueabihf.tar.gz
-cosanta-${VERSION}-i686-pc-linux-gnu.tar.gz
-cosanta-${VERSION}-x86_64-linux-gnu.tar.gz
-cosanta-${VERSION}-osx64.tar.gz
-cosanta-${VERSION}-osx.dmg
-cosanta-${VERSION}.tar.gz
-cosanta-${VERSION}-win64-setup.exe
-cosanta-${VERSION}-win64.zip
+piratecash-${VERSION}-aarch64-linux-gnu.tar.gz
+piratecash-${VERSION}-arm-linux-gnueabihf.tar.gz
+piratecash-${VERSION}-i686-pc-linux-gnu.tar.gz
+piratecash-${VERSION}-x86_64-linux-gnu.tar.gz
+piratecash-${VERSION}-osx64.tar.gz
+piratecash-${VERSION}-osx.dmg
+piratecash-${VERSION}.tar.gz
+piratecash-${VERSION}-win64-setup.exe
+piratecash-${VERSION}-win64.zip
 ```
 The `*-debug*` files generated by the Gitian build contain debug symbols
 for troubleshooting by developers. It is assumed that anyone that is interested
 in debugging can run Gitian to generate the files for themselves. To avoid
 end-user confusion about which file to pick, as well as save storage
-space *do not upload these to the cosa.is server*.
+space *do not upload these to the piratecash.net server*.
 
 - GPG-sign it, delete the unsigned file:
 ```
@@ -258,19 +258,19 @@ rm SHA256SUMS
 (the digest algorithm is forced to sha256 to avoid confusion of the `Hash:` header that GPG adds with the SHA256 used for the files)
 Note: check that SHA256SUMS itself doesn't end up in SHA256SUMS, which is a spurious/nonsensical entry.
 
-- Upload zips and installers, as well as `SHA256SUMS.asc` from last step, to the cosa.is server
+- Upload zips and installers, as well as `SHA256SUMS.asc` from last step, to the piratecash.net server
 
-- Update cosa.is
+- Update piratecash.net
 
 - Announce the release:
 
-  - Release on Cosanta forum: https://bitcointalk.org/index.php?topic=5333014
+  - Release on PirateCash forum: https://bitcointalk.org/index.php?topic=5333014
 
-  - Optionally Discord, twitter, reddit /r/Cosanta, ... but this will usually sort out itself
+  - Optionally Discord, twitter, reddit /r/PirateCash, ... but this will usually sort out itself
 
   - Archive release notes for the new version to `doc/release-notes/` (branch `master` and branch of the release)
 
-  - Create a [new GitHub release](https://github.com/cosanta/cosanta-core/releases/new) with a link to the archived release notes.
+  - Create a [new GitHub release](https://github.com/piratecash/piratecash-core/releases/new) with a link to the archived release notes.
 
   - Celebrate
 
@@ -282,7 +282,7 @@ Both variables are used as a guideline for how much space the user needs on thei
 Note that all values should be taken from a **fully synced** node and have an overhead of 5-10% added on top of its base value.
 
 To calculate `m_assumed_blockchain_size`:
-- For `mainnet` -> Take the size of the Cosanta Core data directory, excluding `/regtest` and `/testnet3` directories.
+- For `mainnet` -> Take the size of the PirateCash Core data directory, excluding `/regtest` and `/testnet3` directories.
 - For `testnet` -> Take the size of the `/testnet3` directory.
 
 

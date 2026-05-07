@@ -1,10 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=Cosanta Core
-Comment=Cosanta P2P Cryptocurrency
-Comment[de]=Verbinde mit dem Cosanta peer-to-peer Netzwerk
-Comment[fr]=Cosanta, monnaie virtuelle cryptographique pair à pair
-Comment[tr]=Cosanta, eşten eşe kriptografik sanal para birimi
+Name=PirateCash Core
+Comment=PirateCash P2P Cryptocurrency
+Comment[de]=Verbinde mit dem PirateCash peer-to-peer Netzwerk
+Comment[fr]=PirateCash, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=PirateCash, eşten eşe kriptografik sanal para birimi
 Exec=cosanta-qt %u
 Terminal=false
 Type=Application

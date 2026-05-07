@@ -75,7 +75,7 @@ void OptionsModel::Init(bool resetSettings)
 
     // Display
     if (!settings.contains("nDisplayUnit"))
-        settings.setValue("nDisplayUnit", BitcoinUnits::COSA);
+        settings.setValue("nDisplayUnit", BitcoinUnits::PIRATECASH);
     nDisplayUnit = settings.value("nDisplayUnit").toInt();
 
     if (!settings.contains("strThirdPartyTxUrls"))
@@ -236,7 +236,7 @@ void OptionsModel::Init(bool resetSettings)
         if (!settings.contains("nAnonymizeDashAmount"))
             settings.setValue("nCoinJoinAmount", DEFAULT_COINJOIN_AMOUNT);
         else
-            settings.setValue("nCoinJoinAmount", settings.value("nAnonymizeCosantaAmount").toInt());
+            settings.setValue("nCoinJoinAmount", settings.value("nAnonymizePirateCashAmount").toInt());
     }
     if (!m_node.softSetArg("-coinjoinamount", settings.value("nCoinJoinAmount").toString().toStdString()))
         addOverriddenOption("-coinjoinamount");

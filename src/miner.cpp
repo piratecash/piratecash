@@ -607,7 +607,7 @@ void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned
 void PoSMiner(std::shared_ptr<CWallet> pwallet, CConnman& connman, CEvoDB& evo_db, CTxMemPool& mempool, CThreadInterrupt &interrupt)
 {
     LogPrintf("PoSMiner started\n");
-    util::ThreadRename("cosanta-miner");
+    util::ThreadRename("piratecash-miner");
     SetThreadPriority(0);
 
     assert(sporkManager);
@@ -623,6 +623,7 @@ void PoSMiner(std::shared_ptr<CWallet> pwallet, CConnman& connman, CEvoDB& evo_d
     int nMintableLastCheck = 0;
     int last_height = -1;
     int64_t start_block_time = 0;
+    const CChainParams& chainparams = Params();
 
     while (!interrupt) {
         auto hash_interval = std::max(pwallet->nHashInterval, (unsigned int)1);
@@ -672,6 +673,31 @@ void PoSMiner(std::shared_ptr<CWallet> pwallet, CConnman& connman, CEvoDB& evo_d
         {
             nMintableLastCheck = GetTime();
             fMintableCoins = pwallet->MintableCoins();
+        }
+
+        {
+            CBlockIndex* pindexPrev = ::ChainActive().Tip();
+            
+            if (!pindexPrev) {
+                interrupt.sleep_for(std::chrono::seconds(1));
+                SetMiningStatus(":<br>- no active blocks");
+                LogPrint(BCLog::STAKING, "%s : %s \n", __func__, getMiningStatus());
+                continue;
+            }
+
+            if (!IsPoSEnforcedHeight(pindexPrev->nHeight + 1) && !IsPoSV2EnforcedHeight(pindexPrev->nHeight + 1) && !pindexPrev->IsProofOfStake()) {
+                interrupt.sleep_for(std::chrono::seconds(hash_interval));
+                SetMiningStatus(":<br>- PoS is not enabled at height " + std::to_string(pindexPrev->nHeight + 1));
+                LogPrint(BCLog::STAKING, "%s : %s \n", __func__, getMiningStatus());
+                continue;
+            }
+
+            if (pindexPrev->nHeight + 1  < chainparams.GetConsensus().nForkHeight) {
+                interrupt.sleep_for(std::chrono::seconds(hash_interval));
+                SetMiningStatus(":<br>- PoSv2 is not enabled at height <b>" + std::to_string(pindexPrev->nHeight + 1) + "</b>");
+                LogPrint(BCLog::STAKING, "%s : %s \n", __func__, getMiningStatus());
+                continue;
+            }
         }
 
         SetMiningStatus("");

@@ -29,8 +29,7 @@ import sys
 def main():
     config = configparser.ConfigParser()
     config.optionxform = str
-    with open(os.path.join(os.path.dirname(__file__), "../config.ini"), encoding="utf8") as config_file:
-        config.read_file(config_file)
+    config.readfp(open(os.path.join(os.path.dirname(__file__), "../config.ini"), encoding="utf8"))
     env_conf = dict(config.items('environment'))
 
     parser = argparse.ArgumentParser(description=__doc__)
@@ -159,7 +158,7 @@ def bctest(testDir, testObj, buildenv):
         want_error = testObj["error_txt"]
         # Compare error text
         # TODO: ideally, we'd compare the strings exactly and also assert
-        # That stderr is empty if no errors are expected. However, cosanta-tx
+        # That stderr is empty if no errors are expected. However, dash-tx
         # emits DISPLAY errors when running as a windows application on
         # linux through wine. Just assert that the expected error text appears
         # somewhere in stderr.

@@ -187,10 +187,10 @@ void RecentRequestsTableModel::addNewRequest(const std::string &recipient)
     RecentRequestEntry entry;
     // Don't let a single malformed receive-request entry bring down the whole
     // WalletModel construction. If the entry is unreadable for any reason
-    // (format mismatch between Cosanta versions, partial write, etc.), log it
-    // and skip — the wallet will still open in the GUI.
+    // (format mismatch between PirateCash versions, partial write, etc.), log it
+    // and skip -- the wallet will still open in the GUI.
     // TODO(remove-in-v20): together with the SendCoinsRecipient backward-compat
-    // reader, once `cosanta-wallet migrate-v19` has been run on all known wallets.
+    // reader, once `piratecash-wallet migrate-v19` has been run on all known wallets.
     try {
         ss >> entry;
     } catch (const std::exception& e) {
@@ -205,7 +205,7 @@ void RecentRequestsTableModel::addNewRequest(const std::string &recipient)
             int nVersion = 0;
             ss_id >> nVersion >> broken_id;
         } catch (...) {
-            // value is too short even for the header — give up
+            // value is too short even for the header -- give up
         }
         if (broken_id > nReceiveRequestsMaxId) {
             nReceiveRequestsMaxId = broken_id;

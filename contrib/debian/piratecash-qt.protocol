@@ -1,6 +1,6 @@
 [Protocol]
-exec=cosanta-qt '%u'
-protocol=cosanta
+exec=piratecash-qt '%u'
+protocol=dash
 input=none
 output=none
 helper=true

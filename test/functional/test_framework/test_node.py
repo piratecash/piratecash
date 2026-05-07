@@ -33,7 +33,7 @@ from .util import (
     Options
 )
 
-COSANTAD_PROC_WAIT_TIMEOUT = 60
+BITCOIND_PROC_WAIT_TIMEOUT = 60
 
 
 class FailedToStartError(Exception):
@@ -164,7 +164,7 @@ class TestNode():
         raise AssertionError(self._node_msg(msg))
 
     def __del__(self):
-        # Ensure that we don't leave any cosantad processes lying around after
+        # Ensure that we don't leave any dashd processes lying around after
         # the test ends
         if self.process and self.cleanup_on_exit:
             # Should only happen on test failure
@@ -186,7 +186,7 @@ class TestNode():
         if extra_args is None:
             extra_args = self.extra_args
 
-        # Add a new stdout and stderr file each time cosantad is started
+        # Add a new stdout and stderr file each time dashd is started
         if stderr is None:
             stderr = tempfile.NamedTemporaryFile(dir=self.stderr_dir, delete=False)
         if stdout is None:
@@ -199,7 +199,7 @@ class TestNode():
             all_args = all_args + ["-mocktime=%d" % self.mocktime]
 
         # Delete any existing cookie file -- if such a file exists (eg due to
-        # unclean shutdown), it will get overwritten anyway by cosantad, and
+        # unclean shutdown), it will get overwritten anyway by dashd, and
         # potentially interfere with our attempt to authenticate
         delete_cookie_file(self.datadir, self.chain)
 
@@ -295,7 +295,7 @@ class TestNode():
         self.log.debug("Node stopped")
         return True
 
-    def wait_until_stopped(self, timeout=COSANTAD_PROC_WAIT_TIMEOUT):
+    def wait_until_stopped(self, timeout=BITCOIND_PROC_WAIT_TIMEOUT):
         wait_until(self.is_node_stopped, timeout=timeout)
 
     @contextlib.contextmanager
@@ -424,11 +424,11 @@ class TestNode():
     def assert_start_raises_init_error(self, extra_args=None, expected_msg=None, match=ErrorMatch.FULL_TEXT, *args, **kwargs):
         """Attempt to start the node and expect it to raise an error.
 
-        extra_args: extra arguments to pass through to cosantad
-        expected_msg: regex that stderr should match when cosantad fails
+        extra_args: extra arguments to pass through to dashd
+        expected_msg: regex that stderr should match when dashd fails
 
-        Will throw if cosantad starts without an error.
-        Will throw if an expected_msg is provided and it does not match cosantad's stdout."""
+        Will throw if dashd starts without an error.
+        Will throw if an expected_msg is provided and it does not match dashd's stdout."""
         with tempfile.NamedTemporaryFile(dir=self.stderr_dir, delete=False) as log_stderr, \
              tempfile.NamedTemporaryFile(dir=self.stdout_dir, delete=False) as log_stdout:
             try:
@@ -437,7 +437,7 @@ class TestNode():
                 self.stop_node()
                 self.wait_until_stopped()
             except FailedToStartError as e:
-                self.log.debug('cosantad failed to start: %s', e)
+                self.log.debug('dashd failed to start: %s', e)
                 self.running = False
                 self.process = None
                 # Check stderr for expected message
@@ -458,9 +458,9 @@ class TestNode():
                                 'Expected message "{}" does not fully match stderr:\n"{}"'.format(expected_msg, stderr))
             else:
                 if expected_msg is None:
-                    assert_msg = "cosantad should have exited with an error"
+                    assert_msg = "dashd should have exited with an error"
                 else:
-                    assert_msg = "cosantad should have exited with expected error " + expected_msg
+                    assert_msg = "dashd should have exited with expected error " + expected_msg
                 self._raise_assertion_error(assert_msg)
 
     def add_p2p_connection(self, p2p_conn, *, wait_for_verack=True, **kwargs):

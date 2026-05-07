@@ -3,7 +3,7 @@
 - [`697d289eb`](https://github.com/dashpay/dash/commit/697d289eb) Merge #12392: Fix ignoring tx data requests when fPauseSend is set on a peer (#3225)
 - [`8c17c8163`](https://github.com/dashpay/dash/commit/8c17c8163) Remove light-hires theme as it's not required anymore
 - [`d9741fc63`](https://github.com/dashpay/dash/commit/d9741fc63) Merge #16254: qt: Set AA_EnableHighDpiScaling attribute early
-- [`df04cdcd2`](https://github.com/dashpay/dash/commit/df04cdcd2) Fix Cosanta specific docs and scripts
+- [`df04cdcd2`](https://github.com/dashpay/dash/commit/df04cdcd2) Fix PirateCash specific docs and scripts
 - [`1ef70ac9e`](https://github.com/dashpay/dash/commit/1ef70ac9e) Merge #12607: depends: Remove ccache
 - [`5107582f2`](https://github.com/dashpay/dash/commit/5107582f2) Merge #11252: [P2P] When clearing addrman clear mapInfo and mapAddr. (#3171)
 - [`cf632029b`](https://github.com/dashpay/dash/commit/cf632029b) Merge #12804: [tests] Fix intermittent rpc_net.py failure.
@@ -126,7 +126,7 @@
 - [`ec892d459`](https://github.com/dashpay/dash/commit/ec892d459) Merge #11234: Remove redundant testutil.cpp|h files
 - [`d643ada80`](https://github.com/dashpay/dash/commit/d643ada80) Merge #11241: [tests] Improve signmessages functional test
 - [`b9ce8480d`](https://github.com/dashpay/dash/commit/b9ce8480d) Merge #11215: [tests] fixups from set_test_params()
-- [`a304d4d47`](https://github.com/dashpay/dash/commit/a304d4d47) Fix CosantaTestFramework and tests depending on it
+- [`a304d4d47`](https://github.com/dashpay/dash/commit/a304d4d47) Fix PirateCashTestFramework and tests depending on it
 - [`ac0f483d8`](https://github.com/dashpay/dash/commit/ac0f483d8) Fix issues with set_test_params and start/stop_node
 - [`703f4c77a`](https://github.com/dashpay/dash/commit/703f4c77a) Fix stderr related issues
 - [`39a1c6452`](https://github.com/dashpay/dash/commit/39a1c6452) Allow to set self.stderr when using vanilla setup_nodes()
@@ -144,7 +144,7 @@
 - [`1596b1dfa`](https://github.com/dashpay/dash/commit/1596b1dfa) Move -createwalletbackups=0 into test_node.py
 - [`4049754f4`](https://github.com/dashpay/dash/commit/4049754f4) Dashify test_node.py
 - [`96966e5b8`](https://github.com/dashpay/dash/commit/96966e5b8) Use TestNode.node_encrypt_wallet
-- [`cc124c99c`](https://github.com/dashpay/dash/commit/cc124c99c) Remove Cosanta specific leftovers of node.stop optimization
+- [`cc124c99c`](https://github.com/dashpay/dash/commit/cc124c99c) Remove PirateCash specific leftovers of node.stop optimization
 - [`f55da3aa5`](https://github.com/dashpay/dash/commit/f55da3aa5) Merge #10711: [tests] Introduce TestNode
 - [`f7a679062`](https://github.com/dashpay/dash/commit/f7a679062) Merge #10854: Avoid using sizes on non-fixed-width types to derive protocol constants.
 - [`3eb0e1463`](https://github.com/dashpay/dash/commit/3eb0e1463) Fix rawtransaction.py test
@@ -234,7 +234,7 @@
 - [`cb480af01`](https://github.com/dashpay/dash/commit/cb480af01) Dashify
 - [`806da3c6e`](https://github.com/dashpay/dash/commit/806da3c6e) adjust number of parameters in sendmany
 - [`c4094c8de`](https://github.com/dashpay/dash/commit/c4094c8de) Few more tiny trivial fixes
-- [`8c2c2a1ad`](https://github.com/dashpay/dash/commit/8c2c2a1ad) s/bitcoind/cosantad/ in some places
+- [`8c2c2a1ad`](https://github.com/dashpay/dash/commit/8c2c2a1ad) s/bitcoind/piratecashd/ in some places
 - [`76822dd50`](https://github.com/dashpay/dash/commit/76822dd50) fix imports
 - [`4bfef1daa`](https://github.com/dashpay/dash/commit/4bfef1daa) Add missing dash-specific parts
 - [`9828b624a`](https://github.com/dashpay/dash/commit/9828b624a) `_wait_for_bitcoind_start` should be a part of BitcoinTestFramework
@@ -303,8 +303,8 @@
 - [`d97fd1ca7`](https://github.com/dashpay/dash/commit/d97fd1ca7) state that getinfo will be deprecated in a future version
 - [`d6633b5fb`](https://github.com/dashpay/dash/commit/d6633b5fb) apply rpcconsole.cpp patch
 - [`4a22fb78f`](https://github.com/dashpay/dash/commit/4a22fb78f) s/dash-util-test.py/bitcoin-util-test.py
-- [`e0424c1a0`](https://github.com/dashpay/dash/commit/e0424c1a0) s/libbitcoin/libcosanta
-- [`316fa1859`](https://github.com/dashpay/dash/commit/316fa1859) s/bitcoind/cosantad
+- [`e0424c1a0`](https://github.com/dashpay/dash/commit/e0424c1a0) s/libbitcoin/libpiratecash
+- [`316fa1859`](https://github.com/dashpay/dash/commit/316fa1859) s/bitcoind/piratecashd
 - [`f38ed3c71`](https://github.com/dashpay/dash/commit/f38ed3c71) #10821 continued
 - [`64c195a03`](https://github.com/dashpay/dash/commit/64c195a03) remove witness/segwit based text
 - [`c84636a47`](https://github.com/dashpay/dash/commit/c84636a47) update commented time estimates for fees
@@ -346,7 +346,7 @@
 - [`7e4318dda`](https://github.com/dashpay/dash/commit/7e4318dda) Merge bitcoin#8329: Consensus: MOVEONLY: Move functions for tx verification (#3030)
 - [`a4f046cd0`](https://github.com/dashpay/dash/commit/a4f046cd0) adjust formatting from review configure.ac
 - [`0eae9ed90`](https://github.com/dashpay/dash/commit/0eae9ed90) remove witness comment/text
-- [`2b9216e98`](https://github.com/dashpay/dash/commit/2b9216e98) /s/BTC/COSANTA
+- [`2b9216e98`](https://github.com/dashpay/dash/commit/2b9216e98) /s/BTC/DASH
 - [`188f4a752`](https://github.com/dashpay/dash/commit/188f4a752) Merge #10735: Avoid static analyzer warnings regarding uninitialized arguments
 - [`c097ab84d`](https://github.com/dashpay/dash/commit/c097ab84d) Merge #10840: Remove duplicate include
 - [`d7057d429`](https://github.com/dashpay/dash/commit/d7057d429) Merge #10766: Building Environment: Set ARFLAGS to cr
@@ -474,7 +474,7 @@
 - [`9adb72e11`](https://github.com/dashpay/dash/commit/9adb72e11) remove initialize to 0 in chainparams.h
 - [`6ce3e55cb`](https://github.com/dashpay/dash/commit/6ce3e55cb) add extra params to AvailableCoins calls
 - [`6ad8fe0e9`](https://github.com/dashpay/dash/commit/6ad8fe0e9) adjust CoinType logic
-- [`d5d27ad19`](https://github.com/dashpay/dash/commit/d5d27ad19) s/bitcoind/cosantad
+- [`d5d27ad19`](https://github.com/dashpay/dash/commit/d5d27ad19) s/bitcoind/piratecashd
 - [`39cfd61c0`](https://github.com/dashpay/dash/commit/39cfd61c0) Merge #9279: Consensus: Move CFeeRate out of libconsensus
 - [`535d7d6a8`](https://github.com/dashpay/dash/commit/535d7d6a8) Merge #10347: Use range-based for loops (C++11) when looping over vector elements
 - [`30ad4b8e8`](https://github.com/dashpay/dash/commit/30ad4b8e8) Merge #8952: Add query options to listunspent RPC call
@@ -591,7 +591,7 @@
 - [`22c4cd7b0`](https://github.com/dashpay/dash/commit/22c4cd7b0) Merge #10159: [tests] color test results and sort alphabetically
 - [`9c863edd9`](https://github.com/dashpay/dash/commit/9c863edd9) Merge #9780: Suppress noisy output from qa tests in Travis
 - [`98f3e295c`](https://github.com/dashpay/dash/commit/98f3e295c) add `&& llmq::IsOldInstantSendEnabled()` to instantsend max value check
-- [`a651f0d0f`](https://github.com/dashpay/dash/commit/a651f0d0f) adjust test_runner.py check if cosantad is running
+- [`a651f0d0f`](https://github.com/dashpay/dash/commit/a651f0d0f) adjust test_runner.py check if piratecashd is running
 - [`74830ee2a`](https://github.com/dashpay/dash/commit/74830ee2a) adjust spork5 code in wallet.cpp
 - [`4c7b47e28`](https://github.com/dashpay/dash/commit/4c7b47e28) Resolve comment, add check for fUseInstantSend and set value equal to the max value
 - [`5152e751c`](https://github.com/dashpay/dash/commit/5152e751c) Notify UI/external scripts about wallet txes locks
@@ -659,7 +659,7 @@
 - [`9b8a750c9`](https://github.com/dashpay/dash/commit/9b8a750c9) More `boost::filesystem`->`fs` and some related cleanup
 - [`250195185`](https://github.com/dashpay/dash/commit/250195185) Adjust CDSNotificationInterface to align with CValidationInterface changes
 - [`d180061b8`](https://github.com/dashpay/dash/commit/d180061b8) Pass block index via BlockDisconnected
-- [`282d1554d`](https://github.com/dashpay/dash/commit/282d1554d) adjust examples/cosanta.conf
+- [`282d1554d`](https://github.com/dashpay/dash/commit/282d1554d) adjust examples/piratecash.conf
 - [`e451325d6`](https://github.com/dashpay/dash/commit/e451325d6) Merge #10186: Remove SYNC_TRANSACTION_NOT_IN_BLOCK magic number
 - [`60438257a`](https://github.com/dashpay/dash/commit/60438257a) Merge #9725: CValidationInterface Cleanups
 - [`f893ac66c`](https://github.com/dashpay/dash/commit/f893ac66c) Merge #10124: [test] Suppress test logging spam
@@ -703,7 +703,7 @@
 - [`f2e976a05`](https://github.com/dashpay/dash/commit/f2e976a05) Merge #10045: [trivial] Fix typos in comments
 - [`2c833eff3`](https://github.com/dashpay/dash/commit/2c833eff3) Merge #10039: Fix compile errors with Qt 5.3.2 and Boost 1.55.0
 - [`a6eee07f2`](https://github.com/dashpay/dash/commit/a6eee07f2) Merge bitcoin#9963: util: Properly handle errors during log message formatting (#2917)
-- [`67c735b15`](https://github.com/dashpay/dash/commit/67c735b15) s/bitcoin-config.h/cosanta-config.h/
+- [`67c735b15`](https://github.com/dashpay/dash/commit/67c735b15) s/bitcoin-config.h/piratecash-config.h/
 - [`2f63322cd`](https://github.com/dashpay/dash/commit/2f63322cd) dashify "Finding reviewers" section to be more relevant
 - [`e7a21faa2`](https://github.com/dashpay/dash/commit/e7a21faa2) Merge Bitcoin#9960: Trivial: Add const modifier to GetHDChain and IsHDEnabled
 - [`eecc72436`](https://github.com/dashpay/dash/commit/eecc72436) Merge #10564: Return early in IsBanned.

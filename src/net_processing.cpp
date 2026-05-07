@@ -61,7 +61,7 @@
 #include <statsd_client.h>
 
 #if defined(NDEBUG)
-# error "Cosanta Core cannot be compiled without assertions."
+# error "PirateCash Core cannot be compiled without assertions."
 #endif
 
 static std::deque<const CBlockIndex*> vToFetchCache GUARDED_BY(cs_main);
@@ -1061,15 +1061,22 @@ bool AddOrphanTx(const CTransactionRef& tx, NodeId peer) EXCLUSIVE_LOCKS_REQUIRE
     if (mapOrphanTransactions.count(hash))
         return false;
 
-    // Ignore big transactions, to avoid a
-    // send-big-orphans memory exhaustion attack. If a peer has a legitimate
-    // large transaction with a missing parent then we assume
-    // it will rebroadcast it later, after the parent transaction(s)
-    // have been mined or received.
-    // 100 orphans, each of which is at most 99,999 bytes big is
-    // at most 10 megabytes of orphans and somewhat more byprev index (in the worst case):
+    // Ignore big transactions, to avoid a send-big-orphans memory exhaustion
+    // attack. If a peer has a legitimate large transaction with a missing
+    // parent then we assume it will rebroadcast it later, after the parent
+    // transaction(s) have been mined or received.
+    //
+    // PIP-0003 stage 1 (v19): we keep MAX_LEGACY_TX_SIZE here in lock-step
+    // with IsStandardTx so a pre-v19 peer that legitimately rebroadcasts a
+    // legacy-sized transaction does not get its orphan dropped. The total
+    // orphan-pool memory footprint is independently capped by
+    // -maxorphantxsize (DEFAULT_MAX_ORPHAN_TRANSACTIONS_SIZE megabytes,
+    // currently 10 MB by default), so even with the per-tx cap raised to
+    // ~2.9 MB an attacker cannot grow the pool beyond that aggregate limit
+    // — at most a handful of legacy-sized orphans coexist in memory at any
+    // moment. v20 will switch this per-tx cap back to MAX_STANDARD_TX_SIZE.
     unsigned int sz = GetSerializeSize(*tx, CTransaction::CURRENT_VERSION);
-    if (sz > MAX_STANDARD_TX_SIZE)
+    if (sz > MAX_LEGACY_TX_SIZE)
     {
         LogPrint(BCLog::MEMPOOL, "ignoring large orphan tx (size: %u, hash: %s)\n", sz, hash.ToString());
         return false;
@@ -1600,7 +1607,7 @@ bool static AlreadyHave(const CInv& inv, const CTxMemPool& mempool, const LLMQCo
         return LookupBlockIndex(inv.hash) != nullptr;
 
     /*
-        Dash Related Inventory Messages
+        PirateCash Related Inventory Messages
 
         --
 
@@ -2103,8 +2110,11 @@ static void ProcessHeadersMessage(CNode& pfrom, CConnman& connman, ChainstateMan
         // - Once a headers message is received that is valid and does connect,
         //   nUnconnectingHeaders gets reset back to 0.
 
-        // FIXED: syncing of PoS blocks - Cosanta
-        if (pindexPrev == nullptr && headers.size() <= MAX_BLOCKS_TO_ANNOUNCE) {
+        // FIXED: syncing of PoS blocks - PirateCash
+        //if (!LookupBlockIndex(headers[0].hashPrevBlock) && nCount < MAX_BLOCKS_TO_ANNOUNCE) {
+        if ((pindexPrev == nullptr) &&
+                (headers.size() <= MAX_BLOCKS_TO_ANNOUNCE)
+                ) {
             nodestate->nUnconnectingHeaders++;
             const std::string msg_type = (pfrom.nServices & NODE_HEADERS_COMPRESSED) ? NetMsgType::GETHEADERS2 : NetMsgType::GETHEADERS;
             connman.PushMessage(&pfrom, msgMaker.Make(msg_type, ::ChainActive().GetLocator(pindexBestHeader), uint256()));
@@ -2150,7 +2160,7 @@ static void ProcessHeadersMessage(CNode& pfrom, CConnman& connman, ChainstateMan
             return;
         }
         if (state.IsError() || state.IsTransientError()) {
-            // Cosanta: transient error means the peer sent us a header we
+            // PirateCash: transient error means the peer sent us a header we
             // cannot fully validate yet (e.g. PoS stake utxo not in our local
             // chain). Don't punish, retry later.
             LogPrint(BCLog::NET, "peer %d sent us header which we are unable to process yet \n", pfrom.GetId());
@@ -2167,7 +2177,7 @@ static void ProcessHeadersMessage(CNode& pfrom, CConnman& connman, ChainstateMan
                 // edge case: the first header in the batch failed
                 pindexLast = pindexPrev;
             }
-            // Cosanta: the peer still has more headers for us beyond the
+            // PirateCash: the peer still has more headers for us beyond the
             // one we choked on — once our chain catches up to pindexLast we
             // must explicitly ask for the next batch, otherwise sync stalls.
             get_more_headers = true;
@@ -2892,6 +2902,9 @@ void PeerLogicValidation::ProcessMessage(
         return;
     }
 
+    // set deserialization mode to read PoS flag in headers
+    vRecv.SetType(vRecv.GetType() | SER_POSMARKER);
+
     // At this point, the outgoing message serialization version can't change.
     const CNetMsgMaker msgMaker(pfrom.GetSendVersion());
 
@@ -3601,7 +3614,7 @@ void PeerLogicValidation::ProcessMessage(
                 MaybePunishNode(pfrom.GetId(), state, /*via_compact_block*/ true, "invalid header via cmpctblock");
                 return;
             }
-            // Cosanta: a transient error (e.g. PoS stake input not yet in
+            // PirateCash: a transient error (e.g. PoS stake input not yet in
             // our local chain) means we cannot fully validate this header
             // right now. Don't enter the cmpctblock fast-path below — pindex
             // is unset and assert(pindex) would fire. Instead reroute the
@@ -3895,6 +3908,9 @@ void PeerLogicValidation::ProcessMessage(
                 for (unsigned int n = 0; n < nCount; n++) {
                     vRecv >> headers[n];
                     ReadCompactSize(vRecv); // ignore tx count; assume it is 0.
+                    if (!headers[n].IsProofOfStakeV2()) {
+                        ReadCompactSize(vRecv); // needed for legacy PirateCash oldVchBlockSig.
+                    }
                 }
             } else if (msg_type == NetMsgType::HEADERS2) {
                 std::list<int32_t> last_unique_versions;
@@ -3923,6 +3939,8 @@ void PeerLogicValidation::ProcessMessage(
 
         std::shared_ptr<CBlock> pblock = std::make_shared<CBlock>();
         vRecv >> *pblock;
+        if (pblock->IsProofOfStakeTX())
+            pblock->nFlags |= CBlockIndex::BLOCK_PROOF_OF_STAKE;
 
         LogPrint(BCLog::NET, "received block %s peer=%d\n", pblock->GetHash().ToString(), pfrom.GetId());
 

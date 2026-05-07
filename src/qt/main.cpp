@@ -13,7 +13,7 @@
 
 /** Translate string to current locale using Qt. */
 extern const std::function<std::string(const char*)> G_TRANSLATION_FUN = [](const char* psz) {
-    return QCoreApplication::translate("cosanta-core", psz).toStdString();
+    return QCoreApplication::translate("piratecash-core", psz).toStdString();
 };
 
 int main(int argc, char* argv[]) { return GuiMain(argc, argv); }

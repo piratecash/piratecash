@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install $APT_ARGS nano openssh-client zsh gdb && r
 ENV DEBIAN_FRONTEND="dialog"
 
 # Expose Cosanta P2P and RPC ports for main network and test networks
-EXPOSE 9606 60606 9696 60696
+EXPOSE 9998 9999 19998 19999
 
 # We're done, switch back to non-privileged user
 USER cosanta

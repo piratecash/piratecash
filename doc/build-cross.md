@@ -1,7 +1,7 @@
-Cross-compiliation of Cosanta Core
+Cross-compiliation of PirateCash Core
 ===============================
 
-Cosanta Core can be cross-compiled on Linux to all other supported host systems. This is done by changing
+PirateCash Core can be cross-compiled on Linux to all other supported host systems. This is done by changing
 the `HOST` parameter when building the dependencies and then specifying another `--prefix` directory when building Dash.
 
 The following instructions are only tested on Debian Stretch and Ubuntu Bionic.
@@ -29,7 +29,7 @@ When building the dependencies, as described in [build-generic](build-generic.md
 $ make HOST=x86_64-apple-darwin19 -j4
 ```
 
-When building Cosanta Core, use
+When building PirateCash Core, use
 
 ```bash
 $ ./configure --prefix=`pwd`/depends/x86_64-apple-darwin19
@@ -58,8 +58,8 @@ If you want to build the windows installer with `make deploy` you need [NSIS](ht
 
 Acquire the source in the usual way:
 
-    git clone https://github.com/cosanta/cosanta-core.git
-    cd cosanta-core
+    git clone https://github.com/piratecash/piratecash-core.git
+    cd piratecash-core
 
 ### Building for 64-bit Windows
 
@@ -74,7 +74,7 @@ Ubuntu Bionic 18.04 <sup>[1](#footnote1)</sup>:
 
 Once the toolchain is installed the build steps are common:
 
-Note that for WSL the Cosanta Core source path MUST be somewhere in the default mount file system, for
+Note that for WSL the PirateCash Core source path MUST be somewhere in the default mount file system, for
 example /usr/src/dash, AND not under /mnt/d/. If this is not the case the dependency autoconf scripts will fail.
 This means you cannot use a directory that is located directly on the host Windows file system to perform the build.
 
@@ -106,7 +106,7 @@ When building the dependencies, as described in [build-generic](build-generic.md
 $ make HOST=arm-linux-gnueabihf -j4
 ```
 
-When building Cosanta Core, use
+When building PirateCash Core, use
 
 ```bash
 $ ./configure --prefix=`pwd`/depends/arm-linux-gnueabihf
@@ -119,5 +119,5 @@ Footnotes
 compiler options to allow a choice between either posix or win32 threads. The default option is win32 threads which is the more
 efficient since it will result in binary code that links directly with the Windows kernel32.lib. Unfortunately, the headers
 required to support win32 threads conflict with some of the classes in the C++11 standard library, in particular std::mutex.
-It's not possible to build the Cosanta Core code using the win32 version of the Mingw-w64 cross compilers (at least not without
-modifying headers in the Cosanta Core source code).
+It's not possible to build the PirateCash Core code using the win32 version of the Mingw-w64 cross compilers (at least not without
+modifying headers in the PirateCash Core source code).

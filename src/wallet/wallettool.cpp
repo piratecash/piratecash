@@ -19,7 +19,7 @@
 namespace WalletTool {
 
 // The standard wallet deleter function blocks on the validation interface
-// queue, which doesn't exist for the dash-wallet. Define our own
+// queue, which doesn't exist for the piratecash-wallet. Define our own
 // deleter here.
 static void WalletToolReleaseWallet(CWallet* wallet)
 {
@@ -110,7 +110,7 @@ static void WalletShowInfo(CWallet* wallet_instance)
 }
 
 // ---------------------------------------------------------------------------
-// `migrate-v19` — Cosanta-specific: bring a wallet up to the v19 on-disk
+// `migrate-v19` -- PirateCash-specific: bring a wallet up to the v19 on-disk
 // format. Currently the only sub-step is RewriteReceiveRequestsToV19Format(),
 // but additional v19-related migrations can be added here later and chained
 // from MigrateToV19().
@@ -141,8 +141,8 @@ static void WalletShowInfo(CWallet* wallet_instance)
 //
 // 7-field layout (v19+):
 //   ... same as above ...
-//   varstr sPaymentRequest      (always empty in Cosanta — no BIP70)
-//   varstr authenticatedMerchant (always empty in Cosanta — no BIP70)
+//   varstr sPaymentRequest      (always empty in PirateCash -- no BIP70)
+//   varstr authenticatedMerchant (always empty in PirateCash -- no BIP70)
 //
 // Reads each rr value, attempts to parse the 5-field layout. If the stream is
 // exhausted right after message_str, appends two empty varstrs and rewrites
@@ -190,7 +190,7 @@ static bool RewriteReceiveRequestsToV19Format(CWallet& wallet,
                >> inner_version >> addr_str >> label_str >> amount >> message_str;
 
             if (!ss.empty()) {
-                // Stream still has bytes after message_str — record is already
+                // Stream still has bytes after message_str -- record is already
                 // in the v19+ 7-field format (or newer). Nothing to do.
                 ++already_new;
                 continue;
@@ -214,7 +214,7 @@ static bool RewriteReceiveRequestsToV19Format(CWallet& wallet,
             // Keep the in-memory cache in sync with what we just wrote.
             // We can't use CWallet::LoadDestData / AddDestData here because
             // they go through std::map::insert which is a no-op when the key
-            // is already present — and it always is, since the entry was
+            // is already present -- and it always is, since the entry was
             // populated when the wallet was loaded. Assign directly so that
             // any subsequent v19 sub-migration step sees the rewritten value.
             wallet.mapAddressBook[e.dest].destdata[e.key] = new_value;
@@ -300,7 +300,7 @@ static bool MigrateToV19(const std::string& name, const fs::path& path)
     std::shared_ptr<CWallet> wallet_instance = MakeWallet(name, path, /* create= */ false);
     if (!wallet_instance) {
         tfm::format(std::cerr,
-                    "migrate-v19: could not open wallet — backup at %s is intact, "
+                    "migrate-v19: could not open wallet -- backup at %s is intact, "
                     "you can restore from it.\n", backup.string());
         return false;
     }
@@ -329,7 +329,7 @@ static bool MigrateToV19(const std::string& name, const fs::path& path)
         return true;
     }
     tfm::format(std::cerr,
-                "migrate-v19: there were errors — keep the backup at %s.\n",
+                "migrate-v19: there were errors -- keep the backup at %s.\n",
                 backup.string());
     return false;
 }
@@ -396,7 +396,7 @@ bool ExecuteWalletToolFunc(const std::string& command, const std::string& name)
 #endif
         }
     } else if (command == "migrate-v19") {
-        // Cosanta-specific: see MigrateToV19 above.
+        // PirateCash-specific: see MigrateToV19 above.
         // TODO(remove-in-v20): drop together with the Qt-side backward-compat reader.
         return MigrateToV19(name, path);
     } else {

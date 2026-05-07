@@ -70,7 +70,7 @@ TEST_EXIT_PASSED = 0
 TEST_EXIT_FAILED = 1
 TEST_EXIT_SKIPPED = 77
 
-TMPDIR_PREFIX = "cosanta_func_test_"
+TMPDIR_PREFIX = "dash_func_test_"
 
 class SkipTest(Exception):
     """This exception is raised to skip a test"""
@@ -179,14 +179,8 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         config = configparser.ConfigParser()
         config.read_file(open(self.options.configfile))
         self.config = config
-        self.options.bitcoind = (
-            os.getenv("COSANTAD")
-            or config["environment"]["BUILDDIR"] + '/src/cosantad' + config["environment"]["EXEEXT"]
-        )
-        self.options.bitcoincli = (
-            os.getenv("COSANTACLI")
-            or config["environment"]["BUILDDIR"] + '/src/cosanta-cli' + config["environment"]["EXEEXT"]
-        )
+        self.options.bitcoind = os.getenv("BITCOIND", default=config["environment"]["BUILDDIR"] + '/src/cosantad' + config["environment"]["EXEEXT"])
+        self.options.bitcoincli = os.getenv("BITCOINCLI", default=config["environment"]["BUILDDIR"] + '/src/cosanta-cli' + config["environment"]["EXEEXT"])
 
         self.extra_args_from_options = self.options.cosantad_extra_args
 
@@ -637,7 +631,7 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
             from_dir = get_datadir_path(self.options.cachedir, i)
             to_dir = get_datadir_path(self.options.tmpdir, i)
             shutil.copytree(from_dir, to_dir)
-            initialize_datadir(self.options.tmpdir, i, self.chain)  # Overwrite port/rpcport in cosanta.conf
+            initialize_datadir(self.options.tmpdir, i, self.chain)  # Overwrite port/rpcport in piratecash.conf
 
     def _initialize_chain_clean(self):
         """Initialize empty blockchain for use by the test.

@@ -1,4 +1,4 @@
-Cosanta Core version 0.12.2
+PirateCash Core version 0.12.2
 ========================
 
 Release is now available from:
@@ -19,8 +19,8 @@ How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), then run the
-installer (on Windows) or just copy over /Applications/Cosanta-Qt (on Mac) or
-cosantad/cosanta-qt (on Linux).
+installer (on Windows) or just copy over /Applications/PirateCash-Qt (on Mac) or
+piratecashd/piratecash-qt (on Linux).
 
 Downgrade warning
 -----------------
@@ -39,7 +39,7 @@ Notable changes
 DIP0001
 -------
 
-We outline an initial scaling mechanism for Cosanta. After deployment and activation, Dash will be able to handle double the transactions it can currently handle. Together with the faster block times, Dash we will be prepared to handle eight times the traffic of Bitcoin.
+We outline an initial scaling mechanism for PirateCash. After deployment and activation, Dash will be able to handle double the transactions it can currently handle. Together with the faster block times, Dash we will be prepared to handle eight times the traffic of Bitcoin.
 
 https://github.com/dashpay/dips/blob/master/dip-0001.md
 
@@ -47,7 +47,7 @@ https://github.com/dashpay/dips/blob/master/dip-0001.md
 Fee reduction
 -------------
 
-All transaction fees are reduced 10x (from 10K per Kb to 1K per Kb), including fees for InstantSend (from 0.001 COSANTA per input to 0.0001 per input)
+All transaction fees are reduced 10x (from 10K per Kb to 1K per Kb), including fees for InstantSend (from 0.001 PIRATE per input to 0.0001 per input)
 
 InstantSend fix
 ---------------
@@ -78,7 +78,7 @@ New: `assumevalid`, `blocksonly`, `reindex-chainstate`
 
 Experimental: `usehd`, `mnemonic`, `mnemonicpassphrase`, `hdseed`
 
-See `Help -> Command-line options` in Qt wallet or `cosantad --help` for more info.
+See `Help -> Command-line options` in Qt wallet or `piratecashd --help` for more info.
 
 PrivateSend improvements
 ------------------------
@@ -106,7 +106,7 @@ Detailed [change log](https://github.com/dashpay/dash/compare/v0.12.1.x...dashpa
 
 ### Backports:
 - [`ff30aed68`](https://github.com/dashpay/dash/commit/ff30aed68) Align with btc 0.12 (#1409)
-- [`9901cf433`](https://github.com/dashpay/dash/commit/9901cf433) Fix for cosanta-qt issue with startup and multiple monitors. (#1461)
+- [`9901cf433`](https://github.com/dashpay/dash/commit/9901cf433) Fix for piratecash-qt issue with startup and multiple monitors. (#1461)
 - [`39750439b`](https://github.com/dashpay/dash/commit/39750439b) Force to use C++11 mode for compilation (#1463)
 - [`e30faab6f`](https://github.com/dashpay/dash/commit/e30faab6f) Make strWalletFile const (#1459)
 - [`c4fe22900`](https://github.com/dashpay/dash/commit/c4fe22900) Access WorkQueue::running only within the cs lock. (#1460)
@@ -128,7 +128,7 @@ Detailed [change log](https://github.com/dashpay/dash/compare/v0.12.1.x...dashpa
 - [`a443d4e2d`](https://github.com/dashpay/dash/commit/a443d4e2d) Backport Bitcoin PRs #6589, #7180 and remaining part of #7181: enable per-command byte counters in `CNode` (#1496)
 - [`f9730cb2e`](https://github.com/dashpay/dash/commit/f9730cb2e) Increase test coverage for addrman and addrinfo (#1497)
 - [`a12491448`](https://github.com/dashpay/dash/commit/a12491448) Eliminate unnecessary call to CheckBlock (#1498)
-- [`b0843c397`](https://github.com/dashpay/dash/commit/b0843c397) Backport Bincoin PR#7348: MOVE ONLY: move rpc* to rpc/ + same for Cosanta-specific rpc (#1502)
+- [`b0843c397`](https://github.com/dashpay/dash/commit/b0843c397) Backport Bincoin PR#7348: MOVE ONLY: move rpc* to rpc/ + same for PirateCash-specific rpc (#1502)
 - [`f65017cfe`](https://github.com/dashpay/dash/commit/f65017cfe) Backport Bitcoin PR#7349: Build against system UniValue when available (#1503)
 - [`ac6c3c900`](https://github.com/dashpay/dash/commit/ac6c3c900) Backport Bitcoin PR#7350: Banlist updates (#1505)
 - [`d787fe4ab`](https://github.com/dashpay/dash/commit/d787fe4ab) Backport Bitcoin PR#7458: [Net] peers.dat, banlist.dat recreated when missing (#1506)
@@ -239,7 +239,7 @@ Detailed [change log](https://github.com/dashpay/dash/compare/v0.12.1.x...dashpa
 - [`8da26da71`](https://github.com/dashpay/dash/commit/8da26da71) Eliminate g_connman use in spork module. (#1613)
 - [`4956ba7a7`](https://github.com/dashpay/dash/commit/4956ba7a7) Eliminate g_connman use in instantx module. (#1626)
 - [`10eddb52d`](https://github.com/dashpay/dash/commit/10eddb52d) Move some (spamy) CMasternodeSync log messages to new `mnsync` log category (#1630)
-- [`753b1e486`](https://github.com/dashpay/dash/commit/753b1e486) Eliminate remaining uses of g_connman in Cosanta-specific code. (#1635)
+- [`753b1e486`](https://github.com/dashpay/dash/commit/753b1e486) Eliminate remaining uses of g_connman in PirateCash-specific code. (#1635)
 - [`8949f4345`](https://github.com/dashpay/dash/commit/8949f4345) Wait for full sync in functional tests that use getblocktemplate. (#1642)
 - [`5f0da8aa7`](https://github.com/dashpay/dash/commit/5f0da8aa7) fix sync (#1643)
 - [`7a8910443`](https://github.com/dashpay/dash/commit/7a8910443) Fix unlocked access to vNodes.size() (#1654)
@@ -318,7 +318,7 @@ Detailed [change log](https://github.com/dashpay/dash/compare/v0.12.1.x...dashpa
 - [`7a5943c3a`](https://github.com/dashpay/dash/commit/7a5943c3a) Merge pull request #1431 from dashpay/v0.12.2.x-merge_upstream
 - [`8bbcf6200`](https://github.com/dashpay/dash/commit/8bbcf6200) Fixed pow (test and algo) (#1415)
 - [`f3b92a95d`](https://github.com/dashpay/dash/commit/f3b92a95d) c++11: don't throw from the reverselock destructor (#1421)
-- [`b40f8f333`](https://github.com/dashpay/dash/commit/b40f8f333) Rename bitcoinconsensus library to cosantaconsensus. (#1432)
+- [`b40f8f333`](https://github.com/dashpay/dash/commit/b40f8f333) Rename bitcoinconsensus library to pirateconsensus. (#1432)
 - [`28a1d0ecc`](https://github.com/dashpay/dash/commit/28a1d0ecc) Fix the same header included twice. (#1474)
 - [`adf97e12a`](https://github.com/dashpay/dash/commit/adf97e12a) fix travis ci mac build (#1483)
 - [`a28fa724c`](https://github.com/dashpay/dash/commit/a28fa724c) fix BIP34 starting blocks for mainnet/testnet (#1476)
@@ -391,12 +391,12 @@ the 0.8.x tree and was first released on Mar/13/2014.
 Darkcoin tree 0.10.x used to be the closed source implementation of Darksend
 which was released open source on Sep/25/2014.
 
-Cosanta Core tree 0.11.x was a fork of Bitcoin Core tree 0.9, Darkcoin was rebranded
+PirateCash Core tree 0.11.x was a fork of Bitcoin Core tree 0.9, Darkcoin was rebranded
 to Dash.
 
-Cosanta Core tree 0.12.0.x was a fork of Bitcoin Core tree 0.10.
+PirateCash Core tree 0.12.0.x was a fork of Bitcoin Core tree 0.10.
 
-Cosanta Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
+PirateCash Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
 
 These release are considered obsolete. Old changelogs can be found here:
 

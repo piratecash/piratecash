@@ -18,10 +18,10 @@ BitcoinUnits::BitcoinUnits(QObject *parent):
 QList<BitcoinUnits::Unit> BitcoinUnits::availableUnits()
 {
     QList<BitcoinUnits::Unit> unitlist;
-    unitlist.append(COSA);
-    unitlist.append(mCOSA);
-    unitlist.append(uCOSA);
-    unitlist.append(UNIT);
+    unitlist.append(PIRATECASH);
+    unitlist.append(mPIRATECASH);
+    unitlist.append(uPIRATECASH);
+    unitlist.append(corsars);
     return unitlist;
 }
 
@@ -29,10 +29,10 @@ bool BitcoinUnits::valid(int unit)
 {
     switch(unit)
     {
-    case COSA:
-    case mCOSA:
-    case uCOSA:
-    case UNIT:
+    case PIRATECASH:
+    case mPIRATECASH:
+    case uPIRATECASH:
+    case corsars:
         return true;
     default:
         return false;
@@ -45,10 +45,10 @@ QString BitcoinUnits::name(int unit)
     {
         switch(unit)
         {
-            case COSA: return QString("COSA");
-            case mCOSA: return QString("mCOSA");
-            case uCOSA: return QString::fromUtf8("μCOSA");
-            case UNIT: return QString("unit");
+            case PIRATECASH: return QString("PIRATE");
+            case mPIRATECASH: return QString("mPIRATE");
+            case uPIRATECASH: return QString::fromUtf8("μPIRATE");
+            case corsars: return QString("corsars");
             default: return QString("???");
         }
     }
@@ -56,10 +56,10 @@ QString BitcoinUnits::name(int unit)
     {
         switch(unit)
         {
-            case COSA: return QString("tCOSA");
-            case mCOSA: return QString("mtCOSA");
-            case uCOSA: return QString::fromUtf8("μtCOSA");
-            case UNIT: return QString("tunit");
+            case PIRATECASH: return QString("tPIRATE");
+            case mPIRATECASH: return QString("mtPIRATE");
+            case uPIRATECASH: return QString::fromUtf8("μtPIRATE");
+            case corsars: return QString("tcorsars");
             default: return QString("???");
         }
     }
@@ -71,10 +71,10 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case COSA: return QString("Cosanta");
-            case mCOSA: return QString("Milli-Cosanta (1 / 1" THIN_SP_UTF8 "000)");
-            case uCOSA: return QString("Micro-Cosanta (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case UNIT: return QString("Cosanta unit (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case PIRATECASH: return QString("PirateCash");
+            case mPIRATECASH: return QString("Milli-PirateCash (1 / 1" THIN_SP_UTF8 "000)");
+            case uPIRATECASH: return QString("Micro-PirateCash (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case corsars: return QString("Ten Nano-PirateCash (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -82,10 +82,10 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case COSA: return QString("TestCosantas");
-            case mCOSA: return QString("Milli-TestCosanta (1 / 1" THIN_SP_UTF8 "000)");
-            case uCOSA: return QString("Micro-TestCosanta (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case UNIT: return QString("TestCosanta unit (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case PIRATECASH: return QString("TestPirateCashs");
+            case mPIRATECASH: return QString("Milli-TestPirateCash (1 / 1" THIN_SP_UTF8 "000)");
+            case uPIRATECASH: return QString("Micro-TestPirateCash (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case corsars: return QString("Ten Nano-TestPirateCash (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -95,10 +95,10 @@ qint64 BitcoinUnits::factor(int unit)
 {
     switch(unit)
     {
-    case COSA:  return 100000000;
-    case mCOSA: return 100000;
-    case uCOSA: return 100;
-    case UNIT: return 1;
+    case PIRATECASH:  return 100000000;
+    case mPIRATECASH: return 100000;
+    case uPIRATECASH: return 100;
+    case corsars: return 1;
     default:   return 100000000;
     }
 }
@@ -107,10 +107,10 @@ int BitcoinUnits::decimals(int unit)
 {
     switch(unit)
     {
-    case COSA: return 8;
-    case mCOSA: return 5;
-    case uCOSA: return 2;
-    case UNIT: return 0;
+    case PIRATECASH: return 8;
+    case mPIRATECASH: return 5;
+    case uPIRATECASH: return 2;
+    case corsars: return 0;
     default: return 0;
     }
 }

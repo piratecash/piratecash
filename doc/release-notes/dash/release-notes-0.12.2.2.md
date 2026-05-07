@@ -1,4 +1,4 @@
-Cosanta Core version 0.12.2.2
+PirateCash Core version 0.12.2.2
 ==========================
 
 Release is now available from:
@@ -21,8 +21,8 @@ How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), then run the
-installer (on Windows) or just copy over /Applications/Cosanta-Qt (on Mac) or
-cosantad/cosanta-qt (on Linux). Because of the per-UTXO fix (see below) there is a
+installer (on Windows) or just copy over /Applications/PirateCash-Qt (on Mac) or
+piratecashd/piratecash-qt (on Linux). Because of the per-UTXO fix (see below) there is a
 one-time database upgrade operation, so expect a slightly longer startup time on
 the first run.
 
@@ -51,7 +51,7 @@ can cause nodes to allocate excessive amounts of memory, which leads them to a
 halt. You can read more about the fix in the original Bitcoin Core pull request
 https://github.com/bitcoin/bitcoin/pull/10195
 
-To fix this issue in Cosanta Core however, we had to backport a lot of other
+To fix this issue in PirateCash Core however, we had to backport a lot of other
 improvements from Bitcoin Core, see full list of backports in the detailed
 change log below.
 
@@ -78,7 +78,7 @@ a minor issue which was not affecting mixing speed or user privacy in any way.
 Removal of support for local masternodes
 ----------------------------------------
 
-Keeping a wallet with 1000 COSANTA unlocked for 24/7 is definitely not a good idea
+Keeping a wallet with 1000 PIRATE unlocked for 24/7 is definitely not a good idea
 anymore. Because of this fact, it's also no longer reasonable to update and test
 this feature, so it's completely removed now. If for some reason you were still
 using it, please follow one of the guides and setup a remote masternode instead.
@@ -92,7 +92,7 @@ Other improvements and bug fixes
 --------------------------------
 
 As a result of previous intensive refactoring and some additional fixes,
-it should be possible to compile Cosanta Core with `--disable-wallet` option now.
+it should be possible to compile PirateCash Core with `--disable-wallet` option now.
 
 This release also improves sync process and significantly lowers the time after
 which `getblocktemplate` rpc becomes available on node start.
@@ -240,12 +240,12 @@ the 0.8.x tree and was first released on Mar/13/2014.
 Darkcoin tree 0.10.x used to be the closed source implementation of Darksend
 which was released open source on Sep/25/2014.
 
-Cosanta Core tree 0.11.x was a fork of Bitcoin Core tree 0.9,
+PirateCash Core tree 0.11.x was a fork of Bitcoin Core tree 0.9,
 Darkcoin was rebranded to Dash.
 
-Cosanta Core tree 0.12.0.x was a fork of Bitcoin Core tree 0.10.
+PirateCash Core tree 0.12.0.x was a fork of Bitcoin Core tree 0.10.
 
-Cosanta Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
+PirateCash Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
 
 These release are considered obsolete. Old release notes can be found here:
 

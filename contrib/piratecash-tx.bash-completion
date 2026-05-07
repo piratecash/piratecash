@@ -1,16 +1,16 @@
-# bash programmable completion for cosanta-tx(1)
+# bash programmable completion for piratecash-tx(1)
 # Copyright (c) 2016 The Bitcoin Core developers
 # Copyright (c) 2020-2022 The Cosanta Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-_cosanta_tx() {
+_piratecash_tx() {
     local cur prev words=() cword
-    local cosanta_tx
+    local piratecash_tx
 
-    # save and use original argument to invoke cosanta-tx for -help
+    # save and use original argument to invoke piratecash-tx for -help
     # it might not be in $PATH
-    cosanta_tx="$1"
+    piratecash_tx="$1"
 
     COMPREPLY=()
     _get_comp_words_by_ref -n =: cur prev words cword
@@ -28,15 +28,15 @@ _cosanta_tx() {
 
     if [[ "$cword" == 1 || ( "$prev" != "-create" && "$prev" == -* ) ]]; then
         # only options (or an uncompletable hex-string) allowed
-        # parse cosanta-tx -help for options
+        # parse piratecash-tx -help for options
         local helpopts
-        helpopts=$($cosanta_tx -help | sed -e '/^  -/ p' -e d )
+        helpopts=$($piratecash_tx -help | sed -e '/^  -/ p' -e d )
         COMPREPLY=( $( compgen -W "$helpopts" -- "$cur" ) )
     else
         # only commands are allowed
         # parse -help for commands
         local helpcmds
-        helpcmds=$($cosanta_tx -help | sed -e '1,/Commands:/d' -e 's/=.*/=/' -e '/^  [a-z]/ p' -e d )
+        helpcmds=$($piratecash_tx -help | sed -e '1,/Commands:/d' -e 's/=.*/=/' -e '/^  [a-z]/ p' -e d )
         COMPREPLY=( $( compgen -W "$helpcmds" -- "$cur" ) )
     fi
 
@@ -47,7 +47,7 @@ _cosanta_tx() {
 
     return 0
 } &&
-complete -F _cosanta_tx cosanta-tx
+complete -F _piratecash_tx piratecash-tx
 
 # Local variables:
 # mode: shell-script

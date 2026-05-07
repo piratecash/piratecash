@@ -1,15 +1,15 @@
-Cosanta Core version 0.17.0.3
+PirateCash Core version 0.17.0.3
 ==========================
 
 Release is now available from:
 
-  <https://cosa.is/downloads/>
+  <https://piratecash.net/en/download/>
 
 This is a new hotfix release.
 
 Please report bugs using the issue tracker at github:
 
-  <https://github.com/cosanta/cosanta-core/issues>
+  <https://github.com/piratecash/piratecash-core/issues>
 
 
 Upgrading and downgrading
@@ -20,14 +20,14 @@ How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), then run the
-installer (on Windows) or just copy over /Applications/Cosanta-Qt (on Mac) or
-cosantad/cosanta-qt (on Linux). If you upgrade after DIP0003 activation and you were
+installer (on Windows) or just copy over /Applications/PirateCash-Qt (on Mac) or
+piratecashd/piratecash-qt (on Linux). If you upgrade after DIP0003 activation and you were
 using version < 0.13 you will have to reindex (start with -reindex-chainstate
 or -reindex) to make sure your wallet has all the new data synced. Upgrading
 from version 0.13 should not require any additional actions.
 
 When upgrading from a version prior to 0.14.0.3, the
-first startup of Cosanta Core will run a migration process which can take a few
+first startup of PirateCash Core will run a migration process which can take a few
 minutes to finish. After the migration, a downgrade to an older version is only
 possible with a reindex (or reindex-chainstate).
 
@@ -72,4 +72,4 @@ As well as everyone that submitted issues and reviewed pull requests.
 Older releases
 ==============
 
-Cosanta was forked from Dash Core.
+PirateCash was forked from Dash Core.

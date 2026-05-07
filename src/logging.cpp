@@ -176,12 +176,12 @@ const CLogCategoryDesc LogCategories[] =
     {BCLog::COINJOIN, "coinjoin"},
     {BCLog::SPORK, "spork"},
     {BCLog::NETCONN, "netconn"},
-    {BCLog::DASH, "cosanta"},
+    {BCLog::DASH, "dash"},
     //End Dash
 
-    //Start Cosanta
+    //Start PirateCash
     {BCLog::STAKING, "stake"},
-    //End Cosanta
+    //End PirateCash
 };
 
 bool GetLogCategory(BCLog::LogFlags& flag, const std::string& str)

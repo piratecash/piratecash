@@ -40,6 +40,6 @@ VOLUME ["/home/cosanta"]
 COPY cosanta/contrib/containers/deploy/docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
-EXPOSE 9606 60606 9696 60696
+EXPOSE 9998 9999 19998 19999
 
 WORKDIR /home/cosanta

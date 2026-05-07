@@ -53,8 +53,8 @@ RUN pip3 install \
     yq
 
 # cosnata_hash
-RUN git clone --depth 1 --no-tags https://github.com/cosanta/cosanta_hash
-RUN cd cosanta_hash && python3 setup.py install
+RUN git clone --depth 1 --no-tags https://github.com/piratecash/piratecash_hash
+RUN cd piratecash_hash && python3 setup.py install
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
@@ -62,8 +62,8 @@ ARG GROUP_ID=1000
 # add user with specified (or default) user/group ids
 ENV USER_ID ${USER_ID}
 ENV GROUP_ID ${GROUP_ID}
-RUN groupadd -g ${GROUP_ID} cosanta
-RUN useradd -u ${USER_ID} -g cosanta -s /bin/bash -m -d /cosanta cosanta
+RUN groupadd -g ${GROUP_ID} piratecash
+RUN useradd -u ${USER_ID} -g piratecash -s /bin/bash -m -d /piratecash piratecash
 
 # Packages needed for all target builds
 RUN apt-get update && apt-get install $APT_ARGS \
@@ -113,14 +113,14 @@ RUN \
   update-alternatives --set x86_64-w64-mingw32-g++  /usr/bin/x86_64-w64-mingw32-g++-posix; \
   exit 0
 
-RUN mkdir /cosanta-src && \
+RUN mkdir /piratecash-src && \
   mkdir -p /cache/ccache && \
   mkdir /cache/depends && \
   mkdir /cache/sdk-sources && \
-  chown $USER_ID:$GROUP_ID /cosanta-src && \
+  chown $USER_ID:$GROUP_ID /piratecash-src && \
   chown $USER_ID:$GROUP_ID /cache && \
   chown $USER_ID:$GROUP_ID /cache -R
 
-WORKDIR /cosanta-src
+WORKDIR /piratecash-src
 
-USER cosanta
+USER piratecash

@@ -6,6 +6,7 @@
 #include <consensus/validation.h>
 #include <net.h>
 #include <net_processing.h>
+#include <policy/policy.h>
 #include <txmempool.h>
 #include <util/validation.h>
 #include <validation.h>
@@ -33,6 +34,23 @@ TransactionError BroadcastTransaction(NodeContext& node, const CTransactionRef t
         // IsSpent does not mean the coin is spent, it means the output does not exist.
         // So if the output does exist, then this transaction exists in the chain.
         if (!existingCoin.IsSpent()) return TransactionError::ALREADY_IN_CHAIN;
+    }
+    // PIP-0003 stage 1 (v19): refuse local submission of oversized transactions.
+    // BroadcastTransaction is the single entry point for sendrawtransaction and
+    // for wallet-initiated sends, so guarding here prevents an upgraded node
+    // from becoming the source of a new oversized transaction even when the
+    // transaction is hand-crafted (e.g. via createrawtransaction). P2P relay of
+    // legacy-sized transactions from older peers stays soft via IsStandardTx
+    // until v20 — see doc/pips/pip-0003.md.
+    //
+    // The guard runs after the ALREADY_IN_CHAIN check above so that
+    // re-submitting a legacy-sized historical transaction still short-circuits
+    // with the correct ALREADY_IN_CHAIN result instead of being misreported as
+    // tx-size-local. bypass_limits applies to mempool limiting (size, fee),
+    // not to this static policy guard.
+    if (::GetSerializeSize(*tx, PROTOCOL_VERSION) > MAX_STANDARD_TX_SIZE) {
+        err_string = "tx-size-local";
+        return TransactionError::MEMPOOL_REJECTED;
     }
     if (!node.mempool->exists(hashTx)) {
         // Transaction is not already in the mempool. Submit it.

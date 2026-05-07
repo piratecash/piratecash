@@ -40,7 +40,7 @@ struct ChainTxData {
 
 /**
  * CChainParams defines various tweakable parameters of a given instance of the
- * Cosanta system. There are three: the main network on which people trade goods
+ * PirateCash system. There are three: the main network on which people trade goods
  * and services, the public test network which gets reset from time to time and
  * a regression test mode which is intended for private networks only. It has
  * minimal difficulty to ensure that blocks can be found instantly.
@@ -116,6 +116,10 @@ public:
     int64_t MinStakeAge() const { return nStakeMinAge; }
     uint32_t FirstPoSv2Block() const { return nFirstPoSv2Block; }
     bool HasLLMQ(Consensus::LLMQType llmqType) const;
+    /** Minimum Corsa messenger node `protocol_version` accepted by the
+     *  PIP-0001 stage 1 startup probe. A masternode whose local Corsa
+     *  reports a lower version refuses to start. */
+    int MinCorsaProtocolVersion() const { return nMinCorsaProtocolVersion; }
 
 protected:
     CChainParams() {}
@@ -154,6 +158,8 @@ protected:
     int64_t nStakeMinAge;
     // POS V2
     uint32_t nFirstPoSv2Block;
+    // PIP-0001: minimum required Corsa protocol_version for masternode startup
+    int nMinCorsaProtocolVersion{0};
 
     void AddLLMQ(Consensus::LLMQType llmqType);
 };

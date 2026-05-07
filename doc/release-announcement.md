@@ -1,14 +1,14 @@
-# Cosanta Core 19.0.0 Release Announcement
+# PirateCash Core 19.0.0 Release Announcement
 
-We are happy to announce the release of Cosanta Core 19.0.0. This release
+We are happy to announce the release of PirateCash Core 19.0.0. This release
 includes binaries that you can download below.
 
 ## About this release
 
-Cosanta Core 19.0.0 is the first major release of the Cosanta Core 19.x.x
+PirateCash Core 19.0.0 is the first major release of the PirateCash Core 19.x.x
 series. This release is based on Dash Core 19.3.0 and includes the Dash Core
 19.0.0 through 19.3.0 feature set, improvements and bug fixes adapted for the
-Cosanta network. We consider this a stable release.
+PirateCash network. We consider this a stable release.
 
 Detailed release notes are available in
 [doc/release-notes.md](release-notes.md).
@@ -20,11 +20,16 @@ to thirty minutes to complete on some systems.
 This release is mandatory for all nodes. Masternode operators should upgrade
 Sentinel to 1.7.3 or newer if Sentinel is used as part of their deployment.
 
+This release also activates Stage 1 of
+[PIP-0001](pips/pip-0001.md), making local Corsa messenger integration a
+mandatory startup requirement for PirateCash masternodes. A masternode must be
+configured with a local authenticated Corsa RPC endpoint before it can start.
+
 ## Downloads
 
 Binaries are available from:
 
-<https://cosa.is/downloads/>
+<https://p.cash/en/download/>
 
 ## Verification
 
@@ -38,7 +43,7 @@ your downloaded binary before installing.
 
 ## Credits
 
-Thanks go out to all Cosanta Core contributors, infrastructure maintainers,
+Thanks go out to all PirateCash Core contributors, infrastructure maintainers,
 everyone who submitted issues, reviewed pull requests, helped translate the
 project, or tested release candidates.
 

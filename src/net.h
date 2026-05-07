@@ -1049,6 +1049,11 @@ public:
     // and in the order requested.
     std::vector<uint256> vInventoryBlockToSend GUARDED_BY(cs_inventory);
     CCriticalSection cs_inventory;
+    std::vector<uint256> vBlockRequested;
+    std::chrono::microseconds nNextInvSend{0};
+    // Used for BIP35 mempool sending, also protected by cs_inventory
+    bool fSendMempool GUARDED_BY(cs_inventory){false};
+
     /** UNIX epoch time of the last block received from this peer that we had
      * not yet seen (e.g. not already received from another peer), that passed
      * preliminary validity checks and was saved to disk, even if we don't

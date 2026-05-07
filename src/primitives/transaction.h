@@ -158,6 +158,12 @@ public:
         return (nValue == -1);
     }
 
+    void SetEmpty()
+    {
+        nValue = 0;
+        scriptPubKey.clear();
+    }
+
     bool IsEmpty() const
     {
         return (nValue == 0 && scriptPubKey.empty());
@@ -186,13 +192,13 @@ class CTransaction
 {
 public:
     // Default transaction version.
-    static const int32_t CURRENT_VERSION=2;
+    static const int32_t CURRENT_VERSION=4;
 
     // Changing the default transaction version requires a two step process: first
     // adapting relay policy by bumping MAX_STANDARD_VERSION, and then later date
     // bumping the default CURRENT_VERSION at which point both CURRENT_VERSION and
     // MAX_STANDARD_VERSION will be equal.
-    static const int32_t MAX_STANDARD_VERSION=3;
+    static const int32_t MAX_STANDARD_VERSION=4;
 
     // The local variables are made const to prevent unintended modification
     // without updating the cached hash value. However, CTransaction is not
@@ -204,6 +210,7 @@ public:
     const int16_t nVersion;
     const uint16_t nType;
     const uint32_t nLockTime;
+    const uint32_t nTime;
     const std::vector<uint8_t> vExtraPayload; // only available for special transaction types
 
 private:
@@ -224,6 +231,9 @@ public:
     inline void Serialize(Stream& s) const {
         int32_t n32bitVersion = this->nVersion | (this->nType << 16);
         s << n32bitVersion;
+        if (this->nVersion == 1 || this->nVersion == 2){
+            s << nTime;
+        }
         s << vin;
         s << vout;
         s << nLockTime;
@@ -282,6 +292,7 @@ struct CMutableTransaction
     int16_t nVersion;
     uint16_t nType;
     uint32_t nLockTime;
+    uint32_t nTime;
     std::vector<uint8_t> vExtraPayload; // only available for special transaction types
 
     CMutableTransaction();
@@ -294,6 +305,9 @@ struct CMutableTransaction
         READWRITE(n32bitVersion);
         SER_READ(obj, obj.nVersion = (int16_t) (n32bitVersion & 0xffff));
         SER_READ(obj, obj.nType = (uint16_t) ((n32bitVersion >> 16) & 0xffff));
+        if (obj.nVersion == 1 || obj.nVersion == 2) {
+            READWRITE(obj.nTime);
+        }
         READWRITE(obj.vin, obj.vout, obj.nLockTime);
         if (obj.nVersion == 3 && obj.nType != TRANSACTION_NORMAL) {
             READWRITE(obj.vExtraPayload);

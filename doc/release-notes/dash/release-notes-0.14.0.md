@@ -1,4 +1,4 @@
-Cosanta Core version 0.14.0.0
+PirateCash Core version 0.14.0.0
 ==========================
 
 Release is now available from:
@@ -20,8 +20,8 @@ How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), then run the
-installer (on Windows) or just copy over /Applications/Cosanta-Qt (on Mac) or
-cosantad/cosanta-qt (on Linux). If you upgrade after DIP0003 activation and you were
+installer (on Windows) or just copy over /Applications/PirateCash-Qt (on Mac) or
+piratecashd/piratecash-qt (on Linux). If you upgrade after DIP0003 activation and you were
 using version < 0.13 you will have to reindex (start with -reindex-chainstate
 or -reindex) to make sure your wallet has all the new data synced. Upgrading from
 version 0.13 should not require any additional actions.
@@ -163,7 +163,7 @@ New cmd-line options:
 Few cmd-line options are no longer supported: `-limitfreerelay`, `-relaypriority`, `-blockprioritysize`,
 `-sendfreetransactions`, `-mnconf`, `-mnconflock`, `-masternodeprivkey`
 
-See `Help -> Command-line options` in Qt wallet or `cosantad --help` for more info.
+See `Help -> Command-line options` in Qt wallet or `piratecashd --help` for more info.
 
 Miscellaneous
 -------------
@@ -201,7 +201,7 @@ See detailed [set of changes](https://github.com/dashpay/dash/compare/v0.13.3.0.
 - [`3d993ee8f`](https://github.com/dashpay/dash/commit/3d993ee8f) Translations v14 (#2638)
 - [`fbd244dde`](https://github.com/dashpay/dash/commit/fbd244dde) Bail out in few more places when blockchain is not synced yet (#2888)
 - [`fd6aaae7f`](https://github.com/dashpay/dash/commit/fd6aaae7f) Add proTxHash to masternode list rpc response (#2887)
-- [`dd3977523`](https://github.com/dashpay/dash/commit/dd3977523) More "bench" log for Cosanta specific parts (#2884)
+- [`dd3977523`](https://github.com/dashpay/dash/commit/dd3977523) More "bench" log for PirateCash specific parts (#2884)
 - [`8ffdcbf99`](https://github.com/dashpay/dash/commit/8ffdcbf99) A bunch of mostly trivial tweaks/fixes (#2889)
 - [`195100161`](https://github.com/dashpay/dash/commit/195100161) New LLMQ-based IS should have no legacy IS strings in UI and no legacy restrictions (#2883)
 - [`7f419ae7f`](https://github.com/dashpay/dash/commit/7f419ae7f) Accept non-spent LLMQ IS locked outpoints from mempool in PS mixing (#2878)
@@ -315,7 +315,7 @@ See detailed [set of changes](https://github.com/dashpay/dash/compare/v0.13.3.0.
 - [`15c720dd4`](https://github.com/dashpay/dash/commit/15c720dd4) Stop tracking interested/participating nodes and send/announce to MNAUTH peers (#2798)
 - [`f20620b0a`](https://github.com/dashpay/dash/commit/f20620b0a) Also handle MNAUTH on non-masternodes (#2797)
 - [`b18f8cb77`](https://github.com/dashpay/dash/commit/b18f8cb77) Implement MNAUTH and allow unlimited inbound MN connections (#2790)
-- [`aae985746`](https://github.com/dashpay/dash/commit/aae985746) Update log categories in help message and in decomposition of "cosanta" category (#2792)
+- [`aae985746`](https://github.com/dashpay/dash/commit/aae985746) Update log categories in help message and in decomposition of "dash" category (#2792)
 - [`7b76e7abb`](https://github.com/dashpay/dash/commit/7b76e7abb) Implement BIP9 style deployment for DIP8/ChainLocks and fix a bug with late headers (#2793)
 - [`3ead8cd85`](https://github.com/dashpay/dash/commit/3ead8cd85) Fix potential travis failures due to network failures (#2795)
 - [`02db06658`](https://github.com/dashpay/dash/commit/02db06658) Fix loop in CLLMQUtils::GetQuorumConnections to add at least 2 connections (#2796)
@@ -356,7 +356,7 @@ See detailed [set of changes](https://github.com/dashpay/dash/compare/v0.13.3.0.
 - [`4ae52758b`](https://github.com/dashpay/dash/commit/4ae52758b) Remove size check in CDKGSessionManager::GetVerifiedContributions
 - [`e21da2d99`](https://github.com/dashpay/dash/commit/e21da2d99) Move simple PoSe tests into llmq-simplepose.py
 - [`6488135f4`](https://github.com/dashpay/dash/commit/6488135f4) Track index into self.nodes in mninfo
-- [`f30ea6dfd`](https://github.com/dashpay/dash/commit/f30ea6dfd) Replace BITCOIN_UNORDERED_LRU_CACHE_H with COSANTA_UNORDERED_LRU_CACHE_H
+- [`f30ea6dfd`](https://github.com/dashpay/dash/commit/f30ea6dfd) Replace BITCOIN_UNORDERED_LRU_CACHE_H with DASH_UNORDERED_LRU_CACHE_H
 - [`e763310b5`](https://github.com/dashpay/dash/commit/e763310b5) Add missing LOCK(cs_main)
 - [`3a5e7c433`](https://github.com/dashpay/dash/commit/3a5e7c433) Do not hold cs_vNodes in CSigSharesManager::SendMessages() for too long (#2758)
 - [`fbf0dcb08`](https://github.com/dashpay/dash/commit/fbf0dcb08) Various small cleanups (#2761)
@@ -368,7 +368,7 @@ See detailed [set of changes](https://github.com/dashpay/dash/compare/v0.13.3.0.
 - [`609114a80`](https://github.com/dashpay/dash/commit/609114a80) Code review: re-add string cast in mininode.py
 - [`85ffc1d64`](https://github.com/dashpay/dash/commit/85ffc1d64) drop `swap_outputs_in_rawtx` and `DecimalEncoder` in smartfees.py
 - [`bc593c84b`](https://github.com/dashpay/dash/commit/bc593c84b) Revert "Fix use of missing self.log in blockchain.py"
-- [`0e91ebcf4`](https://github.com/dashpay/dash/commit/0e91ebcf4) Use logging framework in Cosanta specific tests
+- [`0e91ebcf4`](https://github.com/dashpay/dash/commit/0e91ebcf4) Use logging framework in PirateCash specific tests
 - [`dd1245c2a`](https://github.com/dashpay/dash/commit/dd1245c2a) Update dnsseed-policy.md (#2751)
 - [`f351145e6`](https://github.com/dashpay/dash/commit/f351145e6) Use GetVoteForId instead of maintaining votes on inputs
 - [`d4cf78fe2`](https://github.com/dashpay/dash/commit/d4cf78fe2) Add HasVotedOnId/GetVoteForId to CSigningManager
@@ -555,7 +555,7 @@ See detailed [set of changes](https://github.com/dashpay/dash/compare/v0.13.3.0.
 - [`9f211ef12`](https://github.com/dashpay/dash/commit/9f211ef12) Add listener interface to listen for recovered sigs
 - [`189cee210`](https://github.com/dashpay/dash/commit/189cee210) Don't pass poolSize to SelectQuorum and instead use consensus params
 - [`13855674d`](https://github.com/dashpay/dash/commit/13855674d) Add missing new-line character in log output
-- [`d31edf66a`](https://github.com/dashpay/dash/commit/d31edf66a) Wait for script checks to finish before messing with txes in Cosanta-specific way (#2652)
+- [`d31edf66a`](https://github.com/dashpay/dash/commit/d31edf66a) Wait for script checks to finish before messing with txes in PirateCash-specific way (#2652)
 - [`2c477b0d4`](https://github.com/dashpay/dash/commit/2c477b0d4) Fix no_wallet for rpcmasternode/rpcevo
 - [`fc00b7bae`](https://github.com/dashpay/dash/commit/fc00b7bae) add import to rpcevo fixing backport 8775
 - [`30b03863e`](https://github.com/dashpay/dash/commit/30b03863e) Apply suggestions from code review #2646
@@ -599,7 +599,7 @@ See detailed [set of changes](https://github.com/dashpay/dash/compare/v0.13.3.0.
 - [`b8d069bcd`](https://github.com/dashpay/dash/commit/b8d069bcd) fix/cleanup qt rpcnestedtests
 - [`b970c20a9`](https://github.com/dashpay/dash/commit/b970c20a9) Avoid using immature coinbase UTXOs for dummy TXins
 - [`4d25148c0`](https://github.com/dashpay/dash/commit/4d25148c0) Add llmq-signing.py tests
-- [`d020ffa00`](https://github.com/dashpay/dash/commit/d020ffa00) Add wait_for_sporks_same and mine_quorum to CosantaTestFramework
+- [`d020ffa00`](https://github.com/dashpay/dash/commit/d020ffa00) Add wait_for_sporks_same and mine_quorum to PirateCashTestFramework
 - [`0cc1cf279`](https://github.com/dashpay/dash/commit/0cc1cf279) Add receivedFinalCommitment flag to CDKGDebugSessionStatus
 - [`23d7ed80d`](https://github.com/dashpay/dash/commit/23d7ed80d) Implement "quorum sign/hasrecsig/isconflicting" RPCs
 - [`316b6bf0d`](https://github.com/dashpay/dash/commit/316b6bf0d) Faster re-requesting of recovered sigs
@@ -726,12 +726,12 @@ the 0.8.x tree and was first released on Mar/13/2014.
 Darkcoin tree 0.10.x used to be the closed source implementation of Darksend
 which was released open source on Sep/25/2014.
 
-Cosanta Core tree 0.11.x was a fork of Bitcoin Core tree 0.9,
+PirateCash Core tree 0.11.x was a fork of Bitcoin Core tree 0.9,
 Darkcoin was rebranded to Dash.
 
-Cosanta Core tree 0.12.0.x was a fork of Bitcoin Core tree 0.10.
+PirateCash Core tree 0.12.0.x was a fork of Bitcoin Core tree 0.10.
 
-Cosanta Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
+PirateCash Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
 
 These release are considered obsolete. Old release notes can be found here:
 

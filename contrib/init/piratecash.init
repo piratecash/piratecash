@@ -19,14 +19,14 @@ fi
 RETVAL=0
 
 prog=cosantad
-# you can override the lockfile via COSANTAD_LOCKFILE in /etc/sysconfig/cosantad
-lockfile=${COSANTAD_LOCKFILE-/var/lock/subsys/cosantad}
+# you can override the lockfile via BITCOIND_LOCKFILE in /etc/sysconfig/cosantad
+lockfile=${BITCOIND_LOCKFILE-/var/lock/subsys/cosantad}
 
-# cosantad defaults to /usr/bin/cosantad, override with COSANTAD_BIN
-cosantad=${COSANTAD_BIN-/usr/bin/cosantad}
+# cosantad defaults to /usr/bin/cosantad, override with BITCOIND_BIN
+cosantad=${BITCOIND_BIN-/usr/bin/cosantad}
 
-# cosantad opts default to -disablewallet, override with COSANTAD_OPTS
-cosantad_opts=${COSANTAD_OPTS--disablewallet}
+# cosantad opts default to -disablewallet, override with BITCOIND_OPTS
+cosantad_opts=${BITCOIND_OPTS--disablewallet}
 
 start() {
     echo -n $"Starting $prog: "

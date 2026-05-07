@@ -26,7 +26,7 @@
      <item>
       <widget class="QValidatedLineEdit" name="uriEdit">
        <property name="placeholderText">
-        <string notr="true">cosanta:</string>
+        <string notr="true">dash:</string>
        </property>
       </widget>
      </item>

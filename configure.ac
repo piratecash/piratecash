@@ -1,23 +1,23 @@
 AC_PREREQ([2.69])
 define(_CLIENT_VERSION_MAJOR, 19)
 define(_CLIENT_VERSION_MINOR, 1)
-define(_CLIENT_VERSION_BUILD, 1)
+define(_CLIENT_VERSION_BUILD, 2)
 define(_CLIENT_VERSION_RC, 0)
 define(_CLIENT_VERSION_IS_RELEASE, true)
 define(_COPYRIGHT_YEAR, 2026)
 define(_COPYRIGHT_HOLDERS,[The %s developers])
-define(_COPYRIGHT_HOLDERS_SUBSTITUTION,[[Cosanta Core]])
-AC_INIT([Cosanta Core],m4_join([.], _CLIENT_VERSION_MAJOR, _CLIENT_VERSION_MINOR, _CLIENT_VERSION_BUILD)m4_if(_CLIENT_VERSION_RC, [0], [], [rc]_CLIENT_VERSION_RC),[https://github.com/cosanta/cosanta-core/issues],[cosantacore],[https://cosa.is/])
+define(_COPYRIGHT_HOLDERS_SUBSTITUTION,[[PirateCash Core]])
+AC_INIT([PirateCash Core],m4_join([.], _CLIENT_VERSION_MAJOR, _CLIENT_VERSION_MINOR, _CLIENT_VERSION_BUILD)m4_if(_CLIENT_VERSION_RC, [0], [], [rc]_CLIENT_VERSION_RC),[https://github.com/piratecash/piratecash/issues],[piratecashcore],[https://p.cash/])
 AC_CONFIG_SRCDIR([src/validation.cpp])
 AC_CONFIG_HEADERS([src/config/bitcoin-config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([build-aux/m4])
 
-BITCOIN_DAEMON_NAME=cosantad
-BITCOIN_GUI_NAME=cosanta-qt
-BITCOIN_CLI_NAME=cosanta-cli
-BITCOIN_TX_NAME=cosanta-tx
-BITCOIN_WALLET_TOOL_NAME=cosanta-wallet
+BITCOIN_DAEMON_NAME=piratecashd
+BITCOIN_GUI_NAME=piratecash-qt
+BITCOIN_CLI_NAME=piratecash-cli
+BITCOIN_TX_NAME=piratecash-tx
+BITCOIN_WALLET_TOOL_NAME=piratecash-wallet
 
 dnl Unless the user specified ARFLAGS, force it to be cr
 AC_ARG_VAR(ARFLAGS, [Flags for the archiver, defaults to <cr> if not set])
@@ -27,9 +27,9 @@ fi
 
 AC_CANONICAL_HOST
 
-AH_TOP([#ifndef DASH_CONFIG_H])
-AH_TOP([#define DASH_CONFIG_H])
-AH_BOTTOM([#endif //DASH_CONFIG_H])
+AH_TOP([#ifndef PIRATECASH_CONFIG_H])
+AH_TOP([#define PIRATECASH_CONFIG_H])
+AH_BOTTOM([#endif //PIRATECASH_CONFIG_H])
 
 dnl faketime breaks configure and is only needed for make. Disable it here.
 unset FAKETIME
@@ -193,6 +193,12 @@ AC_ARG_WITH([qrencode],
   [enable QR code support (default is yes if qt is enabled and libqrencode is found)])],
   [use_qr=$withval],
   [use_qr=auto])
+
+AC_ARG_WITH([openssl],
+  [AS_HELP_STRING([--with-openssl],
+  [enable openssl (default is yes if OpenSSL is found)])],
+  [use_openssl=$withval],
+  [use_openssl=yes])
 
 AC_ARG_ENABLE([hardening],
   [AS_HELP_STRING([--disable-hardening],
@@ -602,25 +608,25 @@ CPPFLAGS="$CPPFLAGS -DHAVE_BUILD_INFO"
 
 AC_ARG_WITH([utils],
   [AS_HELP_STRING([--with-utils],
-  [build cosanta-cli cosanta-tx cosanta-wallet (default=yes)])],
+  [build piratecash-cli piratecash-tx piratecash-wallet (default=yes)])],
   [build_bitcoin_utils=$withval],
   [build_bitcoin_utils=yes])
 
 AC_ARG_ENABLE([util-cli],
   [AS_HELP_STRING([--enable-util-cli],
-  [build cosanta-cli])],
+  [build piratecash-cli])],
   [build_bitcoin_cli=$enableval],
   [build_bitcoin_cli=$build_bitcoin_utils])
 
 AC_ARG_ENABLE([util-tx],
   [AS_HELP_STRING([--enable-util-tx],
-  [build cosanta-tx])],
+  [build piratecash-tx])],
   [build_bitcoin_tx=$enableval],
   [build_bitcoin_tx=$build_bitcoin_utils])
 
 AC_ARG_ENABLE([util-wallet],
   [AS_HELP_STRING([--enable-util-wallet],
-  [build cosanta-wallet])],
+  [build piratecash-wallet])],
   [build_bitcoin_wallet=$enableval],
   [build_bitcoin_wallet=$build_bitcoin_utils])
 
@@ -632,7 +638,7 @@ AC_ARG_WITH([libs],
 
 AC_ARG_WITH([daemon],
   [AS_HELP_STRING([--with-daemon],
-  [build cosantad daemon (default=yes)])],
+  [build piratecashd daemon (default=yes)])],
   [build_bitcoind=$withval],
   [build_bitcoind=yes])
 
@@ -702,6 +708,13 @@ case $host in
          dnl the user (--without-wallet or --without-gui for example).
 
          qt5_prefix=$($BREW --prefix qt5 2>/dev/null)
+         if test x$use_openssl != xno; then
+           openssl_prefix=$($BREW --prefix openssl 2>/dev/null)
+           if test x$openssl_prefix != x; then
+             PKG_CONFIG_PATH="$openssl_prefix/lib/pkgconfig:$PKG_CONFIG_PATH"
+             export PKG_CONFIG_PATH
+           fi
+         fi
          if $BREW list --versions berkeley-db4 >/dev/null && test "x$BDB_CFLAGS" = "x" && test "x$BDB_LIBS" = "x" && test "$use_bdb" != "no"; then
            bdb_prefix=$($BREW --prefix berkeley-db4 2>/dev/null)
            dnl This must precede the call to BITCOIN_FIND_BDB48 below.
@@ -1258,6 +1271,7 @@ if test "x$enable_fuzz" = "xyes"; then
   use_upnp=no
   use_natpmp=no
   use_zmq=no
+  use_openssl=no
 
   AX_CHECK_PREPROC_FLAG([-DABORT_ON_FAILED_ASSUME],[[DEBUG_CPPFLAGS="$DEBUG_CPPFLAGS -DABORT_ON_FAILED_ASSUME"]],,[[$CXXFLAG_WERROR]])
 
@@ -1435,6 +1449,9 @@ if test x$use_pkgconfig = xyes; then
   m4_ifdef(
     [PKG_CHECK_MODULES],
     [
+      if test x$use_openssl != xno; then
+        PKG_CHECK_MODULES([CRYPTO], [libcrypto],, [use_openssl=no])
+      fi
       if test x$use_qr != xno; then
         BITCOIN_QT_CHECK([PKG_CHECK_MODULES([QR], [libqrencode], [have_qrencode=yes], [have_qrencode=no])])
       fi
@@ -1457,6 +1474,11 @@ if test x$use_pkgconfig = xyes; then
     ]
   )
 else
+
+  if test x$use_openssl != xno; then
+    AC_CHECK_HEADER([openssl/crypto.h],,[use_openssl=no])
+    AC_CHECK_LIB([crypto], [main], CRYPTO_LIBS=-lcrypto, [use_openssl=no])
+  fi
 
   if test x$build_bitcoin_cli$build_bitcoind$bitcoin_enable_qt$use_tests != xnononono; then
     AC_CHECK_HEADER([event2/event.h],, AC_MSG_ERROR(libevent headers missing),)
@@ -1499,19 +1521,19 @@ dnl check if libgmp is present
 AC_CHECK_HEADER([gmp.h],, AC_MSG_ERROR(libgmp headers missing))
 AC_CHECK_LIB([gmp],  [__gmpz_init],GMP_LIBS=-lgmp, AC_MSG_ERROR(libgmp missing))
 
-AC_MSG_CHECKING([whether to build cosantad])
+AC_MSG_CHECKING([whether to build piratecashd])
 AM_CONDITIONAL([BUILD_BITCOIND], [test x$build_bitcoind = xyes])
 AC_MSG_RESULT($build_bitcoind)
 
-AC_MSG_CHECKING([whether to build cosanta-cli])
+AC_MSG_CHECKING([whether to build piratecash-cli])
 AM_CONDITIONAL([BUILD_BITCOIN_CLI], [test x$build_bitcoin_cli = xyes])
 AC_MSG_RESULT($build_bitcoin_cli)
 
-AC_MSG_CHECKING([whether to build cosanta-tx])
+AC_MSG_CHECKING([whether to build piratecash-tx])
 AM_CONDITIONAL([BUILD_BITCOIN_TX], [test x$build_bitcoin_tx = xyes])
 AC_MSG_RESULT($build_bitcoin_tx)
 
-AC_MSG_CHECKING([whether to build cosanta-wallet])
+AC_MSG_CHECKING([whether to build piratecash-wallet])
 AM_CONDITIONAL([BUILD_BITCOIN_WALLET], [test x$build_bitcoin_wallet = xyes])
 AC_MSG_RESULT($build_bitcoin_wallet)
 
@@ -1520,7 +1542,7 @@ AM_CONDITIONAL([BUILD_BITCOIN_LIBS], [test x$build_bitcoin_libs = xyes])
 AM_CONDITIONAL([EMBEDDED_UNIVALUE], [true])
 if test x$build_bitcoin_libs = xyes; then
   AC_DEFINE(HAVE_CONSENSUS_LIB, 1, [Define this symbol if the consensus lib has been built])
-  AC_CONFIG_FILES([libcosantaconsensus.pc:libcosantaconsensus.pc.in])
+  AC_CONFIG_FILES([libpiratecashconsensus.pc:libpiratecashconsensus.pc.in])
 fi
 AC_MSG_RESULT($build_bitcoin_libs)
 
@@ -1642,7 +1664,7 @@ if test x$bitcoin_enable_qt != xno; then
     AC_MSG_WARN("xgettext is required to update qt translations")
   fi
 
-  AC_MSG_CHECKING([whether to build test_cosanta-qt])
+  AC_MSG_CHECKING([whether to build test_piratecash-qt])
   if test x$use_gui_tests$bitcoin_enable_qt_test = xyesyes; then
     AC_MSG_RESULT([yes])
     BUILD_TEST_QT="yes"
@@ -1651,9 +1673,13 @@ if test x$bitcoin_enable_qt != xno; then
   fi
 fi
 
+if test x$use_openssl = xyes; then
+  AC_DEFINE([USE_OPENSSL],[1],[Define to 1 to use OpenSSL])
+fi
+
 AM_CONDITIONAL([ENABLE_ZMQ], [test "x$use_zmq" = "xyes"])
 
-AC_MSG_CHECKING([whether to build test_cosanta])
+AC_MSG_CHECKING([whether to build test_piratecash])
 if test x$use_tests = xyes; then
   AC_MSG_RESULT([yes])
   BUILD_TEST="yes"
@@ -1766,6 +1792,8 @@ AC_SUBST(USE_BDB)
 AC_SUBST(USE_UPNP)
 AC_SUBST(USE_QRCODE)
 AC_SUBST(BOOST_LIBS)
+AC_SUBST(CRYPTO_CFLAGS)
+AC_SUBST(CRYPTO_LIBS)
 AC_SUBST(SQLITE_LIBS)
 AC_SUBST(TESTDEFS)
 AC_SUBST(MINIUPNPC_CPPFLAGS)
@@ -1843,6 +1871,7 @@ fi
 if test x$bitcoin_enable_qt != xno; then
     echo "    with qr           = $use_qr"
 fi
+echo "  with openssl        = $use_openssl"
 echo "  with zmq            = $use_zmq"
 echo "  with test           = $use_tests"
 echo "  with bench          = $use_bench"

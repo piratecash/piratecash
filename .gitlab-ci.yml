@@ -123,12 +123,12 @@ builder-image:
       - build-ci
     # Exclude some less important binaries to reduce the size of the artifacts
     exclude:
-      - build-ci/cosantacore-$BUILD_TARGET/src/bench/bench_cosanta
-      - build-ci/cosantacore-$BUILD_TARGET/src/bench/bench_cosanta.exe
-      - build-ci/cosantacore-$BUILD_TARGET/src/qt/test/test_cosanta-qt
-      - build-ci/cosantacore-$BUILD_TARGET/src/qt/test/test_cosanta-qt.exe
-      - build-ci/cosantacore-$BUILD_TARGET/src/test/test_cosanta
-      - build-ci/cosantacore-$BUILD_TARGET/src/test/test_cosanta.exe
+      - build-ci/cosantacore-$BUILD_TARGET/src/bench/bench_dash
+      - build-ci/cosantacore-$BUILD_TARGET/src/bench/bench_dash.exe
+      - build-ci/cosantacore-$BUILD_TARGET/src/qt/test/test_dash-qt
+      - build-ci/cosantacore-$BUILD_TARGET/src/qt/test/test_dash-qt.exe
+      - build-ci/cosantacore-$BUILD_TARGET/src/test/test_dash
+      - build-ci/cosantacore-$BUILD_TARGET/src/test/test_dash.exe
     expire_in: 3 days
 
 .test-template:

@@ -1,9 +1,9 @@
-Cosanta Core
+PirateCash Core
 ==========
 
 Intro
 -----
-Cosanta is a free open source peer-to-peer electronic cash system that is
+PirateCash is a free open source peer-to-peer electronic cash system that is
 completely decentralized, without the need for a central server or trusted
 parties.  Users hold the crypto keys to their own money and transact directly
 with each other, with the help of a P2P network to check for double-spending.
@@ -11,10 +11,10 @@ with each other, with the help of a P2P network to check for double-spending.
 
 Setup
 -----
-Unpack the files into a directory and run cosanta-qt.exe.
+Unpack the files into a directory and run piratecash-qt.exe.
 
-Cosanta Core is the original Dash client and it builds the backbone of the network.
-However, it downloads and stores the entire history of Cosanta transactions;
+PirateCash Core is the original Dash client and it builds the backbone of the network.
+However, it downloads and stores the entire history of PirateCash transactions;
 depending on the speed of your computer and network connection, the synchronization
 process can take anywhere from a few hours to a day or more.
 

@@ -91,7 +91,7 @@ private:
         MODE_VALID,           //!< everything ok
         MODE_INVALID,         //!< network rule violation (DoS value may be set)
         MODE_ERROR,           //!< run-time error
-        MODE_TRANSIENT_ERROR, //!< a temporary error which may get vanished with changes of state (Cosanta)
+        MODE_TRANSIENT_ERROR, //!< a temporary error which may get vanished with changes of state (PirateCash)
     } mode;
     ValidationInvalidReason m_reason;
     std::string strRejectReason;
@@ -117,7 +117,7 @@ public:
         mode = MODE_ERROR;
         return false;
     }
-    // Cosanta: transient error (e.g. PoS stake tx not yet known) — header
+    // PirateCash: transient error (e.g. PoS stake tx not yet known) — header
     // is rejected for now but is not marked permanently invalid; will be
     // re-tried as our local chain progresses.
     bool TransientError(const std::string& strRejectReasonIn) {

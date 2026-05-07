@@ -89,16 +89,16 @@ public:
         std::string address_str, label_str, message_str, auth_merchant_str;
         s >> nVersion >> address_str >> label_str >> amount >> message_str;
 
-        // Cosanta-specific backward compatibility:
+        // PirateCash-specific backward compatibility:
         // Wallets created on the master branch (where BIP70 support was removed
         // via upstream commit 38e7e164f0 / Bitcoin PR #17165) wrote SendCoinsRecipient
         // using only 5 fields, without sPaymentRequest and authenticatedMerchant.
         // The v19 backport from Dash restored those two fields, so we still write
         // and try to read them, but tolerate their absence so that pre-v19
-        // (master) wallets keep loading. In Cosanta these fields are always empty
-        // anyway because the GUI does not use the BIP70 payment protocol.
+        // (master) wallets keep loading. In PirateCash these fields are always
+        // empty anyway because the GUI does not use the BIP70 payment protocol.
         // TODO(remove-in-v20): drop this backward-compat branch once all
-        // wallets have been migrated via `cosanta-wallet migrate-v19`.
+        // wallets have been migrated via `piratecash-wallet migrate-v19`.
         sPaymentRequest.clear();
         auth_merchant_str.clear();
         if (!s.empty()) s >> sPaymentRequest;

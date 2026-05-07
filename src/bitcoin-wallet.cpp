@@ -28,10 +28,10 @@ static void SetupWalletToolArgs(ArgsManager& argsman)
 
     argsman.AddArg("info", "Get wallet info", ArgsManager::ALLOW_ANY, OptionsCategory::COMMANDS);
     argsman.AddArg("create", "Create new wallet file", ArgsManager::ALLOW_ANY, OptionsCategory::COMMANDS);
-    // Cosanta-specific. TODO(remove-in-v20): drop together with the Qt-side
+    // PirateCash-specific. TODO(remove-in-v20): drop together with the Qt-side
     // backward-compat reader in src/qt/walletmodel.h once all known wallets
     // have been migrated.
-    argsman.AddArg("migrate-v19", "Migrate a wallet from a pre-v19 (Cosanta master) format to the v19 format. Currently rewrites Qt receive-request entries from 5-field to 7-field SendCoinsRecipient layout. Before any change, the wallet file is copied to a timestamped backup next to it: <wallet>.bak.<UTC>, e.g. wallet.dat.bak.20260502T103022Z. Safe to re-run; each run produces its own backup.", ArgsManager::ALLOW_ANY, OptionsCategory::COMMANDS);
+    argsman.AddArg("migrate-v19", "Migrate a wallet from a pre-v19 (PirateCash master) format to the v19 format. Currently rewrites Qt receive-request entries from 5-field to 7-field SendCoinsRecipient layout. Before any change, the wallet file is copied to a timestamped backup next to it: <wallet>.bak.<UTC>, e.g. wallet.dat.bak.20260502T103022Z. Safe to re-run; each run produces its own backup.", ArgsManager::ALLOW_ANY, OptionsCategory::COMMANDS);
 
     // Hidden
     argsman.AddArg("salvage", "Attempt to recover private keys from a corrupt wallet", ArgsManager::ALLOW_ANY, OptionsCategory::COMMANDS);
@@ -47,12 +47,12 @@ static bool WalletAppInit(int argc, char* argv[])
         return false;
     }
     if (argc < 2 || HelpRequested(gArgs)) {
-        std::string usage = strprintf("%s cosanta-wallet version", PACKAGE_NAME) + " " + FormatFullVersion() + "\n\n" +
-                                      "wallet-tool is an offline tool for creating and interacting with Cosanta Core wallet files.\n" +
+        std::string usage = strprintf("%s piratecash-wallet version", PACKAGE_NAME) + " " + FormatFullVersion() + "\n\n" +
+                                      "wallet-tool is an offline tool for creating and interacting with PirateCash Core wallet files.\n" +
                                       "By default wallet-tool will act on wallets in the default mainnet wallet directory in the datadir.\n" +
                                       "To change the target wallet, use the -datadir, -wallet and -testnet/-regtest arguments.\n\n" +
                                       "Usage:\n" +
-                                     "  cosanta-wallet [options] <command>\n\n" +
+                                     "  piratecash-wallet [options] <command>\n\n" +
                                      gArgs.GetHelpMessage();
 
         tfm::format(std::cout, "%s", usage);
@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
     }
 
     if (method.empty()) {
-        tfm::format(std::cerr, "No method provided. Run `cosanta-wallet -help` for valid methods.\n");
+        tfm::format(std::cerr, "No method provided. Run `piratecash-wallet -help` for valid methods.\n");
         return EXIT_FAILURE;
     }
 

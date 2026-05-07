@@ -46,8 +46,6 @@ don't have test cases for.
 
 #### General test-writing advice
 
-- The framework uses `COSANTAD` and `COSANTACLI` environment variables to
-  override the daemon and CLI binaries used by tests.
 - Set `self.num_nodes` to the minimum number of nodes necessary for the test.
   Having additional unrequired nodes adds to the execution time of the test as
   well as memory/CPU/disk requirements (which is important when running tests in
@@ -58,7 +56,7 @@ don't have test cases for.
 - Set the `self.setup_clean_chain` variable in `set_test_params()` to control whether
   or not to use the cached data directories. The cached data directories
   contain a 200-block pre-mined blockchain and wallets for four nodes. Each node
-  has 25 mature blocks (25x500=12500 COSA) in its wallet.
+  has 25 mature blocks (25x500=12500 COSANTA) in its wallet.
 - When calling RPCs with lots of arguments, consider using named keyword
   arguments instead of positional arguments to make the intent of the call
   clear to readers.

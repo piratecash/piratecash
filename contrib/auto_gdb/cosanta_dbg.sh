@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# use testnet settings,  if you need mainnet,  use ~/.cosantacore/cosantad.pid file instead
+# use testnet settings,  if you need mainnet,  use ~/.piratecashcore/piratecashd.pid file instead
 export LC_ALL=C
 
-cosanta_pid=$(<~/.cosantacore/testnet3/cosantad.pid)
-sudo gdb -batch -ex "source debug.gdb" cosantad ${cosanta_pid}
+piratecash_pid=$(<~/.piratecashcore/testnet3/piratecashd.pid)
+sudo gdb -batch -ex "source debug.gdb" piratecashd ${piratecash_pid}

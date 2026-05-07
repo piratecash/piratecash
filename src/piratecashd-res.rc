@@ -16,14 +16,14 @@ BEGIN
     BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
-            VALUE "CompanyName",        "Cosanta"
-            VALUE "FileDescription",    "cosantad (Cosanta node with a JSON-RPC server)"
+            VALUE "CompanyName",        "PirateCash"
+            VALUE "FileDescription",    "piratecashd (PirateCash node with a JSON-RPC server)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
-            VALUE "InternalName",       "cosantad"
+            VALUE "InternalName",       "piratecashd"
             VALUE "LegalCopyright",     COPYRIGHT_STR
             VALUE "LegalTrademarks1",   "Distributed under the MIT software license, see the accompanying file COPYING or http://www.opensource.org/licenses/mit-license.php."
-            VALUE "OriginalFilename",   "cosantad.exe"
-            VALUE "ProductName",        "cosantad"
+            VALUE "OriginalFilename",   "piratecashd.exe"
+            VALUE "ProductName",        "piratecashd"
             VALUE "ProductVersion",     VER_PRODUCTVERSION_STR
         END
     END

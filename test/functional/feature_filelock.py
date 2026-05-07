@@ -24,7 +24,7 @@ class FilelockTest(BitcoinTestFramework):
         datadir = os.path.join(self.nodes[0].datadir, 'regtest')
         self.log.info("Using datadir {}".format(datadir))
 
-        self.log.info("Check that we can't start a second cosantad instance using the same datadir")
+        self.log.info("Check that we can't start a second dashd instance using the same datadir")
         expected_msg = "Error: Cannot obtain a lock on data directory {}. Cosanta Core is probably already running.".format(datadir)
         self.nodes[1].assert_start_raises_init_error(extra_args=['-datadir={}'.format(self.nodes[0].datadir), '-noserver'], expected_msg=expected_msg)
 
@@ -32,7 +32,7 @@ class FilelockTest(BitcoinTestFramework):
             wallet_name = ''.join([random.choice(string.ascii_lowercase) for _ in range(6)])
             self.nodes[0].createwallet(wallet_name=wallet_name)
             wallet_dir = os.path.join(datadir, 'wallets')
-            self.log.info("Check that we can't start a second cosantad instance using the same wallet")
+            self.log.info("Check that we can't start a second dashd instance using the same wallet")
             expected_msg = "Error: SQLiteDatabase: Unable to obtain an exclusive lock on the database, is it being used by another cosantad?"
             if self.is_bdb_compiled():
                 expected_msg = "Error: Error initializing wallet database environment"

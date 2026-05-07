@@ -102,6 +102,9 @@ static const bool DEFAULT_PERSIST_MEMPOOL = true;
 /** Default for -syncmempool */
 static const bool DEFAULT_SYNC_MEMPOOL = true;
 
+/** Due to high computation requirements for PirateCash PoW & PoS we need to limit message loop blocking */
+static constexpr unsigned int MAX_NEW_HEADER_BURST = 50;
+
 /** Default for -stopatheight */
 static const int DEFAULT_STOPATHEIGHT = 0;
 /** Block files containing a block-height within MIN_BLOCKS_TO_KEEP of ::ChainActive().Tip() will not be pruned. */
@@ -1065,7 +1068,6 @@ bool LoadMempool(CTxMemPool& pool);
 /** Check if Proof-of-Stake is required for particular height **/
 bool IsPoSEnforcedHeight(int nBlockHeight);
 bool IsPoSV2EnforcedHeight(int nFirstPoSv2Block);
-bool IsPowActiveHeight(int nBlockHeight);
 
 bool CheckProof(CValidationState& state, const CBlockIndex &pindex, const Consensus::Params& params);
 bool CheckProof(CValidationState& state, const CBlockHeader &block, const Consensus::Params& params);

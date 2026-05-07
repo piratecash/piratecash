@@ -14,14 +14,14 @@
 CAmount GetDustThreshold(const CTxOut& txout, const CFeeRate& dustRelayFeeIn)
 {
     // "Dust" is defined in terms of dustRelayFee,
-    // which has units duffs-per-kilobyte.
+    // which has units corsars-per-kilobyte.
     // If you'd pay more in fees than the value of the output
     // to spend something, then we consider it dust.
     // A typical spendable txout is 34 bytes big, and will
     // need a CTxIn of at least 148 bytes to spend:
     // so dust is a spendable txout less than
-    // 182*dustRelayFee/1000 (in duffs).
-    // 546 duffs at the default rate of 3000 duff/kB.
+    // 182*dustRelayFee/1000 (in corsars).
+    // 546 corsars at the default rate of 3000 corsar/kB.
     if (txout.scriptPubKey.IsUnspendable())
         return 0;
 
@@ -68,8 +68,14 @@ bool IsStandardTx(const CTransaction& tx, bool permit_bare_multisig, const CFeeR
     // almost as much to process as they cost the sender in fees, because
     // computing signature hashes is O(ninputs*txsize). Limiting transactions
     // to MAX_STANDARD_TX_SIZE mitigates CPU exhaustion attacks.
+    //
+    // PIP-0003 (v19): we keep MAX_LEGACY_TX_SIZE here so that the mempool/relay
+    // stays compatible with older PirateCash peers that may still propagate
+    // historically-oversized transactions. The wallet has already been tightened
+    // to MAX_STANDARD_TX_SIZE, so no new oversized transactions originate from
+    // an upgraded node. v20 will switch this back to MAX_STANDARD_TX_SIZE.
     unsigned int sz = GetSerializeSize(tx, CTransaction::CURRENT_VERSION);
-    if (sz >= MAX_STANDARD_TX_SIZE) {
+    if (sz >= MAX_LEGACY_TX_SIZE) {
         reason = "tx-size";
         return false;
     }
