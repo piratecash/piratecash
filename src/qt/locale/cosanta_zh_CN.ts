@@ -74,12 +74,12 @@
         <translation>正在接收地址</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>这些是您要付款过去的Dash地址。在付款之前，务必要检查金额和收款地址是否正确。</translation>
+        <source>These are your Cosanta addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>这些是您要付款过去的Cosanta地址。在付款之前，务必要检查金额和收款地址是否正确。</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>这些是用于接收付款的Dash地址. 使用接收标签中的 '创建新接收地址' 按钮来创建新地址.</translation>
+        <source>These are your Cosanta addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <translation>这些是用于接收付款的Cosanta地址. 使用接收标签中的 '创建新接收地址' 按钮来创建新地址.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -211,8 +211,8 @@
         <translation>确认加密钱包</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
-        <translation>警告:如果把钱包加​​密后又忘记密码，您就会从此&lt;b&gt;失去所有的Dash&lt;/b&gt;！</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COSA&lt;/b&gt;!</source>
+        <translation>警告:如果把钱包加​​密后又忘记密码，您就会从此&lt;b&gt;失去所有的Cosanta&lt;/b&gt;！</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -316,16 +316,16 @@
         <translation>发送(&amp;S)</translation>
     </message>
     <message>
-        <source>Send coins to a Dash address</source>
-        <translation>发送币至Dash地址</translation>
+        <source>Send coins to a Cosanta address</source>
+        <translation>发送币至Cosanta地址</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>接收(&amp;R)</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
-        <translation>请求付款(生成二维码和Dash付款协议的URI)</translation>
+        <source>Request payments (generates QR codes and cosanta: URIs)</source>
+        <translation>请求付款(生成二维码和Cosanta付款协议的URI)</translation>
     </message>
     <message>
         <source>&amp;Sending addresses</source>
@@ -412,8 +412,8 @@
         <translation>关于 %1</translation>
     </message>
     <message>
-        <source>Send %1 funds to a Dash address</source>
-        <translation>发送%1资金至一个Dash地址</translation>
+        <source>Send %1 funds to a Cosanta address</source>
+        <translation>发送%1资金至一个Cosanta地址</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -468,16 +468,16 @@
         <translation>消息签名(&amp;M)...</translation>
     </message>
     <message>
-        <source>Sign messages with your Dash addresses to prove you own them</source>
-        <translation>使用您的Dash地址进行消息签名以证明对此地址的所有权</translation>
+        <source>Sign messages with your Cosanta addresses to prove you own them</source>
+        <translation>使用您的Cosanta地址进行消息签名以证明对此地址的所有权</translation>
     </message>
     <message>
         <source>&amp;Verify message...</source>
         <translation>验证消息(&amp;V)...</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dash addresses</source>
-        <translation>验证消息是用来确定此消息是用指定的Dash地址签发的</translation>
+        <source>Verify messages to ensure they were signed with specified Cosanta addresses</source>
+        <translation>验证消息是用来确定此消息是用指定的Cosanta地址签发的</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -548,7 +548,7 @@
         <translation>&amp;命令行选项</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Dash command-line options</source>
+        <source>Show the %1 help message to get a list with possible Cosanta command-line options</source>
         <translation>显示 %1 帮助信息，获取可用命令行选项列表</translation>
     </message>
     <message>
@@ -582,8 +582,8 @@
         <translation>打开调试和诊断控制台</translation>
     </message>
     <message>
-        <source>Open a dash: URI</source>
-        <translation>打开一个dash: URI</translation>
+        <source>Open a cosanta: URI</source>
+        <translation>打开一个cosanta: URI</translation>
     </message>
     <message>
         <source>Create Wallet...</source>
@@ -622,8 +622,8 @@
         <translation>查看治理提案</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Dash network</source>
-        <translation><numerusform>%n个有效的Dash网络连接</numerusform></translation>
+        <source>%n active connection(s) to Cosanta network</source>
+        <translation><numerusform>%n个有效的Cosanta网络连接</numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
@@ -1068,8 +1068,8 @@
         <translation>编辑发送地址</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Dash address.</source>
-        <translation>输入的地址“%1”不是有效的Dash地址。</translation>
+        <source>The entered address "%1" is not a valid Cosanta address.</source>
+        <translation>输入的地址“%1”不是有效的Cosanta地址。</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -1157,8 +1157,8 @@
         <translation>%1信息</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Dash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH and 10 DASH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;%1基础知识&lt;/h3&gt;%1通过隐藏您的资金来源为您提供真正的财务隐私。您的钱包中所有的Dash都由不同的“输入”组成，您可以将其视为分开的离散硬币。&lt;br&gt;%1使用创新的方法将您的输入与其他两个人的输入相结合，而过程中不会让您的Dash离开您的钱包。每时每刻，您仍然控制着您的钱。&lt;hr&gt;&lt;b&gt;%1的运作原理如下：&lt;/b&gt;&lt;ol type="1"&gt;&lt;li&gt;%1首先将您的交易分柝成多个标准面额的交易。这些标准面额分别为0.001 DASH，0.01 DASH，0.1 DASH，1 DASH和10 DASH --有点像您每天使用的纸币。&lt;/li&gt;&lt;li&gt;您的钱包然后发送请求到网络上有专门配置的软件节点，称为“主节点”。这些主节点会收到您希望混合一些资金的通知。没有可识别的信息发送到主节点，所以他们永远不会知道您是“谁”。&lt;li&gt;当另外两个人发送类似的消息时，表示希望混合相同的面额的话，混合会话就会开始。相关的主节点会混合这些输入，并指示所有三个用户的钱包将已经转换了输入的交易支付给自己。您的钱包直接支付给自己，但是付给不同的位址（称之为找零地址）。&lt;/li&gt;&lt;li&gt;为了完全掩盖您的资金来源，您的钱包必须以每个面额来重复此过程数次。每次这个过程完成后，都称之为一个“循环”。每个循环的%1都会令确定您的资金来源的工作倍加困难。&lt;/li&gt;&lt;li&gt;这种混合过程发生在后台，而不需要您进行任何操作。当您想进行交易时，您的资金将已被混币处理。不需再花额外的时间等待。&lt;/li&gt;&lt;/ol&gt;&lt;hr&gt;重要：&lt;b&gt;您的钱包只能拥有1000个“找零地址”。每次混合事件发生时，最多会使用9个找零地址。这意味着这1000个地址可以容许100次的混合事件。当其的中900个已经被使用后，您的钱包必须创建更多的地址。如果您启用了自动备份，则只能够这样做。&lt;br&gt;因此，禁用备份的用户也将禁用%1。&lt;hr&gt;如欲了解更多信息请参阅&lt;a style="%2" href="%3"&gt;%1文档&lt;/a&gt;。</translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Cosanta in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 COSA, 0.01 COSA, 0.1 COSA, 1 COSA and 10 COSA -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;%1基础知识&lt;/h3&gt;%1通过隐藏您的资金来源为您提供真正的财务隐私。您的钱包中所有的Cosanta都由不同的“输入”组成，您可以将其视为分开的离散硬币。&lt;br&gt;%1使用创新的方法将您的输入与其他两个人的输入相结合，而过程中不会让您的Cosanta离开您的钱包。每时每刻，您仍然控制着您的钱。&lt;hr&gt;&lt;b&gt;%1的运作原理如下：&lt;/b&gt;&lt;ol type="1"&gt;&lt;li&gt;%1首先将您的交易分柝成多个标准面额的交易。这些标准面额分别为0.001 COSA，0.01 COSA，0.1 COSA，1 COSA和10 COSA --有点像您每天使用的纸币。&lt;/li&gt;&lt;li&gt;您的钱包然后发送请求到网络上有专门配置的软件节点，称为“主节点”。这些主节点会收到您希望混合一些资金的通知。没有可识别的信息发送到主节点，所以他们永远不会知道您是“谁”。&lt;li&gt;当另外两个人发送类似的消息时，表示希望混合相同的面额的话，混合会话就会开始。相关的主节点会混合这些输入，并指示所有三个用户的钱包将已经转换了输入的交易支付给自己。您的钱包直接支付给自己，但是付给不同的位址（称之为找零地址）。&lt;/li&gt;&lt;li&gt;为了完全掩盖您的资金来源，您的钱包必须以每个面额来重复此过程数次。每次这个过程完成后，都称之为一个“循环”。每个循环的%1都会令确定您的资金来源的工作倍加困难。&lt;/li&gt;&lt;li&gt;这种混合过程发生在后台，而不需要您进行任何操作。当您想进行交易时，您的资金将已被混币处理。不需再花额外的时间等待。&lt;/li&gt;&lt;/ol&gt;&lt;hr&gt;重要：&lt;b&gt;您的钱包只能拥有1000个“找零地址”。每次混合事件发生时，最多会使用9个找零地址。这意味着这1000个地址可以容许100次的混合事件。当其的中900个已经被使用后，您的钱包必须创建更多的地址。如果您启用了自动备份，则只能够这样做。&lt;br&gt;因此，禁用备份的用户也将禁用%1。&lt;hr&gt;如欲了解更多信息请参阅&lt;a style="%2" href="%3"&gt;%1文档&lt;/a&gt;。</translation>
     </message>
 </context>
 <context>
@@ -1204,8 +1204,8 @@
         <translation>会在此目录中存储约 %1 GB 的数据。</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Dash block chain.</source>
-        <translation>%1 将会下载并存储Dash区块链.</translation>
+        <source>%1 will download and store a copy of the Cosanta block chain.</source>
+        <translation>%1 将会下载并存储Cosanta区块链.</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1354,12 +1354,12 @@
         <translation>表单</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
-        <translation>最近的交易可能尚未显示，因此您的钱包的余额可能不正确。一旦您的钱包完成与Dash网络的同步，这个信息将会修正，如下所述。</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Cosanta network, as detailed below.</source>
+        <translation>最近的交易可能尚未显示，因此您的钱包的余额可能不正确。一旦您的钱包完成与Cosanta网络的同步，这个信息将会修正，如下所述。</translation>
     </message>
     <message>
-        <source>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>假如您正在尝试花费尚未显示出来的Dash，这个交易将不会被网络所接受。</translation>
+        <source>Attempting to spend Cosanta that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>假如您正在尝试花费尚未显示出来的Cosanta，这个交易将不会被网络所接受。</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -1551,8 +1551,8 @@
         <translation>目标余额</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>自动在路由器打开Dash Core客户端端口。此项只在路由器支持UPnP且开启时有效。</translation>
+        <source>Automatically open the Cosanta Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>自动在路由器打开Cosanta Core客户端端口。此项只在路由器支持UPnP且开启时有效。</translation>
     </message>
     <message>
         <source>Map port using NA&amp;T-PMP</source>
@@ -1567,8 +1567,8 @@
         <translation>允许连入连接</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a SOCKS5 proxy.</source>
-        <translation>通过SOCKS5代理连接Dash网络。</translation>
+        <source>Connect to the Cosanta network through a SOCKS5 proxy.</source>
+        <translation>通过SOCKS5代理连接Cosanta网络。</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1639,8 +1639,8 @@
         <translation>使用UPnP映射端口(&amp;U)</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
-        <translation>自动打开路由器上Dash Core客户端端口. 这仅在您的路由器支持NAT-PMP并且已启用时才有效. 外部端口可以是随机的.</translation>
+        <source>Automatically open the Cosanta Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
+        <translation>自动打开路由器上Cosanta Core客户端端口. 这仅在您的路由器支持NAT-PMP并且已启用时才有效. 外部端口可以是随机的.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -1700,9 +1700,9 @@
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/projects/p/dash/</source>
+https://www.transifex.com/projects/p/cosanta/</source>
         <translation>缺少相关语言或翻译不完整？请到这里协助翻译：
-https://www.transifex.com/projects/p/dash/</translation>
+https://www.transifex.com/projects/p/cosanta/</translation>
     </message>
     <message>
         <source>&amp;Unit to show amounts in:</source>
@@ -1768,8 +1768,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>表单</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Dash network after a connection is established, but this process has not completed yet.</source>
-        <translation>显示的信息也许已过期。当与Dash网络连接后钱包程序会自动同步，但现在还未完成。</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Cosanta network after a connection is established, but this process has not completed yet.</source>
+        <translation>显示的信息也许已过期。当与Cosanta网络连接后钱包程序会自动同步，但现在还未完成。</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -1848,8 +1848,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>数量与循环次数：</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
-        <translation>0 Dash / 0 循环数</translation>
+        <source>0 COSA / 0 Rounds</source>
+        <translation>0 Cosanta / 0 循环数</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -1869,7 +1869,7 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
     <message>
         <source>The denominations you submitted to the Masternode.&lt;br&gt;To mix, other users must submit the exact same denominations.</source>
-        <translation>您向主节点所提交的用以面额化混合的Dash。&lt;br&gt;为了混合，其他用户必须提交完全一样的面额。</translation>
+        <translation>您向主节点所提交的用以面额化混合的Cosanta。&lt;br&gt;为了混合，其他用户必须提交完全一样的面额。</translation>
     </message>
     <message>
         <source>out of sync</source>
@@ -1994,16 +1994,16 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>支付请求出错</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
-        <translation>无法启动Dash程序：click-to-pay handler</translation>
+        <source>Cannot start cosanta: click-to-pay handler</source>
+        <translation>无法启动Cosanta程序：click-to-pay handler</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>URI 处理</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash://' 不是一个有效链接. 请使用'dash:'</translation>
+        <source>'cosanta://' is not a valid URI. Use 'cosanta:' instead.</source>
+        <translation>'cosanta://' 不是一个有效链接. 请使用'cosanta:'</translation>
     </message>
     <message>
         <source>Cannot process payment request as BIP70 is no longer supported.</source>
@@ -2018,8 +2018,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>无效的付款地址 %1</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Dash address or malformed URI parameters.</source>
-        <translation>URI不能被解析! 原因可能是无效的Dash地址或URI参数格式错误。</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid Cosanta address or malformed URI parameters.</source>
+        <translation>URI不能被解析! 原因可能是无效的Cosanta地址或URI参数格式错误。</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -2182,8 +2182,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>金额</translation>
     </message>
     <message>
-        <source>Enter a Dash address (e.g. %1)</source>
-        <translation>输入一个Dash地址(例如 %1)</translation>
+        <source>Enter a Cosanta address (e.g. %1)</source>
+        <translation>输入一个Cosanta地址(例如 %1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
@@ -2694,8 +2694,8 @@ https://www.transifex.com/projects/p/dash/</translation>
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>附加在付款要求中的讯息，可以不填，打开要求内容时会显示。注意：这个讯息不会随着付款送到Dash网路上。</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Cosanta network.</source>
+        <translation>附加在付款要求中的讯息，可以不填，打开要求内容时会显示。注意：这个讯息不会随着付款送到Cosanta网路上。</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -2706,8 +2706,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>可为新建的收款地址添加一个可选标签。</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>附加在付款要求中的讯息，可以不填，打开要求内容时会显示。&lt;br&gt;注意：这个讯息不会随着付款送到Dash网路上。</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Cosanta network.</source>
+        <translation>附加在付款要求中的讯息，可以不填，打开要求内容时会显示。&lt;br&gt;注意：这个讯息不会随着付款送到Cosanta网路上。</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address (used by you to identify an invoice).  It is also attached to the payment request.</source>
@@ -2911,8 +2911,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>选择...</translation>
     </message>
     <message>
-        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
-        <translation>当交易量小于区块空间时, 矿工和中继节点或许会强制收取最低费用. 仅支付最低费用也可以, 但请注意, 一旦Dash交易的需求超出了网络的处理能力, 则会导致这笔交易永远无法被确认.</translation>
+        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for Cosanta transactions than the network can process.</source>
+        <translation>当交易量小于区块空间时, 矿工和中继节点或许会强制收取最低费用. 仅支付最低费用也可以, 但请注意, 一旦Cosanta交易的需求超出了网络的处理能力, 则会导致这笔交易永远无法被确认.</translation>
     </message>
     <message>
         <source>A too low fee might result in a never confirming transaction (read the tooltip)</source>
@@ -2923,8 +2923,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>确认时间目标：</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
-        <translation>如果自定手续费设定为1000 duffs，而交易信息只有250字节的话，那么选择"每千字节"就只会支付250 duffs的手续费，&lt;br /&gt;而"至少"会支付1000 duffs。但如果交易信息大于一千字节,那么两者都要按每千字节付费。</translation>
+        <source>If the custom fee is set to 1000 units and the transaction is only 250 bytes, then "per kilobyte" only pays 250 units in fee,&lt;br /&gt;while "at least" pays 1000 units. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <translation>如果自定手续费设定为1000 units，而交易信息只有250字节的话，那么选择"每千字节"就只会支付250 units的手续费，&lt;br /&gt;而"至少"会支付1000 units。但如果交易信息大于一千字节,那么两者都要按每千字节付费。</translation>
     </message>
     <message>
         <source>per kilobyte</source>
@@ -3155,8 +3155,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation><numerusform>预计在%n 个区块内开始确认。</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Dash address</source>
-        <translation>警告：无效的Dash地址</translation>
+        <source>Warning: Invalid Cosanta address</source>
+        <translation>警告：无效的Cosanta地址</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -3182,7 +3182,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>付给(&amp;T)：</translation>
     </message>
     <message>
-        <source>The Dash address to send the payment to</source>
+        <source>The Cosanta address to send the payment to</source>
         <translation>选择发款地址</translation>
     </message>
     <message>
@@ -3222,8 +3222,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>在所选单位中发送的金额</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>手续费将从发送金额中扣除。接收者将收到的Dash金额将会比您在金额字段中输入的金额为少。如果选择了多个收款人，该费用将会被平均摊分。</translation>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Cosanta than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <translation>手续费将从发送金额中扣除。接收者将收到的Cosanta金额将会比您在金额字段中输入的金额为少。如果选择了多个收款人，该费用将会被平均摊分。</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -3238,8 +3238,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>消息：</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Dash network.</source>
-        <translation>附加在Dash付款协议URI中的信息，会和交易内容一并存储，可供您参考。提示：此信息不会发送到Dash网络上。</translation>
+        <source>A message that was attached to the cosanta: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Cosanta network.</source>
+        <translation>附加在Cosanta付款协议URI中的信息，会和交易内容一并存储，可供您参考。提示：此信息不会发送到Cosanta网络上。</translation>
     </message>
     <message>
         <source>This is an unauthenticated payment request.</source>
@@ -3280,11 +3280,11 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>签名消息(&amp;S)</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Dash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <source>You can sign messages/agreements with your addresses to prove you can receive Cosanta sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
         <translation>您可以用自己的地址签署信息/协议，来证明您对地址的所有权。但是请小心，不要签署语意含糊不清的内容，因为钓鱼式诈骗可能会用骗您签署的手法来冒充是您。只有在语句中的细节您都同意时才签署。</translation>
     </message>
     <message>
-        <source>The Dash address to sign the message with</source>
+        <source>The Cosanta address to sign the message with</source>
         <translation>对此地址进行签名</translation>
     </message>
     <message>
@@ -3316,8 +3316,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>复制当前签名至剪切板</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Dash address</source>
-        <translation>签署信息证明您拥有此Dash地址</translation>
+        <source>Sign the message to prove you own this Cosanta address</source>
+        <translation>签署信息证明您拥有此Cosanta地址</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -3340,7 +3340,7 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>请在下面输入接收者地址、消息（确保换行符、空格符、制表符等完全相同）和签名以验证消息。请仔细核对签名信息，以提防中间人攻击。请注意，这只是证明接收方签名的地址，它不能证明任何交易！</translation>
     </message>
     <message>
-        <source>The Dash address the message was signed with</source>
+        <source>The Cosanta address the message was signed with</source>
         <translation>已签名的地址</translation>
     </message>
     <message>
@@ -3352,8 +3352,8 @@ https://www.transifex.com/projects/p/dash/</translation>
         <translation>签名消息时所用的签名</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Dash address</source>
-        <translation>验证信息用来确保此被签署信息对应相对的Dash地址</translation>
+        <source>Verify the message to ensure it was signed with the specified Cosanta address</source>
+        <translation>验证信息用来确保此被签署信息对应相对的Cosanta地址</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -3587,7 +3587,7 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
     <message>
         <source>Generated coins must mature %1 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to "not accepted" and it won't be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
-        <translation>生成的Dash在可以使用前必须有 %1 个成熟的区块。当您生成了此区块后，它将被广播到网络中以加入区块链。如果它未成功进入区块链，其状态将变更为“不接受”并且不可使用。这可能偶尔会发生，如果另一个节点比您早几秒钟成功生成一个区块。</translation>
+        <translation>生成的Cosanta在可以使用前必须有 %1 个成熟的区块。当您生成了此区块后，它将被广播到网络中以加入区块链。如果它未成功进入区块链，其状态将变更为“不接受”并且不可使用。这可能偶尔会发生，如果另一个节点比您早几秒钟成功生成一个区块。</translation>
     </message>
     <message>
         <source>Debug information</source>
@@ -3992,7 +3992,7 @@ Go to File &gt; Open Wallet to load a wallet.
     <name>WalletModel</name>
     <message>
         <source>Send Coins</source>
-        <translation>发送Dash</translation>
+        <translation>发送Cosanta</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -4039,7 +4039,7 @@ Go to File &gt; Open Wallet to load a wallet.
     </message>
 </context>
 <context>
-    <name>dash-core</name>
+    <name>cosanta-core</name>
     <message>
         <source>Error: Listening for incoming connections failed (listen returned error %s)</source>
         <translation>错误：监听外来连接失败(监听回馈错误 %s)</translation>
@@ -4809,8 +4809,8 @@ Go to File &gt; Open Wallet to load a wallet.
         <translation>上一次队列才被创建.</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup.</source>
-        <translation>%s 已损坏. 请尝试使用钱包工具 dash-wallet 来挽救或恢复备份.</translation>
+        <source>%s corrupt. Try using the wallet tool cosanta-wallet to salvage or restoring a backup.</source>
+        <translation>%s 已损坏. 请尝试使用钱包工具 cosanta-wallet 来挽救或恢复备份.</translation>
     </message>
     <message>
         <source>Last successful action was too recent.</source>
