@@ -107,27 +107,27 @@ TESTS =
 BENCHMARKS =
 
 if BUILD_BITCOIND
-  bin_PROGRAMS += dashd
+  bin_PROGRAMS += cosantad
 endif
 
 if BUILD_BITCOIN_NODE
-  bin_PROGRAMS += dash-node
+  bin_PROGRAMS += cosanta-node
 endif
 
 if BUILD_BITCOIN_CLI
-  bin_PROGRAMS += dash-cli
+  bin_PROGRAMS += cosanta-cli
 endif
 if BUILD_BITCOIN_TX
-  bin_PROGRAMS += dash-tx
+  bin_PROGRAMS += cosanta-tx
 endif
 if ENABLE_WALLET
 if BUILD_BITCOIN_WALLET
-  bin_PROGRAMS += dash-wallet
+  bin_PROGRAMS += cosanta-wallet
 endif
 endif
 
 .PHONY: FORCE check-symbols check-security
-# dash core #
+# cosanta core #
 BITCOIN_CORE_H = \
   addrdb.h \
   addressindex.h \
@@ -396,7 +396,7 @@ obj/build.h: FORCE
 	  "$(abs_top_srcdir)"
 libbitcoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
-# server: shared between dashd and dash-qt
+# server: shared between cosantad and cosanta-qt
 # Contains code accessing mempool and chain state that is meant to be separated
 # from wallet and gui code (see node/README.md). Shared code should go in
 # libbitcoin_common or libbitcoin_util libraries, instead.
@@ -532,7 +532,7 @@ libbitcoin_zmq_a_SOURCES = \
 endif
 
 
-# wallet: shared between dashd and dash-qt, but only linked
+# wallet: shared between cosantad and cosanta-qt, but only linked
 # when wallet enabled
 libbitcoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(SQLITE_CFLAGS)
 libbitcoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
@@ -715,7 +715,7 @@ libbitcoin_consensus_a_SOURCES = \
   util/string.cpp \
   version.h
 
-# common: shared between dashd, and dash-qt and non-server tools
+# common: shared between cosantad, and cosanta-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_common_a_SOURCES = \
@@ -805,7 +805,7 @@ if USE_LIBEVENT
 libbitcoin_util_a_SOURCES += util/url.cpp
 endif
 
-# cli: shared between dash-cli and dash-qt
+# cli: shared between cosanta-cli and cosanta-qt
 libbitcoin_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_cli_a_SOURCES = \
@@ -817,14 +817,14 @@ libbitcoin_cli_a_SOURCES = \
 nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
-# dashd & dash-node binaries #
+# cosantad & cosanta-node binaries #
 bitcoin_daemon_sources = bitcoind.cpp
 bitcoin_bin_cppflags = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 bitcoin_bin_cxxflags = $(AM_CXXFLAGS) $(PIE_FLAGS)
 bitcoin_bin_ldflags = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(PTHREAD_FLAGS)
 
 if TARGET_WINDOWS
-bitcoin_daemon_sources += dashd-res.rc
+bitcoin_daemon_sources += cosantad-res.rc
 endif
 
 bitcoin_bin_ldadd = \
@@ -843,47 +843,47 @@ bitcoin_bin_ldadd = \
 
 bitcoin_bin_ldadd += $(BACKTRACE_LIB) $(BOOST_LIBS) $(BDB_LIBS) $(MINIUPNPC_LIBS) $(NATPMP_LIBS) $(SQLITE_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS) $(GMP_LIBS)
 
-dashd_SOURCES = $(bitcoin_daemon_sources)
-dashd_CPPFLAGS = $(bitcoin_bin_cppflags)
-dashd_CXXFLAGS = $(bitcoin_bin_cxxflags)
-dashd_LDFLAGS = $(bitcoin_bin_ldflags)
-dashd_LDADD = $(LIBBITCOIN_SERVER) $(bitcoin_bin_ldadd)
+cosantad_SOURCES = $(bitcoin_daemon_sources)
+cosantad_CPPFLAGS = $(bitcoin_bin_cppflags)
+cosantad_CXXFLAGS = $(bitcoin_bin_cxxflags)
+cosantad_LDFLAGS = $(bitcoin_bin_ldflags)
+cosantad_LDADD = $(LIBBITCOIN_SERVER) $(bitcoin_bin_ldadd)
 
-dash_node_SOURCES = $(bitcoin_daemon_sources)
-dash_node_CPPFLAGS = $(bitcoin_bin_cppflags)
-dash_node_CXXFLAGS = $(bitcoin_bin_cxxflags)
-dash_node_LDFLAGS = $(bitcoin_bin_ldflags)
-dash_node_LDADD = $(LIBBITCOIN_SERVER) $(bitcoin_bin_ldadd)
+cosanta_node_SOURCES = $(bitcoin_daemon_sources)
+cosanta_node_CPPFLAGS = $(bitcoin_bin_cppflags)
+cosanta_node_CXXFLAGS = $(bitcoin_bin_cxxflags)
+cosanta_node_LDFLAGS = $(bitcoin_bin_ldflags)
+cosanta_node_LDADD = $(LIBBITCOIN_SERVER) $(bitcoin_bin_ldadd)
 
-# dash-cli binary #
-dash_cli_SOURCES = bitcoin-cli.cpp
-dash_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
-dash_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-dash_cli_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(PTHREAD_FLAGS)
+# cosanta-cli binary #
+cosanta_cli_SOURCES = bitcoin-cli.cpp
+cosanta_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+cosanta_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+cosanta_cli_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(PTHREAD_FLAGS)
 
 if TARGET_WINDOWS
-dash_cli_SOURCES += dash-cli-res.rc
+cosanta_cli_SOURCES += cosanta-cli-res.rc
 endif
 
-dash_cli_LDADD = \
+cosanta_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO)
-dash_cli_LDADD += $(BACKTRACE_LIB) $(BOOST_LIBS) $(EVENT_LIBS) $(GMP_LIBS)
+cosanta_cli_LDADD += $(BACKTRACE_LIB) $(BOOST_LIBS) $(EVENT_LIBS) $(GMP_LIBS)
 #
 
-# dash-tx binary #
-dash_tx_SOURCES = bitcoin-tx.cpp
-dash_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-dash_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-dash_tx_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(PTHREAD_FLAGS)
+# cosanta-tx binary #
+cosanta_tx_SOURCES = bitcoin-tx.cpp
+cosanta_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+cosanta_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+cosanta_tx_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(PTHREAD_FLAGS)
 
 if TARGET_WINDOWS
-dash_tx_SOURCES += dash-tx-res.rc
+cosanta_tx_SOURCES += cosanta-tx-res.rc
 endif
 
-dash_tx_LDADD = \
+cosanta_tx_LDADD = \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_UTIL) \
@@ -892,18 +892,18 @@ dash_tx_LDADD = \
   $(LIBDASHBLS) \
   $(LIBSECP256K1)
 
-dash_tx_LDADD += $(BACKTRACE_LIB) $(BOOST_LIBS) $(GMP_LIBS)
+cosanta_tx_LDADD += $(BACKTRACE_LIB) $(BOOST_LIBS) $(GMP_LIBS)
 #
 
-# dash-wallet binary #
-dash_wallet_SOURCES = bitcoin-wallet.cpp
-dash_wallet_CPPFLAGS = $(bitcoin_bin_cppflags)
-dash_wallet_CXXFLAGS = $(bitcoin_bin_cxxflags)
-dash_wallet_LDFLAGS = $(bitcoin_bin_ldflags)
-dash_wallet_LDADD = $(LIBBITCOIN_WALLET_TOOL) $(bitcoin_bin_ldadd)
+# cosanta-wallet binary #
+cosanta_wallet_SOURCES = bitcoin-wallet.cpp
+cosanta_wallet_CPPFLAGS = $(bitcoin_bin_cppflags)
+cosanta_wallet_CXXFLAGS = $(bitcoin_bin_cxxflags)
+cosanta_wallet_LDFLAGS = $(bitcoin_bin_ldflags)
+cosanta_wallet_LDADD = $(LIBBITCOIN_WALLET_TOOL) $(bitcoin_bin_ldadd)
 
 if TARGET_WINDOWS
-dash_wallet_SOURCES += dash-wallet-res.rc
+cosanta_wallet_SOURCES += cosanta-wallet-res.rc
 endif
 #
 
