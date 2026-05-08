@@ -2,12 +2,12 @@
 # Copyright (c) 2019-2020 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Test dashd aborts if can't disconnect a block.
+"""Test cosantad aborts if can't disconnect a block.
 
 - Start a single node and generate 3 blocks.
 - Delete the undo data.
 - Mine a fork that requires disconnecting the tip.
-- Verify that dashd AbortNode's.
+- Verify that cosantad AbortNode's.
 """
 
 from test_framework.test_framework import BitcoinTestFramework

@@ -27,17 +27,9 @@ ENABLED_CHECKS=(
 
 IGNORED_WARNINGS=(
     "src/bls/bls.h:.* Struct 'CBLSIdImplicit' has a constructor with 1 argument that is not explicit."
-    "src/llmq/dkgsessionmgr.h:.* warning: struct member 'ContributionsCacheEntry::entryTime' is never used."
-    "src/llmq/instantsend.h:.* warning: struct member 'NonLockedTxInfo::pindexMined' is never used."
     "src/rpc/masternode.cpp:.*:21: warning: Consider using std::copy algorithm instead of a raw loop." # UniValue doesn't support std::copy
     "src/cachemultimap.h:.*: warning: Variable 'mapIt' can be declared as reference to const"
     "src/evo/simplifiedmns.cpp:.*:20: warning: Consider using std::copy algorithm instead of a raw loop."
-    "src/spork.h:.* warning: struct member 'CSporkDef::defaultValue' is never used."
-    "src/test/dip0020opcodes_tests.cpp:.* warning: There is an unknown macro here somewhere. Configuration is required. If BOOST_FIXTURE_TEST_SUITE is a macro then please configure it."
-    "src/ctpl_stl.h:.*22: warning: Dereferencing '_f' after it is deallocated / released"
-
-    "src/llmq/snapshot.cpp:.*:17: warning: Consider using std::copy algorithm instead of a raw loop."
-    "src/llmq/snapshot.cpp:.*:18: warning: Consider using std::copy algorithm instead of a raw loop."
 # General catchall, for some reason any value named 'hash' is viewed as never used.
     "Variable 'hash' is assigned a value that is never used."
 
@@ -55,7 +47,7 @@ IGNORED_WARNINGS=(
     "unusedStructMember"
 )
 
-# We should attempt to update this with all Cosanta-specific code
+# We should attempt to update this with all dash specific code
 FILES=$(git ls-files -- "src/batchedlogger.*" \
                         "src/bench/bls*.cpp" \
                         "src/bls/*.cpp" \
@@ -120,7 +112,7 @@ then
     mkdir $CPPCHECK_DIR
 fi
 WARNINGS=$(echo "${FILES}" | \
-    xargs cppcheck --enable=all --inline-suppr --suppress=missingIncludeSystem --cppcheck-build-dir=$CPPCHECK_DIR -j "$(getconf _NPROCESSORS_ONLN)" --language=c++ --std=c++17 --template=gcc -D__cplusplus -DENABLE_WALLET -DCLIENT_VERSION_BUILD -DCLIENT_VERSION_IS_RELEASE -DCLIENT_VERSION_MAJOR -DCLIENT_VERSION_MINOR -DCOPYRIGHT_YEAR -DDEBUG -DHAVE_WORKING_BOOST_SLEEP_FOR -DCHAR_BIT=8 -I src/ -q 2>&1 | sort -u | \
+    xargs cppcheck --enable=all --inline-suppr --suppress=missingIncludeSystem --cppcheck-build-dir=$CPPCHECK_DIR -j "$(getconf _NPROCESSORS_ONLN)" --language=c++ --std=c++17 --template=gcc -D__cplusplus -DENABLE_WALLET -DCLIENT_VERSION_BUILD -DCLIENT_VERSION_IS_RELEASE -DCLIENT_VERSION_MAJOR -DCLIENT_VERSION_MINOR -DCOPYRIGHT_YEAR -DDEBUG -DCHAR_BIT=8 -I src/ -q 2>&1 | sort -u | \
     grep -E "${ENABLED_CHECKS_REGEXP}" | \
     grep -vE "${IGNORED_WARNINGS_REGEXP}" | \
     grep -E "${FILES_REGEXP}")

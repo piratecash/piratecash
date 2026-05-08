@@ -24,7 +24,7 @@ class ConnectDevnetNodes(BitcoinTestFramework):
 
     def run_test(self):
         self.nodes[0].add_p2p_connection(P2PInterface())
-        assert_equal(self.nodes[0].getconnectioncount(), 2)  # 1 out dashd + 1 p2p
+        assert_equal(self.nodes[0].getconnectioncount(), 2)  # 1 out cosantad + 1 p2p
 
 
 if __name__ == '__main__':

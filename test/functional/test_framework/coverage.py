@@ -79,7 +79,7 @@ def get_filename(dirname, n_node):
 
 def write_all_rpc_commands(dirname: str, node: AuthServiceProxy) -> bool:
     """
-    Write out a list of all RPC functions available in `dash-cli` for
+    Write out a list of all RPC functions available in `cosanta-cli` for
     coverage comparison. This will only happen once per coverage
     directory.
 

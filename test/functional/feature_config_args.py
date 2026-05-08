@@ -21,29 +21,29 @@ class ConfArgsTest(BitcoinTestFramework):
         # Assume node is stopped
 
         inc_conf_file_path = os.path.join(self.nodes[0].datadir, 'include.conf')
-        with open(os.path.join(self.nodes[0].datadir, 'dash.conf'), 'a', encoding='utf-8') as conf:
+        with open(os.path.join(self.nodes[0].datadir, 'cosanta.conf'), 'a', encoding='utf-8') as conf:
             conf.write('includeconf={}\n'.format(inc_conf_file_path))
 
         self.nodes[0].assert_start_raises_init_error(
-            expected_msg='Error: Error parsing command line arguments: Invalid parameter -dash_cli=1',
-            extra_args=['-dash_cli=1'],
+            expected_msg='Error: Error parsing command line arguments: Invalid parameter -cosanta_cli=1',
+            extra_args=['-cosanta_cli=1'],
         )
         with open(inc_conf_file_path, 'w', encoding='utf-8') as conf:
-            conf.write('dash_conf=1\n')
-        with self.nodes[0].assert_debug_log(expected_msgs=['Ignoring unknown configuration value dash_conf']):
+            conf.write('cosanta_conf=1\n')
+        with self.nodes[0].assert_debug_log(expected_msgs=['Ignoring unknown configuration value cosanta_conf']):
             self.start_node(0)
         self.stop_node(0)
 
         with open(inc_conf_file_path, 'w', encoding='utf-8') as conf:
-            conf.write('-dash=1\n')
-        self.nodes[0].assert_start_raises_init_error(expected_msg='Error: Error reading configuration file: parse error on line 1: -dash=1, options in configuration file must be specified without leading -')
+            conf.write('-cosanta=1\n')
+        self.nodes[0].assert_start_raises_init_error(expected_msg='Error: Error reading configuration file: parse error on line 1: -cosanta=1, options in configuration file must be specified without leading -')
 
         if self.is_wallet_compiled():
             with open(inc_conf_file_path, 'w', encoding='utf8') as conf:
                 conf.write("wallet=foo\n")
             self.nodes[0].assert_start_raises_init_error(expected_msg='Error: Config setting for -wallet only applied on %s network when in [%s] section.' % (self.chain, self.chain))
 
-        main_conf_file_path = os.path.join(self.options.tmpdir, 'node0', 'dash_main.conf')
+        main_conf_file_path = os.path.join(self.options.tmpdir, 'node0', 'cosanta_main.conf')
         util.write_config(main_conf_file_path, n=0, chain='', extra_config='includeconf={}\n'.format(inc_conf_file_path))
         with open(inc_conf_file_path, 'w', encoding='utf-8') as conf:
             conf.write('acceptnonstdtxn=1\n')
@@ -66,7 +66,7 @@ class ConfArgsTest(BitcoinTestFramework):
         self.nodes[0].assert_start_raises_init_error(expected_msg='Error: Error reading configuration file: parse error on line 4, using # in rpcpassword can be ambiguous and should be avoided')
 
         inc_conf_file2_path = os.path.join(self.nodes[0].datadir, 'include2.conf')
-        with open(os.path.join(self.nodes[0].datadir, 'dash.conf'), 'a', encoding='utf-8') as conf:
+        with open(os.path.join(self.nodes[0].datadir, 'cosanta.conf'), 'a', encoding='utf-8') as conf:
             conf.write('includeconf={}\n'.format(inc_conf_file2_path))
 
         with open(inc_conf_file_path, 'w', encoding='utf-8') as conf:
@@ -143,7 +143,7 @@ class ConfArgsTest(BitcoinTestFramework):
         self.nodes[0].assert_start_raises_init_error(['-datadir=' + new_data_dir], 'Error: Specified data directory "' + new_data_dir + '" does not exist.')
 
         # Check that using non-existent datadir in conf file fails
-        conf_file = os.path.join(default_data_dir, "dash.conf")
+        conf_file = os.path.join(default_data_dir, "cosanta.conf")
 
         # datadir needs to be set before [chain] section
         conf_file_contents = open(conf_file, encoding='utf8').read()

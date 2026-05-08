@@ -2,7 +2,7 @@
 # Copyright (c) 2018-2024 The Dash Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Test the Cosanta-specific ZMQ notification interfaces."""
+"""Test the dash specific ZMQ notification interfaces."""
 
 import configparser
 from enum import Enum
@@ -82,18 +82,18 @@ class TestP2PConn(P2PInterface):
         inv = msg_inv([CInv(31, hash)])
         self.send_message(inv)
 
-    def send_tx(self, tx, deterministic):
+    def send_tx(self, tx):
         hash = uint256_from_str(hash256(tx.serialize()))
         self.txes[hash] = tx
 
-        inv = msg_inv([CInv(31 if deterministic else 30, hash)])
+        inv = msg_inv([CInv(MSG_TX, hash)])
         self.send_message(inv)
 
     def on_getdata(self, message):
         for inv in message.inv:
-            if inv.hash in self.islocks:
+            if ((inv.type & MSG_TYPE_MASK) == 30 or (inv.type & MSG_TYPE_MASK) == 31) and inv.hash in self.islocks:
                 self.send_message(self.islocks[inv.hash])
-            if inv.hash in self.txes:
+            if (inv.type & MSG_TYPE_MASK) == MSG_TX and inv.hash in self.txes:
                 self.send_message(self.txes[inv.hash])
 
 
@@ -128,7 +128,7 @@ class CosantaZMQTest(DashTestFramework):
             self.zmq_context = zmq.Context()
             # Initialize the network
             self.activate_dip8()
-            self.nodes[0].spork("SPORK_17_QUORUM_DKG_ENABLED", 0)
+            self.nodes[0].sporkupdate("SPORK_17_QUORUM_DKG_ENABLED", 0)
             self.wait_for_sporks_same()
             self.activate_v19(expected_activation_height=900)
             self.log.info("Activated v19 at height:" + str(self.nodes[0].getblockcount()))
@@ -146,7 +146,7 @@ class CosantaZMQTest(DashTestFramework):
             # Wait a moment to avoid subscribing to recovered sig in the test before the one from the chainlock
             # has been sent which leads to test failure.
             time.sleep(1)
-            # Test all Cosanta-related ZMQ publishers
+            # Test all dash related ZMQ publisher
             #self.test_recovered_signature_publishers()
             self.test_chainlock_publishers()
             self.test_governance_publishers()
@@ -341,7 +341,7 @@ class CosantaZMQTest(DashTestFramework):
             # this is expected
             pass
         # Now send the tx itself
-        self.test_node.send_tx(FromHex(msg_tx(), rpc_raw_tx_3['hex']), deterministic)
+        self.test_node.send_tx(FromHex(msg_tx(), rpc_raw_tx_3['hex']))
         self.wait_for_instantlock(rpc_raw_tx_3['txid'], self.nodes[0])
         # Validate hashtxlock
         zmq_tx_lock_hash = self.subscribers[ZMQPublisher.hash_tx_lock].receive().read(32).hex()

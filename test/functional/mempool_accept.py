@@ -132,7 +132,7 @@ class MempoolAcceptanceTest(BitcoinTestFramework):
         tx.deserialize(BytesIO(hex_str_to_bytes(raw_tx_0_reject)))
         txid_0_reject = tx.rehash()
         self.check_mempool_result(
-            # No RBF in DASH
+            # No RBF in COSA
             result_expected=[{'txid': txid_0_reject, 'allowed': False, 'reject-reason': 'txn-mempool-conflict'}],
             rawtxs=[raw_tx_0_reject],
         )

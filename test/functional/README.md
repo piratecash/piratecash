@@ -70,7 +70,7 @@ don't have test cases for.
   load a premined blockchain from cache with the default value of `False`. The
   cached data directories contain a 200-block pre-mined blockchain with the
   spendable mining rewards being split between four nodes. Each node has 25
-  mature block subsidies (25x500=12500 DASH) in its wallet. Using them is much more
+  mature block subsidies (25x500=12500 COSA) in its wallet. Using them is much more
   efficient than mining blocks in your test.
 - When calling RPCs with lots of arguments, consider using named keyword
   arguments instead of positional arguments to make the intent of the call
@@ -99,10 +99,10 @@ over the network (`CBlock`, `CTransaction`, etc, along with the network-level
 wrappers for them, `msg_block`, `msg_tx`, etc).
 
 - P2P tests have two threads. One thread handles all network communication
-with the dashd(s) being tested in a callback-based event loop; the other
+with the cosantad(s) being tested in a callback-based event loop; the other
 implements the test logic.
 
-- `P2PConnection` is the class used to connect to a dashd.  `P2PInterface`
+- `P2PConnection` is the class used to connect to a cosantad.  `P2PInterface`
 contains the higher level logic for processing P2P payloads and connecting to
 the Bitcoin Core node application logic. For custom behaviour, subclass the
 P2PInterface object and override the callback methods.
@@ -149,7 +149,7 @@ Base class for functional tests.
 Generally useful functions.
 
 #### [p2p.py](test_framework/p2p.py)
-Test objects for interacting with a dashd node over the p2p interface.
+Test objects for interacting with a cosantad node over the p2p interface.
 
 #### [script.py](test_framework/script.py)
 Utilities for manipulating transaction scripts (originally from python-bitcoinlib)

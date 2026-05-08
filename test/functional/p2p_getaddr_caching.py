@@ -54,7 +54,7 @@ class AddrTest(BitcoinTestFramework):
             first_octet = i >> 8
             second_octet = i % 256
             a = "{}.{}.1.1".format(first_octet, second_octet)
-            self.nodes[0].addpeeraddress(a, 9999)
+            self.nodes[0].addpeeraddress(a, 60606)
 
         # Need to make sure we hit MAX_ADDR_TO_SEND records in the addr response later because
         # only a fraction of all known addresses can be cached and returned.

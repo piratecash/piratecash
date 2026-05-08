@@ -66,7 +66,7 @@ class CLazyNode(P2PInterface):
 # anyway, and eventually get disconnected.
 class CNodeNoVersionBan(CLazyNode):
     # send a bunch of veracks without sending a message. This should get us disconnected.
-    # NOTE: implementation-specific check here. Remove if dashd ban behavior changes
+    # NOTE: implementation-specific check here. Remove if cosantad ban behavior changes
     def on_open(self):
         super().on_open()
         for _ in range(banscore):
