@@ -22,10 +22,10 @@ BitcoinUnits::BitcoinUnits(QObject *parent):
 QList<BitcoinUnits::Unit> BitcoinUnits::availableUnits()
 {
     QList<BitcoinUnits::Unit> unitlist;
-    unitlist.append(DASH);
-    unitlist.append(mDASH);
-    unitlist.append(uDASH);
-    unitlist.append(duffs);
+    unitlist.append(COSA);
+    unitlist.append(mCOSA);
+    unitlist.append(uCOSA);
+    unitlist.append(UNIT);
     return unitlist;
 }
 
@@ -33,10 +33,10 @@ bool BitcoinUnits::valid(int unit)
 {
     switch(unit)
     {
-    case DASH:
-    case mDASH:
-    case uDASH:
-    case duffs:
+    case COSA:
+    case mCOSA:
+    case uCOSA:
+    case UNIT:
         return true;
     default:
         return false;
@@ -49,10 +49,10 @@ QString BitcoinUnits::name(int unit)
     {
         switch(unit)
         {
-            case DASH: return QString("DASH");
-            case mDASH: return QString("mDASH");
-            case uDASH: return QString::fromUtf8("μDASH");
-            case duffs: return QString("duffs");
+            case COSA: return QString("COSA");
+            case mCOSA: return QString("mCOSA");
+            case uCOSA: return QString::fromUtf8("μCOSA");
+            case UNIT: return QString("unit");
             default: return QString("???");
         }
     }
@@ -60,10 +60,10 @@ QString BitcoinUnits::name(int unit)
     {
         switch(unit)
         {
-            case DASH: return QString("tDASH");
-            case mDASH: return QString("mtDASH");
-            case uDASH: return QString::fromUtf8("μtDASH");
-            case duffs: return QString("tduffs");
+            case COSA: return QString("tCOSA");
+            case mCOSA: return QString("mtCOSA");
+            case uCOSA: return QString::fromUtf8("μtCOSA");
+            case UNIT: return QString("tunit");
             default: return QString("???");
         }
     }
@@ -75,10 +75,10 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case DASH: return QString("Dash");
-            case mDASH: return QString("Milli-Dash (1 / 1" THIN_SP_UTF8 "000)");
-            case uDASH: return QString("Micro-Dash (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case duffs: return QString("Ten Nano-Dash (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case COSA: return QString("Cosanta");
+            case mCOSA: return QString("Milli-Cosanta (1 / 1" THIN_SP_UTF8 "000)");
+            case uCOSA: return QString("Micro-Cosanta (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case UNIT: return QString("Cosanta unit (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -86,10 +86,10 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case DASH: return QString("TestDashs");
-            case mDASH: return QString("Milli-TestDash (1 / 1" THIN_SP_UTF8 "000)");
-            case uDASH: return QString("Micro-TestDash (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case duffs: return QString("Ten Nano-TestDash (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case COSA: return QString("TestCosantas");
+            case mCOSA: return QString("Milli-TestCosanta (1 / 1" THIN_SP_UTF8 "000)");
+            case uCOSA: return QString("Micro-TestCosanta (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case UNIT: return QString("TestCosanta unit (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -99,10 +99,10 @@ qint64 BitcoinUnits::factor(int unit)
 {
     switch(unit)
     {
-    case DASH:  return 100000000;
-    case mDASH: return 100000;
-    case uDASH: return 100;
-    case duffs: return 1;
+    case COSA:  return 100000000;
+    case mCOSA: return 100000;
+    case uCOSA: return 100;
+    case UNIT: return 1;
     default:   return 100000000;
     }
 }
@@ -111,10 +111,10 @@ int BitcoinUnits::decimals(int unit)
 {
     switch(unit)
     {
-    case DASH: return 8;
-    case mDASH: return 5;
-    case uDASH: return 2;
-    case duffs: return 0;
+    case COSA: return 8;
+    case mCOSA: return 5;
+    case uCOSA: return 2;
+    case UNIT: return 0;
     default: return 0;
     }
 }

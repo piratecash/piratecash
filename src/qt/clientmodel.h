@@ -44,7 +44,7 @@ class CDeterministicMNList;
 class CGovernanceObject;
 typedef std::shared_ptr<CDeterministicMNList> CDeterministicMNListPtr;
 
-/** Model for Dash network client. */
+/** Model for Cosanta network client. */
 class ClientModel : public QObject
 {
     Q_OBJECT

@@ -40,6 +40,7 @@
 #include <coinjoin/client.h>
 #include <coinjoin/options.h>
 #include <llmq/chainlocks.h>
+#include <masternode/sync.h>
 
 #include <stdint.h>
 
@@ -51,7 +52,7 @@ using interfaces::FoundBlock;
 
 static const std::string WALLET_ENDPOINT_BASE = "/wallet/";
 
-static const uint32_t WALLET_DASH_KB_TO_DUFF_B = COIN / 1000; // 1 duff / B = 0.00001 DASH / kB
+static const uint32_t WALLET_COSA_KB_TO_UNIT_B = COIN / 1000; // 1 unit / B = 0.00001 COSA / kB
 
 static inline bool GetAvoidReuseFlag(const CWallet* const pwallet, const UniValue& param) {
     bool can_avoid_reuse = pwallet->IsWalletFlagSet(WALLET_FLAG_AVOID_REUSE);
@@ -225,7 +226,7 @@ static void SetFeeEstimateMode(const CWallet* pwallet, CCoinControl& cc, const U
 
         CAmount fee_rate = AmountFromValue(estimate_param);
         if (cc.m_fee_mode == FeeEstimateMode::DUFF_B) {
-            fee_rate /= WALLET_DASH_KB_TO_DUFF_B;
+            fee_rate /= WALLET_COSA_KB_TO_UNIT_B;
         }
 
         cc.m_feerate = CFeeRate(fee_rate);
@@ -238,14 +239,14 @@ static void SetFeeEstimateMode(const CWallet* pwallet, CCoinControl& cc, const U
 UniValue getnewaddress(const JSONRPCRequest& request)
 {
     RPCHelpMan{"getnewaddress",
-        "\nReturns a new Dash address for receiving payments.\n"
+        "\nReturns a new Cosanta address for receiving payments.\n"
         "If 'label' is specified, it is added to the address book \n"
         "so payments received with the address will be associated with 'label'.\n",
         {
             {"label", RPCArg::Type::STR, /* default */ "\"\"", "The label name for the address to be linked to. It can also be set to the empty string \"\" to represent the default label. The label does not need to exist, it will be created if there is no label by the given name."},
         },
         RPCResult{
-    RPCResult::Type::STR, "address", "The new Dash address"
+    RPCResult::Type::STR, "address", "The new Cosanta address"
         },
         RPCExamples{
             HelpExampleCli("getnewaddress", "")
@@ -279,7 +280,7 @@ UniValue getnewaddress(const JSONRPCRequest& request)
 UniValue getrawchangeaddress(const JSONRPCRequest& request)
 {
     RPCHelpMan{"getrawchangeaddress",
-        "\nReturns a new Dash address, for receiving change.\n"
+        "\nReturns a new Cosanta address, for receiving change.\n"
         "This is for use with raw transactions, NOT normal use.\n",
         {},
         RPCResult{
@@ -315,7 +316,7 @@ static UniValue setlabel(const JSONRPCRequest& request)
     RPCHelpMan{"setlabel",
         "\nSets the label associated with the given address.\n",
         {
-            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Dash address to be associated with a label."},
+            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Cosanta address to be associated with a label."},
             {"label", RPCArg::Type::STR, RPCArg::Optional::NO, "The label to assign to the address."},
         },
         RPCResult{RPCResult::Type::NONE, "", ""},
@@ -333,7 +334,7 @@ static UniValue setlabel(const JSONRPCRequest& request)
 
     CTxDestination dest = DecodeDestination(request.params[0].get_str());
     if (!IsValidDestination(dest)) {
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Dash address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Cosanta address");
     }
 
     std::string label = LabelFromValue(request.params[1]);
@@ -363,7 +364,7 @@ static CTransactionRef SendMoney(CWallet* const pwallet, const CTxDestination& a
         mapValue["DS"] = "1";
     }
 
-    // Parse Dash address
+    // Parse Cosanta address
     CScript scriptPubKey = GetScriptForDestination(address);
 
     // Create and send the transaction
@@ -393,7 +394,7 @@ static UniValue sendtoaddress(const JSONRPCRequest& request)
         "\nSend an amount to a given address." +
                 HELP_REQUIRING_PASSPHRASE,
         {
-            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Dash address to send to."},
+            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Cosanta address to send to."},
             {"amount", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "The amount in " + CURRENCY_UNIT + " to send. eg 0.1"},
             {"comment", RPCArg::Type::STR, RPCArg::Optional::OMITTED_NAMED_ARG, "A comment used to store what the transaction is for.\n"
     "                             This is not part of the transaction, just kept in your wallet."},
@@ -401,7 +402,7 @@ static UniValue sendtoaddress(const JSONRPCRequest& request)
     "                             to which you're sending the transaction. This is not part of the \n"
     "                             transaction, just kept in your wallet."},
             {"subtractfeefromamount", RPCArg::Type::BOOL, /* default */ "false", "The fee will be deducted from the amount being sent.\n"
-    "                             The recipient will receive less amount of Dash than you enter in the amount field."},
+    "                             The recipient will receive less amount of COSA than you enter in the amount field."},
             {"use_is", RPCArg::Type::BOOL, /* default */ "false", "Deprecated and ignored"},
             {"use_cj", RPCArg::Type::BOOL, /* default */ "false", "Use CoinJoin funds only"},
             {"conf_target", RPCArg::Type::NUM, /* default */ "wallet default", "Confirmation target (in blocks), or fee rate (for " + CURRENCY_UNIT + "/kB or " + CURRENCY_ATOM + "/B estimate modes)"},
@@ -494,7 +495,7 @@ static UniValue listaddressgroupings(const JSONRPCRequest& request)
                 {
                     {RPCResult::Type::ARR, "", "",
                     {
-                        {RPCResult::Type::STR, "address", "The Dash address"},
+                        {RPCResult::Type::STR, "address", "The Cosanta address"},
                         {RPCResult::Type::STR_AMOUNT, "amount", "The amount in " + CURRENCY_UNIT},
                         {RPCResult::Type::STR, "label", /* optional */ true, "The label"},
                     }},
@@ -548,7 +549,7 @@ static UniValue listaddressbalances(const JSONRPCRequest& request)
         RPCResult{
             RPCResult::Type::ARR, "", "",
             {
-                {RPCResult::Type::STR_AMOUNT, "amount", "The Dash address and the amount in " + CURRENCY_UNIT},
+                {RPCResult::Type::STR_AMOUNT, "amount", "The Cosanta address and the amount in " + CURRENCY_UNIT},
             }
         },
         RPCExamples{
@@ -587,7 +588,7 @@ static UniValue signmessage(const JSONRPCRequest& request)
         "\nSign a message with the private key of an address" +
                 HELP_REQUIRING_PASSPHRASE,
         {
-            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Dash address to use for the private key."},
+            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Cosanta address to use for the private key."},
             {"message", RPCArg::Type::STR, RPCArg::Optional::NO, "The message to create a signature of."},
         },
         RPCResult{
@@ -649,7 +650,7 @@ static CAmount GetReceived(const CWallet& wallet, const UniValue& params, bool b
         // Get the address
         CTxDestination dest = DecodeDestination(params[0].get_str());
         if (!IsValidDestination(dest)) {
-            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Dash address");
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Cosanta address");
         }
         CScript script_pub_key = GetScriptForDestination(dest);
         if (!wallet.IsMine(script_pub_key)) {
@@ -690,7 +691,7 @@ static UniValue getreceivedbyaddress(const JSONRPCRequest& request)
     RPCHelpMan{"getreceivedbyaddress",
         "\nReturns the total amount received by the given address in transactions with at least minconf confirmations.\n",
         {
-            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Dash address for transactions."},
+            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Cosanta address for transactions."},
             {"minconf", RPCArg::Type::NUM, /* default */ "1", "Only include transactions confirmed at least this many times."},
             {"addlocked", RPCArg::Type::BOOL, /* default */ "false", "Whether to include transactions locked via InstantSend."},
         },
@@ -853,7 +854,7 @@ static UniValue sendmany(const JSONRPCRequest& request)
                     {"dummy", RPCArg::Type::STR, RPCArg::Optional::NO, "Must be set to \"\" for backwards compatibility.", "\"\""},
                     {"amounts", RPCArg::Type::OBJ, RPCArg::Optional::NO, "The addresses and amounts",
                         {
-                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "The Dash address is the key, the numeric amount (can be string) in " + CURRENCY_UNIT + " is the value"},
+                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "The Cosanta address is the key, the numeric amount (can be string) in " + CURRENCY_UNIT + " is the value"},
                         },
                     },
                     {"minconf", RPCArg::Type::NUM, RPCArg::Optional::OMITTED_NAMED_ARG, "Ignored dummy value"},
@@ -861,7 +862,7 @@ static UniValue sendmany(const JSONRPCRequest& request)
                     {"comment", RPCArg::Type::STR, RPCArg::Optional::OMITTED_NAMED_ARG, "A comment"},
                     {"subtractfeefrom", RPCArg::Type::ARR, RPCArg::Optional::OMITTED_NAMED_ARG, "The addresses.\n"
             "                           The fee will be equally deducted from the amount of each selected address.\n"
-            "                           Those recipients will receive less Dash than you enter in their corresponding amount field.\n"
+            "                           Those recipients will receive less COSA than you enter in their corresponding amount field.\n"
             "                           If no addresses are specified here, the sender pays the fee.",
                         {
                             {"address", RPCArg::Type::STR, RPCArg::Optional::OMITTED, "Subtract fee from this address"},
@@ -930,7 +931,7 @@ static UniValue sendmany(const JSONRPCRequest& request)
     for (const std::string& name_ : keys) {
         CTxDestination dest = DecodeDestination(name_);
         if (!IsValidDestination(dest)) {
-            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Dash address: ") + name_);
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Cosanta address: ") + name_);
         }
 
         if (destinations.count(dest)) {
@@ -972,15 +973,15 @@ UniValue addmultisigaddress(const JSONRPCRequest& request)
 {
     RPCHelpMan{"addmultisigaddress",
         "\nAdd an nrequired-to-sign multisignature address to the wallet. Requires a new wallet backup.\n"
-        "Each key is a Dash address or hex-encoded public key.\n"
+        "Each key is a Cosanta address or hex-encoded public key.\n"
         "This functionality is only intended for use with non-watchonly addresses.\n"
         "See `importaddress` for watchonly p2sh address support.\n"
         "If 'label' is specified, assign address to that label.\n",
         {
             {"nrequired", RPCArg::Type::NUM, RPCArg::Optional::NO, "The number of required signatures out of the n keys or addresses."},
-            {"keys", RPCArg::Type::ARR, RPCArg::Optional::NO, "The Dash addresses or hex-encoded public keys",
+            {"keys", RPCArg::Type::ARR, RPCArg::Optional::NO, "The Cosanta addresses or hex-encoded public keys",
                 {
-                    {"key", RPCArg::Type::STR, RPCArg::Optional::OMITTED, "Dash address or hex-encoded public key"},
+                    {"key", RPCArg::Type::STR, RPCArg::Optional::OMITTED, "Cosanta address or hex-encoded public key"},
                 },
                 },
             {"label", RPCArg::Type::STR, RPCArg::Optional::OMITTED_NAMED_ARG, "A label to assign the addresses to."},
@@ -1435,7 +1436,7 @@ static UniValue listtransactions(const JSONRPCRequest& request)
                 {RPCResult::Type::OBJ, "", "", Cat(Cat<std::vector<RPCResult>>(
                     {
                         {RPCResult::Type::BOOL, "involvesWatchonly", "Only returns true if imported addresses were involved in transaction"},
-                        {RPCResult::Type::STR, "address", "The Dash address of the transaction. Not present for\n"
+                        {RPCResult::Type::STR, "address", "The Cosanta address of the transaction. Not present for\n"
                               "move transactions (category = move)."},
                         {RPCResult::Type::STR, "category", "The transaction category.\n"
                             "\"send\"                  Transactions sent.\n"
@@ -1550,7 +1551,7 @@ static UniValue listsinceblock(const JSONRPCRequest& request)
                     {RPCResult::Type::OBJ, "", "", Cat(Cat<std::vector<RPCResult>>(
                     {
                         {RPCResult::Type::BOOL, "involvesWatchonly", "Only returns true if imported addresses were involved in transaction"},
-                        {RPCResult::Type::STR, "address", "The Dash address of the transaction."},
+                        {RPCResult::Type::STR, "address", "The Cosanta address of the transaction."},
                         {RPCResult::Type::STR, "category", "The transaction category.\n"
                             "\"send\"                  Transactions sent.\n"
                             "\"coinjoin\"              Transactions sent using CoinJoin funds.\n"
@@ -1689,7 +1690,7 @@ static UniValue gettransaction(const JSONRPCRequest& request)
                             {RPCResult::Type::OBJ, "", "",
                                 {
                                     {RPCResult::Type::BOOL, "involvesWatchonly", "Only returns true if imported addresses were involved in transaction"},
-                                    {RPCResult::Type::STR, "address", "The Dash address involved in the transaction."},
+                                    {RPCResult::Type::STR, "address", "The Cosanta address involved in the transaction."},
                                     {RPCResult::Type::STR, "category", "The transaction category.\n"
                                         "\"send\"                  Transactions sent.\n"
                                         "\"coinjoin\"              Transactions sent using CoinJoin funds.\n"
@@ -1896,7 +1897,7 @@ static UniValue walletpassphrase(const JSONRPCRequest& request)
 {
     RPCHelpMan{"walletpassphrase",
         "\nStores the wallet decryption key in memory for 'timeout' seconds.\n"
-        "This is needed prior to performing transactions related to private keys such as sending Dash\n"
+        "This is needed prior to performing transactions related to private keys such as sending COSA\n"
         "\nNote:\n"
         "Issuing the walletpassphrase command while the wallet is already unlocked will set a new unlock\n"
         "time that overrides the old one.\n",
@@ -2098,7 +2099,7 @@ static UniValue encryptwallet(const JSONRPCRequest& request)
         RPCExamples{
     "\nEncrypt your wallet\n"
     + HelpExampleCli("encryptwallet", "\"my pass phrase\"") +
-    "\nNow set the passphrase to use the wallet, such as for signing or sending Dash\n"
+    "\nNow set the passphrase to use the wallet, such as for signing or sending COSA\n"
     + HelpExampleCli("walletpassphrase", "\"my pass phrase\"") +
     "\nNow we can do something like sign\n"
     + HelpExampleCli("signmessage", "\"address\" \"test message\"") +
@@ -2146,7 +2147,7 @@ static UniValue lockunspent(const JSONRPCRequest& request)
         "\nUpdates list of temporarily unspendable outputs.\n"
         "Temporarily lock (unlock=false) or unlock (unlock=true) specified transaction outputs.\n"
         "If no transaction outputs are specified when unlocking then all current locked transaction outputs are unlocked.\n"
-        "A locked transaction output will not be chosen by automatic coin selection, when spending Dash.\n"
+        "A locked transaction output will not be chosen by automatic coin selection, when spending COSA.\n"
         "Manually selected coins are automatically unlocked.\n"
         "Locks are stored in memory only. Nodes start with zero locked outputs, and the locked output list\n"
         "is always cleared (by virtue of process exit) when a node stops or fails.\n"
@@ -2596,6 +2597,67 @@ static UniValue getwalletinfo(const JSONRPCRequest& request)
     return obj;
 }
 
+static UniValue getstakingstatus(const JSONRPCRequest& request)
+{
+    RPCHelpMan{"getstakingstatus",
+        "\nReturns an object containing various staking information.\n",
+        {},
+        RPCResult{
+            RPCResult::Type::OBJ, "", "",
+            {
+                {RPCResult::Type::BOOL, "staking_status", "whether the wallet is staking or not"},
+                {RPCResult::Type::BOOL, "staking_enabled", "whether staking is enabled/disabled in cosanta.conf"},
+                {RPCResult::Type::BOOL, "haveconnections", "whether network connections are present"},
+                {RPCResult::Type::BOOL, "mnsync", "whether the required masternode/spork data is synced"},
+                {RPCResult::Type::BOOL, "walletunlocked", "whether the wallet is unlocked"},
+                {RPCResult::Type::BOOL, "mintable_coins", "whether there are coins eligible for staking"},
+                {RPCResult::Type::BOOL, "above_reserve_balance", "whether the wallet balance is above the reserve balance"},
+                {RPCResult::Type::NUM, "stakesplitthreshold", "value of the current threshold for stake split"},
+                {RPCResult::Type::NUM, "stakemaxsplit", "the number of max inputs & outputs of a stake"},
+                {RPCResult::Type::NUM, "stakeautocombine", "autocombine feature: 0 - disable, 1 - same account, 2 - any account"},
+                {RPCResult::Type::BOOL, "inputstakeprotect", "whether masternode collateral is excluded from staking"},
+                {RPCResult::Type::NUM, "poshashinterval", "number of seconds between stake hash attempts"},
+            },
+        },
+        RPCExamples{
+            HelpExampleCli("getstakingstatus", "")
+            + HelpExampleRpc("getstakingstatus", "")
+        },
+    }.Check(request);
+
+    std::shared_ptr<CWallet> const wallet = GetWalletForJSONRPCRequest(request);
+    if (!wallet) return NullUniValue;
+    CWallet* const pwallet = wallet.get();
+
+    pwallet->BlockUntilSyncedToCurrentChain();
+
+    LOCK(pwallet->cs_wallet);
+
+    // With the v19 NodeContext refactor connman is not directly reachable from
+    // a wallet RPC handler. interfaces::Chain exposes p2pEnabled(), which is
+    // true while P2P networking is up, and mnsync covers the "no peers yet" case.
+    const bool fHaveConnections = pwallet->chain().p2pEnabled();
+    const bool fMintableCoins = pwallet->MintableCoins();
+    const bool fLessReserveBalance = pwallet->nReserveBalance >= pwallet->GetBalance().m_mine_trusted;
+    const bool fMnSynced = ::masternodeSync != nullptr && ::masternodeSync->IsSynced();
+    const bool fStatus = !(pwallet->IsLocked(true) || !fMintableCoins || fLessReserveBalance || !fMnSynced || !fHaveConnections);
+
+    UniValue obj(UniValue::VOBJ);
+    obj.pushKV("staking_status", fStatus);
+    obj.pushKV("staking_enabled", gArgs.GetBoolArg("-staking", true));
+    obj.pushKV("haveconnections", fHaveConnections);
+    obj.pushKV("mnsync", fMnSynced);
+    obj.pushKV("walletunlocked", !pwallet->IsLocked(true));
+    obj.pushKV("mintable_coins", fMintableCoins);
+    obj.pushKV("above_reserve_balance", !fLessReserveBalance);
+    obj.pushKV("stakesplitthreshold", static_cast<uint64_t>(pwallet->nStakeSplitThreshold));
+    obj.pushKV("stakemaxsplit", pwallet->nStakeMaxSplit);
+    obj.pushKV("stakeautocombine", pwallet->fAutocombine);
+    obj.pushKV("inputstakeprotect", pwallet->inputStakeProtect);
+    obj.pushKV("poshashinterval", static_cast<uint64_t>(pwallet->nHashInterval));
+    return obj;
+}
+
 static UniValue listwalletdir(const JSONRPCRequest& request)
 {
     RPCHelpMan{"listwalletdir",
@@ -2756,7 +2818,7 @@ static UniValue loadwallet(const JSONRPCRequest& request)
 {
     RPCHelpMan{"loadwallet",
         "\nLoads a wallet from a wallet file or directory."
-        "\nNote that all wallet command-line options used when starting dashd will be"
+        "\nNote that all wallet command-line options used when starting cosantad will be"
         "\napplied to the new wallet (eg, rescan, etc).\n",
         {
             {"filename", RPCArg::Type::STR, RPCArg::Optional::NO, "The wallet directory or .dat file."},
@@ -3008,9 +3070,9 @@ static UniValue listunspent(const JSONRPCRequest& request)
         {
             {"minconf", RPCArg::Type::NUM, /* default */ "1", "The minimum confirmations to filter"},
             {"maxconf", RPCArg::Type::NUM, /* default */ "9999999", "The maximum confirmations to filter"},
-            {"addresses", RPCArg::Type::ARR, /* default */ "empty array", "The Dash addresses to filter",
+            {"addresses", RPCArg::Type::ARR, /* default */ "empty array", "The Cosanta addresses to filter",
                 {
-                    {"address", RPCArg::Type::STR, RPCArg::Optional::OMITTED, "Dash address"},
+                    {"address", RPCArg::Type::STR, RPCArg::Optional::OMITTED, "Cosanta address"},
                 },
             },
             {"include_unsafe", RPCArg::Type::BOOL, /* default */ "true", "Include outputs that are not safe to spend\n"
@@ -3034,7 +3096,7 @@ static UniValue listunspent(const JSONRPCRequest& request)
                 {
                     {RPCResult::Type::STR_HEX, "txid", "the transaction id"},
                     {RPCResult::Type::NUM, "vout", "the vout value"},
-                    {RPCResult::Type::STR, "address", "the Dash address"},
+                    {RPCResult::Type::STR, "address", "the Cosanta address"},
                     {RPCResult::Type::STR, "label", "The associated label, or \"\" for the default label"},
                     {RPCResult::Type::STR, "scriptPubKey", "the script key"},
                     {RPCResult::Type::STR_AMOUNT, "amount", "the transaction output amount in " + CURRENCY_UNIT},
@@ -3079,7 +3141,7 @@ static UniValue listunspent(const JSONRPCRequest& request)
             const UniValue& input = inputs[idx];
             CTxDestination dest = DecodeDestination(input.get_str());
             if (!IsValidDestination(dest)) {
-                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Dash address: ") + input.get_str());
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Cosanta address: ") + input.get_str());
             }
             if (!destinations.insert(dest).second) {
                 throw JSONRPCError(RPC_INVALID_PARAMETER, std::string("Invalid parameter, duplicated address: ") + input.get_str());
@@ -3250,7 +3312,7 @@ void FundTransaction(CWallet* const pwallet, CMutableTransaction& tx, CAmount& f
             CTxDestination dest = DecodeDestination(options["changeAddress"].get_str());
 
             if (!IsValidDestination(dest)) {
-                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "changeAddress must be a valid Dash address");
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "changeAddress must be a valid Cosanta address");
             }
 
             coinControl.destChange = dest;
@@ -3329,7 +3391,7 @@ static UniValue fundrawtransaction(const JSONRPCRequest& request)
                     {"hexstring", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The hex string of the raw transaction"},
                     {"options", RPCArg::Type::OBJ, RPCArg::Optional::OMITTED_NAMED_ARG, "for backward compatibility: passing in a true instead of an object will result in {\"includeWatching\":true}",
                         {
-                            {"changeAddress", RPCArg::Type::STR, /* default */ "pool address", "The Dash address to receive the change"},
+                            {"changeAddress", RPCArg::Type::STR, /* default */ "pool address", "The Cosanta address to receive the change"},
                             {"changePosition", RPCArg::Type::NUM, /* default */ "random", "The index of the change output"},
                             {"includeWatching", RPCArg::Type::BOOL, /* default */ "true for watch-only wallets, otherwise false", "Also select inputs which are watch only.\n"
                                                           "Only solvable inputs can be used. Watch-only destinations are solvable if the public key and/or output script was imported,\n"
@@ -3338,7 +3400,7 @@ static UniValue fundrawtransaction(const JSONRPCRequest& request)
                             {"feeRate", RPCArg::Type::AMOUNT, /* default */ "not set: makes wallet determine the fee", "Set a specific fee rate in " + CURRENCY_UNIT + "/kB"},
                             {"subtractFeeFromOutputs", RPCArg::Type::ARR, /* default */ "empty array", "The integers.\n"
                             "                              The fee will be equally deducted from the amount of each specified output.\n"
-                            "                              Those recipients will receive less Dash than you enter in their corresponding amount field.\n"
+                            "                              Those recipients will receive less COSA than you enter in their corresponding amount field.\n"
                             "                              If no outputs are specified here, the sender pays the fee.",
                                 {
                                     {"vout_index", RPCArg::Type::NUM, RPCArg::Optional::OMITTED, "The zero-based output index, before a change output is added."},
@@ -3707,15 +3769,15 @@ static UniValue AddressBookDataToJSON(const CAddressBookData& data, const bool v
 UniValue getaddressinfo(const JSONRPCRequest& request)
 {
     RPCHelpMan{"getaddressinfo",
-        "\nReturn information about the given Dash address.\n"
+        "\nReturn information about the given Cosanta address.\n"
         "Some of the information will only be present if the address is in the active wallet.\n",
         {
-            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Dash address for which to get information."},
+            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Cosanta address for which to get information."},
         },
         RPCResult{
             RPCResult::Type::OBJ, "", "",
             {
-                {RPCResult::Type::STR, "address", "The Dash address validated."},
+                {RPCResult::Type::STR, "address", "The Cosanta address validated."},
                 {RPCResult::Type::STR_HEX, "scriptPubKey", "The hex-encoded scriptPubKey generated by the address."},
                 {RPCResult::Type::BOOL, "ismine", "If the address is yours."},
                 {RPCResult::Type::BOOL, "iswatchonly", "If the address is watchonly."},
@@ -4065,7 +4127,7 @@ UniValue walletcreatefundedpsbt(const JSONRPCRequest& request)
                 {
                     {"", RPCArg::Type::OBJ, RPCArg::Optional::OMITTED, "",
                         {
-                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "A key-value pair. The key (string) is the Dash address, the value (float or string) is the amount in " + CURRENCY_UNIT + ""},
+                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "A key-value pair. The key (string) is the Cosanta address, the value (float or string) is the amount in " + CURRENCY_UNIT + ""},
                         },
                         },
                     {"", RPCArg::Type::OBJ, RPCArg::Optional::OMITTED, "",
@@ -4078,14 +4140,14 @@ UniValue walletcreatefundedpsbt(const JSONRPCRequest& request)
             {"locktime", RPCArg::Type::NUM, /* default */ "0", "Raw locktime. Non-0 value also locktime-activates inputs"},
             {"options", RPCArg::Type::OBJ, RPCArg::Optional::OMITTED_NAMED_ARG, "",
                 {
-                    {"changeAddress", RPCArg::Type::STR_HEX, /* default */ "pool address", "The Dash address to receive the change"},
+                    {"changeAddress", RPCArg::Type::STR_HEX, /* default */ "pool address", "The Cosanta address to receive the change"},
                     {"changePosition", RPCArg::Type::NUM, /* default */ "random", "The index of the change output"},
                     {"includeWatching", RPCArg::Type::BOOL, /* default */ "true for watch-only wallets, otherwise false", "Also select inputs which are watch only"},
                     {"lockUnspents", RPCArg::Type::BOOL, /* default */ "false", "Lock selected unspent outputs"},
                     {"feeRate", RPCArg::Type::AMOUNT, /* default */ "not set: makes wallet determine the fee", "Set a specific fee rate in " + CURRENCY_UNIT + "/kB"},
                     {"subtractFeeFromOutputs", RPCArg::Type::ARR, /* default */ "empty array", "The outputs to subtract the fee from.\n"
                     "                              The fee will be equally deducted from the amount of each specified output.\n"
-                    "                              Those recipients will receive less Dash than you enter in their corresponding amount field.\n"
+                    "                              Those recipients will receive less COSA than you enter in their corresponding amount field.\n"
                     "                              If no outputs are specified here, the sender pays the fee.",
                         {
                             {"vout_index", RPCArg::Type::NUM, RPCArg::Optional::OMITTED, "The zero-based output index, before a change output is added."},
@@ -4213,6 +4275,7 @@ static const CRPCCommand commands[] =
     { "wallet",             "gettransaction",                   &gettransaction,                {"txid","include_watchonly","verbose"} },
     { "wallet",             "getunconfirmedbalance",            &getunconfirmedbalance,         {} },
     { "wallet",             "getbalances",                      &getbalances,                   {} },
+    { "wallet",             "getstakingstatus",                 &getstakingstatus,              {} },
     { "wallet",             "getwalletinfo",                    &getwalletinfo,                 {} },
     { "wallet",             "importaddress",                    &importaddress,                 {"address","label","rescan","p2sh"} },
     { "wallet",             "importelectrumwallet",             &importelectrumwallet,          {"filename", "index"} },

@@ -44,7 +44,7 @@ CTxDestination DecodeDestination(const std::string& str, const CChainParams& par
     uint160 hash;
     error_str = "";
     if (DecodeBase58Check(str, data, 21)) {
-        // base58-encoded Dash addresses.
+        // base58-encoded Cosanta addresses.
         // Public-key-hash-addresses have version 76 (or 140 testnet).
         // The data vector contains RIPEMD160(SHA256(pubkey)), where pubkey is the serialized public key.
         const std::vector<unsigned char>& pubkey_prefix = params.Base58Prefix(CChainParams::PUBKEY_ADDRESS);
