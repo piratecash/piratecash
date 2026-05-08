@@ -1,8 +1,8 @@
 Release Process
 ====================
 
-* [ ] Update translations, see [translation_process.md](https://github.com/dashpay/dash/blob/master/doc/translation_process.md#synchronising-translations).
-* [ ] Update manpages, see [gen-manpages.sh](https://github.com/dashpay/dash/blob/master/contrib/devtools/README.md#gen-manpagessh).
+* [ ] Update translations, see [translation_process.md](https://github.com/cosanta/cosanta-core/blob/master/doc/translation_process.md#synchronising-translations).
+* [ ] Update manpages, see [gen-manpages.sh](https://github.com/cosanta/cosanta-core/blob/master/contrib/devtools/README.md#gen-manpagessh).
 
 Before every minor and major release:
 
@@ -24,10 +24,10 @@ Before every minor and major release:
 
 Before every major release:
 
-* [ ] Update hardcoded [seeds](/contrib/seeds/README.md), see [this pull request](https://github.com/dashpay/dash/pull/5914) for an example.
+* [ ] Update hardcoded [seeds](/contrib/seeds/README.md), see [this pull request](https://github.com/cosanta/cosanta-core/pull/5914) for an example.
 * [ ] Update [`src/chainparams.cpp`](/src/chainparams.cpp) `m_assumed_blockchain_size` and `m_assumed_chain_state_size` with the current size plus some overhead (see [this](#how-to-calculate-assumed-blockchain-and-chain-state-size) for information on how to calculate them).
 * [ ] Update [`src/chainparams.cpp`](/src/chainparams.cpp) `chainTxData` with statistics about the transaction count and rate. Use the output of the `getchaintxstats` RPC, see
-  [this pull request](https://github.com/dashpay/dash/pull/5692) for an example. Reviewers can verify the results by running `getchaintxstats <window_block_count> <window_last_block_hash>` with the `window_block_count` and `window_last_block_hash` from your output.
+  [this pull request](https://github.com/cosanta/cosanta-core/pull/5692) for an example. Reviewers can verify the results by running `getchaintxstats <window_block_count> <window_last_block_hash>` with the `window_block_count` and `window_last_block_hash` from your output.
 
 ### First time / New builders
 
@@ -39,11 +39,11 @@ Check out the source code in the following directory hierarchy.
 ```sh
 cd /path/to/your/toplevel/build
 git clone https://github.com/dashpay/guix.sigs.git
-git clone https://github.com/dashpay/dash-detached-sigs.git
-git clone https://github.com/dashpay/dash.git
+git clone https://github.com/cosanta/cosanta-core-detached-sigs.git
+git clone https://github.com/cosanta/cosanta-core.git
 ```
 
-### Dash Core maintainers/release engineers, suggestion for writing release notes
+### Cosanta Core maintainers/release engineers, suggestion for writing release notes
 
 Write release notes. git shortlog helps a lot, for example:
 
@@ -65,7 +65,7 @@ git tag -s v(new version, e.g. 20.0.0)
 
 ### Setup and perform Guix builds
 
-Checkout the Dash Core version you'd like to build:
+Checkout the Cosanta Core version you'd like to build:
 
 ```sh
 pushd ./dash
@@ -85,7 +85,7 @@ git -C ./guix.sigs pull
 
 ### Create the macOS SDK tarball: (first time, or when SDK version changes)
 
-_Note: this step can be skipped if [our CI](https://github.com/dashpay/dash/blob/master/ci/test/00_setup_env.sh#L64) still uses bitcoin's SDK package (see SDK_URL)_
+_Note: this step can be skipped if [our CI](https://github.com/cosanta/cosanta-core/blob/master/ci/test/00_setup_env.sh#L64) still uses bitcoin's SDK package (see SDK_URL)_
 
 Create the macOS SDK tarball, see the [macOS build
 instructions](build-osx.md#deterministic-macos-dmg-notes) for
@@ -166,7 +166,7 @@ popd
 Non-codesigners: wait for Windows/macOS detached signatures:
 
 - Once the Windows/macOS builds each have 3 matching signatures, they will be signed with their respective release keys.
-- Detached signatures will then be committed to the [dash-detached-sigs](https://github.com/dashpay/dash-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
+- Detached signatures will then be committed to the [dash-detached-sigs](https://github.com/cosanta/cosanta-core-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
 
 Create (and optionally verify) the codesigned outputs:
 - [Codesigning](/contrib/guix/README.md#codesigning)
@@ -201,10 +201,10 @@ popd
        for troubleshooting by developers. It is assumed that anyone that is
        interested in debugging can run guix to generate the files for
        themselves. To avoid end-user confusion about which file to pick, as well
-       as save storage space *do not upload these to the dash.org server*.
+       as save storage space *do not upload these to the cosa.is server*.
 
        ```sh
-       find guix-build-${VERSION}/output/ -maxdepth 2 -type f -not -name "SHA256SUMS.part" -and -not -name "*debug*" -exec scp {} user@dash.org:/var/www/bin/dash-core-${VERSION} \;
+       find guix-build-${VERSION}/output/ -maxdepth 2 -type f -not -name "SHA256SUMS.part" -and -not -name "*debug*" -exec scp {} user@cosa.is:/var/www/bin/dash-core-${VERSION} \;
        ```
 
     2. The `SHA256SUMS` file
@@ -214,11 +214,11 @@ popd
 * [ ] Notarize macOS binaries
 * [ ] Publish release on GitHub
 * [ ] Fast-forward `master` branch on GitHub
-* [ ] Update the dash.org download links
+* [ ] Update the cosa.is download links
 * [ ] Ensure that docker hub images are up to date
 
 ### Announce the release:
-* [ ] Release on Dash forum: https://www.dash.org/forum/topic/official-announcements.54/ (necessary so we have a permalink to use on twitter, reddit, etc.)
+* [ ] Release on Cosanta forum: https://cosa.is/forum/topic/official-announcements.54/ (necessary so we have a permalink to use on twitter, reddit, etc.)
 * [ ] Prepare product brief (major versions only)
 * [ ] Prepare a release announcement tweet
 * [ ] Follow-up tweets with any important block heights for consensus changes
@@ -226,9 +226,9 @@ popd
 * [ ] Celebrate
 
 ### After the release:
-* [ ] Submit patches to BTCPay to ensure they use latest / compatible version see https://github.com/dashpay/dash/issues/4211#issuecomment-966608207
-* [ ] Update Core and User docs (docs.dash.org)
-* [ ] Test Docker build runs without error in Dashmate
+* [ ] Submit patches to BTCPay to ensure they use latest / compatible version see https://github.com/cosanta/cosanta-core/issues/4211#issuecomment-966608207
+* [ ] Update Core and User docs (docs.cosa.is)
+* [ ] Test Docker build runs without error in Cosantamate
 * [ ] Add new Release Process items to repo [Release Process](release-process.md) document
 * [ ] Merge `master` branch back into `develop` so that `master` could be fast-forwarded on next release again
 
@@ -260,14 +260,14 @@ If the notarization process is successful, the notary service generates a log fi
 
 #### Notarization Validation
 
-After successfully notarizing the .dmg file, extract `Dash-Qt.app` from the .dmg.
+After successfully notarizing the .dmg file, extract `Cosanta-Qt.app` from the .dmg.
 To verify that the notarization process was successful, run the following command:
 
 ```sh
-spctl -a -vv -t install Dash-Qt.app
+spctl -a -vv -t install Cosanta-Qt.app
 ```
 
-Replace `Dash-Qt.app` with the path to your .app file. This command checks whether your .app file passes Gatekeeper’s
+Replace `Cosanta-Qt.app` with the path to your .app file. This command checks whether your .app file passes Gatekeeper’s
 checks. If the app is successfully notarized, the command line will include a line stating `source=<Notarized Developer ID>`.
 
 ### Additional information

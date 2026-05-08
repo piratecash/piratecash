@@ -1,21 +1,21 @@
 Benchmarking
 ============
 
-Dash Core has an internal benchmarking framework, with benchmarks
+Cosanta Core has an internal benchmarking framework, with benchmarks
 for cryptographic algorithms (e.g. SHA1, SHA256, SHA512, RIPEMD160, Poly1305, ChaCha20), rolling bloom filter, coins selection,
 thread queue, wallet balance.
 
 Running
 ---------------------
 
-For benchmarks purposes you only need to compile `dash_bench`. Beware of configuring without `--enable-debug` as this would impact
+For benchmarks purposes you only need to compile `cosanta_bench`. Beware of configuring without `--enable-debug` as this would impact
 benchmarking by unlatching log printers and lock analysis.
 
-    make -C src dash_bench
+    make -C src bench_cosanta
 
-After compiling Dash Core, the benchmarks can be run with:
+After compiling Cosanta Core, the benchmarks can be run with:
 
-    src/bench/bench_dash
+    src/bench/bench_cosanta
 
 The output will look similar to:
 ```
@@ -29,7 +29,7 @@ The output will look similar to:
 Help
 ---------------------
 
-    src/bench/bench_dash --help
+    src/bench/bench_cosanta --help
 
 To print options like scaling factor or per-benchmark filter.
 
@@ -45,6 +45,6 @@ More benchmarks are needed for, in no particular order:
 Going Further
 --------------------
 
-To monitor Dash Core performance more in depth (like reindex or IBD): https://github.com/chaincodelabs/bitcoinperf
+To monitor Cosanta Core performance more in depth (like reindex or IBD): https://github.com/chaincodelabs/bitcoinperf
 
-To generate Flame Graphs for Dash Core: https://github.com/eklitzke/bitcoin/blob/flamegraphs/doc/flamegraphs.md
+To generate Flame Graphs for Cosanta Core: https://github.com/eklitzke/bitcoin/blob/flamegraphs/doc/flamegraphs.md

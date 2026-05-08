@@ -1,4 +1,4 @@
-# Dash Core version v20.1.0
+# Cosanta Core version v20.1.0
 
 This is a new minor version release, including various new features, improvements, and bug fixes.
 
@@ -6,7 +6,7 @@ This release is optional but recommended for all nodes.
 
 Please report bugs using the issue tracker at GitHub:
 
-  <https://github.com/dashpay/dash/issues>
+  <https://github.com/cosanta/cosanta-core/issues>
 
 
 # Upgrading and downgrading
@@ -15,8 +15,8 @@ Please report bugs using the issue tracker at GitHub:
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), then run the
-installer (on Windows) or just copy over /Applications/Dash-Qt (on Mac) or
-dashd/dash-qt (on Linux).
+installer (on Windows) or just copy over /Applications/Cosanta-Qt (on Mac) or
+cosantad/cosanta-qt (on Linux).
 
 ## Downgrade warning
 
@@ -30,11 +30,11 @@ reindex or re-sync the whole chain.
 
 ## HD Wallets Enabled by Default
 
-In this release, we are taking a significant step towards enhancing the Dash wallet's usability by enabling Hierarchical
-Deterministic (HD) wallets by default. This change aligns the behavior of `dashd` and `dash-qt` with the previously
+In this release, we are taking a significant step towards enhancing the Cosanta wallet's usability by enabling Hierarchical
+Deterministic (HD) wallets by default. This change aligns the behavior of `cosantad` and `cosanta-qt` with the previously
 optional `-usehd=1` flag, making HD wallets the standard for all users.
 
-While HD wallets are now enabled by default to improve user experience, Dash Core still allows for the creation of
+While HD wallets are now enabled by default to improve user experience, Cosanta Core still allows for the creation of
 non-HD wallets by using the `-usehd=0` flag. However, users should be aware that this option is intended for legacy
 support and will be removed in future releases. Importantly, even with an HD wallet, users can still import non-HD
 private keys, ensuring flexibility in managing their funds.
@@ -81,9 +81,9 @@ possible. This RPC is whitelisted for the Platform RPC user.
 
 ## Docker Build System
 
-Modified the Dockerfile to exclude the `dash-qt` graphical wallet interface from the set of binaries copied to
+Modified the Dockerfile to exclude the `cosanta-qt` graphical wallet interface from the set of binaries copied to
 `/usr/local/bin` during the Docker image build process. This change streamlines the Docker image, making it more
-suitable for server environments and headless applications, where the graphical user interface of `dash-qt` is not
+suitable for server environments and headless applications, where the graphical user interface of `cosanta-qt` is not
 required. The update enhances the Docker image's efficiency by reducing its size and minimizing unnecessary components.
 
 ## Command-line options
@@ -98,7 +98,7 @@ notification to different ZeroMQ sockets.
 - `-walletnotify` notifications are now sent for wallet transactions that are removed from the mempool because they
 conflict with a new block. These notifications were sent previously, but have been broken since
 the v18.1 release.
-- The `startupnotify` option is used to specify a command to execute when Dash Core has finished with its startup
+- The `startupnotify` option is used to specify a command to execute when Cosanta Core has finished with its startup
 sequence.
 
 ## Build System
@@ -109,8 +109,8 @@ you can configure it using a `.conf` file, or by passing the relevant options at
 ## Wallet
 
 - The wallet can create a transaction without change even when the keypool is empty. Previously it failed.
-- New Discreet mode for hiding balances in Dash-Qt
-- Added a "Close all wallet" menu item for Dash-Qt
+- New Discreet mode for hiding balances in Cosanta-Qt
+- Added a "Close all wallet" menu item for Cosanta-Qt
 
 ## Backports from Bitcoin Core
 
@@ -141,51 +141,51 @@ debug the release candidates.
 
 These release are considered obsolete. Old release notes can be found here:
 
-- [v20.0.4](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-20.0.4.md) released Jan/13/2024
-- [v20.0.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-20.0.3.md) released December/26/2023
-- [v20.0.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-20.0.2.md) released December/06/2023
-- [v20.0.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-20.0.1.md) released November/18/2023
-- [v20.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-20.0.0.md) released November/15/2023
-- [v19.3.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-19.3.0.md) released July/31/2023
-- [v19.2.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-19.2.0.md) released June/19/2023
-- [v19.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-19.1.0.md) released May/22/2023
-- [v19.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-19.0.0.md) released Apr/14/2023
-- [v18.2.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-18.2.2.md) released Mar/21/2023
-- [v18.2.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-18.2.1.md) released Jan/17/2023
-- [v18.2.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-18.2.0.md) released Jan/01/2023
-- [v18.1.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-18.1.1.md) released January/08/2023
-- [v18.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-18.1.0.md) released October/09/2022
-- [v18.0.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-18.0.2.md) released October/09/2022
-- [v18.0.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-18.0.1.md) released August/17/2022
-- [v0.17.0.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.17.0.3.md) released June/07/2021
-- [v0.17.0.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.17.0.2.md) released May/19/2021
-- [v0.16.1.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.16.1.1.md) released November/17/2020
-- [v0.16.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.16.1.0.md) released November/14/2020
-- [v0.16.0.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.16.0.1.md) released September/30/2020
-- [v0.15.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.15.0.0.md) released Febrary/18/2020
-- [v0.14.0.5](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.14.0.5.md) released December/08/2019
-- [v0.14.0.4](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.14.0.4.md) released November/22/2019
-- [v0.14.0.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.14.0.3.md) released August/15/2019
-- [v0.14.0.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.14.0.2.md) released July/4/2019
-- [v0.14.0.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.14.0.1.md) released May/31/2019
-- [v0.14.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.14.0.md) released May/22/2019
-- [v0.13.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.13.3.md) released Apr/04/2019
-- [v0.13.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.13.2.md) released Mar/15/2019
-- [v0.13.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.13.1.md) released Feb/9/2019
-- [v0.13.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.13.0.md) released Jan/14/2019
-- [v0.12.3.4](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.3.4.md) released Dec/14/2018
-- [v0.12.3.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.3.3.md) released Sep/19/2018
-- [v0.12.3.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.3.2.md) released Jul/09/2018
-- [v0.12.3.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.3.1.md) released Jul/03/2018
-- [v0.12.2.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.2.3.md) released Jan/12/2018
-- [v0.12.2.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.2.2.md) released Dec/17/2017
-- [v0.12.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.2.md) released Nov/08/2017
-- [v0.12.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.1.md) released Feb/06/2017
-- [v0.12.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.0.md) released Aug/15/2015
-- [v0.11.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.11.2.md) released Mar/04/2015
-- [v0.11.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.11.1.md) released Feb/10/2015
-- [v0.11.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.11.0.md) released Jan/15/2015
-- [v0.10.x](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.10.0.md) released Sep/25/2014
-- [v0.9.x](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.9.0.md) released Mar/13/2014
+- [v20.0.4](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-20.0.4.md) released Jan/13/2024
+- [v20.0.3](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-20.0.3.md) released December/26/2023
+- [v20.0.2](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-20.0.2.md) released December/06/2023
+- [v20.0.1](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-20.0.1.md) released November/18/2023
+- [v20.0.0](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-20.0.0.md) released November/15/2023
+- [v19.3.0](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-19.3.0.md) released July/31/2023
+- [v19.2.0](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-19.2.0.md) released June/19/2023
+- [v19.1.0](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-19.1.0.md) released May/22/2023
+- [v19.0.0](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-19.0.0.md) released Apr/14/2023
+- [v18.2.2](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-18.2.2.md) released Mar/21/2023
+- [v18.2.1](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-18.2.1.md) released Jan/17/2023
+- [v18.2.0](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-18.2.0.md) released Jan/01/2023
+- [v18.1.1](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-18.1.1.md) released January/08/2023
+- [v18.1.0](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-18.1.0.md) released October/09/2022
+- [v18.0.2](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-18.0.2.md) released October/09/2022
+- [v18.0.1](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-18.0.1.md) released August/17/2022
+- [v0.17.0.3](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.17.0.3.md) released June/07/2021
+- [v0.17.0.2](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.17.0.2.md) released May/19/2021
+- [v0.16.1.1](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.16.1.1.md) released November/17/2020
+- [v0.16.1.0](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.16.1.0.md) released November/14/2020
+- [v0.16.0.1](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.16.0.1.md) released September/30/2020
+- [v0.15.0.0](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.15.0.0.md) released Febrary/18/2020
+- [v0.14.0.5](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.14.0.5.md) released December/08/2019
+- [v0.14.0.4](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.14.0.4.md) released November/22/2019
+- [v0.14.0.3](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.14.0.3.md) released August/15/2019
+- [v0.14.0.2](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.14.0.2.md) released July/4/2019
+- [v0.14.0.1](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.14.0.1.md) released May/31/2019
+- [v0.14.0](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.14.0.md) released May/22/2019
+- [v0.13.3](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.13.3.md) released Apr/04/2019
+- [v0.13.2](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.13.2.md) released Mar/15/2019
+- [v0.13.1](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.13.1.md) released Feb/9/2019
+- [v0.13.0](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.13.0.md) released Jan/14/2019
+- [v0.12.3.4](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.12.3.4.md) released Dec/14/2018
+- [v0.12.3.3](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.12.3.3.md) released Sep/19/2018
+- [v0.12.3.2](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.12.3.2.md) released Jul/09/2018
+- [v0.12.3.1](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.12.3.1.md) released Jul/03/2018
+- [v0.12.2.3](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.12.2.3.md) released Jan/12/2018
+- [v0.12.2.2](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.12.2.2.md) released Dec/17/2017
+- [v0.12.2](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.12.2.md) released Nov/08/2017
+- [v0.12.1](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.12.1.md) released Feb/06/2017
+- [v0.12.0](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.12.0.md) released Aug/15/2015
+- [v0.11.2](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.11.2.md) released Mar/04/2015
+- [v0.11.1](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.11.1.md) released Feb/10/2015
+- [v0.11.0](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.11.0.md) released Jan/15/2015
+- [v0.10.x](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.10.0.md) released Sep/25/2014
+- [v0.9.x](https://github.com/cosanta/cosanta-core/blob/master/doc/release-notes/dash/release-notes-0.9.0.md) released Mar/13/2014
 
-[set-of-changes]: https://github.com/dashpay/dash/compare/v20.0.4...dashpay:v20.1.0
+[set-of-changes]: https://github.com/cosanta/cosanta-core/compare/v20.0.4...cosanta:v20.1.0
