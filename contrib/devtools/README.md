@@ -2,13 +2,16 @@ Contents
 ========
 This directory contains tools for developers working on this repository.
 
+check-doc.py
+============
+
+Check if all command line args are documented. The return value indicates the
+number of undocumented args.
+
 clang-format-diff.py
 ===================
 
 A script to format unified git diffs according to [.clang-format](../../src/.clang-format).
-
-Requires `clang-format`, installed e.g. via `brew install clang-format` on macOS,
-or `sudo apt install clang-format` on Debian/Ubuntu.
 
 For instance, to format the last commit with 0 lines of context,
 the script should be called from the git root folder as follows.
@@ -20,7 +23,7 @@ git diff -U0 HEAD~1.. | ./contrib/devtools/clang-format-diff.py -p1 -i -v
 copyright\_header.py
 ====================
 
-Provides utilities for managing copyright headers of `The Dash Core
+Provides utilities for managing copyright headers of `The Cosanta Core
 developers` in repository source files. It has three subcommands:
 
 ```
@@ -39,31 +42,31 @@ Specifying `verbose` will list the full filenames of files of each category.
 
 copyright\_header.py update \<base\_directory\> [verbose]
 ---------------------------------------------------------
-Updates all the copyright headers of `The Dash Core developers` which were
+Updates all the copyright headers of `The Cosanta Core developers` which were
 changed in a year more recent than is listed. For example:
 ```
-// Copyright (c) <firstYear>-<lastYear> The Dash Core developers
+// Copyright (c) <firstYear>-<lastYear> The Cosanta Core developers
 ```
 will be updated to:
 ```
-// Copyright (c) <firstYear>-<lastModifiedYear> The Dash Core developers
+// Copyright (c) <firstYear>-<lastModifiedYear> The Cosanta Core developers
 ```
 where `<lastModifiedYear>` is obtained from the `git log` history.
 
 This subcommand also handles copyright headers that have only a single year. In
 those cases:
 ```
-// Copyright (c) <year> The Dash Core developers
+// Copyright (c) <year> The Cosanta Core developers
 ```
 will be updated to:
 ```
-// Copyright (c) <year>-<lastModifiedYear> The Dash Core developers
+// Copyright (c) <year>-<lastModifiedYear> The Cosanta Core developers
 ```
 where the update is appropriate.
 
 copyright\_header.py insert \<file\>
 ------------------------------------
-Inserts a copyright header for `The Dash Core developers` at the top of the
+Inserts a copyright header for `The Cosanta Core developers` at the top of the
 file in either Python or C++ style as determined by the file extension. If the
 file is a Python file and it has  `#!` starting the first line, the header is
 inserted in the line below it.
@@ -73,7 +76,7 @@ The copyright dates will be set to be `<year_introduced>-<current_year>` where
 `<year_introduced>` is equal to `<current_year>`, it will be set as a single
 year rather than two hyphenated years.
 
-If the file already has a copyright for `The Dash Core developers`, the
+If the file already has a copyright for `The Cosanta Core developers`, the
 script will exit.
 
 gen-manpages.sh
@@ -100,7 +103,7 @@ For example:
   ./github-merge.py 3077
 
 (in any git repository) will help you merge pull request #3077 for the
-dashpay/dash repository.
+cosanta/cosanta-core repository.
 
 What it does:
 * Fetch master and the pull request.
@@ -118,29 +121,11 @@ couldn't mess with the sources.
 
 Setup
 ---------
-Configuring the github-merge tool for the Dash Core repository is done in the following way:
+Configuring the github-merge tool for the Cosanta repository is done in the following way:
 
-    git config githubmerge.repository dashpay/dash
+    git config githubmerge.repository cosanta/cosanta-core
     git config githubmerge.testcmd "make -j4 check" (adapt to whatever you want to use for testing)
-    git config --global user.signingkey mykeyid
-
-Authentication (optional)
---------------------------
-
-The API request limit for unauthenticated requests is quite low, but the
-limit for authenticated requests is much higher. If you start running
-into rate limiting errors it can be useful to set an authentication token
-so that the script can authenticate requests.
-
-- First, go to [Personal access tokens](https://github.com/settings/tokens).
-- Click 'Generate new token'.
-- Fill in an arbitrary token description. No further privileges are needed.
-- Click the `Generate token` button at the bottom of the form.
-- Copy the generated token (should be a hexadecimal string)
-
-Then do:
-
-    git config --global user.ghtoken "pasted token"
+    git config --global user.signingkey mykeyid (if you want to GPG sign)
 
 Create and verify timestamps of merge commits
 ---------------------------------------------
@@ -153,7 +138,7 @@ for further details.
 optimize-pngs.py
 ================
 
-A script to optimize png files in the dash
+A script to optimize png files in the Cosanta
 repository (requires pngcrush).
 
 security-check.py and test-security-check.py
@@ -180,10 +165,10 @@ If no errors occur the return value will be 0 and the output will be empty.
 
 If there are any errors the return value will be 1 and output like this will be printed:
 
-    .../64/test_dash: symbol memcpy from unsupported version GLIBC_2.14
-    .../64/test_dash: symbol __fdelt_chk from unsupported version GLIBC_2.15
-    .../64/test_dash: symbol std::out_of_range::~out_of_range() from unsupported version GLIBCXX_3.4.15
-    .../64/test_dash: symbol _ZNSt8__detail15_List_nod from unsupported version GLIBCXX_3.4.15
+    .../64/test_cosanta: symbol memcpy from unsupported version GLIBC_2.14
+    .../64/test_cosanta: symbol __fdelt_chk from unsupported version GLIBC_2.15
+    .../64/test_cosanta: symbol std::out_of_range::~out_of_range() from unsupported version GLIBCXX_3.4.15
+    .../64/test_cosanta: symbol _ZNSt8__detail15_List_nod from unsupported version GLIBCXX_3.4.15
 
 update-translations.py
 ======================

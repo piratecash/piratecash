@@ -5,7 +5,7 @@ set -eo pipefail
 if [[ -n "${1}" ]]; then
     WORKSPACE_PATH="$1"
 else
-    WORKSPACE_PATH="/src/dash"
+    WORKSPACE_PATH="/src/cosanta"
 fi
 
 if [[ ! -d "$WORKSPACE_PATH" ]]; then
@@ -20,9 +20,9 @@ source "contrib/guix/libexec/prelude.bash"
 printf "\nBinaries:\n\n"
 ( \
 SRC_PATH_PREFIX="${VERSION_BASE}/distsrc-" && \
-sha256sum ${SRC_PATH_PREFIX}*/src/dash{d,-cli,-tx,-wallet}{,.exe} && \
-sha256sum ${SRC_PATH_PREFIX}*/src/qt/dash-qt{,.exe} && \
-sha256sum ${SRC_PATH_PREFIX}*/src/test/test_dash{,.exe} \
+sha256sum ${SRC_PATH_PREFIX}*/src/cosanta{d,-cli,-tx,-wallet}{,.exe} && \
+sha256sum ${SRC_PATH_PREFIX}*/src/qt/cosanta-qt{,.exe} && \
+sha256sum ${SRC_PATH_PREFIX}*/src/test/test_cosanta{,.exe} \
 ) | sort -k 2
 
 printf "\nArchives:\n\n"

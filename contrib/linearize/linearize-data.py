@@ -12,7 +12,7 @@ import re
 import os
 import os.path
 import sys
-import dash_hash
+import cosanta_hash
 import datetime
 import time
 import glob
@@ -48,7 +48,7 @@ def wordreverse(in_buf):
     return b''.join(out_words)
 
 def calc_hdr_hash(blk_hdr):
-    return dash_hash.getPoWHash(blk_hdr)
+    return cosanta_hash.getPoWHash(blk_hdr)
 
 def calc_hash_str(blk_hdr):
     hash = calc_hdr_hash(blk_hdr)

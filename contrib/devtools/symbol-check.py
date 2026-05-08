@@ -77,7 +77,7 @@ ELF_INTERPRETER_NAMES: Dict[lief.ELF.ARCH, Dict[lief.ENDIANNESS, str]] = {
 
 # Allowed NEEDED libraries
 ELF_ALLOWED_LIBRARIES = {
-# dashd and dash-qt
+# cosantad and cosanta-qt
 'libgcc_s.so.1', # GCC base support
 'libc.so.6', # C library
 'libpthread.so.0', # threading
@@ -92,7 +92,7 @@ ELF_ALLOWED_LIBRARIES = {
 'ld64.so.2', # POWER64 ABIv2 dynamic linker
 'ld-linux-riscv64-lp64d.so.1', # 64-bit RISC-V dynamic linker
 'libz.so.1', # zlib
-# dash-qt only
+# cosanta-qt only
 'libxcb.so.1', # part of X11
 'libxcb-shm.so.0', # X11 shared memory extension
 'libxkbcommon.so.0', # keyboard keymapping

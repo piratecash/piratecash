@@ -8,10 +8,10 @@ services:
     tty: true         # Equivalent to -t
     stdin_open: true  # Equivalent to -i
     ports:
-      - "9998:9998"           # Mainnet Ports
-      - "9999:9999"
-      - "19998:19998"         # Testnet Ports
-      - "19999:19999"
+      - "9606:9606"           # Mainnet Ports
+      - "60606:60606"
+      - "9696:9696"         # Testnet Ports
+      - "60696:60696"
 
 # A note about volumes:
 #
@@ -26,26 +26,4 @@ services:
       - type: bind
 #        source: /host/$PWD # Workaround needed on non-Linux hosts
         source: ../../..
-        target: /src/dash
-
-# Sharing your ccache
-#
-# As the container is supposed to be a reproducible replica of the build
-# environment 1:1, it will not interact with your filesystem except as
-# defined in this file. This comes with the disadvantage of having to engage
-# in repeated re-compilation of object files, which will prolong your build
-# times and make the process more arduous. Therefore it is recommended to share
-# your local ccache with the container. The example below connects to a remote
-# samba share and can be adopted to fit your needs.
-#
-# NOTE: Only the first line is a continuation of the services.container.volumes
-#       definition
-
-#      - cache:/home/dash/.ccache
-#
-# volumes:
-#    cache:
-#      driver_opts:
-#        type: cifs
-#        o: "username=example,password=changemeplsfix"
-#        device: "//127.0.0.1/cache"
+        target: /cosanta-src

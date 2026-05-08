@@ -6,7 +6,7 @@ Utility to generate the seeds.txt list that is compiled into the client
 The seeds compiled into the release are created from the current protx list, like this:
 
 ```bash
-dash-cli protx list valid 1 2018966 > protx_list.json
+cosanta-cli protx list valid 1 2018966 > protx_list.json
 
 # Make sure the onion seeds still work!
 while IFS= read -r line

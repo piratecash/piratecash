@@ -15,4 +15,4 @@ services:
     privileged: true
     network_mode: host
     volumes:
-      - "../../..:/src/dash:rw"
+      - "../../..:/src/cosanta:rw"

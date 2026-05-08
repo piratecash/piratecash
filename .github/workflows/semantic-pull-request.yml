@@ -18,7 +18,7 @@ jobs:
         with:
           # Configure which types are allowed (newline delimited).
           # Default: https://github.com/commitizen/conventional-commit-types
-          # Our specific types/scopes (from https://github.com/dashpay/dash/blob/master/CONTRIBUTING.md#contributor-workflow)
+          # Our specific types/scopes (from CONTRIBUTING.md#contributor-workflow)
           types: |
             feat
             fix

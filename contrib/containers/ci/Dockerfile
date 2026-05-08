@@ -83,10 +83,10 @@ RUN pip3 install \
     yq \
     multiprocess
 
-# dash_hash
-ARG DASH_HASH_VERSION=1.4.0
-RUN git clone --depth 1 --no-tags --branch=${DASH_HASH_VERSION} https://github.com/dashpay/dash_hash
-RUN cd dash_hash && pip3 install -r requirements.txt .
+# cosanta_hash
+ARG COSANTA_HASH_VERSION=1.4.0
+RUN git clone --depth 1 --no-tags --branch=${COSANTA_HASH_VERSION} https://github.com/cosanta/cosanta_hash
+RUN cd cosanta_hash && pip3 install -r requirements.txt .
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
@@ -94,8 +94,8 @@ ARG GROUP_ID=1000
 # add user with specified (or default) user/group ids
 ENV USER_ID ${USER_ID}
 ENV GROUP_ID ${GROUP_ID}
-RUN groupadd -g ${GROUP_ID} dash
-RUN useradd -u ${USER_ID} -g dash -s /bin/bash -m -d /home/dash dash
+RUN groupadd -g ${GROUP_ID} cosanta
+RUN useradd -u ${USER_ID} -g cosanta -s /bin/bash -m -d /home/cosanta cosanta
 
 # Packages needed for all target builds
 RUN apt-get update && apt-get install $APT_ARGS \
@@ -153,7 +153,7 @@ RUN cd /tmp && \
     rm -rf /tmp/llvm.sh
 
 RUN \
-  mkdir -p /src/dash && \
+  mkdir -p /src/cosanta && \
   mkdir -p /cache/ccache && \
   mkdir /cache/depends && \
   mkdir /cache/sdk-sources && \
@@ -162,6 +162,6 @@ RUN \
   chown ${USER_ID}:${GROUP_ID} /cache && \
   chown ${USER_ID}:${GROUP_ID} -R /cache
 
-WORKDIR /src/dash
+WORKDIR /src/cosanta
 
-USER dash
+USER cosanta

@@ -60,7 +60,7 @@ so you should log out and log back in.
 ## Option 3: Using Docker image
 
 Please refer to Docker's image
-[here](https://github.com/dashpay/dash/tree/master/contrib/guix/Dockerfile).
+[here](https://github.com/cosanta/cosanta-core/tree/master/contrib/guix/Dockerfile).
 
 Note that the `Dockerfile` is largely equivalent to running through the binary
 tarball installation steps.
@@ -475,7 +475,7 @@ in the Guix Reference Manual for more details.
 
 ## Optional setup
 
-At this point, you are set up to [use Guix to build Dash
+At this point, you are set up to [use Guix to build Cosanta
 Core](./README.md#usage). However, if you want to polish your setup a bit and
 make it "what Guix intended", then read the next few subsections.
 
