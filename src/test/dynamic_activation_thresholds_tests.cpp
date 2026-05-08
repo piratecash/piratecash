@@ -84,7 +84,7 @@ struct TestChainDATSetup : public TestChainSetup
             const auto pblocktemplate = BlockAssembler(*m_node.sporkman, *m_node.govman, *m_node.llmq_ctx, *m_node.evodb, ::ChainstateActive(), *m_node.mempool, Params()).CreateNewBlock(coinbasePubKey);
             const uint32_t bitmask = ((uint32_t)1) << consensus_params.vDeployments[deployment_id].bit;
             BOOST_CHECK_EQUAL(::ChainActive().Tip()->nVersion & bitmask, 0);
-            BOOST_CHECK_EQUAL(pblocktemplate->block.nVersion & bitmask, bitmask);
+            BOOST_CHECK_EQUAL(pblocktemplate->block->nVersion & bitmask, bitmask);
         }
 
         // Reach activation_index level

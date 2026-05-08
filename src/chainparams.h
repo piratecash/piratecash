@@ -66,7 +66,7 @@ struct ChainTxData {
 
 /**
  * CChainParams defines various tweakable parameters of a given instance of the
- * Dash system.
+ * Cosanta system.
  */
 class CChainParams
 {
@@ -153,6 +153,10 @@ public:
     const std::vector<std::string>& SporkAddresses() const { return vSporkAddresses; }
     int MinSporkKeys() const { return nMinSporkKeys; }
     [[nodiscard]] std::optional<Consensus::LLMQParams> GetLLMQ(Consensus::LLMQType llmqType) const;
+    bool BIP9CheckMasternodesUpgraded() const { return fBIP9CheckMasternodesUpgraded; }
+    int64_t MinStakeAge() const { return nStakeMinAge; }
+    uint32_t FirstPoSv2Block() const { return nFirstPoSv2Block; }
+    bool HasLLMQ(Consensus::LLMQType llmqType) const;
 
 protected:
     CChainParams() {}
@@ -186,8 +190,12 @@ protected:
     int nFulfilledRequestExpireTime;
     std::vector<std::string> vSporkAddresses;
     int nMinSporkKeys;
+    bool fBIP9CheckMasternodesUpgraded;
     uint16_t nDefaultPlatformP2PPort;
     uint16_t nDefaultPlatformHTTPPort;
+    int64_t nStakeMinAge;
+    // POS V2
+    uint32_t nFirstPoSv2Block;
 
     void AddLLMQ(Consensus::LLMQType llmqType);
 };

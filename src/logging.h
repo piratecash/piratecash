@@ -59,6 +59,10 @@ namespace BCLog {
         VALIDATION  = (1 << 21),
         I2P         = (1 << 22),
 
+        //Start Cosanta
+        STAKING  = ((uint64_t)1 << 31),
+        //End Cosanta
+
         //Start Dash
         CHAINLOCKS  = ((uint64_t)1 << 32),
         GOBJECT     = ((uint64_t)1 << 33),

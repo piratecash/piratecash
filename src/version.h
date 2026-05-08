@@ -35,7 +35,7 @@ static const int ISDLOCK_PROTO_VERSION = 70220;
 static const int GOVSCRIPT_PROTO_VERSION = 70221;
 
 //! ADDRV2 was introduced in this version
-static const int ADDRV2_PROTO_VERSION = 70223;
+static const int ADDRV2_PROTO_VERSION = 70228;
 
 //! BLS scheme was introduced in this version
 static const int BLS_SCHEME_PROTO_VERSION = 70225;

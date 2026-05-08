@@ -182,8 +182,12 @@ const CLogCategoryDesc LogCategories[] =
     {BCLog::NETCONN, "netconn"},
     {BCLog::CREDITPOOL, "creditpool"},
     {BCLog::EHF, "ehf"},
-    {BCLog::DASH, "dash"},
+    {BCLog::DASH, "cosanta"},
     //End Dash
+
+    //Start Cosanta
+    {BCLog::STAKING, "stake"},
+    //End Cosanta
 };
 
 bool GetLogCategory(BCLog::LogFlags& flag, const std::string& str)

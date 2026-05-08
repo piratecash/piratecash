@@ -109,6 +109,7 @@ BITCOIN_TESTS =\
   test/evo_assetlocks_tests.cpp \
   test/evo_deterministicmns_tests.cpp \
   test/evo_mnhf_tests.cpp \
+  test/evo_pos_coinstake_skip_tests.cpp \
   test/evo_simplifiedmns_tests.cpp \
   test/evo_trivialvalidation.cpp \
   test/evo_utils_tests.cpp \
@@ -136,6 +137,8 @@ BITCOIN_TESTS =\
   test/netbase_tests.cpp \
   test/pmt_tests.cpp \
   test/policyestimator_tests.cpp \
+  test/pos_header_serialization_tests.cpp \
+  test/pos_staking_tests.cpp \
   test/pow_tests.cpp \
   test/prevector_tests.cpp \
   test/raii_event_tests.cpp \
@@ -182,6 +185,7 @@ BITCOIN_TESTS =\
 if ENABLE_WALLET
 BITCOIN_TESTS += \
   wallet/test/coinjoin_tests.cpp \
+  wallet/test/coinstake_wallet_tests.cpp \
   wallet/test/psbt_wallet_tests.cpp \
   wallet/test/wallet_tests.cpp \
   wallet/test/walletdb_tests.cpp \
