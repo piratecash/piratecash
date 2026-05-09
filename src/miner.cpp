@@ -360,7 +360,27 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
     BlockValidationState state;
     assert(std::addressof(::ChainstateActive()) == std::addressof(m_chainstate));
-    if (!TestBlockValidity(state, m_clhandler, m_evoDb, chainparams, m_chainstate, *pblock, pindexPrev, false, false)) {
+    // FIXME(cosanta-v20): TestBlockValidity() builds a temporary CBlockIndex
+    // without an on-disk position (nFile=-1) and runs ConnectBlock() against
+    // it. After v20 the chainlock check in ConnectBlock walks through
+    // CheckCbTxBestChainlock() -> GetNonNullCoinbaseChainlock(pindex)
+    // -> ReadBlockFromDisk(), which then logs:
+    //   "ERROR: ReadBlockFromDisk: OpenBlockFile failed for FlatFilePos(nFile=-1, nPos=0)"
+    // for every PoS staking iteration. The underlying issue is in
+    // src/evo/cbtx.cpp: that call should target pindex->pprev, not pindex
+    // (the call against pindex is also tautological — it ends up reading
+    // the very block being validated). Dash upstream fixed this in
+    // 4e86bda4dc ("feat: stricter bestCLHeightDiff checks", v21) and later
+    // added a cache in 18044c9eac (v23). When those changes are ported into
+    // Cosanta, drop this skip and call TestBlockValidity() unconditionally
+    // again — the dummy index will no longer be passed to ReadBlockFromDisk.
+    //
+    // Until then, skip the pre-flight TestBlockValidity() for PoS templates
+    // on v20 to keep stakers' logs clean. ProcessNewBlock() still runs the
+    // full validation pipeline against the real CBlockIndex once the block
+    // is written to disk, so an invalid template never reaches peers.
+    const bool skip_pos_template_validation = isPos && fV20Active_context;
+    if (!skip_pos_template_validation && !TestBlockValidity(state, m_clhandler, m_evoDb, chainparams, m_chainstate, *pblock, pindexPrev, false, false)) {
         if (isPos) {
             error("%s: TestBlockValidity failed: %s", __func__, state.ToString());
             return nullptr;
