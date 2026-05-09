@@ -152,6 +152,8 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     if (isPos) {
         // Keep the stake tx pinned at vtx[1] while the v19 block template
         // machinery appends commitments and mempool transactions after it.
+        // The v20 credit pool balance is filled after CreateCoinStake() writes
+        // the real coinstake transaction into this slot.
         pblock->vtx.emplace_back();
         pblocktemplate->vTxFees.push_back(-1); // updated if stake is found
         pblocktemplate->vTxSigOps.push_back(-1); // updated if stake is found
@@ -227,6 +229,16 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     // Compute regular coinbase transaction.
     coinbaseTx.vout[0].nValue = blockReward;
 
+    const auto set_credit_pool_balance = [&](CCbTx& cbTx) {
+        BlockValidationState state;
+        const auto creditPoolDiff = GetCreditPoolDiffForBlock(*pblock, pindexPrev, chainparams.GetConsensus(), blockSubsidy, state);
+        if (creditPoolDiff == std::nullopt) {
+            throw std::runtime_error(strprintf("%s: GetCreditPoolDiffForBlock failed: %s", __func__, state.ToString()));
+        }
+
+        cbTx.creditPoolBalance = creditPoolDiff->GetTotalLocked();
+    };
+
     if (!fDIP0003Active_context) {
         coinbaseTx.vin[0].scriptSig = CScript() << nHeight << OP_0;
     } else {
@@ -262,13 +274,9 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
                     // not an error
                     LogPrintf("CreateNewBlock() h[%d] CbTx failed to find best CL. Inserting null CL\n", nHeight);
                 }
-                BlockValidationState state;
-                const auto creditPoolDiff = GetCreditPoolDiffForBlock(*pblock, pindexPrev, chainparams.GetConsensus(), blockSubsidy, state);
-                if (creditPoolDiff == std::nullopt) {
-                    throw std::runtime_error(strprintf("%s: GetCreditPoolDiffForBlock failed: %s", __func__, state.ToString()));
+                if (!isPos) {
+                    set_credit_pool_balance(cbTx);
                 }
-
-                cbTx.creditPoolBalance = creditPoolDiff->GetTotalLocked();
             }
         }
 
@@ -310,6 +318,17 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
         bool fStakeFound = pwallet->CreateCoinStake(pindexPrev, *pblock, coinbaseTx);
 
         if (fStakeFound) {
+            if (fV20Active_context) {
+                auto opt_cbTx = GetTxPayload<CCbTx>(coinbaseTx.vExtraPayload);
+                if (!opt_cbTx) {
+                    throw std::runtime_error(strprintf("%s: failed to get CbTx payload", __func__));
+                }
+
+                CCbTx cbTx = *opt_cbTx;
+                set_credit_pool_balance(cbTx);
+                SetTxPayload(coinbaseTx, cbTx);
+            }
+
             sign_block = true;
             pblock->CoinBase() = MakeTransactionRef(std::move(coinbaseTx));
             pblocktemplate->vTxFees[1] = 0;
