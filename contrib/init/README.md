@@ -1,11 +1,11 @@
 Sample configuration files for:
 ```
-systemd: cosantad.service
-Upstart: cosantad.conf
-OpenRC:  cosantad.openrc
-         cosantad.openrcconf
-CentOS:  cosantad.init
-macOS:   org.cosanta.cosantad.plist
+systemd: piratecashd.service
+Upstart: piratecashd.conf
+OpenRC:  piratecashd.openrc
+         piratecashd.openrcconf
+CentOS:  piratecashd.init
+macOS:   org.piratecash.piratecashd.plist
 ```
 have been made available to assist packagers in creating node packages here.
 

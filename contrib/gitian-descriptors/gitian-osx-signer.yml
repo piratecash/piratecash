@@ -1,5 +1,5 @@
 ---
-name: "cosanta-dmg-signer"
+name: "piratecash-dmg-signer"
 distro: "ubuntu"
 suites:
 - "focal"
@@ -16,7 +16,7 @@ remotes:
   "dir": "signapple"
   "commit": "8a945a2e7583be2665cf3a6a89d665b70ecd1ab6"
 files:
-- "cosantacore-osx-unsigned.tar.gz"
+- "piratecashcore-osx-unsigned.tar.gz"
 script: |
   set -e -o pipefail
 

@@ -902,7 +902,7 @@ QToolBar > QToolButton:disabled {
 
 QToolBar QLabel#lblToolbarLogo {
     padding: 12px;
-    image: url(':/images/cosanta_logo_toolbar');
+    image: url(':/images/piratecash_logo_toolbar');
     height: 2.5em;
 }
 

@@ -44,7 +44,7 @@ class QUrl;
 class QWidget;
 QT_END_NAMESPACE
 
-/** Utility functions used by the Cosanta Qt UI.
+/** Utility functions used by the PirateCash Qt UI.
  */
 namespace GUIUtil
 {
@@ -124,7 +124,7 @@ namespace GUIUtil
     // Setup appearance settings if not done yet
     void setupAppearance(QWidget* parent, OptionsModel* model);
 
-    // Parse "cosanta:" URI into recipient object, return true on successful parsing
+    // Parse "pirate:" URI into recipient object, return true on successful parsing
     bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out);
     bool parseBitcoinURI(QString uri, SendCoinsRecipient *out);
     bool validateBitcoinURI(const QString& uri);
@@ -212,7 +212,7 @@ namespace GUIUtil
     // Open debug.log
     void openDebugLogfile();
 
-    // Open cosanta.conf
+    // Open piratecash.conf
     void openConfigfile();
 
     // Browse backup folder

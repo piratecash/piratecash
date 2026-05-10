@@ -1,5 +1,5 @@
 ---
-name: "cosanta-win-18.0"
+name: "piratecash-win-18.0"
 enable_cache: true
 suites:
 - "bionic"
@@ -25,7 +25,7 @@ packages:
 - "ccache"
 remotes:
 - "url": "contrib/gitian-descriptors/gitian-win.yml"
-  "dir": "cosanta"
+  "dir": "piratecash"
 files: []
 script: |
   set -e -o pipefail
@@ -121,7 +121,7 @@ script: |
   create_per-host_linker_wrapper "2000-01-01 12:00:00"
   export PATH=${WRAP_DIR}:${PATH}
 
-  cd cosanta
+  cd piratecash
   BASEPREFIX="${PWD}/depends"
   # Build dependencies for each host
   for i in $HOSTS; do

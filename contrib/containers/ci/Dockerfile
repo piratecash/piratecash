@@ -94,8 +94,8 @@ ARG GROUP_ID=1000
 # add user with specified (or default) user/group ids
 ENV USER_ID ${USER_ID}
 ENV GROUP_ID ${GROUP_ID}
-RUN groupadd -g ${GROUP_ID} cosanta
-RUN useradd -u ${USER_ID} -g cosanta -s /bin/bash -m -d /home/cosanta cosanta
+RUN groupadd -g ${GROUP_ID} piratecash
+RUN useradd -u ${USER_ID} -g piratecash -s /bin/bash -m -d /home/piratecash piratecash
 
 # Packages needed for all target builds
 RUN apt-get update && apt-get install $APT_ARGS \
@@ -153,7 +153,7 @@ RUN cd /tmp && \
     rm -rf /tmp/llvm.sh
 
 RUN \
-  mkdir -p /src/cosanta && \
+  mkdir -p /src/piratecash && \
   mkdir -p /cache/ccache && \
   mkdir /cache/depends && \
   mkdir /cache/sdk-sources && \
@@ -162,6 +162,6 @@ RUN \
   chown ${USER_ID}:${GROUP_ID} /cache && \
   chown ${USER_ID}:${GROUP_ID} -R /cache
 
-WORKDIR /src/cosanta
+WORKDIR /src/piratecash
 
-USER cosanta
+USER piratecash

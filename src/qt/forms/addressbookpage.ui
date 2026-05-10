@@ -157,7 +157,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../cosanta.qrc"/>
+  <include location="../piratecash.qrc"/>
  </resources>
  <connections/>
 </ui>

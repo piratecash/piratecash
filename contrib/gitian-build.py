@@ -23,13 +23,13 @@ def setup():
             exit(1)
     subprocess.check_call(['sudo', 'apt-get', 'install', '-qq'] + programs)
     if not os.path.isdir('gitian.sigs'):
-        subprocess.check_call(['git', 'clone', 'https://github.com/cosanta/gitian.sigs.git'])
-    if not os.path.isdir('cosanta-detached-sigs'):
-        subprocess.check_call(['git', 'clone', 'https://github.com/cosanta/cosanta-detached-sigs.git'])
+        subprocess.check_call(['git', 'clone', 'https://github.com/piratecash/gitian.sigs.git'])
+    if not os.path.isdir('piratecash-detached-sigs'):
+        subprocess.check_call(['git', 'clone', 'https://github.com/piratecash/piratecash-detached-sigs.git'])
     if not os.path.isdir('gitian-builder'):
         subprocess.check_call(['git', 'clone', 'https://github.com/devrandom/gitian-builder.git'])
-    if not os.path.isdir('cosanta'):
-        subprocess.check_call(['git', 'clone', 'https://github.com/cosanta/cosanta-core.git'])
+    if not os.path.isdir('piratecash'):
+        subprocess.check_call(['git', 'clone', 'https://github.com/piratecash/piratecash.git'])
     os.chdir('gitian-builder')
     make_image_prog = ['bin/make-base-vm', '--suite', 'bionic', '--arch', 'amd64']
     if args.docker:
@@ -46,36 +46,36 @@ def setup():
 def build():
     global args, workdir
 
-    os.makedirs('cosantacore-binaries/' + args.version, exist_ok=True)
+    os.makedirs('piratecashcore-binaries/' + args.version, exist_ok=True)
     print('\nBuilding Dependencies\n')
     os.chdir('gitian-builder')
     os.makedirs('inputs', exist_ok=True)
 
     subprocess.check_call(['wget', '-O', 'inputs/osslsigncode-2.0.tar.gz', 'https://github.com/mtrojnar/osslsigncode/archive/2.0.tar.gz'])
     subprocess.check_call(["echo '5a60e0a4b3e0b4d655317b2f12a810211c50242138322b16e7e01c6fbb89d92f inputs/osslsigncode-2.0.tar.gz' | sha256sum -c"], shell=True)
-    subprocess.check_call(['make', '-C', '../cosanta/depends', 'download', 'SOURCES_PATH=' + os.getcwd() + '/cache/common'])
+    subprocess.check_call(['make', '-C', '../piratecash/depends', 'download', 'SOURCES_PATH=' + os.getcwd() + '/cache/common'])
 
     if args.linux:
         print('\nCompiling ' + args.version + ' Linux')
-        subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'cosanta='+args.commit, '--url', 'cosanta='+args.url, '../cosanta/contrib/gitian-descriptors/gitian-linux.yml'])
-        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-linux', '--destination', '../gitian.sigs/', '../cosanta/contrib/gitian-descriptors/gitian-linux.yml'])
-        subprocess.check_call('mv build/out/cosantacore-*.tar.gz build/out/src/cosantacore-*.tar.gz ../cosantacore-binaries/'+args.version, shell=True)
+        subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'dash='+args.commit, '--url', 'dash='+args.url, '../dash/contrib/gitian-descriptors/gitian-linux.yml'])
+        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-linux', '--destination', '../gitian.sigs/', '../dash/contrib/gitian-descriptors/gitian-linux.yml'])
+        subprocess.check_call('mv build/out/piratecashcore-*.tar.gz build/out/src/piratecashcore-*.tar.gz ../piratecashcore-binaries/'+args.version, shell=True)
 
     if args.windows:
         print('\nCompiling ' + args.version + ' Windows')
-        subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'cosanta='+args.commit, '--url', 'cosanta='+args.url, '../cosanta/contrib/gitian-descriptors/gitian-win.yml'])
-        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-win-unsigned', '--destination', '../gitian.sigs/', '../cosanta/contrib/gitian-descriptors/gitian-win.yml'])
-        subprocess.check_call('mv build/out/cosantacore-*-win-unsigned.tar.gz inputs/cosantacore-win-unsigned.tar.gz', shell=True)
-        subprocess.check_call('mv build/out/cosantacore-*.zip build/out/cosantacore-*.exe ../cosantacore-binaries/'+args.version, shell=True)
+        subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'dash='+args.commit, '--url', 'dash='+args.url, '../dash/contrib/gitian-descriptors/gitian-win.yml'])
+        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-win-unsigned', '--destination', '../gitian.sigs/', '../dash/contrib/gitian-descriptors/gitian-win.yml'])
+        subprocess.check_call('mv build/out/piratecashcore-*-win-unsigned.tar.gz inputs/piratecashcore-win-unsigned.tar.gz', shell=True)
+        subprocess.check_call('mv build/out/piratecashcore-*.zip build/out/piratecashcore-*.exe ../piratecashcore-binaries/'+args.version, shell=True)
 
     if args.macos:
         print('\nCompiling ' + args.version + ' MacOS')
         subprocess.check_call(['wget', '-N', '-P', 'inputs', 'https://bitcoincore.org/depends-sources/sdks/Xcode-12.1-12A7403-extracted-SDK-with-libcxx-headers.tar.gz'])
         subprocess.check_output(["echo 'be17f48fd0b08fb4dcd229f55a6ae48d9f781d210839b4ea313ef17dd12d6ea5 inputs/Xcode-12.1-12A7403-extracted-SDK-with-libcxx-headers.tar.gz' | sha256sum -c"], shell=True)
-        subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'cosanta='+args.commit, '--url', 'cosanta='+args.url, '../cosanta/contrib/gitian-descriptors/gitian-osx.yml'])
-        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-osx-unsigned', '--destination', '../gitian.sigs/', '../cosanta/contrib/gitian-descriptors/gitian-osx.yml'])
-        subprocess.check_call('mv build/out/cosantacore-*-osx-unsigned.tar.gz inputs/cosantacore-osx-unsigned.tar.gz', shell=True)
-        subprocess.check_call('mv build/out/cosantacore-*.tar.gz build/out/cosantacore-*.dmg ../cosantacore-binaries/'+args.version, shell=True)
+        subprocess.check_call(['bin/gbuild', '-j', args.jobs, '-m', args.memory, '--commit', 'dash='+args.commit, '--url', 'dash='+args.url, '../dash/contrib/gitian-descriptors/gitian-osx.yml'])
+        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-osx-unsigned', '--destination', '../gitian.sigs/', '../dash/contrib/gitian-descriptors/gitian-osx.yml'])
+        subprocess.check_call('mv build/out/piratecashcore-*-osx-unsigned.tar.gz inputs/piratecashcore-osx-unsigned.tar.gz', shell=True)
+        subprocess.check_call('mv build/out/piratecashcore-*.tar.gz build/out/piratecashcore-*.dmg ../piratecashcore-binaries/'+args.version, shell=True)
 
     os.chdir(workdir)
 
@@ -94,15 +94,15 @@ def sign():
 
     if args.windows:
         print('\nSigning ' + args.version + ' Windows')
-        subprocess.check_call(['bin/gbuild', '-i', '--commit', 'signature='+args.commit, '../cosanta/contrib/gitian-descriptors/gitian-win-signer.yml'])
-        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-win-signed', '--destination', '../gitian.sigs/', '../cosanta/contrib/gitian-descriptors/gitian-win-signer.yml'])
-        subprocess.check_call('mv build/out/cosantacore-*win64-setup.exe ../cosantacore-binaries/'+args.version, shell=True)
+        subprocess.check_call(['bin/gbuild', '-i', '--commit', 'signature='+args.commit, '../dash/contrib/gitian-descriptors/gitian-win-signer.yml'])
+        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-win-signed', '--destination', '../gitian.sigs/', '../dash/contrib/gitian-descriptors/gitian-win-signer.yml'])
+        subprocess.check_call('mv build/out/piratecashcore-*win64-setup.exe ../piratecashcore-binaries/'+args.version, shell=True)
 
     if args.macos:
         print('\nSigning ' + args.version + ' MacOS')
-        subprocess.check_call(['bin/gbuild', '-i', '--commit', 'signature='+args.commit, '../cosanta/contrib/gitian-descriptors/gitian-osx-signer.yml'])
-        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-osx-signed', '--destination', '../gitian.sigs/', '../cosanta/contrib/gitian-descriptors/gitian-osx-signer.yml'])
-        subprocess.check_call('mv build/out/cosantacore-osx-signed.dmg ../cosantacore-binaries/'+args.version+'/cosantacore-'+args.version+'-osx.dmg', shell=True)
+        subprocess.check_call(['bin/gbuild', '-i', '--commit', 'signature='+args.commit, '../dash/contrib/gitian-descriptors/gitian-osx-signer.yml'])
+        subprocess.check_call(['bin/gsign', '-p', args.sign_prog, '--signer', args.signer, '--release', args.version+'-osx-signed', '--destination', '../gitian.sigs/', '../dash/contrib/gitian-descriptors/gitian-osx-signer.yml'])
+        subprocess.check_call('mv build/out/piratecashcore-osx-signed.dmg ../piratecashcore-binaries/'+args.version+'/piratecashcore-'+args.version+'-osx.dmg', shell=True)
 
     os.chdir(workdir)
 
@@ -119,15 +119,15 @@ def verify():
     os.chdir('gitian-builder')
 
     print('\nVerifying v'+args.version+' Linux\n')
-    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-linux', '../cosanta/contrib/gitian-descriptors/gitian-linux.yml'])
+    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-linux', '../piratecash/contrib/gitian-descriptors/gitian-linux.yml'])
     print('\nVerifying v'+args.version+' Windows\n')
-    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-win-unsigned', '../cosanta/contrib/gitian-descriptors/gitian-win.yml'])
+    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-win-unsigned', '../piratecash/contrib/gitian-descriptors/gitian-win.yml'])
     print('\nVerifying v'+args.version+' MacOS\n')
-    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-osx-unsigned', '../cosanta/contrib/gitian-descriptors/gitian-osx.yml'])
+    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-osx-unsigned', '../piratecash/contrib/gitian-descriptors/gitian-osx.yml'])
     print('\nVerifying v'+args.version+' Signed Windows\n')
-    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-win-signed', '../cosanta/contrib/gitian-descriptors/gitian-win-signer.yml'])
+    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-win-signed', '../piratecash/contrib/gitian-descriptors/gitian-win-signer.yml'])
     print('\nVerifying v'+args.version+' Signed MacOS\n')
-    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-osx-signed', '../cosanta/contrib/gitian-descriptors/gitian-osx-signer.yml'])
+    subprocess.call(['bin/gverify', '-v', '-d', '../gitian.sigs/', '-r', args.version+'-osx-signed', '../piratecash/contrib/gitian-descriptors/gitian-osx-signer.yml'])
 
     os.chdir(workdir)
 
@@ -137,7 +137,7 @@ def main():
     parser = argparse.ArgumentParser(usage='%(prog)s [options] signer version')
     parser.add_argument('-c', '--commit', action='store_true', dest='commit', help='Indicate that the version argument is for a commit or branch')
     parser.add_argument('-p', '--pull', action='store_true', dest='pull', help='Indicate that the version argument is the number of a github repository pull request')
-    parser.add_argument('-u', '--url', dest='url', default='https://github.com/cosanta/cosanta-core', help='Specify the URL of the repository. Default is %(default)s')
+    parser.add_argument('-u', '--url', dest='url', default='https://github.com/piratecash/piratecash', help='Specify the URL of the repository. Default is %(default)s')
     parser.add_argument('-v', '--verify', action='store_true', dest='verify', help='Verify the Gitian build')
     parser.add_argument('-b', '--build', action='store_true', dest='build', help='Do a Gitian build')
     parser.add_argument('-s', '--sign', action='store_true', dest='sign', help='Make signed binaries for Windows and MacOS')
@@ -229,10 +229,10 @@ def main():
     if not args.build and not args.sign and not args.verify:
         exit(0)
 
-    os.chdir('cosanta')
+    os.chdir('piratecash')
     if args.pull:
         subprocess.check_call(['git', 'fetch', args.url, 'refs/pull/'+args.version+'/merge'])
-        os.chdir('../gitian-builder/inputs/cosanta')
+        os.chdir('../gitian-builder/inputs/piratecash')
         subprocess.check_call(['git', 'fetch', args.url, 'refs/pull/'+args.version+'/merge'])
         args.commit = subprocess.check_output(['git', 'show', '-s', '--format=%H', 'FETCH_HEAD'], universal_newlines=True, encoding='utf8').strip()
         args.version = 'pull-' + args.version

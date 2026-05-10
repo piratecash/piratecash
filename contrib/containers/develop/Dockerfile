@@ -31,14 +31,14 @@ RUN apt-get update && \
 # unconditionally returns 0
 #
 RUN groupadd docker && \
-    usermod -aG sudo cosanta && \
+    usermod -aG sudo piratecash && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # Disable noninteractive mode
 ENV DEBIAN_FRONTEND="dialog"
 
-# Expose Cosanta P2P and RPC ports for main network and test networks
-EXPOSE 9606 60606 9696 60696
+# Expose PirateCash P2P and RPC ports for main network and test networks
+EXPOSE 19606 63636 19696 50666
 
 # We're done, switch back to non-privileged user
-USER cosanta
+USER piratecash

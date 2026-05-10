@@ -74,12 +74,12 @@
         <translation>Direcciones de recepción</translation>
     </message>
     <message>
-        <source>These are your Cosanta addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Estas son sus direcciones Cosanta para enviar pagos. Compruebe siempre la cantidad y la dirección receptora antes de enviar monedas.</translation>
+        <source>These are your PirateCash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Estas son sus direcciones PirateCash para enviar pagos. Compruebe siempre la cantidad y la dirección receptora antes de enviar monedas.</translation>
     </message>
     <message>
-        <source>These are your Cosanta addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>Estas son tus direcciones de Cosanta para recibir pagos. Use el botón 'Crear nueva dirección de recepción' en la pestaña de recepción para crear nuevas direcciones.</translation>
+        <source>These are your PirateCash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <translation>Estas son tus direcciones de PirateCash para recibir pagos. Use el botón 'Crear nueva dirección de recepción' en la pestaña de recepción para crear nuevas direcciones.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -211,8 +211,8 @@
         <translation>Confirmar cifrado de la billetera</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COSA&lt;/b&gt;!</source>
-        <translation>Advertencia: Si cifra su billetera y pierde su contraseña, ¡&lt;b&gt;PERDERÁ TODOS SUS COSA&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATE&lt;/b&gt;!</source>
+        <translation>Advertencia: Si cifra su billetera y pierde su contraseña, ¡&lt;b&gt;PERDERÁ TODOS SUS PIRATE&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -316,16 +316,16 @@
         <translation>&amp;Enviar</translation>
     </message>
     <message>
-        <source>Send coins to a Cosanta address</source>
-        <translation>Enviar monedas a una dirección Cosanta</translation>
+        <source>Send coins to a PirateCash address</source>
+        <translation>Enviar monedas a una dirección PirateCash</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>&amp;Recibir</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and cosanta: URIs)</source>
-        <translation>Solicitar pagos (genera códigos QR y URIs de Cosanta)</translation>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
+        <translation>Solicitar pagos (genera códigos QR y URIs de PirateCash)</translation>
     </message>
     <message>
         <source>&amp;Sending addresses</source>
@@ -412,8 +412,8 @@
         <translation>&amp;Acerca de %1</translation>
     </message>
     <message>
-        <source>Send %1 funds to a Cosanta address</source>
-        <translation>Enviar %1 de los fondos a una dirección de Cosanta</translation>
+        <source>Send %1 funds to a PirateCash address</source>
+        <translation>Enviar %1 de los fondos a una dirección de PirateCash</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -468,16 +468,16 @@
         <translation>Firmar &amp;mensaje...</translation>
     </message>
     <message>
-        <source>Sign messages with your Cosanta addresses to prove you own them</source>
-        <translation>Firmar mensajes con sus direcciones Cosanta para demostrar que le pertenecen</translation>
+        <source>Sign messages with your PirateCash addresses to prove you own them</source>
+        <translation>Firmar mensajes con sus direcciones PirateCash para demostrar que le pertenecen</translation>
     </message>
     <message>
         <source>&amp;Verify message...</source>
         <translation>&amp;Verificar mensaje...</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Cosanta addresses</source>
-        <translation>Verificar mensajes para comprobar que fueron firmados con la dirección Cosanta indicada</translation>
+        <source>Verify messages to ensure they were signed with specified PirateCash addresses</source>
+        <translation>Verificar mensajes para comprobar que fueron firmados con la dirección PirateCash indicada</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -548,8 +548,8 @@
         <translation>&amp;Opciones de consola de comandos</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Cosanta command-line options</source>
-        <translation>Mostrar el %1 mensaje de ayuda para obtener una lista de las posibles opciones de linea de comandos de Cosanta</translation>
+        <source>Show the %1 help message to get a list with possible PirateCash command-line options</source>
+        <translation>Mostrar el %1 mensaje de ayuda para obtener una lista de las posibles opciones de linea de comandos de PirateCash</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -614,8 +614,8 @@
         <translation>Ver propuestas de gobernanza</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Cosanta network</source>
-        <translation><numerusform>%n conexion(es) activa a la red Cosanta</numerusform><numerusform>%n conexion(es) activas a la red Cosanta</numerusform><numerusform>%n conexion(es) activas a la red Cosanta</numerusform></translation>
+        <source>%n active connection(s) to PirateCash network</source>
+        <translation><numerusform>%n conexion(es) activa a la red PirateCash</numerusform><numerusform>%n conexion(es) activas a la red PirateCash</numerusform><numerusform>%n conexion(es) activas a la red PirateCash</numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
@@ -1060,8 +1060,8 @@
         <translation>Editar dirección de envío</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Cosanta address.</source>
-        <translation>La dirección introducida "%1" no es una dirección Cosanta válida.</translation>
+        <source>The entered address "%1" is not a valid PirateCash address.</source>
+        <translation>La dirección introducida "%1" no es una dirección PirateCash válida.</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -1145,8 +1145,8 @@
         <translation>%1 Información</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Cosanta in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 COSA, 0.01 COSA, 0.1 COSA, 1 COSA and 10 COSA -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;Conceptos básico de %1&lt;/h3&gt;%1 te da verdadera privacidad financiera al ocultar los orígenes de tus fondos. Todos los Cosanta en tu billetera están compuestos por diferentes "entradas" en las que puedes pensar como monedas separadas discretas.&lt;br&gt;%1 utiliza un proceso innovador que mezcla tus entradas con las entradas de otras dos personas, sin que tus monedas salgan de la billetera. Tu retienes el control de tu dinero en todo momento.&lt;hr&gt;&lt;b&gt;El proceso de %1 funciona así:&lt;/b&gt;&lt;ol type="1"&gt;&lt;li&gt;%1 comienza dividiendo las entradas de tus transacciones en denominaciones estándares. Éstas denominaciones son 0.001 COSA, 0.01 COSA, 0.1 COSA, 1 COSA y 10 COSA - algo así como el papel moneda que usas todos los días.&lt;/li&gt;&lt;li&gt;Entonces, tu billetera envía solicitudes a nodos de software especialmente configurados en la red, llamados "masternodes". Estos masternodes son informados que estás interesado en mezclar una cierta denominación. Información no identificable es enviada a los masternodes, por lo que nunca saben "quién" eres tu.&lt;/li&gt;&lt;li&gt;Cuando otras dos personas envían mensajes similares, indicando que desean mezclar la misma denominación, comienza una sesión de mezclado. El masternode mezcla loas entradas e instruye a las billeteras de los tres usuarios para que paguen la entrada ahora transformada a si mismos. Tu billetera paga esa denominación directamente a sí misma, pero en una dirección diferente (llamada dirección de cambio).&lt;/li&gt; &lt;li&gt;En orden de ocultar totalmente tus fondos, st billetera debe repetir este proceso varias veces con cada denominación. Cada vez que se completa el proceso, se denomina una "ronda". Cada ronda de %1 hace que sea exponencialmente más difícil determinar de dónde provienen los fondos.&lt;/li&gt;&lt;li&gt;Este proceso de mezclado ocurre en segundo plano sin ninguna intervención de tu parte. Cuando desees realizar una transacción, tus fondos ya serán anónimos. No se requiere tiempo de espera adicional.&lt;/li&gt;&lt;/ol&gt;&lt;hr&gt;&lt;b&gt;IMPORTATE:&lt;/b&gt;Tu billetera solo contiene 1000 de estas "direcciones de cambio". Cada vez que ocurre un evento de mezclado, hasta 9 de tus direcciones son usadas. Esto significa que esas 1000 direcciones duran alrededor de 100 eventos de mezclado. Cuando 900 de ellas sean usadas, tu billetera debe crear más direcciones. Sin embargo, solo podrá hacer esto si tiene las copias de seguridad automáticas habilitadas.&lt;br&gt;En consecuencia, los usuarios que tengan las copias de seguridad deshabilitadas también tendrán %1 deshabilitado.&lt;hr&gt;Para mas información, consulta la &lt;a style="%2" href="%3"&gt;documentación de %1&lt;/a&gt;.</translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE and 10 PIRATE -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;Conceptos básico de %1&lt;/h3&gt;%1 te da verdadera privacidad financiera al ocultar los orígenes de tus fondos. Todos los PirateCash en tu billetera están compuestos por diferentes "entradas" en las que puedes pensar como monedas separadas discretas.&lt;br&gt;%1 utiliza un proceso innovador que mezcla tus entradas con las entradas de otras dos personas, sin que tus monedas salgan de la billetera. Tu retienes el control de tu dinero en todo momento.&lt;hr&gt;&lt;b&gt;El proceso de %1 funciona así:&lt;/b&gt;&lt;ol type="1"&gt;&lt;li&gt;%1 comienza dividiendo las entradas de tus transacciones en denominaciones estándares. Éstas denominaciones son 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE y 10 PIRATE - algo así como el papel moneda que usas todos los días.&lt;/li&gt;&lt;li&gt;Entonces, tu billetera envía solicitudes a nodos de software especialmente configurados en la red, llamados "masternodes". Estos masternodes son informados que estás interesado en mezclar una cierta denominación. Información no identificable es enviada a los masternodes, por lo que nunca saben "quién" eres tu.&lt;/li&gt;&lt;li&gt;Cuando otras dos personas envían mensajes similares, indicando que desean mezclar la misma denominación, comienza una sesión de mezclado. El masternode mezcla loas entradas e instruye a las billeteras de los tres usuarios para que paguen la entrada ahora transformada a si mismos. Tu billetera paga esa denominación directamente a sí misma, pero en una dirección diferente (llamada dirección de cambio).&lt;/li&gt; &lt;li&gt;En orden de ocultar totalmente tus fondos, st billetera debe repetir este proceso varias veces con cada denominación. Cada vez que se completa el proceso, se denomina una "ronda". Cada ronda de %1 hace que sea exponencialmente más difícil determinar de dónde provienen los fondos.&lt;/li&gt;&lt;li&gt;Este proceso de mezclado ocurre en segundo plano sin ninguna intervención de tu parte. Cuando desees realizar una transacción, tus fondos ya serán anónimos. No se requiere tiempo de espera adicional.&lt;/li&gt;&lt;/ol&gt;&lt;hr&gt;&lt;b&gt;IMPORTATE:&lt;/b&gt;Tu billetera solo contiene 1000 de estas "direcciones de cambio". Cada vez que ocurre un evento de mezclado, hasta 9 de tus direcciones son usadas. Esto significa que esas 1000 direcciones duran alrededor de 100 eventos de mezclado. Cuando 900 de ellas sean usadas, tu billetera debe crear más direcciones. Sin embargo, solo podrá hacer esto si tiene las copias de seguridad automáticas habilitadas.&lt;br&gt;En consecuencia, los usuarios que tengan las copias de seguridad deshabilitadas también tendrán %1 deshabilitado.&lt;hr&gt;Para mas información, consulta la &lt;a style="%2" href="%3"&gt;documentación de %1&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -1192,8 +1192,8 @@
         <translation>Se almacenará aproximadamente %1 GB de datos en este directorio.</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Cosanta block chain.</source>
-        <translation>%1 descargará y almacenará una copia de la cadena de bloques de Cosanta.</translation>
+        <source>%1 will download and store a copy of the PirateCash block chain.</source>
+        <translation>%1 descargará y almacenará una copia de la cadena de bloques de PirateCash.</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1338,12 +1338,12 @@
         <translation>Formulario</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Cosanta network, as detailed below.</source>
-        <translation>Es posible que las transacciones recientes aún no estén visibles y, por lo tanto, el saldo de su billetera podría ser incorrecto. Esta información será corregida una vez que su billetera haya terminado de sincronizarse con la red de Cosanta, como se detalla a continuación.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the PirateCash network, as detailed below.</source>
+        <translation>Es posible que las transacciones recientes aún no estén visibles y, por lo tanto, el saldo de su billetera podría ser incorrecto. Esta información será corregida una vez que su billetera haya terminado de sincronizarse con la red de PirateCash, como se detalla a continuación.</translation>
     </message>
     <message>
-        <source>Attempting to spend Cosanta that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>La red no aceptará intentos de gastar Cosanta que estén afectados por transacciones aún no reflejadas.</translation>
+        <source>Attempting to spend PirateCash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>La red no aceptará intentos de gastar PirateCash que estén afectados por transacciones aún no reflejadas.</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -1527,8 +1527,8 @@
         <translation>Saldo objetivo</translation>
     </message>
     <message>
-        <source>Automatically open the Cosanta Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Abrir automáticamente el puerto del cliente Cosanta Core en el enrutador. Esto solo funciona cuando su enrutador admite UPnP y está habilitado.</translation>
+        <source>Automatically open the PirateCash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Abrir automáticamente el puerto del cliente PirateCash Core en el enrutador. Esto solo funciona cuando su enrutador admite UPnP y está habilitado.</translation>
     </message>
     <message>
         <source>Map port using NA&amp;T-PMP</source>
@@ -1543,8 +1543,8 @@
         <translation>Permitir conexiones de entrada y salida</translation>
     </message>
     <message>
-        <source>Connect to the Cosanta network through a SOCKS5 proxy.</source>
-        <translation>Conectarse a la red Cosanta a través de un proxy SOCKS5.</translation>
+        <source>Connect to the PirateCash network through a SOCKS5 proxy.</source>
+        <translation>Conectarse a la red PirateCash a través de un proxy SOCKS5.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1672,9 +1672,9 @@
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/projects/p/cosanta/</source>
+https://www.transifex.com/projects/p/piratecash/</source>
         <translation>¿Idioma no disponible o traducción incompleta? Contribuye a la traducción aquí:
-https://www.transifex.com/projects/p/cosanta/</translation>
+https://www.transifex.com/projects/p/piratecash/</translation>
     </message>
     <message>
         <source>&amp;Unit to show amounts in:</source>
@@ -1682,7 +1682,7 @@ https://www.transifex.com/projects/p/cosanta/</translation>
     </message>
     <message>
         <source>Choose the default subdivision unit to show in the interface and when sending coins.</source>
-        <translation>Elegir la subdivisión predeterminada para mostrar las cuantías en la interfaz y cuando se envían Cosanta.</translation>
+        <translation>Elegir la subdivisión predeterminada para mostrar las cuantías en la interfaz y cuando se envían PirateCash.</translation>
     </message>
     <message>
         <source>Decimal digits</source>
@@ -1740,8 +1740,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>Formulario</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Cosanta network after a connection is established, but this process has not completed yet.</source>
-        <translation>La información mostrada puede estar desactualizada. Su billetera se sincroniza automáticamente con la red Cosanta después de que se haya establecido una conexión, pero este proceso aún no se ha completado.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
+        <translation>La información mostrada puede estar desactualizada. Su billetera se sincroniza automáticamente con la red PirateCash después de que se haya establecido una conexión, pero este proceso aún no se ha completado.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -1820,8 +1820,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>Cantidad y Rondas:</translation>
     </message>
     <message>
-        <source>0 COSA / 0 Rounds</source>
-        <translation>0 COSA / 0 Rondas</translation>
+        <source>0 PIRATE / 0 Rounds</source>
+        <translation>0 PIRATE / 0 Rondas</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -1966,24 +1966,24 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>Error en solicitud de pago</translation>
     </message>
     <message>
-        <source>Cannot start cosanta: click-to-pay handler</source>
-        <translation>No se pudo iniciar cosanta: manejador de pago-por-clic</translation>
+        <source>Cannot start piratecash: click-to-pay handler</source>
+        <translation>No se pudo iniciar piratecash: manejador de pago-por-clic</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>Gestión de URI</translation>
     </message>
     <message>
-        <source>'cosanta://' is not a valid URI. Use 'cosanta:' instead.</source>
-        <translation>'cosanta://' no es un URI válido. Usa 'cosanta:'.</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>'piratecash://' no es un URI válido. Usa 'piratecash:'.</translation>
     </message>
     <message>
         <source>Invalid payment address %1</source>
         <translation>Dirección de pago no válida %1</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Cosanta address or malformed URI parameters.</source>
-        <translation>¡No se puede interpretar la URI! Esto puede deberse a una dirección Cosanta inválida o a parámetros de URI mal formados.</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
+        <translation>¡No se puede interpretar la URI! Esto puede deberse a una dirección PirateCash inválida o a parámetros de URI mal formados.</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -2146,8 +2146,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>Cantidad</translation>
     </message>
     <message>
-        <source>Enter a Cosanta address (e.g. %1)</source>
-        <translation>Introduzca una dirección Cosanta (ej. %1)</translation>
+        <source>Enter a PirateCash address (e.g. %1)</source>
+        <translation>Introduzca una dirección PirateCash (ej. %1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
@@ -2654,8 +2654,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Cosanta network.</source>
-        <translation>Un mensaje opcional para adjuntar a la solicitud de pago, el cual se muestra cuando se abre la solicitud. Nota: El mensaje no se enviará con el pago por la red Cosanta.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>Un mensaje opcional para adjuntar a la solicitud de pago, el cual se muestra cuando se abre la solicitud. Nota: El mensaje no se enviará con el pago por la red PirateCash.</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -2666,8 +2666,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>Etiqueta opcional para asociar con la nueva dirección de recepción.</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Cosanta network.</source>
-        <translation>Un mensaje opcional para adjuntar con la solicitud de pago, el cual aparecerá cuando ésta sea abierta.&lt;br&gt;Nota: El mensaje no se enviará con el pago a la red Cosanta.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>Un mensaje opcional para adjuntar con la solicitud de pago, el cual aparecerá cuando ésta sea abierta.&lt;br&gt;Nota: El mensaje no se enviará con el pago a la red PirateCash.</translation>
     </message>
     <message>
         <source>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</source>
@@ -2804,7 +2804,7 @@ https://www.transifex.com/projects/p/cosanta/</translation>
     <name>SendCoinsDialog</name>
     <message>
         <source>Send Coins</source>
-        <translation>Enviar Cosanta</translation>
+        <translation>Enviar PirateCash</translation>
     </message>
     <message>
         <source>Coin Control Features</source>
@@ -3071,8 +3071,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation><numerusform>Está previsto que comience la confirmación en %n bloque.</numerusform><numerusform>Está previsto que comience la confirmación en %n bloques.</numerusform><numerusform>Está previsto que comience la confirmación en %n bloques.</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Cosanta address</source>
-        <translation>Advertencia: Dirección de Cosanta inválida</translation>
+        <source>Warning: Invalid PirateCash address</source>
+        <translation>Advertencia: Dirección de PirateCash inválida</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -3098,8 +3098,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>Pagar &amp;a:</translation>
     </message>
     <message>
-        <source>The Cosanta address to send the payment to</source>
-        <translation>La dirección Cosanta a la cual enviar el pago</translation>
+        <source>The PirateCash address to send the payment to</source>
+        <translation>La dirección PirateCash a la cual enviar el pago</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3138,8 +3138,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>El monto a enviar en la unidad seleccionada</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Cosanta than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>La comisión se descontará de la cantidad que se envía. El destinatario recibirá una cantidad menor de Cosanta de la que ingrese en el campo de cantidad. Si se seleccionan múltiples destinatarios, la comisión se divide por igual.</translation>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PirateCash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <translation>La comisión se descontará de la cantidad que se envía. El destinatario recibirá una cantidad menor de PirateCash de la que ingrese en el campo de cantidad. Si se seleccionan múltiples destinatarios, la comisión se divide por igual.</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -3154,8 +3154,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>Mensaje:</translation>
     </message>
     <message>
-        <source>A message that was attached to the cosanta: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Cosanta network.</source>
-        <translation>Un mensaje que se adjuntó al Cosanta: URI que será almacenada con la transacción para su referencia. Nota: Este mensaje no se enviará a través de la red Cosanta.</translation>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <translation>Un mensaje que se adjuntó al PirateCash: URI que será almacenada con la transacción para su referencia. Nota: Este mensaje no se enviará a través de la red PirateCash.</translation>
     </message>
     <message>
         <source>This is an unauthenticated payment request.</source>
@@ -3196,12 +3196,12 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>&amp;Firmar Mensaje</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Cosanta sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>Puede firmar mensajes/acuerdos con sus direcciones para probar que puede recibir Cosanta enviados a ellos. Tenga cuidado de no firmar nada vago o al azar, como ataques de phising que pueden intentar engañarle para que firme su identidad sobre ellos. Solo firma declaraciones totalmente detallas con las que este de acuerdo.</translation>
+        <source>You can sign messages/agreements with your addresses to prove you can receive PirateCash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <translation>Puede firmar mensajes/acuerdos con sus direcciones para probar que puede recibir PirateCash enviados a ellos. Tenga cuidado de no firmar nada vago o al azar, como ataques de phising que pueden intentar engañarle para que firme su identidad sobre ellos. Solo firma declaraciones totalmente detallas con las que este de acuerdo.</translation>
     </message>
     <message>
-        <source>The Cosanta address to sign the message with</source>
-        <translation>La dirección Cosanta con la cual se firma el mensaje</translation>
+        <source>The PirateCash address to sign the message with</source>
+        <translation>La dirección PirateCash con la cual se firma el mensaje</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3232,8 +3232,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>Copiar la firma actual al portapapeles del sistema</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Cosanta address</source>
-        <translation>Firmar el mensaje para demostrar que posee esta dirección Cosanta</translation>
+        <source>Sign the message to prove you own this PirateCash address</source>
+        <translation>Firmar el mensaje para demostrar que posee esta dirección PirateCash</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -3256,8 +3256,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>Introduzca la dirección del receptor, el mensaje (asegurese de copiar tal cual los saltos de línea, espacios, tabulaciones, etc.) y la firma a continuación para verificar el mensaje. Tenga cuidado de no asumir más información de lo que dice el propio mensaje firmado para evitar fraudes basados en ataques de tipo man-in-the-middle. </translation>
     </message>
     <message>
-        <source>The Cosanta address the message was signed with</source>
-        <translation>La dirección Cosanta con la cual se firmó el mensaje</translation>
+        <source>The PirateCash address the message was signed with</source>
+        <translation>La dirección PirateCash con la cual se firmó el mensaje</translation>
     </message>
     <message>
         <source>The signed message to verify</source>
@@ -3268,8 +3268,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>La firma dada cuando se firmó el mensaje.</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Cosanta address</source>
-        <translation>Verificar el mensaje para garantizar que fue firmado con la dirección Cosanta indicada</translation>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
+        <translation>Verificar el mensaje para garantizar que fue firmado con la dirección PirateCash indicada</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -3892,7 +3892,7 @@ https://www.transifex.com/projects/p/cosanta/</translation>
     <name>WalletModel</name>
     <message>
         <source>Send Coins</source>
-        <translation>Enviar Cosanta</translation>
+        <translation>Enviar PirateCash</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -3939,7 +3939,7 @@ https://www.transifex.com/projects/p/cosanta/</translation>
     </message>
 </context>
 <context>
-    <name>cosanta-core</name>
+    <name>piratecash-core</name>
     <message>
         <source>Error: Listening for incoming connections failed (listen returned error %s)</source>
         <translation>Error: Ha fallado la "escucha" de conexiones entrantes ("Escucha" ha devuelto el error %s)</translation>
@@ -4681,8 +4681,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>La última cola se creó muy recientemente.</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool cosanta-wallet to salvage or restoring a backup.</source>
-        <translation>%s corrupto. Intenta usar la herramienta de billetera cosanta-wallet para recuperar o restaurar una copia de seguridad.</translation>
+        <source>%s corrupt. Try using the wallet tool piratecash-wallet to salvage or restoring a backup.</source>
+        <translation>%s corrupto. Intenta usar la herramienta de billetera piratecash-wallet para recuperar o restaurar una copia de seguridad.</translation>
     </message>
     <message>
         <source>Last successful action was too recent.</source>

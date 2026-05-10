@@ -1,5 +1,5 @@
-Building Cosanta
+Building PirateCash
 =============
 
 See doc/build-*.md for instructions on building the various
-elements of the Cosanta Core reference implementation of Cosanta.
+elements of the PirateCash Core reference implementation of PirateCash.

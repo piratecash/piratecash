@@ -23,7 +23,7 @@ export LC_ALL=C.UTF-8
 
 export LD_LIBRARY_PATH=$BUILD_DIR/depends/$HOST/lib
 
-cd build-ci/cosantacore-$BUILD_TARGET
+cd build-ci/piratecashcore-$BUILD_TARGET
 
 if [ "$SOCKETEVENTS" = "" ]; then
   # Let's switch socketevents mode to some random mode
@@ -37,7 +37,7 @@ if [ "$SOCKETEVENTS" = "" ]; then
   fi
 fi
 echo "Using socketevents mode: $SOCKETEVENTS"
-EXTRA_ARGS="--cosantad-arg=-socketevents=$SOCKETEVENTS"
+EXTRA_ARGS="--piratecashd-arg=-socketevents=$SOCKETEVENTS"
 
 set +e
 ./test/functional/test_runner.py --ci --combinedlogslen=4000 ${TEST_RUNNER_EXTRA} --failfast --nocleanup --tmpdir=$(pwd)/testdatadirs $PASS_ARGS $EXTRA_ARGS

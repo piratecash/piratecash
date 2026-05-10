@@ -30,25 +30,49 @@ static void SerializeBlockHeaderForHash(Stream& s, const CBlockHeader& block)
 
 uint256 CBlockHeader::GetHash() const
 {
-    if (IsProofOfStake()) {
-        return hashProofOfStake();
+    if (nVersion < 4)
+    {
+        uint256 thash;
+        scrypt_1024_1_1_256(BEGIN(nVersion), BEGIN(thash));
+        return thash;
     }
+    return SerializeHash(*this);
+}
 
-    CDataStream ss(SER_GETHASH, PROTOCOL_VERSION);
-    SerializeBlockHeaderForHash(ss, *this);
-    return HashX11(ss.begin(), ss.end());
+uint256 CBlockHeader::GetPoWHash() const
+{
+    uint256 thash;
+    scrypt_1024_1_1_256(BEGIN(nVersion), BEGIN(thash));
+    return thash;
 }
 
 std::string CBlock::ToString() const
 {
     std::stringstream s;
-    s << strprintf("CBlock(hash=%s, ver=0x%08x, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%u, vtx=%u)\n",
-        GetHash().ToString(),
-        nVersion,
-        hashPrevBlock.ToString(),
-        hashMerkleRoot.ToString(),
-        nTime, nBits, nNonce,
-        vtx.size());
+
+    if (IsProofOfStake()) {
+         s << strprintf("CBlock(hash=%s, ver=0x%08x, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%u, posStakeHash=%s, posStakeN=%u, posPubKey=%u, posBlockSig=%u vtx=%u)\n",
+                        GetHash().ToString(),
+                        nVersion,
+                        hashPrevBlock.ToString(),
+                        hashMerkleRoot.ToString(),
+                        nTime, nBits,
+                        nNonce,
+                        posStakeHash.ToString(),
+                        posStakeN,
+                        posPubKey.size(),
+                        posBlockSig.size(),
+                        vtx.size());
+    }else{
+        s << strprintf("CBlock(hash=%s, ver=0x%08x, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%u, vtx=%u)\n",
+            GetHash().ToString(),
+            nVersion,
+            hashPrevBlock.ToString(),
+            hashMerkleRoot.ToString(),
+            nTime, nBits, nNonce,
+            vtx.size());
+    }
+
     for (const auto& tx : vtx) {
         s << "  " << tx->ToString() << "\n";
     }
@@ -115,6 +139,10 @@ void CompressibleBlockHeader::Compress(const std::vector<CompressibleBlockHeader
 
 void CompressibleBlockHeader::Uncompress(const std::vector<CBlockHeader>& previous_blocks, std::list<int32_t>& last_unique_versions)
 {
+    if (bit_field.IsProofOfStake()) {
+        nFlags |= 1; // CBlockIndex::BLOCK_PROOF_OF_STAKE
+    }
+
     if (previous_blocks.empty()) {
         // First block in chain is always uncompressed
         SaveVersionAsMostRecent(last_unique_versions, nVersion);
@@ -183,6 +211,7 @@ bool CBlockHeader::CheckBlockSignature(const CKeyID& key_id) const
 
 const CPubKey& CBlockHeader::BlockPubKey() const
 {
+    // In case it's read from disk
     if (!posPubKey.IsValid() && !posBlockSig.empty()) {
         posPubKey.RecoverCompact(GetHash(), posBlockSig);
     }

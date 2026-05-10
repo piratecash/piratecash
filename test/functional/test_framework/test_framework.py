@@ -207,9 +207,9 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         parser.add_argument("--pdbonfailure", dest="pdbonfailure", default=False, action="store_true",
                             help="Attach a python debugger if test fails")
         parser.add_argument("--usecli", dest="usecli", default=False, action="store_true",
-                            help="use cosanta-cli instead of RPC for all commands")
-        parser.add_argument("--cosantad-arg", dest="cosantad_extra_args", default=[], action="append",
-                            help="Pass extra args to all cosantad instances")
+                            help="use piratecash-cli instead of RPC for all commands")
+        parser.add_argument("--piratecashd-arg", "--cosantad-arg", dest="piratecashd_extra_args", default=[], action="append",
+                            help="Pass extra args to all piratecashd instances")
         parser.add_argument("--timeoutscale", dest="timeout_scale", default=1, type=int,
                             help=argparse.SUPPRESS)
         parser.add_argument("--perf", dest="perf", default=False, action="store_true",
@@ -250,17 +250,17 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         fname_bitcoind = os.path.join(
             config["environment"]["BUILDDIR"],
             "src",
-            "cosantad" + config["environment"]["EXEEXT"],
+            "piratecashd" + config["environment"]["EXEEXT"],
         )
         fname_bitcoincli = os.path.join(
             config["environment"]["BUILDDIR"],
             "src",
-            "cosanta-cli" + config["environment"]["EXEEXT"],
+            "piratecash-cli" + config["environment"]["EXEEXT"],
         )
-        self.options.bitcoind = os.getenv("COSANTAD", default=fname_bitcoind)
-        self.options.bitcoincli = os.getenv("COSANTACLI", default=fname_bitcoincli)
+        self.options.bitcoind = os.getenv("PIRATECASHD", default=fname_bitcoind)
+        self.options.bitcoincli = os.getenv("PIRATECASHCLI", default=fname_bitcoincli)
 
-        self.extra_args_from_options = self.options.cosantad_extra_args
+        self.extra_args_from_options = self.options.piratecashd_extra_args
 
         os.environ['PATH'] = os.pathsep.join([
             os.path.join(config['environment']['BUILDDIR'], 'src'),
@@ -497,9 +497,9 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         if versions is None:
             versions = [None] * num_nodes
         if binary is None:
-            binary = [get_bin_from_version(v, 'cosantad', self.options.bitcoind) for v in versions]
+            binary = [get_bin_from_version(v, 'piratecashd', self.options.bitcoind) for v in versions]
         if binary_cli is None:
-            binary_cli = [get_bin_from_version(v, 'cosanta-cli', self.options.bitcoincli) for v in versions]
+            binary_cli = [get_bin_from_version(v, 'piratecash-cli', self.options.bitcoincli) for v in versions]
         assert_equal(len(extra_confs), num_nodes)
         assert_equal(len(extra_args), num_nodes)
         assert_equal(len(versions), num_nodes)
@@ -940,9 +940,9 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
             raise SkipTest("python3-zmq module not available.")
 
     def skip_if_no_bitcoind_zmq(self):
-        """Skip the running test if cosantad has not been compiled with zmq support."""
+        """Skip the running test if piratecashd has not been compiled with zmq support."""
         if not self.is_zmq_compiled():
-            raise SkipTest("cosantad has not been built with zmq enabled.")
+            raise SkipTest("piratecashd has not been built with zmq enabled.")
 
     def skip_if_no_wallet(self):
         """Skip the running test if wallet has not been compiled."""
@@ -961,14 +961,14 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
             raise SkipTest("BDB has not been compiled.")
 
     def skip_if_no_wallet_tool(self):
-        """Skip the running test if cosanta-wallet has not been compiled."""
+        """Skip the running test if piratecash-wallet has not been compiled."""
         if not self.is_wallet_tool_compiled():
-            raise SkipTest("cosanta-wallet has not been compiled")
+            raise SkipTest("piratecash-wallet has not been compiled")
 
     def skip_if_no_cli(self):
-        """Skip the running test if cosanta-cli has not been compiled."""
+        """Skip the running test if piratecash-cli has not been compiled."""
         if not self.is_cli_compiled():
-            raise SkipTest("cosanta-cli has not been compiled.")
+            raise SkipTest("piratecash-cli has not been compiled.")
 
     def skip_if_no_previous_releases(self):
         """Skip the running test if previous releases are not available."""
@@ -984,7 +984,7 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         return self.options.prev_releases
 
     def is_cli_compiled(self):
-        """Checks whether cosanta-cli was compiled."""
+        """Checks whether piratecash-cli was compiled."""
         return self.config["components"].getboolean("ENABLE_CLI")
 
     def is_wallet_compiled(self):

@@ -29,7 +29,7 @@
 #include <fstream>
 #include <iomanip>
 
-static UniValue masternodelist(const JSONRPCRequest& request, ChainstateManager& chainman);
+static UniValue masternodelist(const JSONRPCRequest& request);
 
 static void masternode_list_help(const JSONRPCRequest& request)
 {
@@ -46,13 +46,13 @@ static void masternode_list_help(const JSONRPCRequest& request)
         "  json           - Print info in JSON format (can be additionally filtered, partial match)\n"
         "  lastpaidblock  - Print the last block height a node was paid on the network\n"
         "  lastpaidtime   - Print the last time a node was paid on the network\n"
-        "  owneraddress   - Print the masternode owner Cosanta address\n"
-        "  payee          - Print the masternode payout Cosanta address (can be additionally filtered,\n"
+        "  owneraddress   - Print the masternode owner PirateCash address\n"
+        "  payee          - Print the masternode payout PirateCash address (can be additionally filtered,\n"
         "                   partial match)\n"
         "  pubKeyOperator - Print the masternode operator public key\n"
         "  status         - Print masternode status: ENABLED / POSE_BANNED\n"
         "                   (can be additionally filtered, partial match)\n"
-        "  votingaddress  - Print the masternode voting Cosanta address\n",
+        "  votingaddress  - Print the masternode voting PirateCash address\n",
         {
             {"mode", RPCArg::Type::STR, /* default */ "json", "The mode to run list in"},
             {"filter", RPCArg::Type::STR, /* default */ "", "Filter results. Partial match by outpoint by default in all modes, additional matches in some modes are also available"},
@@ -572,13 +572,13 @@ static UniValue masternode(const JSONRPCRequest& request)
     } else if (command == "masternodewinners") {
         return masternode_winners(new_request, chainman);
     } else if (command == "masternodelist") {
-        return masternodelist(new_request, chainman);
+        return masternodelist(new_request);
     } else {
         masternode_help();
     }
 }
 
-static UniValue masternodelist(const JSONRPCRequest& request, ChainstateManager& chainman)
+static UniValue masternodelist(const JSONRPCRequest& request)
 {
     std::string strMode = "json";
     std::string strFilter = "";
@@ -599,6 +599,7 @@ static UniValue masternodelist(const JSONRPCRequest& request, ChainstateManager&
     }
 
     const NodeContext& node = EnsureAnyNodeContext(request.context);
+    ChainstateManager& chainman = EnsureAnyChainman(request.context);
 
     UniValue obj(UniValue::VOBJ);
 
@@ -753,8 +754,8 @@ void RegisterMasternodeRPCCommands(CRPCTable &t)
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         argNames
   //  --------------------- ------------------------  -----------------------  ----------
-    { "cosanta",            "masternode",             &masternode,             {} },
-    { "cosanta",            "masternodelist",         &masternode,             {} },
+    { "pirate",               "masternode",             &masternode,             {} },
+    { "pirate",               "masternodelist",         &masternodelist,         {} },
 };
 // clang-format on
     for (const auto& command : commands) {

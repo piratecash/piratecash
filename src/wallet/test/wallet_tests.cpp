@@ -358,7 +358,7 @@ BOOST_FIXTURE_TEST_CASE(importmulti_rescan, TestChain100Setup)
                       "timestamp %d. There was an error reading a block from time %d, which is after or within %d "
                       "seconds of key creation, and could contain transactions pertaining to the key. As a result, "
                       "transactions and coins using this key may not appear in the wallet. This error could be caused "
-                      "by pruning or data corruption (see cosantad log for details) and could be dealt with by "
+                      "by pruning or data corruption (see piratecashd log for details) and could be dealt with by "
                       "downloading and rescanning the relevant blocks (see -reindex and -rescan "
                       "options).\"}},{\"success\":true}]",
                               0, oldTip->GetBlockTimeMax(), TIMESTAMP_WINDOW));
@@ -990,7 +990,7 @@ BOOST_FIXTURE_TEST_CASE(CreateTransactionTest, CreateTransactionTestSetup)
         }
     };
 
-    // First run the tests with only one input containing 100k duffs
+    // First run the tests with only one input containing 100k corsars
     {
         coinControl.SetNull();
         coinControl.Select(GetCoins({{100000, false}})[0]);
@@ -1030,7 +1030,7 @@ BOOST_FIXTURE_TEST_CASE(CreateTransactionTest, CreateTransactionTestSetup)
             {13, {false, ChangeTest::Skip}}
         });
     }
-    // Now use 4 different inputs with a total of 100k duff
+    // Now use 4 different inputs with a total of 100k corsar
     {
         coinControl.SetNull();
         auto setCoins = GetCoins({{1000, false}, {5000, false}, {10000, false}, {84000, false}});
@@ -1074,7 +1074,7 @@ BOOST_FIXTURE_TEST_CASE(CreateTransactionTest, CreateTransactionTestSetup)
         });
     }
 
-    // Last use 10 equal inputs with a total of 100k duff
+    // Last use 10 equal inputs with a total of 100k corsar
     {
         coinControl.SetNull();
         auto setCoins = GetCoins({{10000, false}, {10000, false}, {10000, false}, {10000, false}, {10000, false},

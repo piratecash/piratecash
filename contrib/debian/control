@@ -1,8 +1,8 @@
-Source: cosanta
+Source: dash
 Section: utils
 Priority: optional
-Maintainer: Cosanta Core Developers <dev@cosa.is>
-Uploaders: Cosanta Core Developers <dev@cosa.is>
+Maintainer: Holger Schinzel <holger@dash.org>
+Uploaders: Holger Schinzel <holger@dash.org>
 Build-Depends: debhelper,
  devscripts,
  automake,
@@ -24,45 +24,45 @@ Build-Depends: debhelper,
  python,
  libzmq3-dev
 Standards-Version: 3.9.2
-Homepage: https://cosa.is/
-Vcs-Git: git://github.com/cosanta/cosanta-core.git
-Vcs-Browser: https://github.com/cosanta/cosanta-core
+Homepage: https://www.dash.org/
+Vcs-Git: git://github.com/piratecash/piratecash-core.git
+Vcs-Browser: https://github.com/piratecash/piratecash-core
 
-Package: cosantad
+Package: piratecashd
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - daemon
- Cosanta is an experimental new digital currency that enables instant, private
- payments to anyone, anywhere in the world. Cosanta uses peer-to-peer
+ PirateCash is an experimental new digital currency that enables instant, private
+ payments to anyone, anywhere in the world. PirateCash uses peer-to-peer
  technology to operate with no central authority: managing transactions
- and issuing money are carried out collectively by the network. Cosanta Core
+ and issuing money are carried out collectively by the network. PirateCash Core
  is the name of the open source software which enables the use of this currency.
  .
- This package provides the daemon, cosantad, and the CLI tool
- cosanta-cli to interact with the daemon.
+ This package provides the daemon, piratecashd, and the CLI tool
+ piratecash-cli to interact with the daemon.
 
-Package: cosanta-qt
+Package: piratecash-qt
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - Qt GUI
- Cosanta is an experimental new digital currency that enables instant, private
- payments to anyone, anywhere in the world. Cosanta uses peer-to-peer
+ PirateCash is an experimental new digital currency that enables instant, private
+ payments to anyone, anywhere in the world. PirateCash uses peer-to-peer
  technology to operate with no central authority: managing transactions
- and issuing money are carried out collectively by the network. Cosanta Core
+ and issuing money are carried out collectively by the network. PirateCash Core
  is the name of the open source software which enables the use of this currency.
  .
- This package provides Cosanta-Qt, a GUI for Cosanta based on Qt.
+ This package provides PirateCash-Qt, a GUI for PirateCash based on Qt.
 
-Package: cosanta-tx
+Package: piratecash-tx
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer digital currency - standalone transaction tool
- Cosanta is an experimental new digital currency that enables instant, private
- payments to anyone, anywhere in the world. Cosanta uses peer-to-peer
+ PirateCash is an experimental new digital currency that enables instant, private
+ payments to anyone, anywhere in the world. PirateCash uses peer-to-peer
  technology to operate with no central authority: managing transactions
- and issuing money are carried out collectively by the network. Cosanta Core
+ and issuing money are carried out collectively by the network. PirateCash Core
  is the name of the open source software which enables the use of this currency.
  .
- This package provides cosanta-tx, a command-line transaction creation
- tool which can be used without a cosanta daemon.  Some means of
+ This package provides piratecash-tx, a command-line transaction creation
+ tool which can be used without a dash daemon.  Some means of
  exchanging minimal transaction data with peers is still required.

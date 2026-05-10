@@ -1,57 +1,57 @@
 # It is not recommended to modify this file in-place, because it will
 # be overwritten during package upgrades. If you want to add further
 # options or overwrite existing ones then use
-# $ systemctl edit cosantad.service
+# $ systemctl edit piratecashd.service
 # See "man systemd.service" for details.
 
 # Note that almost all daemon options could be specified in
-# /etc/cosantacore/cosanta.conf, but keep in mind those explicitly
+# /etc/piratecashcore/piratecash.conf, but keep in mind those explicitly
 # specified as arguments in ExecStart= will override those in the
 # config file.
 
 [Unit]
-Description=Cosanta daemon
-Documentation=https://github.com/cosanta/cosanta-core/blob/master/doc/init.md
+Description=PirateCash daemon
+Documentation=https://github.com/piratecash/piratecash-core/blob/master/doc/init.md
 
 # https://www.freedesktop.org/wiki/Software/systemd/NetworkTarget/
 After=network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStart=/usr/bin/cosantad -daemon \
-                                                            -pid=/run/cosantad/cosantad.pid \
-                                                            -conf=/etc/cosantacore/cosanta.conf  \
-                                                            -datadir=/var/lib/cosantad
+ExecStart=/usr/bin/piratecashd -daemon \
+                                                            -pid=/run/piratecashd/piratecashd.pid \
+                                                            -conf=/etc/piratecashcore/piratecash.conf  \
+                                                            -datadir=/var/lib/piratecashd
 
 # Make sure the config directory is readable by the service user
 PermissionsStartOnly=true
-ExecStartPre=/bin/chgrp cosantacore /etc/cosantacore
+ExecStartPre=/bin/chgrp piratecashcore /etc/piratecashcore
 
 # Process management
 ####################
 
 Type=forking
-PIDFile=/run/cosantad/cosantad.pid
+PIDFile=/run/piratecashd/piratecashd.pid
 Restart=on-failure
 TimeoutStopSec=600
 
 # Directory creation and permissions
 ####################################
 
-# Run as cosantacore:cosantacore
-User=cosantacore
-Group=cosantacore
+# Run as piratecashcore:piratecashcore
+User=piratecashcore
+Group=piratecashcore
 
-# /run/cosantad
-RuntimeDirectory=cosantad
+# /run/piratecashd
+RuntimeDirectory=piratecashd
 RuntimeDirectoryMode=0710
 
-# /etc/cosantacore
-ConfigurationDirectory=cosantacore
+# /etc/piratecashcore
+ConfigurationDirectory=piratecashcore
 ConfigurationDirectoryMode=0710
 
-# /var/lib/cosantad
-StateDirectory=cosantad
+# /var/lib/piratecashd
+StateDirectory=piratecashd
 StateDirectoryMode=0710
 
 # Hardening measures

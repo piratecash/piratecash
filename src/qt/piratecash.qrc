@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/icons">
-        <file alias="cosanta">res/icons/cosanta.png</file>
+        <file alias="piratecash">res/icons/piratecash.png</file>
         <file alias="warning">res/icons/warning.png</file>
         <file alias="address-book">res/icons/address-book.png</file>
         <file alias="connect_1">res/icons/connect1_16.png</file>
@@ -92,8 +92,9 @@
         <file alias="checkbox_partly_checked_light">res/images/checkbox_partly_checked_light.png</file>
         <file alias="checkbox_partly_checked_hover_light">res/images/checkbox_partly_checked_hover_light.png</file>
         <file alias="checkbox_partly_checked_disabled_light">res/images/checkbox_partly_checked_disabled_dark.png</file>
-        <file alias="cosanta_logo_toolbar">res/images/cosanta_logo_toolbar.png</file>
-        <file alias="cosanta_logo_toolbar_blue">res/images/cosanta_logo_toolbar_blue.png</file>
+        <file alias="piratecash_logo_horizontal">res/images/piratecash_logo_horizontal.png</file>        
+        <file alias="piratecash_logo_toolbar">res/images/piratecash_logo_toolbar.png</file>
+        <file alias="piratecash_logo_toolbar_blue">res/images/piratecash_logo_toolbar_blue.png</file>
         <file alias="radio_normal_dark">res/images/radio_normal_dark.png</file>
         <file alias="radio_normal_hover_dark">res/images/radio_normal_hover_dark.png</file>
         <file alias="radio_checked_dark">res/images/radio_checked_dark.png</file>

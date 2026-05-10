@@ -1,2 +1,2 @@
-contrib/cosantad.bash-completion	cosantad
-contrib/cosanta-cli.bash-completion    cosanta-cli
+contrib/piratecashd.bash-completion	piratecashd
+contrib/piratecash-cli.bash-completion    piratecash-cli

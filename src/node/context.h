@@ -69,7 +69,7 @@ struct NodeContext {
     std::unique_ptr<interfaces::CoinJoin::Loader> coinjoin_loader{nullptr};
     std::unique_ptr<CScheduler> scheduler;
     std::function<void()> rpc_interruption_point = [] {};
-    //! Cosanta
+    //! PirateCash
     std::unique_ptr<CEvoDB> evodb;
     std::unique_ptr<CJContext> cj_ctx;
     std::unique_ptr<CMNHFManager> mnhf_manager;

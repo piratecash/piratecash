@@ -74,12 +74,12 @@
         <translation>受取アドレス</translation>
     </message>
     <message>
-        <source>These are your Cosanta addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>これらは送金するためのあなたの Cosanta アドレスです。送金する前に常に金額と受取アドレスを確認してください。</translation>
+        <source>These are your PirateCash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>これらは送金するためのあなたの PirateCash アドレスです。送金する前に常に金額と受取アドレスを確認してください。</translation>
     </message>
     <message>
-        <source>These are your Cosanta addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>これらは、支払いを受け取るためのお客様のCosantaアドレスです。受取タブにある「新しい受取アドレスを作成」のボタンを使用し、新しいアドレスを作成します。</translation>
+        <source>These are your PirateCash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <translation>これらは、支払いを受け取るためのお客様のPirateCashアドレスです。受取タブにある「新しい受取アドレスを作成」のボタンを使用し、新しいアドレスを作成します。</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -211,8 +211,8 @@
         <translation>ウォレットの暗号化を確認</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COSA&lt;/b&gt;!</source>
-        <translation>警告: ウォレットを暗号化しパスフレーズを紛失した場合、あなたは &lt;b&gt;すべてのCosanta&lt;/b&gt;を失います!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATE&lt;/b&gt;!</source>
+        <translation>警告: ウォレットを暗号化しパスフレーズを紛失した場合、あなたは &lt;b&gt;すべてのPirateCash&lt;/b&gt;を失います!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -316,16 +316,16 @@
         <translation>送金 (&amp;S)</translation>
     </message>
     <message>
-        <source>Send coins to a Cosanta address</source>
-        <translation>Cosanta アドレスに送金</translation>
+        <source>Send coins to a PirateCash address</source>
+        <translation>PirateCash アドレスに送金</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>受取 (&amp;R)</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and cosanta: URIs)</source>
-        <translation>送金を要求 (QRコードとcosanta:URIを生成)</translation>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
+        <translation>送金を要求 (QRコードとpiratecash:URIを生成)</translation>
     </message>
     <message>
         <source>&amp;Sending addresses</source>
@@ -412,8 +412,8 @@
         <translation>%1 について (&amp;A)</translation>
     </message>
     <message>
-        <source>Send %1 funds to a Cosanta address</source>
-        <translation>Cosantaアドレスに%1の資金を送金します</translation>
+        <source>Send %1 funds to a PirateCash address</source>
+        <translation>PirateCashアドレスに%1の資金を送金します</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -468,16 +468,16 @@
         <translation>メッセージの署名… (&amp;M)</translation>
     </message>
     <message>
-        <source>Sign messages with your Cosanta addresses to prove you own them</source>
-        <translation>あなたがCosanta アドレスを所有していることを証明するために、あなたのCosantaアドレスでメッセージに署名してください。</translation>
+        <source>Sign messages with your PirateCash addresses to prove you own them</source>
+        <translation>あなたがPirateCash アドレスを所有していることを証明するために、あなたのPirateCashアドレスでメッセージに署名してください。</translation>
     </message>
     <message>
         <source>&amp;Verify message...</source>
         <translation>メッセージの検証… (&amp;V)</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Cosanta addresses</source>
-        <translation>指定されたCosantaアドレスで署名されたことを確認するためにメッセージを検証してください。</translation>
+        <source>Verify messages to ensure they were signed with specified PirateCash addresses</source>
+        <translation>指定されたPirateCashアドレスで署名されたことを確認するためにメッセージを検証してください。</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -548,8 +548,8 @@
         <translation>コマンドラインオプション (&amp;C)</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Cosanta command-line options</source>
-        <translation>有効なCosantaのコマンドラインオプションのリストを見るために %1 のヘルプメッセージを表示</translation>
+        <source>Show the %1 help message to get a list with possible PirateCash command-line options</source>
+        <translation>有効なPirateCashのコマンドラインオプションのリストを見るために %1 のヘルプメッセージを表示</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -613,7 +613,7 @@
         <translation>ガバナンス提案を見る</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Cosanta network</source>
+        <source>%n active connection(s) to PirateCash network</source>
         <translation><numerusform>%n アクティブコネクション</numerusform></translation>
     </message>
     <message>
@@ -1059,8 +1059,8 @@
         <translation>送金アドレスを編集</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Cosanta address.</source>
-        <translation>入力されたアドレス "%1" は有効なCosantaアドレスではありません。</translation>
+        <source>The entered address "%1" is not a valid PirateCash address.</source>
+        <translation>入力されたアドレス "%1" は有効なPirateCashアドレスではありません。</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -1144,8 +1144,8 @@
         <translation>%1の情報</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Cosanta in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 COSA, 0.01 COSA, 0.1 COSA, 1 COSA and 10 COSA -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;%1の基本内容&lt;/h3&gt; %1は、お客様の資金の出所を隠すことで、本当の意味での金融プライバシーを提供します。お客様のウォレットにあるすべてのCosantaは、異なる「入力」で構成されており、別個の独立したコインと考えることができます。&lt;br&gt;%1は、革新的なプロセスによって、お客様のインプットと他の2人以上のインプットをミキシングしますが、お客様のウォレットからコインが出ることはありません。お客様はいつでも自分のお金を管理できます。&lt;hr&gt; &lt;b&gt;%1のプロセスは次のように機能します。&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1は最初に取引の入力を標準的な金額に分解します。0.001 COSA、0.01 COSA、0.1 COSA、1 COSA、10 COSAなど、あなたが毎日使っている紙幣と同じような金額になります。&lt;/li&gt; &lt;li&gt;お客様のウォレットは、ネットワーク上にある「マスターノード」と呼ばれる特別に設定されたソフトウェアノードにリクエストを送ります。このとき、これらのマスタノードには、お客様が特定の金額を混合することに関心があると伝えられます。個人を特定できるような情報はマスタノードに送られないため、お客様が「誰」であるか知られることはありません。&lt;/li&gt; &lt;li&gt;他の2人以上の人物が同じようなメッセージを送り、同じ金額のミキシングを希望すると、ミキシングセッションが開始されます。マスターノードは入力をミキシングし、3人のユーザー全員のウォレットに、その時点で変換された入力を3人全員に支払うように指示します。お客様のウォレットは、その金額をウォレット自体に直接支払いますが、別のアドレス（変更アドレスと呼ぶ）になります。&lt;/li&gt; &lt;li&gt;お客様の資金を完全に隠すために、お客様のウォレットではこのプロセスを各金額で何度も繰り返される必要があります。このプロセスが完了する度に、「ラウンド」と呼ばれます。%1の各ラウンドは、お客様の資金が発生した場所を判断するのを指数関数的に難しくします。&lt;/li&gt; &lt;li&gt;このミキシングプロセスはバックグラウンドで行われ、お客様側の介入は一切ありません。お客様が取引をしたいときは、お客様の資金はすでにミキシングされています。さらに待つ必要はありません。&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;重要事項：&lt;/b&gt; お客様のウォレットには、この「変更アドレス」が1000個しか入っていません。ミキシング作業が発生する度に、お客様のアドレスのうち最大9個が使用されます。したがって、この1000個のアドレスは、約100回までのミキシング作業に使えるということです。そのうち900個を使い切ると、お客様はご自身のウォレットにさらにアドレスを作成する必要があります。ただし、これは自動バックアップを有効にしている場合に限ります。&lt;br&gt;そのため、バックアップを無効にしているユーザーは、%1も無効になります。&lt;hr&gt;詳細は、&lt;a style="%2" href="%3"&gt;%1のドキュメント&lt;/a&gt;を参照してください。</translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE and 10 PIRATE -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;%1の基本内容&lt;/h3&gt; %1は、お客様の資金の出所を隠すことで、本当の意味での金融プライバシーを提供します。お客様のウォレットにあるすべてのPirateCashは、異なる「入力」で構成されており、別個の独立したコインと考えることができます。&lt;br&gt;%1は、革新的なプロセスによって、お客様のインプットと他の2人以上のインプットをミキシングしますが、お客様のウォレットからコインが出ることはありません。お客様はいつでも自分のお金を管理できます。&lt;hr&gt; &lt;b&gt;%1のプロセスは次のように機能します。&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1は最初に取引の入力を標準的な金額に分解します。0.001 PIRATE、0.01 PIRATE、0.1 PIRATE、1 PIRATE、10 PIRATEなど、あなたが毎日使っている紙幣と同じような金額になります。&lt;/li&gt; &lt;li&gt;お客様のウォレットは、ネットワーク上にある「マスターノード」と呼ばれる特別に設定されたソフトウェアノードにリクエストを送ります。このとき、これらのマスタノードには、お客様が特定の金額を混合することに関心があると伝えられます。個人を特定できるような情報はマスタノードに送られないため、お客様が「誰」であるか知られることはありません。&lt;/li&gt; &lt;li&gt;他の2人以上の人物が同じようなメッセージを送り、同じ金額のミキシングを希望すると、ミキシングセッションが開始されます。マスターノードは入力をミキシングし、3人のユーザー全員のウォレットに、その時点で変換された入力を3人全員に支払うように指示します。お客様のウォレットは、その金額をウォレット自体に直接支払いますが、別のアドレス（変更アドレスと呼ぶ）になります。&lt;/li&gt; &lt;li&gt;お客様の資金を完全に隠すために、お客様のウォレットではこのプロセスを各金額で何度も繰り返される必要があります。このプロセスが完了する度に、「ラウンド」と呼ばれます。%1の各ラウンドは、お客様の資金が発生した場所を判断するのを指数関数的に難しくします。&lt;/li&gt; &lt;li&gt;このミキシングプロセスはバックグラウンドで行われ、お客様側の介入は一切ありません。お客様が取引をしたいときは、お客様の資金はすでにミキシングされています。さらに待つ必要はありません。&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;重要事項：&lt;/b&gt; お客様のウォレットには、この「変更アドレス」が1000個しか入っていません。ミキシング作業が発生する度に、お客様のアドレスのうち最大9個が使用されます。したがって、この1000個のアドレスは、約100回までのミキシング作業に使えるということです。そのうち900個を使い切ると、お客様はご自身のウォレットにさらにアドレスを作成する必要があります。ただし、これは自動バックアップを有効にしている場合に限ります。&lt;br&gt;そのため、バックアップを無効にしているユーザーは、%1も無効になります。&lt;hr&gt;詳細は、&lt;a style="%2" href="%3"&gt;%1のドキュメント&lt;/a&gt;を参照してください。</translation>
     </message>
 </context>
 <context>
@@ -1192,8 +1192,8 @@
         <translation>おおむね%1GBのデータがこのディレクトリに保存されます。</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Cosanta block chain.</source>
-        <translation>%1はCosantaのブロックチェーンの複製をダウンロードし保存します。</translation>
+        <source>%1 will download and store a copy of the PirateCash block chain.</source>
+        <translation>%1はPirateCashのブロックチェーンの複製をダウンロードし保存します。</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1338,12 +1338,12 @@
         <translation>フォーム</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Cosanta network, as detailed below.</source>
-        <translation>確認できない最新のトランザクションがあるかもしれません。これによりウォレットの残高は不正確なものである可能性があります。この情報はウォレットが一度Cosantaのネットワークへの同期が完了すると正確なものとなります。詳細は下記を参照してください。</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the PirateCash network, as detailed below.</source>
+        <translation>確認できない最新のトランザクションがあるかもしれません。これによりウォレットの残高は不正確なものである可能性があります。この情報はウォレットが一度PirateCashのネットワークへの同期が完了すると正確なものとなります。詳細は下記を参照してください。</translation>
     </message>
     <message>
-        <source>Attempting to spend Cosanta that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>表示されてないトランザクションに影響を受けたCosantaを使用しようとするとネットワークに承認されません。</translation>
+        <source>Attempting to spend PirateCash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>表示されてないトランザクションに影響を受けたPirateCashを使用しようとするとネットワークに承認されません。</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -1527,8 +1527,8 @@
         <translation>対象残高</translation>
     </message>
     <message>
-        <source>Automatically open the Cosanta Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>自動的にルーターのCosanta Core クライアントポートを開放します。これはルーターがUPnP機能をサポートしておりUPnP機能が有効な場合にのみ機能します。</translation>
+        <source>Automatically open the PirateCash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>自動的にルーターのPirateCash Core クライアントポートを開放します。これはルーターがUPnP機能をサポートしておりUPnP機能が有効な場合にのみ機能します。</translation>
     </message>
     <message>
         <source>Map port using NA&amp;T-PMP</source>
@@ -1543,8 +1543,8 @@
         <translation>受信接続を許可する</translation>
     </message>
     <message>
-        <source>Connect to the Cosanta network through a SOCKS5 proxy.</source>
-        <translation>SOCKS5プロキシ経由でCosantaネットワークに接続します。</translation>
+        <source>Connect to the PirateCash network through a SOCKS5 proxy.</source>
+        <translation>SOCKS5プロキシ経由でPirateCashネットワークに接続します。</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1672,9 +1672,9 @@
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/projects/p/cosanta/</source>
+https://www.transifex.com/projects/p/piratecash/</source>
         <translation>希望の言語がない場合または翻訳に問題がある場合はこちらで翻訳にご協力ください。:
-https://www.transifex.com/projects/p/cosanta/</translation>
+https://www.transifex.com/projects/p/piratecash/</translation>
     </message>
     <message>
         <source>&amp;Unit to show amounts in:</source>
@@ -1740,8 +1740,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>フォーム</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Cosanta network after a connection is established, but this process has not completed yet.</source>
-        <translation>表示された情報は古いかもしれません。接続が確立されればあなたのウォレットは Cosantaネットワークと自動的に同期しますが、このプロセスはまだ完了していません。</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
+        <translation>表示された情報は古いかもしれません。接続が確立されればあなたのウォレットは PirateCashネットワークと自動的に同期しますが、このプロセスはまだ完了していません。</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -1820,8 +1820,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>金額とラウンド</translation>
     </message>
     <message>
-        <source>0 COSA / 0 Rounds</source>
-        <translation>0 COSA / 0 ラウンド</translation>
+        <source>0 PIRATE / 0 Rounds</source>
+        <translation>0 PIRATE / 0 ラウンド</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -1966,24 +1966,24 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>支払いリクエストのエラー</translation>
     </message>
     <message>
-        <source>Cannot start cosanta: click-to-pay handler</source>
-        <translation>Cosanta を起動できません: click-to-pay ハンドラー</translation>
+        <source>Cannot start piratecash: click-to-pay handler</source>
+        <translation>PirateCash を起動できません: click-to-pay ハンドラー</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>URI のハンドリング</translation>
     </message>
     <message>
-        <source>'cosanta://' is not a valid URI. Use 'cosanta:' instead.</source>
-        <translation>「cosanta://」は有効なURIではありません。代わりに「cosanta:」を使ってください。</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>「piratecash://」は有効なURIではありません。代わりに「piratecash:」を使ってください。</translation>
     </message>
     <message>
         <source>Invalid payment address %1</source>
         <translation>支払いのアドレス　%1　は無効です</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Cosanta address or malformed URI parameters.</source>
-        <translation>URI を解析できません! これは無効な Cosanta アドレスあるいは不正な形式の URI パラメーターによって引き起こされた可能性があります。</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
+        <translation>URI を解析できません! これは無効な PirateCash アドレスあるいは不正な形式の URI パラメーターによって引き起こされた可能性があります。</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -2146,8 +2146,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>総額</translation>
     </message>
     <message>
-        <source>Enter a Cosanta address (e.g. %1)</source>
-        <translation>Cosantaアドレスを入力してください (例 %1)</translation>
+        <source>Enter a PirateCash address (e.g. %1)</source>
+        <translation>PirateCashアドレスを入力してください (例 %1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
@@ -2654,8 +2654,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Cosanta network.</source>
-        <translation>支払いリクエストが開始された時に表示される、支払いリクエストに添付される任意のメッセージです。注意：このメッセージはCosantaネットワークを通じて支払いと共に送信されるわけではありません。</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>支払いリクエストが開始された時に表示される、支払いリクエストに添付される任意のメッセージです。注意：このメッセージはPirateCashネットワークを通じて支払いと共に送信されるわけではありません。</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -2666,8 +2666,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>新しい受け取り用アドレスに紐づく任意のラベル。</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Cosanta network.</source>
-        <translation>支払いリクエストが開始された時に表示される、支払いリクエストに添付される任意のメッセージです。注意：このメッセージはCosantaネットワークを通じて支払いと共に送信されるわけではありません。</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>支払いリクエストが開始された時に表示される、支払いリクエストに添付される任意のメッセージです。注意：このメッセージはPirateCashネットワークを通じて支払いと共に送信されるわけではありません。</translation>
     </message>
     <message>
         <source>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</source>
@@ -3071,8 +3071,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation><numerusform>%n ブロック以内に検証が開始されると予想されます</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Cosanta address</source>
-        <translation>警告：Cosantaアドレスが無効です</translation>
+        <source>Warning: Invalid PirateCash address</source>
+        <translation>警告：PirateCashアドレスが無効です</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -3098,8 +3098,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>送り先: (&amp;T)</translation>
     </message>
     <message>
-        <source>The Cosanta address to send the payment to</source>
-        <translation>送金先Cosantaアドレス</translation>
+        <source>The PirateCash address to send the payment to</source>
+        <translation>送金先PirateCashアドレス</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3138,8 +3138,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>選択した単位で送金する金額</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Cosanta than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>手数料は総額から差し引かれます。受取人は入力した金額より少ないCosantaを受け取ります。複数の受取人を選択した場合、手数料は等しく分割されます。</translation>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PirateCash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <translation>手数料は総額から差し引かれます。受取人は入力した金額より少ないPirateCashを受け取ります。複数の受取人を選択した場合、手数料は等しく分割されます。</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -3154,8 +3154,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>メッセージ：</translation>
     </message>
     <message>
-        <source>A message that was attached to the cosanta: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Cosanta network.</source>
-        <translation>Cosanta: URIに添付されていたメッセージです。これは参照用としてトランザクションとともに保存されます。注意：このメッセージはCosantaネットワークを経由して送信されるわけではありません。</translation>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <translation>PirateCash: URIに添付されていたメッセージです。これは参照用としてトランザクションとともに保存されます。注意：このメッセージはPirateCashネットワークを経由して送信されるわけではありません。</translation>
     </message>
     <message>
         <source>This is an unauthenticated payment request.</source>
@@ -3196,12 +3196,12 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>メッセージの署名 (&amp;S)</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Cosanta sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>あなたのアドレスを使用してあなたがCosantaを受け取ることができるようにメッセージやアグリーメントに署名できます。充分に詳細が判明していてあなたが確認しているものだけに署名してください。フィッシングによってあなたの署名を読み取られないように注意してください。</translation>
+        <source>You can sign messages/agreements with your addresses to prove you can receive PirateCash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <translation>あなたのアドレスを使用してあなたがPirateCashを受け取ることができるようにメッセージやアグリーメントに署名できます。充分に詳細が判明していてあなたが確認しているものだけに署名してください。フィッシングによってあなたの署名を読み取られないように注意してください。</translation>
     </message>
     <message>
-        <source>The Cosanta address to sign the message with</source>
-        <translation>メッセージを署名する際に使用するCosantaアドレス</translation>
+        <source>The PirateCash address to sign the message with</source>
+        <translation>メッセージを署名する際に使用するPirateCashアドレス</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3232,8 +3232,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>現在の署名をシステムのクリップボードにコピー</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Cosanta address</source>
-        <translation>この Cosanta アドレスを所有していることを証明するためにメッセージに署名</translation>
+        <source>Sign the message to prove you own this PirateCash address</source>
+        <translation>この PirateCash アドレスを所有していることを証明するためにメッセージに署名</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -3256,8 +3256,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>受取人のアドレスとメッセージ（改行やスペース、タブなども完全に一致するよう注意してください）および署名を以下に入力し、メッセージを検証してください。中間者攻撃により騙されるのを防ぐため、署名対象のメッセージに書かれていること以上の意味を署名から読み取ろうとしないよう注意してください。これは署名作成者がこのアドレスで受け取ることを証明するだけであり、トランザクションの送信者を証明するものではないことに注意してください！</translation>
     </message>
     <message>
-        <source>The Cosanta address the message was signed with</source>
-        <translation>メッセージの署名に使用されたCosantaアドレス</translation>
+        <source>The PirateCash address the message was signed with</source>
+        <translation>メッセージの署名に使用されたPirateCashアドレス</translation>
     </message>
     <message>
         <source>The signed message to verify</source>
@@ -3268,8 +3268,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>メッセージの署名時に付与された署名</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Cosanta address</source>
-        <translation>指定されたCosantaアドレスで署名されたことを確認するためメッセージを検証</translation>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
+        <translation>指定されたPirateCashアドレスで署名されたことを確認するためメッセージを検証</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -3939,7 +3939,7 @@ https://www.transifex.com/projects/p/cosanta/</translation>
     </message>
 </context>
 <context>
-    <name>cosanta-core</name>
+    <name>piratecash-core</name>
     <message>
         <source>Error: Listening for incoming connections failed (listen returned error %s)</source>
         <translation>エラー： 受信中の接続をリッスンするのに失敗しました (エラー %s )</translation>
@@ -4681,8 +4681,8 @@ https://www.transifex.com/projects/p/cosanta/</translation>
         <translation>直近のキューがかなり最近に作成されました。</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool cosanta-wallet to salvage or restoring a backup.</source>
-        <translation>%sが破損しています。ウォレットツールのcosanta-walletを使用してサルベージするか、バックアップを復元してみてください。</translation>
+        <source>%s corrupt. Try using the wallet tool piratecash-wallet to salvage or restoring a backup.</source>
+        <translation>%sが破損しています。ウォレットツールのpiratecash-walletを使用してサルベージするか、バックアップを復元してみてください。</translation>
     </message>
     <message>
         <source>Last successful action was too recent.</source>

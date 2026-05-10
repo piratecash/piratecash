@@ -66,7 +66,7 @@ struct ChainTxData {
 
 /**
  * CChainParams defines various tweakable parameters of a given instance of the
- * Cosanta system.
+ * PirateCash system.
  */
 class CChainParams
 {
@@ -157,6 +157,7 @@ public:
     int64_t MinStakeAge() const { return nStakeMinAge; }
     uint32_t FirstPoSv2Block() const { return nFirstPoSv2Block; }
     bool HasLLMQ(Consensus::LLMQType llmqType) const;
+    int MinCorsaProtocolVersion() const { return nMinCorsaProtocolVersion; }
 
 protected:
     CChainParams() {}
@@ -196,6 +197,7 @@ protected:
     int64_t nStakeMinAge;
     // POS V2
     uint32_t nFirstPoSv2Block;
+    int nMinCorsaProtocolVersion{0};
 
     void AddLLMQ(Consensus::LLMQType llmqType);
 };

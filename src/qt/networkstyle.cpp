@@ -70,7 +70,7 @@ NetworkStyle::NetworkStyle(const QString &_appName, const int iconColorHueShift,
     // Allow for separate UI settings for testnets
     QApplication::setApplicationName(appName);
     // load pixmap
-    QPixmap appIconPixmap(":/icons/cosanta");
+    QPixmap appIconPixmap(":/icons/piratecash");
 
     if(iconColorHueShift != 0 && iconColorSaturationReduction != 0)
     {

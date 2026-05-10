@@ -360,7 +360,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
     BlockValidationState state;
     assert(std::addressof(::ChainstateActive()) == std::addressof(m_chainstate));
-    // FIXME(cosanta-v20): TestBlockValidity() builds a temporary CBlockIndex
+    // FIXME(piratecash-v20): TestBlockValidity() builds a temporary CBlockIndex
     // without an on-disk position (nFile=-1) and runs ConnectBlock() against
     // it. After v20 the chainlock check in ConnectBlock walks through
     // CheckCbTxBestChainlock() -> GetNonNullCoinbaseChainlock(pindex)
@@ -372,7 +372,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     // the very block being validated). Dash upstream fixed this in
     // 4e86bda4dc ("feat: stricter bestCLHeightDiff checks", v21) and later
     // added a cache in 18044c9eac (v23). When those changes are ported into
-    // Cosanta, drop this skip and call TestBlockValidity() unconditionally
+    // PirateCash, drop this skip and call TestBlockValidity() unconditionally
     // again — the dummy index will no longer be passed to ReadBlockFromDisk.
     //
     // Until then, skip the pre-flight TestBlockValidity() for PoS templates
@@ -710,7 +710,7 @@ void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned
 void PoSMiner(std::shared_ptr<CWallet> pwallet, CConnman& connman, LLMQContext& llmq_ctx, CEvoDB& evo_db, CChainState& chainstate, CTxMemPool& mempool, CThreadInterrupt &interrupt)
 {
     LogPrintf("PoSMiner started\n");
-    util::ThreadRename("cosanta-miner");
+    util::ThreadRename("piratecash-miner");
     SetThreadPriority(0);
 
     assert(sporkManager);
@@ -723,6 +723,7 @@ void PoSMiner(std::shared_ptr<CWallet> pwallet, CConnman& connman, LLMQContext& 
     int nMintableLastCheck = 0;
     int last_height = -1;
     int64_t start_block_time = 0;
+    const CChainParams& chainparams = Params();
 
     while (!interrupt) {
         auto hash_interval = std::max(pwallet->nHashInterval, (unsigned int)1);
@@ -772,6 +773,31 @@ void PoSMiner(std::shared_ptr<CWallet> pwallet, CConnman& connman, LLMQContext& 
         {
             nMintableLastCheck = GetTime();
             fMintableCoins = pwallet->MintableCoins();
+        }
+
+        {
+            CBlockIndex* pindexPrev = ::ChainActive().Tip();
+            
+            if (!pindexPrev) {
+                interrupt.sleep_for(std::chrono::seconds(1));
+                SetMiningStatus(":<br>- no active blocks");
+                LogPrint(BCLog::STAKING, "%s : %s \n", __func__, getMiningStatus());
+                continue;
+            }
+
+            if (!IsPoSEnforcedHeight(pindexPrev->nHeight + 1) && !IsPoSV2EnforcedHeight(pindexPrev->nHeight + 1) && !pindexPrev->IsProofOfStake()) {
+                interrupt.sleep_for(std::chrono::seconds(hash_interval));
+                SetMiningStatus(":<br>- PoS is not enabled at height " + std::to_string(pindexPrev->nHeight + 1));
+                LogPrint(BCLog::STAKING, "%s : %s \n", __func__, getMiningStatus());
+                continue;
+            }
+
+            if (pindexPrev->nHeight + 1  < chainparams.GetConsensus().nForkHeight) {
+                interrupt.sleep_for(std::chrono::seconds(hash_interval));
+                SetMiningStatus(":<br>- PoSv2 is not enabled at height <b>" + std::to_string(pindexPrev->nHeight + 1) + "</b>");
+                LogPrint(BCLog::STAKING, "%s : %s \n", __func__, getMiningStatus());
+                continue;
+            }
         }
 
         SetMiningStatus("");

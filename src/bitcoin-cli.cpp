@@ -60,7 +60,7 @@ static void SetupCliArgs(ArgsManager& argsman)
     argsman.AddArg("-version", "Print version and exit", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-conf=<file>", strprintf("Specify configuration file. Relative paths will be prefixed by datadir location. (default: %s)", BITCOIN_CONF_FILENAME), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-datadir=<dir>", "Specify data directory", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
-    argsman.AddArg("-generate", strprintf("Generate blocks immediately, equivalent to RPC getnewaddress followed by RPC generatetoaddress. Optional positional integer arguments are number of blocks to generate (default: %s) and maximum iterations to try (default: %s), equivalent to RPC generatetoaddress nblocks and maxtries arguments. Example: cosanta-cli -generate 4 1000", DEFAULT_NBLOCKS, DEFAULT_MAX_TRIES), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
+    argsman.AddArg("-generate", strprintf("Generate blocks immediately, equivalent to RPC getnewaddress followed by RPC generatetoaddress. Optional positional integer arguments are number of blocks to generate (default: %s) and maximum iterations to try (default: %s), equivalent to RPC generatetoaddress nblocks and maxtries arguments. Example: piratecash-cli -generate 4 1000", DEFAULT_NBLOCKS, DEFAULT_MAX_TRIES), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-getinfo", "Get general information from the remote server. Note that unlike server-side RPC calls, the results of -getinfo is the result of multiple non-atomic requests. Some entries in the result may represent results from different states (e.g. wallet balance may be as of a different block from the chain state reported)", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-netinfo", "Get network peer connection information from the remote server. An optional integer argument from 0 to 4 can be passed for different peers listings (default: 0). Pass \"help\" for detailed help documentation.", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-named", strprintf("Pass named instead of positional arguments (default: %s)", DEFAULT_NAMED), ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
@@ -71,7 +71,7 @@ static void SetupCliArgs(ArgsManager& argsman)
     argsman.AddArg("-rpcport=<port>", strprintf("Connect to JSON-RPC on <port> (default: %u, testnet: %u, regtest: %u)", defaultBaseParams->RPCPort(), testnetBaseParams->RPCPort(), regtestBaseParams->RPCPort()), ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::OPTIONS);
     argsman.AddArg("-rpcuser=<user>", "Username for JSON-RPC connections", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-rpcwait", "Wait for RPC server to start", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
-    argsman.AddArg("-rpcwallet=<walletname>", "Send RPC for non-default wallet on RPC server (needs to exactly match corresponding -wallet option passed to cosantad). This changes the RPC endpoint used, e.g. http://127.0.0.1:9606/wallet/<walletname>", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
+    argsman.AddArg("-rpcwallet=<walletname>", "Send RPC for non-default wallet on RPC server (needs to exactly match corresponding -wallet option passed to piratecashd). This changes the RPC endpoint used, e.g. http://127.0.0.1:19606/wallet/<walletname>", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-stdin", "Read extra arguments from standard input, one per line until EOF/Ctrl-D (recommended for sensitive information such as passphrases). When combined with -stdinrpcpass, the first line from standard input is used for the RPC password.", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-stdinrpcpass", "Read RPC password from standard input as a single line. When combined with -stdin, the first line from standard input is used for the RPC password. When combined with -stdinwalletpassphrase, -stdinrpcpass consumes the first line, and -stdinwalletpassphrase consumes the second.", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-stdinwalletpassphrase", "Read wallet passphrase from standard input as a single line. When combined with -stdin, the first line from standard input is used for the wallet passphrase.", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
@@ -132,10 +132,10 @@ static int AppInitRPC(int argc, char* argv[])
         std::string strUsage = PACKAGE_NAME " RPC client version " + FormatFullVersion() + "\n";
         if (!gArgs.IsArgSet("-version")) {
             strUsage += "\n"
-                "Usage:  cosanta-cli [options] <command> [params]  Send command to " PACKAGE_NAME "\n"
-                "or:     cosanta-cli [options] -named <command> [name=value]...  Send command to " PACKAGE_NAME " (with named arguments)\n"
-                "or:     cosanta-cli [options] help                List commands\n"
-                "or:     cosanta-cli [options] help <command>      Get help for a command\n";
+                "Usage:  piratecash-cli [options] <command> [params]  Send command to " PACKAGE_NAME "\n"
+                "or:     piratecash-cli [options] -named <command> [name=value]...  Send command to " PACKAGE_NAME " (with named arguments)\n"
+                "or:     piratecash-cli [options] help                List commands\n"
+                "or:     piratecash-cli [options] help <command>      Get help for a command\n";
             strUsage += "\n" + gArgs.GetHelpMessage();
         }
 
@@ -405,15 +405,15 @@ private:
             "* The local addresses table lists each local address broadcast by the node, the port, and the score.\n\n"
             "Examples:\n\n"
             "Connection counts and local addresses only\n"
-            "> cosanta-cli -netinfo\n\n"
+            "> piratecash-cli -netinfo\n\n"
             "Compact peers listing\n"
-            "> cosanta-cli -netinfo 1\n\n"
+            "> piratecash-cli -netinfo 1\n\n"
             "Full dashboard\n"
-            "> cosanta-cli -netinfo 4\n\n"
+            "> piratecash-cli -netinfo 4\n\n"
             "Full live dashboard, adjust --interval or --no-title as needed (Linux)\n"
-            "> watch --interval 1 --no-title cosanta-cli -netinfo 4\n\n"
+            "> watch --interval 1 --no-title piratecash-cli -netinfo 4\n\n"
             "See this help\n"
-            "> cosanta-cli -netinfo help\n"};
+            "> piratecash-cli -netinfo help\n"};
     }
     const int64_t m_time_now{GetSystemTimeInSeconds()};
 
@@ -450,7 +450,7 @@ public:
 
         const UniValue& networkinfo{batch[ID_NETWORKINFO]["result"]};
         if (networkinfo["version"].get_int() < 200000) {
-            throw std::runtime_error("-netinfo requires cosantad server to be running v20.0 and up");
+            throw std::runtime_error("-netinfo requires piratecashd server to be running v20.0 and up");
         }
 
         // Count peer connection totals, and if DetailsRequested(), store peer data in a vector of structs.
@@ -682,7 +682,7 @@ static UniValue CallRPC(BaseRequestHandler* rh, const std::string& strMethod, co
         if (response.error != -1) {
             responseErrorMessage = strprintf(" (error code %d - \"%s\")", response.error, http_errorstring(response.error));
         }
-        throw CConnectionFailed(strprintf("Could not connect to the server %s:%d%s\n\nMake sure the cosantad server is running and that you are connecting to the correct RPC port.", host, port, responseErrorMessage));
+        throw CConnectionFailed(strprintf("Could not connect to the server %s:%d%s\n\nMake sure the piratecashd server is running and that you are connecting to the correct RPC port.", host, port, responseErrorMessage));
     } else if (response.status == HTTP_UNAUTHORIZED) {
         if (failedToGetAuthCookie) {
             throw std::runtime_error(strprintf(
@@ -764,7 +764,7 @@ static void ParseError(const UniValue& error, std::string& strPrint, int& nRet)
             strPrint += ("error message:\n" + err_msg.get_str());
         }
         if (err_code.isNum() && err_code.get_int() == RPC_WALLET_NOT_SPECIFIED) {
-            strPrint += "\nTry adding \"-rpcwallet=<filename>\" option to cosanta-cli command line.";
+            strPrint += "\nTry adding \"-rpcwallet=<filename>\" option to piratecash-cli command line.";
         }
     } else {
         strPrint = "error: " + error.write();

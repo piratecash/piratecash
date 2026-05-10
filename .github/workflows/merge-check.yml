@@ -2,11 +2,18 @@ name: Check Merge Fast-Forward Only
 
 on:
   push:
+    branches-ignore:
+      - 'backport*'
+      - 'v1*'
+      - 'v2*'
   pull_request:
+    branches-ignore:
+      - 'backport*'
+      - 'v1*'
+      - 'v2*'
 
 jobs:
   check_merge:
-    if: ${{ !(github.event_name == 'pull_request' && startsWith(github.base_ref, 'backport')) && !startsWith(github.ref_name, 'backport') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

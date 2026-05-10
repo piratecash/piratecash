@@ -3,7 +3,7 @@ Unauthenticated REST Interface
 
 The REST API can be enabled with the `-rest` option.
 
-The interface runs on the same port as the JSON-RPC interface, by default port 9606 for mainnet and port 19606 for testnet.
+The interface runs on the same port as the JSON-RPC interface, by default port 19606 for mainnet and port 19696 for testnet.
 
 REST Interface consistency guarantees
 -------------------------------------
@@ -122,4 +122,4 @@ Refer to the `getrawmempool` RPC help for details.
 
 Risks
 -------------
-Running a web browser on the same node with a REST enabled cosantad can be a risk. Accessing prepared XSS websites could read out tx/block data of your node by placing links like `<script src="http://127.0.0.1:19606/rest/tx/1234567890.json">` which might break the nodes privacy.
+Running a web browser on the same node with a REST enabled piratecashd can be a risk. Accessing prepared XSS websites could read out tx/block data of your node by placing links like `<script src="http://127.0.0.1:19606/rest/tx/1234567890.json">` which might break the nodes privacy.

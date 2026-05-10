@@ -18,7 +18,7 @@ import os
 
 EXCLUDE = [
     # auto generated:
-    'src/qt/dashstrings.cpp',
+    'src/qt/piratecashstrings.cpp',
     'src/chainparamsseeds.h',
     # other external copyrights:
     'src/bip39.cpp',

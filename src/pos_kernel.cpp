@@ -80,7 +80,7 @@ public:
     StakeModifierIntervalSelector() {
         StakeModifierSelectionIntervalHelper<MODIFIER_INTERVAL_SECTIONS_MAX - 1>::fill(array);
     }
-
+    
     int64_t Get(int section) {
         assert(section >= 0 && section < 64);
         return array[section];
@@ -392,7 +392,7 @@ bool CheckStakeKernelHash(
     CAmount nValueIn = txPrev.vout[prevout.n].nValue;
     unsigned int nTimeBlockFrom = blockFrom.GetBlockTime();
     auto min_age = Params().MinStakeAge();
-
+    
     if (nValueIn < MIN_STAKE_AMOUNT) {
         return error("CheckStakeKernelHash() : stake value is too small %d < %d", nValueIn, MIN_STAKE_AMOUNT);
     }
@@ -433,7 +433,6 @@ bool CheckStakeKernelHash(
             LogPrintf("CheckStakeKernelHash(): failed to get kernel stake modifier V2 \n");
             return false;
         }
-        hashProofOfStake = current.hashProofOfStake();
         // pass
     } else // PoS v1
 
@@ -442,7 +441,7 @@ bool CheckStakeKernelHash(
         LogPrintf("CheckStakeKernelHash(): failed to get kernel stake modifier \n");
         return false;
     }
-
+    
     if (fCheck) {
         if (nStakeModifier != nRequiredStakeModifier) {
             return error(
@@ -457,9 +456,7 @@ bool CheckStakeKernelHash(
     //create data stream once instead of repeating it in the loop
     CDataStream ss(SER_GETHASH, 0);
     ss << nStakeModifier;
-    if (!current.IsProofOfStakeV2()) {
-        hashProofOfStake = stakeHash(nTimeTx, ss, prevout.n, prevout.hash, nTimeBlockFrom);
-    }
+    hashProofOfStake = stakeHash(nTimeTx, ss, prevout.n, prevout.hash, nTimeBlockFrom);
 
     // if wallet is simply checking to make sure a hash is valid
     //-------------------
@@ -486,9 +483,6 @@ bool CheckStakeKernelHash(
         }
         ss = CDataStream(SER_GETHASH, 0);
         ss << nStakeModifier;
-        if (current.IsProofOfStakeV2()){
-            return true;
-        }
 
         //hash this iteration
         hashProofOfStake = stakeHash(try_time, ss, prevout.n, prevout.hash, nTimeBlockFrom);
@@ -537,12 +531,12 @@ bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& header, 
     txinPrevRef = GetTransaction(/* block_index */ nullptr, mempool, prevout.hash, consensus, txinHashBlock);
     if (!txinPrevRef) {
         auto it = g_chainman.BlockIndex().find(header.hashPrevBlock);
-
+        
         if ((it != g_chainman.BlockIndex().end()) && ::ChainActive().Contains(it->second)) {
             return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-unkown-stake");
         } else {
             // We do not have the previous block, so the block may be valid.
-            // Cosanta: this is a transient error — header validation will
+            // PirateCash: this is a transient error — header validation will
             // be retried once our local chain progresses past the stake utxo.
             return state.TransientError("tmp-bad-unkown-stake");
         }
@@ -561,7 +555,7 @@ bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& header, 
                 return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-stake-mempool",
                                      "stake from mempool");
             } else {
-                // Cosanta: same rationale as the tmp-bad-unkown-stake
+                // PirateCash: same rationale as the tmp-bad-unkown-stake
                 // branch above — the stake input's containing block is not
                 // yet in our active chain. Mark the failure as transient so
                 // header validation gets retried as we catch up, instead of
@@ -614,7 +608,7 @@ bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& header, 
 
     // Check stake maturity (double checking with other functionality for DoS mitigation).
     //
-    // Cosanta: measure maturity against the height of the new block being
+    // PirateCash: measure maturity against the height of the new block being
     // validated (pindex_prev->nHeight + 1), not the height of our own local
     // tip. During headers-first IBD the peer can deliver a header for a block
     // far ahead of our chain (e.g. pindex_prev = 1_076_000 while our Tip is
@@ -665,7 +659,7 @@ bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& header, 
 
     unsigned int nInterval = 0;
     CBlockHeader rwheader = header; // const_cast could be used, but just safety
-
+    
     bool is_valid = CheckStakeKernelHash(
             rwheader,
             *pindex_prev,

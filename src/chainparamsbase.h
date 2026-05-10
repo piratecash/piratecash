@@ -11,8 +11,8 @@
 class ArgsManager;
 
 /**
- * CBaseChainParams defines the base parameters (shared between cosanta-cli and cosantad)
- * of a given instance of the Cosanta system.
+ * CBaseChainParams defines the base parameters (shared between piratecash-cli and piratecashd)
+ * of a given instance of the PirateCash system.
  */
 class CBaseChainParams
 {

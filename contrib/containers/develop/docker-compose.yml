@@ -8,10 +8,10 @@ services:
     tty: true         # Equivalent to -t
     stdin_open: true  # Equivalent to -i
     ports:
-      - "9606:9606"           # Mainnet Ports
-      - "60606:60606"
-      - "9696:9696"         # Testnet Ports
-      - "60696:60696"
+      - "19606:19606"           # Mainnet Ports
+      - "63636:63636"
+      - "19696:19696"         # Testnet Ports
+      - "50666:50666"
 
 # A note about volumes:
 #
@@ -26,4 +26,4 @@ services:
       - type: bind
 #        source: /host/$PWD # Workaround needed on non-Linux hosts
         source: ../../..
-        target: /cosanta-src
+        target: /piratecash-src

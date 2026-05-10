@@ -9,10 +9,10 @@
 
 /**
  * Name of client reported in the 'version' message. Report the same name
- * for both cosantad and cosanta-qt, to make it harder for attackers to
+ * for both piratecashd and piratecash-qt, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("Cosanta Core");
+const std::string CLIENT_NAME("PirateCash Core");
 
 
 #ifdef HAVE_BUILD_INFO

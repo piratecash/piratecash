@@ -11,16 +11,16 @@
 
 #include <string>
 
-const std::string CURRENCY_UNIT = "COSA"; // One formatted unit
-const std::string CURRENCY_ATOM = "unit"; // One indivisible minimum value unit
+const std::string CURRENCY_UNIT = "PIRATE"; // One formatted unit
+const std::string CURRENCY_ATOM = "corsars"; // One indivisible minimum value unit
 
 /* Used to determine type of fee estimation requested */
 enum class FeeEstimateMode {
     UNSET,        //!< Use default settings based on other criteria
     ECONOMICAL,   //!< Force estimateSmartFee to use non-conservative estimates
     CONSERVATIVE, //!< Force estimateSmartFee to use conservative estimates
-    DASH_KB,      //!< Use explicit COSA/kB fee given in coin control
-    DUFF_B,       //!< Use explicit unit/B fee given in coin control
+    DASH_KB,      //!< Use explicit PIRATE/kB fee given in coin control
+    DUFF_B,       //!< Use explicit corsars/B fee given in coin control
 };
 
 /**

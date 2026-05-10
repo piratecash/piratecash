@@ -106,6 +106,7 @@ autom4te.cache
 /config.h.in
 /config.log
 /config.status
+/config.status.old
 /config.sub
 /configure
 /configure.scan

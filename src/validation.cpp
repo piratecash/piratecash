@@ -75,11 +75,10 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #if defined(NDEBUG)
-# error "Cosanta Core cannot be compiled without assertions."
+# error "PirateCash Core cannot be compiled without assertions."
 #endif
 
-uint32_t nFirstPoSBlock = 4070908800ULL; // It's deprecated and kept for the current spork-driven PoS transition.
-uint32_t nlastPoWBlock = 4070908800ULL;  // It is not defined yet and can be disabled remotely if ASICs appear.
+uint32_t nFirstPoSBlock = 1ULL; // PirateCash has PoS active from the start of the chain.
 
 int64_t nReserveBalance = 0;
 
@@ -408,8 +407,10 @@ static bool ContextualCheckTransaction(const CTransaction& tx, TxValidationState
         }
     }
 
-    // Size limits
-    if (fDIP0001Active_context && ::GetSerializeSize(tx, PROTOCOL_VERSION) > MAX_STANDARD_TX_SIZE)
+    // Consensus: this check runs both for blocks and for the mempool. It must stay
+    // on MAX_LEGACY_TX_SIZE so existing PirateCash blocks with oversized
+    // transactions still validate; policy keeps using MAX_STANDARD_TX_SIZE.
+    if (fDIP0001Active_context && ::GetSerializeSize(tx, PROTOCOL_VERSION) > MAX_LEGACY_TX_SIZE)
         return state.Invalid(TxValidationResult::TX_CONSENSUS, "bad-txns-oversize");
 
     return true;
@@ -1177,108 +1178,29 @@ NOTE:   unlike bitcoin we are using PREVIOUS block height here,
 static std::pair<CAmount, CAmount> GetBlockSubsidyHelper(int nPrevBits, int nPrevHeight, const Consensus::Params& consensusParams, bool fV20Active)
 {
     (void)nPrevBits;
-    CAmount nSubsidyBase;
-
-    if (nPrevHeight < 11111) {
-        // Monopoly protection in Cosanta
-        nSubsidyBase = 1 * COIN / 100;
-    } else if (nPrevHeight < 22222) {
-        // CPU mining era
-        nSubsidyBase = 2 * COIN / 100;
-    } else if (nPrevHeight < 33333) {
-        // CPU mining era
-        nSubsidyBase = 3 * COIN / 100;
-    } else if (nPrevHeight < 44444) {
-        // CPU mining era
-        nSubsidyBase = 4 * COIN / 100;
-    } else if (nPrevHeight < 55555) {
-        // CPU mining era
-        nSubsidyBase = 5 * COIN / 100;
-    } else if (nPrevHeight < 66666) {
-        // CPU mining era
-        nSubsidyBase = 6 * COIN / 100;
-    } else if (nPrevHeight < 77777) {
-        // CPU mining era
-        nSubsidyBase = 7 * COIN / 100;
-    } else if (nPrevHeight < 88888) {
-        // CPU mining era
-        nSubsidyBase = 8 * COIN / 100;
-    } else if (nPrevHeight < 99999) {
-        // CPU mining era
-        nSubsidyBase = 9 * COIN / 100;
-    } else if (nPrevHeight < 111111) {
-        // CPU mining era
-        nSubsidyBase = 10 * COIN / 100;
-    } else if (nPrevHeight < 222222) {
-        nSubsidyBase = 20 * COIN / 100;
-    } else if (nPrevHeight < 333333) {
-        nSubsidyBase = 30 * COIN / 100;
-    } else if (nPrevHeight < 444444) {
-        nSubsidyBase = 40 * COIN / 100;
-    } else if (nPrevHeight < 555555) {
-        nSubsidyBase = 50 * COIN / 100;
-    } else if (nPrevHeight < 666666) {
-        nSubsidyBase = 60 * COIN / 100;
-    } else if (nPrevHeight < 700000) {
-        nSubsidyBase = 70 * COIN / 100;
-    } else if (nPrevHeight < 800000) {
-        nSubsidyBase = 80 * COIN / 100;
-    } else if (nPrevHeight < 900000) {
-        nSubsidyBase = 90 * COIN / 100;
-    } else if (nPrevHeight < 910000) {
-        nSubsidyBase = 1 * COIN;
-    } else if (nPrevHeight < 920000) {
-        nSubsidyBase = 2 * COIN;
-    } else if (nPrevHeight < 930000) {
-        nSubsidyBase = 3 * COIN;
-    } else if (nPrevHeight < 940000) {
-        nSubsidyBase = 4 * COIN;
-    } else if (nPrevHeight < 950000) {
-        nSubsidyBase = 5 * COIN;
-    } else if (nPrevHeight < 960000) {
-        nSubsidyBase = 6 * COIN;
-    } else if (nPrevHeight < 970000) {
-        nSubsidyBase = 7 * COIN;
-    } else if (nPrevHeight < 980000) {
-        nSubsidyBase = 8 * COIN;
-    } else if (nPrevHeight < 990000) {
-        nSubsidyBase = 9 * COIN;
-    } else if (nPrevHeight < 991000) {
-        nSubsidyBase = 10 * COIN;
-    } else if (nPrevHeight < 992000) {
-        nSubsidyBase = 15 * COIN;
-    } else if (nPrevHeight < 993000) {
-        nSubsidyBase = 20 * COIN;
-    } else if (nPrevHeight < 994000) {
-        nSubsidyBase = 25 * COIN;
-    } else if (nPrevHeight < 995000) {
-        nSubsidyBase = 30 * COIN;
-    } else if (nPrevHeight < 996000) {
-        nSubsidyBase = 35 * COIN;
-    } else if (nPrevHeight < 997000) {
-        nSubsidyBase = 40 * COIN;
-    } else if (nPrevHeight < 998000) {
-        nSubsidyBase = 425 * COIN / 10;
-    } else if (nPrevHeight < 999000) {
-        nSubsidyBase = 45 * COIN;
-    } else {
-        nSubsidyBase = 50 * COIN;
-    }
+    CAmount nSubsidyBase = 50 * COIN;
 
     int halvings = nPrevHeight >> 20;
     if (halvings >= 34){
         return {0, 0};
     }
 
-    CAmount nSubsidy = nSubsidyBase >> halvings;
+    nSubsidyBase >>= halvings;
+
+    if (nPrevHeight <= consensusParams.nRestoreRewardV18) {
+        if (nPrevHeight > consensusParams.nRewForkDecreaseV18) {
+            // Keep PirateCash v18 compatibility: temporarily drop rewards to 150 satoshi.
+            nSubsidyBase = 150;
+        }
+    }
 
     CAmount nSuperblockPart{};
     // Hard fork to reduce the block reward by 10 extra percent (allowing budget/superblocks)
     if (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) {
         // Once v20 is active, the treasury is 20% instead of 10%
-        nSuperblockPart = nSubsidy / (fV20Active ? 5 : 10);
+        nSuperblockPart = nSubsidyBase / (fV20Active ? 5 : 10);
     }
-    return {nSubsidy - nSuperblockPart, nSuperblockPart};
+    return {nSubsidyBase - nSuperblockPart, nSuperblockPart};
 }
 
 CAmount GetSuperblockSubsidyInner(int nPrevBits, int nPrevHeight, const Consensus::Params& consensusParams, bool fV20Active)
@@ -1303,10 +1225,16 @@ CAmount GetBlockSubsidy(const CBlockIndex* const pindex, const Consensus::Params
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue, bool fV20Active)
 {
     (void)fV20Active;
-    CAmount ret = 0;
     const Consensus::Params& consensusParams = Params().GetConsensus();
     const int nReallocActivationHeight = consensusParams.BRRHeight;
-    if (nHeight >= consensusParams.nMasternodePaymentsStartBlock) {
+
+    CAmount ret;
+    if (nHeight < 917000)
+    {
+        // Old PirateCash scheme with 60% for masternodes.
+        ret = blockValue * 3 / 5;
+    } else {
+        // Increase percent for masternode owners as more services become available.
         ret = blockValue / 1000;
     }
 
@@ -1326,39 +1254,39 @@ CAmount GetMasternodePayment(int nHeight, CAmount blockValue, bool fV20Active)
 
     // Periods used to reallocate the masternode reward from 0.1% to 60%
     static const std::vector<int> vecPeriods{
-        2,   // Period 1:   0.2%
-        5,   // Period 2:   0.5%
-        7,   // Period 3:   0.7%
-        10,  // Period 4:   1.0%
-        50,  // Period 5:   5.0%
-        70,  // Period 6:   7.0%
-        100, // Period 7:  10.0%
-        150, // Period 8:  15.0%
-        200, // Period 9:  20.0%
-        250, // Period 10: 25.0%
-        300, // Period 11: 30.0%
-        350, // Period 12: 35.0%
-        370, // Period 13: 37.0%
-        390, // Period 14: 39.0%
-        400, // Period 15: 40.0%
-        410, // Period 16: 41.0%
-        425, // Period 17: 42.5%
-        440, // Period 18: 44.0%
-        455, // Period 19: 45.5%
-        470, // Period 20: 47.0%
-        485, // Period 21: 48.5%
-        500, // Period 22: 50.0%
-        515, // Period 23: 51.5%
-        530, // Period 24: 53.0%
-        545, // Period 25: 54.5%
-        560, // Period 26: 56.0%
-        575, // Period 27: 57.5%
-        590, // Period 28: 59.0%
-        595, // Period 29: 59.5%
+        10,  // Period 1:   1.0%
+        50,  // Period 2:   5.0%
+        100, // Period 3:  10.0%
+        150, // Period 4:  15.0%
+        200, // Period 5:  20.0%
+        250, // Period 6:  25.0%
+        300, // Period 7:  30.0%
+        350, // Period 8:  35.0%
+        400, // Period 9:  40.0%
+        450, // Period 10: 45.0%
+        500, // Period 11: 50.0%
+        513, // Period 12: 51.3%
+        526, // Period 13: 52.6%
+        533, // Period 14: 53.3%
+        540, // Period 15: 54.0%
+        546, // Period 16: 54.6%
+        552, // Period 17: 55.2%
+        557, // Period 18: 55.7%
+        562, // Period 19: 56.2%
+        567, // Period 20: 56.7%
+        572, // Period 21: 57.2%
+        577, // Period 22: 57.7%
+        582, // Period 23: 58.2%
+        585, // Period 24: 58.5%
+        588, // Period 25: 58.8%
+        591, // Period 26: 59.1%
+        594, // Period 27: 59.4%
+        597, // Period 28: 59.7%
+        599, // Period 29: 59.9%
         600  // Period 30: 60.0%
     };
 
-    int nReallocCycle = nSuperblockCycle * 4;
+    int nReallocCycle = nSuperblockCycle * 3;
     int nCurrentPeriod = std::min<int>((nHeight - nReallocStart) / nReallocCycle, vecPeriods.size() - 1);
 
     return static_cast<CAmount>(blockValue * vecPeriods[nCurrentPeriod] / 1000);
@@ -1780,7 +1708,7 @@ int ApplyTxInUndo(Coin&& undo, CCoinsViewCache& view, const COutPoint& out)
         if (!alternate.IsSpent()) {
             undo.nHeight = alternate.nHeight;
             undo.fCoinBase = alternate.fCoinBase;
-            undo.fCoinStake = alternate.fCoinStake; // Cosanta
+            undo.fCoinStake = alternate.fCoinStake; // PirateCash
         } else {
             return DISCONNECT_FAILED; // adding output for transaction without known metadata
         }
@@ -2221,6 +2149,9 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
     if (block.IsProofOfStakeV2() && !is_posv2_active && !IsPoSV2EnforcedHeight(pindex->nHeight))
         return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "PoSv2-early", "PoSv2 period not active");
 
+    if (!block.IsProofOfStakeV2() && pindex->nHeight >= m_params.GetConsensus().nForkHeight)
+        return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "Hard-fork-active", "Disable blocks from old version of PirateCash");
+
     bool fScriptChecks = true;
     if (!hashAssumeValid.IsNull()) {
         // We've been configured with the hash of a block which has been externally verified to have a valid history.
@@ -2338,7 +2269,7 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
     // MUST process special txes before updating UTXO to ensure consistency between mempool and block processing
     std::optional<MNListUpdates> mnlist_updates_opt{std::nullopt};
     if (!ProcessSpecialTxsInBlock(block, pindex, m_mnhfManager, *m_quorum_block_processor, *m_clhandler, m_params.GetConsensus(), view, fJustCheck, fScriptChecks, state, mnlist_updates_opt)) {
-        return error("ConnectBlock(COSA): ProcessSpecialTxsInBlock for block %s failed with %s",
+        return error("ConnectBlock(PIRATE): ProcessSpecialTxsInBlock for block %s failed with %s",
                      pindex->GetBlockHash().ToString(), state.ToString());
     }
 
@@ -2346,6 +2277,10 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
     LogPrint(BCLog::BENCHMARK, "      - ProcessSpecialTxsInBlock: %.2fms [%.2fs (%.2fms/blk)]\n", MILLI * (nTime2_1 - nTime2), nTimeProcessSpecial * MICRO, nTimeProcessSpecial * MILLI / nBlocksTotal);
 
     int64_t nTime2_index = 0;
+
+    // Workaround for old PirateCash TXes. Pre-v18 PirateCash PoS blocks paid the stake
+    // reward through coinbase, so modern input/value/script checks fail on them.
+    const bool fCheckTxActive = pindex->nHeight >= m_params.GetConsensus().nForkHeight;
 
     for (unsigned int i = 0; i < block.vtx.size(); i++)
     {
@@ -2357,17 +2292,19 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
         if (!tx.IsCoinBase())
         {
             CAmount txfee = 0;
-            TxValidationState tx_state;
-            if (!Consensus::CheckTxInputs(tx, tx_state, view, pindex->nHeight, txfee)) {
-                // Any transaction validation failure in ConnectBlock is a block consensus failure
-                LogPrintf("ERROR: %s: Consensus::CheckTxInputs: %s, %s\n", __func__, tx.GetHash().ToString(), state.ToString());
-                return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS,
-                            tx_state.GetRejectReason(), tx_state.GetDebugMessage());
-            }
-            nFees += txfee;
-            if (!MoneyRange(nFees)) {
-                LogPrintf("ERROR: %s: accumulated fee in the block out of range.\n", __func__);
-                return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-txns-accumulated-fee-outofrange");
+            if (fCheckTxActive) {
+                TxValidationState tx_state;
+                if (!Consensus::CheckTxInputs(tx, tx_state, view, pindex->nHeight, txfee)) {
+                    // Any transaction validation failure in ConnectBlock is a block consensus failure
+                    LogPrintf("ERROR: %s: Consensus::CheckTxInputs: %s, %s\n", __func__, tx.GetHash().ToString(), state.ToString());
+                    return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS,
+                                tx_state.GetRejectReason(), tx_state.GetDebugMessage());
+                }
+                nFees += txfee;
+                if (!MoneyRange(nFees)) {
+                    LogPrintf("ERROR: %s: accumulated fee in the block out of range.\n", __func__);
+                    return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-txns-accumulated-fee-outofrange");
+                }
             }
 
             // Check that transaction is BIP68 final
@@ -2426,19 +2363,20 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
 
         if (!tx.IsCoinBase())
         {
-
-            std::vector<CScriptCheck> vChecks;
-            bool fCacheResults = fJustCheck; /* Don't cache results if we're actually connecting blocks (still consult the cache, though) */
-            TxValidationState tx_state;
-            if (fScriptChecks && !CheckInputScripts(tx, tx_state, view, flags, fCacheResults, fCacheResults, txsdata[i], g_parallel_script_checks ? &vChecks : nullptr)) {
-                // Any transaction validation failure in ConnectBlock is a block consensus failure
-                state.Invalid(BlockValidationResult::BLOCK_CONSENSUS,
-                              tx_state.GetRejectReason(), tx_state.GetDebugMessage());
-                LogPrintf("ERROR: ConnectBlock(): CheckInputScripts on %s failed with %s\n",
-                    tx.GetHash().ToString(), state.ToString());
-                return false;
+            if (fCheckTxActive) {
+                std::vector<CScriptCheck> vChecks;
+                bool fCacheResults = fJustCheck; /* Don't cache results if we're actually connecting blocks (still consult the cache, though) */
+                TxValidationState tx_state;
+                if (fScriptChecks && !CheckInputScripts(tx, tx_state, view, flags, fCacheResults, fCacheResults, txsdata[i], g_parallel_script_checks ? &vChecks : nullptr)) {
+                    // Any transaction validation failure in ConnectBlock is a block consensus failure
+                    state.Invalid(BlockValidationResult::BLOCK_CONSENSUS,
+                                  tx_state.GetRejectReason(), tx_state.GetDebugMessage());
+                    LogPrintf("ERROR: ConnectBlock(): CheckInputScripts on %s failed with %s\n",
+                        tx.GetHash().ToString(), state.ToString());
+                    return false;
+                }
+                control.Add(vChecks);
             }
-            control.Add(vChecks);
         }
 
         if (fAddressIndex) {
@@ -2500,13 +2438,13 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
             if (tx->vin.empty()) continue;
             while (llmq::CInstantSendLockPtr conflictLock = m_isman->GetConflictingLock(*tx)) {
                 if (m_clhandler->HasChainLock(pindex->nHeight, pindex->GetBlockHash())) {
-                    LogPrint(BCLog::ALL, "ConnectBlock(COSA): chain-locked transaction %s overrides islock %s\n",
+                    LogPrint(BCLog::ALL, "ConnectBlock(PIRATE): chain-locked transaction %s overrides islock %s\n",
                             tx->GetHash().ToString(), ::SerializeHash(*conflictLock).ToString());
                     m_isman->RemoveConflictingLock(::SerializeHash(*conflictLock), *conflictLock);
                 } else {
                     // The node which relayed this should switch to correct chain.
                     // TODO: relay instantsend data/proof.
-                    LogPrintf("ERROR: ConnectBlock(COSA): transaction %s conflicts with transaction lock %s\n", tx->GetHash().ToString(), conflictLock->txid.ToString());
+                    LogPrintf("ERROR: ConnectBlock(PIRATE): transaction %s conflicts with transaction lock %s\n", tx->GetHash().ToString(), conflictLock->txid.ToString());
                     return state.Invalid(BlockValidationResult::BLOCK_CHAINLOCK, "conflict-tx-lock");
                 }
             }
@@ -2527,7 +2465,7 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
     LogPrint(BCLog::BENCHMARK, "      - GetBlockSubsidy: %.2fms [%.2fs (%.2fms/blk)]\n", MILLI * (nTime5_2 - nTime5_1), nTimeSubsidy * MICRO, nTimeSubsidy * MILLI / nBlocksTotal);
 
     if (!CheckCreditPoolDiffForBlock(block, pindex, m_params.GetConsensus(), blockSubsidy, state)) {
-        return error("ConnectBlock(COSA): CheckCreditPoolDiffForBlock for block %s failed with %s",
+        return error("ConnectBlock(PIRATE): CheckCreditPoolDiffForBlock for block %s failed with %s",
                      pindex->GetBlockHash().ToString(), state.ToString());
     }
 
@@ -2536,7 +2474,7 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
 
     if (!MasternodePayments::IsBlockValueValid(*sporkManager, *governance, *::masternodeSync, block, pindex->nHeight, blockSubsidy + feeReward, strError)) {
         // NOTE: Do not punish, the node might be missing governance data
-        LogPrintf("ERROR: ConnectBlock(COSA): %s\n", strError);
+        LogPrintf("ERROR: ConnectBlock(PIRATE): %s\n", strError);
         return state.Invalid(BlockValidationResult::BLOCK_RESULT_UNSET, "bad-cb-amount");
     }
 
@@ -2545,7 +2483,7 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
 
     if (!MasternodePayments::IsBlockPayeeValid(*sporkManager, *governance, *::masternodeSync, *block.vtx[0], pindex->pprev, blockSubsidy, feeReward)) {
         // NOTE: Do not punish, the node might be missing governance data
-        LogPrintf("ERROR: ConnectBlock(COSA): couldn't find masternode or superblock payments\n");
+        LogPrintf("ERROR: ConnectBlock(PIRATE): couldn't find masternode or superblock payments\n");
         return state.Invalid(BlockValidationResult::BLOCK_RESULT_UNSET, "bad-cb-payee");
     }
 
@@ -2553,7 +2491,7 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
     LogPrint(BCLog::BENCHMARK, "      - IsBlockPayeeValid: %.2fms [%.2fs (%.2fms/blk)]\n", MILLI * (nTime5_5 - nTime5_4), nTimePayeeValid * MICRO, nTimePayeeValid * MILLI / nBlocksTotal);
 
     int64_t nTime5 = GetTimeMicros(); nTimeDashSpecific += nTime5 - nTime4;
-    LogPrint(BCLog::BENCHMARK, "    - Cosanta specific: %.2fms [%.2fs (%.2fms/blk)]\n", MILLI * (nTime5 - nTime4), nTimeDashSpecific * MICRO, nTimeDashSpecific * MILLI / nBlocksTotal);
+    LogPrint(BCLog::BENCHMARK, "    - PirateCash specific: %.2fms [%.2fs (%.2fms/blk)]\n", MILLI * (nTime5 - nTime4), nTimeDashSpecific * MICRO, nTimeDashSpecific * MILLI / nBlocksTotal);
 
     // END DASH
 
@@ -3909,7 +3847,7 @@ static bool FindUndoPos(BlockValidationState &state, int nFile, FlatFilePos &pos
 static bool CheckBlockHeader(const CBlockHeader& block, const uint256& hash, BlockValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true)
 {
     // NOTE: left here for original behavior, modern check is in the CheckBlock()
-    if (fCheckPOW && block.IsProofOfWork() && !CheckProofOfWork(hash, block.nBits, consensusParams))
+    if (fCheckPOW && block.IsProofOfWork() && !CheckProofOfWork(block.GetPoWHash(), block.nBits, consensusParams) && block.GetBlockTime() != 1541202300)
         return state.Invalid(BlockValidationResult::BLOCK_INVALID_HEADER, "high-hash", "proof of work failed");
 
     // Check DevNet
@@ -3966,8 +3904,17 @@ bool CheckBlock(const CBlock& block, BlockValidationState& state, const Consensu
         if (block.vtx[i]->IsCoinBase())
             return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-cb-multiple", "more than one coinbase");
 
-    if (block.IsProofOfStake()) {
-        // CoinStake is a subset of CoinBase in Cosanta
+    // PirateCash: only the second transaction can be the optional coinstake.
+    for (unsigned int i = 2; i < block.vtx.size(); i++)
+        if (block.vtx[i]->IsCoinStake())
+            return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-cs-missing", "coinstake in wrong position");
+
+    // PirateCash: first coinbase output should be empty in pre-v18 PoS blocks.
+    if (block.IsProofOfStake() && !block.IsProofOfStakeV2() && !block.vtx[0]->vout[0].IsEmpty())
+        return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-cb-notempty", "coinbase output not empty in PoS block");
+
+    if (block.IsProofOfStakeV2()) {
+        // CoinStake is a subset of CoinBase in PirateCash
         if (fCheckPOW && !block.HasStake())
             return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-PoS-stake", "stake contraints failed");
     }
@@ -4035,7 +3982,10 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, BlockValidatio
 
     // Check proof of work
     const Consensus::Params& consensusParams = params.GetConsensus();
-    if(Params().NetworkIDString() == CBaseChainParams::MAIN && nHeight <= 68589){
+    if (nHeight < consensusParams.nForkHeight) {
+        if (block.nBits != GetNextTargetRequired(pindexPrev, ((block.nFlags & CBlockIndex::BLOCK_PROOF_OF_STAKE) || block.IsProofOfStakeV2()), consensusParams))
+            return state.Invalid(BlockValidationResult::BLOCK_INVALID_HEADER, "bad-diffbits", "incorrect proof of work/stake");
+    } else if(Params().NetworkIDString() == CBaseChainParams::MAIN && nHeight <= 68589){
         // architecture issues with DGW v1 and v2)
         unsigned int nBitsNext = GetNextWorkRequired(pindexPrev, &block, consensusParams);
         double n1 = ConvertBitsToDouble(block.nBits);
@@ -4064,8 +4014,10 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, BlockValidatio
     }
 
     // Check timestamp against prev
-    if (block.GetBlockTime() <= pindexPrev->GetMedianTimePast())
+    if (block.GetBlockTime() <= pindexPrev->GetMedianTimePast() && block.GetBlockTime() > consensusParams.nSkipTimeUntil) {
+        LogPrintf("Block time = %d , GetMedianTimePast = %d \n", block.GetBlockTime(), pindexPrev->GetMedianTimePast());
         return state.Invalid(BlockValidationResult::BLOCK_INVALID_HEADER, "time-too-old", strprintf("block's timestamp is too early %d %d", block.GetBlockTime(), pindexPrev->GetMedianTimePast()));
+    }
 
     // 3 minute future drift for PoS.
     if (block.GetBlockTime() > nAdjustedTime + (block.IsProofOfStake() ? MAX_POS_BLOCK_AHEAD_TIME : MAX_FUTURE_BLOCK_TIME))
@@ -4213,7 +4165,7 @@ bool BlockManager::AcceptBlockHeader(const CBlockHeader& block, BlockValidationS
         }
 
         if (!ContextualCheckBlockHeader(block, state, *this, chainparams, pindexPrev, GetAdjustedTime(), true)) {
-            // Cosanta: do not spam the log for transient errors (e.g. PoS
+            // PirateCash: do not spam the log for transient errors (e.g. PoS
             // stake utxo not yet present locally). They will be retried once
             // our local chain catches up.
             if (!state.IsTransientError()) {
@@ -5022,7 +4974,7 @@ bool CChainState::RollforwardBlock(const CBlockIndex* pindex, CCoinsViewCache& i
     BlockValidationState state;
     std::optional<MNListUpdates> mnlist_updates_opt{std::nullopt};
     if (!ProcessSpecialTxsInBlock(block, pindex, m_mnhfManager, *m_quorum_block_processor, *m_clhandler, m_params.GetConsensus(), inputs, false /*fJustCheck*/, false /*fScriptChecks*/, state, mnlist_updates_opt)) {
-        return error("RollforwardBlock(COSA): ProcessSpecialTxsInBlock for block %s failed with %s",
+        return error("RollforwardBlock(PIRATE): ProcessSpecialTxsInBlock for block %s failed with %s",
             pindex->GetBlockHash().ToString(), state.ToString());
     }
 
@@ -5821,18 +5773,14 @@ bool IsPoSV2EnforcedHeight(int nBlockHeight) {
 }
 
 bool IsPowActiveHeight(int nBlockHeight) {
-    uint32_t powHeight = sporkManager->GetSporkValue(SPORK_33_LAST_POW_BLOCK);
-    if (powHeight != nlastPoWBlock){
-        nlastPoWBlock = powHeight; // Temporary workaround and it will be in chainparams
-    }
-    return uint32_t(nBlockHeight) <= nlastPoWBlock;
+    return uint32_t(nBlockHeight) <= Params().GetConsensus().nLastPowBlock;
 }
 
 
 /** Check PoW or PoS based in block index **/
 bool CheckProof(BlockValidationState& state, const CBlockIndex& index, const Consensus::Params& params) {
     if (index.IsProofOfWork()) {
-        if (!CheckProofOfWork(index.GetBlockHash(), index.nBits, params)) {
+        if (!CheckProofOfWork(index.GetBlockHeader().GetPoWHash(), index.nBits, params) && index.GetBlockTime() != 1541202300) {
             return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-pow-proof", "block proof mismatch");
         }
 
@@ -5845,16 +5793,21 @@ bool CheckProof(BlockValidationState& state, const CBlockIndex& index, const Con
 
 /** Check PoW or PoS based on actual block **/
 bool CheckProof(BlockValidationState& state, const CBlockHeader& block, const Consensus::Params& params) {
-    if (block.IsProofOfWork()) {
-        if (!CheckProofOfWork(block.GetHash(), block.nBits, params)) {
+    if (!((block.nFlags & CBlockIndex::BLOCK_PROOF_OF_STAKE) || block.IsProofOfStakeV2())) {
+        if (!CheckProofOfWork(block.GetPoWHash(), block.nBits, params) && block.GetBlockTime() != 1541202300) {
             return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-pow-proof", "block proof mismatch");
         }
 
         return true;
     }
 
-    uint256 hashProofOfStake = uint256();
-    return CheckProofOfStake(state, block, hashProofOfStake, params, nullptr);
+    if (block.IsProofOfStakeV2()) {
+        uint256 hashProofOfStake = uint256();
+        return CheckProofOfStake(state, block, hashProofOfStake, params, nullptr);
+    }
+
+    // TODO Add CheckProof for pre-v18 PirateCash PoS blocks. Right now checkpoints cover them.
+    return true;
 }
 
 //! Guess how far we are in the verification process at the given block index

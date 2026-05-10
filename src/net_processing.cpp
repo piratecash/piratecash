@@ -66,7 +66,7 @@
 #include <statsd_client.h>
 
 #if defined(NDEBUG)
-# error "Cosanta Core cannot be compiled without assertions."
+# error "PirateCash Core cannot be compiled without assertions."
 #endif
 
 static std::deque<const CBlockIndex*> vToFetchCache GUARDED_BY(cs_main);
@@ -2454,7 +2454,7 @@ void PeerManagerImpl::ProcessHeadersMessage(CNode& pfrom, std::deque<CBlockHeade
         // - Once a headers message is received that is valid and does connect,
         //   nUnconnectingHeaders gets reset back to 0.
 
-        // FIXED: syncing of PoS blocks - Cosanta
+        // FIXED: syncing of PoS blocks - PirateCash
         if (pindexPrev == nullptr && headers.size() <= MAX_BLOCKS_TO_ANNOUNCE) {
             nodestate->nUnconnectingHeaders++;
             const std::string msg_type = (pfrom.nServices & NODE_HEADERS_COMPRESSED) ? NetMsgType::GETHEADERS2 : NetMsgType::GETHEADERS;
@@ -2501,7 +2501,7 @@ void PeerManagerImpl::ProcessHeadersMessage(CNode& pfrom, std::deque<CBlockHeade
             return;
         }
         if (state.IsError() || state.IsTransientError()) {
-            // Cosanta: transient error means the peer sent us a header we
+            // PirateCash: transient error means the peer sent us a header we
             // cannot fully validate yet (e.g. PoS stake utxo not in our local
             // chain). Don't punish, retry later.
             LogPrint(BCLog::NET, "peer %d sent us header which we are unable to process yet \n", pfrom.GetId());
@@ -2518,7 +2518,7 @@ void PeerManagerImpl::ProcessHeadersMessage(CNode& pfrom, std::deque<CBlockHeade
                 // edge case: the first header in the batch failed
                 pindexLast = pindexPrev;
             }
-            // Cosanta: the peer still has more headers for us beyond the
+            // PirateCash: the peer still has more headers for us beyond the
             // one we choked on — once our chain catches up to pindexLast we
             // must explicitly ask for the next batch, otherwise sync stalls.
             get_more_headers = true;
@@ -3204,6 +3204,9 @@ void PeerManagerImpl::ProcessMessage(
         Misbehaving(pfrom.GetId(), 1, "non-version message before version handshake");
         return;
     }
+
+    // PirateCash peers serialize the legacy PoS marker in block headers.
+    vRecv.SetType(vRecv.GetType() | SER_POSMARKER);
 
     // At this point, the outgoing message serialization version can't change.
     const CNetMsgMaker msgMaker(pfrom.GetCommonVersion());
@@ -3909,7 +3912,7 @@ void PeerManagerImpl::ProcessMessage(
                 MaybePunishNodeForBlock(pfrom.GetId(), state, /*via_compact_block*/ true, "invalid header via cmpctblock");
                 return;
             }
-            // Cosanta: a transient error (e.g. PoS stake input not yet in
+            // PirateCash: a transient error (e.g. PoS stake input not yet in
             // our local chain) means we cannot fully validate this header
             // right now. Don't enter the cmpctblock fast-path below — pindex
             // is unset and assert(pindex) would fire. Instead reroute the
@@ -4189,6 +4192,9 @@ void PeerManagerImpl::ProcessMessage(
             for (unsigned int n = 0; n < nCount; n++) {
                 vRecv >> headers[n];
                 ReadCompactSize(vRecv); // ignore tx count; assume it is 0.
+                if (!headers[n].IsProofOfStakeV2()) {
+                    ReadCompactSize(vRecv); // needed for legacy PirateCash oldVchBlockSig.
+                }
             }
         } else if (msg_type == NetMsgType::HEADERS2) {
             std::list<int32_t> last_unique_versions;
@@ -4216,6 +4222,9 @@ void PeerManagerImpl::ProcessMessage(
 
         std::shared_ptr<CBlock> pblock = std::make_shared<CBlock>();
         vRecv >> *pblock;
+        if (pblock->IsProofOfStakeTX()) {
+            pblock->nFlags |= CBlockIndex::BLOCK_PROOF_OF_STAKE;
+        }
 
         LogPrint(BCLog::NET, "received block %s peer=%d\n", pblock->GetHash().ToString(), pfrom.GetId());
 

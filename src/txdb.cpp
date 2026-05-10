@@ -438,8 +438,12 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 pindexNew->nStatus        = diskindex.nStatus;
                 pindexNew->nTx            = diskindex.nTx;
 
+                // PirateCash related block index fields
+                pindexNew->nFlags         = diskindex.nFlags;
+
                 if (pindexNew->IsProofOfWork() &&
-                    !CheckProofOfWork(pindexNew->GetBlockHash(), pindexNew->nBits, consensusParams)) {
+                    pindexNew->GetBlockHash() != consensusParams.hashGenesisBlock &&
+                    !CheckProofOfWork(pindexNew->GetBlockHeader().GetPoWHash(), pindexNew->nBits, consensusParams)) {
                     return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());
                 }
 

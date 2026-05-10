@@ -16,7 +16,7 @@ RUN apt-get update && \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /home/cosanta
+WORKDIR /home/piratecash
 
 COPY . .
 
@@ -38,27 +38,27 @@ RUN make -j`nproc | awk '{x=$1/2; print x}'` && make install
 
 RUN mkdir built-target && \
   case "$TARGETPLATFORM" in \
-  "linux/arm64") cp depends/arm-linux-gnueabihf/bin/cosanta* /home/cosanta/built-target ;; \
-  "linux/amd64") cp depends/x86_64-pc-linux-gnu/bin/cosanta* /home/cosanta/built-target ;; \
+  "linux/arm64") cp depends/arm-linux-gnueabihf/bin/piratecash* /home/piratecash/built-target ;; \
+  "linux/amd64") cp depends/x86_64-pc-linux-gnu/bin/piratecash* /home/piratecash/built-target ;; \
 esac
 
 FROM ubuntu:focal
-LABEL maintainer="Cosanta Developers <dev@cosa.is>"
-LABEL description="Dockerised CosantaCore"
+LABEL maintainer="PirateCash Developers <dev@cosa.is>"
+LABEL description="Dockerised PirateCashCore"
 
 ARG USER_ID
 ARG GROUP_ID
 ARG TAG
 
-ENV HOME /home/cosanta
+ENV HOME /home/piratecash
 
 # add user with specified (or default) user/group ids
 ENV USER_ID ${USER_ID:-1000}
 ENV GROUP_ID ${GROUP_ID:-1000}
-RUN groupadd -g ${GROUP_ID} cosanta && \
-    useradd -u ${USER_ID} -g cosanta -s /bin/bash -m -d /home/cosanta cosanta  && \
-    mkdir /home/cosanta/.cosantacore && \
-    chown ${USER_ID}:${GROUP_ID} -R /home/cosanta
+RUN groupadd -g ${GROUP_ID} piratecash && \
+    useradd -u ${USER_ID} -g piratecash -s /bin/bash -m -d /home/piratecash piratecash  && \
+    mkdir /home/piratecash/.piratecore && \
+    chown ${USER_ID}:${GROUP_ID} -R /home/piratecash
 
 RUN apt-get update && \
     apt-get -y install --no-install-recommends \
@@ -66,15 +66,15 @@ RUN apt-get update && \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /home/cosanta/built-target/cosanta* /usr/local/bin
+COPY --from=builder /home/piratecash/built-target/piratecash* /usr/local/bin
 
-USER cosanta
+USER piratecash
 
-VOLUME ["/home/cosanta"]
+VOLUME ["/home/piratecash"]
 
 COPY docker/docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
-EXPOSE 9606 60606 9696 60696
+EXPOSE 19606 63636 19696 50666
 
-WORKDIR /home/cosanta
+WORKDIR /home/piratecash

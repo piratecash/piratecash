@@ -6,18 +6,18 @@ reset-files.bash
 *.tar.gz
 
 *.exe
-src/cosanta
-src/cosantad
-src/cosanta-cli
-src/cosanta-gui
-src/cosanta-node
-src/cosanta-tx
-src/cosanta-wallet
+src/piratecash
+src/piratecashd
+src/piratecash-cli
+src/piratecash-gui
+src/piratecash-node
+src/piratecash-tx
+src/piratecash-wallet
 src/test/fuzz/fuzz
-src/test/test_cosanta
-src/qt/test/test_cosanta-qt
+src/test/test_piratecash
+src/qt/test/test_piratecash-qt
 src/qt/res/css/colors/*
-src/bench/bench_cosanta
+src/bench/bench_piratecash
 
 # autoreconf
 Makefile.in
@@ -68,6 +68,7 @@ libconftest.dylib*
 *.pyc
 *.o
 *.o-*
+*.o.tmp
 *.a
 *.pb.cc
 *.pb.h
@@ -94,15 +95,15 @@ libconftest.dylib*
 *.qm
 Makefile
 !depends/Makefile
-cosanta-qt
-Cosanta-Qt.app
+piratecash-qt
+PirateCash-Qt.app
 
 # Qt Creator
 Makefile.am.user
 
 # Unit-tests
 Makefile.test
-cosanta-qt_test
+piratecash-qt_test
 
 # Resources cpp
 qrc_*.cpp
@@ -119,7 +120,7 @@ releases
 *.gcno
 *.gcda
 /*.info
-test_cosanta.coverage/
+test_piratecash.coverage/
 total.coverage/
 fuzz.coverage/
 coverage_percent.txt
@@ -141,15 +142,15 @@ test/.mypy_cache/
 .autotools
 /doc/doxygen/
 
-libcosantaconsensus.pc
+libpiratecashconsensus.pc
 contrib/devtools/split-debug.sh
-src/qt/cosanta-qt.bash
+src/qt/piratecash-qt.bash
 qa/pull-tester/tests-config.sh
 
 #development symlinks
-cosanta-cli
-cosantad
-cosanta-qt
+piratecash-cli
+piratecashd
+piratecash-qt
 make
 
 /docker/bin

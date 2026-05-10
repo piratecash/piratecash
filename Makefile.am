@@ -19,7 +19,7 @@ export PYTHONPATH
 
 if BUILD_BITCOIN_LIBS
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libcosantaconsensus.pc
+pkgconfig_DATA = libpiratecashconsensus.pc
 endif
 
 BITCOIND_BIN=$(top_builddir)/src/$(BITCOIN_DAEMON_NAME)$(EXEEXT)
@@ -34,12 +34,12 @@ BITCOIN_WIN_INSTALLER=$(PACKAGE)-$(PACKAGE_VERSION)-win64-setup$(EXEEXT)
 empty :=
 space := $(empty) $(empty)
 
-OSX_APP=Cosanta-Qt.app
+OSX_APP=PirateCash-Qt.app
 OSX_VOLNAME = $(subst $(space),-,$(PACKAGE_NAME))
 OSX_DMG = $(OSX_VOLNAME).dmg
 OSX_TEMP_ISO = $(OSX_DMG:.dmg=).temp.iso
 OSX_DEPLOY_SCRIPT=$(top_srcdir)/contrib/macdeploy/macdeployqtplus
-OSX_INSTALLER_ICONS=$(top_srcdir)/src/qt/res/icons/cosanta.icns
+OSX_INSTALLER_ICONS=$(top_srcdir)/src/qt/res/icons/piratecash.icns
 OSX_PLIST=$(top_builddir)/share/qt/Info.plist #not installed
 
 DIST_CONTRIB = \
@@ -55,7 +55,7 @@ BIN_CHECKS=$(top_srcdir)/contrib/devtools/symbol-check.py \
            $(top_srcdir)/contrib/devtools/security-check.py \
            $(top_srcdir)/contrib/devtools/utils.py
 
-WINDOWS_PACKAGING = $(top_srcdir)/share/pixmaps/cosanta.ico \
+WINDOWS_PACKAGING = $(top_srcdir)/share/pixmaps/piratecash.ico \
   $(top_srcdir)/share/pixmaps/nsis-header.bmp \
   $(top_srcdir)/share/pixmaps/nsis-wizard.bmp \
   $(top_srcdir)/doc/README_windows.txt
@@ -64,9 +64,9 @@ OSX_PACKAGING = $(OSX_DEPLOY_SCRIPT) $(OSX_INSTALLER_ICONS) \
   $(top_srcdir)/contrib/macdeploy/detached-sig-create.sh
 
 COVERAGE_INFO = $(COV_TOOL_WRAPPER) baseline.info \
-  test_cosanta_filtered.info total_coverage.info \
+  test_piratecash_filtered.info total_coverage.info \
   baseline_filtered.info functional_test.info functional_test_filtered.info \
-  test_cosanta_coverage.info test_cosanta.info fuzz.info fuzz_filtered.info fuzz_coverage.info
+  test_piratecash_coverage.info test_piratecash.info fuzz.info fuzz_filtered.info fuzz_coverage.info
 
 dist-hook:
 	-$(GIT) archive --format=tar HEAD -- src/clientversion.cpp | $(AMTAR) -C $(top_distdir) -xf -
@@ -99,11 +99,11 @@ $(OSX_APP)/Contents/Info.plist: $(OSX_PLIST)
 	$(MKDIR_P) $(@D)
 	$(INSTALL_DATA) $< $@
 
-$(OSX_APP)/Contents/Resources/cosanta.icns: $(OSX_INSTALLER_ICONS)
+$(OSX_APP)/Contents/Resources/piratecash.icns: $(OSX_INSTALLER_ICONS)
 	$(MKDIR_P) $(@D)
 	$(INSTALL_DATA) $< $@
 
-$(OSX_APP)/Contents/MacOS/Cosanta-Qt: all-recursive
+$(OSX_APP)/Contents/MacOS/PirateCash-Qt: all-recursive
 	$(MKDIR_P) $(@D)
 	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM)  $(BITCOIN_QT_BIN) $@
 
@@ -112,8 +112,8 @@ $(OSX_APP)/Contents/Resources/Base.lproj/InfoPlist.strings:
 	echo '{	CFBundleDisplayName = "$(PACKAGE_NAME)"; CFBundleName = "$(PACKAGE_NAME)"; }' > $@
 
 OSX_APP_BUILT=$(OSX_APP)/Contents/PkgInfo $(OSX_APP)/Contents/Resources/empty.lproj \
-  $(OSX_APP)/Contents/Resources/cosanta.icns $(OSX_APP)/Contents/Info.plist \
-  $(OSX_APP)/Contents/MacOS/Cosanta-Qt $(OSX_APP)/Contents/Resources/Base.lproj/InfoPlist.strings
+  $(OSX_APP)/Contents/Resources/piratecash.icns $(OSX_APP)/Contents/Info.plist \
+  $(OSX_APP)/Contents/MacOS/PirateCash-Qt $(OSX_APP)/Contents/Resources/Base.lproj/InfoPlist.strings
 
 osx_volname:
 	echo $(OSX_VOLNAME) >$@
@@ -126,16 +126,16 @@ deploydir: $(OSX_DMG)
 else !BUILD_DARWIN
 APP_DIST_DIR=$(top_builddir)/dist
 
-$(OSX_TEMP_ISO): $(APP_DIST_DIR)/$(OSX_APP)/Contents/MacOS/Cosanta-Qt
+$(OSX_TEMP_ISO): $(APP_DIST_DIR)/$(OSX_APP)/Contents/MacOS/PirateCash-Qt
 	$(XORRISOFS) -D -l -V "$(OSX_VOLNAME)" -no-pad -r -dir-mode 0755 -o $@ $(APP_DIST_DIR) -- $(if $(SOURCE_DATE_EPOCH),-volume_date all_file_dates =$(SOURCE_DATE_EPOCH))
 
 $(OSX_DMG): $(OSX_TEMP_ISO)
 	$(DMG) dmg "$<" "$@"
 
-$(APP_DIST_DIR)/$(OSX_APP)/Contents/MacOS/Cosanta-Qt: $(OSX_APP_BUILT) $(OSX_PACKAGING)
+$(APP_DIST_DIR)/$(OSX_APP)/Contents/MacOS/PirateCash-Qt: $(OSX_APP_BUILT) $(OSX_PACKAGING)
 	INSTALLNAMETOOL=$(INSTALLNAMETOOL) OTOOL=$(OTOOL) STRIP=$(STRIP) $(PYTHON) $(OSX_DEPLOY_SCRIPT) $(OSX_APP) $(OSX_VOLNAME) -translations-dir=$(QT_TRANSLATION_DIR)
 
-deploydir: $(APP_DIST_DIR)/$(OSX_APP)/Contents/MacOS/Cosanta-Qt
+deploydir: $(APP_DIST_DIR)/$(OSX_APP)/Contents/MacOS/PirateCash-Qt
 endif !BUILD_DARWIN
 
 appbundle: $(OSX_APP_BUILT)
@@ -201,16 +201,16 @@ fuzz_filtered.info: fuzz.info
 	$(abs_builddir)/contrib/filter-lcov.py $(LCOV_FILTER_PATTERN) $< $@
 	$(LCOV) -a $@ $(LCOV_OPTS) -o $@
 
-test_cosanta.info: baseline_filtered.info
+test_piratecash.info: baseline_filtered.info
 	$(MAKE) -C src/ check
-	$(LCOV) -c $(LCOV_OPTS) -d $(abs_builddir)/src -t test_cosanta -o $@
+	$(LCOV) -c $(LCOV_OPTS) -d $(abs_builddir)/src -t test_piratecash -o $@
 	$(LCOV) -z $(LCOV_OPTS) -d $(abs_builddir)/src
 
-test_cosanta_filtered.info: test_cosanta.info
+test_piratecash_filtered.info: test_piratecash.info
 	$(abs_builddir)/contrib/filter-lcov.py $(LCOV_FILTER_PATTERN) $< $@
 	$(LCOV) -a $@ $(LCOV_OPTS) -o $@
 
-functional_test.info: test_cosanta_filtered.info
+functional_test.info: test_piratecash_filtered.info
 	-@TIMEOUT=15 test/functional/test_runner.py $(EXTENDED_FUNCTIONAL_TESTS)
 	$(LCOV) -c $(LCOV_OPTS) -d $(abs_builddir)/src --t functional-tests -o $@
 	$(LCOV) -z $(LCOV_OPTS) -d $(abs_builddir)/src
@@ -222,17 +222,17 @@ functional_test_filtered.info: functional_test.info
 fuzz_coverage.info: fuzz_filtered.info
 	$(LCOV) -a $(LCOV_OPTS) baseline_filtered.info -a fuzz_filtered.info -o $@ | $(GREP) "\%" | $(AWK) '{ print substr($$3,2,50) "/" $$5 }' > coverage_percent.txt
 
-test_cosanta_coverage.info: baseline_filtered.info test_cosanta_filtered.info
-	$(LCOV) -a $(LCOV_OPTS) baseline_filtered.info -a test_cosanta_filtered.info -o $@
+test_piratecash_coverage.info: baseline_filtered.info test_piratecash_filtered.info
+	$(LCOV) -a $(LCOV_OPTS) baseline_filtered.info -a test_piratecash_filtered.info -o $@
 
-total_coverage.info: test_cosanta_filtered.info functional_test_filtered.info
-	$(LCOV) -a $(LCOV_OPTS) baseline_filtered.info -a test_cosanta_filtered.info -a functional_test_filtered.info -o $@ | $(GREP) "\%" | $(AWK) '{ print substr($$3,2,50) "/" $$5 }' > coverage_percent.txt
+total_coverage.info: test_piratecash_filtered.info functional_test_filtered.info
+	$(LCOV) -a $(LCOV_OPTS) baseline_filtered.info -a test_piratecash_filtered.info -a functional_test_filtered.info -o $@ | $(GREP) "\%" | $(AWK) '{ print substr($$3,2,50) "/" $$5 }' > coverage_percent.txt
 
 fuzz.coverage/.dirstamp: fuzz_coverage.info
 	$(GENHTML) -s $(LCOV_OPTS) $< -o $(@D)
 	@touch $@
 
-test_cosanta.coverage/.dirstamp:  test_cosanta_coverage.info
+test_piratecash.coverage/.dirstamp:  test_piratecash_coverage.info
 	$(GENHTML) -s $(LCOV_OPTS) $< -o $(@D)
 	@touch $@
 
@@ -242,7 +242,7 @@ total.coverage/.dirstamp: total_coverage.info
 
 cov_fuzz: fuzz.coverage/.dirstamp
 
-cov: test_cosanta.coverage/.dirstamp total.coverage/.dirstamp
+cov: test_piratecash.coverage/.dirstamp total.coverage/.dirstamp
 
 endif
 
@@ -317,7 +317,7 @@ clean-docs:
 	rm -rf doc/doxygen
 
 clean-local: clean-docs
-	rm -rf coverage_percent.txt test_cosanta.coverage/ total.coverage/ fuzz.coverage/ test/tmp/ cache/ $(OSX_APP)
+	rm -rf coverage_percent.txt test_piratecash.coverage/ total.coverage/ fuzz.coverage/ test/tmp/ cache/ $(OSX_APP)
 	rm -rf test/functional/__pycache__ test/functional/test_framework/__pycache__ test/cache share/rpcauth/__pycache__
 	rm -rf osx_volname dist/
 

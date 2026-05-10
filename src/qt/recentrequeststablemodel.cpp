@@ -188,7 +188,7 @@ void RecentRequestsTableModel::addNewRequest(const std::string &recipient)
     RecentRequestEntry entry;
     // Don't let a single malformed receive-request entry bring down the whole
     // WalletModel construction. If the entry is unreadable for any reason
-    // (format mismatch between Cosanta versions, partial write, etc.), log it
+    // (format mismatch between PirateCash versions, partial write, etc.), log it
     // and skip — the wallet will still open in the GUI.
     try {
         ss >> entry;

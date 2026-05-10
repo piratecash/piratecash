@@ -363,7 +363,7 @@ public Q_SLOTS:
     void showPeers();
     void showRepair();
 
-    /** Open external (default) editor with cosanta.conf */
+    /** Open external (default) editor with piratecash.conf */
     void showConfEditor();
     /** Show folder with wallet backups in default file browser */
     void showBackups();

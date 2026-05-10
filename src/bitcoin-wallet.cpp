@@ -47,14 +47,14 @@ static bool WalletAppInit(int argc, char* argv[])
         return false;
     }
     if (argc < 2 || HelpRequested(gArgs) || gArgs.IsArgSet("-version")) {
-        std::string strUsage = strprintf("%s cosanta-wallet version", PACKAGE_NAME) + " " + FormatFullVersion() + "\n";
+        std::string strUsage = strprintf("%s piratecash-wallet version", PACKAGE_NAME) + " " + FormatFullVersion() + "\n";
             if (!gArgs.IsArgSet("-version")) {
                 strUsage += "\n"
-                    "cosanta-wallet is an offline tool for creating and interacting with " PACKAGE_NAME " wallet files.\n"
-                    "By default cosanta-wallet will act on wallets in the default mainnet wallet directory in the datadir.\n"
+                    "piratecash-wallet is an offline tool for creating and interacting with " PACKAGE_NAME " wallet files.\n"
+                    "By default piratecash-wallet will act on wallets in the default mainnet wallet directory in the datadir.\n"
                     "To change the target wallet, use the -datadir, -wallet and -testnet/-regtest arguments.\n\n"
                     "Usage:\n"
-                    "  cosanta-wallet [options] <command>\n";
+                    "  piratecash-wallet [options] <command>\n";
                 strUsage += "\n" + gArgs.GetHelpMessage();
             }
         tfm::format(std::cout, "%s", strUsage);
@@ -101,7 +101,7 @@ MAIN_FUNCTION
     }
 
     if (method.empty()) {
-        tfm::format(std::cerr, "No method provided. Run `cosanta-wallet -help` for valid methods.\n");
+        tfm::format(std::cerr, "No method provided. Run `piratecash-wallet -help` for valid methods.\n");
         return EXIT_FAILURE;
     }
 

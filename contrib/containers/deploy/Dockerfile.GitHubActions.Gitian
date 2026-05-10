@@ -1,21 +1,21 @@
 # syntax=docker/dockerfile:1.3
 FROM ubuntu:focal
-LABEL maintainer="Cosanta Developers <dev@cosa.is>"
-LABEL description="Dockerised Cosanta Core"
+LABEL maintainer="PirateCash Developers <dev@cosa.is>"
+LABEL description="Dockerised PirateCash Core"
 
 ARG USER_ID
 ARG GROUP_ID
 ARG TAG
 
-ENV HOME /home/cosanta
+ENV HOME /home/piratecash
 
 # add user with specified (or default) user/group ids
 ENV USER_ID ${USER_ID:-1000}
 ENV GROUP_ID ${GROUP_ID:-1000}
-RUN groupadd -g ${GROUP_ID} cosanta && \
-    useradd -u ${USER_ID} -g cosanta -s /bin/bash -m -d /home/cosanta cosanta  && \
-    mkdir /home/cosanta/.cosantacore && \
-    chown ${USER_ID}:${GROUP_ID} -R /home/cosanta
+RUN groupadd -g ${GROUP_ID} piratecash && \
+    useradd -u ${USER_ID} -g piratecash -s /bin/bash -m -d /home/piratecash piratecash  && \
+    mkdir /home/piratecash/.piratecore && \
+    chown ${USER_ID}:${GROUP_ID} -R /home/piratecash
 
 RUN apt-get update && \
     apt-get -y install --no-install-recommends \
@@ -23,23 +23,23 @@ RUN apt-get update && \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-COPY cosantacore-binaries/${TAG}/cosantacore* /home/cosanta
+COPY piratecashcore-binaries/${TAG}/piratecashcore* /home/piratecash
 
 RUN mach=$(uname -m) \
       && case $mach in aarch64) arch="aarch64-linux-gnu"; ;; x86_64) arch="x86_64-linux-gnu"; ;;  *) echo "ERROR: Machine type $mach not supported."; ;; esac \
-      && cd /home/cosanta \
-      && tar xvzf cosantacore*$arch.tar.gz \
-      && echo $(ls -1 /home/cosanta) \
-      && cp cosantacore-*/bin/* /usr/local/bin \
-      && rm -rf cosanta*
+      && cd /home/piratecash \
+      && tar xvzf piratecashcore*$arch.tar.gz \
+      && echo $(ls -1 /home/piratecash) \
+      && cp piratecashcore-*/bin/* /usr/local/bin \
+      && rm -rf piratecash*
 
-USER cosanta
+USER piratecash
 
-VOLUME ["/home/cosanta"]
+VOLUME ["/home/piratecash"]
 
-COPY cosanta/contrib/containers/deploy/docker-entrypoint.sh /docker-entrypoint.sh
+COPY piratecash/contrib/containers/deploy/docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
-EXPOSE 9606 60606 9696 60696
+EXPOSE 19606 63636 19696 50666
 
-WORKDIR /home/cosanta
+WORKDIR /home/piratecash

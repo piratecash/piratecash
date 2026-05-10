@@ -29,7 +29,7 @@ class TxnMallTest(BitcoinTestFramework):
         self.disconnect_nodes(1, 2)
 
     def run_test(self):
-        # All nodes should start with 12,500 COSA:
+        # All nodes should start with 12,500 PIRATE:
         starting_balance = 12500
 
         # All nodes should be out of IBD.
@@ -58,7 +58,7 @@ class TxnMallTest(BitcoinTestFramework):
         # Coins are sent to node1_address
         node1_address = self.nodes[1].getnewaddress()
 
-        # First: use raw transaction API to send 12400 COSA to node1_address,
+        # First: use raw transaction API to send 12400 PIRATE to node1_address,
         # but don't broadcast:
         doublespend_fee = Decimal('-.02')
         rawtx_input_0 = {}
@@ -88,7 +88,7 @@ class TxnMallTest(BitcoinTestFramework):
         tx1 = self.nodes[0].gettransaction(txid1)
         tx2 = self.nodes[0].gettransaction(txid2)
 
-        # Node0's balance should be starting balance, plus 500COSA for another
+        # Node0's balance should be starting balance, plus 500 PIRATE for another
         # matured block, minus 400, minus 200, and minus transaction fees:
         expected = starting_balance + fund_foo_tx["fee"] + fund_bar_tx["fee"]
         if self.options.mine_block:
@@ -127,7 +127,7 @@ class TxnMallTest(BitcoinTestFramework):
         assert_equal(tx1["confirmations"], -2)
         assert_equal(tx2["confirmations"], -2)
 
-        # Node0's total balance should be starting balance, plus 1000COSA for
+        # Node0's total balance should be starting balance, plus 1000 PIRATE for
         # two more matured blocks, minus 12400 for the double-spend, plus fees (which are
         # negative):
         expected = starting_balance + 1000 - 12400 + fund_foo_tx["fee"] + fund_bar_tx["fee"] + doublespend_fee

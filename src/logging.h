@@ -59,9 +59,9 @@ namespace BCLog {
         VALIDATION  = (1 << 21),
         I2P         = (1 << 22),
 
-        //Start Cosanta
+        //Start PirateCash
         STAKING  = ((uint64_t)1 << 31),
-        //End Cosanta
+        //End PirateCash
 
         //Start Dash
         CHAINLOCKS  = ((uint64_t)1 << 32),
