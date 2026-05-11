@@ -85,8 +85,6 @@ struct Params {
     /** Block height at which BIP16 becomes active */
     int BIP16Height;
     int nMasternodePaymentsStartBlock;
-    int nMasternodePaymentsIncreaseBlock;
-    int nMasternodePaymentsIncreasePeriod; // in blocks
     int nInstantSendConfirmationsRequired; // in blocks
     int nInstantSendKeepLock; // in blocks
     int nBudgetPaymentsStartBlock;
@@ -144,10 +142,19 @@ struct Params {
     BIP9Deployment vDeployments[MAX_VERSION_BITS_DEPLOYMENTS];
     /** Proof of work parameters */
     uint256 powLimit;
+    uint256 posLimit;
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     int64_t nPowTargetSpacing;
+    int64_t nPosTargetSpacingV1;
+    int64_t nPosTargetSpacingV2;
+    int64_t nSpecTargetFix;
     int64_t nPowTargetTimespan;
+    int64_t nRewForkDecreaseV18;  // The block height when reward will be 150 satoshi
+    int64_t nRestoreRewardV18;    // The block height when reward will be restored
+    int64_t nForkHeight;          // The block height when we'll swap old PirateCash to new code base
+    int64_t nSkipTimeUntil;
+    int64_t nLastPowBlock;        // Last Proof-of-work block
     int nPowKGWHeight;
     int nPowDGWHeight;
     int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
