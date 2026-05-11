@@ -6,12 +6,17 @@
 #ifndef BITCOIN_PRIMITIVES_BLOCK_H
 #define BITCOIN_PRIMITIVES_BLOCK_H
 
+#include "pubkey.h"
+
+#include <deque>
 #include <list>
 #include <primitives/transaction.h>
 #include <serialize.h>
 #include <uint256.h>
 #include <cstddef>
 #include <type_traits>
+
+#define BEGIN(a)	((char*)&(a))
 
 /** Nodes collect new transactions into a block, hash them into a hash tree,
  * and scan through nonce values to make the block's hash satisfy proof-of-work
@@ -23,20 +28,51 @@
 class CBlockHeader
 {
 public:
+    static constexpr uint32_t POS_BIT = 0x10000000UL;
+    static constexpr uint32_t POSV2_BITS = POS_BIT | 0x08000000UL;
+
     // header
     int32_t nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
     uint32_t nTime;
     uint32_t nBits;
+    // Mix of PoW & PoS
+    // NOTE: Proof & Modifier are not strictly required in PoS block,
+    //       but it should aid debugging issues in field.
     uint32_t nNonce;
+    // PoS only
+    uint256 posStakeHash; // stake primary input tx
+    uint32_t posStakeN; // stake primary input tx output
+    std::vector<unsigned char> posBlockSig; // to be signed by coinbase/coinstake primary out
+    // PirateCash: A copy from CBlockIndex.nFlags from other clients. We need this information because we are using headers-first syncronization.
+    uint32_t nFlags;
+
+    // Memory-only
+    mutable CPubKey posPubKey;
 
     CBlockHeader()
     {
         SetNull();
     }
 
-    SERIALIZE_METHODS(CBlockHeader, obj) { READWRITE(obj.nVersion, obj.hashPrevBlock, obj.hashMerkleRoot, obj.nTime, obj.nBits, obj.nNonce); }
+    SERIALIZE_METHODS(CBlockHeader, obj) {
+        READWRITE(obj.nVersion, obj.hashPrevBlock, obj.hashMerkleRoot, obj.nTime, obj.nBits, obj.nNonce);
+        if (obj.IsProofOfStakeV2()) {
+            READWRITE(obj.posStakeHash);
+            READWRITE(obj.posStakeN);
+            if (!(s.GetType() & SER_GETHASH)) {
+                READWRITE(obj.posBlockSig);
+            }
+
+            SER_READ(obj, {
+                obj.posPubKey = CPubKey();
+            });
+        }
+        // piratecash: do not serialize nFlags when computing hash
+        if (!(s.GetType() & SER_GETHASH) && s.GetType() & SER_POSMARKER)
+            READWRITE(obj.nFlags);
+    }
 
     void SetNull()
     {
@@ -46,6 +82,11 @@ public:
         nTime = 0;
         nBits = 0;
         nNonce = 0;
+        posStakeHash.SetNull();
+        posStakeN = 0;
+        posBlockSig.clear();
+        nFlags = 0;
+        posPubKey = CPubKey();
     }
 
     bool IsNull() const
@@ -55,9 +96,41 @@ public:
 
     uint256 GetHash() const;
 
+    uint256 GetPoWHash() const;
+
+    uint256 hashProofOfStake() const;
+
     int64_t GetBlockTime() const
     {
         return (int64_t)nTime;
+    }
+
+    uint32_t& nStakeModifier() {
+        return nNonce;
+    }
+    const uint32_t& nStakeModifier() const {
+        return nNonce;
+    }
+
+    bool IsProofOfStake() const
+    {
+        return ((nFlags & 1) || ((nVersion & CBlockHeader::POS_BIT) != 0));
+    }
+
+    bool IsProofOfStakeV2() const
+    {
+        return (nVersion & CBlockHeader::POSV2_BITS) == CBlockHeader::POSV2_BITS;
+    }
+
+    bool IsProofOfWork() const
+    {
+        return !IsProofOfStake();
+    }
+
+    bool CheckBlockSignature(const CKeyID&) const;
+    const CPubKey& BlockPubKey() const;
+    COutPoint StakeInput() const {
+        return COutPoint(posStakeHash, posStakeN);
     }
 };
 
@@ -73,6 +146,7 @@ public:
         PREV_BLOCK_HASH = (1 << 3),
         TIMESTAMP = (1 << 4),
         NBITS = (1 << 5),
+        PROOF_OF_STAKE = (1 << 6),
     };
 
     inline bool IsCompressed(Flag flag) const
@@ -104,6 +178,20 @@ public:
     inline uint8_t GetVersionOffset() const
     {
         return to_uint8(bit_field & VERSION_BIT_MASK);
+    }
+
+    inline bool IsProofOfStake() const
+    {
+        return (bit_field & to_byte(Flag::PROOF_OF_STAKE)) == to_byte(Flag::PROOF_OF_STAKE);
+    }
+
+    inline void SetProofOfStake(bool proof_of_stake)
+    {
+        if (proof_of_stake) {
+            bit_field |= to_byte(Flag::PROOF_OF_STAKE);
+        } else {
+            bit_field &= ~to_byte(Flag::PROOF_OF_STAKE);
+        }
     }
 
     template <typename Stream>
@@ -147,11 +235,13 @@ struct CompressibleBlockHeader : CBlockHeader {
 
     explicit CompressibleBlockHeader(CBlockHeader&& block_header)
     {
-        static_assert(std::is_trivially_copyable_v<CBlockHeader>, "If CBlockHeader is not trivially copyable, please consider using std::move on the next line");
-        *static_cast<CBlockHeader*>(this) = block_header;
+        static_cast<CBlockHeader&>(*this) = block_header;
 
         // When we create this from a block header, mark everything as uncompressed
+        // Version offset 0 means "not compressed via version history"; Compress()
+        // may later replace it with a back-reference to one of the recent versions.
         bit_field.SetVersionOffset(0);
+        bit_field.SetProofOfStake(block_header.IsProofOfStake());
         bit_field.MarkAsUncompressed(CompressedHeaderBitField::Flag::PREV_BLOCK_HASH);
         bit_field.MarkAsUncompressed(CompressedHeaderBitField::Flag::TIMESTAMP);
         bit_field.MarkAsUncompressed(CompressedHeaderBitField::Flag::NBITS);
@@ -176,6 +266,15 @@ struct CompressibleBlockHeader : CBlockHeader {
             READWRITE(obj.nBits);
         }
         READWRITE(obj.nNonce);
+        if (obj.bit_field.IsProofOfStake()) {
+            READWRITE(obj.posStakeHash);
+            READWRITE(obj.posStakeN);
+            READWRITE(obj.posBlockSig);
+
+            SER_READ(obj, {
+                obj.posPubKey = CPubKey();
+            });
+        }
     }
 
     void Compress(const std::vector<CompressibleBlockHeader>& previous_blocks, std::list<int32_t>& last_unique_versions);
@@ -186,8 +285,14 @@ struct CompressibleBlockHeader : CBlockHeader {
 class CBlock : public CBlockHeader
 {
 public:
+    static constexpr size_t COINBASE_INDEX = 0;
+    static constexpr size_t STAKE_INDEX = 1;
+
     // network and disk
     std::vector<CTransactionRef> vtx;
+
+    // PirateCash: block signature - signed by coin base txout[0]'s owner
+    std::vector<unsigned char> oldVchBlockSig;
 
     // memory only
     mutable bool fChecked;
@@ -207,6 +312,8 @@ public:
     {
         READWRITEAS(CBlockHeader, obj);
         READWRITE(obj.vtx);
+        if (!obj.IsProofOfStakeV2())
+            READWRITE(obj.oldVchBlockSig);
     }
 
     void SetNull()
@@ -214,6 +321,7 @@ public:
         CBlockHeader::SetNull();
         vtx.clear();
         fChecked = false;
+        oldVchBlockSig.clear();
     }
 
     CBlockHeader GetBlockHeader() const
@@ -225,7 +333,34 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
+        block.nFlags         = nFlags;
+        block.posStakeHash   = posStakeHash;
+        block.posStakeN      = posStakeN;
+        block.posBlockSig    = posBlockSig;
         return block;
+    }
+
+    bool HasCoinBase() const;
+    bool HasStake() const;
+
+    bool IsProofOfStakeTX() const {
+        return (vtx.size() > 1 && vtx[1]->IsCoinStake());
+    }
+
+    const CTransactionRef& CoinBase() const {
+        return vtx[COINBASE_INDEX];
+    }
+
+    CTransactionRef& CoinBase() {
+        return vtx[COINBASE_INDEX];
+    }
+
+    const CTransactionRef& Stake() const {
+        return vtx[STAKE_INDEX];
+    }
+
+    CTransactionRef& Stake() {
+        return vtx[STAKE_INDEX];
     }
 
     std::string ToString() const;
