@@ -41,7 +41,7 @@ class AmountValidator : public QValidator
 public:
     explicit AmountValidator(QObject *parent) :
         QValidator(parent),
-        currentUnit(BitcoinUnits::DASH) {}
+        currentUnit(BitcoinUnits::PIRATECASH) {}
 
     State validate(QString &input, int &pos) const override
     {
@@ -69,7 +69,7 @@ class AmountLineEdit: public QLineEdit
 public:
     explicit AmountLineEdit(QWidget *parent):
         QLineEdit(parent),
-        currentUnit(BitcoinUnits::DASH)
+        currentUnit(BitcoinUnits::PIRATECASH)
     {
         setAlignment(Qt::AlignLeft);
         amountValidator = new AmountValidator(this);
@@ -142,14 +142,14 @@ public:
         ensurePolished();
         const QFontMetrics fm(fontMetrics());
         int h = 0;
-        int w = GUIUtil::TextWidth(fm, BitcoinUnits::format(BitcoinUnits::DASH, BitcoinUnits::maxMoney(), false, BitcoinUnits::SeparatorStyle::ALWAYS));
+        int w = GUIUtil::TextWidth(fm, BitcoinUnits::format(BitcoinUnits::PIRATECASH, BitcoinUnits::maxMoney(), false, BitcoinUnits::SeparatorStyle::ALWAYS));
         w += 2; // cursor blinking space
         w += GUIUtil::dashThemeActive() ? 24 : 0; // counteract padding from css
         return QSize(w, h);
     }
 
 private:
-    int currentUnit{BitcoinUnits::DASH};
+    int currentUnit{BitcoinUnits::PIRATECASH};
     bool m_allow_empty{true};
     CAmount m_min_amount{CAmount(0)};
     CAmount m_max_amount{BitcoinUnits::maxMoney()};
