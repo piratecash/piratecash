@@ -101,7 +101,7 @@ public:
         vOutpoints.assign(setSelected.begin(), setSelected.end());
     }
 
-    // Dash-specific helpers
+    // PirateCash-specific helpers
 
     void UseCoinJoin(bool fUseCoinJoin)
     {

@@ -48,10 +48,9 @@ CTxIn MineBlock(const NodeContext& node, const CScript& coinbase_scriptPubKey)
 std::shared_ptr<CBlock> PrepareBlock(const NodeContext& node, const CScript& coinbase_scriptPubKey)
 {
     assert(node.mempool);
-    auto block = std::make_shared<CBlock>(
-        BlockAssembler{*node.sporkman, *node.govman, *node.llmq_ctx, *node.evodb, ::ChainstateActive(), *node.mempool, Params()}
-            .CreateNewBlock(coinbase_scriptPubKey)
-            ->block);
+    auto block = BlockAssembler{*node.sporkman, *node.govman, *node.llmq_ctx, *node.evodb, ::ChainstateActive(), *node.mempool, Params()}
+                     .CreateNewBlock(coinbase_scriptPubKey)
+                     ->block;
 
     block->nTime = ::ChainActive().Tip()->GetMedianTimePast() + 1;
     block->hashMerkleRoot = BlockMerkleRoot(*block);

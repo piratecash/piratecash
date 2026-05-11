@@ -170,7 +170,7 @@ static UniValue generateBlocks(ChainstateManager& chainman, CEvoDB& evodb, CGove
         std::unique_ptr<CBlockTemplate> pblocktemplate(BlockAssembler(sporkman, govman, llmq_ctx, evodb, chainman.ActiveChainstate(), mempool, Params()).CreateNewBlock(coinbase_script));
         if (!pblocktemplate.get())
             throw JSONRPCError(RPC_INTERNAL_ERROR, "Couldn't create new block");
-        CBlock *pblock = &pblocktemplate->block;
+        CBlock* pblock = pblocktemplate->block.get();
 
         uint256 block_hash;
         if (!GenerateBlock(chainman, *pblock, nMaxTries, nExtraNonce, block_hash)) {
@@ -263,7 +263,7 @@ static UniValue generatetoaddress(const JSONRPCRequest& request)
         "\nMine blocks immediately to a specified address (before the RPC call returns)\n",
         {
             {"nblocks", RPCArg::Type::NUM, RPCArg::Optional::NO, "How many blocks are generated immediately."},
-            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The address to send the newly generated coins to."},
+            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The address to send the newly generated PirateCash to."},
             {"maxtries", RPCArg::Type::NUM, /* default */ ToString(DEFAULT_MAX_TRIES), "How many iterations to try."},
         },
         RPCResult{
@@ -274,7 +274,7 @@ static UniValue generatetoaddress(const JSONRPCRequest& request)
         RPCExamples{
     "\nGenerate 11 blocks to myaddress\n"
     + HelpExampleCli("generatetoaddress", "11 \"myaddress\"")
-        + "If you are using the " PACKAGE_NAME " wallet, you can get a new address to send the newly generated coins to with:\n"
+        + "If you are running the PirateCash Core wallet, you can get a new address to send the newly generated coins to with:\n"
             + HelpExampleCli("getnewaddress", "")},
     }.Check(request);
 
@@ -377,7 +377,7 @@ static UniValue generateblock(const JSONRPCRequest& request)
         if (!blocktemplate) {
             throw JSONRPCError(RPC_INTERNAL_ERROR, "Couldn't create new block");
         }
-        block = blocktemplate->block;
+        block = *blocktemplate->block;
     }
 
     // 1 coinbase + could have a few quorum commitments
@@ -473,7 +473,7 @@ static UniValue prioritisetransaction(const JSONRPCRequest& request)
         "Accepts the transaction into mined blocks at a higher (or lower) priority\n",
         {
             {"txid", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The transaction id."},
-            {"fee_delta", RPCArg::Type::NUM, RPCArg::Optional::NO, "The fee value (in duffs) to add (or subtract, if negative).\n"
+            {"fee_delta", RPCArg::Type::NUM, RPCArg::Optional::NO, "The fee value (in units) to add (or subtract, if negative).\n"
     "                  Note, that this value is not a fee rate. It is a value to modify absolute fee of the TX.\n"
     "                  The fee is not actually paid, only the algorithm for selecting transactions into a block\n"
     "                  considers the transaction as it would have paid a higher (or lower) fee."},
@@ -788,7 +788,7 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
 
         // Create new block
         CScript scriptDummy = CScript() << OP_TRUE;
-        LLMQContext& llmq_ctx = EnsureAnyLLMQContext(request.context);
+        LLMQContext& llmq_ctx = EnsureLLMQContext(node);
         pblocktemplate = BlockAssembler(*node.sporkman, *node.govman, llmq_ctx, *node.evodb, active_chainstate, mempool, Params()).CreateNewBlock(scriptDummy);
         if (!pblocktemplate)
             throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
@@ -797,7 +797,7 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
         pindexPrev = pindexPrevNew;
     }
     CHECK_NONFATAL(pindexPrev);
-    CBlock* pblock = &pblocktemplate->block; // pointer for convenience
+    CBlock* pblock = pblocktemplate->block.get(); // pointer for convenience
     const Consensus::Params& consensusParams = Params().GetConsensus();
 
     // Update nTime
@@ -1254,12 +1254,60 @@ static UniValue estimaterawfee(const JSONRPCRequest& request)
     return result;
 }
 
+// ppcoin: reserve balance from being staked for network protection
+static UniValue reservebalance(const JSONRPCRequest& request)
+{
+    auto &params = request.params;
+    CAmount CENT = 1000000;
+
+    if (request.fHelp || params.size() > 2)
+        throw std::runtime_error(
+            "reservebalance ( reserve amount )\n"
+            "\nShow or set the reserve amount not participating in network protection\n"
+            "If no parameters provided current setting is printed.\n"
+
+            "\nArguments:\n"
+            "1. reserve     (boolean, optional) is true or false to turn balance reserve on or off.\n"
+            "2. amount      (numeric, optional) is a real and rounded to cent.\n"
+
+            "\nResult:\n"
+            "{\n"
+            "  \"reserve\": true|false,     (boolean) Status of the reserve balance\n"
+            "  \"amount\": x.xxxx       (numeric) Amount reserved\n"
+            "\nExamples:\n" +
+            HelpExampleCli("reservebalance", "true 5000") +
+            HelpExampleRpc("reservebalance", "true 5000"));
+
+    if (params.size() > 0) {
+        bool fReserve = params[0].get_bool();
+        if (fReserve) {
+            if (params.size() == 1)
+                throw std::runtime_error("must provide amount to reserve balance.\n");
+            CAmount nAmount = AmountFromValue(params[1]);
+            nAmount = (nAmount / CENT) * CENT; // round to cent
+            if (nAmount < 0)
+                throw std::runtime_error("amount cannot be negative.\n");
+            nReserveBalance = nAmount;
+        } else {
+            if (params.size() > 1)
+                throw std::runtime_error("cannot specify amount to turn off reserve.\n");
+            nReserveBalance = 0;
+        }
+    }
+
+    UniValue result(UniValue::VOBJ);
+    result.pushKV("reserve",    (nReserveBalance > 0));
+    result.pushKV("amount",     ValueFromAmount(nReserveBalance));
+    return result;
+}
+
 void RegisterMiningRPCCommands(CRPCTable &t)
 {
 // clang-format off
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         argNames
   //  --------------------- ------------------------  -----------------------  ----------
+    { "mining",             "reservebalance",         &reservebalance,         {"reserve", "amount"} },
     { "mining",             "getnetworkhashps",       &getnetworkhashps,       {"nblocks","height"} },
     { "mining",             "getmininginfo",          &getmininginfo,          {} },
     { "mining",             "prioritisetransaction",  &prioritisetransaction,  {"txid","fee_delta"} },
