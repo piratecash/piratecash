@@ -747,7 +747,6 @@ void PoSMiner(std::shared_ptr<CWallet> pwallet, CConnman& connman, LLMQContext& 
             }
         }
 
-        /*
         // Don't enter wallet staking checks until the node is operational
         // enough for PoS. This avoids touching the wallet's cs_main/cs_wallet
         // path while startup is still finishing.
@@ -769,7 +768,6 @@ void PoSMiner(std::shared_ptr<CWallet> pwallet, CConnman& connman, LLMQContext& 
                                   int(connman.GetNodeCount(CConnman::CONNECTIONS_ALL) == 0));
             continue;
         }
-        */
 
         if ((GetTime() - nMintableLastCheck > 60))
         {
