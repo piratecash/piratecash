@@ -23,4 +23,4 @@ FORMS += \
     ../src/qt/forms/createwalletdialog.ui
 
 RESOURCES += \
-    ../src/qt/dash.qrc
+    ../src/qt/piratecash.qrc

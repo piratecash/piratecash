@@ -7,7 +7,7 @@ dnl Output: If qt version is auto, set bitcoin_enable_qt to false. Else, exit.
 AC_DEFUN([BITCOIN_QT_FAIL],[
   if test "x$bitcoin_qt_want_version" = xauto && test "x$bitcoin_qt_force" != xyes; then
     if test "x$bitcoin_enable_qt" != xno; then
-      AC_MSG_WARN([$1; dash-qt frontend will not be built])
+      AC_MSG_WARN([$1; piratecash-qt frontend will not be built])
     fi
     bitcoin_enable_qt=no
     bitcoin_enable_qt_test=no
@@ -54,7 +54,7 @@ AC_DEFUN([BITCOIN_QT_INIT],[
   dnl enable qt support
   AC_ARG_WITH([gui],
     [AS_HELP_STRING([--with-gui@<:@=no|qt5|auto@:>@],
-    [build dash-qt GUI (default=auto)])],
+    [build piratecash-qt GUI (default=auto)])],
     [
      bitcoin_qt_want_version=$withval
      if test "x$bitcoin_qt_want_version" = xyes; then
@@ -160,7 +160,7 @@ AC_DEFUN([BITCOIN_QT_CONFIGURE],[
       _BITCOIN_QT_CHECK_STATIC_PLUGIN([QMacStylePlugin], [-lqmacstyle])
       AC_DEFINE(QT_QPA_PLATFORM_COCOA, 1, [Define this symbol if the qt platform is cocoa])
     elif test "x$TARGET_OS" = xandroid; then
-      QT_LIBS="-Wl,--export-dynamic,--undefined=JNI_OnLoad -lplugins_platforms_qtforandroid${qt_lib_suffix} -ljnigraphics -landroid -lqtfreetype${qt_lib_suffix} $QT_LIBS"
+      QT_LIBS="-Wl,--export-dynamic,--undefined=JNI_OnLoad -lplugins_platforms_qtforandroid_$ANDROID_ARCH -ljnigraphics -landroid -lqtfreetype_$ANDROID_ARCH $QT_LIBS"
       AC_DEFINE(QT_QPA_PLATFORM_ANDROID, 1, [Define this symbol if the qt platform is android])
     fi
   fi
