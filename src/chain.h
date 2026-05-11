@@ -18,7 +18,7 @@
  * Maximum amount of time that a block timestamp is allowed to exceed the
  * current network-adjusted time before the block will be accepted.
  */
-static constexpr int64_t MAX_FUTURE_BLOCK_TIME = 2 * 60 * 60;
+static constexpr int64_t MAX_FUTURE_BLOCK_TIME = 5 * 60;
 
 /**
  * Timestamp window used as a grace period by code that compares external
@@ -183,30 +183,117 @@ public:
     //! @sa ActivateSnapshot
     uint32_t nStatus{0};
 
+    uint32_t& nStakeModifier() {
+        return nNonce;
+    }
+    const uint32_t& nStakeModifier() const {
+        return nNonce;
+    }
+
     //! block header
-    int32_t nVersion{0};
-    uint256 hashMerkleRoot{};
-    uint32_t nTime{0};
-    uint32_t nBits{0};
-    uint32_t nNonce{0};
+    int32_t nVersion;
+    uint256 hashMerkleRoot;
+    uint32_t nTime;
+    uint32_t nBits;
+    uint32_t nNonce;
+
+    std::vector<unsigned char> posBlockSig;
+    // PirateCash: money supply related block index fields
+    unsigned int nFlags{0};  // PirateCash: block index flags
+    enum
+    {
+        BLOCK_PROOF_OF_STAKE = (1 << 0), // is proof-of-stake block
+        BLOCK_STAKE_ENTROPY  = (1 << 1), // entropy bit for stake modifier
+        BLOCK_STAKE_MODIFIER = (1 << 2), // regenerated stake modifier
+    };
+    // proof-of-stake specific fields
+    uint256 posStakeHash;
+    uint32_t posStakeN;
+    bool IsProofOfWork() const
+    {
+        return !((nFlags & BLOCK_PROOF_OF_STAKE)||(nVersion & CBlockHeader::POS_BIT));
+    }
+
+    bool IsProofOfStake() const
+    {
+        return ((nFlags & BLOCK_PROOF_OF_STAKE)||(nVersion & CBlockHeader::POS_BIT));
+    }
+
+    void SetProofOfStake()
+    {
+        nFlags |= BLOCK_PROOF_OF_STAKE;
+    }
+
+    unsigned int GetStakeEntropyBit() const
+    {
+        return ((nFlags & BLOCK_STAKE_ENTROPY) >> 1);
+    }
+
+    bool SetStakeEntropyBit(unsigned int nEntropyBit)
+    {
+        if (nEntropyBit > 1)
+            return false;
+        nFlags |= (nEntropyBit? BLOCK_STAKE_ENTROPY : 0);
+        return true;
+    }
+
+    bool GeneratedStakeModifier() const
+    {
+        return (nFlags & BLOCK_STAKE_MODIFIER);
+    }
 
     //! (memory only) Sequential id assigned to distinguish order in which blocks are received.
     int32_t nSequenceId{0};
 
     //! (memory only) Maximum nTime in the chain up to and including this block.
-    unsigned int nTimeMax{0};
+    unsigned int nTimeMax;
+
+    void SetNull()
+    {
+        phashBlock = nullptr;
+        pprev = nullptr;
+        pskip = nullptr;
+        nHeight = 0;
+        nFile = 0;
+        nDataPos = 0;
+        nUndoPos = 0;
+        nChainWork = arith_uint256();
+        nTx = 0;
+        nChainTx = 0;
+        nStatus = 0;
+        nSequenceId = 0;
+        nTimeMax = 0;
+
+        nFlags = 0;
+
+        nVersion       = 0;
+        hashMerkleRoot = uint256();
+        nTime          = 0;
+        nBits          = 0;
+        nNonce         = 0;
+        posStakeHash   = uint256();
+        posStakeN      = 0;
+        posBlockSig.clear();
+    }
 
     CBlockIndex()
     {
+        SetNull();
     }
 
     explicit CBlockIndex(const CBlockHeader& block)
-        : nVersion{block.nVersion},
-          hashMerkleRoot{block.hashMerkleRoot},
-          nTime{block.nTime},
-          nBits{block.nBits},
-          nNonce{block.nNonce}
     {
+        SetNull();
+
+        nVersion       = block.nVersion;
+        hashMerkleRoot = block.hashMerkleRoot;
+        nTime          = block.nTime;
+        nBits          = block.nBits;
+        nNonce         = block.nNonce;
+        posStakeHash   = block.posStakeHash;
+        posStakeN      = block.posStakeN;
+        posBlockSig    = block.posBlockSig;
+        nFlags         = block.nFlags;
     }
 
     FlatFilePos GetBlockPos() const {
@@ -237,6 +324,10 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
+        block.posStakeHash   = posStakeHash;
+        block.posStakeN      = posStakeN;
+        block.posBlockSig    = posBlockSig;
+        block.nFlags         = nFlags;
         return block;
     }
 
@@ -264,6 +355,11 @@ public:
         return (int64_t)nTimeMax;
     }
 
+    bool IsProofOfStakeV2() const
+    {
+        return (nVersion & CBlockHeader::POSV2_BITS) == CBlockHeader::POSV2_BITS;
+    }
+
     static constexpr int nMedianTimeSpan = 11;
 
     int64_t GetMedianTimePast() const
@@ -278,6 +374,17 @@ public:
 
         std::sort(pbegin, pend);
         return pbegin[(pend - pbegin)/2];
+    }
+
+    COutPoint StakeInput() const {
+        return COutPoint(posStakeHash, posStakeN);
+    }
+
+    bool IsGeneratedStakeModifier() const
+    {
+        return (pprev && (
+                    !pprev->IsProofOfStake() ||
+                    (pprev->nStakeModifier() != nStakeModifier())));
     }
 
     std::string ToString() const;
@@ -327,15 +434,13 @@ public:
     uint256 hash;
     uint256 hashPrev;
 
-    CDiskBlockIndex() {
-        hash = uint256();
-        hashPrev = uint256();
-    }
+    CDiskBlockIndex() = default;
 
-    explicit CDiskBlockIndex(const CBlockIndex* pindex) : CBlockIndex(*pindex) {
-        hash = (hash == uint256() ? pindex->GetBlockHash() : hash);
-        hashPrev = (pprev ? pprev->GetBlockHash() : uint256());
-    }
+    explicit CDiskBlockIndex(const CBlockIndex* pindex) :
+        CBlockIndex(*pindex),
+        hash(pindex->GetBlockHash()),
+        hashPrev(pprev ? pprev->GetBlockHash() : uint256())
+    {}
 
     SERIALIZE_METHODS(CDiskBlockIndex, obj)
     {
@@ -351,6 +456,7 @@ public:
 
         // block hash
         READWRITE(obj.hash);
+        READWRITE(obj.nFlags);
         // block header
         READWRITE(obj.nVersion);
         READWRITE(obj.hashPrev);
@@ -358,20 +464,16 @@ public:
         READWRITE(obj.nTime);
         READWRITE(obj.nBits);
         READWRITE(obj.nNonce);
+        if (obj.IsProofOfStake()) {
+            READWRITE(obj.posStakeHash);
+            READWRITE(obj.posStakeN);
+            READWRITE(obj.posBlockSig);
+        }
     }
 
     uint256 GetBlockHash() const
     {
-        if(hash != uint256()) return hash;
-        // should never really get here, keeping this as a fallback
-        CBlockHeader block;
-        block.nVersion        = nVersion;
-        block.hashPrevBlock   = hashPrev;
-        block.hashMerkleRoot  = hashMerkleRoot;
-        block.nTime           = nTime;
-        block.nBits           = nBits;
-        block.nNonce          = nNonce;
-        return block.GetHash();
+        return hash;
     }
 
     std::string ToString() const;
@@ -399,6 +501,12 @@ public:
         if (nHeight < 0 || nHeight >= (int)vChain.size())
             return nullptr;
         return vChain[nHeight];
+    }
+
+    /** Compare two chains efficiently. */
+    friend bool operator==(const CChain &a, const CChain &b) {
+        return a.vChain.size() == b.vChain.size() &&
+               a.vChain[a.vChain.size() - 1] == b.vChain[b.vChain.size() - 1];
     }
 
     /** Efficiently check whether a block is present in this chain. */
@@ -431,5 +539,7 @@ public:
     /** Find the earliest block with timestamp equal or greater than the given time and height equal or greater than the given height. */
     CBlockIndex* FindEarliestAtLeast(int64_t nTime, int height) const;
 };
+
+const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfStake);
 
 #endif // BITCOIN_CHAIN_H
