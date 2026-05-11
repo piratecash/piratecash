@@ -2,7 +2,7 @@
 # Copyright (c) 2018-2024 The Dash Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Test the dash specific ZMQ notification interfaces."""
+"""Test the PirateCash specific ZMQ notification interfaces."""
 
 import configparser
 from enum import Enum
@@ -97,7 +97,7 @@ class TestP2PConn(P2PInterface):
                 self.send_message(self.txes[inv.hash])
 
 
-class DashZMQTest (DashTestFramework):
+class PirateCashZMQTest(DashTestFramework):
     def set_test_params(self):
         # That's where the zmq publisher will listen for subscriber
         self.address = "tcp://127.0.0.1:28333"
@@ -118,7 +118,7 @@ class DashZMQTest (DashTestFramework):
 
     def run_test(self):
         self.subscribers = {}
-        # Check that dashd has been built with ZMQ enabled.
+        # Check that piratecashd has been built with ZMQ enabled.
         config = configparser.ConfigParser()
         config.read_file(open(self.options.configfile))
         import zmq
@@ -146,7 +146,7 @@ class DashZMQTest (DashTestFramework):
             # Wait a moment to avoid subscribing to recovered sig in the test before the one from the chainlock
             # has been sent which leads to test failure.
             time.sleep(1)
-            # Test all dash related ZMQ publisher
+            # Test all PirateCash related ZMQ publisher
             #self.test_recovered_signature_publishers()
             self.test_chainlock_publishers()
             self.test_governance_publishers()
@@ -371,7 +371,7 @@ class DashZMQTest (DashTestFramework):
             "end_epoch": proposal_time + 60,
             "payment_amount": 5,
             "payment_address": self.nodes[0].getnewaddress(),
-            "url": "https://dash.org"
+            "url": "https://piratecash.net"
         }
         proposal_hex = ''.join(format(x, '02x') for x in json.dumps(proposal_data).encode())
         collateral = self.nodes[0].gobject("prepare", "0", proposal_rev, proposal_time, proposal_hex)
@@ -445,4 +445,4 @@ class DashZMQTest (DashTestFramework):
         ])
 
 if __name__ == '__main__':
-    DashZMQTest().main()
+    PirateCashZMQTest().main()

@@ -198,7 +198,7 @@ class MiningTest(BitcoinTestFramework):
 
         def filter_tip_keys(chaintips):
             """
-            Dash chaintips rpc returns extra info in each tip (difficulty, chainwork, and
+            PirateCash chaintips rpc returns extra info in each tip (difficulty, chainwork, and
             forkpoint). Filter down to relevant ones checked in this test.
             """
             check_keys = ["hash", "height", "branchlen", "status"]

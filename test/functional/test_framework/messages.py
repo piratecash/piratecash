@@ -217,7 +217,7 @@ def FromHex(obj, hex_string):
 def ToHex(obj):
     return obj.serialize().hex()
 
-# Objects that map to dashd objects, which can be serialized/deserialized
+# Objects that map to piratecashd objects, which can be serialized/deserialized
 
 class CService:
     __slots__ = ("ip", "port")
@@ -1928,7 +1928,7 @@ class msg_headers:
         self.headers = headers if headers is not None else []
 
     def deserialize(self, f):
-        # comment in dashd indicates these should be deserialized as blocks
+        # comment in piratecashd indicates these should be deserialized as blocks
         blocks = deser_vector(f, CBlock)
         for x in blocks:
             self.headers.append(CBlockHeader(x))

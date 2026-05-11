@@ -1094,10 +1094,10 @@ static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         argNames
   //  --------------------- ------------------------  -----------------------  ----------
     /* PirateCash features */
-    { "dash",               "getgovernanceinfo",      &getgovernanceinfo,      {} },
-    { "dash",               "getsuperblockbudget",    &getsuperblockbudget,    {"index"} },
-    { "dash",               "gobject",                &gobject,                {} },
-    { "dash",               "voteraw",                &voteraw,                {"tx_hash","tx_index","gov_hash","signal","outcome","time","sig"} },
+    { "pirate",             "getgovernanceinfo",      &getgovernanceinfo,      {} },
+    { "pirate",             "getsuperblockbudget",    &getsuperblockbudget,    {"index"} },
+    { "pirate",             "gobject",                &gobject,                {} },
+    { "pirate",             "voteraw",                &voteraw,                {"tx_hash","tx_index","gov_hash","signal","outcome","time","sig"} },
 
 };
 // clang-format on

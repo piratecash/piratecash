@@ -39,10 +39,10 @@ def assert_fee_amount(fee, tx_size, fee_per_kB):
     """Assert the fee was in range"""
     target_fee = round(tx_size * fee_per_kB / 1000, 8)
     if fee < target_fee:
-        raise AssertionError("Fee of %s DASH too low! (Should be %s DASH)" % (str(fee), str(target_fee)))
+        raise AssertionError("Fee of %s PIRATE too low! (Should be %s PIRATE)" % (str(fee), str(target_fee)))
     # allow the wallet's estimation to be at most 2 bytes off
     if fee > (tx_size + 2) * fee_per_kB / 1000:
-        raise AssertionError("Fee of %s DASH too high! (Should be %s DASH)" % (str(fee), str(target_fee)))
+        raise AssertionError("Fee of %s PIRATE too high! (Should be %s PIRATE)" % (str(fee), str(target_fee)))
 
 
 def assert_equal(thing1, thing2, *args):
@@ -340,7 +340,7 @@ def initialize_datadir(dirname, n, chain):
     datadir = get_datadir_path(dirname, n)
     if not os.path.isdir(datadir):
         os.makedirs(datadir)
-    write_config(os.path.join(datadir, "dash.conf"), n=n, chain=chain)
+    write_config(os.path.join(datadir, "piratecash.conf"), n=n, chain=chain)
     os.makedirs(os.path.join(datadir, 'stderr'), exist_ok=True)
     os.makedirs(os.path.join(datadir, 'stdout'), exist_ok=True)
     return datadir
@@ -386,7 +386,7 @@ def get_datadir_path(dirname, n):
 
 
 def append_config(datadir, options):
-    with open(os.path.join(datadir, "dash.conf"), 'a', encoding='utf8') as f:
+    with open(os.path.join(datadir, "piratecash.conf"), 'a', encoding='utf8') as f:
         for option in options:
             f.write(option + "\n")
 
@@ -394,8 +394,8 @@ def append_config(datadir, options):
 def get_auth_cookie(datadir, chain):
     user = None
     password = None
-    if os.path.isfile(os.path.join(datadir, "dash.conf")):
-        with open(os.path.join(datadir, "dash.conf"), 'r', encoding='utf8') as f:
+    if os.path.isfile(os.path.join(datadir, "piratecash.conf")):
+        with open(os.path.join(datadir, "piratecash.conf"), 'r', encoding='utf8') as f:
             for line in f:
                 if line.startswith("rpcuser="):
                     assert user is None  # Ensure that there is only one rpcuser line

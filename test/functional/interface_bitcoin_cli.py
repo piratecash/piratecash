@@ -2,7 +2,7 @@
 # Copyright (c) 2017-2020 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Test dash-cli"""
+"""Test piratecash-cli"""
 
 from decimal import Decimal
 
@@ -15,9 +15,9 @@ from test_framework.util import (
     get_auth_cookie,
 )
 
-# The block reward of coinbaseoutput.nValue (500) DASH/block matures after
+# The block reward of coinbaseoutput.nValue (500) PIRATE/block matures after
 # COINBASE_MATURITY (100) blocks. Therefore, after mining 101 blocks we expect
-# node 0 to have a balance of (BLOCKS - COINBASE_MATURITY) * 500 DASH/block.
+# node 0 to have a balance of (BLOCKS - COINBASE_MATURITY) * 500 PIRATE/block.
 BLOCKS = COINBASE_MATURITY + 1
 BALANCE = (BLOCKS - 100) * 500
 
@@ -41,7 +41,7 @@ class TestBitcoinCli(BitcoinTestFramework):
         """Main test logic"""
         self.nodes[0].generate(BLOCKS)
 
-        self.log.info("Compare responses from getblockchaininfo RPC and `dash-cli getblockchaininfo`")
+        self.log.info("Compare responses from getblockchaininfo RPC and `piratecash-cli getblockchaininfo`")
         cli_response = self.nodes[0].cli.getblockchaininfo()
         rpc_response = self.nodes[0].getblockchaininfo()
         assert_equal(cli_response, rpc_response)
@@ -86,7 +86,7 @@ class TestBitcoinCli(BitcoinTestFramework):
         assert_equal(cli_get_info['chain'], blockchain_info['chain'])
 
         if self.is_wallet_compiled():
-            self.log.info("Test -getinfo and dash-cli getwalletinfo return expected wallet info")
+            self.log.info("Test -getinfo and piratecash-cli getwalletinfo return expected wallet info")
             assert_equal(cli_get_info['balance'], BALANCE)
             assert 'balances' not in cli_get_info.keys()
             wallet_info = self.nodes[0].getwalletinfo()
@@ -112,7 +112,7 @@ class TestBitcoinCli(BitcoinTestFramework):
             w1.sendtoaddress(w2.getnewaddress(), amounts[1])
             w1.sendtoaddress(w3.getnewaddress(), amounts[2])
 
-            # Mine a block to confirm; adds a block reward (500 DASH) to the default wallet.
+            # Mine a block to confirm; adds a block reward (500 PIRATE) to the default wallet.
             self.nodes[0].generate(1)
 
             self.log.info("Test -getinfo with multiple wallets and -rpcwallet returns specified wallet balance")

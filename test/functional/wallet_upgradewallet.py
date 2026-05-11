@@ -89,7 +89,7 @@ class UpgradeWalletTest(BitcoinTestFramework):
         v16_1_wallet       = os.path.join(v16_1_node.datadir, "regtest/wallets/wallet.dat")
         self.stop_nodes()
 
-        # Copy the 0.16.3 wallet to the last Dash Core version and open it:
+        # Copy the 0.16.3 wallet to the last PirateCash Core version and open it:
         shutil.rmtree(node_master_wallet_dir)
         os.mkdir(node_master_wallet_dir)
         shutil.copy(
@@ -112,7 +112,7 @@ class UpgradeWalletTest(BitcoinTestFramework):
         assert_equal(wallet.getbalance(), v18_2_balance)
 
         self.stop_node(0)
-        # Copy the 19.3.0 wallet to the last Dash Core version and open it:
+        # Copy the 19.3.0 wallet to the last PirateCash Core version and open it:
         shutil.rmtree(node_master_wallet_dir)
         os.mkdir(node_master_wallet_dir)
         shutil.copy(
