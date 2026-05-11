@@ -51,7 +51,15 @@ Run `test_dash --help` for the full list.
 
 ### Adding test cases
 
-To add a new unit test file to our test suite you need
+The sources in this directory are unit test cases.  Boost includes a
+unit testing framework, and since PirateCash Core already uses boost, it makes
+sense to simply use this framework rather than require developers to
+configure some other framework (we want as few impediments to creating
+unit tests as possible).
+
+The build system is setup to compile an executable called `test_piratecash`
+that runs all of the unit tests.  The main source file is called
+setup_common.cpp. To add a new unit test file to our test suite you need
 to add the file to `src/Makefile.test.include`. The pattern is to create
 one test file for each class or source file for which you want to create
 unit tests. The file naming convention is `<source_filename>_tests.cpp`

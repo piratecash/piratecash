@@ -172,7 +172,7 @@ static UniValue getrawtransaction(const JSONRPCRequest& request)
                                         {RPCResult::Type::STR, "type", "The type, eg 'pubkeyhash'"},
                                         {RPCResult::Type::ARR, "addresses", "",
                                         {
-                                            {RPCResult::Type::STR, "address", "Dash address"},
+                                            {RPCResult::Type::STR, "address", "piratecash address"},
                                         }},
                                     }},
                                 }},
@@ -743,7 +743,7 @@ static UniValue createrawtransaction(const JSONRPCRequest& request)
                 {
                     {"", RPCArg::Type::OBJ, RPCArg::Optional::OMITTED, "",
                         {
-                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "A key-value pair. The key (string) is the Dash address, the value (float or string) is the amount in " + CURRENCY_UNIT},
+                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "A key-value pair. The key (string) is the piratecash address, the value (float or string) is the amount in " + CURRENCY_UNIT},
                         },
                         },
                     {"", RPCArg::Type::OBJ, RPCArg::Optional::OMITTED, "",
@@ -821,7 +821,7 @@ static UniValue decoderawtransaction(const JSONRPCRequest& request)
                                     {RPCResult::Type::STR, "type", "The type, eg 'pubkeyhash'"},
                                     {RPCResult::Type::ARR, "addresses", "",
                                     {
-                                        {RPCResult::Type::STR, "address", "Dash address"},
+                                        {RPCResult::Type::STR, "address", "piratecash address"},
                                     }},
                                 }},
                             }},
@@ -874,7 +874,7 @@ static UniValue decodescript(const JSONRPCRequest& request)
                         {RPCResult::Type::NUM, "reqSigs", "The required signatures"},
                         {RPCResult::Type::ARR, "addresses", "",
                         {
-                            {RPCResult::Type::STR, "address", "Dash address"},
+                            {RPCResult::Type::STR, "address", "piratecash address"},
                         }},
                         {RPCResult::Type::STR, "p2sh", "address of P2SH script wrapping this redeem script (not returned if the script is already a P2SH)"},
                     }
@@ -1668,7 +1668,7 @@ UniValue createpsbt(const JSONRPCRequest& request)
                 {
                     {"", RPCArg::Type::OBJ, RPCArg::Optional::OMITTED, "",
                         {
-                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "A key-value pair. The key (string) is the Dash address, the value (float or string) is the amount in " + CURRENCY_UNIT},
+                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "A key-value pair. The key (string) is the PirateCash address, the value (float or string) is the amount in " + CURRENCY_UNIT},
                         },
                         },
                     {"", RPCArg::Type::OBJ, RPCArg::Optional::OMITTED, "",
