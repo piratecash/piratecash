@@ -87,7 +87,7 @@ builder-image:
   before_script:
     - export CACHE_DIR=$CI_PROJECT_DIR/cache
     - echo BUILD_TARGET=$BUILD_TARGET
-    - source ./ci/dash/matrix.sh
+    - source ./ci/matrix.sh
 
     # Setup some environment variables
     - |
@@ -118,8 +118,8 @@ builder-image:
   variables:
     CCACHE_SIZE: "400M"
   script:
-    - ./ci/dash/build_src.sh
-    - ./ci/dash/test_unittests.sh # Run unit tests in build stage to avoid creating too many parallel jobs
+    - ./ci/build_src.sh
+    - ./ci/test_unittests.sh # Run unit tests in build stage to avoid creating too many parallel jobs
   cache:
     # Let all branches share the same cache, which is ok because ccache is able to handle it
     key:
@@ -135,13 +135,13 @@ builder-image:
       - build-ci
     # Exclude some less important binaries to reduce the size of the artifacts
     exclude:
-      - build-ci/dashcore-$BUILD_TARGET/src/bench/bench_dash
-      - build-ci/dashcore-$BUILD_TARGET/src/bench/bench_dash.exe
-      - build-ci/dashcore-$BUILD_TARGET/src/qt/test/test_dash-qt
-      - build-ci/dashcore-$BUILD_TARGET/src/qt/test/test_dash-qt.exe
-      - build-ci/dashcore-$BUILD_TARGET/src/test/test_dash
-      - build-ci/dashcore-$BUILD_TARGET/src/test/test_dash.exe
-      - build-ci/dashcore-$BUILD_TARGET/src/test/fuzz/*
+      - build-ci/piratecashcore-$BUILD_TARGET/src/bench/bench_piratecash
+      - build-ci/piratecashcore-$BUILD_TARGET/src/bench/bench_piratecash.exe
+      - build-ci/piratecashcore-$BUILD_TARGET/src/qt/test/test_piratecash-qt
+      - build-ci/piratecashcore-$BUILD_TARGET/src/qt/test/test_piratecash-qt.exe
+      - build-ci/piratecashcore-$BUILD_TARGET/src/test/test_piratecash
+      - build-ci/piratecashcore-$BUILD_TARGET/src/test/test_piratecash.exe
+      - build-ci/piratecashcore-$BUILD_TARGET/src/test/fuzz/*
     expire_in: 3 days
 
 .test-template:
@@ -151,7 +151,7 @@ builder-image:
     INTEGRATION_TESTS_ARGS: "--extended --exclude feature_pruning,feature_dbcrash"
   script:
     - echo "INTEGRATION_TESTS_ARGS=${INTEGRATION_TESTS_ARGS}"
-    - ./ci/dash/test_integrationtests.sh $INTEGRATION_TESTS_ARGS
+    - ./ci/test_integrationtests.sh $INTEGRATION_TESTS_ARGS
   cache:
     # Let all branches share the same cache, which is ok because get_previous_releases.py extracts release binaries in separate folders
     key:

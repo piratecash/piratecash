@@ -83,10 +83,10 @@ RUN pip3 install \
     yq \
     multiprocess
 
-# dash_hash
-ARG DASH_HASH_VERSION=1.4.0
-RUN git clone --depth 1 --no-tags --branch=${DASH_HASH_VERSION} https://github.com/dashpay/dash_hash
-RUN cd dash_hash && pip3 install -r requirements.txt .
+# piratecash_hash
+ARG PIRATECASH_HASH_VERSION=1.4.0
+RUN git clone --depth 1 --no-tags --branch=${PIRATECASH_HASH_VERSION} https://github.com/piratecash/piratecash_hash
+RUN cd piratecash_hash && pip3 install -r requirements.txt .
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
@@ -94,8 +94,8 @@ ARG GROUP_ID=1000
 # add user with specified (or default) user/group ids
 ENV USER_ID ${USER_ID}
 ENV GROUP_ID ${GROUP_ID}
-RUN groupadd -g ${GROUP_ID} dash
-RUN useradd -u ${USER_ID} -g dash -s /bin/bash -m -d /home/dash dash
+RUN groupadd -g ${GROUP_ID} piratecash
+RUN useradd -u ${USER_ID} -g piratecash -s /bin/bash -m -d /home/piratecash piratecash
 
 # Packages needed for all target builds
 RUN apt-get update && apt-get install $APT_ARGS \
@@ -153,7 +153,7 @@ RUN cd /tmp && \
     rm -rf /tmp/llvm.sh
 
 RUN \
-  mkdir -p /src/dash && \
+  mkdir -p /src/piratecash && \
   mkdir -p /cache/ccache && \
   mkdir /cache/depends && \
   mkdir /cache/sdk-sources && \
@@ -162,6 +162,6 @@ RUN \
   chown ${USER_ID}:${GROUP_ID} /cache && \
   chown ${USER_ID}:${GROUP_ID} -R /cache
 
-WORKDIR /src/dash
+WORKDIR /src/piratecash
 
-USER dash
+USER piratecash

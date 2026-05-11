@@ -1,28 +1,28 @@
 FROM phusion/baseimage:focal-1.0.0
-LABEL maintainer="Dash Developers <dev@dash.org>"
-LABEL description="Dockerised DashCore, built from Travis"
+LABEL maintainer="PirateCash Developers <dev@piratecash.net>"
+LABEL description="Dockerised PirateCashCore, built from Travis"
 
 ARG USER_ID
 ARG GROUP_ID
 
-ENV HOME /home/dash
+ENV HOME /home/piratecash
 
 # add user with specified (or default) user/group ids
 ENV USER_ID ${USER_ID:-1000}
 ENV GROUP_ID ${GROUP_ID:-1000}
-RUN groupadd -g ${GROUP_ID} dash && \
-    useradd -u ${USER_ID} -g dash -s /bin/bash -m -d /home/dash dash && \
-    mkdir /home/dash/.dashcore && \
-    chown ${USER_ID}:${GROUP_ID} -R /home/dash
+RUN groupadd -g ${GROUP_ID} piratecash && \
+    useradd -u ${USER_ID} -g piratecash -s /bin/bash -m -d /home/piratecash piratecash && \
+    mkdir /home/piratecash/.piratecore && \
+    chown ${USER_ID}:${GROUP_ID} -R /home/piratecash
 
 COPY bin/* /usr/local/bin/
 
 RUN chmod a+x /usr/local/bin/*
 
-USER dash
+USER piratecash
 
-VOLUME ["/home/dash"]
+VOLUME ["/home/piratecash"]
 
-EXPOSE 9998 9999 19998 19999
+EXPOSE 19606 63636 19696 50666
 
-WORKDIR /home/dash
+WORKDIR /home/piratecash
