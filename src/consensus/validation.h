@@ -72,6 +72,7 @@ private:
         M_VALID,   //!< everything ok
         M_INVALID, //!< network rule violation (DoS value may be set)
         M_ERROR,   //!< run-time error
+        M_TRANSIENT_ERROR, //!< temporary error; retry when local state changes
     } m_mode{ModeState::M_VALID};
     Result m_result{};
     std::string m_reject_reason;
@@ -95,9 +96,17 @@ public:
         m_mode = ModeState::M_ERROR;
         return false;
     }
+    bool TransientError(const std::string& reject_reason)
+    {
+        if (m_mode == ModeState::M_VALID)
+            m_reject_reason = reject_reason;
+        m_mode = ModeState::M_TRANSIENT_ERROR;
+        return false;
+    }
     bool IsValid() const { return m_mode == ModeState::M_VALID; }
     bool IsInvalid() const { return m_mode == ModeState::M_INVALID; }
     bool IsError() const { return m_mode == ModeState::M_ERROR; }
+    bool IsTransientError() const { return m_mode == ModeState::M_TRANSIENT_ERROR; }
     Result GetResult() const { return m_result; }
     std::string GetRejectReason() const { return m_reject_reason; }
     std::string GetDebugMessage() const { return m_debug_message; }
