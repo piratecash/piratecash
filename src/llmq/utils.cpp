@@ -36,11 +36,6 @@ using CQuorumCPtr = std::shared_ptr<const CQuorum>;
  */
 std::optional<std::pair<CBLSSignature, uint32_t>> GetNonNullCoinbaseChainlock(const CBlockIndex* pindex);
 
-static bool IsV19Active(gsl::not_null<const CBlockIndex*> pindexPrev)
-{
-    return DeploymentActiveAfter(pindexPrev, Params().GetConsensus(), Consensus::DEPLOYMENT_V19);
-}
-
 static bool IsV20Active(gsl::not_null<const CBlockIndex*> pindexPrev)
 {
     return DeploymentActiveAfter(pindexPrev, Params().GetConsensus(), Consensus::DEPLOYMENT_V20);
@@ -656,6 +651,28 @@ std::pair<CDeterministicMNList, CDeterministicMNList> GetMNUsageBySnapshot(const
     }
 
     return std::make_pair(usedMNs, nonUsedMNs);
+}
+
+bool IsV19Active(const CBlockIndex* pindex)
+{
+    assert(pindex);
+    return g_versionbitscache.State(pindex, Params().GetConsensus(), Consensus::DEPLOYMENT_V19) == ThresholdState::ACTIVE;
+}
+
+const int V19ActivationHeight(const CBlockIndex* pindex)
+{
+    assert(pindex);
+
+    if (g_versionbitscache.State(pindex, Params().GetConsensus(), Consensus::DEPLOYMENT_V19) != ThresholdState::ACTIVE) {
+        return -1;
+    }
+    return g_versionbitscache.StateSinceHeight(pindex, Params().GetConsensus(), Consensus::DEPLOYMENT_V19);
+}
+
+const CBlockIndex* V19ActivationIndex(const CBlockIndex* pindex)
+{
+    assert(pindex);
+    return pindex->GetAncestor(V19ActivationHeight(pindex));
 }
 
 uint256 DeterministicOutboundConnection(const uint256& proTxHash1, const uint256& proTxHash2)

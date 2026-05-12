@@ -248,8 +248,7 @@ public:
         consensus.DIP0020Height = 1278144;
         consensus.DIP0024Height = 1278144;
         consensus.DIP0024QuorumsHeight = 1387050;
-        consensus.V19Height = 0;
-        consensus.MinBIP9WarningHeight = 0;
+        consensus.MinBIP9WarningHeight = consensus.DIP0008Height + consensus.nMinerConfirmationWindow; // dip0008 activation height + miner confirmation window
         consensus.powLimit = uint256S("0x0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 16
         consensus.posLimit = uint256S("0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 20
         consensus.nPowTargetTimespan = 8 * 60 * 60;
@@ -271,6 +270,15 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = VERSIONBITS_NUM_BITS - 1;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1705104000;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1736726400;
+
+        // Deployment of Basic BLS and EvoNodes
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].bit = 8;
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nStartTime = 1778889600;     // Saturday, May 16, 2026 0:00:00
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nTimeout = 1811030400;       // Sunday, May 23, 2027 0:00:00
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nWindowSize = 4032;
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nThresholdStart = 3226;       // 80% of 4032
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nThresholdMin = 2420;         // 60% of 4032
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nFalloffCoeff = 5;            // this corresponds to 10 periods
 
         consensus.vDeployments[Consensus::DEPLOYMENT_V20].bit = 9;
         consensus.vDeployments[Consensus::DEPLOYMENT_V20].nStartTime = 1781308800;      // June 13, 2026
@@ -452,8 +460,7 @@ public:
         consensus.DIP0020Height = 290900;
         consensus.DIP0024Height = 290900;
         consensus.DIP0024QuorumsHeight = 290900;
-        consensus.V19Height = 1078600;
-        consensus.MinBIP9WarningHeight = consensus.V19Height + 2016;
+        consensus.MinBIP9WarningHeight = consensus.DIP0008Height + consensus.nMinerConfirmationWindow; // dip0008 activation height + miner confirmation window
         consensus.powLimit = uint256S("0x0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 16
         consensus.posLimit = uint256S("0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 20
         consensus.nPowTargetTimespan = 8 * 60 * 60;
@@ -475,6 +482,15 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = VERSIONBITS_NUM_BITS - 1;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1702845060;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1735689600;
+
+        // Deployment of Basic BLS and EvoNodes
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].bit = 8;
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nStartTime = 1776211200;     // Wednesday, April 15, 2026 0:00:00
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nTimeout = 1808352000;       // Thursday, April 22, 2027 0:00:00
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nWindowSize = 100;
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nThresholdStart = 80;         // 80% of 100
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nThresholdMin = 60;           // 60% of 100
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nFalloffCoeff = 5;            // this corresponds to 10 periods
 
         consensus.vDeployments[Consensus::DEPLOYMENT_V20].bit = 9;
         consensus.vDeployments[Consensus::DEPLOYMENT_V20].nStartTime = 1778112000;     // May 7, 2026
@@ -638,8 +654,7 @@ public:
         consensus.DIP0020Height = 300;
         consensus.DIP0024Height = 300;
         consensus.DIP0024QuorumsHeight = 300;
-        consensus.V19Height = 300;
-        consensus.MinBIP9WarningHeight = 300 + 2016; // v19 activation height + miner confirmation window
+        consensus.MinBIP9WarningHeight = 300 + 2016; // dip0024 activation height + miner confirmation window
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
         consensus.posLimit = uint256S("0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 4
         consensus.nPowTargetTimespan = 24 * 60 * 60;
@@ -661,6 +676,15 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = VERSIONBITS_NUM_BITS - 1;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1619222400; // April 24, 2021
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1672444800; // December 31, 2022
+
+        // Deployment of Basic BLS and EvoNodes
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].bit = 8;
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nStartTime = 1661990400; // Sep 1st, 2022
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nTimeout = Consensus::BIP9Deployment::NO_TIMEOUT;
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nWindowSize = 120;
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nThresholdStart = 80; // 80% of 100
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nThresholdMin = 60;   // 60% of 100
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nFalloffCoeff = 5;     // this corresponds to 10 periods
 
         consensus.vDeployments[Consensus::DEPLOYMENT_V20].bit = 9;
         consensus.vDeployments[Consensus::DEPLOYMENT_V20].nStartTime = 1661990400; // Sep 1st, 2022
@@ -899,7 +923,6 @@ public:
         consensus.DIP0020Height = 300;
         consensus.DIP0024Height = 900;
         consensus.DIP0024QuorumsHeight = 900;
-        consensus.V19Height = 900;
         consensus.MinBIP9WarningHeight = 0;
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
         consensus.posLimit = uint256S("0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 4
@@ -922,6 +945,15 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = VERSIONBITS_NUM_BITS - 1;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 0;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = Consensus::BIP9Deployment::NO_TIMEOUT;
+
+        // Deployment of Basic BLS and EvoNodes
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].bit = 8;
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nStartTime = 0;
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nTimeout = Consensus::BIP9Deployment::NO_TIMEOUT;
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nWindowSize = 400;
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nThresholdStart = 384; // 80% of 480
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nThresholdMin = 288;   // 60% of 480
+        consensus.vDeployments[Consensus::DEPLOYMENT_V19].nFalloffCoeff = 5;     // this corresponds to 10 periods
 
         consensus.vDeployments[Consensus::DEPLOYMENT_V20].bit = 9;
         consensus.vDeployments[Consensus::DEPLOYMENT_V20].nStartTime = 0;
@@ -1468,7 +1500,4 @@ void SelectParams(const std::string& network)
 {
     SelectBaseParams(network);
     globalChainParams = CreateChainParams(gArgs, network);
-    if (network == CBaseChainParams::MAIN) {
-        throw std::runtime_error("PirateCash mainnet is disabled until V19 activation height is configured; remove this guard deliberately");
-    }
 }

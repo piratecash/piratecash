@@ -23,6 +23,8 @@
 #include <evo/providertx.h>
 #include <evo/specialtx.h>
 
+#include <llmq/utils.h>
+
 #include <boost/test/unit_test.hpp>
 
 using SimpleUTXOMap = std::map<COutPoint, std::pair<int, CAmount>>;
@@ -381,7 +383,7 @@ void FuncV19Activation(TestChainSetup& setup)
     }
 
     // check mn list/diff
-    const CBlockIndex* v19_index = ::ChainActive().Tip()->GetAncestor(Params().GetConsensus().V19Height);
+    const CBlockIndex* v19_index = llmq::utils::V19ActivationIndex(::ChainActive().Tip());
     auto v19_list = dmnman.GetListForBlock(v19_index);
     dummy_diff = v19_list.BuildDiff(tip_list);
     dummmy_list = v19_list.ApplyDiff(::ChainActive().Tip(), dummy_diff);

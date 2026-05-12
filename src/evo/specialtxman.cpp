@@ -16,6 +16,7 @@
 #include <hash.h>
 #include <llmq/blockprocessor.h>
 #include <llmq/commitment.h>
+#include <llmq/utils.h>
 #include <primitives/block.h>
 #include <validation.h>
 
@@ -218,7 +219,7 @@ bool ProcessSpecialTxsInBlock(const CBlock& block, const CBlockIndex* pindex, CM
         nTimeMnehf += nTime7 - nTime6;
         LogPrint(BCLog::BENCHMARK, "        - mnhfManager: %.2fms [%.2fs]\n", 0.001 * (nTime7 - nTime6), nTimeMnehf * 0.000001);
 
-        if (Params().GetConsensus().V19Height == pindex->nHeight + 1) {
+        if (llmq::utils::V19ActivationHeight(pindex) == pindex->nHeight + 1) {
             // NOTE: The block next to the activation is the one that is using new rules.
             // V19 activated just activated, so we must switch to the new rules here.
             bls::bls_legacy_scheme.store(false);
@@ -239,7 +240,7 @@ bool UndoSpecialTxsInBlock(const CBlock& block, const CBlockIndex* pindex, CMNHF
     auto bls_legacy_scheme = bls::bls_legacy_scheme.load();
 
     try {
-        if (Params().GetConsensus().V19Height == pindex->nHeight + 1) {
+        if (llmq::utils::V19ActivationHeight(pindex) == pindex->nHeight + 1) {
             // NOTE: The block next to the activation is the one that is using new rules.
             // Removing the activation block here, so we must switch back to the old rules.
             bls::bls_legacy_scheme.store(true);
