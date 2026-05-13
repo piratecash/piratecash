@@ -194,8 +194,17 @@ public:
         consensus.V19Height = 1899072; // 0000000000000015e32e73052d663626327004c81c5c22cb8b42c361015c0eae
         consensus.MinBIP9WarningHeight = 1899072 + 2016; // V19 activation height + miner confirmation window
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
+        consensus.posLimit = uint256S("0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 20
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Dash: 1 day
         consensus.nPowTargetSpacing = 2.5 * 60; // Dash: 2.5 minutes
+        consensus.nPosTargetSpacingV1 = 90;
+        consensus.nPosTargetSpacingV2 = 120;
+        consensus.nSpecTargetFix = 310000;
+        consensus.nRewForkDecreaseV18 = 1265000;
+        consensus.nForkHeight = 1265800;
+        consensus.nRestoreRewardV18 = 1268999;
+        consensus.nSkipTimeUntil = 1705104000;
+        consensus.nLastPowBlock = 100000;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nPowKGWHeight = 15200;
@@ -301,6 +310,8 @@ public:
 
         vSporkAddresses = {"Xgtyuk76vhuFW2iT7UAiHgNdWXCf3J34wh"};
         nMinSporkKeys = 1;
+        nStakeMinAge = 8 * 60 * 60;
+        nFirstPoSv2Block = consensus.nForkHeight;
 
         checkpointData = {
             {
@@ -396,8 +407,17 @@ public:
         consensus.V19Height = 850100; // 000004728b8ff2a16b9d4eebb0fd61eeffadc9c7fe4b0ec0b5a739869401ab5b
         consensus.MinBIP9WarningHeight = 850100 + 2016;  // v19 activation height + miner confirmation window
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
+        consensus.posLimit = uint256S("0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 20
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Dash: 1 day
         consensus.nPowTargetSpacing = 2.5 * 60; // Dash: 2.5 minutes
+        consensus.nPosTargetSpacingV1 = 90;
+        consensus.nPosTargetSpacingV2 = 120;
+        consensus.nSpecTargetFix = 104000;
+        consensus.nRewForkDecreaseV18 = 288882;
+        consensus.nForkHeight = 289000;
+        consensus.nRestoreRewardV18 = 290000;
+        consensus.nSkipTimeUntil = 1705276800;
+        consensus.nLastPowBlock = 3000;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nPowKGWHeight = 4002; // nPowKGWHeight >= nPowDGWHeight means "no KGW"
@@ -496,6 +516,8 @@ public:
 
         vSporkAddresses = {"yjPtiKh2uwk3bDutTEA2q9mCtXyiZRWn55"};
         nMinSporkKeys = 1;
+        nStakeMinAge = 8 * 60 * 60;
+        nFirstPoSv2Block = consensus.nForkHeight;
 
         checkpointData = {
             {
@@ -572,8 +594,17 @@ public:
         consensus.V19Height = 300;
         consensus.MinBIP9WarningHeight = 300 + 2016; // v19 activation height + miner confirmation window
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
+        consensus.posLimit = uint256S("0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 4
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Dash: 1 day
         consensus.nPowTargetSpacing = 2.5 * 60; // Dash: 2.5 minutes
+        consensus.nPosTargetSpacingV1 = 90;
+        consensus.nPosTargetSpacingV2 = 120;
+        consensus.nSpecTargetFix = 100;
+        consensus.nRewForkDecreaseV18 = 0;
+        consensus.nForkHeight = 1;
+        consensus.nRestoreRewardV18 = 1;
+        consensus.nSkipTimeUntil = 1672531200;
+        consensus.nLastPowBlock = 3000;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nPowKGWHeight = 4001; // nPowKGWHeight >= nPowDGWHeight means "no KGW"
@@ -682,6 +713,8 @@ public:
 
         vSporkAddresses = {"yjPtiKh2uwk3bDutTEA2q9mCtXyiZRWn55"};
         nMinSporkKeys = 1;
+        nStakeMinAge = 24 * 60 * 60;
+        nFirstPoSv2Block = 78000ULL;
 
         checkpointData = (CCheckpointData) {
             {
@@ -812,8 +845,17 @@ public:
         consensus.V19Height = 900;
         consensus.MinBIP9WarningHeight = 0;
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
+        consensus.posLimit = uint256S("0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 4
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Dash: 1 day
         consensus.nPowTargetSpacing = 2.5 * 60; // Dash: 2.5 minutes
+        consensus.nPosTargetSpacingV1 = 90;
+        consensus.nPosTargetSpacingV2 = 120;
+        consensus.nSpecTargetFix = 100;
+        consensus.nRewForkDecreaseV18 = 0;
+        consensus.nForkHeight = 1;
+        consensus.nRestoreRewardV18 = 1;
+        consensus.nSkipTimeUntil = 1672531200;
+        consensus.nLastPowBlock = 3000;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
         consensus.nPowKGWHeight = 15200; // same as mainnet
@@ -890,6 +932,8 @@ public:
         // privKey: cP4EKFyJsHT39LDqgdcB43Y3YXjNyjb5Fuas1GQSeAtjnZWmZEQK
         vSporkAddresses = {"yj949n1UH6fDhw6HtVE5VMj2iSTaSWBMcW"};
         nMinSporkKeys = 1;
+        nStakeMinAge = 24 * 60 * 60;
+        nFirstPoSv2Block = 10000ULL;
 
         checkpointData = {
             {

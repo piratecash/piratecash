@@ -13,7 +13,9 @@
 
 class CBlockHeader;
 class CBlockIndex;
+class CChain;
 class CTxMemPool;
+class BlockManager;
 namespace Consensus {
 struct Params;
 }
@@ -43,6 +45,6 @@ bool CheckStakeKernelHash(
 
 // Check kernel hash target and coinstake signature
 // Sets hashProofOfStake on success return
-bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& block, uint256& hashProofOfStake, const Consensus::Params& consensus, const CTxMemPool* mempool = nullptr);
+bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& block, uint256& hashProofOfStake, const Consensus::Params& consensus, const CTxMemPool* mempool = nullptr, const BlockManager* blockman = nullptr, const CChain* active_chain = nullptr);
 
 #endif // BITCOIN_KERNEL_H

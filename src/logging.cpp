@@ -159,6 +159,7 @@ const CLogCategoryDesc LogCategories[] =
     {BCLog::VALIDATION, "validation"},
     {BCLog::I2P, "i2p"},
     {BCLog::LOCK, "lock"},
+    {BCLog::STAKING, "staking"},
     {BCLog::ALL, "1"},
     {BCLog::ALL, "all"},
 

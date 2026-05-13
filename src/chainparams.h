@@ -153,6 +153,8 @@ public:
     const std::vector<std::string>& SporkAddresses() const { return vSporkAddresses; }
     int MinSporkKeys() const { return nMinSporkKeys; }
     [[nodiscard]] std::optional<Consensus::LLMQParams> GetLLMQ(Consensus::LLMQType llmqType) const;
+    int64_t MinStakeAge() const { return nStakeMinAge; }
+    uint32_t FirstPoSv2Block() const { return nFirstPoSv2Block; }
 
 protected:
     CChainParams() {}
@@ -188,6 +190,8 @@ protected:
     int nMinSporkKeys;
     uint16_t nDefaultPlatformP2PPort;
     uint16_t nDefaultPlatformHTTPPort;
+    int64_t nStakeMinAge;
+    uint32_t nFirstPoSv2Block;
 
     void AddLLMQ(Consensus::LLMQType llmqType);
 };
