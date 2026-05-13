@@ -172,6 +172,7 @@ BITCOIN_CORE_H = \
   consensus/tx_verify.h \
   core_io.h \
   core_memusage.h \
+  corsa/client.h \
   cuckoocache.h \
   ctpl_stl.h \
   cxxtimer.hpp \
@@ -427,6 +428,7 @@ libbitcoin_server_a_SOURCES = \
   coinjoin/context.cpp \
   coinjoin/server.cpp \
   consensus/tx_verify.cpp \
+  corsa/client.cpp \
   dbwrapper.cpp \
   deploymentstatus.cpp \
   dsnotificationinterface.cpp \

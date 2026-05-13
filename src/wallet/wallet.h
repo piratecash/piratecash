@@ -103,12 +103,27 @@ static const CAmount HIGH_MAX_TX_FEE = 100 * HIGH_TX_FEE_PER_KB;
 //! if set, all keys will be derived by using BIP39/BIP44
 static const bool DEFAULT_USE_HD_WALLET = true;
 
+static const size_t DEFAULT_STAKE_SPLIT_THRESHOLD = 500;
+static const int64_t MAX_STAKE_SPLIT_THRESHOLD = 1000000;
+static const int DEFAULT_STAKE_MAX_SPLIT = 500;
+static const unsigned int DEFAULT_POS_HASH_INTERVAL = 1;
+static const unsigned int MAX_POS_HASH_INTERVAL = 86400;
+static const bool DEFAULT_INPUT_STAKE_PROTECT = true;
+
+enum {
+    AUTOCOMBINE_DISABLE = 0,
+    AUTOCOMBINE_SAME = 1,
+    AUTOCOMBINE_ANY = 2,
+ };
+static const int DEFAULT_STAKE_AUTOCOMBINE = AUTOCOMBINE_SAME;
+
 class CCoinControl;
 class CKey;
 class COutput;
 class CScript;
 class CTxDSIn;
 class CWalletTx;
+using StakeCandidates = std::vector<std::tuple<CAmount, const CWalletTx*, unsigned int>>;
 struct FeeCalculation;
 enum class FeeEstimateMode;
 class ReserveDestination;
@@ -571,8 +586,8 @@ public:
 
     /**
      * @return number of blocks to maturity for this transaction:
-     *  0 : is not a coinbase transaction, or is a mature coinbase transaction
-     * >0 : is a coinbase transaction which matures in this many blocks
+     *  0 : is not a generated reward transaction, or is already mature
+     * >0 : is a coinbase/coinstake reward which matures in this many blocks
      */
     int GetBlocksToMaturity() const;
     bool isAbandoned() const { return m_confirm.status == CWalletTx::ABANDONED; }
@@ -592,6 +607,7 @@ public:
     const uint256& GetHash() const { return tx->GetHash(); }
     bool IsCoinBase() const { return tx->IsCoinBase(); }
     bool IsPlatformTransfer() const { return tx->IsPlatformTransfer(); }
+    bool IsCoinStake() const { return tx->IsCoinStake(); }
     bool IsImmatureCoinBase() const;
 
     // Disable copying of CWalletTx objects to prevent bugs where instances get
@@ -880,15 +896,19 @@ public:
     MasterKeyMap mapMasterKeys;
     unsigned int nMasterKeyMaxID = 0;
 
+    unsigned int nHashDrift = 30;
+    unsigned int nHashInterval = DEFAULT_POS_HASH_INTERVAL;
+    CAmount nReserveBalance = 0;
+    size_t nStakeSplitThreshold = DEFAULT_STAKE_SPLIT_THRESHOLD;
+    int nStakeMaxSplit = DEFAULT_STAKE_MAX_SPLIT;
+    int fAutocombine = DEFAULT_STAKE_AUTOCOMBINE;
+    bool inputStakeProtect = DEFAULT_INPUT_STAKE_PROTECT;
+    mutable StakeCandidates setStakeCoins;
+    mutable int64_t nLastStakeSetUpdate = 0;
+    int64_t nStakeSetUpdateTime = 60;
+
     /** Construct wallet with specified name and database implementation. */
-    CWallet(interfaces::Chain* chain, interfaces::CoinJoin::Loader* coinjoin_loader, const std::string& name, std::unique_ptr<WalletDatabase> database)
-        : fOnlyMixingAllowed(false),
-          m_chain(chain),
-          m_coinjoin_loader(coinjoin_loader),
-          m_name(name),
-          m_database(std::move(database))
-    {
-    }
+    CWallet(interfaces::Chain* chain, interfaces::CoinJoin::Loader* coinjoin_loader, const std::string& name, std::unique_ptr<WalletDatabase> database);
 
     ~CWallet()
     {
@@ -900,6 +920,7 @@ public:
     bool HaveChain() const { return m_chain ? true : false; }
     bool IsCrypted() const;
     bool IsLocked(bool fForMixing = false) const override;
+    bool CreateCoinStake(const CBlockIndex* pindex_prev, CBlock& curr_block, CMutableTransaction& coinbaseTx);
     bool Lock(bool fForMixing = false);
 
     void UpdateProgress(const std::string& title, int nProgress) override;
@@ -976,6 +997,8 @@ public:
 
     std::vector<CompactTallyItem> SelectCoinsGroupedByAddresses(bool fSkipDenominated = true, bool fAnonymizable = true, bool fSkipUnconfirmed = true, int nMaxOupointsPerAddress = -1) const;
 
+    bool SelectStakeCoins(StakeCandidates& setCoins, CAmount nTargetAmount) const;
+    bool MintableCoins();
     bool HasCollateralInputs(bool fOnlyConfirmed = true) const;
     int  CountInputsWithAmount(CAmount nInputAmount) const;
 

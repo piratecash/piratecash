@@ -70,7 +70,7 @@ CBlock BuildChainTestingSetup::CreateBlock(const CBlockIndex* prev,
 {
     const CChainParams& chainparams = Params();
     std::unique_ptr<CBlockTemplate> pblocktemplate = BlockAssembler(m_node.chainman->ActiveChainstate(), m_node, *m_node.mempool, chainparams).CreateNewBlock(scriptPubKey);
-    CBlock& block = pblocktemplate->block;
+    CBlock& block = *pblocktemplate->block;
     block.hashPrevBlock = prev->GetBlockHash();
     block.nTime = prev->nTime + 1;
 

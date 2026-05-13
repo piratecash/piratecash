@@ -941,6 +941,8 @@ public:
         LOCK(cs_main);
         return ::fHavePruned;
     }
+    bool p2pEnabled() override { return m_node.connman != nullptr; }
+    bool masternodeSyncDone() override { return m_node.mn_sync != nullptr && m_node.mn_sync->IsSynced(); }
     bool isReadyToBroadcast() override { return !::fImporting && !::fReindex && !isInitialBlockDownload(); }
     bool isInitialBlockDownload() override {
         return chainman().ActiveChainstate().IsInitialBlockDownload();
