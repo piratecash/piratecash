@@ -1,9 +1,15 @@
+boost_upstream_version=1.81.0
+boost_upstream_download_path=https://archives.boost.io/release/$(boost_upstream_version)/source/
+boost_upstream_file_name=boost_$(subst .,_,$(boost_upstream_version)).tar.gz
+boost_upstream_sha256_hash=205666dea9f6a7cfed87c7a6dfbeb52a2c1b9de55712c9c1a87735d7181452b6
+
 package=boost
-$(package)_version=1.77.0
-$(package)_download_path=https://boostorg.jfrog.io/artifactory/main/release/$($(package)_version)/source/
-$(package)_file_name=boost_$(subst .,_,$($(package)_version)).tar.bz2
-$(package)_sha256_hash=fc9f85fc030e233142908241af7a846e60630aa7388de9a5fafb1f3a26840854
+$(package)_version=$(boost_upstream_version)
+$(package)_download_path=$(boost_upstream_download_path)
+$(package)_file_name=$(boost_upstream_file_name)
+$(package)_sha256_hash=$(boost_upstream_sha256_hash)
 $(package)_dependencies=native_b2
+$(package)_patches=process_macos_sdk.patch
 
 define $(package)_set_vars
 $(package)_config_opts_release=variant=release
@@ -21,28 +27,21 @@ $(package)_config_opts_i686_android=address-model=32
 $(package)_config_opts_aarch64_android=address-model=64
 $(package)_config_opts_x86_64_android=address-model=64
 $(package)_config_opts_armv7a_android=address-model=32
-unary_function=unary_function
 ifneq (,$(findstring clang,$($(package)_cxx)))
 $(package)_toolset_$(host_os)=clang
-ifeq ($(build_os),darwin)
-unary_function=__unary_function
-endif
 else
 $(package)_toolset_$(host_os)=gcc
 endif
-$(package)_config_libraries=filesystem,test
-$(package)_cxxflags=-std=c++17
+$(package)_config_libraries=system,filesystem,program_options,thread,chrono,test
+$(package)_cxxflags=-std=c++17 -fvisibility=hidden
 $(package)_cxxflags_linux=-fPIC
-$(package)_cxxflags_freebsd=-fPIC
-$(package)_cxxflags_openbsd=-fPIC
 $(package)_cxxflags_android=-fPIC
-$(package)_cxxflags_x86_64=-fcf-protection=full
+$(package)_cxxflags_darwin=-Wno-enum-constexpr-conversion
 endef
 
-# Fix missing unary_function in clang15 on macos, can be removed after upgrading to 1.81
 define $(package)_preprocess_cmds
-  sed -i.old "s/unary_function/$(unary_function)/" boost/container_hash/hash.hpp && \
-  echo "using $($(package)_toolset_$(host_os)) : : $($(package)_cxx) : <cflags>\"$($(package)_cflags)\" <cxxflags>\"$($(package)_cxxflags)\" <compileflags>\"$($(package)_cppflags)\" <linkflags>\"$($(package)_ldflags)\" <archiver>\"$($(package)_ar)\" <striper>\"$(host_STRIP)\"  <ranlib>\"$(host_RANLIB)\" <rc>\"$(host_WINDRES)\" : ;" > user-config.jam
+  patch -p1 < $($(package)_patch_dir)/process_macos_sdk.patch && \
+  echo "using $($(package)_toolset_$(host_os)) : : $($(package)_cxx) : <cflags>\"$($(package)_cflags)\" <cxxflags>\"$($(package)_cxxflags)\" <compileflags>\"$($(package)_cppflags)\" <linkflags>\"$($(package)_ldflags)\" <archiver>\"$($(package)_ar)\" <striper>\"$(host_STRIP)\" <ranlib>\"$(host_RANLIB)\" <rc>\"$(host_WINDRES)\" : ;" > user-config.jam
 endef
 
 define $(package)_config_cmds
