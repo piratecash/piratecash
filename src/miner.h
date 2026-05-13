@@ -12,6 +12,7 @@
 #include <memory>
 #include <optional>
 #include <stdint.h>
+#include <string>
 
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/ordered_index.hpp>
@@ -230,5 +231,7 @@ private:
 /** Modify the extranonce in a block */
 void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned int& nExtraNonce);
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev);
+bool IsStakingActive();
+std::string getMiningStatus();
 
 #endif // BITCOIN_MINER_H

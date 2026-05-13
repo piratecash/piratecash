@@ -92,6 +92,17 @@ uint256 CTransaction::ComputeHash() const
     return SerializeHash(*this);
 }
 
+bool CTransaction::IsCoinStake() const
+{
+    if (vin.empty())
+        return false;
+
+    if (vin[0].prevout.IsNull())
+        return false;
+
+    return (vout.size() >= 2 && vout[0].IsEmpty());
+}
+
 CTransaction::CTransaction(const CMutableTransaction& tx) : vin(tx.vin), vout(tx.vout), nVersion(tx.nVersion), nType(tx.nType), nLockTime(tx.nLockTime), vExtraPayload(tx.vExtraPayload), hash{ComputeHash()} {}
 CTransaction::CTransaction(CMutableTransaction&& tx) : vin(std::move(tx.vin)), vout(std::move(tx.vout)), nVersion(tx.nVersion), nType(tx.nType), nLockTime(tx.nLockTime), vExtraPayload(tx.vExtraPayload), hash{ComputeHash()} {}
 

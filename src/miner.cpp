@@ -42,6 +42,12 @@
 #include <algorithm>
 #include <utility>
 
+int64_t nLastCoinStakeSearchTime = 0;
+namespace {
+RecursiveMutex g_mining_status_mutex;
+std::string miningStatus GUARDED_BY(g_mining_status_mutex);
+} // namespace
+
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev)
 {
     int64_t nOldTime = pblock->nTime;
@@ -584,4 +590,15 @@ void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned
 
     pblock->vtx[0] = MakeTransactionRef(std::move(txCoinbase));
     pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
+}
+
+bool IsStakingActive()
+{
+    return (GetAdjustedTime() - nLastCoinStakeSearchTime) < 60;
+}
+
+std::string getMiningStatus()
+{
+    LOCK(g_mining_status_mutex);
+    return miningStatus;
 }
