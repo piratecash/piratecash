@@ -2,7 +2,15 @@ name: Check Merge Fast-Forward Only
 
 on:
   push:
+    branches-ignore:
+      - 'backport*'
+      - 'v1*'
+      - 'v2*'
   pull_request:
+    branches-ignore:
+      - 'backport*'
+      - 'v1*'
+      - 'v2*'
 
 jobs:
   check_merge:
@@ -20,8 +28,8 @@ jobs:
 
       - name: Check merge --ff-only
         run: |
-          git fetch origin master:master
-          git checkout master
+          git fetch origin master:refs/remotes/origin/master
+          git checkout -B master origin/master
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             git merge --ff-only ${{ github.event.pull_request.head.sha }}
           else

@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          path: dash
+          path: piratecash
           fetch-depth: 0
 
       - name: Set up Docker Buildx
@@ -29,7 +29,7 @@ jobs:
       - name: Commit variables
         id: prepare
         run: |
-          echo "hash=$(sha256sum ./dash/contrib/containers/guix/Dockerfile | cut -d ' ' -f1)" >> $GITHUB_OUTPUT
+          echo "hash=$(sha256sum ./piratecash/contrib/containers/guix/Dockerfile | cut -d ' ' -f1)" >> $GITHUB_OUTPUT
           echo "host_user_id=$(id -u)" >> $GITHUB_OUTPUT
           echo "host_group_id=$(id -g)" >> $GITHUB_OUTPUT
           BRANCH_NAME=$(echo "${GITHUB_REF##*/}" | tr '[:upper:]' '[:lower:]')
@@ -47,18 +47,18 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ${{ github.workspace }}/dash
+          context: ${{ github.workspace }}/piratecash
           build-args: |
             USER_ID=${{ steps.prepare.outputs.host_user_id }}
             GROUP_ID=${{ steps.prepare.outputs.host_group_id }}
           build-contexts: |
-            docker_root=${{ github.workspace }}/dash/contrib/containers/guix
-          file: ./dash/contrib/containers/guix/Dockerfile
+            docker_root=${{ github.workspace }}/piratecash/contrib/containers/guix
+          file: ./piratecash/contrib/containers/guix/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ steps.prepare.outputs.repo-name }}/dashcore-guix-builder:${{ steps.prepare.outputs.image-tag }}
-            ghcr.io/${{ steps.prepare.outputs.repo-name }}/dashcore-guix-builder:latest
-          cache-from: type=registry,ref=ghcr.io/${{ steps.prepare.outputs.repo-name }}/dashcore-guix-builder:latest
+            ghcr.io/${{ steps.prepare.outputs.repo-name }}/piratecashcore-guix-builder:${{ steps.prepare.outputs.image-tag }}
+            ghcr.io/${{ steps.prepare.outputs.repo-name }}/piratecashcore-guix-builder:latest
+          cache-from: type=registry,ref=ghcr.io/${{ steps.prepare.outputs.repo-name }}/piratecashcore-guix-builder:latest
           cache-to: type=inline,mode=max
 
   build:
@@ -76,7 +76,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          path: dash
+          path: piratecash
           fetch-depth: 0
 
       - name: Cache Guix and depends
@@ -85,9 +85,9 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/.cache
-            ${{ github.workspace }}/dash/depends/built
-            ${{ github.workspace }}/dash/depends/sources
-            ${{ github.workspace }}/dash/depends/work
+            ${{ github.workspace }}/piratecash/depends/built
+            ${{ github.workspace }}/piratecash/depends/sources
+            ${{ github.workspace }}/piratecash/depends/work
             /gnu/store
           key: ${{ runner.os }}-guix-${{ matrix.build_target }}-${{ github.sha }}
           restore-keys: |
@@ -104,10 +104,10 @@ jobs:
           docker run --privileged -d --rm -t \
             --name guix-daemon \
             -e ADDITIONAL_GUIX_COMMON_FLAGS="--max-jobs=$(nproc --all)" \
-            -v ${{ github.workspace }}/dash:/src/dash \
+            -v ${{ github.workspace }}/piratecash:/src/piratecash \
             -v ${{ github.workspace }}/.cache:/home/ubuntu/.cache \
-            -w /src/dash \
-            ghcr.io/${{ needs.build-image.outputs.repo-name }}/dashcore-guix-builder:${{ needs.build-image.outputs.image-tag }} && \
+            -w /src/piratecash \
+            ghcr.io/${{ needs.build-image.outputs.repo-name }}/piratecashcore-guix-builder:${{ needs.build-image.outputs.image-tag }} && \
           docker exec guix-daemon bash -c 'HOSTS=${{ matrix.build_target }} /usr/local/bin/guix-start'
 
       - name: Ensure build passes
@@ -120,16 +120,16 @@ jobs:
       - name: Compute SHA256 checksums
         continue-on-error: true # It will complain on depending on only some hosts
         run: |
-          HOSTS=${{ matrix.build_target }} ./dash/contrib/containers/guix/scripts/guix-check ${{ github.workspace }}/dash
+          HOSTS=${{ matrix.build_target }} ./piratecash/contrib/containers/guix/scripts/guix-check ${{ github.workspace }}/piratecash
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: guix-artifacts-${{ matrix.build_target }}
           path: |
-            ${{ github.workspace }}/dash/guix-build*/output/${{ matrix.build_target }}/
+            ${{ github.workspace }}/piratecash/guix-build*/output/${{ matrix.build_target }}/
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v1
         with:
-          subject-path: ${{ github.workspace }}/dash/guix-build*/output/${{ matrix.build_target }}/*
+          subject-path: ${{ github.workspace }}/piratecash/guix-build*/output/${{ matrix.build_target }}/*
