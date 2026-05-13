@@ -51,14 +51,14 @@ static bool WalletAppInit(ArgsManager& args, int argc, char* argv[])
         return false;
     }
     if (argc < 2 || HelpRequested(args) || args.IsArgSet("-version")) {
-        std::string strUsage = strprintf("%s dash-wallet version", PACKAGE_NAME) + " " + FormatFullVersion() + "\n";
+        std::string strUsage = strprintf("%s piratecash-wallet version", PACKAGE_NAME) + " " + FormatFullVersion() + "\n";
         if (!args.IsArgSet("-version")) {
             strUsage += "\n"
-                    "dash-wallet is an offline tool for creating and interacting with " PACKAGE_NAME " wallet files.\n"
-                    "By default dash-wallet will act on wallets in the default mainnet wallet directory in the datadir.\n"
+                    "piratecash-wallet is an offline tool for creating and interacting with " PACKAGE_NAME " wallet files.\n"
+                    "By default piratecash-wallet will act on wallets in the default mainnet wallet directory in the datadir.\n"
                     "To change the target wallet, use the -datadir, -wallet and -testnet/-regtest arguments.\n\n"
                     "Usage:\n"
-                    "  dash-wallet [options] <command>\n";
+                    "  piratecash-wallet [options] <command>\n";
             strUsage += "\n" + args.GetHelpMessage();
         }
         tfm::format(std::cout, "%s", strUsage);
@@ -96,7 +96,7 @@ MAIN_FUNCTION
 
     const auto command = args.GetCommand();
     if (!command) {
-        tfm::format(std::cerr, "No method provided. Run `dash-wallet -help` for valid methods.\n");
+        tfm::format(std::cerr, "No method provided. Run `piratecash-wallet -help` for valid methods.\n");
         return EXIT_FAILURE;
     }
     if (command->args.size() != 0) {

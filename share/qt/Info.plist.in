@@ -11,7 +11,7 @@
   </array>
 
   <key>CFBundleIconFile</key>
-  <string>dash.icns</string>
+  <string>piratecash.icns</string>
 
   <key>CFBundlePackageType</key>
   <string>APPL</string>
@@ -26,15 +26,15 @@
   <string>????</string>
 
   <key>CFBundleExecutable</key>
-  <string>Dash-Qt</string>
+  <string>PirateCash-Qt</string>
   <key>CFBundleName</key>
-  <string>Dash-Qt</string>
+  <string>PirateCash-Qt</string>
 
   <key>LSHasLocalizedDisplayName</key>
   <true/>
 
   <key>CFBundleIdentifier</key>
-  <string>org.dash.Dash-Qt</string>
+  <string>cash.p.PirateCash-Qt</string>
 
   <key>CFBundleURLTypes</key>
   <array>
@@ -42,10 +42,10 @@
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
       <key>CFBundleURLName</key>
-      <string>org.dash.DashPayment</string>
+      <string>cash.p</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>dash</string>
+        <string>piratecash</string>
       </array>
     </dict>
   </array>
@@ -60,7 +60,7 @@
     <string>True</string>
 
   <key>NSHumanReadableCopyright</key>
-  <string>Copyright © 2009-@COPYRIGHT_YEAR@ The Bitcoin Core developers, 2014-@COPYRIGHT_YEAR@ @COPYRIGHT_HOLDERS_FINAL@</string>
+  <string>Copyright © 2009-@COPYRIGHT_YEAR@ The Bitcoin Core developers, 2018-@COPYRIGHT_YEAR@ @COPYRIGHT_HOLDERS_FINAL@</string>
   <key>LSApplicationCategoryType</key>
     <string>public.app-category.finance</string>
 </dict>
