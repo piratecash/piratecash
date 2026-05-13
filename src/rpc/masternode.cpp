@@ -530,13 +530,13 @@ static RPCHelpMan masternodelist_helper(bool is_composite)
         "  json           - Print info in JSON format (can be additionally filtered, partial match)\n"
         "  lastpaidblock  - Print the last block height a node was paid on the network\n"
         "  lastpaidtime   - Print the last time a node was paid on the network\n"
-        "  owneraddress   - Print the masternode owner Dash address\n"
-        "  payee          - Print the masternode payout Dash address (can be additionally filtered,\n"
+        "  owneraddress   - Print the masternode owner PirateCash address\n"
+        "  payee          - Print the masternode payout PirateCash address (can be additionally filtered,\n"
         "                   partial match)\n"
         "  pubKeyOperator - Print the masternode operator public key\n"
         "  status         - Print masternode status: ENABLED / POSE_BANNED\n"
         "                   (can be additionally filtered, partial match)\n"
-        "  votingaddress  - Print the masternode voting Dash address\n",
+        "  votingaddress  - Print the masternode voting PirateCash address\n",
         {
             {"mode", RPCArg::Type::STR, /* default */ "json", "The mode to run list in"},
             {"filter", RPCArg::Type::STR, /* default */ "", "Filter results. Partial match by outpoint by default in all modes, additional matches in some modes are also available"},
@@ -732,19 +732,19 @@ void RegisterMasternodeRPCCommands(CRPCTable &t)
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         argNames
   //  --------------------- ------------------------  -----------------------  ----------
-    { "dash",               "masternode",             &masternode_help,          {"command"} },
-    { "dash",               "masternode", "list",     &masternodelist_composite, {"mode", "filter"} },
-    { "dash",               "masternodelist",         &masternodelist,           {"mode", "filter"} },
-    { "dash",               "masternode", "connect",  &masternode_connect,       {"address"} },
-    { "dash",               "masternode", "count",    &masternode_count,         {} },
+    { "pirate",             "masternode",             &masternode_help,          {"command"} },
+    { "pirate",             "masternode", "list",     &masternodelist_composite, {"mode", "filter"} },
+    { "pirate",             "masternodelist",         &masternodelist,           {"mode", "filter"} },
+    { "pirate",             "masternode", "connect",  &masternode_connect,       {"address"} },
+    { "pirate",             "masternode", "count",    &masternode_count,         {} },
 #ifdef ENABLE_WALLET
-    { "dash",               "masternode", "outputs",  &masternode_outputs,       {} },
+    { "pirate",             "masternode", "outputs",  &masternode_outputs,       {} },
 #endif // ENABLE_WALLET
-    { "dash",               "masternode", "status",   &masternode_status,        {} },
-    { "dash",               "masternode", "payments", &masternode_payments,      {"blockhash", "count"} },
-    { "dash",               "masternode", "winners",  &masternode_winners,       {"count", "filter"} },
-    { "dash",               "masternode", "current",  &masternode_current,       {} },
-    { "dash",               "masternode", "winner",   &masternode_winner,        {} },
+    { "pirate",             "masternode", "status",   &masternode_status,        {} },
+    { "pirate",             "masternode", "payments", &masternode_payments,      {"blockhash", "count"} },
+    { "pirate",             "masternode", "winners",  &masternode_winners,       {"count", "filter"} },
+    { "pirate",             "masternode", "current",  &masternode_current,       {} },
+    { "pirate",             "masternode", "winner",   &masternode_winner,        {} },
 };
 // clang-format on
     for (const auto& command : commands) {

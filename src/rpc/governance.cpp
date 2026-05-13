@@ -165,7 +165,7 @@ static RPCHelpMan gobject_prepare()
 
     CGovernanceObject govobj(hashParent, nRevision, nTime, uint256(), strDataHex);
 
-    // This command is dangerous because it consumes 5 DASH irreversibly.
+    // This command is dangerous because it consumes 5 PIRATE irreversibly.
     // If params are lost, it's very hard to bruteforce them and yet
     // users ignore all instructions on dashcentral etc. and do not save them...
     // Let's log them here and hope users do not mess with debug.log
@@ -1059,7 +1059,7 @@ void RegisterGovernanceRPCCommands(CRPCTable &t)
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         argNames
   //  --------------------- ------------------------  -----------------------  ----------
-    /* Dash features */
+    /* PirateCash features */
     { "dash",               "getgovernanceinfo",          &getgovernanceinfo,       {} },
     { "dash",               "getsuperblockbudget",        &getsuperblockbudget,     {"index"} },
     { "dash",               "gobject",                    &gobject,                 {"command"} },
