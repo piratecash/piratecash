@@ -197,6 +197,17 @@ class MiningTest(BitcoinTestFramework):
         block.nTime += 1
         block.solve()
 
+        def filter_tip_keys(chaintips):
+            """
+            PirateCash chaintips rpc returns extra info in each tip (difficulty, chainwork, and
+            forkpoint). Filter down to relevant ones checked in this test.
+            """
+            check_keys = ["hash", "height", "branchlen", "status"]
+            filtered_tips = []
+            for tip in chaintips:
+                filtered_tips.append({k: tip[k] for k in check_keys})
+            return filtered_tips
+
         def chain_tip(b_hash, *, status='headers-only', branchlen=1):
             return {'hash': b_hash, 'height': 202, 'branchlen': branchlen, 'status': status}
         assert chain_tip(block.hash) not in filter_tip_keys(node.getchaintips())

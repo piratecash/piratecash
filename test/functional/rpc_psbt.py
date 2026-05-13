@@ -28,7 +28,7 @@ class PSBTTest(BitcoinTestFramework):
         self.skip_if_no_wallet()
 
     def run_test(self):
-        # Create and fund a raw tx for sending 10 DASH
+        # Create and fund a raw tx for sending 10 PIRATE
         psbtx1 = self.nodes[0].walletcreatefundedpsbt([], {self.nodes[2].getnewaddress():10})['psbt']
 
         # If inputs are specified, do not automatically add more:
@@ -105,14 +105,14 @@ class PSBTTest(BitcoinTestFramework):
         assert_equal(walletprocesspsbt_out['complete'], True)
         self.nodes[1].sendrawtransaction(self.nodes[1].finalizepsbt(walletprocesspsbt_out['psbt'])['hex'])
 
-        # feeRate of 0.1 DASH / KB produces a total fee slightly below -maxtxfee (~0.06650000):
+        # feeRate of 0.1 PIRATE / KB produces a total fee slightly below -maxtxfee (~0.06650000):
         res = self.nodes[1].walletcreatefundedpsbt([{"txid":txid,"vout":p2pkh_pos}], {self.nodes[1].getnewaddress():9.99}, 0, {"feeRate": 0.1, "add_inputs": True}, False)
         assert_approx(res["fee"], 0.04, 0.03)
         decoded_psbt = self.nodes[0].decodepsbt(res['psbt'])
         for psbt_in in decoded_psbt["inputs"]:
             assert "bip32_derivs" not in psbt_in
 
-        # feeRate of 10 DASH / KB produces a total fee well above -maxtxfee
+        # feeRate of 10 PIRATE / KB produces a total fee well above -maxtxfee
         # previously this was silently capped at -maxtxfee
         assert_raises_rpc_error(-4, "Fee exceeds maximum configured by user (e.g. -maxtxfee, maxfeerate)", self.nodes[1].walletcreatefundedpsbt, [{"txid":txid,"vout":p2pkh_pos}], {self.nodes[1].getnewaddress():9.99}, 0, {"feeRate": 10, "add_inputs": True})
         assert_raises_rpc_error(-4, "Fee exceeds maximum configured by user (e.g. -maxtxfee, maxfeerate)", self.nodes[1].walletcreatefundedpsbt, [{"txid":txid,"vout":p2pkh_pos}], {self.nodes[1].getnewaddress():1}, 0, {"feeRate": 10, "add_inputs": True})

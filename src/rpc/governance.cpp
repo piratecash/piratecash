@@ -1060,24 +1060,24 @@ static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         argNames
   //  --------------------- ------------------------  -----------------------  ----------
     /* PirateCash features */
-    { "dash",               "getgovernanceinfo",          &getgovernanceinfo,       {} },
-    { "dash",               "getsuperblockbudget",        &getsuperblockbudget,     {"index"} },
-    { "dash",               "gobject",                    &gobject,                 {"command"} },
-    { "dash",               "gobject", "count",           &gobject_count,           {"mode"} },
-    { "dash",               "gobject", "deserialize",     &gobject_deserialize,     {"hex_data"} },
-    { "dash",               "gobject", "check",           &gobject_check,           {"hex_data"} },
+    { "pirate",             "getgovernanceinfo",          &getgovernanceinfo,       {} },
+    { "pirate",             "getsuperblockbudget",        &getsuperblockbudget,     {"index"} },
+    { "pirate",             "gobject",                    &gobject,                 {"command"} },
+    { "pirate",             "gobject", "count",           &gobject_count,           {"mode"} },
+    { "pirate",             "gobject", "deserialize",     &gobject_deserialize,     {"hex_data"} },
+    { "pirate",             "gobject", "check",           &gobject_check,           {"hex_data"} },
 #ifdef ENABLE_WALLET
-    { "dash",               "gobject", "prepare",         &gobject_prepare,         {"parent-hash", "revision", "time", "data-hex", "use-IS", "outputHash", "outputIndex"} },
-    { "dash",               "gobject", "list-prepared",   &gobject_list_prepared,   {"count"} },
-    { "dash",               "gobject", "vote-many",       &gobject_vote_many,       {"governance-hash", "vote", "vote-outcome"} },
-    { "dash",               "gobject", "vote-alias",      &gobject_vote_alias,      {"governance-hash", "vote", "vote-outcome", "protx-hash"} },
+    { "pirate",             "gobject", "prepare",         &gobject_prepare,         {"parent-hash", "revision", "time", "data-hex", "use-IS", "outputHash", "outputIndex"} },
+    { "pirate",             "gobject", "list-prepared",   &gobject_list_prepared,   {"count"} },
+    { "pirate",             "gobject", "vote-many",       &gobject_vote_many,       {"governance-hash", "vote", "vote-outcome"} },
+    { "pirate",             "gobject", "vote-alias",      &gobject_vote_alias,      {"governance-hash", "vote", "vote-outcome", "protx-hash"} },
 #endif
-    { "dash",               "gobject", "submit",          &gobject_submit,          {"parent-hash", "revision", "time", "data-hex", "fee-txid"} },
-    { "dash",               "gobject", "list",            &gobject_list,            {"signal", "type"} },
-    { "dash",               "gobject", "diff",            &gobject_diff,            {"signal", "type"} },
-    { "dash",               "gobject", "get",             &gobject_get,             {"governance-hash"} },
-    { "dash",               "gobject", "getcurrentvotes", &gobject_getcurrentvotes, {"governance-hash", "txid", "vout"} },
-    { "dash",               "voteraw",                    &voteraw,                 {"mn-collateral-tx-hash","mn-collateral-tx-index","governance-hash","vote-signal","vote-outcome","time","vote-sig"} },
+    { "pirate",             "gobject", "submit",          &gobject_submit,          {"parent-hash", "revision", "time", "data-hex", "fee-txid"} },
+    { "pirate",             "gobject", "list",            &gobject_list,            {"signal", "type"} },
+    { "pirate",             "gobject", "diff",            &gobject_diff,            {"signal", "type"} },
+    { "pirate",             "gobject", "get",             &gobject_get,             {"governance-hash"} },
+    { "pirate",             "gobject", "getcurrentvotes", &gobject_getcurrentvotes, {"governance-hash", "txid", "vout"} },
+    { "pirate",             "voteraw",                    &voteraw,                 {"mn-collateral-tx-hash","mn-collateral-tx-index","governance-hash","vote-signal","vote-outcome","time","vote-sig"} },
 
 };
 // clang-format on

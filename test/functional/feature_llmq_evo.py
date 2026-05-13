@@ -219,7 +219,7 @@ class LLMQEvoNodesTest(DashTestFramework):
         voting_address = self.nodes[0].getnewaddress()
         reward_address = self.nodes[0].getnewaddress()
 
-        collateral_amount = 4000
+        collateral_amount = 40000
         outputs = {collateral_address: collateral_amount, funds_address: 1}
         collateral_txid = self.nodes[0].sendmany("", outputs)
         self.nodes[0].generate(8)

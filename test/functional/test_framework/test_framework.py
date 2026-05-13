@@ -68,7 +68,7 @@ TEST_EXIT_PASSED = 0
 TEST_EXIT_FAILED = 1
 TEST_EXIT_SKIPPED = 77
 
-TMPDIR_PREFIX = "dash_func_test_"
+TMPDIR_PREFIX = "piratecash_func_test_"
 
 class SkipTest(Exception):
     """This exception is raised to skip a test"""
@@ -186,9 +186,9 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         previous_releases_path = os.getenv("PREVIOUS_RELEASES_DIR") or os.getcwd() + "/releases"
         parser = argparse.ArgumentParser(usage="%(prog)s [options]")
         parser.add_argument("--nocleanup", dest="nocleanup", default=False, action="store_true",
-                            help="Leave dashds and test.* datadir on exit or error")
+                            help="Leave piratecashds and test.* datadir on exit or error")
         parser.add_argument("--noshutdown", dest="noshutdown", default=False, action="store_true",
-                            help="Don't stop dashds after the test execution")
+                            help="Don't stop piratecashds after the test execution")
         parser.add_argument("--cachedir", dest="cachedir", default=os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + "/../../cache"),
                             help="Directory for caching pregenerated datadirs (default: %(default)s)")
         parser.add_argument("--tmpdir", dest="tmpdir", help="Root directory for datadirs")
@@ -209,9 +209,9 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         parser.add_argument("--pdbonfailure", dest="pdbonfailure", default=False, action="store_true",
                             help="Attach a python debugger if test fails")
         parser.add_argument("--usecli", dest="usecli", default=False, action="store_true",
-                            help="use dash-cli instead of RPC for all commands")
-        parser.add_argument("--dashd-arg", dest="dashd_extra_args", default=[], action="append",
-                            help="Pass extra args to all dashd instances")
+                            help="use piratecash-cli instead of RPC for all commands")
+        parser.add_argument("--piratecashd-arg", dest="piratecashd_extra_args", default=[], action="append",
+                            help="Pass extra args to all piratecashd instances")
         parser.add_argument("--timeoutscale", dest="timeout_scale", default=1, type=int,
                             help=argparse.SUPPRESS)
         parser.add_argument("--perf", dest="perf", default=False, action="store_true",
@@ -266,17 +266,17 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         fname_bitcoind = os.path.join(
             config["environment"]["BUILDDIR"],
             "src",
-            "dashd" + config["environment"]["EXEEXT"],
+            "piratecashd" + config["environment"]["EXEEXT"],
         )
         fname_bitcoincli = os.path.join(
             config["environment"]["BUILDDIR"],
             "src",
-            "dash-cli" + config["environment"]["EXEEXT"],
+            "piratecash-cli" + config["environment"]["EXEEXT"],
         )
         self.options.bitcoind = os.getenv("BITCOIND", default=fname_bitcoind)
         self.options.bitcoincli = os.getenv("BITCOINCLI", default=fname_bitcoincli)
 
-        self.extra_args_from_options = self.options.dashd_extra_args
+        self.extra_args_from_options = self.options.piratecashd_extra_args
 
         os.environ['PATH'] = os.pathsep.join([
             os.path.join(config['environment']['BUILDDIR'], 'src'),
@@ -341,7 +341,7 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         else:
             for node in self.nodes:
                 node.cleanup_on_exit = False
-            self.log.info("Note: dashds were not stopped and may still be running")
+            self.log.info("Note: piratecashds were not stopped and may still be running")
 
         should_clean_up = (
             not self.options.nocleanup and
@@ -513,9 +513,9 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         if versions is None:
             versions = [None] * num_nodes
         if binary is None:
-            binary = [get_bin_from_version(v, 'dashd', self.options.bitcoind) for v in versions]
+            binary = [get_bin_from_version(v, 'piratecashd', self.options.bitcoind) for v in versions]
         if binary_cli is None:
-            binary_cli = [get_bin_from_version(v, 'dash-cli', self.options.bitcoincli) for v in versions]
+            binary_cli = [get_bin_from_version(v, 'piratecash-cli', self.options.bitcoincli) for v in versions]
         assert_equal(len(extra_confs), num_nodes)
         assert_equal(len(extra_args), num_nodes)
         assert_equal(len(versions), num_nodes)
@@ -619,7 +619,7 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
             chain_name_conf_section = self.chain
             chain_name_conf_arg_value = '1'
 
-        with open(os.path.join(new_data_dir, "dash.conf"), 'w', encoding='utf8') as f:
+        with open(os.path.join(new_data_dir, "piratecash.conf"), 'w', encoding='utf8') as f:
             f.write("{}={}\n".format(chain_name_conf_arg, chain_name_conf_arg_value))
             f.write("[{}]\n".format(chain_name_conf_section))
             f.write("port=" + str(node_p2p_port) + "\n")
@@ -637,7 +637,7 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
             os.makedirs(os.path.join(new_data_dir, 'stdout'), exist_ok=True)
 
     def start_node(self, i, *args, **kwargs):
-        """Start a dashd"""
+        """Start a piratecashd"""
 
         node = self.nodes[i]
 
@@ -648,7 +648,7 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
             coverage.write_all_rpc_commands(self.options.coveragedir, node.rpc)
 
     def start_nodes(self, extra_args=None, *args, **kwargs):
-        """Start multiple dashds"""
+        """Start multiple piratecashds"""
 
         if extra_args is None:
             extra_args = [None] * self.num_nodes
@@ -668,11 +668,11 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
                 coverage.write_all_rpc_commands(self.options.coveragedir, node.rpc)
 
     def stop_node(self, i, expected_stderr='', wait=0):
-        """Stop a dashd test node"""
+        """Stop a piratecashd test node"""
         self.nodes[i].stop_node(expected_stderr=expected_stderr, wait=wait)
 
     def stop_nodes(self, expected_stderr='', wait=0):
-        """Stop multiple dashd test nodes"""
+        """Stop multiple piratecashd test nodes"""
         for node in self.nodes:
             # Issue RPC to stop nodes
             node.stop_node(expected_stderr=expected_stderr, wait=wait, wait_until_stopped=False)
@@ -849,7 +849,7 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         # User can provide log level as a number or string (eg DEBUG). loglevel was caught as a string, so try to convert it to an int
         ll = int(self.options.loglevel) if self.options.loglevel.isdigit() else self.options.loglevel.upper()
         ch.setLevel(ll)
-        # Format logs the same as dashd's debug.log with microprecision (so log files can be concatenated and sorted)
+        # Format logs the same as piratecashd's debug.log with microprecision (so log files can be concatenated and sorted)
         formatter = logging.Formatter(fmt='%(asctime)s.%(msecs)03d000Z %(name)s (%(levelname)s): %(message)s', datefmt='%Y-%m-%dT%H:%M:%S')
         formatter.converter = time.gmtime
         fh.setFormatter(formatter)
@@ -941,7 +941,7 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
             self.log.debug("Copy cache directory {} to node {}".format(cache_node_dir, i))
             to_dir = get_datadir_path(self.options.tmpdir, i)
             shutil.copytree(cache_node_dir, to_dir)
-            initialize_datadir(self.options.tmpdir, i, self.chain)  # Overwrite port/rpcport in dash.conf
+            initialize_datadir(self.options.tmpdir, i, self.chain)  # Overwrite port/rpcport in piratecash.conf
 
     def _initialize_chain_clean(self):
         """Initialize empty blockchain for use by the test.
@@ -959,9 +959,9 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
             raise SkipTest("python3-zmq module not available.")
 
     def skip_if_no_bitcoind_zmq(self):
-        """Skip the running test if dashd has not been compiled with zmq support."""
+        """Skip the running test if piratecashd has not been compiled with zmq support."""
         if not self.is_zmq_compiled():
-            raise SkipTest("dashd has not been built with zmq enabled.")
+            raise SkipTest("piratecashd has not been built with zmq enabled.")
 
     def skip_if_no_wallet(self):
         """Skip the running test if wallet has not been compiled."""
@@ -984,14 +984,14 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
             raise SkipTest("BDB has not been compiled.")
 
     def skip_if_no_wallet_tool(self):
-        """Skip the running test if dash-wallet has not been compiled."""
+        """Skip the running test if piratecash-wallet has not been compiled."""
         if not self.is_wallet_tool_compiled():
-            raise SkipTest("dash-wallet has not been compiled")
+            raise SkipTest("piratecash-wallet has not been compiled")
 
     def skip_if_no_cli(self):
-        """Skip the running test if dash-cli has not been compiled."""
+        """Skip the running test if piratecash-cli has not been compiled."""
         if not self.is_cli_compiled():
-            raise SkipTest("dash-cli has not been compiled.")
+            raise SkipTest("piratecash-cli has not been compiled.")
 
     def skip_if_no_previous_releases(self):
         """Skip the running test if previous releases are not available."""
@@ -1007,7 +1007,7 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         return self.options.prev_releases
 
     def is_cli_compiled(self):
-        """Checks whether dash-cli was compiled."""
+        """Checks whether piratecash-cli was compiled."""
         return self.config["components"].getboolean("ENABLE_CLI")
 
     def is_wallet_compiled(self):
@@ -1015,7 +1015,7 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         return self.config["components"].getboolean("ENABLE_WALLET")
 
     def is_wallet_tool_compiled(self):
-        """Checks whether dash-wallet was compiled."""
+        """Checks whether piratecash-wallet was compiled."""
         return self.config["components"].getboolean("ENABLE_WALLET_TOOL")
 
     def is_zmq_compiled(self):
