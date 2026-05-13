@@ -730,8 +730,14 @@ bool CDeterministicMNManager::BuildNewListFromBlock(const CBlock& block, gsl::no
     const bool isV19Active{DeploymentActiveAfter(pindexPrev, Params().GetConsensus(), Consensus::DEPLOYMENT_V19)};
     const bool isMNRewardReallocation{DeploymentActiveAfter(pindexPrev, Params().GetConsensus(), Consensus::DEPLOYMENT_MN_RR)};
 
+    const bool isProofOfStake = block.IsProofOfStake();
+
     // we skip the coinbase
     for (int i = 1; i < (int)block.vtx.size(); i++) {
+        if (isProofOfStake && i == 1) {
+            // skip coinstake transaction at vtx[1] in PoS blocks
+            continue;
+        }
         const CTransaction& tx = *block.vtx[i];
 
         if (!tx.IsSpecialTxVersion()) {
@@ -926,6 +932,10 @@ bool CDeterministicMNManager::BuildNewListFromBlock(const CBlock& block, gsl::no
 
     // we skip the coinbase
     for (int i = 1; i < (int)block.vtx.size(); i++) {
+        if (isProofOfStake && i == 1) {
+            // skip coinstake transaction at vtx[1] in PoS blocks
+            continue;
+        }
         const CTransaction& tx = *block.vtx[i];
 
         // check if any existing MN collateral is spent by this transaction

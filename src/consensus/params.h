@@ -95,8 +95,6 @@ struct Params {
     /** Block height at which BIP16 becomes active */
     int BIP16Height;
     int nMasternodePaymentsStartBlock;
-    int nMasternodePaymentsIncreaseBlock;
-    int nMasternodePaymentsIncreasePeriod; // in blocks
     int nInstantSendConfirmationsRequired; // in blocks
     int nInstantSendKeepLock; // in blocks
     int nBudgetPaymentsStartBlock;
