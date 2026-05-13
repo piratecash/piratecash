@@ -74,12 +74,12 @@
         <translation>受取アドレス</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>これらは送金するためのあなたの Dash アドレスです。送金する前に常に金額と受取アドレスを確認してください。</translation>
+        <source>These are your PirateCash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>これらは送金するためのあなたの PirateCash アドレスです。送金する前に常に金額と受取アドレスを確認してください。</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>これらは、支払いを受け取るためのお客様のDashアドレスです。受取タブにある「新しい受取アドレスを作成」のボタンを使用し、新しいアドレスを作成します。</translation>
+        <source>These are your PirateCash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <translation>これらは、支払いを受け取るためのお客様のPirateCashアドレスです。受取タブにある「新しい受取アドレスを作成」のボタンを使用し、新しいアドレスを作成します。</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -211,8 +211,8 @@
         <translation>ウォレットの暗号化を確認</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
-        <translation>警告: ウォレットを暗号化しパスフレーズを紛失した場合、あなたは &lt;b&gt;すべてのDash&lt;/b&gt;を失います!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATE&lt;/b&gt;!</source>
+        <translation>警告: ウォレットを暗号化しパスフレーズを紛失した場合、あなたは &lt;b&gt;すべてのPirateCash&lt;/b&gt;を失います!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -302,9 +302,6 @@
     </message>
 </context>
 <context>
-    <name>BitcoinApplication</name>
-    </context>
-<context>
     <name>BitcoinGUI</name>
     <message>
         <source>&amp;Overview</source>
@@ -319,44 +316,16 @@
         <translation>送金 (&amp;S)</translation>
     </message>
     <message>
-        <source>Send coins to a Dash address</source>
-        <translation>Dash アドレスに送金</translation>
+        <source>Send coins to a PirateCash address</source>
+        <translation>PirateCash アドレスに送金</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>受取 (&amp;R)</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
-        <translation>送金を要求 (QRコードとdash:URIを生成)</translation>
-    </message>
-    <message>
-        <source>&amp;Options…</source>
-        <translation>オプション… (&amp;O)</translation>
-    </message>
-    <message>
-        <source>&amp;Encrypt Wallet…</source>
-        <translation>ウォレットの暗号化… (&amp;E)</translation>
-    </message>
-    <message>
-        <source>&amp;Backup Wallet…</source>
-        <translation>ウォレットのバックアップ… (&amp;B)</translation>
-    </message>
-    <message>
-        <source>&amp;Change Passphrase…</source>
-        <translation>パスフレーズの変更… (&amp;C)</translation>
-    </message>
-    <message>
-        <source>&amp;Unlock Wallet…</source>
-        <translation>ウォレットをアンロック…(&amp;U)</translation>
-    </message>
-    <message>
-        <source>Sign &amp;message…</source>
-        <translation>メッセージの署名… (&amp;M)</translation>
-    </message>
-    <message>
-        <source>&amp;Verify message…</source>
-        <translation>メッセージの検証… (&amp;V)</translation>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
+        <translation>送金を要求 (QRコードとpiratecash:URIを生成)</translation>
     </message>
     <message>
         <source>&amp;Sending addresses</source>
@@ -367,16 +336,16 @@
         <translation>アドレスを受信 (&amp;R)</translation>
     </message>
     <message>
-        <source>Open &amp;URI…</source>
-        <translation>URIを開く… (&amp;U)</translation>
-    </message>
-    <message>
         <source>Open Wallet</source>
         <translation>ウォレットを開く</translation>
     </message>
     <message>
         <source>Open a wallet</source>
         <translation>ウォレットを開く</translation>
+    </message>
+    <message>
+        <source>Close Wallet...</source>
+        <translation>ウォレットを閉じる...</translation>
     </message>
     <message>
         <source>Close wallet</source>
@@ -435,12 +404,16 @@
         <translation>Qt についての情報を表示</translation>
     </message>
     <message>
+        <source>&amp;Options...</source>
+        <translation>オプション… (&amp;O)</translation>
+    </message>
+    <message>
         <source>&amp;About %1</source>
         <translation>%1 について (&amp;A)</translation>
     </message>
     <message>
-        <source>Send %1 funds to a Dash address</source>
-        <translation>Dashアドレスに%1の資金を送金します</translation>
+        <source>Send %1 funds to a PirateCash address</source>
+        <translation>PirateCashアドレスに%1の資金を送金します</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -455,16 +428,32 @@
         <translation>メインウインドウを表示または非表示</translation>
     </message>
     <message>
+        <source>&amp;Encrypt Wallet...</source>
+        <translation>ウォレットの暗号化… (&amp;E)</translation>
+    </message>
+    <message>
         <source>Encrypt the private keys that belong to your wallet</source>
         <translation>あなたのウォレットの秘密鍵を暗号化</translation>
+    </message>
+    <message>
+        <source>&amp;Backup Wallet...</source>
+        <translation>ウォレットのバックアップ… (&amp;B)</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
         <translation>ウォレットを他の場所にバックアップ</translation>
     </message>
     <message>
+        <source>&amp;Change Passphrase...</source>
+        <translation>パスフレーズの変更… (&amp;C)</translation>
+    </message>
+    <message>
         <source>Change the passphrase used for wallet encryption</source>
         <translation>ウォレット暗号化のためのパスフレーズを変更</translation>
+    </message>
+    <message>
+        <source>&amp;Unlock Wallet...</source>
+        <translation>ウォレットをアンロック...(&amp;U)</translation>
     </message>
     <message>
         <source>Unlock wallet</source>
@@ -475,12 +464,20 @@
         <translation>ウォレットをロック(&amp;L)</translation>
     </message>
     <message>
-        <source>Sign messages with your Dash addresses to prove you own them</source>
-        <translation>あなたがDash アドレスを所有していることを証明するために、あなたのDashアドレスでメッセージに署名してください。</translation>
+        <source>Sign &amp;message...</source>
+        <translation>メッセージの署名… (&amp;M)</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dash addresses</source>
-        <translation>指定されたDashアドレスで署名されたことを確認するためにメッセージを検証してください。</translation>
+        <source>Sign messages with your PirateCash addresses to prove you own them</source>
+        <translation>あなたがPirateCash アドレスを所有していることを証明するために、あなたのPirateCashアドレスでメッセージに署名してください。</translation>
+    </message>
+    <message>
+        <source>&amp;Verify message...</source>
+        <translation>メッセージの検証… (&amp;V)</translation>
+    </message>
+    <message>
+        <source>Verify messages to ensure they were signed with specified PirateCash addresses</source>
+        <translation>指定されたPirateCashアドレスで署名されたことを確認するためにメッセージを検証してください。</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -543,12 +540,16 @@
         <translation>過去に使用した受取先アドレスとラベルの一覧を表示</translation>
     </message>
     <message>
+        <source>Open &amp;URI...</source>
+        <translation>URIを開く… (&amp;U)</translation>
+    </message>
+    <message>
         <source>&amp;Command-line options</source>
         <translation>コマンドラインオプション (&amp;C)</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Dash command-line options</source>
-        <translation>有効なDashのコマンドラインオプションのリストを見るために %1 のヘルプメッセージを表示</translation>
+        <source>Show the %1 help message to get a list with possible PirateCash command-line options</source>
+        <translation>有効なPirateCashのコマンドラインオプションのリストを見るために %1 のヘルプメッセージを表示</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -574,6 +575,10 @@
     <message>
         <source>Show information about %1</source>
         <translation>%1の情報を表示する</translation>
+    </message>
+    <message>
+        <source>Create Wallet...</source>
+        <translation>ウォレットを作成する...</translation>
     </message>
     <message>
         <source>Create a new wallet</source>
@@ -608,12 +613,36 @@
         <translation>ガバナンス提案を見る</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Dash network</source>
+        <source>%n active connection(s) to PirateCash network</source>
         <translation><numerusform>%n アクティブコネクション</numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
         <translation>ネットワークアクティビティは無効化されました</translation>
+    </message>
+    <message>
+        <source>Syncing Headers (%1%)...</source>
+        <translation>ヘッダーを同期しています (%1%)...</translation>
+    </message>
+    <message>
+        <source>Synchronizing with network...</source>
+        <translation>ネットワークに同期中…</translation>
+    </message>
+    <message>
+        <source>Indexing blocks on disk...</source>
+        <translation>ディスク上のブロックのインデックスを作成中...</translation>
+    </message>
+    <message>
+        <source>Processing blocks on disk...</source>
+        <translation>ディスク上のブロックを処理中...</translation>
+    </message>
+    <message>
+        <source>Reindexing blocks on disk...</source>
+        <translation>ディスク上のブロックのインデックスを再作成中…</translation>
+    </message>
+    <message>
+        <source>Connecting to peers...</source>
+        <translation>ピアに接続中...</translation>
     </message>
     <message numerus="yes">
         <source>Processed %n block(s) of transaction history.</source>
@@ -624,39 +653,7 @@
         <translation>%1 遅延</translation>
     </message>
     <message>
-        <source>Close Wallet…</source>
-        <translation>ウォレットを閉じる…</translation>
-    </message>
-    <message>
-        <source>Create Wallet…</source>
-        <translation>ウォレットを作成する…</translation>
-    </message>
-    <message>
-        <source>Syncing Headers (%1%)…</source>
-        <translation>ヘッダーを同期しています (%1%)…</translation>
-    </message>
-    <message>
-        <source>Synchronizing with network…</source>
-        <translation>ネットワークに同期中…</translation>
-    </message>
-    <message>
-        <source>Indexing blocks on disk…</source>
-        <translation>ディスク上のブロックのインデックスを作成中…</translation>
-    </message>
-    <message>
-        <source>Processing blocks on disk…</source>
-        <translation>ディスク上のブロックを処理中…</translation>
-    </message>
-    <message>
-        <source>Reindexing blocks on disk…</source>
-        <translation>ディスク上のブロックのインデックスを再作成中…</translation>
-    </message>
-    <message>
-        <source>Connecting to peers…</source>
-        <translation>ピアに接続中…</translation>
-    </message>
-    <message>
-        <source>Catching up…</source>
+        <source>Catching up...</source>
         <translation>追跡中…</translation>
     </message>
     <message>
@@ -781,7 +778,7 @@
         <source>Original message:</source>
         <translation>元のメッセージ：</translation>
     </message>
-</context>
+    </context>
 <context>
     <name>CoinControlDialog</name>
     <message>
@@ -976,8 +973,8 @@
 <context>
     <name>CreateWalletActivity</name>
     <message>
-        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;…</source>
-        <translation>ウォレット&lt;b&gt;%1&lt;/b&gt;を作成…</translation>
+        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
+        <translation>ウォレット&lt;b&gt;%1&lt;/b&gt;を作成...</translation>
     </message>
     <message>
         <source>Create wallet failed</source>
@@ -1026,7 +1023,7 @@
         <source>Create</source>
         <translation>作成</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>EditAddressDialog</name>
     <message>
@@ -1062,8 +1059,8 @@
         <translation>送金アドレスを編集</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Dash address.</source>
-        <translation>入力されたアドレス "%1" は有効なDashアドレスではありません。</translation>
+        <source>The entered address "%1" is not a valid PirateCash address.</source>
+        <translation>入力されたアドレス "%1" は有効なPirateCashアドレスではありません。</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -1147,8 +1144,8 @@
         <translation>%1の情報</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Dash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH and 10 DASH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;%1の基本内容&lt;/h3&gt; %1は、お客様の資金の出所を隠すことで、本当の意味での金融プライバシーを提供します。お客様のウォレットにあるすべてのDashは、異なる「入力」で構成されており、別個の独立したコインと考えることができます。&lt;br&gt;%1は、革新的なプロセスによって、お客様のインプットと他の2人以上のインプットをミキシングしますが、お客様のウォレットからコインが出ることはありません。お客様はいつでも自分のお金を管理できます。&lt;hr&gt; &lt;b&gt;%1のプロセスは次のように機能します。&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1は最初に取引の入力を標準的な金額に分解します。0.001 DASH、0.01 DASH、0.1 DASH、1 DASH、10 DASHなど、あなたが毎日使っている紙幣と同じような金額になります。&lt;/li&gt; &lt;li&gt;お客様のウォレットは、ネットワーク上にある「マスターノード」と呼ばれる特別に設定されたソフトウェアノードにリクエストを送ります。このとき、これらのマスタノードには、お客様が特定の金額を混合することに関心があると伝えられます。個人を特定できるような情報はマスタノードに送られないため、お客様が「誰」であるか知られることはありません。&lt;/li&gt; &lt;li&gt;他の2人以上の人物が同じようなメッセージを送り、同じ金額のミキシングを希望すると、ミキシングセッションが開始されます。マスターノードは入力をミキシングし、3人のユーザー全員のウォレットに、その時点で変換された入力を3人全員に支払うように指示します。お客様のウォレットは、その金額をウォレット自体に直接支払いますが、別のアドレス（変更アドレスと呼ぶ）になります。&lt;/li&gt; &lt;li&gt;お客様の資金を完全に隠すために、お客様のウォレットではこのプロセスを各金額で何度も繰り返される必要があります。このプロセスが完了する度に、「ラウンド」と呼ばれます。%1の各ラウンドは、お客様の資金が発生した場所を判断するのを指数関数的に難しくします。&lt;/li&gt; &lt;li&gt;このミキシングプロセスはバックグラウンドで行われ、お客様側の介入は一切ありません。お客様が取引をしたいときは、お客様の資金はすでにミキシングされています。さらに待つ必要はありません。&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;重要事項：&lt;/b&gt; お客様のウォレットには、この「変更アドレス」が1000個しか入っていません。ミキシング作業が発生する度に、お客様のアドレスのうち最大9個が使用されます。したがって、この1000個のアドレスは、約100回までのミキシング作業に使えるということです。そのうち900個を使い切ると、お客様はご自身のウォレットにさらにアドレスを作成する必要があります。ただし、これは自動バックアップを有効にしている場合に限ります。&lt;br&gt;そのため、バックアップを無効にしているユーザーは、%1も無効になります。&lt;hr&gt;詳細は、&lt;a style="%2" href="%3"&gt;%1のドキュメント&lt;/a&gt;を参照してください。</translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE and 10 PIRATE -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;%1の基本内容&lt;/h3&gt; %1は、お客様の資金の出所を隠すことで、本当の意味での金融プライバシーを提供します。お客様のウォレットにあるすべてのPirateCashは、異なる「入力」で構成されており、別個の独立したコインと考えることができます。&lt;br&gt;%1は、革新的なプロセスによって、お客様のインプットと他の2人以上のインプットをミキシングしますが、お客様のウォレットからコインが出ることはありません。お客様はいつでも自分のお金を管理できます。&lt;hr&gt; &lt;b&gt;%1のプロセスは次のように機能します。&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1は最初に取引の入力を標準的な金額に分解します。0.001 PIRATE、0.01 PIRATE、0.1 PIRATE、1 PIRATE、10 PIRATEなど、あなたが毎日使っている紙幣と同じような金額になります。&lt;/li&gt; &lt;li&gt;お客様のウォレットは、ネットワーク上にある「マスターノード」と呼ばれる特別に設定されたソフトウェアノードにリクエストを送ります。このとき、これらのマスタノードには、お客様が特定の金額を混合することに関心があると伝えられます。個人を特定できるような情報はマスタノードに送られないため、お客様が「誰」であるか知られることはありません。&lt;/li&gt; &lt;li&gt;他の2人以上の人物が同じようなメッセージを送り、同じ金額のミキシングを希望すると、ミキシングセッションが開始されます。マスターノードは入力をミキシングし、3人のユーザー全員のウォレットに、その時点で変換された入力を3人全員に支払うように指示します。お客様のウォレットは、その金額をウォレット自体に直接支払いますが、別のアドレス（変更アドレスと呼ぶ）になります。&lt;/li&gt; &lt;li&gt;お客様の資金を完全に隠すために、お客様のウォレットではこのプロセスを各金額で何度も繰り返される必要があります。このプロセスが完了する度に、「ラウンド」と呼ばれます。%1の各ラウンドは、お客様の資金が発生した場所を判断するのを指数関数的に難しくします。&lt;/li&gt; &lt;li&gt;このミキシングプロセスはバックグラウンドで行われ、お客様側の介入は一切ありません。お客様が取引をしたいときは、お客様の資金はすでにミキシングされています。さらに待つ必要はありません。&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;重要事項：&lt;/b&gt; お客様のウォレットには、この「変更アドレス」が1000個しか入っていません。ミキシング作業が発生する度に、お客様のアドレスのうち最大9個が使用されます。したがって、この1000個のアドレスは、約100回までのミキシング作業に使えるということです。そのうち900個を使い切ると、お客様はご自身のウォレットにさらにアドレスを作成する必要があります。ただし、これは自動バックアップを有効にしている場合に限ります。&lt;br&gt;そのため、バックアップを無効にしているユーザーは、%1も無効になります。&lt;hr&gt;詳細は、&lt;a style="%2" href="%3"&gt;%1のドキュメント&lt;/a&gt;を参照してください。</translation>
     </message>
 </context>
 <context>
@@ -1165,6 +1162,10 @@
     <message>
         <source>As this is the first time the program is launched, you can choose where %1 will store its data.</source>
         <translation>これは本プログラムの最初の起動です。%1 がデータを保存する場所を選択して下さい。</translation>
+    </message>
+    <message>
+        <source>When you click OK, %1 will begin to download and process the full %4 block chain (%2GB) starting with the earliest transactions in %3 when %4 initially launched.</source>
+        <translation>OKをクリックすると、%1は完全な%4ブロックチェーン (%2GB) のダウンロードおよび処理を%4が開始された時点の%3から開始します。</translation>
     </message>
     <message>
         <source>This initial synchronisation is very demanding, and may expose hardware problems with your computer that had previously gone unnoticed. Each time you run %1, it will continue downloading where it left off.</source>
@@ -1191,8 +1192,8 @@
         <translation>おおむね%1GBのデータがこのディレクトリに保存されます。</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Dash block chain.</source>
-        <translation>%1はDashのブロックチェーンの複製をダウンロードし保存します。</translation>
+        <source>%1 will download and store a copy of the PirateCash block chain.</source>
+        <translation>%1はPirateCashのブロックチェーンの複製をダウンロードし保存します。</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1286,12 +1287,8 @@
         <translation>担保のアウトポイントをコピー</translation>
     </message>
     <message>
-        <source>Please wait…</source>
-        <translation>お待ちください…</translation>
-    </message>
-    <message>
-        <source>Updating…</source>
-        <translation>更新中…</translation>
+        <source>Updating...</source>
+        <translation>更新中...</translation>
     </message>
     <message>
         <source>ENABLED</source>
@@ -1326,6 +1323,10 @@
         <translation>プロパティでのフィルタリング（例：アドレスやProTxハッシュなど）</translation>
     </message>
     <message>
+        <source>Please wait...</source>
+        <translation>お待ちください...</translation>
+    </message>
+    <message>
         <source>Additional information for DIP3 Masternode %1</source>
         <translation>DIP3のマスターノード%1の追加情報</translation>
     </message>
@@ -1337,24 +1338,20 @@
         <translation>フォーム</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
-        <translation>確認できない最新のトランザクションがあるかもしれません。これによりウォレットの残高は不正確なものである可能性があります。この情報はウォレットが一度Dashのネットワークへの同期が完了すると正確なものとなります。詳細は下記を参照してください。</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the PirateCash network, as detailed below.</source>
+        <translation>確認できない最新のトランザクションがあるかもしれません。これによりウォレットの残高は不正確なものである可能性があります。この情報はウォレットが一度PirateCashのネットワークへの同期が完了すると正確なものとなります。詳細は下記を参照してください。</translation>
     </message>
     <message>
-        <source>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>表示されてないトランザクションに影響を受けたDashを使用しようとするとネットワークに承認されません。</translation>
+        <source>Attempting to spend PirateCash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>表示されてないトランザクションに影響を受けたPirateCashを使用しようとするとネットワークに承認されません。</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
         <translation>残りのブロック数</translation>
     </message>
     <message>
-        <source>Unknown…</source>
-        <translation>不明…</translation>
-    </message>
-    <message>
-        <source>calculating…</source>
-        <translation>計算中…</translation>
+        <source>Unknown...</source>
+        <translation>不明...</translation>
     </message>
     <message>
         <source>Last block time</source>
@@ -1369,6 +1366,10 @@
         <translation>一時間毎の進捗の変化</translation>
     </message>
     <message>
+        <source>calculating...</source>
+        <translation>計算中...</translation>
+    </message>
+    <message>
         <source>Estimated time left until synced</source>
         <translation>同期が完了するまでの推定残り時間</translation>
     </message>
@@ -1377,8 +1378,8 @@
         <translation>非表示</translation>
     </message>
     <message>
-        <source>Unknown. Syncing Headers (%1, %2%)…</source>
-        <translation>不明。ヘッダー(%1、%2%)を同期中…</translation>
+        <source>Unknown. Syncing Headers (%1, %2%)...</source>
+        <translation>不明。ヘッダー(%1、%2%)を同期中...</translation>
     </message>
 </context>
 <context>
@@ -1407,8 +1408,8 @@
         <translation>デフォルトのウォレット</translation>
     </message>
     <message>
-        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;…</source>
-        <translation>&lt;b&gt;%1&lt;/b&gt;のウォレットを開封中…</translation>
+        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
+        <translation>&lt;b&gt;%1&lt;/b&gt;のウォレットを開封中...</translation>
     </message>
 </context>
 <context>
@@ -1526,8 +1527,8 @@
         <translation>対象残高</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>自動的にルーターのDash Core クライアントポートを開放します。これはルーターがUPnP機能をサポートしておりUPnP機能が有効な場合にのみ機能します。</translation>
+        <source>Automatically open the PirateCash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>自動的にルーターのPirateCash Core クライアントポートを開放します。これはルーターがUPnP機能をサポートしておりUPnP機能が有効な場合にのみ機能します。</translation>
     </message>
     <message>
         <source>Map port using NA&amp;T-PMP</source>
@@ -1542,8 +1543,8 @@
         <translation>受信接続を許可する</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a SOCKS5 proxy.</source>
-        <translation>SOCKS5プロキシ経由でDashネットワークに接続します。</translation>
+        <source>Connect to the PirateCash network through a SOCKS5 proxy.</source>
+        <translation>SOCKS5プロキシ経由でPirateCashネットワークに接続します。</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1556,6 +1557,14 @@
     <message>
         <source>Options set in this dialog are overridden by the command line or in the configuration file:</source>
         <translation>このダイアログで設定されたオプションは、コマンドラインまたは設定ファイルによって上書きされます。</translation>
+    </message>
+    <message>
+        <source>Hide the icon from the system tray.</source>
+        <translation>システムトレイからアイコンを非表示にします。</translation>
+    </message>
+    <message>
+        <source>&amp;Hide tray icon</source>
+        <translation>トレイアイコンを非表示にする(&amp;H)</translation>
     </message>
     <message>
         <source>Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Exit in the menu.</source>
@@ -1662,6 +1671,12 @@
         <translation>ここでユーザーインターフェースの言語を設定できます。設定を反映するには %1 を再起動します。</translation>
     </message>
     <message>
+        <source>Language missing or translation incomplete? Help contributing translations here:
+https://www.transifex.com/projects/p/piratecash/</source>
+        <translation>希望の言語がない場合または翻訳に問題がある場合はこちらで翻訳にご協力ください。:
+https://www.transifex.com/projects/p/piratecash/</translation>
+    </message>
+    <message>
         <source>&amp;Unit to show amounts in:</source>
         <translation>表示する単位 ：(&amp;U)</translation>
     </message>
@@ -1725,8 +1740,8 @@
         <translation>フォーム</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Dash network after a connection is established, but this process has not completed yet.</source>
-        <translation>表示された情報は古いかもしれません。接続が確立されればあなたのウォレットは Dashネットワークと自動的に同期しますが、このプロセスはまだ完了していません。</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
+        <translation>表示された情報は古いかもしれません。接続が確立されればあなたのウォレットは PirateCashネットワークと自動的に同期しますが、このプロセスはまだ完了していません。</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -1805,8 +1820,8 @@
         <translation>金額とラウンド</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
-        <translation>0 DASH / 0 ラウンド</translation>
+        <source>0 PIRATE / 0 Rounds</source>
+        <translation>0 PIRATE / 0 ラウンド</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -1951,20 +1966,24 @@
         <translation>支払いリクエストのエラー</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
-        <translation>Dash を起動できません: click-to-pay ハンドラー</translation>
+        <source>Cannot start piratecash: click-to-pay handler</source>
+        <translation>PirateCash を起動できません: click-to-pay ハンドラー</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>URI のハンドリング</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>「dash://」は有効なURIではありません。代わりに「dash:」を使ってください。</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>「piratecash://」は有効なURIではありません。代わりに「piratecash:」を使ってください。</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Dash address or malformed URI parameters.</source>
-        <translation>URI を解析できません! これは無効な Dash アドレスあるいは不正な形式の URI パラメーターによって引き起こされた可能性があります。</translation>
+        <source>Invalid payment address %1</source>
+        <translation>支払いのアドレス　%1　は無効です</translation>
+    </message>
+    <message>
+        <source>URI cannot be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
+        <translation>URI を解析できません! これは無効な PirateCash アドレスあるいは不正な形式の URI パラメーターによって引き起こされた可能性があります。</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -1975,22 +1994,18 @@
     <name>PeerTableModel</name>
     <message>
         <source>User Agent</source>
-        <extracomment>Title of Peers Table column which contains the peer's User Agent string.</extracomment>
         <translation>ユーザーエージェント</translation>
     </message>
     <message>
         <source>Ping</source>
-        <extracomment>Title of Peers Table column which indicates the current latency of the connection with the peer.</extracomment>
         <translation>Ping</translation>
     </message>
     <message>
         <source>Sent</source>
-        <extracomment>Title of Peers Table column which indicates the total amount of network information we have sent to the peer.</extracomment>
         <translation>送金しました</translation>
     </message>
     <message>
         <source>Received</source>
-        <extracomment>Title of Peers Table column which indicates the total amount of network information we have received from the peer.</extracomment>
         <translation>受け取りました</translation>
     </message>
     </context>
@@ -2123,7 +2138,7 @@
         <translation>エラー：%1のCSSファイルが-custom-css-dirパスにありません。</translation>
     </message>
     <message>
-        <source>%1 didn't yet exit safely…</source>
+        <source>%1 didn't yet exit safely...</source>
         <translation>%1 はまだ安全に終了していません</translation>
     </message>
     <message>
@@ -2131,8 +2146,8 @@
         <translation>総額</translation>
     </message>
     <message>
-        <source>Enter a Dash address (e.g. %1)</source>
-        <translation>Dashアドレスを入力してください (例 %1)</translation>
+        <source>Enter a PirateCash address (e.g. %1)</source>
+        <translation>PirateCashアドレスを入力してください (例 %1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
@@ -2234,14 +2249,14 @@
         <translation>QRコード</translation>
     </message>
     <message>
-        <source>&amp;Save Image…</source>
-        <translation>画像を保存…(&amp;S)</translation>
+        <source>&amp;Save Image...</source>
+        <translation>画像を保存...(&amp;S)</translation>
     </message>
 </context>
 <context>
     <name>QRImageWidget</name>
     <message>
-        <source>&amp;Save Image…</source>
+        <source>&amp;Save Image...</source>
         <translation>画像を保存… (&amp;S)</translation>
     </message>
     <message>
@@ -2368,6 +2383,10 @@
         <translation>詳細を確認したいピアを選択してください。</translation>
     </message>
     <message>
+        <source>Direction</source>
+        <translation>ディレクション</translation>
+    </message>
+    <message>
         <source>Version</source>
         <translation>バージョン</translation>
     </message>
@@ -2474,6 +2493,10 @@
     <message>
         <source>Services</source>
         <translation>サービス</translation>
+    </message>
+    <message>
+        <source>Ban Score</source>
+        <translation>Banスコア</translation>
     </message>
     <message>
         <source>Connection Time</source>
@@ -2600,6 +2623,18 @@
         <translation>%1経由</translation>
     </message>
     <message>
+        <source>never</source>
+        <translation>一度もなし</translation>
+    </message>
+    <message>
+        <source>Inbound</source>
+        <translation>インバウンド</translation>
+    </message>
+    <message>
+        <source>Outbound</source>
+        <translation>アウトバウンド</translation>
+    </message>
+    <message>
         <source>Regular</source>
         <translation>通常</translation>
     </message>
@@ -2615,12 +2650,12 @@
         <source>Unknown</source>
         <translation>不明</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>支払いリクエストが開始された時に表示される、支払いリクエストに添付される任意のメッセージです。注意：このメッセージはDashネットワークを通じて支払いと共に送信されるわけではありません。</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>支払いリクエストが開始された時に表示される、支払いリクエストに添付される任意のメッセージです。注意：このメッセージはPirateCashネットワークを通じて支払いと共に送信されるわけではありません。</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -2631,8 +2666,8 @@
         <translation>新しい受け取り用アドレスに紐づく任意のラベル。</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>支払いリクエストが開始された時に表示される、支払いリクエストに添付される任意のメッセージです。注意：このメッセージはDashネットワークを通じて支払いと共に送信されるわけではありません。</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>支払いリクエストが開始された時に表示される、支払いリクエストに添付される任意のメッセージです。注意：このメッセージはPirateCashネットワークを通じて支払いと共に送信されるわけではありません。</translation>
     </message>
     <message>
         <source>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</source>
@@ -2710,7 +2745,7 @@
         <source>Copy amount</source>
         <translation>総額のコピー</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>ReceiveRequestDialog</name>
     <message>
@@ -2722,7 +2757,7 @@
         <translation>アドレスをコピー(&amp;A)</translation>
     </message>
     <message>
-        <source>&amp;Save Image…</source>
+        <source>&amp;Save Image...</source>
         <translation>画像を保存… (&amp;S)</translation>
     </message>
     <message>
@@ -2776,6 +2811,10 @@
         <translation>コインコントロール機能</translation>
     </message>
     <message>
+        <source>Inputs...</source>
+        <translation>インプット…</translation>
+    </message>
+    <message>
         <source>automatically selected</source>
         <translation>自動選択</translation>
     </message>
@@ -2804,10 +2843,6 @@
         <translation>ダスト：</translation>
     </message>
     <message>
-        <source>Inputs…</source>
-        <translation>インプット…</translation>
-    </message>
-    <message>
         <source>After Fee:</source>
         <translation>手数料差引後：</translation>
     </message>
@@ -2828,16 +2863,16 @@
         <translation>トランザクション手数料：</translation>
     </message>
     <message>
-        <source>(Smart fee not initialized yet. This usually takes a few blocks…)</source>
-        <translation>（スマート手数料はまだ初期化されていません。これには約数ブロックほどかかります…）</translation>
+        <source>Choose...</source>
+        <translation>選択…</translation>
     </message>
     <message>
         <source>Confirmation time target:</source>
         <translation>検証時間ターゲット:</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
-        <translation>カスタマイズされた手数料が1000duffsに設定され、トランザクションが250 bytesしかなかった場合、キロバイトあたりでは250 duffsしか手数料を支払いませんが&lt;br /&gt;最低でも1000 duffs支払います。1キロバイト以上のトランザクションに対しては、1キロバイトあたり1000duffs支払います。</translation>
+        <source>If the custom fee is set to 1000 units and the transaction is only 250 bytes, then "per kilobyte" only pays 250 units in fee,&lt;br /&gt;while "at least" pays 1000 units. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <translation>カスタマイズされた手数料が1000unitsに設定され、トランザクションが250 bytesしかなかった場合、キロバイトあたりでは250 unitsしか手数料を支払いませんが&lt;br /&gt;最低でも1000 units支払います。1キロバイト以上のトランザクションに対しては、1キロバイトあたり1000units支払います。</translation>
     </message>
     <message>
         <source>per kilobyte</source>
@@ -2846,10 +2881,6 @@
     <message>
         <source>Using the fallbackfee can result in sending a transaction that will take several hours or days (or never) to confirm. Consider choosing your fee manually or wait until you have validated the complete chain.</source>
         <translation>フォールバックフィーを使用すると、承認に数時間から数日かかる（あるいは承認されない）トランザクションが送信される可能性があります。手数料を手動で選択するか、ブロックチェーン全体の検証が完了するまで待ってください。</translation>
-    </message>
-    <message>
-        <source>Choose…</source>
-        <translation>選択…</translation>
     </message>
     <message>
         <source>Note: Not enough data for fee estimation, using the fallback fee instead.</source>
@@ -2870,6 +2901,10 @@
     <message>
         <source>Custom:</source>
         <translation>カスタム：</translation>
+    </message>
+    <message>
+        <source>(Smart fee not initialized yet. This usually takes a few blocks...)</source>
+        <translation>（スマート手数料はまだ初期化されていません。これには約数ブロックほどかかります…）</translation>
     </message>
     <message>
         <source>Confirm the send action</source>
@@ -3036,8 +3071,8 @@
         <translation><numerusform>%n ブロック以内に検証が開始されると予想されます</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Dash address</source>
-        <translation>警告：Dashアドレスが無効です</translation>
+        <source>Warning: Invalid PirateCash address</source>
+        <translation>警告：PirateCashアドレスが無効です</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -3063,8 +3098,8 @@
         <translation>送り先: (&amp;T)</translation>
     </message>
     <message>
-        <source>The Dash address to send the payment to</source>
-        <translation>送金先Dashアドレス</translation>
+        <source>The PirateCash address to send the payment to</source>
+        <translation>送金先PirateCashアドレス</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3103,8 +3138,8 @@
         <translation>選択した単位で送金する金額</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>手数料は総額から差し引かれます。受取人は入力した金額より少ないDashを受け取ります。複数の受取人を選択した場合、手数料は等しく分割されます。</translation>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PirateCash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <translation>手数料は総額から差し引かれます。受取人は入力した金額より少ないPirateCashを受け取ります。複数の受取人を選択した場合、手数料は等しく分割されます。</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -3119,8 +3154,8 @@
         <translation>メッセージ：</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Dash network.</source>
-        <translation>Dash: URIに添付されていたメッセージです。これは参照用としてトランザクションとともに保存されます。注意：このメッセージはDashネットワークを経由して送信されるわけではありません。</translation>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <translation>PirateCash: URIに添付されていたメッセージです。これは参照用としてトランザクションとともに保存されます。注意：このメッセージはPirateCashネットワークを経由して送信されるわけではありません。</translation>
     </message>
     <message>
         <source>This is an unauthenticated payment request.</source>
@@ -3142,8 +3177,8 @@
 <context>
     <name>ShutdownWindow</name>
     <message>
-        <source>%1 is shutting down…</source>
-        <translation>%1 をシャットダウンしています…</translation>
+        <source>%1 is shutting down...</source>
+        <translation>%1 をシャットダウンしています...</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
@@ -3161,12 +3196,12 @@
         <translation>メッセージの署名 (&amp;S)</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Dash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>あなたのアドレスを使用してあなたがDashを受け取ることができるようにメッセージやアグリーメントに署名できます。充分に詳細が判明していてあなたが確認しているものだけに署名してください。フィッシングによってあなたの署名を読み取られないように注意してください。</translation>
+        <source>You can sign messages/agreements with your addresses to prove you can receive PirateCash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <translation>あなたのアドレスを使用してあなたがPirateCashを受け取ることができるようにメッセージやアグリーメントに署名できます。充分に詳細が判明していてあなたが確認しているものだけに署名してください。フィッシングによってあなたの署名を読み取られないように注意してください。</translation>
     </message>
     <message>
-        <source>The Dash address to sign the message with</source>
-        <translation>メッセージを署名する際に使用するDashアドレス</translation>
+        <source>The PirateCash address to sign the message with</source>
+        <translation>メッセージを署名する際に使用するPirateCashアドレス</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3197,8 +3232,8 @@
         <translation>現在の署名をシステムのクリップボードにコピー</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Dash address</source>
-        <translation>この Dash アドレスを所有していることを証明するためにメッセージに署名</translation>
+        <source>Sign the message to prove you own this PirateCash address</source>
+        <translation>この PirateCash アドレスを所有していることを証明するためにメッセージに署名</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -3221,8 +3256,8 @@
         <translation>受取人のアドレスとメッセージ（改行やスペース、タブなども完全に一致するよう注意してください）および署名を以下に入力し、メッセージを検証してください。中間者攻撃により騙されるのを防ぐため、署名対象のメッセージに書かれていること以上の意味を署名から読み取ろうとしないよう注意してください。これは署名作成者がこのアドレスで受け取ることを証明するだけであり、トランザクションの送信者を証明するものではないことに注意してください！</translation>
     </message>
     <message>
-        <source>The Dash address the message was signed with</source>
-        <translation>メッセージの署名に使用されたDashアドレス</translation>
+        <source>The PirateCash address the message was signed with</source>
+        <translation>メッセージの署名に使用されたPirateCashアドレス</translation>
     </message>
     <message>
         <source>The signed message to verify</source>
@@ -3233,8 +3268,8 @@
         <translation>メッセージの署名時に付与された署名</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Dash address</source>
-        <translation>指定されたDashアドレスで署名されたことを確認するためメッセージを検証</translation>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
+        <translation>指定されたPirateCashアドレスで署名されたことを確認するためメッセージを検証</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -3672,7 +3707,7 @@
         <translation>今年</translation>
     </message>
     <message>
-        <source>Range…</source>
+        <source>Range...</source>
         <translation>期間…</translation>
     </message>
     <message>
@@ -3904,7 +3939,7 @@
     </message>
 </context>
 <context>
-    <name>dash-core</name>
+    <name>piratecash-core</name>
     <message>
         <source>Error: Listening for incoming connections failed (listen returned error %s)</source>
         <translation>エラー： 受信中の接続をリッスンするのに失敗しました (エラー %s )</translation>
@@ -4010,6 +4045,14 @@
         <translation>充分なユーザーを発見しました、サインしています ( 待機中 %s )</translation>
     </message>
     <message>
+        <source>Found enough users, signing ...</source>
+        <translation>充分なユーザーを発見しました、サインしています </translation>
+    </message>
+    <message>
+        <source>Importing...</source>
+        <translation>インポートしています…</translation>
+    </message>
+    <message>
         <source>Incompatible mode.</source>
         <translation>非互換性モード</translation>
     </message>
@@ -4042,8 +4085,16 @@
         <translation>-minsporkkeysで指定されたスポーク署名者の最小数が無効です</translation>
     </message>
     <message>
+        <source>Loading banlist...</source>
+        <translation>banリストを読み込んでいます...</translation>
+    </message>
+    <message>
         <source>Lock is already in place.</source>
         <translation>すでにロックされています</translation>
+    </message>
+    <message>
+        <source>Mixing in progress...</source>
+        <translation>ミキシング中...</translation>
     </message>
     <message>
         <source>Need to specify a port with -whitebind: '%s'</source>
@@ -4066,36 +4117,12 @@
         <translation>マスターノードリストにありません</translation>
     </message>
     <message>
-        <source>Pruning blockstore…</source>
-        <translation>ブロックストアを剪定しています…</translation>
-    </message>
-    <message>
-        <source>Replaying blocks…</source>
-        <translation>ブロックをリプレイ中…</translation>
-    </message>
-    <message>
-        <source>Rescanning…</source>
-        <translation>再スキャン中…</translation>
-    </message>
-    <message>
-        <source>Starting network threads…</source>
-        <translation>ネットワークのスレッドを起動しています…</translation>
-    </message>
-    <message>
         <source>Submitted to masternode, waiting in queue %s</source>
         <translation>マスターノードにサブミット、待機中 %s</translation>
     </message>
     <message>
         <source>Synchronization finished</source>
         <translation>同期完了</translation>
-    </message>
-    <message>
-        <source>Synchronizing blockchain…</source>
-        <translation>ブロックチェーンの同期中…</translation>
-    </message>
-    <message>
-        <source>Synchronizing governance objects…</source>
-        <translation>ガバナンスオブジェクトを同期中…</translation>
     </message>
     <message>
         <source>Unable to start HTTP server. See debug log for details.</source>
@@ -4108,6 +4135,14 @@
     <message>
         <source>User Agent comment (%s) contains unsafe characters.</source>
         <translation>ユーザーエージェントのコメント (%s) には安全でない文字が含まれています。</translation>
+    </message>
+    <message>
+        <source>Verifying wallet(s)...</source>
+        <translation>ウォレットを検証中…</translation>
+    </message>
+    <message>
+        <source>Will retry...</source>
+        <translation>再試行...</translation>
     </message>
     <message>
         <source>Can't find random Masternode.</source>
@@ -4226,6 +4261,10 @@
         <translation>エラー：%sのディスク容量が不足しています</translation>
     </message>
     <message>
+        <source>Error: failed to add socket to epollfd (epoll_ctl returned error %s)</source>
+        <translation>エラー：epollfdへのソケットの追加に失敗しました（epoll_ctlは、%sのエラーを返しました）</translation>
+    </message>
+    <message>
         <source>Exceeded max tries.</source>
         <translation>最大試行回数を超えました。</translation>
     </message>
@@ -4250,10 +4289,6 @@
         <translation>初期化中にウォレットの再スキャンに失敗しました</translation>
     </message>
     <message>
-        <source>Found enough users, signing…</source>
-        <translation>充分なユーザーを発見しました、サインしています </translation>
-    </message>
-    <message>
         <source>Invalid P2P permission: '%s'</source>
         <translation>無効なP2P許可：「%s」</translation>
     </message>
@@ -4266,6 +4301,14 @@
         <translation>マスターノードBLS秘密鍵が無効です。ドキュメントをお読み下さい。</translation>
     </message>
     <message>
+        <source>Loading block index...</source>
+        <translation>ブロックインデックスを読み込んでいます…</translation>
+    </message>
+    <message>
+        <source>Loading wallet...</source>
+        <translation>ウォレットを読み込んでいます…</translation>
+    </message>
+    <message>
         <source>Masternode queue is full.</source>
         <translation>マスターノードキューがいっぱいです</translation>
     </message>
@@ -4276,10 +4319,6 @@
     <message>
         <source>Missing input transaction information.</source>
         <translation>不明なインプットトランザクション情報</translation>
-    </message>
-    <message>
-        <source>Mixing in progress…</source>
-        <translation>ミキシング中…</translation>
     </message>
     <message>
         <source>No errors detected.</source>
@@ -4310,6 +4349,10 @@
         <translation>剪定モードは-txindexと互換性がありません。</translation>
     </message>
     <message>
+        <source>Pruning blockstore...</source>
+        <translation>ブロックストアを剪定しています…</translation>
+    </message>
+    <message>
         <source>Section [%s] is not recognized.</source>
         <translation>[%s]のセクションは認識されません。</translation>
     </message>
@@ -4324,6 +4367,10 @@
     <message>
         <source>Specified -walletdir "%s" is not a directory</source>
         <translation>指定された-walletdirの「%s」はディレクトリではありません</translation>
+    </message>
+    <message>
+        <source>Synchronizing blockchain...</source>
+        <translation>ブロックチェーンの同期中…</translation>
     </message>
     <message>
         <source>The wallet will avoid paying less than the minimum relay fee.</source>
@@ -4358,6 +4405,10 @@
         <translation>トランザクション量が大きすぎます。</translation>
     </message>
     <message>
+        <source>Trying to connect...</source>
+        <translation>接続中です...</translation>
+    </message>
+    <message>
         <source>Unable to bind to %s on this computer. %s is probably already running.</source>
         <translation>このコンピュータの %s にバインドすることができません。おそらく %s は既に実行されています。</translation>
     </message>
@@ -4376,14 +4427,6 @@
     <message>
         <source>Upgrading UTXO database</source>
         <translation>UTXOデータベースを更新しています</translation>
-    </message>
-    <message>
-        <source>Verifying blocks…</source>
-        <translation>ブロックの検証中…</translation>
-    </message>
-    <message>
-        <source>Verifying wallet(s)…</source>
-        <translation>ウォレットを検証中…</translation>
     </message>
     <message>
         <source>Wallet needed to be rewritten: restart %s to complete</source>
@@ -4534,20 +4577,8 @@
         <translation>チェーンステートデータベースのアップグレードエラー</translation>
     </message>
     <message>
-        <source>Loading P2P addresses…</source>
-        <translation>P2Pアドレスを読み込んでいます…</translation>
-    </message>
-    <message>
-        <source>Loading banlist…</source>
-        <translation>banリストを読み込んでいます…</translation>
-    </message>
-    <message>
-        <source>Loading block index…</source>
-        <translation>ブロックインデックスを読み込んでいます…</translation>
-    </message>
-    <message>
-        <source>Loading wallet…</source>
-        <translation>ウォレットを読み込んでいます…</translation>
+        <source>Error: failed to add socket to kqueuefd (kevent returned error %s)</source>
+        <translation>エラー：kqueuefdへのソケットの追加に失敗しました (keventが、%sのエラーを返しました）</translation>
     </message>
     <message>
         <source>Failed to clear fulfilled requests cache at %s</source>
@@ -4586,10 +4617,6 @@
         <translation>新しいミキシングキューの開始に失敗</translation>
     </message>
     <message>
-        <source>Importing…</source>
-        <translation>インポートしています…</translation>
-    </message>
-    <message>
         <source>Incorrect -rescan mode, falling back to default value</source>
         <translation>再スキャンモードが正しくないため、デフォルト値に戻ります</translation>
     </message>
@@ -4618,8 +4645,20 @@
         <translation>-sporkaddrに指定された無効なスポークアドレスI</translation>
     </message>
     <message>
+        <source>Loading P2P addresses...</source>
+        <translation>P2Pアドレスを読み込んでいます...</translation>
+    </message>
+    <message>
         <source>Reducing -maxconnections from %d to %d, because of system limitations.</source>
         <translation>システム上の制約から、-maxconnections を %d から %d に削減します。</translation>
+    </message>
+    <message>
+        <source>Replaying blocks...</source>
+        <translation>ブロックをリプレイ中…</translation>
+    </message>
+    <message>
+        <source>Rescanning...</source>
+        <translation>再スキャン中…</translation>
     </message>
     <message>
         <source>Session not complete!</source>
@@ -4642,12 +4681,20 @@
         <translation>直近のキューがかなり最近に作成されました。</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup.</source>
-        <translation>%sが破損しています。ウォレットツールのdash-walletを使用してサルベージするか、バックアップを復元してみてください。</translation>
+        <source>%s corrupt. Try using the wallet tool piratecash-wallet to salvage or restoring a backup.</source>
+        <translation>%sが破損しています。ウォレットツールのpiratecash-walletを使用してサルベージするか、バックアップを復元してみてください。</translation>
     </message>
     <message>
         <source>Last successful action was too recent.</source>
         <translation>直近の成功したアクションが最新過ぎでした。</translation>
+    </message>
+    <message>
+        <source>Starting network threads...</source>
+        <translation>ネットワークのスレッドを起動しています...</translation>
+    </message>
+    <message>
+        <source>Synchronizing governance objects...</source>
+        <translation>ガバナンスオブジェクトを同期中...</translation>
     </message>
     <message>
         <source>The source code is available from %s.</source>
@@ -4676,10 +4723,6 @@
     <message>
         <source>Transaction not valid.</source>
         <translation>トランザクションが無効です</translation>
-    </message>
-    <message>
-        <source>Trying to connect…</source>
-        <translation>接続中です…</translation>
     </message>
     <message>
         <source>Unable to bind to %s on this computer (bind returned error %s)</source>
@@ -4714,6 +4757,10 @@
         <translation>txindexデータベースのアップグレード</translation>
     </message>
     <message>
+        <source>Verifying blocks...</source>
+        <translation>ブロックの検証中…</translation>
+    </message>
+    <message>
         <source>Very low number of keys left: %d</source>
         <translation>非常に少ない数のキー: %d</translation>
     </message>
@@ -4728,10 +4775,6 @@
     <message>
         <source>Warning: incorrect parameter %s, path must exist! Using default path.</source>
         <translation>警告：パラメータの%sが正しくありません。パスは必須となります。デフォルトのパスを使用しています。</translation>
-    </message>
-    <message>
-        <source>Will retry…</source>
-        <translation>再試行…</translation>
     </message>
     <message>
         <source>You are starting with governance validation disabled.</source>

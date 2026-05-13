@@ -74,12 +74,12 @@
         <translation>Adresa prijatia</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Toto sú vaše Dash adresy pre posielanie platieb. Pred poslaním mincí vždy overte sumu a doručovaciu adresu.</translation>
+        <source>These are your PirateCash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Toto sú vaše PirateCash adresy pre posielanie platieb. Pred poslaním mincí vždy overte sumu a doručovaciu adresu.</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>Toto sú vaše Dash adresy na prijímanie platieb. Na vytvorenie nových adries použite tlačidlo „Vytvoriť novú prijímaciu adresu“ na karte prijímania.</translation>
+        <source>These are your PirateCash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <translation>Toto sú vaše PirateCash adresy na prijímanie platieb. Na vytvorenie nových adries použite tlačidlo „Vytvoriť novú prijímaciu adresu“ na karte prijímania.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -211,8 +211,8 @@
         <translation>Potvrďte zašifrovanie peňaženky</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
-        <translation>Upozornenie: Ak zašifrujete vašu peňaženku a stratíte prístupové heslo, potom &lt;b&gt;prídete o všetky svoje DASH-y&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATE&lt;/b&gt;!</source>
+        <translation>Upozornenie: Ak zašifrujete vašu peňaženku a stratíte prístupové heslo, potom &lt;b&gt;prídete o všetky svoje PIRATE-y&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -302,9 +302,6 @@
     </message>
 </context>
 <context>
-    <name>BitcoinApplication</name>
-    </context>
-<context>
     <name>BitcoinGUI</name>
     <message>
         <source>&amp;Overview</source>
@@ -319,44 +316,16 @@
         <translation>&amp;Odoslať</translation>
     </message>
     <message>
-        <source>Send coins to a Dash address</source>
-        <translation>Poslať mince na Dash adresu</translation>
+        <source>Send coins to a PirateCash address</source>
+        <translation>Poslať mince na PirateCash adresu</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>&amp;Prijať</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
-        <translation>Vyžiadať platby (vygeneruje QR kódy a Dash: URI)</translation>
-    </message>
-    <message>
-        <source>&amp;Options…</source>
-        <translation>&amp;Možnosti…</translation>
-    </message>
-    <message>
-        <source>&amp;Encrypt Wallet…</source>
-        <translation>&amp;Zašifrovať peňaženku…</translation>
-    </message>
-    <message>
-        <source>&amp;Backup Wallet…</source>
-        <translation>&amp;Zálohovať peňaženku…</translation>
-    </message>
-    <message>
-        <source>&amp;Change Passphrase…</source>
-        <translation>&amp;Zmena hesla…</translation>
-    </message>
-    <message>
-        <source>&amp;Unlock Wallet…</source>
-        <translation>&amp;Odomknúť peňaženku</translation>
-    </message>
-    <message>
-        <source>Sign &amp;message…</source>
-        <translation>Podpísať &amp;správu…</translation>
-    </message>
-    <message>
-        <source>&amp;Verify message…</source>
-        <translation>&amp;Overiť správu…</translation>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
+        <translation>Vyžiadať platby (vygeneruje QR kódy a PirateCash: URI)</translation>
     </message>
     <message>
         <source>&amp;Sending addresses</source>
@@ -367,10 +336,6 @@
         <translation>&amp;Prijímacie adresy</translation>
     </message>
     <message>
-        <source>Open &amp;URI…</source>
-        <translation>Otvoriť &amp;URI…</translation>
-    </message>
-    <message>
         <source>Open Wallet</source>
         <translation>Otvoriť Peňaženku</translation>
     </message>
@@ -379,8 +344,12 @@
         <translation>Otvoriť peňaženku</translation>
     </message>
     <message>
+        <source>Close Wallet...</source>
+        <translation>Zatvoriť Peňaženku...</translation>
+    </message>
+    <message>
         <source>Close wallet</source>
-        <translation>Zatvoriť peňaženku…</translation>
+        <translation>Zatvoriť peňaženku...</translation>
     </message>
     <message>
         <source>No wallets available</source>
@@ -435,12 +404,16 @@
         <translation>Zobrazit informácie o Qt</translation>
     </message>
     <message>
+        <source>&amp;Options...</source>
+        <translation>&amp;Možnosti...</translation>
+    </message>
+    <message>
         <source>&amp;About %1</source>
         <translation>&amp;O %1</translation>
     </message>
     <message>
-        <source>Send %1 funds to a Dash address</source>
-        <translation>Poslať zdroje %1 na Dash adresu</translation>
+        <source>Send %1 funds to a PirateCash address</source>
+        <translation>Poslať zdroje %1 na PirateCash adresu</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -455,16 +428,32 @@
         <translation>Zobraziť alebo skryť hlavné okno</translation>
     </message>
     <message>
+        <source>&amp;Encrypt Wallet...</source>
+        <translation>&amp;Zašifrovať peňaženku...</translation>
+    </message>
+    <message>
         <source>Encrypt the private keys that belong to your wallet</source>
         <translation>Zašifruj súkromné kľúče ktoré patria do vašej peňaženky</translation>
+    </message>
+    <message>
+        <source>&amp;Backup Wallet...</source>
+        <translation>&amp;Zálohovať peňaženku...</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
         <translation>Zálohovať peňaženku na iné miesto</translation>
     </message>
     <message>
+        <source>&amp;Change Passphrase...</source>
+        <translation>&amp;Zmena hesla...</translation>
+    </message>
+    <message>
         <source>Change the passphrase used for wallet encryption</source>
         <translation>Zmeniť heslo použité na šifrovanie peňaženky</translation>
+    </message>
+    <message>
+        <source>&amp;Unlock Wallet...</source>
+        <translation>&amp;Odomknúť peňaženku</translation>
     </message>
     <message>
         <source>Unlock wallet</source>
@@ -475,12 +464,20 @@
         <translation>&amp;Zamknúť peňaženku</translation>
     </message>
     <message>
-        <source>Sign messages with your Dash addresses to prove you own them</source>
-        <translation>Podpísať správy s vašimi Dash adresami ako dôkaz že ich vlastníte</translation>
+        <source>Sign &amp;message...</source>
+        <translation>Podpísať &amp;správu...</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dash addresses</source>
-        <translation>Overiť správy pre uistenie, že boli podpísané zadanými Dash adresami</translation>
+        <source>Sign messages with your PirateCash addresses to prove you own them</source>
+        <translation>Podpísať správy s vašimi PirateCash adresami ako dôkaz že ich vlastníte</translation>
+    </message>
+    <message>
+        <source>&amp;Verify message...</source>
+        <translation>&amp;Overiť správu...</translation>
+    </message>
+    <message>
+        <source>Verify messages to ensure they were signed with specified PirateCash addresses</source>
+        <translation>Overiť správy pre uistenie, že boli podpísané zadanými PirateCash adresami</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -543,12 +540,16 @@
         <translation>Zobraziť zoznam použitých prijímacích adries a ich popisov</translation>
     </message>
     <message>
+        <source>Open &amp;URI...</source>
+        <translation>Otvoriť &amp;URI...</translation>
+    </message>
+    <message>
         <source>&amp;Command-line options</source>
         <translation>&amp;Možnosti príkazového riadku</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Dash command-line options</source>
-        <translation>Ukázať %1 zoznam možných nastavení Dash pomocou príkazového riadku</translation>
+        <source>Show the %1 help message to get a list with possible PirateCash command-line options</source>
+        <translation>Ukázať %1 zoznam možných nastavení PirateCash pomocou príkazového riadku</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -575,6 +576,10 @@
     <message>
         <source>Show information about %1</source>
         <translation>Zobraziť informácie o %1</translation>
+    </message>
+    <message>
+        <source>Create Wallet...</source>
+        <translation>Vytvoriť peňaženku...</translation>
     </message>
     <message>
         <source>Create a new wallet</source>
@@ -609,12 +614,36 @@
         <translation>Zobraziť návrhy dozoru</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Dash network</source>
-        <translation><numerusform>%n aktívne spojenie so sieťou Dash</numerusform><numerusform>%n aktívne spojenia so sieťou Dash</numerusform><numerusform>%n aktívnych spojení so sieťou Dash</numerusform><numerusform>%n aktívnych spojení so sieťou Dash</numerusform></translation>
+        <source>%n active connection(s) to PirateCash network</source>
+        <translation><numerusform>%n aktívne spojenie so sieťou PirateCash</numerusform><numerusform>%n aktívne spojenia so sieťou PirateCash</numerusform><numerusform>%n aktívnych spojení so sieťou PirateCash</numerusform><numerusform>%n aktívnych spojení so sieťou PirateCash</numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
         <translation>Sieťová aktivita zakázaná</translation>
+    </message>
+    <message>
+        <source>Syncing Headers (%1%)...</source>
+        <translation>Synchronizujú sa hlavičky (%1%)...</translation>
+    </message>
+    <message>
+        <source>Synchronizing with network...</source>
+        <translation>Synchronizácia so sieťou...</translation>
+    </message>
+    <message>
+        <source>Indexing blocks on disk...</source>
+        <translation>Indexujem bloky na disku...</translation>
+    </message>
+    <message>
+        <source>Processing blocks on disk...</source>
+        <translation>Spracovávam bloky na disku...</translation>
+    </message>
+    <message>
+        <source>Reindexing blocks on disk...</source>
+        <translation>Reindexujú sa bloky na disku...</translation>
+    </message>
+    <message>
+        <source>Connecting to peers...</source>
+        <translation>Pripája sa k partnerom...</translation>
     </message>
     <message numerus="yes">
         <source>Processed %n block(s) of transaction history.</source>
@@ -625,40 +654,8 @@
         <translation>%1 pozadu</translation>
     </message>
     <message>
-        <source>Close Wallet…</source>
-        <translation>Zatvoriť Peňaženku…</translation>
-    </message>
-    <message>
-        <source>Create Wallet…</source>
-        <translation>Vytvoriť peňaženku…</translation>
-    </message>
-    <message>
-        <source>Syncing Headers (%1%)…</source>
-        <translation>Synchronizujú sa hlavičky (%1%)…</translation>
-    </message>
-    <message>
-        <source>Synchronizing with network…</source>
-        <translation>Synchronizácia so sieťou…</translation>
-    </message>
-    <message>
-        <source>Indexing blocks on disk…</source>
-        <translation>Indexujem bloky na disku…</translation>
-    </message>
-    <message>
-        <source>Processing blocks on disk…</source>
-        <translation>Spracovávam bloky na disku…</translation>
-    </message>
-    <message>
-        <source>Reindexing blocks on disk…</source>
-        <translation>Reindexujú sa bloky na disku…</translation>
-    </message>
-    <message>
-        <source>Connecting to peers…</source>
-        <translation>Pripája sa k partnerom…</translation>
-    </message>
-    <message>
-        <source>Catching up…</source>
-        <translation>Sťahujem…</translation>
+        <source>Catching up...</source>
+        <translation>Sťahujem...</translation>
     </message>
     <message>
         <source>Last received block was generated %1 ago.</source>
@@ -782,7 +779,7 @@
         <source>Original message:</source>
         <translation>Pôvodná správa:</translation>
     </message>
-</context>
+    </context>
 <context>
     <name>CoinControlDialog</name>
     <message>
@@ -977,8 +974,8 @@
 <context>
     <name>CreateWalletActivity</name>
     <message>
-        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;…</source>
-        <translation>Vytvára sa peňaženka &lt;b&gt;%1&lt;/b&gt;…</translation>
+        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
+        <translation>Vytvára sa peňaženka &lt;b&gt;%1&lt;/b&gt;...</translation>
     </message>
     <message>
         <source>Create wallet failed</source>
@@ -1027,7 +1024,7 @@
         <source>Create</source>
         <translation>Vytvoriť</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>EditAddressDialog</name>
     <message>
@@ -1063,8 +1060,8 @@
         <translation>Upraviť adresu pre odoslanie</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Dash address.</source>
-        <translation>Zadaná adresa "%1" nie je platná Dash adresa.</translation>
+        <source>The entered address "%1" is not a valid PirateCash address.</source>
+        <translation>Zadaná adresa "%1" nie je platná PirateCash adresa.</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -1148,8 +1145,8 @@
         <translation>%1 Informácie</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Dash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH and 10 DASH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;Základy %1&lt;/h3&gt; %1 vám poskytuje skutočné finančné súkromie skrývaním pôvodu vašich zdrojov. Všetky Dashe vo vašej peňaženke pozostávajú z rôznych "vstupov", ktoré si môžete predstaviť ako rozdelené,  diskrétne mince.&lt;br&gt; %1 používa zdokonalený proces pre miešanie vašich vstupov so vstupmi iných ľudí bez toho, aby vaše mince museli opustiť peňaženku. Počas celej doby máte kontrolu nad vašimi peniazmi.&lt;hr&gt; &lt;b&gt;Proces %1 funguje nasledovne:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 začne rozdelením vašich transakčných vstupov na štandardné časti, takzvané denominácie. Tieto denominácie sú 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH a 10 DASH -- v podstate niečo ako papierové peniaze, ktoré používate každý deň.&lt;/li&gt; &lt;li&gt;Vaša peňaženka potom pošle požiadavok špeciálne nastavenému softvérovému uzlu nazvaného "Masternód". Tieto masternódy sú potom informované, že máte záujem miešať určité denominácie. Masternód neobdrží žiadne informácie ktoré by vás identifikovali, takže nikdy nevie kto ste.&lt;/li&gt; &lt;li&gt;Keď ďalší dvaja ľudia pošlú podobnú správu hovoriacu o tom, že chcú miešať rovnakú denomináciu, začne sa samotné miešanie. Masternód zamieša vstupy a povie peňaženkám všetkých troch používateľov, aby zaplatili teraz už zmiešané vstupy sami sebe. Vaša peňaženka zaplatí tieto denominácie priamo sebe, ale už na inú adresu (nazývanú "meniaca adresa").&lt;/li&gt; &lt;li&gt;Aby boli vaše zdroje plne ukryté, vaša peňaženka musí zopakovať tento proces niekoľko krát s každou denomináciou.  Vždy keď je tento proces dokončený, je nazvaný "kolo". Každé kolo %1 exponenciálne sťažuje určiť, odkiaľ pochádzajú vaše zdroje.&lt;/li&gt; &lt;li&gt;Toto miešanie sa deje na pozadí, bez nutnosti zásahov z vašej strany. Keď si prajete uskutočniť transakciu, vaše zdroje budú už zmiešané. Nie je nutné na nič čakať.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt; &lt;b&gt;DÔLEŽITÉ:&lt;/b&gt; Vaša peňaženka obsahuje iba 1000 takýchto "meniacich adries". Vždy keď prebehne miešanie, použije sa maximálne až 9 vašich adries. To znamená, že týchto 1000 adries vystačí zhruba na 100 miešaní. Keď sa použije 900 adries, vaša peňaženka musí vytvoriť viac adries. Toto je však možné iba vtedy, keď máte zapnuté automatické zálohovanie.&lt;br&gt; V dôsledku toho, používatelia ktorí majú zálohovanie vypnuté, budú mať vypnutý aj %1. &lt;hr&gt;Viac informácií nájdete v &lt;a style="%2" href="%3"&gt;dokumentácií ku %1&lt;/a&gt;.</translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE and 10 PIRATE -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;Základy %1&lt;/h3&gt; %1 vám poskytuje skutočné finančné súkromie skrývaním pôvodu vašich zdrojov. Všetky PirateCashe vo vašej peňaženke pozostávajú z rôznych "vstupov", ktoré si môžete predstaviť ako rozdelené,  diskrétne mince.&lt;br&gt; %1 používa zdokonalený proces pre miešanie vašich vstupov so vstupmi iných ľudí bez toho, aby vaše mince museli opustiť peňaženku. Počas celej doby máte kontrolu nad vašimi peniazmi.&lt;hr&gt; &lt;b&gt;Proces %1 funguje nasledovne:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 začne rozdelením vašich transakčných vstupov na štandardné časti, takzvané denominácie. Tieto denominácie sú 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE a 10 PIRATE -- v podstate niečo ako papierové peniaze, ktoré používate každý deň.&lt;/li&gt; &lt;li&gt;Vaša peňaženka potom pošle požiadavok špeciálne nastavenému softvérovému uzlu nazvaného "Masternód". Tieto masternódy sú potom informované, že máte záujem miešať určité denominácie. Masternód neobdrží žiadne informácie ktoré by vás identifikovali, takže nikdy nevie kto ste.&lt;/li&gt; &lt;li&gt;Keď ďalší dvaja ľudia pošlú podobnú správu hovoriacu o tom, že chcú miešať rovnakú denomináciu, začne sa samotné miešanie. Masternód zamieša vstupy a povie peňaženkám všetkých troch používateľov, aby zaplatili teraz už zmiešané vstupy sami sebe. Vaša peňaženka zaplatí tieto denominácie priamo sebe, ale už na inú adresu (nazývanú "meniaca adresa").&lt;/li&gt; &lt;li&gt;Aby boli vaše zdroje plne ukryté, vaša peňaženka musí zopakovať tento proces niekoľko krát s každou denomináciou.  Vždy keď je tento proces dokončený, je nazvaný "kolo". Každé kolo %1 exponenciálne sťažuje určiť, odkiaľ pochádzajú vaše zdroje.&lt;/li&gt; &lt;li&gt;Toto miešanie sa deje na pozadí, bez nutnosti zásahov z vašej strany. Keď si prajete uskutočniť transakciu, vaše zdroje budú už zmiešané. Nie je nutné na nič čakať.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt; &lt;b&gt;DÔLEŽITÉ:&lt;/b&gt; Vaša peňaženka obsahuje iba 1000 takýchto "meniacich adries". Vždy keď prebehne miešanie, použije sa maximálne až 9 vašich adries. To znamená, že týchto 1000 adries vystačí zhruba na 100 miešaní. Keď sa použije 900 adries, vaša peňaženka musí vytvoriť viac adries. Toto je však možné iba vtedy, keď máte zapnuté automatické zálohovanie.&lt;br&gt; V dôsledku toho, používatelia ktorí majú zálohovanie vypnuté, budú mať vypnutý aj %1. &lt;hr&gt;Viac informácií nájdete v &lt;a style="%2" href="%3"&gt;dokumentácií ku %1&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -1165,6 +1162,10 @@
     <message>
         <source>As this is the first time the program is launched, you can choose where %1 will store its data.</source>
         <translation>Keďže toto je prvé spustenie programu, môžete si vybrať, kam %1 bude ukladať vaše údaje.</translation>
+    </message>
+    <message>
+        <source>When you click OK, %1 will begin to download and process the full %4 block chain (%2GB) starting with the earliest transactions in %3 when %4 initially launched.</source>
+        <translation>Keď kliknete na OK tak %1 začne sťahovanie a spracuje celý %4 blockchain (%2GB) počnúc najmladšími transakciami v %3 keď sa %4 prvý krát spustil.</translation>
     </message>
     <message>
         <source>This initial synchronisation is very demanding, and may expose hardware problems with your computer that had previously gone unnoticed. Each time you run %1, it will continue downloading where it left off.</source>
@@ -1191,8 +1192,8 @@
         <translation>V tomto adresári bude uložených približne %1 GB dát.</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Dash block chain.</source>
-        <translation>%1 stiahne a bude uchovávať kópiu Dash blockchainu.</translation>
+        <source>%1 will download and store a copy of the PirateCash block chain.</source>
+        <translation>%1 stiahne a bude uchovávať kópiu PirateCash blockchainu.</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1286,12 +1287,8 @@
         <translation>Kopírovať zábezpeku Outpoint</translation>
     </message>
     <message>
-        <source>Please wait…</source>
-        <translation>Prosím čakajte…</translation>
-    </message>
-    <message>
-        <source>Updating…</source>
-        <translation>Aktualizuje sa…</translation>
+        <source>Updating...</source>
+        <translation>Aktualizuje sa...</translation>
     </message>
     <message>
         <source>ENABLED</source>
@@ -1326,6 +1323,10 @@
         <translation>Filtrovať podľa ľubovoľnej vlastnosti (napr. adresa alebo protx hash)</translation>
     </message>
     <message>
+        <source>Please wait...</source>
+        <translation>Prosím čakajte...</translation>
+    </message>
+    <message>
         <source>Additional information for DIP3 Masternode %1</source>
         <translation>Ďalšie informácie pre DIP3 Masternode %1</translation>
     </message>
@@ -1337,24 +1338,20 @@
         <translation>Forma</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
-        <translation>Nedávne transakcie ešte nemusia byť viditeľné a preto môže byť stav vašej peňaženky nesprávny. Informácia bude správna hneď ako vaša peňaženka dokončí synchronizáciu so sieťou Dash. Viac detailov nájdete nižšie.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the PirateCash network, as detailed below.</source>
+        <translation>Nedávne transakcie ešte nemusia byť viditeľné a preto môže byť stav vašej peňaženky nesprávny. Informácia bude správna hneď ako vaša peňaženka dokončí synchronizáciu so sieťou PirateCash. Viac detailov nájdete nižšie.</translation>
     </message>
     <message>
-        <source>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>Pokús o minutie Dashov, ktoré sú ovplyvnené "ešte nezobrazenými" transakciami, nebude sieťou akceptovaný.</translation>
+        <source>Attempting to spend PirateCash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>Pokús o minutie PirateCashov, ktoré sú ovplyvnené "ešte nezobrazenými" transakciami, nebude sieťou akceptovaný.</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
         <translation>Počet zostávajúcich blokov</translation>
     </message>
     <message>
-        <source>Unknown…</source>
-        <translation>Neznáme…</translation>
-    </message>
-    <message>
-        <source>calculating…</source>
-        <translation>počíta sa…</translation>
+        <source>Unknown...</source>
+        <translation>Neznáme...</translation>
     </message>
     <message>
         <source>Last block time</source>
@@ -1369,6 +1366,10 @@
         <translation>Prírastok postupu za hodinu</translation>
     </message>
     <message>
+        <source>calculating...</source>
+        <translation>počíta sa...</translation>
+    </message>
+    <message>
         <source>Estimated time left until synced</source>
         <translation>Odhad času pre dokončenie synchronizácie</translation>
     </message>
@@ -1377,8 +1378,8 @@
         <translation>Skryť</translation>
     </message>
     <message>
-        <source>Unknown. Syncing Headers (%1, %2%)…</source>
-        <translation>Neznáme. Synchronizujú sa hlavičky (%1, %2%)…</translation>
+        <source>Unknown. Syncing Headers (%1, %2%)...</source>
+        <translation>Neznáme. Synchronizujú sa hlavičky (%1, %2%)...</translation>
     </message>
 </context>
 <context>
@@ -1407,8 +1408,8 @@
         <translation>predvolená peňaženka</translation>
     </message>
     <message>
-        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;…</source>
-        <translation>Otvára sa peňaženka &lt;b&gt;%1&lt;/b&gt;…</translation>
+        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
+        <translation>Otvára sa peňaženka &lt;b&gt;%1&lt;/b&gt;...</translation>
     </message>
 </context>
 <context>
@@ -1526,8 +1527,8 @@
         <translation>Cieľový zostatok</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Automaticky otvoriť na smerovači port pre Dash Core klient. Toto funguje iba ak váš smerovač  podporuje UPnP a je povolené</translation>
+        <source>Automatically open the PirateCash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Automaticky otvoriť na smerovači port pre PirateCash Core klient. Toto funguje iba ak váš smerovač  podporuje UPnP a je povolené</translation>
     </message>
     <message>
         <source>Map port using NA&amp;T-PMP</source>
@@ -1542,8 +1543,8 @@
         <translation>Povoliť pric&amp;hádzajúce spojenia</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a SOCKS5 proxy.</source>
-        <translation>Pripojiť sa do siete Dash cez proxy SOCKS5.</translation>
+        <source>Connect to the PirateCash network through a SOCKS5 proxy.</source>
+        <translation>Pripojiť sa do siete PirateCash cez proxy SOCKS5.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1556,6 +1557,14 @@
     <message>
         <source>Options set in this dialog are overridden by the command line or in the configuration file:</source>
         <translation>Možnosti nastavené v tomto dialógovom okne sú prepísané príkazovým riadkom alebo v konfiguračnom súbore:</translation>
+    </message>
+    <message>
+        <source>Hide the icon from the system tray.</source>
+        <translation>Skryť ikonu zo systémovej lišty.</translation>
+    </message>
+    <message>
+        <source>&amp;Hide tray icon</source>
+        <translation>&amp;Skryť ikonu v oblasti oznámení</translation>
     </message>
     <message>
         <source>Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Exit in the menu.</source>
@@ -1662,6 +1671,12 @@
         <translation>Jazyk uživateľského rozhrania sa dá nastaviť tu. Toto nastavenie sa uplatní až po reštarte %1.</translation>
     </message>
     <message>
+        <source>Language missing or translation incomplete? Help contributing translations here:
+https://www.transifex.com/projects/p/piratecash/</source>
+        <translation>Chýbajúci alebo nekompletný preklad? Pomôžte nám tu:
+https://www.transifex.com/projects/p/piratecash/</translation>
+    </message>
+    <message>
         <source>&amp;Unit to show amounts in:</source>
         <translation>&amp;Zobrazovať hodnoty v jednotkách:</translation>
     </message>
@@ -1725,8 +1740,8 @@
         <translation>Forma</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Dash network after a connection is established, but this process has not completed yet.</source>
-        <translation>Zobrazené informácie môžu byť zastaralé. Vaša peňaženka sa automaticky zosynchronizuje so sieťou Dash akonáhle nadviaže spojenie, avšak tento proces ešte nebol dokončený.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
+        <translation>Zobrazené informácie môžu byť zastaralé. Vaša peňaženka sa automaticky zosynchronizuje so sieťou PirateCash akonáhle nadviaže spojenie, avšak tento proces ešte nebol dokončený.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -1805,8 +1820,8 @@
         <translation>Čiastka a kolá:</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
-        <translation>0 DASH / 0 Kôl</translation>
+        <source>0 PIRATE / 0 Rounds</source>
+        <translation>0 PIRATE / 0 Kôl</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -1951,20 +1966,24 @@
         <translation>Chyba pri vyžiadaní platby</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
-        <translation>Dash sa nedá spustiť: click-to-pay handler</translation>
+        <source>Cannot start piratecash: click-to-pay handler</source>
+        <translation>PirateCash sa nedá spustiť: click-to-pay handler</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>Spracovanie URI</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>„dash://“ nie je platný URI. Namiesto toho použite „dash:“.</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>„piratecash://“ nie je platný URI. Namiesto toho použite „piratecash:“.</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Dash address or malformed URI parameters.</source>
-        <translation>URI sa nedá analyzovať! Toto môže byť spôsobené neplatnou Dash adresou, alebo nesprávnym tvarom URI parametrov.</translation>
+        <source>Invalid payment address %1</source>
+        <translation>Neplatná adresa platby %1</translation>
+    </message>
+    <message>
+        <source>URI cannot be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
+        <translation>URI sa nedá analyzovať! Toto môže byť spôsobené neplatnou PirateCash adresou, alebo nesprávnym tvarom URI parametrov.</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -1975,22 +1994,18 @@
     <name>PeerTableModel</name>
     <message>
         <source>User Agent</source>
-        <extracomment>Title of Peers Table column which contains the peer's User Agent string.</extracomment>
         <translation>Agent používateľa</translation>
     </message>
     <message>
         <source>Ping</source>
-        <extracomment>Title of Peers Table column which indicates the current latency of the connection with the peer.</extracomment>
         <translation>Odozva</translation>
     </message>
     <message>
         <source>Sent</source>
-        <extracomment>Title of Peers Table column which indicates the total amount of network information we have sent to the peer.</extracomment>
         <translation>Odoslané</translation>
     </message>
     <message>
         <source>Received</source>
-        <extracomment>Title of Peers Table column which indicates the total amount of network information we have received from the peer.</extracomment>
         <translation>Prijaté</translation>
     </message>
     </context>
@@ -2123,16 +2138,16 @@
         <translation>Chyba: %1 CSS súbor(ov) chýba v ceste -custom-css-dir.</translation>
     </message>
     <message>
-        <source>%1 didn't yet exit safely…</source>
-        <translation>%1 nebol ešte bezpečne ukončený…</translation>
+        <source>%1 didn't yet exit safely...</source>
+        <translation>%1 nebol ešte bezpečne ukončený...</translation>
     </message>
     <message>
         <source>Amount</source>
         <translation>Suma</translation>
     </message>
     <message>
-        <source>Enter a Dash address (e.g. %1)</source>
-        <translation>Zadajte Dash adresu (e.g. %1)</translation>
+        <source>Enter a PirateCash address (e.g. %1)</source>
+        <translation>Zadajte PirateCash adresu (e.g. %1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
@@ -2234,15 +2249,15 @@
         <translation>QR kód</translation>
     </message>
     <message>
-        <source>&amp;Save Image…</source>
-        <translation>&amp;Uložiť obrázok…</translation>
+        <source>&amp;Save Image...</source>
+        <translation>&amp;Uložiť obrázok...</translation>
     </message>
 </context>
 <context>
     <name>QRImageWidget</name>
     <message>
-        <source>&amp;Save Image…</source>
-        <translation>&amp;Uložiť obrázok…</translation>
+        <source>&amp;Save Image...</source>
+        <translation>&amp;Uložiť obrázok...</translation>
     </message>
     <message>
         <source>&amp;Copy Image</source>
@@ -2368,6 +2383,10 @@
         <translation>Pre detailné informácie vyberte partnerský uzol.</translation>
     </message>
     <message>
+        <source>Direction</source>
+        <translation>Smer</translation>
+    </message>
+    <message>
         <source>Version</source>
         <translation>Verzia</translation>
     </message>
@@ -2474,6 +2493,10 @@
     <message>
         <source>Services</source>
         <translation>Služby</translation>
+    </message>
+    <message>
+        <source>Ban Score</source>
+        <translation>Skóre zákazu</translation>
     </message>
     <message>
         <source>Connection Time</source>
@@ -2600,6 +2623,18 @@
         <translation>cez %1</translation>
     </message>
     <message>
+        <source>never</source>
+        <translation>nikdy</translation>
+    </message>
+    <message>
+        <source>Inbound</source>
+        <translation>Vstupné</translation>
+    </message>
+    <message>
+        <source>Outbound</source>
+        <translation>Výstupné</translation>
+    </message>
+    <message>
         <source>Regular</source>
         <translation>Pravidelné</translation>
     </message>
@@ -2615,12 +2650,12 @@
         <source>Unknown</source>
         <translation>Neznáme</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>Pripojiť ku vyžiadanej platbe voliteľnú správu, ktorá sa zobrazí, keď bude žiadosť otvorená. Poznámka: Správa nebude poslaná spolu s platbou cez sieť Dash.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>Pripojiť ku vyžiadanej platbe voliteľnú správu, ktorá sa zobrazí, keď bude žiadosť otvorená. Poznámka: Správa nebude poslaná spolu s platbou cez sieť PirateCash.</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -2631,8 +2666,8 @@
         <translation>Voliteľný popis ktorý sa pridá k tejto novej prijímajúcej adrese.</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>Pripojiť ku vyžiadanej platbe voliteľnú správu, ktorá sa zobrazí, keď bude žiadosť otvorená. &lt;br&gt;Poznámka: Správa nebude poslaná spolu s platbou cez sieť Dash.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>Pripojiť ku vyžiadanej platbe voliteľnú správu, ktorá sa zobrazí, keď bude žiadosť otvorená. &lt;br&gt;Poznámka: Správa nebude poslaná spolu s platbou cez sieť PirateCash.</translation>
     </message>
     <message>
         <source>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</source>
@@ -2710,7 +2745,7 @@
         <source>Copy amount</source>
         <translation>Kopírovať sumu</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>ReceiveRequestDialog</name>
     <message>
@@ -2722,8 +2757,8 @@
         <translation>Kopírovať &amp;adresu</translation>
     </message>
     <message>
-        <source>&amp;Save Image…</source>
-        <translation>&amp;Uložiť obrázok…</translation>
+        <source>&amp;Save Image...</source>
+        <translation>&amp;Uložiť obrázok...</translation>
     </message>
     <message>
         <source>Request payment to %1</source>
@@ -2776,6 +2811,10 @@
         <translation>Možnosti "Kontroly mincí"</translation>
     </message>
     <message>
+        <source>Inputs...</source>
+        <translation>Vstupy...</translation>
+    </message>
+    <message>
         <source>automatically selected</source>
         <translation>automaticky vybraté</translation>
     </message>
@@ -2804,10 +2843,6 @@
         <translation>Prach:</translation>
     </message>
     <message>
-        <source>Inputs…</source>
-        <translation>Vstupy…</translation>
-    </message>
-    <message>
         <source>After Fee:</source>
         <translation>Po poplatku:</translation>
     </message>
@@ -2828,15 +2863,15 @@
         <translation>Transakčný poplatok</translation>
     </message>
     <message>
-        <source>(Smart fee not initialized yet. This usually takes a few blocks…)</source>
-        <translation>(Inteligentný poplatok nebol ešte inicializovaný. Obvykle to trvá nekoľko blokov…)</translation>
+        <source>Choose...</source>
+        <translation>Vybrať...</translation>
     </message>
     <message>
         <source>Confirmation time target:</source>
         <translation>Cieľový čas potvrdenia:</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <source>If the custom fee is set to 1000 units and the transaction is only 250 bytes, then "per kilobyte" only pays 250 units in fee,&lt;br /&gt;while "at least" pays 1000 units. For transactions bigger than a kilobyte both pay by kilobyte.</source>
         <translation>Ak je vlastný poplatok nastavený na 1000 duffov a transakcia je len 250 bytov, v tom prípade sa "za kilobajt" zaplatí  na poplatkoch iba 250 duffov, &lt;br /&gt;zatiaľ čo "pri najmenšom" zaplatí 1000 duffov. Pre transakcie väčšie ako jeden kilobajt, obe zaplatia rovnako za kilobajt. </translation>
     </message>
     <message>
@@ -2846,10 +2881,6 @@
     <message>
         <source>Using the fallbackfee can result in sending a transaction that will take several hours or days (or never) to confirm. Consider choosing your fee manually or wait until you have validated the complete chain.</source>
         <translation>Používanie fallbackfee môže mať za následok odoslanie transakcie, ktorá sa bude potvrdzovať niekoľko hodín alebo dní (prípadne nikdy). Zvážte možnosť výberu poplatku ručne alebo počkajte, než potvrdíte kompletný reťazec blokov.</translation>
-    </message>
-    <message>
-        <source>Choose…</source>
-        <translation>Vybrať…</translation>
     </message>
     <message>
         <source>Note: Not enough data for fee estimation, using the fallback fee instead.</source>
@@ -2870,6 +2901,10 @@
     <message>
         <source>Custom:</source>
         <translation>Vlastné:</translation>
+    </message>
+    <message>
+        <source>(Smart fee not initialized yet. This usually takes a few blocks...)</source>
+        <translation>(Inteligentný poplatok nebol ešte inicializovaný. Obvykle to trvá nekoľko blokov...)</translation>
     </message>
     <message>
         <source>Confirm the send action</source>
@@ -3036,8 +3071,8 @@
         <translation><numerusform>Odhad pre začiatok potvrdzovania je %n blok.</numerusform><numerusform>Odhad pre začiatok potvrdzovania sú %n bloky.</numerusform><numerusform>Odhad pre začiatok potvrdzovania je %n blokov.</numerusform><numerusform>Odhad pre začiatok potvrdzovania je %n blokov.</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Dash address</source>
-        <translation>Upozornenie: Neplatná Dash adresa</translation>
+        <source>Warning: Invalid PirateCash address</source>
+        <translation>Upozornenie: Neplatná PirateCash adresa</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -3063,8 +3098,8 @@
         <translation>Zapla&amp;tiť:</translation>
     </message>
     <message>
-        <source>The Dash address to send the payment to</source>
-        <translation>Dash adresa pre poslanie platby</translation>
+        <source>The PirateCash address to send the payment to</source>
+        <translation>PirateCash adresa pre poslanie platby</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3103,8 +3138,8 @@
         <translation>Suma na odoslanie vo vybranej jednotke</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>Poplatok sa odpočíta od čiastky, ktorú odosielate. Príjemca dostane menej Dash ako zadáte. Ak je vybraných viacero príjemcov, poplatok je rozdelený rovnakým dielom.</translation>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PirateCash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <translation>Poplatok sa odpočíta od čiastky, ktorú odosielate. Príjemca dostane menej PirateCash ako zadáte. Ak je vybraných viacero príjemcov, poplatok je rozdelený rovnakým dielom.</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -3119,8 +3154,8 @@
         <translation>Správa:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Dash network.</source>
-        <translation>Správa ktorá bola pripojená ku dash: URI ktorá sa uchová spolu s transakciou pre vašu referenciu. Poznámka: Táto správa nebude poslaná cez sieť Dash.</translation>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <translation>Správa ktorá bola pripojená ku piratecash: URI ktorá sa uchová spolu s transakciou pre vašu referenciu. Poznámka: Táto správa nebude poslaná cez sieť PirateCash.</translation>
     </message>
     <message>
         <source>This is an unauthenticated payment request.</source>
@@ -3142,8 +3177,8 @@
 <context>
     <name>ShutdownWindow</name>
     <message>
-        <source>%1 is shutting down…</source>
-        <translation>%1 sa vypína…</translation>
+        <source>%1 is shutting down...</source>
+        <translation>%1 sa vypína...</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
@@ -3161,12 +3196,12 @@
         <translation>&amp;Podpísať Správu</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Dash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>Môžete podpísať správy/dohody svojou adresou aby ste dokázali, že na ňu prijať Dash. Buďte opatrní a nepodpisuje nič vágne alebo náhodné, nakoľko útoky typu "phishing" vás môžu lákať k ich podpísaniu vašej identity. Podpisujte iba vyhlásenia s úplnými detailami s ktorými súhlasíte.</translation>
+        <source>You can sign messages/agreements with your addresses to prove you can receive PirateCash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <translation>Môžete podpísať správy/dohody svojou adresou aby ste dokázali, že na ňu prijať PirateCash. Buďte opatrní a nepodpisuje nič vágne alebo náhodné, nakoľko útoky typu "phishing" vás môžu lákať k ich podpísaniu vašej identity. Podpisujte iba vyhlásenia s úplnými detailami s ktorými súhlasíte.</translation>
     </message>
     <message>
-        <source>The Dash address to sign the message with</source>
-        <translation>Dash adresa na podpísanie správy</translation>
+        <source>The PirateCash address to sign the message with</source>
+        <translation>PirateCash adresa na podpísanie správy</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3197,8 +3232,8 @@
         <translation>Kopírovať práve zvolenú adresu do systémovej schránky</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Dash address</source>
-        <translation>Podpísať spravu aby ste dokázali, že vlastníte túto Dash adresu</translation>
+        <source>Sign the message to prove you own this PirateCash address</source>
+        <translation>Podpísať spravu aby ste dokázali, že vlastníte túto PirateCash adresu</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -3214,15 +3249,15 @@
     </message>
     <message>
         <source>&amp;Verify Message</source>
-        <translation>&amp;Overiť správu…</translation>
+        <translation>&amp;Overiť správu...</translation>
     </message>
     <message>
         <source>Enter the receiver's address, message (ensure you copy line breaks, spaces, tabs, etc. exactly) and signature below to verify the message. Be careful not to read more into the signature than what is in the signed message itself, to avoid being tricked by a man-in-the-middle attack. Note that this only proves the signing party receives with the address, it cannot prove sendership of any transaction!</source>
         <translation>Vložte adresu príjemcu, správu (uistite sa, že presne kopírujete ukončenia riadkov, medzery, odrážky, atď.) a podpis pre potvrdenie správy. Buďte opatrní a nedomýšľajte si viac než je uvedené v samotnej podpísanej správe a môžete sa tak vyhnúť podvodu MITM útokom. Toto len potvrdzuje, že podpisujúca strana môže prijímať na tejto adrese, nepotvrdzuje to vlastníctvo žiadnej transakcie!</translation>
     </message>
     <message>
-        <source>The Dash address the message was signed with</source>
-        <translation>Adresa Dash s ktorou bola podpísaná správa</translation>
+        <source>The PirateCash address the message was signed with</source>
+        <translation>Adresa PirateCash s ktorou bola podpísaná správa</translation>
     </message>
     <message>
         <source>The signed message to verify</source>
@@ -3233,8 +3268,8 @@
         <translation>Podpis daný pri podpise správy</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Dash address</source>
-        <translation>Overiť správu pre uistenie, že bola podpísaná zadanou Dash adresou</translation>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
+        <translation>Overiť správu pre uistenie, že bola podpísaná zadanou PirateCash adresou</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -3672,8 +3707,8 @@
         <translation>Tento rok</translation>
     </message>
     <message>
-        <source>Range…</source>
-        <translation>Rozsah…</translation>
+        <source>Range...</source>
+        <translation>Rozsah...</translation>
     </message>
     <message>
         <source>Most Common</source>
@@ -3839,7 +3874,7 @@
     <name>WalletController</name>
     <message>
         <source>Close wallet</source>
-        <translation>Zatvoriť peňaženku…</translation>
+        <translation>Zatvoriť peňaženku...</translation>
     </message>
     <message>
         <source>Are you sure you wish to close the wallet &lt;i&gt;%1&lt;/i&gt;?</source>
@@ -3904,7 +3939,7 @@
     </message>
 </context>
 <context>
-    <name>dash-core</name>
+    <name>piratecash-core</name>
     <message>
         <source>Error: Listening for incoming connections failed (listen returned error %s)</source>
         <translation>Chyba: Počúvanie prichádzajúcich spojení zlyhalo (vrátená chyba je %s)</translation>
@@ -4010,6 +4045,14 @@
         <translation>Nájdený dostatok používateľov, pospisuje sa ( čakanie %s )</translation>
     </message>
     <message>
+        <source>Found enough users, signing ...</source>
+        <translation>Nájdený dostatok používateľov, pospisuje sa ...</translation>
+    </message>
+    <message>
+        <source>Importing...</source>
+        <translation>Importuje sa...</translation>
+    </message>
+    <message>
         <source>Incompatible mode.</source>
         <translation>Nekompatibilný mód.</translation>
     </message>
@@ -4042,8 +4085,16 @@
         <translation>Neplatný minimálny počet spork podpisovateľov určených pomocou -minsporkkeys</translation>
     </message>
     <message>
+        <source>Loading banlist...</source>
+        <translation>Načítavam banlist...</translation>
+    </message>
+    <message>
         <source>Lock is already in place.</source>
         <translation>Zámok je už na mieste.</translation>
+    </message>
+    <message>
+        <source>Mixing in progress...</source>
+        <translation>Prebieha miešanie...</translation>
     </message>
     <message>
         <source>Need to specify a port with -whitebind: '%s'</source>
@@ -4066,36 +4117,12 @@
         <translation>Nie je v zozname Masternode.</translation>
     </message>
     <message>
-        <source>Pruning blockstore…</source>
-        <translation>Redukovanie blockstore…</translation>
-    </message>
-    <message>
-        <source>Replaying blocks…</source>
-        <translation>Prebieha nahratie blokov …</translation>
-    </message>
-    <message>
-        <source>Rescanning…</source>
-        <translation>Znova prehľadávam…</translation>
-    </message>
-    <message>
-        <source>Starting network threads…</source>
-        <translation>Spúšťajú sa sieťové vlákna…</translation>
-    </message>
-    <message>
         <source>Submitted to masternode, waiting in queue %s</source>
         <translation>Odoslané na masternode, čaká vo fronte %s</translation>
     </message>
     <message>
         <source>Synchronization finished</source>
         <translation>Synchronizácia dokončená</translation>
-    </message>
-    <message>
-        <source>Synchronizing blockchain…</source>
-        <translation>Synchronizuje sa blockchain…</translation>
-    </message>
-    <message>
-        <source>Synchronizing governance objects…</source>
-        <translation>Synchronizujú sa objekty správy…</translation>
     </message>
     <message>
         <source>Unable to start HTTP server. See debug log for details.</source>
@@ -4108,6 +4135,14 @@
     <message>
         <source>User Agent comment (%s) contains unsafe characters.</source>
         <translation>Komentár u typu klienta (%s) obsahuje riskantné znaky.</translation>
+    </message>
+    <message>
+        <source>Verifying wallet(s)...</source>
+        <translation>Overuje sa peňaženka(y)...</translation>
+    </message>
+    <message>
+        <source>Will retry...</source>
+        <translation>Skúsime znovu...</translation>
     </message>
     <message>
         <source>Can't find random Masternode.</source>
@@ -4226,6 +4261,10 @@
         <translation>Chyba: Miesta na disku pre %s je málo</translation>
     </message>
     <message>
+        <source>Error: failed to add socket to epollfd (epoll_ctl returned error %s)</source>
+        <translation>Chyba: Nepodaril sa pridať soket do epollfd (epoll_ctl vrátil chybu %s)</translation>
+    </message>
+    <message>
         <source>Exceeded max tries.</source>
         <translation>Prekročený maximálny počet pokusov.</translation>
     </message>
@@ -4250,10 +4289,6 @@
         <translation>Počas inicializácie sa nepodarilo znova naskenovať peňaženku</translation>
     </message>
     <message>
-        <source>Found enough users, signing…</source>
-        <translation>Nájdený dostatok používateľov, pospisuje sa…</translation>
-    </message>
-    <message>
         <source>Invalid P2P permission: '%s'</source>
         <translation>Neplatné povolenie P2P: '%s'</translation>
     </message>
@@ -4266,6 +4301,14 @@
         <translation>Neplatný masternodeblsprivkey. Pozrite si dokumentáciu.</translation>
     </message>
     <message>
+        <source>Loading block index...</source>
+        <translation>Načítavanie zoznamu blokov...</translation>
+    </message>
+    <message>
+        <source>Loading wallet...</source>
+        <translation>Načítavanie peňaženky...</translation>
+    </message>
+    <message>
         <source>Masternode queue is full.</source>
         <translation>Fronta Masternode je plná</translation>
     </message>
@@ -4276,10 +4319,6 @@
     <message>
         <source>Missing input transaction information.</source>
         <translation>Chýbajú vstupy transakčnej informácie.</translation>
-    </message>
-    <message>
-        <source>Mixing in progress…</source>
-        <translation>Prebieha miešanie…</translation>
     </message>
     <message>
         <source>No errors detected.</source>
@@ -4310,6 +4349,10 @@
         <translation>Orezávanie nie je kompatibilné s -txindex.</translation>
     </message>
     <message>
+        <source>Pruning blockstore...</source>
+        <translation>Redukovanie blockstore...</translation>
+    </message>
+    <message>
         <source>Section [%s] is not recognized.</source>
         <translation>Sekcia [%s] nie je rozpoznaná.</translation>
     </message>
@@ -4324,6 +4367,10 @@
     <message>
         <source>Specified -walletdir "%s" is not a directory</source>
         <translation>Zadaný -walletdir "%s" nie je adresár</translation>
+    </message>
+    <message>
+        <source>Synchronizing blockchain...</source>
+        <translation>Synchronizuje sa blockchain...</translation>
     </message>
     <message>
         <source>The wallet will avoid paying less than the minimum relay fee.</source>
@@ -4358,6 +4405,10 @@
         <translation>Transakcia je príliš veľká</translation>
     </message>
     <message>
+        <source>Trying to connect...</source>
+        <translation>Pokúšame sa pripojiť...</translation>
+    </message>
+    <message>
         <source>Unable to bind to %s on this computer. %s is probably already running.</source>
         <translation>Nedá sa pripojiť k %s na tomto počítači. %s už pravdepodobne beží.</translation>
     </message>
@@ -4376,14 +4427,6 @@
     <message>
         <source>Upgrading UTXO database</source>
         <translation>Vylepšuje sa databáza neminutých výstupov (UTXO)</translation>
-    </message>
-    <message>
-        <source>Verifying blocks…</source>
-        <translation>Overovanie blokov…</translation>
-    </message>
-    <message>
-        <source>Verifying wallet(s)…</source>
-        <translation>Overuje sa peňaženka(y)…</translation>
     </message>
     <message>
         <source>Wallet needed to be rewritten: restart %s to complete</source>
@@ -4534,20 +4577,8 @@
         <translation>Chyba pri vylepšení databáze reťzcov blokov</translation>
     </message>
     <message>
-        <source>Loading P2P addresses…</source>
-        <translation>Načítavam P2P adresy…</translation>
-    </message>
-    <message>
-        <source>Loading banlist…</source>
-        <translation>Načítavam banlist…</translation>
-    </message>
-    <message>
-        <source>Loading block index…</source>
-        <translation>Načítavanie zoznamu blokov…</translation>
-    </message>
-    <message>
-        <source>Loading wallet…</source>
-        <translation>Načítavanie peňaženky…</translation>
+        <source>Error: failed to add socket to kqueuefd (kevent returned error %s)</source>
+        <translation>Chyba: Nepodaril sa pridať soket do kqueuefd (kevent vrátil chybu %s)</translation>
     </message>
     <message>
         <source>Failed to clear fulfilled requests cache at %s</source>
@@ -4586,10 +4617,6 @@
         <translation>Nepodarilo sa spustiť novú frontu miešania</translation>
     </message>
     <message>
-        <source>Importing…</source>
-        <translation>Importuje sa…</translation>
-    </message>
-    <message>
         <source>Incorrect -rescan mode, falling back to default value</source>
         <translation>Nesprávny -rescan režim, vracia sa späť k predvolenej hodnote</translation>
     </message>
@@ -4618,8 +4645,20 @@
         <translation>Neplatná spork adresa určená pomocou -sporkaddr</translation>
     </message>
     <message>
+        <source>Loading P2P addresses...</source>
+        <translation>Načítavam P2P adresy…</translation>
+    </message>
+    <message>
         <source>Reducing -maxconnections from %d to %d, because of system limitations.</source>
         <translation>Obmedzuje sa -maxconnections z %d na %d kvôli systémovým obmedzeniam.</translation>
+    </message>
+    <message>
+        <source>Replaying blocks...</source>
+        <translation>Prebieha nahratie blokov ...</translation>
+    </message>
+    <message>
+        <source>Rescanning...</source>
+        <translation>Znova prehľadávam...</translation>
     </message>
     <message>
         <source>Session not complete!</source>
@@ -4642,12 +4681,20 @@
         <translation>Posledný dotaz bol vytvorený príliš nedávno.</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup.</source>
-        <translation>%s poškodený. Skúste použiť nástroj peňaženky dash-wallet na záchranu alebo obnovenie zálohy.</translation>
+        <source>%s corrupt. Try using the wallet tool piratecash-wallet to salvage or restoring a backup.</source>
+        <translation>%s poškodený. Skúste použiť nástroj peňaženky piratecash-wallet na záchranu alebo obnovenie zálohy.</translation>
     </message>
     <message>
         <source>Last successful action was too recent.</source>
         <translation>Posledná akcia bola pred chvíľou.</translation>
+    </message>
+    <message>
+        <source>Starting network threads...</source>
+        <translation>Spúšťajú sa sieťové vlákna...</translation>
+    </message>
+    <message>
+        <source>Synchronizing governance objects...</source>
+        <translation>Synchronizujú sa objekty správy...</translation>
     </message>
     <message>
         <source>The source code is available from %s.</source>
@@ -4676,10 +4723,6 @@
     <message>
         <source>Transaction not valid.</source>
         <translation>Neplatná transakcia.</translation>
-    </message>
-    <message>
-        <source>Trying to connect…</source>
-        <translation>Pokúšame sa pripojiť…</translation>
     </message>
     <message>
         <source>Unable to bind to %s on this computer (bind returned error %s)</source>
@@ -4714,6 +4757,10 @@
         <translation>Aktualizácia databázy txindex</translation>
     </message>
     <message>
+        <source>Verifying blocks...</source>
+        <translation>Overovanie blokov...</translation>
+    </message>
+    <message>
         <source>Very low number of keys left: %d</source>
         <translation>Zostáva veľmi málo kľúčov: %d</translation>
     </message>
@@ -4728,10 +4775,6 @@
     <message>
         <source>Warning: incorrect parameter %s, path must exist! Using default path.</source>
         <translation>Upozornenie: nesprávny parameter %s, cesta musí existovať! Použije sa predvolené cesta.</translation>
-    </message>
-    <message>
-        <source>Will retry…</source>
-        <translation>Skúsime znovu…</translation>
     </message>
     <message>
         <source>You are starting with governance validation disabled.</source>

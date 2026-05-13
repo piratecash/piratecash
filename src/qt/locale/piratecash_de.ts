@@ -55,11 +55,11 @@
     </message>
     <message>
         <source>Choose the address to send coins to</source>
-        <translation>Wählen Sie die Adresse aus, an die Sie Dash überweisen möchten</translation>
+        <translation>Wählen Sie die Adresse aus, an die Sie PirateCash überweisen möchten</translation>
     </message>
     <message>
         <source>Choose the address to receive coins with</source>
-        <translation>Wählen Sie die Adresse aus, über die Sie Dash empfangen wollen</translation>
+        <translation>Wählen Sie die Adresse aus, über die Sie PirateCash empfangen wollen</translation>
     </message>
     <message>
         <source>C&amp;hoose</source>
@@ -74,12 +74,12 @@
         <translation>Empfangsadressen</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Dies sind ihre Dash-Adressen zum Tätigen von Überweisungen. Bitte prüfen Sie den Betrag und die Empfangsadresse, bevor Sie Dash überweisen.</translation>
+        <source>These are your PirateCash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Dies sind ihre PirateCash-Adressen zum Tätigen von Überweisungen. Bitte prüfen Sie den Betrag und die Empfangsadresse, bevor Sie PirateCash überweisen.</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>Hierbei handelt es sich um deine Dash-Adressen für den Empfang von Zahlungen. Nutze die Schaltfläche "Neue Empfangsadresse erstellen" auf der Registerkarte "Empfangen", um neue Adressen zu erstellen.</translation>
+        <source>These are your PirateCash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <translation>Hierbei handelt es sich um deine PirateCash-Adressen für den Empfang von Zahlungen. Nutze die Schaltfläche "Neue Empfangsadresse erstellen" auf der Registerkarte "Empfangen", um neue Adressen zu erstellen.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -211,8 +211,8 @@
         <translation>Wallet-Verschlüsselung bestätigen</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
-        <translation>Warnung: Wenn Sie ihre Wallet verschlüsseln und ihre Passphrase verlieren werden Sie &lt;b&gt;alle ihre Dash verlieren&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATE&lt;/b&gt;!</source>
+        <translation>Warnung: Wenn Sie ihre Wallet verschlüsseln und ihre Passphrase verlieren werden Sie &lt;b&gt;alle ihre PirateCash verlieren&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -302,9 +302,6 @@
     </message>
 </context>
 <context>
-    <name>BitcoinApplication</name>
-    </context>
-<context>
     <name>BitcoinGUI</name>
     <message>
         <source>&amp;Overview</source>
@@ -319,44 +316,16 @@
         <translation>&amp;Überweisen</translation>
     </message>
     <message>
-        <source>Send coins to a Dash address</source>
-        <translation>Dash an eine Dash-Adresse überweisen</translation>
+        <source>Send coins to a PirateCash address</source>
+        <translation>PirateCash an eine PirateCash-Adresse überweisen</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>&amp;Empfangen</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
-        <translation>Zahlungen anfordern (erzeugt QR-Codes und "dash:"-URIs)</translation>
-    </message>
-    <message>
-        <source>&amp;Options…</source>
-        <translation>&amp;Konfiguration…</translation>
-    </message>
-    <message>
-        <source>&amp;Encrypt Wallet…</source>
-        <translation>Wallet &amp;verschlüsseln…</translation>
-    </message>
-    <message>
-        <source>&amp;Backup Wallet…</source>
-        <translation>Wallet &amp;sichern…</translation>
-    </message>
-    <message>
-        <source>&amp;Change Passphrase…</source>
-        <translation>Passphrase &amp;ändern…</translation>
-    </message>
-    <message>
-        <source>&amp;Unlock Wallet…</source>
-        <translation>Wallet &amp;entsperren</translation>
-    </message>
-    <message>
-        <source>Sign &amp;message…</source>
-        <translation>Nachricht s&amp;ignieren…</translation>
-    </message>
-    <message>
-        <source>&amp;Verify message…</source>
-        <translation>Nachricht &amp;verifizieren…</translation>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
+        <translation>Zahlungen anfordern (erzeugt QR-Codes und "piratecash:"-URIs)</translation>
     </message>
     <message>
         <source>&amp;Sending addresses</source>
@@ -367,16 +336,16 @@
         <translation>&amp;Empfangsadressen</translation>
     </message>
     <message>
-        <source>Open &amp;URI…</source>
-        <translation>&amp;URI öffnen…</translation>
-    </message>
-    <message>
         <source>Open Wallet</source>
         <translation>Wallet öffnen</translation>
     </message>
     <message>
         <source>Open a wallet</source>
         <translation>Eine Wallet öffnen</translation>
+    </message>
+    <message>
+        <source>Close Wallet...</source>
+        <translation>Wallet schließen...</translation>
     </message>
     <message>
         <source>Close wallet</source>
@@ -435,12 +404,16 @@
         <translation>Informationen über Qt anzeigen</translation>
     </message>
     <message>
+        <source>&amp;Options...</source>
+        <translation>&amp;Konfiguration...</translation>
+    </message>
+    <message>
         <source>&amp;About %1</source>
         <translation>Über %1</translation>
     </message>
     <message>
-        <source>Send %1 funds to a Dash address</source>
-        <translation>Sende %1 Guthaben an eine Dash-Adresse</translation>
+        <source>Send %1 funds to a PirateCash address</source>
+        <translation>Sende %1 Guthaben an eine PirateCash-Adresse</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -455,16 +428,32 @@
         <translation>Das Hauptfenster anzeigen oder verstecken</translation>
     </message>
     <message>
+        <source>&amp;Encrypt Wallet...</source>
+        <translation>Wallet &amp;verschlüsseln...</translation>
+    </message>
+    <message>
         <source>Encrypt the private keys that belong to your wallet</source>
         <translation>Verschlüsselt die zu ihrer Wallet gehörenden privaten Schlüssel</translation>
+    </message>
+    <message>
+        <source>&amp;Backup Wallet...</source>
+        <translation>Wallet &amp;sichern...</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
         <translation>Eine Wallet-Sicherungskopie erstellen und abspeichern</translation>
     </message>
     <message>
+        <source>&amp;Change Passphrase...</source>
+        <translation>Passphrase &amp;ändern...</translation>
+    </message>
+    <message>
         <source>Change the passphrase used for wallet encryption</source>
         <translation>Ändert die Passphrase, die für die Wallet-Verschlüsselung benutzt wird</translation>
+    </message>
+    <message>
+        <source>&amp;Unlock Wallet...</source>
+        <translation>Wallet &amp;entsperren</translation>
     </message>
     <message>
         <source>Unlock wallet</source>
@@ -475,12 +464,20 @@
         <translation>Wallet &amp;sperren</translation>
     </message>
     <message>
-        <source>Sign messages with your Dash addresses to prove you own them</source>
-        <translation>Nachrichten signieren, um den Besitz ihrer Dash-Adressen zu beweisen</translation>
+        <source>Sign &amp;message...</source>
+        <translation>Nachricht s&amp;ignieren...</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dash addresses</source>
-        <translation>Nachrichten verifizieren, um sicherzustellen, dass diese mit den angegebenen Dash-Adressen signiert wurden</translation>
+        <source>Sign messages with your PirateCash addresses to prove you own them</source>
+        <translation>Nachrichten signieren, um den Besitz ihrer PirateCash-Adressen zu beweisen</translation>
+    </message>
+    <message>
+        <source>&amp;Verify message...</source>
+        <translation>Nachricht &amp;verifizieren...</translation>
+    </message>
+    <message>
+        <source>Verify messages to ensure they were signed with specified PirateCash addresses</source>
+        <translation>Nachrichten verifizieren, um sicherzustellen, dass diese mit den angegebenen PirateCash-Adressen signiert wurden</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -543,11 +540,15 @@
         <translation>Liste verwendeter Empfangsadressen und Bezeichnungen anzeigen</translation>
     </message>
     <message>
+        <source>Open &amp;URI...</source>
+        <translation>&amp;URI öffnen...</translation>
+    </message>
+    <message>
         <source>&amp;Command-line options</source>
         <translation>&amp;Kommandozeilenoptionen</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Dash command-line options</source>
+        <source>Show the %1 help message to get a list with possible PirateCash command-line options</source>
         <translation>Zeige den "%1"-Hilfetext, um eine Liste mit möglichen Kommandozeilenoptionen zu erhalten</translation>
     </message>
     <message>
@@ -575,6 +576,10 @@
     <message>
         <source>Show information about %1</source>
         <translation>Zeige Informationen über %1</translation>
+    </message>
+    <message>
+        <source>Create Wallet...</source>
+        <translation>Wallet erstellen...</translation>
     </message>
     <message>
         <source>Create a new wallet</source>
@@ -609,12 +614,36 @@
         <translation>Zeige Governance Proposals</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Dash network</source>
-        <translation><numerusform>%n aktive Verbindung zum Dash-Netzwerk</numerusform><numerusform>%n aktive Verbindungen zum Dash-Netzwerk</numerusform></translation>
+        <source>%n active connection(s) to PirateCash network</source>
+        <translation><numerusform>%n aktive Verbindung zum PirateCash-Netzwerk</numerusform><numerusform>%n aktive Verbindungen zum PirateCash-Netzwerk</numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
         <translation>Netzwerk-Aktivität deaktiviert</translation>
+    </message>
+    <message>
+        <source>Syncing Headers (%1%)...</source>
+        <translation>Synchronisiere Header (%1%)...</translation>
+    </message>
+    <message>
+        <source>Synchronizing with network...</source>
+        <translation>Synchronisiere mit Netzwerk...</translation>
+    </message>
+    <message>
+        <source>Indexing blocks on disk...</source>
+        <translation>Indiziere Blöcke auf Datenträger...</translation>
+    </message>
+    <message>
+        <source>Processing blocks on disk...</source>
+        <translation>Verarbeite Blöcke auf Datenträger...</translation>
+    </message>
+    <message>
+        <source>Reindexing blocks on disk...</source>
+        <translation>Reindiziere Blöcke auf Datenträger...</translation>
+    </message>
+    <message>
+        <source>Connecting to peers...</source>
+        <translation>Verbinde mit Peers...</translation>
     </message>
     <message numerus="yes">
         <source>Processed %n block(s) of transaction history.</source>
@@ -625,40 +654,8 @@
         <translation>%1 im Rückstand</translation>
     </message>
     <message>
-        <source>Close Wallet…</source>
-        <translation>Wallet schließen…</translation>
-    </message>
-    <message>
-        <source>Create Wallet…</source>
-        <translation>Wallet erstellen…</translation>
-    </message>
-    <message>
-        <source>Syncing Headers (%1%)…</source>
-        <translation>Synchronisiere Header (%1%)…</translation>
-    </message>
-    <message>
-        <source>Synchronizing with network…</source>
-        <translation>Synchronisiere mit Netzwerk…</translation>
-    </message>
-    <message>
-        <source>Indexing blocks on disk…</source>
-        <translation>Indiziere Blöcke auf Datenträger…</translation>
-    </message>
-    <message>
-        <source>Processing blocks on disk…</source>
-        <translation>Verarbeite Blöcke auf Datenträger…</translation>
-    </message>
-    <message>
-        <source>Reindexing blocks on disk…</source>
-        <translation>Reindiziere Blöcke auf Datenträger…</translation>
-    </message>
-    <message>
-        <source>Connecting to peers…</source>
-        <translation>Verbinde mit Peers…</translation>
-    </message>
-    <message>
-        <source>Catching up…</source>
-        <translation>Hole auf…</translation>
+        <source>Catching up...</source>
+        <translation>Hole auf...</translation>
     </message>
     <message>
         <source>Last received block was generated %1 ago.</source>
@@ -782,7 +779,7 @@
         <source>Original message:</source>
         <translation>Originalnachricht:</translation>
     </message>
-</context>
+    </context>
 <context>
     <name>CoinControlDialog</name>
     <message>
@@ -977,8 +974,8 @@
 <context>
     <name>CreateWalletActivity</name>
     <message>
-        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;…</source>
-        <translation>Erstelle Wallet &lt;b&gt;%1&lt;/b&gt;…</translation>
+        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
+        <translation>Erstelle Wallet &lt;b&gt;%1&lt;/b&gt;...</translation>
     </message>
     <message>
         <source>Create wallet failed</source>
@@ -1027,7 +1024,7 @@
         <source>Create</source>
         <translation>Erstellen</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>EditAddressDialog</name>
     <message>
@@ -1063,8 +1060,8 @@
         <translation>Zahlungsadresse bearbeiten</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Dash address.</source>
-        <translation>Die eingegebene Adresse "%1" ist keine gültige Dash-Adresse.</translation>
+        <source>The entered address "%1" is not a valid PirateCash address.</source>
+        <translation>Die eingegebene Adresse "%1" ist keine gültige PirateCash-Adresse.</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -1148,8 +1145,8 @@
         <translation>%1 Information</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Dash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH and 10 DASH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;Basisinformation zu %1&lt;/h3&gt; %1 bietet finanziellen Datenschutz durch geschickte Verschleierung der Herkunft Ihres Geldes. Die Dash in Ihrer Geldbörse setzen sich aus völlig unterschiedlichen eigenständigen "Inputs" zusammen.&lt;br&gt; %1 benutzt einen innovativen Prozeß, um Ihre "Inputs" mit denen von 2 anderen Personen zu mischen, ohne das Ihr Geld jemals Ihre Geldbörse verlassen muß, d.h. Sie haben während dieses Prozesses immer die Kontrolle über Ihr Geld.&lt;hr&gt;&lt;b&gt;Der %1-Prozess funktioniert folgendermaßen:&lt;/b&gt;&lt;ol type="1"&gt;&lt;li&gt;%1 stückelt Ihre "Inputs" in kleinere Teile. Diese sind 0,001 DASH, 0,01 DASH, 0,1 DASH, 1 DASH und 10 DASH -- im Prinzip wie Münzen oder Scheine, wie wir sie jeden Tag benutzen.&lt;/li&gt; &lt;li&gt;Ihre Geldbörse sendet dann eine entsprechende Mixing Anforderungen an spezielle Dash-Server im Internet, die sogenannten "Masternodes". Damit werden diese Masternodes darüber informiert, daß Sie Ihre gestückelten DASH gerne mixen würden. Dabei wird keinerlei Information über Sie versendet, d.h. die Masternodes wissen nie, wer genau mixen möchte.&lt;/li&gt; &lt;li&gt; Sobald zwei andere Personen eine gleiche Mixing-Anforderung mit der gleichen Stückelung senden beginnt der Mixing-Prozeß. Der Masternode vermischt (daher das Wort "Mixing") die gestückelten Inputs und weist das Ergebnis wieder den Geldbörsen zu, allerdings mit neuen Empfängeradressen (sog. Wechseladressen), so daß man sie nicht mehr den ursprünglichen Adressen zuordnen kann.&lt;/li&gt; &lt;li&gt;Um die Herkunft Ihres Guthabens vollständig zu verschleiern muß dieser Prozeß mehrmals wiederholt werden, d.h. es gibt mehrere "Runden" des Mixing-Prozesses. Die Anzahl der Runden ist einstellbar, je mehr, desto besser ist die Herkunft Ihres Guthabens verschleiert, aber um so länger dauert der Prozeß.&lt;/li&gt; &lt;li&gt;Der Mixing-Prozeß läuft nach dem Start vollständig im Hintergrund, d.h. es ist keine Benutzerinteraktion mehr erforderlich. Das Wallet informiert Sie über den Fortschrittsbalken über den aktuellen Status des Prozesses.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;WICHTIG:&lt;/b&gt; beim Mischen der Inputs werden die einzelnen Stückelungen einer NEUEN Empfängeradresse zugeordnet (siehe Oben). Ihre Geldbörse hat bereits beim ersten Start 1000 dieser "Wechseladressen" auf Vorrat erzeugt. Bei jedem Mischen werden 9 dieser Wechseladressen verbraucht, d.h. nach ungefähr 100 Mischvorgänge sind diese 1000 Wechseladressen aufgebraucht. Die Geldbörse ist so eingestellt, daß sie bei Erreichen von 900 benutzen Wechseladressen wieder genug neue Wechseladressen erzeugt. Die neuen Wechseladressen werden aber nur dann erzeugt, wenn man in den Einstellungen "Automatische Datensicherungen" aktiviert hat.&lt;br&gt; Daher ist bei Benutzern, die "Automatische Datensicherungen" deaktiviert haben, automatisch auch %1 dekativiert.&lt;hr&gt; Weitere Information hierzu finden Sie in der &lt;a style="%2" href="%3"&gt;%1-Dokumentation&lt;/a&gt;.</translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE and 10 PIRATE -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;Basisinformation zu %1&lt;/h3&gt; %1 bietet finanziellen Datenschutz durch geschickte Verschleierung der Herkunft Ihres Geldes. Die PirateCash in Ihrer Geldbörse setzen sich aus völlig unterschiedlichen eigenständigen "Inputs" zusammen.&lt;br&gt; %1 benutzt einen innovativen Prozeß, um Ihre "Inputs" mit denen von 2 anderen Personen zu mischen, ohne das Ihr Geld jemals Ihre Geldbörse verlassen muß, d.h. Sie haben während dieses Prozesses immer die Kontrolle über Ihr Geld.&lt;hr&gt;&lt;b&gt;Der %1-Prozess funktioniert folgendermaßen:&lt;/b&gt;&lt;ol type="1"&gt;&lt;li&gt;%1 stückelt Ihre "Inputs" in kleinere Teile. Diese sind 0,001 PIRATE, 0,01 PIRATE, 0,1 PIRATE, 1 PIRATE und 10 PIRATE -- im Prinzip wie Münzen oder Scheine, wie wir sie jeden Tag benutzen.&lt;/li&gt; &lt;li&gt;Ihre Geldbörse sendet dann eine entsprechende Mixing Anforderungen an spezielle PirateCash-Server im Internet, die sogenannten "Masternodes". Damit werden diese Masternodes darüber informiert, daß Sie Ihre gestückelten PIRATE gerne mixen würden. Dabei wird keinerlei Information über Sie versendet, d.h. die Masternodes wissen nie, wer genau mixen möchte.&lt;/li&gt; &lt;li&gt; Sobald zwei andere Personen eine gleiche Mixing-Anforderung mit der gleichen Stückelung senden beginnt der Mixing-Prozeß. Der Masternode vermischt (daher das Wort "Mixing") die gestückelten Inputs und weist das Ergebnis wieder den Geldbörsen zu, allerdings mit neuen Empfängeradressen (sog. Wechseladressen), so daß man sie nicht mehr den ursprünglichen Adressen zuordnen kann.&lt;/li&gt; &lt;li&gt;Um die Herkunft Ihres Guthabens vollständig zu verschleiern muß dieser Prozeß mehrmals wiederholt werden, d.h. es gibt mehrere "Runden" des Mixing-Prozesses. Die Anzahl der Runden ist einstellbar, je mehr, desto besser ist die Herkunft Ihres Guthabens verschleiert, aber um so länger dauert der Prozeß.&lt;/li&gt; &lt;li&gt;Der Mixing-Prozeß läuft nach dem Start vollständig im Hintergrund, d.h. es ist keine Benutzerinteraktion mehr erforderlich. Das Wallet informiert Sie über den Fortschrittsbalken über den aktuellen Status des Prozesses.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;WICHTIG:&lt;/b&gt; beim Mischen der Inputs werden die einzelnen Stückelungen einer NEUEN Empfängeradresse zugeordnet (siehe Oben). Ihre Geldbörse hat bereits beim ersten Start 1000 dieser "Wechseladressen" auf Vorrat erzeugt. Bei jedem Mischen werden 9 dieser Wechseladressen verbraucht, d.h. nach ungefähr 100 Mischvorgänge sind diese 1000 Wechseladressen aufgebraucht. Die Geldbörse ist so eingestellt, daß sie bei Erreichen von 900 benutzen Wechseladressen wieder genug neue Wechseladressen erzeugt. Die neuen Wechseladressen werden aber nur dann erzeugt, wenn man in den Einstellungen "Automatische Datensicherungen" aktiviert hat.&lt;br&gt; Daher ist bei Benutzern, die "Automatische Datensicherungen" deaktiviert haben, automatisch auch %1 dekativiert.&lt;hr&gt; Weitere Information hierzu finden Sie in der &lt;a style="%2" href="%3"&gt;%1-Dokumentation&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -1165,6 +1162,10 @@
     <message>
         <source>As this is the first time the program is launched, you can choose where %1 will store its data.</source>
         <translation>Da Sie das Programm gerade zum ersten Mal starten, können Sie nun auswählen wo %1 seine Daten ablegen wird.</translation>
+    </message>
+    <message>
+        <source>When you click OK, %1 will begin to download and process the full %4 block chain (%2GB) starting with the earliest transactions in %3 when %4 initially launched.</source>
+        <translation>Wenn Sie OK klicken, wird der Download %1 angestoßen und die volle %4 Blockchain (%2GB) verarbeitet. Die Verarbeitung beginnt mit den frühesten Transaktionen in %3 , wenn %4 gestartet sind.</translation>
     </message>
     <message>
         <source>This initial synchronisation is very demanding, and may expose hardware problems with your computer that had previously gone unnoticed. Each time you run %1, it will continue downloading where it left off.</source>
@@ -1191,8 +1192,8 @@
         <translation>Etwa %1 GB Daten werden in diesem Verzeichnis gespeichert.</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Dash block chain.</source>
-        <translation>%1 wird eine Kopie der Dash Blockchain herunterladen und speichern.</translation>
+        <source>%1 will download and store a copy of the PirateCash block chain.</source>
+        <translation>%1 wird eine Kopie der PirateCash Blockchain herunterladen und speichern.</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1286,12 +1287,8 @@
         <translation>Collateral Outpoint kopieren</translation>
     </message>
     <message>
-        <source>Please wait…</source>
-        <translation>Bitte warten…</translation>
-    </message>
-    <message>
-        <source>Updating…</source>
-        <translation>Aktualisiere…</translation>
+        <source>Updating...</source>
+        <translation>Aktualisiere...</translation>
     </message>
     <message>
         <source>ENABLED</source>
@@ -1326,6 +1323,10 @@
         <translation>Nach Eigenschaft filtern (z.B. Adresse oder Protx-Hash)</translation>
     </message>
     <message>
+        <source>Please wait...</source>
+        <translation>Bitte warten...</translation>
+    </message>
+    <message>
         <source>Additional information for DIP3 Masternode %1</source>
         <translation>Zusätzliche Informationen für DIP3 Masternode %1</translation>
     </message>
@@ -1337,24 +1338,20 @@
         <translation>Formular</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
-        <translation>Kontostand möglicherweise falsch, da die neuesten Transaktionen ggf. noch nicht sichtbar sind. Der Kontostand wird automatisch aktualisiert, sobald Ihre Wallet die Synchronisation mit dem Dash Netzwerk abgeschlossen hat.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the PirateCash network, as detailed below.</source>
+        <translation>Kontostand möglicherweise falsch, da die neuesten Transaktionen ggf. noch nicht sichtbar sind. Der Kontostand wird automatisch aktualisiert, sobald Ihre Wallet die Synchronisation mit dem PirateCash Netzwerk abgeschlossen hat.</translation>
     </message>
     <message>
-        <source>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>Der Versuch Dash aus Transaktionen auszugeben, die noch nicht angezeigt werden, wird vom Netzwerk nicht akzeptiert.</translation>
+        <source>Attempting to spend PirateCash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>Der Versuch PirateCash aus Transaktionen auszugeben, die noch nicht angezeigt werden, wird vom Netzwerk nicht akzeptiert.</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
         <translation>Anzahl verbleibender Blöcke</translation>
     </message>
     <message>
-        <source>Unknown…</source>
-        <translation>Unbekannt…</translation>
-    </message>
-    <message>
-        <source>calculating…</source>
-        <translation>berechne…</translation>
+        <source>Unknown...</source>
+        <translation>Unbekannt...</translation>
     </message>
     <message>
         <source>Last block time</source>
@@ -1369,6 +1366,10 @@
         <translation>Fortschritt pro Stunde</translation>
     </message>
     <message>
+        <source>calculating...</source>
+        <translation>berechne...</translation>
+    </message>
+    <message>
         <source>Estimated time left until synced</source>
         <translation>Geschätzte Dauer bis zur Synchronisation</translation>
     </message>
@@ -1377,8 +1378,8 @@
         <translation>Verbergen</translation>
     </message>
     <message>
-        <source>Unknown. Syncing Headers (%1, %2%)…</source>
-        <translation>Unbekannt. Synchronisiere Headers (%1, %2%)…</translation>
+        <source>Unknown. Syncing Headers (%1, %2%)...</source>
+        <translation>Unbekannt. Synchronisiere Headers (%1, %2%)...</translation>
     </message>
 </context>
 <context>
@@ -1407,8 +1408,8 @@
         <translation>default wallet</translation>
     </message>
     <message>
-        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;…</source>
-        <translation>Öffne Wallet &lt;b&gt;%1&lt;/b&gt;…</translation>
+        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
+        <translation>Öffne Wallet &lt;b&gt;%1&lt;/b&gt;...</translation>
     </message>
 </context>
 <context>
@@ -1526,8 +1527,8 @@
         <translation>Guthaben auswählen</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Automatisch den Dash Core Clientport auf dem Router öffnen. Dies funktioniert nur, wenn Ihr Router UPnP unterstützt und dies aktiviert ist.</translation>
+        <source>Automatically open the PirateCash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Automatisch den PirateCash Core Clientport auf dem Router öffnen. Dies funktioniert nur, wenn Ihr Router UPnP unterstützt und dies aktiviert ist.</translation>
     </message>
     <message>
         <source>Map port using NA&amp;T-PMP</source>
@@ -1542,8 +1543,8 @@
         <translation>Eingehend&amp;e Verbindungen erlauben</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a SOCKS5 proxy.</source>
-        <translation>Über einen SOCKS5-Proxy mit dem Dash-Netzwerk verbinden.</translation>
+        <source>Connect to the PirateCash network through a SOCKS5 proxy.</source>
+        <translation>Über einen SOCKS5-Proxy mit dem PirateCash-Netzwerk verbinden.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1556,6 +1557,14 @@
     <message>
         <source>Options set in this dialog are overridden by the command line or in the configuration file:</source>
         <translation>In diesem Dialog eingestellte Optionen werden in der Kommandozeile oder in der Konfigurationsdatei überschrieben:</translation>
+    </message>
+    <message>
+        <source>Hide the icon from the system tray.</source>
+        <translation>Verberge Symbol im Infobereich.</translation>
+    </message>
+    <message>
+        <source>&amp;Hide tray icon</source>
+        <translation>&amp;Infosymbol verbergen</translation>
     </message>
     <message>
         <source>Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Exit in the menu.</source>
@@ -1662,12 +1671,18 @@
         <translation>Die Benutzeroberflächensprache kann hier festgelegt werden. Diese Einstellung wird nach einem Neustart von %1 wirksam werden.</translation>
     </message>
     <message>
+        <source>Language missing or translation incomplete? Help contributing translations here:
+https://www.transifex.com/projects/p/piratecash/</source>
+        <translation>Fehlt eine Sprache oder ist unvollständig übersetzt? Hier können Sie helfen:
+https://www.transifex.com/projects/p/piratecash/</translation>
+    </message>
+    <message>
         <source>&amp;Unit to show amounts in:</source>
         <translation>&amp;Einheit der Beträge:</translation>
     </message>
     <message>
         <source>Choose the default subdivision unit to show in the interface and when sending coins.</source>
-        <translation>Wählen Sie die standardmäßige Untereinheit, die in der Benutzeroberfläche und beim Überweisen von Dash angezeigt werden soll.</translation>
+        <translation>Wählen Sie die standardmäßige Untereinheit, die in der Benutzeroberfläche und beim Überweisen von PirateCash angezeigt werden soll.</translation>
     </message>
     <message>
         <source>Decimal digits</source>
@@ -1725,8 +1740,8 @@
         <translation>Formular</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Dash network after a connection is established, but this process has not completed yet.</source>
-        <translation>Die angezeigten Informationen sind möglicherweise nicht mehr aktuell. Ihre Wallet wird automatisch synchronisiert, nachdem eine Verbindung zum Dash-Netzwerk hergestellt wurde. Dieser Prozess ist jedoch derzeit noch nicht abgeschlossen.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
+        <translation>Die angezeigten Informationen sind möglicherweise nicht mehr aktuell. Ihre Wallet wird automatisch synchronisiert, nachdem eine Verbindung zum PirateCash-Netzwerk hergestellt wurde. Dieser Prozess ist jedoch derzeit noch nicht abgeschlossen.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -1805,8 +1820,8 @@
         <translation>Betrag und Runden:</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
-        <translation>0 DASH / 0 Runden</translation>
+        <source>0 PIRATE / 0 Rounds</source>
+        <translation>0 PIRATE / 0 Runden</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -1951,20 +1966,24 @@
         <translation>Fehlerhafte Zahlungsanforderung</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
-        <translation>Dash kann nicht gestartet werden: click-to-pay handler</translation>
+        <source>Cannot start piratecash: click-to-pay handler</source>
+        <translation>PirateCash kann nicht gestartet werden: click-to-pay handler</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>URI-Verarbeitung</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash://' ist keine gültige URI. Verwende 'dash:' stattdessen.</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>'piratecash://' ist keine gültige URI. Verwende 'piratecash:' stattdessen.</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Dash address or malformed URI parameters.</source>
-        <translation>URI konnte nicht erfolgreich verarbeitet werden. Höchstwahrscheinlich ist dies entweder keine gültige Dash-Adresse oder die URI-Parameter sind falsch gesetzt. </translation>
+        <source>Invalid payment address %1</source>
+        <translation>Ungültige Zahlungsadresse %1</translation>
+    </message>
+    <message>
+        <source>URI cannot be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
+        <translation>URI konnte nicht erfolgreich verarbeitet werden. Höchstwahrscheinlich ist dies entweder keine gültige PirateCash-Adresse oder die URI-Parameter sind falsch gesetzt. </translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -1975,22 +1994,18 @@
     <name>PeerTableModel</name>
     <message>
         <source>User Agent</source>
-        <extracomment>Title of Peers Table column which contains the peer's User Agent string.</extracomment>
         <translation>Benutzerprogramm</translation>
     </message>
     <message>
         <source>Ping</source>
-        <extracomment>Title of Peers Table column which indicates the current latency of the connection with the peer.</extracomment>
         <translation>Ping</translation>
     </message>
     <message>
         <source>Sent</source>
-        <extracomment>Title of Peers Table column which indicates the total amount of network information we have sent to the peer.</extracomment>
         <translation>Gesendet</translation>
     </message>
     <message>
         <source>Received</source>
-        <extracomment>Title of Peers Table column which indicates the total amount of network information we have received from the peer.</extracomment>
         <translation>Empfangen</translation>
     </message>
     </context>
@@ -2123,16 +2138,16 @@
         <translation>Fehler: %1 CSS-Datei(en) fehlen im Pfad -custom-css-dir.</translation>
     </message>
     <message>
-        <source>%1 didn't yet exit safely…</source>
-        <translation>%1 wurde noch nicht sicher beendet…</translation>
+        <source>%1 didn't yet exit safely...</source>
+        <translation>%1 wurde noch nicht sicher beendet...</translation>
     </message>
     <message>
         <source>Amount</source>
         <translation>Betrag</translation>
     </message>
     <message>
-        <source>Enter a Dash address (e.g. %1)</source>
-        <translation>Dash-Adresse eingeben (z.B. %1)</translation>
+        <source>Enter a PirateCash address (e.g. %1)</source>
+        <translation>PirateCash-Adresse eingeben (z.B. %1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
@@ -2234,15 +2249,15 @@
         <translation>QR-Code</translation>
     </message>
     <message>
-        <source>&amp;Save Image…</source>
-        <translation>Grafik &amp;speichern…</translation>
+        <source>&amp;Save Image...</source>
+        <translation>Grafik &amp;speichern...</translation>
     </message>
 </context>
 <context>
     <name>QRImageWidget</name>
     <message>
-        <source>&amp;Save Image…</source>
-        <translation>Grafik &amp;speichern…</translation>
+        <source>&amp;Save Image...</source>
+        <translation>Grafik &amp;speichern...</translation>
     </message>
     <message>
         <source>&amp;Copy Image</source>
@@ -2368,6 +2383,10 @@
         <translation>Gegenstelle auswählen, um Detailinformationen zu sehen.</translation>
     </message>
     <message>
+        <source>Direction</source>
+        <translation>Richtung</translation>
+    </message>
+    <message>
         <source>Version</source>
         <translation>Version</translation>
     </message>
@@ -2474,6 +2493,10 @@
     <message>
         <source>Services</source>
         <translation>Dienste</translation>
+    </message>
+    <message>
+        <source>Ban Score</source>
+        <translation>Ausschluss-Punktzahl</translation>
     </message>
     <message>
         <source>Connection Time</source>
@@ -2600,6 +2623,18 @@
         <translation>über %1</translation>
     </message>
     <message>
+        <source>never</source>
+        <translation>niemals</translation>
+    </message>
+    <message>
+        <source>Inbound</source>
+        <translation>Eingehend</translation>
+    </message>
+    <message>
+        <source>Outbound</source>
+        <translation>Ausgehend</translation>
+    </message>
+    <message>
         <source>Regular</source>
         <translation>Standard</translation>
     </message>
@@ -2615,12 +2650,12 @@
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>Eine optionale Nachricht, die an die Zahlungsanforderung angehängt wird. Sie wird angezeigt, wenn die Anforderung geöffnet wird. Hinweis: Diese Nachricht wird nicht mit der Zahlung über das Dash-Netzwerk gesendet.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>Eine optionale Nachricht, die an die Zahlungsanforderung angehängt wird. Sie wird angezeigt, wenn die Anforderung geöffnet wird. Hinweis: Diese Nachricht wird nicht mit der Zahlung über das PirateCash-Netzwerk gesendet.</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -2631,8 +2666,8 @@
         <translation>Eine optionale Bezeichnung, die der neuen Empfangsadresse zugeordnet wird.</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>Eine optionale Nachricht, die an die Zahlungsanforderung angehängt wird. Sie wird angezeigt, wenn die Anforderung geöffnet wird.&lt;br&gt; Hinweis: Diese Nachricht wird nicht mit der Zahlung über das Dash-Netzwerk gesendet.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>Eine optionale Nachricht, die an die Zahlungsanforderung angehängt wird. Sie wird angezeigt, wenn die Anforderung geöffnet wird.&lt;br&gt; Hinweis: Diese Nachricht wird nicht mit der Zahlung über das PirateCash-Netzwerk gesendet.</translation>
     </message>
     <message>
         <source>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</source>
@@ -2710,7 +2745,7 @@
         <source>Copy amount</source>
         <translation>Betrag kopieren</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>ReceiveRequestDialog</name>
     <message>
@@ -2722,8 +2757,8 @@
         <translation>&amp;Addresse kopieren</translation>
     </message>
     <message>
-        <source>&amp;Save Image…</source>
-        <translation>Grafik &amp;speichern…</translation>
+        <source>&amp;Save Image...</source>
+        <translation>Grafik &amp;speichern...</translation>
     </message>
     <message>
         <source>Request payment to %1</source>
@@ -2769,11 +2804,15 @@
     <name>SendCoinsDialog</name>
     <message>
         <source>Send Coins</source>
-        <translation>Dash überweisen</translation>
+        <translation>PirateCash überweisen</translation>
     </message>
     <message>
         <source>Coin Control Features</source>
         <translation>"Coin Control"-Funktionen</translation>
+    </message>
+    <message>
+        <source>Inputs...</source>
+        <translation>Inputs...</translation>
     </message>
     <message>
         <source>automatically selected</source>
@@ -2804,10 +2843,6 @@
         <translation>"Dust"</translation>
     </message>
     <message>
-        <source>Inputs…</source>
-        <translation>Inputs…</translation>
-    </message>
-    <message>
         <source>After Fee:</source>
         <translation>Abzüglich Gebühr:</translation>
     </message>
@@ -2828,16 +2863,16 @@
         <translation>Transaktionsgebühr:</translation>
     </message>
     <message>
-        <source>(Smart fee not initialized yet. This usually takes a few blocks…)</source>
-        <translation>("Intelligente" Gebühren sind noch nicht initialisiert. Dies dauert normalerweise ein paar Blöcke…)</translation>
+        <source>Choose...</source>
+        <translation>Auswählen...</translation>
     </message>
     <message>
         <source>Confirmation time target:</source>
         <translation>Bestätigungsziel:</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
-        <translation>Wenn die benutzerdefinierten Gebühren auf 1000 duffs gesetzt sind und eine Transaktion hat nur 250 Bytes, dann kostet "pro Kilobyte" nur 250 duffs Gebühren,&lt;br/&gt; während "mindestens" 1000 duffs kostet. Transaktionen größer als 1 Kilobyte werden immer pro Kilobyte bezahlt.</translation>
+        <source>If the custom fee is set to 1000 units and the transaction is only 250 bytes, then "per kilobyte" only pays 250 units in fee,&lt;br /&gt;while "at least" pays 1000 units. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <translation>Wenn die benutzerdefinierten Gebühren auf 1000 units gesetzt sind und eine Transaktion hat nur 250 Bytes, dann kostet "pro Kilobyte" nur 250 units Gebühren,&lt;br/&gt; während "mindestens" 1000 units kostet. Transaktionen größer als 1 Kilobyte werden immer pro Kilobyte bezahlt.</translation>
     </message>
     <message>
         <source>per kilobyte</source>
@@ -2846,10 +2881,6 @@
     <message>
         <source>Using the fallbackfee can result in sending a transaction that will take several hours or days (or never) to confirm. Consider choosing your fee manually or wait until you have validated the complete chain.</source>
         <translation>Wenn die Fallbackfee verwendet wird kann dies bedeuten, dass es Stunden oder Tage dauern kann, bis die Transaktion bestätigt wird (oder sie kann auch niemals bestätigt werden). Du kannst die Gebühr manuell einstellen oder warten, bis die vollständige Blockchain heruntergeladen wurde.</translation>
-    </message>
-    <message>
-        <source>Choose…</source>
-        <translation>Auswählen…</translation>
     </message>
     <message>
         <source>Note: Not enough data for fee estimation, using the fallback fee instead.</source>
@@ -2870,6 +2901,10 @@
     <message>
         <source>Custom:</source>
         <translation>Benutzerdefiniert:</translation>
+    </message>
+    <message>
+        <source>(Smart fee not initialized yet. This usually takes a few blocks...)</source>
+        <translation>("Intelligente" Gebühren sind noch nicht initialisiert. Dies dauert normalerweise ein paar Blöcke...)</translation>
     </message>
     <message>
         <source>Confirm the send action</source>
@@ -3036,8 +3071,8 @@
         <translation><numerusform>Geschätzter Beginn der Bestätigung in %n Block.</numerusform><numerusform>Geschätzter Beginn der Bestätigung in %n Blöcken.</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Dash address</source>
-        <translation>Warnung: ungültige Dash-Adresse</translation>
+        <source>Warning: Invalid PirateCash address</source>
+        <translation>Warnung: ungültige PirateCash-Adresse</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -3063,8 +3098,8 @@
         <translation>E&amp;mpfänger:</translation>
     </message>
     <message>
-        <source>The Dash address to send the payment to</source>
-        <translation>Dash-Adresse, an die überwiesen werden soll</translation>
+        <source>The PirateCash address to send the payment to</source>
+        <translation>PirateCash-Adresse, an die überwiesen werden soll</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3103,7 +3138,7 @@
         <translation>Der Betrag, der in der gewählten Einheit gesendet werden soll</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PirateCash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>Die Gebühr wird von der versendeten  Summe abgezogen, daher wird der Empfänger einen  niedrigeren Betrag erhalten, als Sie im Feld "Betrag" angegeben haben. Bei mehreren Empfängern wird die Gebühre gleichmäßig auf alle Empfänger aufgeteilt.</translation>
     </message>
     <message>
@@ -3119,8 +3154,8 @@
         <translation>Nachricht:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Dash network.</source>
-        <translation>Eine an die "dash:"-URI angefügte Nachricht, die zusammen mit der Transaktion gespeichert wird. Hinweis: Diese Nachricht wird nicht über das Dash-Netzwerk gesendet.</translation>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <translation>Eine an die "piratecash:"-URI angefügte Nachricht, die zusammen mit der Transaktion gespeichert wird. Hinweis: Diese Nachricht wird nicht über das PirateCash-Netzwerk gesendet.</translation>
     </message>
     <message>
         <source>This is an unauthenticated payment request.</source>
@@ -3142,8 +3177,8 @@
 <context>
     <name>ShutdownWindow</name>
     <message>
-        <source>%1 is shutting down…</source>
-        <translation>%1 wird beendet…</translation>
+        <source>%1 is shutting down...</source>
+        <translation>%1 wird beendet...</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
@@ -3161,12 +3196,12 @@
         <translation>Nachricht &amp;signieren</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Dash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <source>You can sign messages/agreements with your addresses to prove you can receive PirateCash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
         <translation>Sie können Nachrichten mit ihren Adressen signieren, um den Besitz dieser Adressen zu beweisen. Bitte nutzen Sie diese Funktion mit Vorsicht und nehmen Sie sich vor Phishingangriffen in Acht. Signieren Sie nur Nachrichten, mit denen Sie vollständig einverstanden sind.</translation>
     </message>
     <message>
-        <source>The Dash address to sign the message with</source>
-        <translation>Dash-Adresse, mit der die Nachricht signiert werden soll</translation>
+        <source>The PirateCash address to sign the message with</source>
+        <translation>PirateCash-Adresse, mit der die Nachricht signiert werden soll</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3197,8 +3232,8 @@
         <translation>Aktuelle Signatur in die Zwischenablage kopieren</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Dash address</source>
-        <translation>Die Nachricht signieren, um den Besitz dieser Dash-Adresse zu belegen</translation>
+        <source>Sign the message to prove you own this PirateCash address</source>
+        <translation>Die Nachricht signieren, um den Besitz dieser PirateCash-Adresse zu belegen</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -3221,8 +3256,8 @@
         <translation>Geben Sie die signierende Adresse, Nachricht (achten Sie darauf Zeilenumbrüche, Leerzeichen, Tabulatoren usw. exakt zu kopieren) und Signatur unten ein, um die Nachricht zu verifizieren. Vorsicht, interpretieren Sie nicht mehr in die Signatur hinein, als in der signierten Nachricht selber enthalten ist, um nicht von einem Man-in-the-middle-Angriff hinters Licht geführt zu werden.</translation>
     </message>
     <message>
-        <source>The Dash address the message was signed with</source>
-        <translation>Dash-Adresse, mit der die Nachricht signiert worden ist</translation>
+        <source>The PirateCash address the message was signed with</source>
+        <translation>PirateCash-Adresse, mit der die Nachricht signiert worden ist</translation>
     </message>
     <message>
         <source>The signed message to verify</source>
@@ -3233,8 +3268,8 @@
         <translation>Die bei der Unterzeichnung der Nachricht angegebene Signatur</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Dash address</source>
-        <translation>Die Nachricht verifizieren, um sicherzustellen, dass diese mit der angegebenen Dash-Adresse signiert wurde</translation>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
+        <translation>Die Nachricht verifizieren, um sicherzustellen, dass diese mit der angegebenen PirateCash-Adresse signiert wurde</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -3468,7 +3503,7 @@
     </message>
     <message>
         <source>Generated coins must mature %1 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to "not accepted" and it won't be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
-        <translation>Erzeugte Dash müssen %1 Blöcke lang reifen, bevor sie ausgegeben werden können. Als Sie diesen Block erzeugten, wurde er an das Netzwerk übertragen, um ihn der Blockkette hinzuzufügen. Falls dies fehlschlägt wird der Status in "nicht angenommen" geändert und Sie werden keine Dash gutgeschrieben bekommen. Das kann gelegentlich passieren, wenn ein anderer Knoten einen Block fast zeitgleich erzeugt.</translation>
+        <translation>Erzeugte PirateCash müssen %1 Blöcke lang reifen, bevor sie ausgegeben werden können. Als Sie diesen Block erzeugten, wurde er an das Netzwerk übertragen, um ihn der Blockkette hinzuzufügen. Falls dies fehlschlägt wird der Status in "nicht angenommen" geändert und Sie werden keine PirateCash gutgeschrieben bekommen. Das kann gelegentlich passieren, wenn ein anderer Knoten einen Block fast zeitgleich erzeugt.</translation>
     </message>
     <message>
         <source>Debug information</source>
@@ -3672,8 +3707,8 @@
         <translation>Dieses Jahr</translation>
     </message>
     <message>
-        <source>Range…</source>
-        <translation>Zeitraum…</translation>
+        <source>Range...</source>
+        <translation>Zeitraum...</translation>
     </message>
     <message>
         <source>Most Common</source>
@@ -3857,7 +3892,7 @@
     <name>WalletModel</name>
     <message>
         <source>Send Coins</source>
-        <translation>Dash überweisen</translation>
+        <translation>PirateCash überweisen</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -3904,7 +3939,7 @@
     </message>
 </context>
 <context>
-    <name>dash-core</name>
+    <name>piratecash-core</name>
     <message>
         <source>Error: Listening for incoming connections failed (listen returned error %s)</source>
         <translation>Fehler: Abhören nach eingehenden Verbindungen fehlgeschlagen (Fehler %s)</translation>
@@ -4010,6 +4045,14 @@
         <translation>Genug Partner gefunden, signiere ( warte %s )</translation>
     </message>
     <message>
+        <source>Found enough users, signing ...</source>
+        <translation>Genug Partner gefunden, signiere ... </translation>
+    </message>
+    <message>
+        <source>Importing...</source>
+        <translation>Importiere...</translation>
+    </message>
+    <message>
         <source>Incompatible mode.</source>
         <translation>Inkompatibler Modus.</translation>
     </message>
@@ -4042,8 +4085,16 @@
         <translation>Ungültige minimale Anzahl an Spork-Unterzeichnern durch -minsporkkeys spezifiziert</translation>
     </message>
     <message>
+        <source>Loading banlist...</source>
+        <translation>Lade Bann-Liste...</translation>
+    </message>
+    <message>
         <source>Lock is already in place.</source>
         <translation>Schon gesperrt.</translation>
+    </message>
+    <message>
+        <source>Mixing in progress...</source>
+        <translation>Am Mixen...</translation>
     </message>
     <message>
         <source>Need to specify a port with -whitebind: '%s'</source>
@@ -4066,36 +4117,12 @@
         <translation>Nicht in der Masternode-Liste.</translation>
     </message>
     <message>
-        <source>Pruning blockstore…</source>
-        <translation>Alte Blocks werden abgeschnitten/pruned…</translation>
-    </message>
-    <message>
-        <source>Replaying blocks…</source>
-        <translation>Blöcke wiederherstellen…</translation>
-    </message>
-    <message>
-        <source>Rescanning…</source>
-        <translation>Durchsuche erneut…</translation>
-    </message>
-    <message>
-        <source>Starting network threads…</source>
-        <translation>Netzwerk-Threads werden gestartet…</translation>
-    </message>
-    <message>
         <source>Submitted to masternode, waiting in queue %s</source>
         <translation>An Masternode übermittelt, wartet in Warteschlange %s</translation>
     </message>
     <message>
         <source>Synchronization finished</source>
         <translation>Synchronisation beendet</translation>
-    </message>
-    <message>
-        <source>Synchronizing blockchain…</source>
-        <translation>Synchronisiere Blockchain…</translation>
-    </message>
-    <message>
-        <source>Synchronizing governance objects…</source>
-        <translation>Synchronisiere Governance Objekte…</translation>
     </message>
     <message>
         <source>Unable to start HTTP server. See debug log for details.</source>
@@ -4108,6 +4135,14 @@
     <message>
         <source>User Agent comment (%s) contains unsafe characters.</source>
         <translation>Der "User Agent"-Text (%s) enthält unsichere Zeichen.</translation>
+    </message>
+    <message>
+        <source>Verifying wallet(s)...</source>
+        <translation>Verifiziere Wallet(s)...</translation>
+    </message>
+    <message>
+        <source>Will retry...</source>
+        <translation>Versuche erneut...</translation>
     </message>
     <message>
         <source>Can't find random Masternode.</source>
@@ -4226,6 +4261,10 @@
         <translation>Fehler: Geringer Speicherplatz für %s</translation>
     </message>
     <message>
+        <source>Error: failed to add socket to epollfd (epoll_ctl returned error %s)</source>
+        <translation>Fehler: Hinzufügung eines Sockets zu epollfd fehlgeschlagen (epoll_ctl meldet Fehler %s)</translation>
+    </message>
+    <message>
         <source>Exceeded max tries.</source>
         <translation>Maximale Zahl an Versuchen überschritten.</translation>
     </message>
@@ -4250,10 +4289,6 @@
         <translation>Rescan der Wallet während der Initialisierung fehlgeschlagen</translation>
     </message>
     <message>
-        <source>Found enough users, signing…</source>
-        <translation>Genug Partner gefunden, signiere…</translation>
-    </message>
-    <message>
         <source>Invalid P2P permission: '%s'</source>
         <translation>Ungültige P2P-Erlaubnis: '%s'</translation>
     </message>
@@ -4266,6 +4301,14 @@
         <translation>Ungültiger masternodeblsprivkey. Weitere Informationen befinden sich in der Dokumentation.</translation>
     </message>
     <message>
+        <source>Loading block index...</source>
+        <translation>Lade Blockindex...</translation>
+    </message>
+    <message>
+        <source>Loading wallet...</source>
+        <translation>Lade Wallet...</translation>
+    </message>
+    <message>
         <source>Masternode queue is full.</source>
         <translation>Warteschlange der Masternode ist voll.</translation>
     </message>
@@ -4276,10 +4319,6 @@
     <message>
         <source>Missing input transaction information.</source>
         <translation>Fehlende Informationen zur Eingangs-Transaktion.</translation>
-    </message>
-    <message>
-        <source>Mixing in progress…</source>
-        <translation>Am Mixen…</translation>
     </message>
     <message>
         <source>No errors detected.</source>
@@ -4310,6 +4349,10 @@
         <translation>Prune/Abschneiden ist zu -txindex nicht kompatibel.</translation>
     </message>
     <message>
+        <source>Pruning blockstore...</source>
+        <translation>Alte Blocks werden abgeschnitten/pruned...</translation>
+    </message>
+    <message>
         <source>Section [%s] is not recognized.</source>
         <translation>Abschnitt [%s] wird nicht erkannt.</translation>
     </message>
@@ -4324,6 +4367,10 @@
     <message>
         <source>Specified -walletdir "%s" is not a directory</source>
         <translation>Spezifizierte -walletdir "%s" ist kein Verzeichnis</translation>
+    </message>
+    <message>
+        <source>Synchronizing blockchain...</source>
+        <translation>Synchronisiere Blockchain...</translation>
     </message>
     <message>
         <source>The wallet will avoid paying less than the minimum relay fee.</source>
@@ -4358,6 +4405,10 @@
         <translation>Transaktion zu groß</translation>
     </message>
     <message>
+        <source>Trying to connect...</source>
+        <translation>Verbindungsaufbau...</translation>
+    </message>
+    <message>
         <source>Unable to bind to %s on this computer. %s is probably already running.</source>
         <translation>Kann auf diesem Computer nicht an %s binden. Evtl. wurde %s bereits gestartet.</translation>
     </message>
@@ -4376,14 +4427,6 @@
     <message>
         <source>Upgrading UTXO database</source>
         <translation>Aktualisierung der UTXO Datenbank</translation>
-    </message>
-    <message>
-        <source>Verifying blocks…</source>
-        <translation>Verifiziere Blöcke…</translation>
-    </message>
-    <message>
-        <source>Verifying wallet(s)…</source>
-        <translation>Verifiziere Wallet(s)…</translation>
     </message>
     <message>
         <source>Wallet needed to be rewritten: restart %s to complete</source>
@@ -4419,7 +4462,7 @@
     </message>
     <message>
         <source>%s uses exact denominated amounts to send funds, you might simply need to mix some more coins.</source>
-        <translation>%s benutzt exakt gestückelte Beträge zum Versenden, Sie müssen dafür möglicherweise noch mehr DASH mischen.</translation>
+        <translation>%s benutzt exakt gestückelte Beträge zum Versenden, Sie müssen dafür möglicherweise noch mehr PIRATE mischen.</translation>
     </message>
     <message>
         <source>Cannot obtain a lock on data directory %s. %s is probably already running.</source>
@@ -4534,20 +4577,8 @@
         <translation>Fehler bei der Aktualisierung einer Kettenstatus-Datenbank</translation>
     </message>
     <message>
-        <source>Loading P2P addresses…</source>
-        <translation>Lade P2P-Adressen…</translation>
-    </message>
-    <message>
-        <source>Loading banlist…</source>
-        <translation>Lade Bann-Liste…</translation>
-    </message>
-    <message>
-        <source>Loading block index…</source>
-        <translation>Lade Blockindex…</translation>
-    </message>
-    <message>
-        <source>Loading wallet…</source>
-        <translation>Lade Wallet…</translation>
+        <source>Error: failed to add socket to kqueuefd (kevent returned error %s)</source>
+        <translation>Fehler: Hinzufügung eines Sockets zu kqueuefd fehlgeschlagen (kevent meldet Fehler %s)</translation>
     </message>
     <message>
         <source>Failed to clear fulfilled requests cache at %s</source>
@@ -4586,10 +4617,6 @@
         <translation>Keine Warteschlange konnte zum mischen gestartet werden</translation>
     </message>
     <message>
-        <source>Importing…</source>
-        <translation>Importiere…</translation>
-    </message>
-    <message>
         <source>Incorrect -rescan mode, falling back to default value</source>
         <translation>Falscher -Rescan-Modus, Zurückfallen auf Standardwert</translation>
     </message>
@@ -4618,8 +4645,20 @@
         <translation>Ungültige Spork-Adresse mit -sporkaddr angegeben</translation>
     </message>
     <message>
+        <source>Loading P2P addresses...</source>
+        <translation>Lade P2P-Adressen...</translation>
+    </message>
+    <message>
         <source>Reducing -maxconnections from %d to %d, because of system limitations.</source>
         <translation>-maxconnections wird wegen Systembeschränkungen von %d auf %d verringert.</translation>
+    </message>
+    <message>
+        <source>Replaying blocks...</source>
+        <translation>Blöcke wiederherstellen...</translation>
+    </message>
+    <message>
+        <source>Rescanning...</source>
+        <translation>Durchsuche erneut...</translation>
     </message>
     <message>
         <source>Session not complete!</source>
@@ -4642,12 +4681,20 @@
         <translation>Das letzte Queue wurde vor zu kurzer Zeit erstellt.</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup.</source>
-        <translation>%s korrumpiert. Verwende das Wallet-Tool dash-wallet, um es zu retten, oder stelle ein Backup wieder her.</translation>
+        <source>%s corrupt. Try using the wallet tool piratecash-wallet to salvage or restoring a backup.</source>
+        <translation>%s korrumpiert. Verwende das Wallet-Tool piratecash-wallet, um es zu retten, oder stelle ein Backup wieder her.</translation>
     </message>
     <message>
         <source>Last successful action was too recent.</source>
         <translation>Letzte erfolgreiche Transaktion ist noch zu neu.</translation>
+    </message>
+    <message>
+        <source>Starting network threads...</source>
+        <translation>Netzwerk-Threads werden gestartet...</translation>
+    </message>
+    <message>
+        <source>Synchronizing governance objects...</source>
+        <translation>Synchronisiere Governance Objekte...</translation>
     </message>
     <message>
         <source>The source code is available from %s.</source>
@@ -4676,10 +4723,6 @@
     <message>
         <source>Transaction not valid.</source>
         <translation>Transaktion ungültig.</translation>
-    </message>
-    <message>
-        <source>Trying to connect…</source>
-        <translation>Verbindungsaufbau…</translation>
     </message>
     <message>
         <source>Unable to bind to %s on this computer (bind returned error %s)</source>
@@ -4714,6 +4757,10 @@
         <translation>Aktualisierung der txindex-Datenbank</translation>
     </message>
     <message>
+        <source>Verifying blocks...</source>
+        <translation>Verifiziere Blöcke...</translation>
+    </message>
+    <message>
         <source>Very low number of keys left: %d</source>
         <translation>Nur noch wenige Schlüssel verfügbar: %d</translation>
     </message>
@@ -4728,10 +4775,6 @@
     <message>
         <source>Warning: incorrect parameter %s, path must exist! Using default path.</source>
         <translation>Warnung: Ungültiger Parameter %s. Pfad muss existieren! Nutze Standardpfad.</translation>
-    </message>
-    <message>
-        <source>Will retry…</source>
-        <translation>Versuche erneut…</translation>
     </message>
     <message>
         <source>You are starting with governance validation disabled.</source>

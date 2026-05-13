@@ -74,12 +74,12 @@
         <translation>正在接收地址</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>这些是您要付款过去的Dash地址。在付款之前，务必要检查金额和收款地址是否正确。</translation>
+        <source>These are your PirateCash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>这些是您要付款过去的PirateCash地址。在付款之前，务必要检查金额和收款地址是否正确。</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>这些是用于接收付款的Dash地址. 使用接收标签中的 '创建新接收地址' 按钮来创建新地址.</translation>
+        <source>These are your PirateCash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <translation>这些是用于接收付款的PirateCash地址. 使用接收标签中的 '创建新接收地址' 按钮来创建新地址.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -211,8 +211,8 @@
         <translation>确认加密钱包</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
-        <translation>警告:如果把钱包加​​密后又忘记密码，您就会从此&lt;b&gt;失去所有的Dash&lt;/b&gt;！</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATE&lt;/b&gt;!</source>
+        <translation>警告:如果把钱包加​​密后又忘记密码，您就会从此&lt;b&gt;失去所有的PirateCash&lt;/b&gt;！</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -302,9 +302,6 @@
     </message>
 </context>
 <context>
-    <name>BitcoinApplication</name>
-    </context>
-<context>
     <name>BitcoinGUI</name>
     <message>
         <source>&amp;Overview</source>
@@ -319,44 +316,16 @@
         <translation>发送(&amp;S)</translation>
     </message>
     <message>
-        <source>Send coins to a Dash address</source>
-        <translation>发送币至Dash地址</translation>
+        <source>Send coins to a PirateCash address</source>
+        <translation>发送币至PirateCash地址</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>接收(&amp;R)</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
-        <translation>请求付款(生成二维码和Dash付款协议的URI)</translation>
-    </message>
-    <message>
-        <source>&amp;Options…</source>
-        <translation>选项(&amp;O)…</translation>
-    </message>
-    <message>
-        <source>&amp;Encrypt Wallet…</source>
-        <translation>加密钱包(&amp;E)…</translation>
-    </message>
-    <message>
-        <source>&amp;Backup Wallet…</source>
-        <translation>备份钱包(&amp;B)…</translation>
-    </message>
-    <message>
-        <source>&amp;Change Passphrase…</source>
-        <translation>更改密码(&amp;C)…</translation>
-    </message>
-    <message>
-        <source>&amp;Unlock Wallet…</source>
-        <translation>解锁钱包(&amp;U)</translation>
-    </message>
-    <message>
-        <source>Sign &amp;message…</source>
-        <translation>消息签名(&amp;M)…</translation>
-    </message>
-    <message>
-        <source>&amp;Verify message…</source>
-        <translation>验证消息(&amp;V)…</translation>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
+        <translation>请求付款(生成二维码和PirateCash付款协议的URI)</translation>
     </message>
     <message>
         <source>&amp;Sending addresses</source>
@@ -367,16 +336,16 @@
         <translation>&amp;收款地址</translation>
     </message>
     <message>
-        <source>Open &amp;URI…</source>
-        <translation>打开 &amp;URI…</translation>
-    </message>
-    <message>
         <source>Open Wallet</source>
         <translation>打开钱包</translation>
     </message>
     <message>
         <source>Open a wallet</source>
         <translation>打开一个钱包</translation>
+    </message>
+    <message>
+        <source>Close Wallet...</source>
+        <translation>关闭钱包...</translation>
     </message>
     <message>
         <source>Close wallet</source>
@@ -435,12 +404,16 @@
         <translation>显示 Qt 相关信息</translation>
     </message>
     <message>
+        <source>&amp;Options...</source>
+        <translation>选项(&amp;O)...</translation>
+    </message>
+    <message>
         <source>&amp;About %1</source>
         <translation>关于 %1</translation>
     </message>
     <message>
-        <source>Send %1 funds to a Dash address</source>
-        <translation>发送%1资金至一个Dash地址</translation>
+        <source>Send %1 funds to a PirateCash address</source>
+        <translation>发送%1资金至一个PirateCash地址</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -455,16 +428,32 @@
         <translation>显示或隐藏主窗口</translation>
     </message>
     <message>
+        <source>&amp;Encrypt Wallet...</source>
+        <translation>加密钱包(&amp;E)...</translation>
+    </message>
+    <message>
         <source>Encrypt the private keys that belong to your wallet</source>
         <translation>对钱包中的私钥加密</translation>
+    </message>
+    <message>
+        <source>&amp;Backup Wallet...</source>
+        <translation>备份钱包(&amp;B)...</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
         <translation>备份钱包到其他文件夹</translation>
     </message>
     <message>
+        <source>&amp;Change Passphrase...</source>
+        <translation>更改密码(&amp;C)...</translation>
+    </message>
+    <message>
         <source>Change the passphrase used for wallet encryption</source>
         <translation>更改钱包加密口令</translation>
+    </message>
+    <message>
+        <source>&amp;Unlock Wallet...</source>
+        <translation>解锁钱包(&amp;U)</translation>
     </message>
     <message>
         <source>Unlock wallet</source>
@@ -475,12 +464,20 @@
         <translation>锁定钱包(&amp;L)</translation>
     </message>
     <message>
-        <source>Sign messages with your Dash addresses to prove you own them</source>
-        <translation>使用您的Dash地址进行消息签名以证明对此地址的所有权</translation>
+        <source>Sign &amp;message...</source>
+        <translation>消息签名(&amp;M)...</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dash addresses</source>
-        <translation>验证消息是用来确定此消息是用指定的Dash地址签发的</translation>
+        <source>Sign messages with your PirateCash addresses to prove you own them</source>
+        <translation>使用您的PirateCash地址进行消息签名以证明对此地址的所有权</translation>
+    </message>
+    <message>
+        <source>&amp;Verify message...</source>
+        <translation>验证消息(&amp;V)...</translation>
+    </message>
+    <message>
+        <source>Verify messages to ensure they were signed with specified PirateCash addresses</source>
+        <translation>验证消息是用来确定此消息是用指定的PirateCash地址签发的</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -543,11 +540,15 @@
         <translation>显示用过的接收地址和标签的列表</translation>
     </message>
     <message>
+        <source>Open &amp;URI...</source>
+        <translation>打开 &amp;URI...</translation>
+    </message>
+    <message>
         <source>&amp;Command-line options</source>
         <translation>&amp;命令行选项</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Dash command-line options</source>
+        <source>Show the %1 help message to get a list with possible PirateCash command-line options</source>
         <translation>显示 %1 帮助信息，获取可用命令行选项列表</translation>
     </message>
     <message>
@@ -581,8 +582,12 @@
         <translation>打开调试和诊断控制台</translation>
     </message>
     <message>
-        <source>Open a dash: URI</source>
-        <translation>打开一个dash: URI</translation>
+        <source>Open a piratecash: URI</source>
+        <translation>打开一个piratecash: URI</translation>
+    </message>
+    <message>
+        <source>Create Wallet...</source>
+        <translation>创建钱包...</translation>
     </message>
     <message>
         <source>Create a new wallet</source>
@@ -617,12 +622,36 @@
         <translation>查看治理提案</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Dash network</source>
-        <translation><numerusform>%n个有效的Dash网络连接</numerusform></translation>
+        <source>%n active connection(s) to PirateCash network</source>
+        <translation><numerusform>%n个有效的PirateCash网络连接</numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
         <translation>网络活动已禁用</translation>
+    </message>
+    <message>
+        <source>Syncing Headers (%1%)...</source>
+        <translation>同步区块头部 (%1%)...</translation>
+    </message>
+    <message>
+        <source>Synchronizing with network...</source>
+        <translation>正在与网络同步...</translation>
+    </message>
+    <message>
+        <source>Indexing blocks on disk...</source>
+        <translation>正在为硬盘中的区块建立索引...</translation>
+    </message>
+    <message>
+        <source>Processing blocks on disk...</source>
+        <translation>正在处理硬盘中的区块...</translation>
+    </message>
+    <message>
+        <source>Reindexing blocks on disk...</source>
+        <translation>正在为硬盘中的区块重建索引...</translation>
+    </message>
+    <message>
+        <source>Connecting to peers...</source>
+        <translation>正在连接到节点……</translation>
     </message>
     <message numerus="yes">
         <source>Processed %n block(s) of transaction history.</source>
@@ -633,40 +662,8 @@
         <translation>落后 %1 </translation>
     </message>
     <message>
-        <source>Close Wallet…</source>
-        <translation>关闭钱包…</translation>
-    </message>
-    <message>
-        <source>Create Wallet…</source>
-        <translation>创建钱包…</translation>
-    </message>
-    <message>
-        <source>Syncing Headers (%1%)…</source>
-        <translation>同步区块头部 (%1%)…</translation>
-    </message>
-    <message>
-        <source>Synchronizing with network…</source>
-        <translation>正在与网络同步…</translation>
-    </message>
-    <message>
-        <source>Indexing blocks on disk…</source>
-        <translation>正在为硬盘中的区块建立索引…</translation>
-    </message>
-    <message>
-        <source>Processing blocks on disk…</source>
-        <translation>正在处理硬盘中的区块…</translation>
-    </message>
-    <message>
-        <source>Reindexing blocks on disk…</source>
-        <translation>正在为硬盘中的区块重建索引…</translation>
-    </message>
-    <message>
-        <source>Connecting to peers…</source>
-        <translation>正在连接到节点……</translation>
-    </message>
-    <message>
-        <source>Catching up…</source>
-        <translation>更新中…</translation>
+        <source>Catching up...</source>
+        <translation>更新中...</translation>
     </message>
     <message>
         <source>Last received block was generated %1 ago.</source>
@@ -790,7 +787,7 @@
         <source>Original message:</source>
         <translation>原始信息:</translation>
     </message>
-</context>
+    </context>
 <context>
     <name>CoinControlDialog</name>
     <message>
@@ -985,8 +982,8 @@
 <context>
     <name>CreateWalletActivity</name>
     <message>
-        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;…</source>
-        <translation>正在创建钱包 &lt;b&gt;%1&lt;/b&gt;…</translation>
+        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
+        <translation>正在创建钱包 &lt;b&gt;%1&lt;/b&gt;...</translation>
     </message>
     <message>
         <source>Create wallet failed</source>
@@ -1035,7 +1032,7 @@
         <source>Create</source>
         <translation>创建</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>EditAddressDialog</name>
     <message>
@@ -1071,8 +1068,8 @@
         <translation>编辑发送地址</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Dash address.</source>
-        <translation>输入的地址“%1”不是有效的Dash地址。</translation>
+        <source>The entered address "%1" is not a valid PirateCash address.</source>
+        <translation>输入的地址“%1”不是有效的PirateCash地址。</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -1160,8 +1157,8 @@
         <translation>%1信息</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Dash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH and 10 DASH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;%1基础知识&lt;/h3&gt;%1通过隐藏您的资金来源为您提供真正的财务隐私。您的钱包中所有的Dash都由不同的“输入”组成，您可以将其视为分开的离散硬币。&lt;br&gt;%1使用创新的方法将您的输入与其他两个人的输入相结合，而过程中不会让您的Dash离开您的钱包。每时每刻，您仍然控制着您的钱。&lt;hr&gt;&lt;b&gt;%1的运作原理如下：&lt;/b&gt;&lt;ol type="1"&gt;&lt;li&gt;%1首先将您的交易分柝成多个标准面额的交易。这些标准面额分别为0.001 DASH，0.01 DASH，0.1 DASH，1 DASH和10 DASH --有点像您每天使用的纸币。&lt;/li&gt;&lt;li&gt;您的钱包然后发送请求到网络上有专门配置的软件节点，称为“主节点”。这些主节点会收到您希望混合一些资金的通知。没有可识别的信息发送到主节点，所以他们永远不会知道您是“谁”。&lt;li&gt;当另外两个人发送类似的消息时，表示希望混合相同的面额的话，混合会话就会开始。相关的主节点会混合这些输入，并指示所有三个用户的钱包将已经转换了输入的交易支付给自己。您的钱包直接支付给自己，但是付给不同的位址（称之为找零地址）。&lt;/li&gt;&lt;li&gt;为了完全掩盖您的资金来源，您的钱包必须以每个面额来重复此过程数次。每次这个过程完成后，都称之为一个“循环”。每个循环的%1都会令确定您的资金来源的工作倍加困难。&lt;/li&gt;&lt;li&gt;这种混合过程发生在后台，而不需要您进行任何操作。当您想进行交易时，您的资金将已被混币处理。不需再花额外的时间等待。&lt;/li&gt;&lt;/ol&gt;&lt;hr&gt;重要：&lt;b&gt;您的钱包只能拥有1000个“找零地址”。每次混合事件发生时，最多会使用9个找零地址。这意味着这1000个地址可以容许100次的混合事件。当其的中900个已经被使用后，您的钱包必须创建更多的地址。如果您启用了自动备份，则只能够这样做。&lt;br&gt;因此，禁用备份的用户也将禁用%1。&lt;hr&gt;如欲了解更多信息请参阅&lt;a style="%2" href="%3"&gt;%1文档&lt;/a&gt;。</translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE and 10 PIRATE -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;%1基础知识&lt;/h3&gt;%1通过隐藏您的资金来源为您提供真正的财务隐私。您的钱包中所有的PirateCash都由不同的“输入”组成，您可以将其视为分开的离散硬币。&lt;br&gt;%1使用创新的方法将您的输入与其他两个人的输入相结合，而过程中不会让您的PirateCash离开您的钱包。每时每刻，您仍然控制着您的钱。&lt;hr&gt;&lt;b&gt;%1的运作原理如下：&lt;/b&gt;&lt;ol type="1"&gt;&lt;li&gt;%1首先将您的交易分柝成多个标准面额的交易。这些标准面额分别为0.001 PIRATE，0.01 PIRATE，0.1 PIRATE，1 PIRATE和10 PIRATE --有点像您每天使用的纸币。&lt;/li&gt;&lt;li&gt;您的钱包然后发送请求到网络上有专门配置的软件节点，称为“主节点”。这些主节点会收到您希望混合一些资金的通知。没有可识别的信息发送到主节点，所以他们永远不会知道您是“谁”。&lt;li&gt;当另外两个人发送类似的消息时，表示希望混合相同的面额的话，混合会话就会开始。相关的主节点会混合这些输入，并指示所有三个用户的钱包将已经转换了输入的交易支付给自己。您的钱包直接支付给自己，但是付给不同的位址（称之为找零地址）。&lt;/li&gt;&lt;li&gt;为了完全掩盖您的资金来源，您的钱包必须以每个面额来重复此过程数次。每次这个过程完成后，都称之为一个“循环”。每个循环的%1都会令确定您的资金来源的工作倍加困难。&lt;/li&gt;&lt;li&gt;这种混合过程发生在后台，而不需要您进行任何操作。当您想进行交易时，您的资金将已被混币处理。不需再花额外的时间等待。&lt;/li&gt;&lt;/ol&gt;&lt;hr&gt;重要：&lt;b&gt;您的钱包只能拥有1000个“找零地址”。每次混合事件发生时，最多会使用9个找零地址。这意味着这1000个地址可以容许100次的混合事件。当其的中900个已经被使用后，您的钱包必须创建更多的地址。如果您启用了自动备份，则只能够这样做。&lt;br&gt;因此，禁用备份的用户也将禁用%1。&lt;hr&gt;如欲了解更多信息请参阅&lt;a style="%2" href="%3"&gt;%1文档&lt;/a&gt;。</translation>
     </message>
 </context>
 <context>
@@ -1177,6 +1174,10 @@
     <message>
         <source>As this is the first time the program is launched, you can choose where %1 will store its data.</source>
         <translation>由于这是第一次启动此程序，您可以选择%1的数据所存储的位置</translation>
+    </message>
+    <message>
+        <source>When you click OK, %1 will begin to download and process the full %4 block chain (%2GB) starting with the earliest transactions in %3 when %4 initially launched.</source>
+        <translation>当您点击确认后，%1 将会在 %4 启动时从  %3 中最早的交易开始，下载并处理完整的 %4 区块链 (%2GB)。</translation>
     </message>
     <message>
         <source>This initial synchronisation is very demanding, and may expose hardware problems with your computer that had previously gone unnoticed. Each time you run %1, it will continue downloading where it left off.</source>
@@ -1203,8 +1204,8 @@
         <translation>会在此目录中存储约 %1 GB 的数据。</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Dash block chain.</source>
-        <translation>%1 将会下载并存储Dash区块链.</translation>
+        <source>%1 will download and store a copy of the PirateCash block chain.</source>
+        <translation>%1 将会下载并存储PirateCash区块链.</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1302,12 +1303,8 @@
         <translation>复制保证金输出点</translation>
     </message>
     <message>
-        <source>Please wait…</source>
-        <translation>请稍等…</translation>
-    </message>
-    <message>
-        <source>Updating…</source>
-        <translation>更新中…</translation>
+        <source>Updating...</source>
+        <translation>更新中...</translation>
     </message>
     <message>
         <source>ENABLED</source>
@@ -1342,6 +1339,10 @@
         <translation>按任何属性筛选 (例. 地址或protx hash)</translation>
     </message>
     <message>
+        <source>Please wait...</source>
+        <translation>请稍等...</translation>
+    </message>
+    <message>
         <source>Additional information for DIP3 Masternode %1</source>
         <translation>DIP3 主节点 %1 的额外信息</translation>
     </message>
@@ -1353,24 +1354,20 @@
         <translation>表单</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
-        <translation>最近的交易可能尚未显示，因此您的钱包的余额可能不正确。一旦您的钱包完成与Dash网络的同步，这个信息将会修正，如下所述。</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the PirateCash network, as detailed below.</source>
+        <translation>最近的交易可能尚未显示，因此您的钱包的余额可能不正确。一旦您的钱包完成与PirateCash网络的同步，这个信息将会修正，如下所述。</translation>
     </message>
     <message>
-        <source>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>假如您正在尝试花费尚未显示出来的Dash，这个交易将不会被网络所接受。</translation>
+        <source>Attempting to spend PirateCash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>假如您正在尝试花费尚未显示出来的PirateCash，这个交易将不会被网络所接受。</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
         <translation>剩余区块数量</translation>
     </message>
     <message>
-        <source>Unknown…</source>
-        <translation>未知…</translation>
-    </message>
-    <message>
-        <source>calculating…</source>
-        <translation>正在计算…</translation>
+        <source>Unknown...</source>
+        <translation>未知...</translation>
     </message>
     <message>
         <source>Last block time</source>
@@ -1385,6 +1382,10 @@
         <translation>每小时进度增加</translation>
     </message>
     <message>
+        <source>calculating...</source>
+        <translation>正在计算...</translation>
+    </message>
+    <message>
         <source>Estimated time left until synced</source>
         <translation>预计剩余同步时间</translation>
     </message>
@@ -1393,8 +1394,8 @@
         <translation>隐藏</translation>
     </message>
     <message>
-        <source>Unknown. Syncing Headers (%1, %2%)…</source>
-        <translation>未知状态. 同步区块头部 (%1, %2%)…</translation>
+        <source>Unknown. Syncing Headers (%1, %2%)...</source>
+        <translation>未知状态. 同步区块头部 (%1, %2%)...</translation>
     </message>
 </context>
 <context>
@@ -1423,8 +1424,8 @@
         <translation>默认钱包</translation>
     </message>
     <message>
-        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;…</source>
-        <translation>正在打开钱包 &lt;b&gt;%1&lt;/b&gt;…</translation>
+        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
+        <translation>正在打开钱包 &lt;b&gt;%1&lt;/b&gt;...</translation>
     </message>
 </context>
 <context>
@@ -1550,8 +1551,8 @@
         <translation>目标余额</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>自动在路由器打开Dash Core客户端端口。此项只在路由器支持UPnP且开启时有效。</translation>
+        <source>Automatically open the PirateCash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>自动在路由器打开PirateCash Core客户端端口。此项只在路由器支持UPnP且开启时有效。</translation>
     </message>
     <message>
         <source>Map port using NA&amp;T-PMP</source>
@@ -1566,8 +1567,8 @@
         <translation>允许连入连接</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a SOCKS5 proxy.</source>
-        <translation>通过SOCKS5代理连接Dash网络。</translation>
+        <source>Connect to the PirateCash network through a SOCKS5 proxy.</source>
+        <translation>通过SOCKS5代理连接PirateCash网络。</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1580,6 +1581,14 @@
     <message>
         <source>Options set in this dialog are overridden by the command line or in the configuration file:</source>
         <translation>此对话框中设置的选项被命令行或配置文件覆盖:</translation>
+    </message>
+    <message>
+        <source>Hide the icon from the system tray.</source>
+        <translation>隐藏系统托盘中的图标.</translation>
+    </message>
+    <message>
+        <source>&amp;Hide tray icon</source>
+        <translation>&amp;隐藏托盘图标</translation>
     </message>
     <message>
         <source>Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Exit in the menu.</source>
@@ -1630,8 +1639,8 @@
         <translation>使用UPnP映射端口(&amp;U)</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
-        <translation>自动打开路由器上Dash Core客户端端口. 这仅在您的路由器支持NAT-PMP并且已启用时才有效. 外部端口可以是随机的.</translation>
+        <source>Automatically open the PirateCash Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
+        <translation>自动打开路由器上PirateCash Core客户端端口. 这仅在您的路由器支持NAT-PMP并且已启用时才有效. 外部端口可以是随机的.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -1688,6 +1697,12 @@
     <message>
         <source>The user interface language can be set here. This setting will take effect after restarting %1.</source>
         <translation>可以在这里设定用户界面的语言。这个设定在重启 %1 后才会生效。</translation>
+    </message>
+    <message>
+        <source>Language missing or translation incomplete? Help contributing translations here:
+https://www.transifex.com/projects/p/piratecash/</source>
+        <translation>缺少相关语言或翻译不完整？请到这里协助翻译：
+https://www.transifex.com/projects/p/piratecash/</translation>
     </message>
     <message>
         <source>&amp;Unit to show amounts in:</source>
@@ -1753,8 +1768,8 @@
         <translation>表单</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Dash network after a connection is established, but this process has not completed yet.</source>
-        <translation>显示的信息也许已过期。当与Dash网络连接后钱包程序会自动同步，但现在还未完成。</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
+        <translation>显示的信息也许已过期。当与PirateCash网络连接后钱包程序会自动同步，但现在还未完成。</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -1833,8 +1848,8 @@
         <translation>数量与循环次数：</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
-        <translation>0 Dash / 0 循环数</translation>
+        <source>0 PIRATE / 0 Rounds</source>
+        <translation>0 PirateCash / 0 循环数</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -1854,7 +1869,7 @@
     </message>
     <message>
         <source>The denominations you submitted to the Masternode.&lt;br&gt;To mix, other users must submit the exact same denominations.</source>
-        <translation>您向主节点所提交的用以面额化混合的Dash。&lt;br&gt;为了混合，其他用户必须提交完全一样的面额。</translation>
+        <translation>您向主节点所提交的用以面额化混合的PirateCash。&lt;br&gt;为了混合，其他用户必须提交完全一样的面额。</translation>
     </message>
     <message>
         <source>out of sync</source>
@@ -1979,16 +1994,16 @@
         <translation>支付请求出错</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
-        <translation>无法启动Dash程序：click-to-pay handler</translation>
+        <source>Cannot start piratecash: click-to-pay handler</source>
+        <translation>无法启动PirateCash程序：click-to-pay handler</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>URI 处理</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash://' 不是一个有效链接. 请使用'dash:'</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>'piratecash://' 不是一个有效链接. 请使用'piratecash:'</translation>
     </message>
     <message>
         <source>Cannot process payment request as BIP70 is no longer supported.</source>
@@ -1999,8 +2014,12 @@
         <translation>由于终止支持, 您应当要求商家为您提供一个兼容BIP21的URI, 或使用仍支持BIP70的钱包.</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Dash address or malformed URI parameters.</source>
-        <translation>URI不能被解析! 原因可能是无效的Dash地址或URI参数格式错误。</translation>
+        <source>Invalid payment address %1</source>
+        <translation>无效的付款地址 %1</translation>
+    </message>
+    <message>
+        <source>URI cannot be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
+        <translation>URI不能被解析! 原因可能是无效的PirateCash地址或URI参数格式错误。</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -2011,22 +2030,18 @@
     <name>PeerTableModel</name>
     <message>
         <source>User Agent</source>
-        <extracomment>Title of Peers Table column which contains the peer's User Agent string.</extracomment>
         <translation>用户代理</translation>
     </message>
     <message>
         <source>Ping</source>
-        <extracomment>Title of Peers Table column which indicates the current latency of the connection with the peer.</extracomment>
         <translation> Ping</translation>
     </message>
     <message>
         <source>Sent</source>
-        <extracomment>Title of Peers Table column which indicates the total amount of network information we have sent to the peer.</extracomment>
         <translation>发送</translation>
     </message>
     <message>
         <source>Received</source>
-        <extracomment>Title of Peers Table column which indicates the total amount of network information we have received from the peer.</extracomment>
         <translation>已接收</translation>
     </message>
     </context>
@@ -2159,7 +2174,7 @@
         <translation>错误: -custom-css-dir 路径下%1 CSS file(s)丢失.</translation>
     </message>
     <message>
-        <source>%1 didn't yet exit safely…</source>
+        <source>%1 didn't yet exit safely...</source>
         <translation>%1 尚未安全退出</translation>
     </message>
     <message>
@@ -2167,8 +2182,8 @@
         <translation>金额</translation>
     </message>
     <message>
-        <source>Enter a Dash address (e.g. %1)</source>
-        <translation>输入一个Dash地址(例如 %1)</translation>
+        <source>Enter a PirateCash address (e.g. %1)</source>
+        <translation>输入一个PirateCash地址(例如 %1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
@@ -2270,15 +2285,15 @@
         <translation>二维码</translation>
     </message>
     <message>
-        <source>&amp;Save Image…</source>
-        <translation>保存图片(&amp;S)…</translation>
+        <source>&amp;Save Image...</source>
+        <translation>保存图片(&amp;S)...</translation>
     </message>
 </context>
 <context>
     <name>QRImageWidget</name>
     <message>
-        <source>&amp;Save Image…</source>
-        <translation>保存图片(&amp;S)…</translation>
+        <source>&amp;Save Image...</source>
+        <translation>保存图片(&amp;S)...</translation>
     </message>
     <message>
         <source>&amp;Copy Image</source>
@@ -2404,6 +2419,10 @@
         <translation>选择一个节点查看详细信息.</translation>
     </message>
     <message>
+        <source>Direction</source>
+        <translation>方向</translation>
+    </message>
+    <message>
         <source>Version</source>
         <translation>版本</translation>
     </message>
@@ -2510,6 +2529,10 @@
     <message>
         <source>Services</source>
         <translation>服务</translation>
+    </message>
+    <message>
+        <source>Ban Score</source>
+        <translation>禁止 扣分</translation>
     </message>
     <message>
         <source>Connection Time</source>
@@ -2636,6 +2659,22 @@
         <translation>经由 %1</translation>
     </message>
     <message>
+        <source>never</source>
+        <translation>永不</translation>
+    </message>
+    <message>
+        <source>Inbound</source>
+        <translation>导入</translation>
+    </message>
+    <message>
+        <source>Outbound</source>
+        <translation>导出</translation>
+    </message>
+    <message>
+        <source>Outbound block-relay</source>
+        <translation>向外区块广播</translation>
+    </message>
+    <message>
         <source>Regular</source>
         <translation>常规</translation>
     </message>
@@ -2651,12 +2690,12 @@
         <source>Unknown</source>
         <translation>未知</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>附加在付款要求中的讯息，可以不填，打开要求内容时会显示。注意：这个讯息不会随着付款送到Dash网路上。</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>附加在付款要求中的讯息，可以不填，打开要求内容时会显示。注意：这个讯息不会随着付款送到PirateCash网路上。</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -2667,8 +2706,8 @@
         <translation>可为新建的收款地址添加一个可选标签。</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>附加在付款要求中的讯息，可以不填，打开要求内容时会显示。&lt;br&gt;注意：这个讯息不会随着付款送到Dash网路上。</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>附加在付款要求中的讯息，可以不填，打开要求内容时会显示。&lt;br&gt;注意：这个讯息不会随着付款送到PirateCash网路上。</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address (used by you to identify an invoice).  It is also attached to the payment request.</source>
@@ -2750,7 +2789,7 @@
         <source>Copy amount</source>
         <translation>复制金额</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>ReceiveRequestDialog</name>
     <message>
@@ -2762,8 +2801,8 @@
         <translation>复制地址(&amp;A)</translation>
     </message>
     <message>
-        <source>&amp;Save Image…</source>
-        <translation>保存图片(&amp;S)…</translation>
+        <source>&amp;Save Image...</source>
+        <translation>保存图片(&amp;S)...</translation>
     </message>
     <message>
         <source>Request payment to %1</source>
@@ -2816,6 +2855,10 @@
         <translation>交易源地址控制功能</translation>
     </message>
     <message>
+        <source>Inputs...</source>
+        <translation>输入...</translation>
+    </message>
+    <message>
         <source>automatically selected</source>
         <translation>自动选择</translation>
     </message>
@@ -2844,10 +2887,6 @@
         <translation>零散金额：</translation>
     </message>
     <message>
-        <source>Inputs…</source>
-        <translation>输入…</translation>
-    </message>
-    <message>
         <source>After Fee:</source>
         <translation>加上交易费用后:</translation>
     </message>
@@ -2868,24 +2907,24 @@
         <translation>交易手续费：</translation>
     </message>
     <message>
-        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
-        <translation>当交易量小于区块空间时, 矿工和中继节点或许会强制收取最低费用. 仅支付最低费用也可以, 但请注意, 一旦Dash交易的需求超出了网络的处理能力, 则会导致这笔交易永远无法被确认.</translation>
+        <source>Choose...</source>
+        <translation>选择...</translation>
+    </message>
+    <message>
+        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
+        <translation>当交易量小于区块空间时, 矿工和中继节点或许会强制收取最低费用. 仅支付最低费用也可以, 但请注意, 一旦PirateCash交易的需求超出了网络的处理能力, 则会导致这笔交易永远无法被确认.</translation>
     </message>
     <message>
         <source>A too low fee might result in a never confirming transaction (read the tooltip)</source>
         <translation>过低的交易手续费也许会导致交易永远无法被确认 (阅读提示信息)</translation>
     </message>
     <message>
-        <source>(Smart fee not initialized yet. This usually takes a few blocks…)</source>
-        <translation>(手续费演算法还没有准备好。通常都要等几个块才可以…)</translation>
-    </message>
-    <message>
         <source>Confirmation time target:</source>
         <translation>确认时间目标：</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
-        <translation>如果自定手续费设定为1000 duffs，而交易信息只有250字节的话，那么选择"每千字节"就只会支付250 duffs的手续费，&lt;br /&gt;而"至少"会支付1000 duffs。但如果交易信息大于一千字节,那么两者都要按每千字节付费。</translation>
+        <source>If the custom fee is set to 1000 units and the transaction is only 250 bytes, then "per kilobyte" only pays 250 units in fee,&lt;br /&gt;while "at least" pays 1000 units. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <translation>如果自定手续费设定为1000 units，而交易信息只有250字节的话，那么选择"每千字节"就只会支付250 units的手续费，&lt;br /&gt;而"至少"会支付1000 units。但如果交易信息大于一千字节,那么两者都要按每千字节付费。</translation>
     </message>
     <message>
         <source>per kilobyte</source>
@@ -2894,10 +2933,6 @@
     <message>
         <source>Using the fallbackfee can result in sending a transaction that will take several hours or days (or never) to confirm. Consider choosing your fee manually or wait until you have validated the complete chain.</source>
         <translation>使用fallbackfee可能会导致发送一笔需要几个小时或几天(或永远不会)确认的交易. 建议手动选择手续费, 或者等待您完全验证整个区块链后.</translation>
-    </message>
-    <message>
-        <source>Choose…</source>
-        <translation>选择…</translation>
     </message>
     <message>
         <source>Note: Not enough data for fee estimation, using the fallback fee instead.</source>
@@ -2918,6 +2953,10 @@
     <message>
         <source>Custom:</source>
         <translation>自定义：</translation>
+    </message>
+    <message>
+        <source>(Smart fee not initialized yet. This usually takes a few blocks...)</source>
+        <translation>(手续费演算法还没有准备好。通常都要等几个块才可以...)</translation>
     </message>
     <message>
         <source>Confirm the send action</source>
@@ -3068,6 +3107,10 @@
         <translation>或</translation>
     </message>
     <message>
+        <source>To review recipient list click "Show Details..."</source>
+        <translation>查看收件人列表请点击 "显示详细信息..."</translation>
+    </message>
+    <message>
         <source>Confirm send coins</source>
         <translation>确认发送货币</translation>
     </message>
@@ -3078,10 +3121,6 @@
     <message>
         <source>Send</source>
         <translation>发送</translation>
-    </message>
-    <message>
-        <source>To review recipient list click "Show Details…"</source>
-        <translation>查看收件人列表请点击 "显示详细信息…"</translation>
     </message>
     <message>
         <source>The recipient address is not valid. Please recheck.</source>
@@ -3116,8 +3155,8 @@
         <translation><numerusform>预计在%n 个区块内开始确认。</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Dash address</source>
-        <translation>警告：无效的Dash地址</translation>
+        <source>Warning: Invalid PirateCash address</source>
+        <translation>警告：无效的PirateCash地址</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -3143,7 +3182,7 @@
         <translation>付给(&amp;T)：</translation>
     </message>
     <message>
-        <source>The Dash address to send the payment to</source>
+        <source>The PirateCash address to send the payment to</source>
         <translation>选择发款地址</translation>
     </message>
     <message>
@@ -3183,8 +3222,8 @@
         <translation>在所选单位中发送的金额</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>手续费将从发送金额中扣除。接收者将收到的Dash金额将会比您在金额字段中输入的金额为少。如果选择了多个收款人，该费用将会被平均摊分。</translation>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PirateCash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <translation>手续费将从发送金额中扣除。接收者将收到的PirateCash金额将会比您在金额字段中输入的金额为少。如果选择了多个收款人，该费用将会被平均摊分。</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -3199,8 +3238,8 @@
         <translation>消息：</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Dash network.</source>
-        <translation>附加在Dash付款协议URI中的信息，会和交易内容一并存储，可供您参考。提示：此信息不会发送到Dash网络上。</translation>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <translation>附加在PirateCash付款协议URI中的信息，会和交易内容一并存储，可供您参考。提示：此信息不会发送到PirateCash网络上。</translation>
     </message>
     <message>
         <source>This is an unauthenticated payment request.</source>
@@ -3222,8 +3261,8 @@
 <context>
     <name>ShutdownWindow</name>
     <message>
-        <source>%1 is shutting down…</source>
-        <translation>正在关闭 %1 …</translation>
+        <source>%1 is shutting down...</source>
+        <translation>正在关闭 %1 ...</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
@@ -3241,11 +3280,11 @@
         <translation>签名消息(&amp;S)</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Dash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <source>You can sign messages/agreements with your addresses to prove you can receive PirateCash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
         <translation>您可以用自己的地址签署信息/协议，来证明您对地址的所有权。但是请小心，不要签署语意含糊不清的内容，因为钓鱼式诈骗可能会用骗您签署的手法来冒充是您。只有在语句中的细节您都同意时才签署。</translation>
     </message>
     <message>
-        <source>The Dash address to sign the message with</source>
+        <source>The PirateCash address to sign the message with</source>
         <translation>对此地址进行签名</translation>
     </message>
     <message>
@@ -3277,8 +3316,8 @@
         <translation>复制当前签名至剪切板</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Dash address</source>
-        <translation>签署信息证明您拥有此Dash地址</translation>
+        <source>Sign the message to prove you own this PirateCash address</source>
+        <translation>签署信息证明您拥有此PirateCash地址</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -3301,7 +3340,7 @@
         <translation>请在下面输入接收者地址、消息（确保换行符、空格符、制表符等完全相同）和签名以验证消息。请仔细核对签名信息，以提防中间人攻击。请注意，这只是证明接收方签名的地址，它不能证明任何交易！</translation>
     </message>
     <message>
-        <source>The Dash address the message was signed with</source>
+        <source>The PirateCash address the message was signed with</source>
         <translation>已签名的地址</translation>
     </message>
     <message>
@@ -3313,8 +3352,8 @@
         <translation>签名消息时所用的签名</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Dash address</source>
-        <translation>验证信息用来确保此被签署信息对应相对的Dash地址</translation>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
+        <translation>验证信息用来确保此被签署信息对应相对的PirateCash地址</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -3548,7 +3587,7 @@
     </message>
     <message>
         <source>Generated coins must mature %1 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to "not accepted" and it won't be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
-        <translation>生成的Dash在可以使用前必须有 %1 个成熟的区块。当您生成了此区块后，它将被广播到网络中以加入区块链。如果它未成功进入区块链，其状态将变更为“不接受”并且不可使用。这可能偶尔会发生，如果另一个节点比您早几秒钟成功生成一个区块。</translation>
+        <translation>生成的PirateCash在可以使用前必须有 %1 个成熟的区块。当您生成了此区块后，它将被广播到网络中以加入区块链。如果它未成功进入区块链，其状态将变更为“不接受”并且不可使用。这可能偶尔会发生，如果另一个节点比您早几秒钟成功生成一个区块。</translation>
     </message>
     <message>
         <source>Debug information</source>
@@ -3752,8 +3791,8 @@
         <translation>今年</translation>
     </message>
     <message>
-        <source>Range…</source>
-        <translation>范围…</translation>
+        <source>Range...</source>
+        <translation>范围...</translation>
     </message>
     <message>
         <source>Most Common</source>
@@ -3953,7 +3992,7 @@ Go to File &gt; Open Wallet to load a wallet.
     <name>WalletModel</name>
     <message>
         <source>Send Coins</source>
-        <translation>发送Dash</translation>
+        <translation>发送PirateCash</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -4000,7 +4039,7 @@ Go to File &gt; Open Wallet to load a wallet.
     </message>
 </context>
 <context>
-    <name>dash-core</name>
+    <name>piratecash-core</name>
     <message>
         <source>Error: Listening for incoming connections failed (listen returned error %s)</source>
         <translation>错误：监听外来连接失败(监听回馈错误 %s)</translation>
@@ -4110,6 +4149,14 @@ Go to File &gt; Open Wallet to load a wallet.
         <translation>用户数已满足，开始签名 (等待 %s)</translation>
     </message>
     <message>
+        <source>Found enough users, signing ...</source>
+        <translation>用户数已满足，开始签名 ... </translation>
+    </message>
+    <message>
+        <source>Importing...</source>
+        <translation>正在导入...</translation>
+    </message>
+    <message>
         <source>Incompatible mode.</source>
         <translation>不兼容模式。</translation>
     </message>
@@ -4142,8 +4189,16 @@ Go to File &gt; Open Wallet to load a wallet.
         <translation>无效的最少数叉勺签名人以  -minsporkkeys 标识</translation>
     </message>
     <message>
+        <source>Loading banlist...</source>
+        <translation>正在加载黑名单...</translation>
+    </message>
+    <message>
         <source>Lock is already in place.</source>
         <translation>已锁定。</translation>
+    </message>
+    <message>
+        <source>Mixing in progress...</source>
+        <translation>正在混合...</translation>
     </message>
     <message>
         <source>Need to specify a port with -whitebind: '%s'</source>
@@ -4166,36 +4221,12 @@ Go to File &gt; Open Wallet to load a wallet.
         <translation>在主节点列表中不存在。</translation>
     </message>
     <message>
-        <source>Pruning blockstore…</source>
-        <translation>正在修剪区块存储…</translation>
-    </message>
-    <message>
-        <source>Replaying blocks…</source>
-        <translation>重播区块中…</translation>
-    </message>
-    <message>
-        <source>Rescanning…</source>
-        <translation>正在重新扫描…</translation>
-    </message>
-    <message>
-        <source>Starting network threads…</source>
-        <translation>正在启动网络线程…</translation>
-    </message>
-    <message>
         <source>Submitted to masternode, waiting in queue %s</source>
         <translation>提交到主节点，在队列 %s 中等待</translation>
     </message>
     <message>
         <source>Synchronization finished</source>
         <translation>同步完成</translation>
-    </message>
-    <message>
-        <source>Synchronizing blockchain…</source>
-        <translation>正在同步区块链…</translation>
-    </message>
-    <message>
-        <source>Synchronizing governance objects…</source>
-        <translation>正在同步治理对象…</translation>
     </message>
     <message>
         <source>Unable to start HTTP server. See debug log for details.</source>
@@ -4208,6 +4239,14 @@ Go to File &gt; Open Wallet to load a wallet.
     <message>
         <source>User Agent comment (%s) contains unsafe characters.</source>
         <translation>用户代理评论(%s)包含不安全的字符。</translation>
+    </message>
+    <message>
+        <source>Verifying wallet(s)...</source>
+        <translation>验证(多个)钱包中...</translation>
+    </message>
+    <message>
+        <source>Will retry...</source>
+        <translation>即将重试...</translation>
     </message>
     <message>
         <source>Can't find random Masternode.</source>
@@ -4326,6 +4365,10 @@ Go to File &gt; Open Wallet to load a wallet.
         <translation>错误: %s 磁盘空间不足</translation>
     </message>
     <message>
+        <source>Error: failed to add socket to epollfd (epoll_ctl returned error %s)</source>
+        <translation>错误: 无法添加socket到epollfd (epoll_ctl 返回错误 %s)</translation>
+    </message>
+    <message>
         <source>Exceeded max tries.</source>
         <translation>超过最大尝试次数.</translation>
     </message>
@@ -4354,10 +4397,6 @@ Go to File &gt; Open Wallet to load a wallet.
         <translation>验证数据库失败</translation>
     </message>
     <message>
-        <source>Found enough users, signing…</source>
-        <translation>用户数已满足，开始签名…</translation>
-    </message>
-    <message>
         <source>Ignoring duplicate -wallet %s.</source>
         <translation>忽略重复 -钱包 %s.</translation>
     </message>
@@ -4374,6 +4413,14 @@ Go to File &gt; Open Wallet to load a wallet.
         <translation>无效的 masternodeblsprivkey。请阅读文档。</translation>
     </message>
     <message>
+        <source>Loading block index...</source>
+        <translation>正在读取区块索引...</translation>
+    </message>
+    <message>
+        <source>Loading wallet...</source>
+        <translation>正在读取钱包...</translation>
+    </message>
+    <message>
         <source>Masternode queue is full.</source>
         <translation>主节点列队已满。</translation>
     </message>
@@ -4384,10 +4431,6 @@ Go to File &gt; Open Wallet to load a wallet.
     <message>
         <source>Missing input transaction information.</source>
         <translation>缺少交易信息的输入数据。</translation>
-    </message>
-    <message>
-        <source>Mixing in progress…</source>
-        <translation>正在混合…</translation>
     </message>
     <message>
         <source>No errors detected.</source>
@@ -4416,6 +4459,10 @@ Go to File &gt; Open Wallet to load a wallet.
     <message>
         <source>Prune mode is incompatible with -txindex.</source>
         <translation>修剪模式与 -txindex 不兼容。</translation>
+    </message>
+    <message>
+        <source>Pruning blockstore...</source>
+        <translation>正在修剪区块存储...</translation>
     </message>
     <message>
         <source>SQLiteDatabase: Failed to execute statement to verify database: %s</source>
@@ -4450,6 +4497,10 @@ Go to File &gt; Open Wallet to load a wallet.
         <translation>指定的  -walletdir "%s" 不是一个目录</translation>
     </message>
     <message>
+        <source>Synchronizing blockchain...</source>
+        <translation>正在同步区块链...</translation>
+    </message>
+    <message>
         <source>The wallet will avoid paying less than the minimum relay fee.</source>
         <translation>钱包避免低于最小交易费的支付</translation>
     </message>
@@ -4482,6 +4533,10 @@ Go to File &gt; Open Wallet to load a wallet.
         <translation>交易过大</translation>
     </message>
     <message>
+        <source>Trying to connect...</source>
+        <translation>尝试连接中...</translation>
+    </message>
+    <message>
         <source>Unable to bind to %s on this computer. %s is probably already running.</source>
         <translation>无法在本机绑定 %s 端口。%s 可能已经在运行。</translation>
     </message>
@@ -4500,14 +4555,6 @@ Go to File &gt; Open Wallet to load a wallet.
     <message>
         <source>Upgrading UTXO database</source>
         <translation>升级UTXO数据库</translation>
-    </message>
-    <message>
-        <source>Verifying blocks…</source>
-        <translation>验证区块中…</translation>
-    </message>
-    <message>
-        <source>Verifying wallet(s)…</source>
-        <translation>验证(多个)钱包中…</translation>
     </message>
     <message>
         <source>Wallet needed to be rewritten: restart %s to complete</source>
@@ -4658,20 +4705,8 @@ Go to File &gt; Open Wallet to load a wallet.
         <translation>升级链状态数据库出错</translation>
     </message>
     <message>
-        <source>Loading P2P addresses…</source>
-        <translation>正在加载P2P地址…</translation>
-    </message>
-    <message>
-        <source>Loading banlist…</source>
-        <translation>正在加载黑名单…</translation>
-    </message>
-    <message>
-        <source>Loading block index…</source>
-        <translation>正在读取区块索引…</translation>
-    </message>
-    <message>
-        <source>Loading wallet…</source>
-        <translation>正在读取钱包…</translation>
+        <source>Error: failed to add socket to kqueuefd (kevent returned error %s)</source>
+        <translation>错误: 无法添加socket到kqueuefd (kevent 返回错误 %s)</translation>
     </message>
     <message>
         <source>Failed to clear fulfilled requests cache at %s</source>
@@ -4710,10 +4745,6 @@ Go to File &gt; Open Wallet to load a wallet.
         <translation>无法开始一个新的混币队列</translation>
     </message>
     <message>
-        <source>Importing…</source>
-        <translation>正在导入…</translation>
-    </message>
-    <message>
         <source>Incorrect -rescan mode, falling back to default value</source>
         <translation>错误的-rescan模式，恢复到默认值</translation>
     </message>
@@ -4742,8 +4773,20 @@ Go to File &gt; Open Wallet to load a wallet.
         <translation>使用 -sporkaddr 指定的spork地址无效</translation>
     </message>
     <message>
+        <source>Loading P2P addresses...</source>
+        <translation>正在加载P2P地址...</translation>
+    </message>
+    <message>
         <source>Reducing -maxconnections from %d to %d, because of system limitations.</source>
         <translation>因为系统的限制，将 -maxconnections 参数从 %d 降到了 %d</translation>
+    </message>
+    <message>
+        <source>Replaying blocks...</source>
+        <translation>重播区块中...</translation>
+    </message>
+    <message>
+        <source>Rescanning...</source>
+        <translation>正在重新扫描...</translation>
     </message>
     <message>
         <source>Session not complete!</source>
@@ -4766,12 +4809,20 @@ Go to File &gt; Open Wallet to load a wallet.
         <translation>上一次队列才被创建.</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup.</source>
-        <translation>%s 已损坏. 请尝试使用钱包工具 dash-wallet 来挽救或恢复备份.</translation>
+        <source>%s corrupt. Try using the wallet tool piratecash-wallet to salvage or restoring a backup.</source>
+        <translation>%s 已损坏. 请尝试使用钱包工具 piratecash-wallet 来挽救或恢复备份.</translation>
     </message>
     <message>
         <source>Last successful action was too recent.</source>
         <translation>上一次成功操作才完成。</translation>
+    </message>
+    <message>
+        <source>Starting network threads...</source>
+        <translation>正在启动网络线程...</translation>
+    </message>
+    <message>
+        <source>Synchronizing governance objects...</source>
+        <translation>正在同步治理对象…</translation>
     </message>
     <message>
         <source>The source code is available from %s.</source>
@@ -4800,10 +4851,6 @@ Go to File &gt; Open Wallet to load a wallet.
     <message>
         <source>Transaction not valid.</source>
         <translation>交易无效。</translation>
-    </message>
-    <message>
-        <source>Trying to connect…</source>
-        <translation>尝试连接中…</translation>
     </message>
     <message>
         <source>Unable to bind to %s on this computer (bind returned error %s)</source>
@@ -4838,6 +4885,10 @@ Go to File &gt; Open Wallet to load a wallet.
         <translation>正在升级交易指数数据库</translation>
     </message>
     <message>
+        <source>Verifying blocks...</source>
+        <translation>验证区块中...</translation>
+    </message>
+    <message>
         <source>Very low number of keys left: %d</source>
         <translation>尚余少量的密匙：%d</translation>
     </message>
@@ -4852,10 +4903,6 @@ Go to File &gt; Open Wallet to load a wallet.
     <message>
         <source>Warning: incorrect parameter %s, path must exist! Using default path.</source>
         <translation>警告：不正确的参数 %s，路径必须存在！请使用预设路径。</translation>
-    </message>
-    <message>
-        <source>Will retry…</source>
-        <translation>即将重试…</translation>
     </message>
     <message>
         <source>You are starting with governance validation disabled.</source>
