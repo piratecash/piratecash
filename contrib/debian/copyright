@@ -1,16 +1,16 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Dash Core
-Upstream-Contact: Dash Core Group, Inc https://www.dash.org/dcg/
-Source: https://github.com/dashpay/dash
+Upstream-Name: PirateCash Core
+Upstream-Contact: PirateCash Core developers <https://github.com/piratecash/piratecash-core>
+Source: https://github.com/piratecash/piratecash-core
 
 Files: *
 Copyright: 2009-2025, Bitcoin Core Developers,
-           2019-2025, Dash Core Developers
+           2019-2025, Dash Core Developers,
+           2018-2026, PirateCash Core Developers
 License: Expat
 Comment: The Bitcoin Core Developers encompasses the current developers listed on bitcoin.org,
          as well as the numerous contributors to the project. The Dash Core Developers
-         encompasses the current developers listed on https://www.dash.org/team/, as well as
-         the numerous contributors to the project.
+         and PirateCash Core Developers encompass their current developers and contributors.
 
 Files: debian/*
 Copyright: 2010-2011, Jonas Smedegaard <dr@jones.dk>
