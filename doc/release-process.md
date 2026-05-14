@@ -1,13 +1,13 @@
 Release Process
 ====================
 
-* [ ] Update translations, see [translation_process.md](https://github.com/dashpay/dash/blob/master/doc/translation_process.md#synchronising-translations).
+* [ ] Update translations, see [translation_process.md](https://github.com/piratecash/piratecash-core/blob/master/doc/translation_process.md#synchronising-translations).
 * [ ] Update manpages (after rebuilding the binaries), see [gen-manpages.py](https://github.com/bitcoin/bitcoin/blob/master/contrib/devtools/README.md#gen-manpagespy).
 
 Before every minor and major release:
 
 * [ ] Update [bips.md](bips.md) to account for changes since the last release.
-* [ ] Update DIPs with any changes introduced by this release (see [this pull request](https://github.com/dashpay/dips/pull/142) for an example)
+* [ ] Update [pips.md](pips.md) with any changes introduced by this release.
 * [ ] Update version in `configure.ac` (don't forget to set `CLIENT_VERSION_IS_RELEASE` to `true`)
 * [ ] Write release notes (see below)
 * [ ] Update `src/chainparams.cpp` `nMinimumChainWork` with information from the `getblockchaininfo` rpc.
@@ -24,10 +24,10 @@ Before every minor and major release:
 
 Before every major release:
 
-* [ ] Update hardcoded [seeds](/contrib/seeds/README.md), see [this pull request](https://github.com/dashpay/dash/pull/5914) for an example.
+* [ ] Update hardcoded [seeds](/contrib/seeds/README.md). TODO: Give example PR for PirateCash.
 * [ ] Update [`src/chainparams.cpp`](/src/chainparams.cpp) `m_assumed_blockchain_size` and `m_assumed_chain_state_size` with the current size plus some overhead (see [this](#how-to-calculate-assumed-blockchain-and-chain-state-size) for information on how to calculate them).
 * [ ] Update [`src/chainparams.cpp`](/src/chainparams.cpp) `chainTxData` with statistics about the transaction count and rate. Use the output of the `getchaintxstats` RPC, see
-  [this pull request](https://github.com/dashpay/dash/pull/5692) for an example. Reviewers can verify the results by running `getchaintxstats <window_block_count> <window_last_block_hash>` with the `window_block_count` and `window_last_block_hash` from your output.
+  [this pull request](https://github.com/bitcoin/bitcoin/pull/12270) for an example. Reviewers can verify the results by running `getchaintxstats <window_block_count> <window_last_block_hash>` with the `window_block_count` and `window_last_block_hash` from your output.
 
 ### First time / New builders
 
@@ -38,12 +38,12 @@ Check out the source code in the following directory hierarchy.
 
 ```sh
 cd /path/to/your/toplevel/build
-git clone https://github.com/dashpay/guix.sigs.git
-git clone https://github.com/dashpay/dash-detached-sigs.git
-git clone https://github.com/dashpay/dash.git
+git clone https://github.com/piratecash/guix.sigs.git
+git clone https://github.com/piratecash/piratecash-detached-sigs.git
+git clone https://github.com/piratecash/piratecash-core.git piratecash
 ```
 
-### Dash Core maintainers/release engineers, suggestion for writing release notes
+### PirateCash Core maintainers/release engineers, suggestion for writing release notes
 
 Write release notes. git shortlog helps a lot, for example:
 
@@ -65,12 +65,12 @@ git tag -s v(new version, e.g. 20.0.0)
 
 ### Setup and perform Guix builds
 
-Checkout the Dash Core version you'd like to build:
+Checkout the PirateCash Core version you'd like to build:
 
 ```sh
-pushd ./dash
-export SIGNER='(your builder key, ie udjinm6, pasta, etc)'
-export VERSION='(new version, e.g. 20.0.0)'
+pushd ./piratecash
+export SIGNER='(your builder key, ie Pasta, etc)'
+export VERSION='(new version, e.g. 21.1.1)'
 git fetch "v${VERSION}"
 git checkout "v${VERSION}"
 popd
@@ -85,7 +85,7 @@ git -C ./guix.sigs pull
 
 ### Create the macOS SDK tarball: (first time, or when SDK version changes)
 
-_Note: this step can be skipped if [our CI](https://github.com/dashpay/dash/blob/master/ci/test/00_setup_env.sh#L64) still uses bitcoin's SDK package (see SDK_URL)_
+_Note: this step can be skipped if [our CI](https://github.com/piratecash/piratecash-core/blob/master/ci/test/00_setup_env.sh#L64) still uses bitcoin's SDK package (see SDK_URL)_
 
 Create the macOS SDK tarball, see the [macOS build
 instructions](build-osx.md#deterministic-macos-app-notes) for
@@ -101,7 +101,7 @@ _Note: we ship releases for only some supported HOSTs so consider providing limi
 
 ### Verify other builders' signatures to your own. (Optional)
 
-Add other builders keys to your gpg keyring, and/or refresh keys: See `../dash/contrib/builder-keys/README.md`.
+Add other builders keys to your gpg keyring, and/or refresh keys: See `../piratecash/contrib/builder-keys/README.md`.
 
 Follow the relevant Guix README.md sections:
 - [Verifying build output attestations](/contrib/guix/README.md#verifying-build-output-attestations)
@@ -124,11 +124,11 @@ Codesigner only: Create Windows/macOS detached signatures:
 
 Codesigner only: Sign the macOS binary:
 
-* Transfer `dashcore-osx-unsigned.tar.gz` to macOS for signing
+* Transfer `piratecashcore-osx-unsigned.tar.gz` to macOS for signing
 * Extract and sign:
 
     ```sh
-    tar xf dashcore-osx-unsigned.tar.gz
+    tar xf piratecashcore-osx-unsigned.tar.gz
     ./detached-sig-create.sh -s "Key ID" -o runtime
     ```
 
@@ -140,7 +140,7 @@ Codesigner only: Sign the windows binaries:
 * Extract and sign:
 
     ```sh
-    tar xf dashcore-win-unsigned.tar.gz
+    tar xf piratecashcore-win-unsigned.tar.gz
     ./detached-sig-create.sh -key /path/to/codesign.key
     ```
 
@@ -148,12 +148,12 @@ Codesigner only: Sign the windows binaries:
 * `signature-win.tar.gz` will be created
 
 Code-signer only: It is advised to test that the code signature attaches properly prior to tagging by performing the `guix-codesign` step.
-However if this is done, once the release has been tagged in the bitcoin-detached-sigs repo, the `guix-codesign` step must be performed again in order for the guix attestation to be valid when compared against the attestations of non-codesigner builds.
+However if this is done, once the release has been tagged in the PirateCash detached signatures repo, the `guix-codesign` step must be performed again in order for the guix attestation to be valid when compared against the attestations of non-codesigner builds.
 
 Codesigner only: Commit the detached codesign payloads:
 
 ```sh
-pushd ~/dashcore-detached-sigs
+pushd ~/piratecashcore-detached-sigs
 # checkout the appropriate branch for this release series
 git checkout "v${VERSION}"
 rm -rf *
@@ -168,7 +168,7 @@ popd
 Non-codesigners: wait for Windows/macOS detached signatures:
 
 - Once the Windows/macOS builds each have 3 matching signatures, they will be signed with their respective release keys.
-- Detached signatures will then be committed to the [dash-detached-sigs](https://github.com/dashpay/dash-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
+- Detached signatures will then be committed to the [piratecash-detached-sigs](https://github.com/piratecash/piratecash-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
 
 Create (and optionally verify) the codesigned outputs:
 - [Codesigning](/contrib/guix/README.md#codesigning)
@@ -191,7 +191,7 @@ popd
     ```
 * [ ] GPG sign each download / binary
 * [ ] Upload zips and installers, as well as `SHA256SUMS.asc` from last step, to GitHub as GitHub draft release.
-    1. The contents of each `./dash/guix-build-${VERSION}/output/${HOST}/` directory, except for
+    1. The contents of each `./piratecash/guix-build-${VERSION}/output/${HOST}/` directory, except for
        `*-debug*` files.
 
        Guix will output all of the results into host subdirectories, but the `SHA256SUMS`
@@ -203,10 +203,10 @@ popd
        for troubleshooting by developers. It is assumed that anyone that is
        interested in debugging can run guix to generate the files for
        themselves. To avoid end-user confusion about which file to pick, as well
-       as save storage space *do not upload these to the dash.org server*.
+       as save storage space *do not upload these to the PirateCash download server*.
 
        ```sh
-       find guix-build-${VERSION}/output/ -maxdepth 2 -type f -not -name "SHA256SUMS.part" -and -not -name "*debug*" -exec scp {} user@dash.org:/var/www/bin/dash-core-${VERSION} \;
+       find guix-build-${VERSION}/output/ -maxdepth 2 -type f -not -name "SHA256SUMS.part" -and -not -name "*debug*" -exec scp {} user@p.cash:/var/www/bin/piratecash-core-${VERSION} \;
        ```
 
     2. The `SHA256SUMS` file
@@ -216,11 +216,11 @@ popd
 * [ ] Notarize macOS binaries
 * [ ] Publish release on GitHub
 * [ ] Fast-forward `master` branch on GitHub
-* [ ] Update the dash.org download links
+* [ ] Update the p.cash download links
 * [ ] Ensure that docker hub images are up to date
 
 ### Announce the release:
-* [ ] Release on Dash forum: https://www.dash.org/forum/topic/official-announcements.54/ (necessary so we have a permalink to use on twitter, reddit, etc.)
+* [ ] Release on PirateCash forum: https://bitcointalk.org/index.php?topic=5333014 (necessary so we have a permalink to use on twitter, reddit, etc.)
 * [ ] Prepare product brief (major versions only)
 * [ ] Prepare a release announcement tweet
 * [ ] Follow-up tweets with any important block heights for consensus changes
@@ -228,9 +228,8 @@ popd
 * [ ] Celebrate
 
 ### After the release:
-* [ ] Submit patches to BTCPay to ensure they use latest / compatible version see https://github.com/dashpay/dash/issues/4211#issuecomment-966608207
-* [ ] Update Core and User docs (docs.dash.org)
-* [ ] Test Docker build runs without error in Dashmate
+* [ ] Update Core and User docs.
+* [ ] Test Docker build runs without error.
 * [ ] Add new Release Process items to repo [Release Process](release-process.md) document
 * [ ] Merge `master` branch back into `develop` so that `master` could be fast-forwarded on next release again
 
@@ -251,7 +250,7 @@ Open Terminal, and navigate to the location of the .dmg file.
 Then, run the following command to notarize the .dmg file:
 
 ```sh
-xcrun notarytool submit dashcore-{version}-{x86_64, arm64}-apple-darwin.dmg --keychain-profile "AC_PASSWORD" --wait
+xcrun notarytool submit piratecashcore-{version}-{x86_64, arm64}-apple-darwin.dmg --keychain-profile "AC_PASSWORD" --wait
 ```
 
 Replace `{version}` with the version you are notarizing. This command uploads the .dmg file to Apple's notary service.
@@ -262,14 +261,14 @@ If the notarization process is successful, the notary service generates a log fi
 
 #### Notarization Validation
 
-After successfully notarizing the .dmg file, extract `Dash-Qt.app` from the .dmg.
+After successfully notarizing the .dmg file, extract `PirateCash-Qt.app` from the .dmg.
 To verify that the notarization process was successful, run the following command:
 
 ```sh
-spctl -a -vv -t install Dash-Qt.app
+spctl -a -vv -t install PirateCash-Qt.app
 ```
 
-Replace `Dash-Qt.app` with the path to your .app file. This command checks whether your .app file passes Gatekeeper’s
+Replace `PirateCash-Qt.app` with the path to your .app file. This command checks whether your .app file passes Gatekeeper’s
 checks. If the app is successfully notarized, the command line will include a line stating `source=<Notarized Developer ID>`.
 
 ### Additional information
@@ -280,7 +279,7 @@ Both variables are used as a guideline for how much space the user needs on thei
 Note that all values should be taken from a **fully synced** node and have an overhead of 5-10% added on top of its base value.
 
 To calculate `m_assumed_blockchain_size`:
-- For `mainnet` -> Take the size of the data directory, excluding `/regtest` and `/testnet3` directories.
+- For `mainnet` -> Take the size of the PirateCash Core data directory, excluding `/regtest` and `/testnet3` directories.
 - For `testnet` -> Take the size of the `/testnet3` directory.
 
 
