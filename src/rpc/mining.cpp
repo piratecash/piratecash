@@ -172,7 +172,7 @@ static UniValue generateBlocks(ChainstateManager& chainman, const NodeContext& n
         std::unique_ptr<CBlockTemplate> pblocktemplate(BlockAssembler(chainman.ActiveChainstate(), node, mempool, Params()).CreateNewBlock(coinbase_script));
         if (!pblocktemplate.get())
             throw JSONRPCError(RPC_INTERNAL_ERROR, "Couldn't create new block");
-        CBlock *pblock = &pblocktemplate->block;
+        CBlock* pblock = pblocktemplate->block.get();
 
         uint256 block_hash;
         if (!GenerateBlock(chainman, *pblock, nMaxTries, nExtraNonce, block_hash)) {
@@ -265,7 +265,7 @@ static RPCHelpMan generatetoaddress()
         "\nMine blocks immediately to a specified address (before the RPC call returns)\n",
         {
             {"nblocks", RPCArg::Type::NUM, RPCArg::Optional::NO, "How many blocks are generated immediately."},
-            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The address to send the newly generated coins to."},
+            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The address to send the newly generated PirateCash to."},
             {"maxtries", RPCArg::Type::NUM, RPCArg::Default{DEFAULT_MAX_TRIES}, "How many iterations to try."},
         },
         RPCResult{
@@ -276,7 +276,7 @@ static RPCHelpMan generatetoaddress()
         RPCExamples{
     "\nGenerate 11 blocks to myaddress\n"
     + HelpExampleCli("generatetoaddress", "11 \"myaddress\"")
-        + "If you are using the " PACKAGE_NAME " wallet, you can get a new address to send the newly generated coins to with:\n"
+        + "If you are running the PirateCash Core wallet, you can get a new address to send the newly generated coins to with:\n"
             + HelpExampleCli("getnewaddress", "")},
         [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue
 {
@@ -380,7 +380,7 @@ static RPCHelpMan generateblock()
         if (!blocktemplate) {
             throw JSONRPCError(RPC_INTERNAL_ERROR, "Couldn't create new block");
         }
-        block = blocktemplate->block;
+        block = *blocktemplate->block;
     }
 
     // 1 coinbase + could have a few quorum commitments
@@ -497,7 +497,7 @@ static RPCHelpMan prioritisetransaction()
         "Accepts the transaction into mined blocks at a higher (or lower) priority\n",
         {
             {"txid", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The transaction id."},
-            {"fee_delta", RPCArg::Type::NUM, RPCArg::Optional::NO, "The fee value (in duffs) to add (or subtract, if negative).\n"
+            {"fee_delta", RPCArg::Type::NUM, RPCArg::Optional::NO, "The fee value (in units) to add (or subtract, if negative).\n"
     "                  Note, that this value is not a fee rate. It is a value to modify absolute fee of the TX.\n"
     "                  The fee is not actually paid, only the algorithm for selecting transactions into a block\n"
     "                  considers the transaction as it would have paid a higher (or lower) fee."},
@@ -827,7 +827,7 @@ static RPCHelpMan getblocktemplate()
         pindexPrev = pindexPrevNew;
     }
     CHECK_NONFATAL(pindexPrev);
-    CBlock* pblock = &pblocktemplate->block; // pointer for convenience
+    CBlock* pblock = pblocktemplate->block.get(); // pointer for convenience
     const Consensus::Params& consensusParams = Params().GetConsensus();
 
     // Update nTime
@@ -1110,12 +1110,69 @@ static RPCHelpMan submitheader()
     };
 }
 
+static RPCHelpMan reservebalance()
+{
+    return RPCHelpMan{"reservebalance",
+        "\nShow or set the reserve amount not participating in network protection.\n"
+        "If no parameters are provided, the current setting is printed.\n",
+        {
+            {"reserve", RPCArg::Type::BOOL, RPCArg::Optional::OMITTED, "True or false to turn balance reserve on or off."},
+            {"amount", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "Amount to reserve, rounded to cent."},
+        },
+        RPCResult{
+            RPCResult::Type::OBJ, "", "",
+            {
+                {RPCResult::Type::BOOL, "reserve", "Status of the reserve balance"},
+                {RPCResult::Type::STR_AMOUNT, "amount", "Amount reserved"},
+            }},
+        RPCExamples{
+            HelpExampleCli("reservebalance", "true 5000") +
+            HelpExampleRpc("reservebalance", "true 5000")
+        },
+        [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue
+{
+    const auto& params = request.params;
+    static constexpr CAmount CENT = 1000000;
+
+    if (params.size() > 2) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Too many parameters");
+    }
+
+    if (params.size() > 0) {
+        const bool reserve = params[0].get_bool();
+        if (reserve) {
+            if (params.size() == 1) {
+                throw JSONRPCError(RPC_INVALID_PARAMETER, "Must provide amount to reserve balance");
+            }
+            CAmount amount = AmountFromValue(params[1]);
+            amount = (amount / CENT) * CENT;
+            if (amount < 0) {
+                throw JSONRPCError(RPC_INVALID_PARAMETER, "Amount cannot be negative");
+            }
+            nReserveBalance = amount;
+        } else {
+            if (params.size() > 1) {
+                throw JSONRPCError(RPC_INVALID_PARAMETER, "Cannot specify amount to turn off reserve");
+            }
+            nReserveBalance = 0;
+        }
+    }
+
+    UniValue result(UniValue::VOBJ);
+    result.pushKV("reserve", nReserveBalance > 0);
+    result.pushKV("amount", ValueFromAmount(nReserveBalance));
+    return result;
+},
+    };
+}
+
 void RegisterMiningRPCCommands(CRPCTable& t)
 {
 // clang-format off
 static const CRPCCommand commands[] =
 { //  category               actor (function)
   //  ---------------------  -----------------------
+    { "mining",              &reservebalance,          },
     { "mining",              &getnetworkhashps,        },
     { "mining",              &getmininginfo,           },
     { "mining",              &prioritisetransaction,   },

@@ -97,7 +97,7 @@ void Finish(FuzzedDataProvider& fuzzed_data_provider, MockedTxPool& tx_pool, con
 
         auto assembler = BlockAssembler{chainstate, node, *static_cast<CTxMemPool*>(&tx_pool), chainstate.m_params, options};
         auto block_template = assembler.CreateNewBlock(CScript{} << OP_TRUE);
-        Assert(block_template->block.vtx.size() >= 1);
+        Assert(block_template->block->vtx.size() >= 1);
     }
     const auto info_all = tx_pool.infoAll();
     if (!info_all.empty()) {

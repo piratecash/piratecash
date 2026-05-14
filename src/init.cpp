@@ -76,6 +76,7 @@
 #include <walletinitinterface.h>
 
 #include <bls/bls.h>
+#include <corsa/client.h>
 #include <coinjoin/coinjoin.h>
 #include <coinjoin/context.h>
 #include <coinjoin/server.h>
@@ -101,6 +102,7 @@
 #ifdef ENABLE_WALLET
 #include <coinjoin/client.h>
 #include <coinjoin/options.h>
+#include <wallet/wallet.h>
 #endif // ENABLE_WALLET
 
 #include <algorithm>
@@ -110,6 +112,7 @@
 #include <fstream>
 #include <functional>
 #include <set>
+#include <limits>
 #include <memory>
 #include <optional>
 #include <string>
@@ -148,7 +151,7 @@ static const char* DEFAULT_ASMAP_FILENAME="ip_asn.map";
 /**
  * The PID file facilities.
  */
-static const char* BITCOIN_PID_FILENAME = "dashd.pid";
+static const char* BITCOIN_PID_FILENAME = "piratecashd.pid";
 
 static fs::path GetPidFile(const ArgsManager& args)
 {
@@ -195,6 +198,32 @@ static fs::path GetPidFile(const ArgsManager& args)
 // shutdown thing.
 //
 
+#ifdef ENABLE_WALLET
+static std::unique_ptr<CThreadInterrupt> g_staking_interrupt;
+static std::thread g_staking_thread;
+
+static void StartStakingThread(NodeContext& node)
+{
+    if (g_staking_thread.joinable() || ShutdownRequested()) {
+        return;
+    }
+
+    auto wallets = GetWallets();
+    if (wallets.empty()) {
+        LogPrintf("Staking start skipped: no wallets loaded\n");
+        return;
+    }
+
+    LogPrintf("Staking with wallet: %s\n", wallets[0]->GetName().c_str());
+    g_staking_interrupt = std::make_unique<CThreadInterrupt>();
+    LogPrintf("About to start staking thread\n");
+    g_staking_thread = std::thread([wallet = wallets[0], &node]() {
+        LogPrintf("Entered staking thread lambda\n");
+        PoSMiner(wallet, node, *Assert(g_staking_interrupt));
+    });
+}
+#endif // ENABLE_WALLET
+
 void Interrupt(NodeContext& node)
 {
     InterruptHTTPServer();
@@ -206,6 +235,10 @@ void Interrupt(NodeContext& node)
         node.llmq_ctx->Interrupt();
     }
     InterruptMapPort();
+#ifdef ENABLE_WALLET
+    if (g_staking_interrupt) (*g_staking_interrupt)();
+#endif // ENABLE_WALLET
+    corsa::InterruptMonitor();
     if (node.connman)
         node.connman->Interrupt();
     if (g_txindex) {
@@ -247,7 +280,25 @@ void PrepareShutdown(NodeContext& node)
     // Because these depend on each-other, we make sure that neither can be
     // using the other before destroying them.
     if (node.peerman) UnregisterValidationInterface(node.peerman.get());
-    if (node.connman) node.connman->Stop();
+#ifdef ENABLE_WALLET
+    if (g_staking_thread.joinable()) g_staking_thread.join();
+    g_staking_interrupt.reset();
+#endif // ENABLE_WALLET
+    corsa::StopMonitor();
+    // Follow the lock order requirements:
+    // * CheckForStaleTipAndEvictPeers locks cs_main before indirectly calling GetExtraFullOutboundCount
+    //   which locks cs_vNodes.
+    // * ProcessMessage locks cs_main and g_cs_orphans before indirectly calling ForEachNode which
+    //   locks cs_vNodes.
+    // * CConnman::Stop calls DeleteNode, which calls FinalizeNode, which locks cs_main and calls
+    //   EraseOrphansFor, which locks g_cs_orphans.
+    //
+    // Thus the implicit locking order requirement is: (1) cs_main, (2) g_cs_orphans, (3) cs_vNodes.
+    if (node.connman) {
+        node.connman->StopThreads();
+        LOCK2(::cs_main, ::g_cs_orphans);
+        node.connman->StopNodes();
+    }
 
     StopTorControl();
 
@@ -720,7 +771,14 @@ void SetupServerArgs(ArgsManager& argsman)
     argsman.AddArg("-llmq-data-recovery=<n>", strprintf("Enable automated quorum data recovery (default: %u)", llmq::DEFAULT_ENABLE_QUORUM_DATA_RECOVERY), ArgsManager::ALLOW_ANY, OptionsCategory::MASTERNODE);
     argsman.AddArg("-llmq-qvvec-sync=<quorum_name>:<mode>", strprintf("Defines from which LLMQ type the masternode should sync quorum verification vectors. Can be used multiple times with different LLMQ types. <mode>: %d (sync always from all quorums of the type defined by <quorum_name>), %d (sync from all quorums of the type defined by <quorum_name> if a member of any of the quorums)", (int32_t)llmq::QvvecSyncMode::Always, (int32_t)llmq::QvvecSyncMode::OnlyIfTypeMember), ArgsManager::ALLOW_ANY, OptionsCategory::MASTERNODE);
     argsman.AddArg("-masternodeblsprivkey=<hex>", "Set the masternode BLS private key and enable the client to act as a masternode", ArgsManager::ALLOW_ANY | ArgsManager::SENSITIVE, OptionsCategory::MASTERNODE);
-    argsman.AddArg("-deprecated-platform-user=<user>", "Set the username for the \"platform user\", a restricted user intended to be used by Dash Platform, to the specified username.", ArgsManager::ALLOW_ANY, OptionsCategory::MASTERNODE);
+    argsman.AddArg("-platform-user=<user>", "Set the username for the \"platform user\", a restricted user intended to be used by PirateCash Platform, to the specified username.", ArgsManager::ALLOW_ANY, OptionsCategory::MASTERNODE);
+    argsman.AddArg("-corsarpcuser=<user>", "Username for the local Corsa messenger node RPC connection. Required to start a masternode (PIP-0001 stage 1).", ArgsManager::ALLOW_ANY | ArgsManager::SENSITIVE, OptionsCategory::MASTERNODE);
+    argsman.AddArg("-corsarpcpassword=<pw>", "Password for the local Corsa messenger node RPC connection. Required to start a masternode (PIP-0001 stage 1).", ArgsManager::ALLOW_ANY | ArgsManager::SENSITIVE, OptionsCategory::MASTERNODE);
+    argsman.AddArg("-corsarpcport=<port>", "TCP port of the local Corsa messenger node RPC endpoint on 127.0.0.1 (e.g. 46464). Required to start a masternode (PIP-0001 stage 1). Corsa must run on the same server as the masternode; the daemon never connects to a non-loopback Corsa host.", ArgsManager::ALLOW_ANY, OptionsCategory::MASTERNODE);
+    argsman.AddArg("-corsarpctimeout=<n>", "Per-attempt timeout in seconds for the Corsa node_status probe (default: 10)", ArgsManager::ALLOW_ANY, OptionsCategory::MASTERNODE);
+    argsman.AddArg("-corsarpcattempts=<n>", "Number of probe attempts before refusing to start the masternode (default: 5)", ArgsManager::ALLOW_ANY, OptionsCategory::MASTERNODE);
+    argsman.AddArg("-corsarpcretrydelay=<ms>", "Pause in milliseconds between Corsa probe attempts (default: 2000)", ArgsManager::ALLOW_ANY, OptionsCategory::MASTERNODE);
+    argsman.AddArg("-corsamonitorinterval=<sec>", "Interval in seconds between background Corsa node_status probes on an active masternode (default: 3600)", ArgsManager::ALLOW_ANY, OptionsCategory::MASTERNODE);
 
     argsman.AddArg("-acceptnonstdtxn", strprintf("Relay and mine \"non-standard\" transactions (%sdefault: %u)", "testnet/regtest only; ", !testnetChainParams->RequireStandard()), ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::NODE_RELAY);
     argsman.AddArg("-dustrelayfee=<amt>", strprintf("Fee rate (in %s/kB) used to define dust, the value of an output such that it will cost more than its value in fees at this fee rate to spend it. (default: %s)", CURRENCY_UNIT, FormatMoney(DUST_RELAY_TX_FEE)), ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::NODE_RELAY);
@@ -764,6 +822,16 @@ void SetupServerArgs(ArgsManager& argsman)
     argsman.AddArg("-statsperiod=<seconds>", strprintf("Specify the number of seconds between periodic measurements (default: %d)", DEFAULT_STATSD_PERIOD), ArgsManager::ALLOW_ANY, OptionsCategory::STATSD);
     argsman.AddArg("-statsprefix=<string>", strprintf("Specify an optional string prepended to every stats key (default: %s)", DEFAULT_STATSD_PREFIX), ArgsManager::ALLOW_ANY, OptionsCategory::STATSD);
     argsman.AddArg("-statssuffix=<string>", strprintf("Specify an optional string appended to every stats key (default: %s)", DEFAULT_STATSD_SUFFIX), ArgsManager::ALLOW_ANY, OptionsCategory::STATSD);
+#ifdef ENABLE_WALLET
+    argsman.AddArg("-staking=<n>", strprintf("Enable staking functionality (0-1, default: %u)", 1), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+    argsman.AddArg("-reservebalance=<amt>", "Keep the specified amount available for spending at all times (default: 0)", ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+    argsman.AddArg("-stakesplitthreshold=<n>", strprintf("Splits stake reward by threshold (1-%d, default: %d)", MAX_STAKE_SPLIT_THRESHOLD, DEFAULT_STAKE_SPLIT_THRESHOLD), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+    argsman.AddArg("-stakemaxsplit=<n>", strprintf("Sets the number of max inputs & outputs of a stake (default: %d)", DEFAULT_STAKE_MAX_SPLIT), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+    argsman.AddArg("-stakeautocombine=<n>", strprintf("Autocombine feature: 0 - disable, 1 - same account, 2 - any account (default: %d)", DEFAULT_STAKE_AUTOCOMBINE), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+    argsman.AddArg("-inputstakeprotect=<n>", strprintf("Don't use masternode collateral for staking (0-1, default: %u)", DEFAULT_INPUT_STAKE_PROTECT), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+    argsman.AddArg("-printcoinstake", "", ArgsManager::ALLOW_ANY, OptionsCategory::HIDDEN);
+    argsman.AddArg("-poshashinterval=<n>", strprintf("Specify the number of seconds between stake hash attempts (1-%u, default: %u)", MAX_POS_HASH_INTERVAL, DEFAULT_POS_HASH_INTERVAL), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+#endif
 #if HAVE_DECL_FORK
     argsman.AddArg("-daemon", strprintf("Run in the background as a daemon and accept commands (default: %d)", DEFAULT_DAEMON), ArgsManager::ALLOW_BOOL, OptionsCategory::OPTIONS);
     argsman.AddArg("-daemonwait", strprintf("Wait for initialization to be finished before exiting. This implies -daemon (default: %d)", DEFAULT_DAEMONWAIT), ArgsManager::ALLOW_BOOL, OptionsCategory::OPTIONS);
@@ -778,9 +846,9 @@ void SetupServerArgs(ArgsManager& argsman)
 
 std::string LicenseInfo()
 {
-    const std::string URL_SOURCE_CODE = "<https://github.com/dashpay/dash>";
+    const std::string URL_SOURCE_CODE = "<https://github.com/piratecash/piratecash>";
 
-    return CopyrightHolders(_("Copyright (C)").translated, 2014, COPYRIGHT_YEAR) + "\n" +
+    return CopyrightHolders(_("Copyright (C)").translated, 2018, COPYRIGHT_YEAR) + "\n" +
            "\n" +
            strprintf(_("Please contribute if you find %s useful. "
                        "Visit %s for further information about the software.").translated,
@@ -1117,6 +1185,28 @@ bool AppInitParameterInteraction(const ArgsManager& args)
         InitWarning(warnings);
     }
 
+#ifdef ENABLE_WALLET
+    const int64_t stake_split_threshold = args.GetArg("-stakesplitthreshold", static_cast<int64_t>(DEFAULT_STAKE_SPLIT_THRESHOLD));
+    if (stake_split_threshold <= 0 || stake_split_threshold > MAX_STAKE_SPLIT_THRESHOLD) {
+        return InitError(strprintf(_("-stakesplitthreshold must be between 1 and %d"), MAX_STAKE_SPLIT_THRESHOLD));
+    }
+
+    const int64_t stake_max_split = args.GetArg("-stakemaxsplit", static_cast<int64_t>(DEFAULT_STAKE_MAX_SPLIT));
+    if (stake_max_split < 0 || stake_max_split > std::numeric_limits<int>::max()) {
+        return InitError(strprintf(_("-stakemaxsplit must be between 0 and %d"), std::numeric_limits<int>::max()));
+    }
+
+    const int64_t stake_autocombine = args.GetArg("-stakeautocombine", static_cast<int64_t>(DEFAULT_STAKE_AUTOCOMBINE));
+    if (stake_autocombine < AUTOCOMBINE_DISABLE || stake_autocombine > AUTOCOMBINE_ANY) {
+        return InitError(strprintf(_("-stakeautocombine must be between %d and %d"), AUTOCOMBINE_DISABLE, AUTOCOMBINE_ANY));
+    }
+
+    const int64_t pos_hash_interval = args.GetArg("-poshashinterval", static_cast<int64_t>(DEFAULT_POS_HASH_INTERVAL));
+    if (pos_hash_interval <= 0 || pos_hash_interval > MAX_POS_HASH_INTERVAL) {
+        return InitError(strprintf(_("-poshashinterval must be between 1 and %u"), MAX_POS_HASH_INTERVAL));
+    }
+#endif
+
     if (!fs::is_directory(gArgs.GetBlocksDirPath())) {
         return InitError(strprintf(_("Specified blocks directory \"%s\" does not exist."), args.GetArg("-blocksdir", "")));
     }
@@ -1379,6 +1469,27 @@ bool AppInitParameterInteraction(const ArgsManager& args)
         if (args.GetBoolArg("-disablegovernance", !DEFAULT_GOVERNANCE_ENABLE)) {
             return InitError(_("You can not disable governance validation on a masternode."));
         }
+
+        // PIP-0001 stage 1: a masternode must not start unless the operator
+        // explicitly configures local Corsa messenger RPC credentials and
+        // endpoint. The Corsa node lives on the same server (the daemon
+        // always connects to 127.0.0.1), so we only ask for the port.
+        // Do not log the values themselves.
+        if (args.GetArg("-corsarpcuser", "").empty()) {
+            return InitError(Untranslated("Masternode requires -corsarpcuser to be set (PIP-0001 stage 1)"));
+        }
+        if (args.GetArg("-corsarpcpassword", "").empty()) {
+            return InitError(Untranslated("Masternode requires -corsarpcpassword to be set (PIP-0001 stage 1)"));
+        }
+        if (!args.IsArgSet("-corsarpcport")) {
+            return InitError(Untranslated("Masternode requires -corsarpcport to be set (PIP-0001 stage 1)"));
+        }
+        const int64_t corsaRpcPortArg = args.GetArg("-corsarpcport", 0);
+        if (corsaRpcPortArg < 1 || corsaRpcPortArg > 65535) {
+            return InitError(strprintf(Untranslated(
+                "Invalid -corsarpcport=%d: must be a TCP port in 1..65535 (PIP-0001 stage 1)"),
+                corsaRpcPortArg));
+        }
     }
 
     if (args.GetBoolArg("-disablegovernance", !DEFAULT_GOVERNANCE_ENABLE)) {
@@ -1393,7 +1504,7 @@ bool AppInitParameterInteraction(const ArgsManager& args)
 
 static bool LockDataDirectory(bool probeOnly)
 {
-    // Make sure only a single Dash Core process is using the data directory.
+    // Make sure only a single PirateCash Core process is using the data directory.
     fs::path datadir = gArgs.GetDataDirNet();
     if (!DirIsWritable(datadir)) {
         return InitError(strprintf(_("Cannot write to data directory '%s'; check permissions."), fs::PathToString(datadir)));
@@ -1463,9 +1574,9 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
     // Warn about relative -datadir path.
     if (args.IsArgSet("-datadir") && !args.GetPathArg("-datadir").is_absolute()) {
         LogPrintf("Warning: relative datadir option '%s' specified, which will be interpreted relative to the " /* Continued */
-                  "current working directory '%s'. This is fragile, because if Dash Core is started in the future "
+                  "current working directory '%s'. This is fragile, because if PirateCash Core is started in the future "
                   "from a different location, it will be unable to locate the current data files. There could "
-                  "also be data loss if Dash Core is started while in a temporary directory.\n",
+                  "also be data loss if PirateCash Core is started while in a temporary directory.\n",
                   args.GetArg("-datadir", ""), fs::PathToString(fs::current_path()));
     }
 
@@ -1648,6 +1759,38 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
         if (!keyOperator.IsValid()) {
             return InitError(_("Invalid masternodeblsprivkey. Please see documentation."));
         }
+
+        // PIP-0001 stage 1: probe the local Corsa messenger node before we
+        // flip into masternode mode. Failing to reach it means the operator
+        // hasn't installed/configured Corsa yet - refuse to start. Host is
+        // hardcoded to loopback; only the port is operator-supplied.
+        {
+            corsa::ProbeConfig pc;
+            pc.host = "127.0.0.1";
+            pc.port = static_cast<uint16_t>(args.GetArg("-corsarpcport", 0));
+            pc.rpc_user = args.GetArg("-corsarpcuser", "");
+            pc.rpc_password = args.GetArg("-corsarpcpassword", "");
+            pc.timeout_seconds = static_cast<int>(args.GetArg("-corsarpctimeout", 10));
+            pc.max_attempts = static_cast<int>(args.GetArg("-corsarpcattempts", 5));
+            pc.retry_delay = std::chrono::milliseconds{args.GetArg("-corsarpcretrydelay", 2000)};
+
+            uiInterface.InitMessage(_("Verifying local Corsa messenger node...").translated);
+            corsa::NodeStatus status;
+            std::string corsaErr;
+            if (!corsa::ProbeNodeStatus(pc, status, corsaErr)) {
+                return InitError(Untranslated(corsaErr));
+            }
+
+            // PIP-0001 stage 1: enforce the chain's minimum Corsa protocol version.
+            const int minCorsaProto = Params().MinCorsaProtocolVersion();
+            if (minCorsaProto > 0 && status.protocol_version < minCorsaProto) {
+                return InitError(strprintf(Untranslated(
+                    "Corsa messenger node protocol_version=%d is below the minimum required %d for this chain. "
+                    "Upgrade the local Corsa node before starting the masternode (PIP-0001 stage 1)."),
+                    status.protocol_version, minCorsaProto));
+            }
+        }
+
         fMasternodeMode = true;
         {
             // Create and register mn_activeman, will init later in ThreadImport
@@ -2039,7 +2182,7 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
     g_wallet_init_interface.InitCoinJoinSettings(*node.cj_ctx->walletman);
 #endif // ENABLE_WALLET
 
-    // ********************************************************* Step 7d: Setup other Dash services
+    // ********************************************************* Step 7d: Setup other PirateCash services
 
     bool fLoadCacheFiles = !(fReindex || fReindexChainState) && (chainman.ActiveChain().Tip() != nullptr);
 
@@ -2135,7 +2278,7 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
         return false;
     }
 
-    // ********************************************************* Step 10a: schedule Dash-specific tasks
+    // ********************************************************* Step 10a: schedule PirateCash-specific tasks
 
     node.llmq_ctx->Start(*node.connman, *node.peerman);
 
@@ -2282,7 +2425,7 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
 
     const auto BadPortWarning = [](const char* prefix, uint16_t port) {
         return strprintf(_("%s request to listen on port %u. This port is considered \"bad\" and "
-                           "thus it is unlikely that any Dash Core peers connect to it. See "
+                           "thus it is unlikely that any PirateCash Core peers connect to it. See "
                            "doc/p2p-bad-ports.md for details and a full list."),
                          prefix,
                          port);
@@ -2423,6 +2566,38 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
 
     for (const auto& client : node.chain_clients) {
         client->start(*node.scheduler);
+    }
+
+#ifdef ENABLE_WALLET
+    if (args.GetBoolArg("-staking", true) && !args.IsArgSet("-masternodeblsprivkey")) {
+        node.scheduler->scheduleFromNow([&node]() { StartStakingThread(node); }, std::chrono::milliseconds{1000});
+    }
+#endif // ENABLE_WALLET
+
+    // PIP-0001 stage 1 runtime: on an active masternode, run a background
+    // poller that hits the same Corsa /rpc/v1/system/node_status endpoint
+    // hourly and emits an INFO heartbeat. This block is reached only when:
+    //   1) -masternodeblsprivkey was provided, AND
+    //   2) the startup probe (corsa::ProbeNodeStatus) returned success, AND
+    //   3) status.protocol_version >= Params().MinCorsaProtocolVersion().
+    // Any earlier failure short-circuits AppInitMain via InitError(), so a
+    // non-masternode client or a masternode that failed Corsa verification
+    // never starts the monitor. The loop is purely observational at stage 1.
+    if (fMasternodeMode) {
+        corsa::ProbeConfig pc;
+        pc.host = "127.0.0.1";
+        pc.port = static_cast<uint16_t>(args.GetArg("-corsarpcport", 0));
+        pc.rpc_user = args.GetArg("-corsarpcuser", "");
+        pc.rpc_password = args.GetArg("-corsarpcpassword", "");
+        pc.timeout_seconds = static_cast<int>(args.GetArg("-corsarpctimeout", 10));
+        // Single attempt per heartbeat - we do not want to amplify failures
+        // into long retry storms inside the monitor loop. The next heartbeat
+        // will try again after `interval`.
+        pc.max_attempts = 1;
+
+        const std::chrono::seconds interval{
+            std::max<int64_t>(1, args.GetArg("-corsamonitorinterval", 3600))};
+        corsa::StartMonitor(pc, interval);
     }
 
     BanMan* banman = node.banman.get();
