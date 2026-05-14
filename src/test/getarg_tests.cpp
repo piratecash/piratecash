@@ -31,7 +31,7 @@ void LocalTestingSetup :: ResetArgs(const std::string& strArg)
     }
 
     // Insert dummy executable name:
-    vecArg.insert(vecArg.begin(), "testdash");
+    vecArg.insert(vecArg.begin(), "testpirate");
 
     // Convert to char*:
     std::vector<const char*> vecChar;

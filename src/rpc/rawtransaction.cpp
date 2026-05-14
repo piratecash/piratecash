@@ -180,10 +180,10 @@ static RPCHelpMan getrawtransaction()
                                         {RPCResult::Type::STR, "hex", "the hex"},
                                         {RPCResult::Type::NUM, "reqSigs", /* optional */ true, "(DEPRECATED, returned only if config option -deprecatedrpc=addresses is passed) Number of required signatures"},
                                         {RPCResult::Type::STR, "type", "The type, eg 'pubkeyhash'"},
-                                        {RPCResult::Type::STR, "address", /* optional */ true, "Dash address (only if a well-defined address exists)"},
-                                        {RPCResult::Type::ARR, "addresses", /* optional */ true, "(DEPRECATED, returned only if config option -deprecatedrpc=addresses is passed) Array of Dash addresses",
+                                        {RPCResult::Type::STR, "address", /* optional */ true, "PirateCash address (only if a well-defined address exists)"},
+                                        {RPCResult::Type::ARR, "addresses", /* optional */ true, "(DEPRECATED, returned only if config option -deprecatedrpc=addresses is passed) Array of PirateCash addresses",
                                         {
-                                            {RPCResult::Type::STR, "address", "Dash address"},
+                                            {RPCResult::Type::STR, "address", "PirateCash address"},
                                         }},
                                     }},
                                 }},
@@ -686,7 +686,7 @@ static RPCHelpMan createrawtransaction()
                 {
                     {"", RPCArg::Type::OBJ_USER_KEYS, RPCArg::Optional::OMITTED, "",
                         {
-                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "A key-value pair. The key (string) is the Dash address, the value (float or string) is the amount in " + CURRENCY_UNIT},
+                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "A key-value pair. The key (string) is the PirateCash address, the value (float or string) is the amount in " + CURRENCY_UNIT},
                         },
                         },
                     {"", RPCArg::Type::OBJ, RPCArg::Optional::OMITTED, "",
@@ -764,10 +764,10 @@ static RPCHelpMan decoderawtransaction()
                                     {RPCResult::Type::STR_HEX, "hex", "the hex"},
                                     {RPCResult::Type::NUM, "reqSigs", /* optional */ true, "(DEPRECATED, returned only if config option -deprecatedrpc=addresses is passed) Number of required signatures"},
                                     {RPCResult::Type::STR, "type", "The type, eg 'pubkeyhash'"},
-                                    {RPCResult::Type::STR, "address", /* optional */ true, "Dash address (only if a well-defined address exists)"},
-                                    {RPCResult::Type::ARR, "addresses", /* optional */ true, "(DEPRECATED, returned only if config option -deprecatedrpc=addresses is passed) Array of Dash addresses",
+                                    {RPCResult::Type::STR, "address", /* optional */ true, "PirateCash address (only if a well-defined address exists)"},
+                                    {RPCResult::Type::ARR, "addresses", /* optional */ true, "(DEPRECATED, returned only if config option -deprecatedrpc=addresses is passed) Array of PirateCash addresses",
                                     {
-                                        {RPCResult::Type::STR, "address", "Dash address"},
+                                        {RPCResult::Type::STR, "address", "PirateCash address"},
                                     }},
                                 }},
                             }},
@@ -810,11 +810,11 @@ static RPCHelpMan decodescript()
             {
                 {RPCResult::Type::STR, "asm", "Script public key"},
                 {RPCResult::Type::STR, "type", "The output type (e.g. " + GetAllOutputTypes() + ")"},
-                {RPCResult::Type::STR, "address", /* optional */ true, "Dash address (only if a well-defined address exists)"},
+                {RPCResult::Type::STR, "address", /* optional */ true, "PirateCash address (only if a well-defined address exists)"},
                 {RPCResult::Type::NUM, "reqSigs", /* optional */ true, "(DEPRECATED, returned only if config option -deprecatedrpc=addresses is passed) Number of required signatures"},
-                {RPCResult::Type::ARR, "addresses", /* optional */ true, "(DEPRECATED, returned only if config option -deprecatedrpc=addresses is passed) Array of Dash addresses",
+                {RPCResult::Type::ARR, "addresses", /* optional */ true, "(DEPRECATED, returned only if config option -deprecatedrpc=addresses is passed) Array of PirateCash addresses",
                     {
-                        {RPCResult::Type::STR, "address", "Dash address"},
+                        {RPCResult::Type::STR, "address", "PirateCash address"},
                     }},
                     {RPCResult::Type::STR, "p2sh", "address of P2SH script wrapping this redeem script (not returned if the script is already a P2SH)"},
             },
@@ -1243,7 +1243,7 @@ static RPCHelpMan testmempoolaccept()
 static RPCHelpMan decodepsbt()
 {
     return RPCHelpMan{"decodepsbt",
-        "\nReturn a JSON object representing the serialized, base64-encoded partially signed blockchain transaction.\n",
+        "\nReturn a JSON object representing the serialized, base64-encoded partially signed PirateCash transaction.\n",
         {
             {"psbt", RPCArg::Type::STR, RPCArg::Optional::NO, "The PSBT base64 string"},
         },
@@ -1648,7 +1648,7 @@ static RPCHelpMan decodepsbt()
 static RPCHelpMan combinepsbt()
 {
     return RPCHelpMan{"combinepsbt",
-        "\nCombine multiple partially signed blockchain transactions into one transaction.\n"
+        "\nCombine multiple partially signed PirateCash transactions into one transaction.\n"
         "Implements the Combiner role.\n",
         {
             {"txs", RPCArg::Type::ARR, RPCArg::Optional::NO, "The base64 strings of partially signed transactions",
@@ -1778,7 +1778,7 @@ static RPCHelpMan createpsbt()
                 {
                     {"", RPCArg::Type::OBJ_USER_KEYS, RPCArg::Optional::OMITTED, "",
                         {
-                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "A key-value pair. The key (string) is the Dash address, the value (float or string) is the amount in " + CURRENCY_UNIT},
+                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "A key-value pair. The key (string) is the PirateCash address, the value (float or string) is the amount in " + CURRENCY_UNIT},
                         },
                         },
                     {"", RPCArg::Type::OBJ, RPCArg::Optional::OMITTED, "",

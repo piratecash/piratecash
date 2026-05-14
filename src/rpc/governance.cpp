@@ -167,7 +167,7 @@ static RPCHelpMan gobject_prepare()
 
     CGovernanceObject govobj(hashParent, nRevision, nTime, uint256(), strDataHex);
 
-    // This command is dangerous because it consumes 5 DASH irreversibly.
+    // This command is dangerous because it consumes 5 PIRATE irreversibly.
     // If params are lost, it's very hard to bruteforce them and yet
     // users ignore all instructions on dashcentral etc. and do not save them...
     // Let's log them here and hope users do not mess with debug.log
@@ -1076,25 +1076,25 @@ void RegisterGovernanceRPCCommands(CRPCTable &t)
 static const CRPCCommand commands[] =
 { //  category              actor (function)
   //  --------------------- -----------------------
-    /* Dash features */
-    { "dash",               &getgovernanceinfo,         },
-    { "dash",               &getsuperblockbudget,       },
-    { "dash",               &gobject,                   },
-    { "dash",               &gobject_count,             },
-    { "dash",               &gobject_deserialize,       },
-    { "dash",               &gobject_check,             },
+    /* PirateCash features */
+    { "pirate",             &getgovernanceinfo,         },
+    { "pirate",             &getsuperblockbudget,       },
+    { "pirate",             &gobject,                   },
+    { "pirate",             &gobject_count,             },
+    { "pirate",             &gobject_deserialize,       },
+    { "pirate",             &gobject_check,             },
 #ifdef ENABLE_WALLET
-    { "dash",               &gobject_prepare,           },
-    { "dash",               &gobject_list_prepared,     },
-    { "dash",               &gobject_vote_many,         },
-    { "dash",               &gobject_vote_alias,        },
+    { "pirate",             &gobject_prepare,           },
+    { "pirate",             &gobject_list_prepared,     },
+    { "pirate",             &gobject_vote_many,         },
+    { "pirate",             &gobject_vote_alias,        },
 #endif
-    { "dash",               &gobject_submit,            },
-    { "dash",               &gobject_list,              },
-    { "dash",               &gobject_diff,              },
-    { "dash",               &gobject_get,               },
-    { "dash",               &gobject_getcurrentvotes,   },
-    { "dash",               &voteraw,                   },
+    { "pirate",             &gobject_submit,            },
+    { "pirate",             &gobject_list,              },
+    { "pirate",             &gobject_diff,              },
+    { "pirate",             &gobject_get,               },
+    { "pirate",             &gobject_getcurrentvotes,   },
+    { "pirate",             &voteraw,                   },
 };
 // clang-format on
     for (const auto& command : commands) {

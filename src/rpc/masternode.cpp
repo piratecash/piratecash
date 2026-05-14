@@ -540,13 +540,13 @@ static RPCHelpMan masternodelist_helper(bool is_composite)
         "  json           - Print info in JSON format (can be additionally filtered, partial match)\n"
         "  lastpaidblock  - Print the last block height a node was paid on the network\n"
         "  lastpaidtime   - Print the last time a node was paid on the network\n"
-        "  owneraddress   - Print the masternode owner Dash address\n"
-        "  payee          - Print the masternode payout Dash address (can be additionally filtered,\n"
+        "  owneraddress   - Print the masternode owner PirateCash address\n"
+        "  payee          - Print the masternode payout PirateCash address (can be additionally filtered,\n"
         "                   partial match)\n"
         "  pubKeyOperator - Print the masternode operator public key\n"
         "  status         - Print masternode status: ENABLED / POSE_BANNED\n"
         "                   (can be additionally filtered, partial match)\n"
-        "  votingaddress  - Print the masternode voting Dash address\n",
+        "  votingaddress  - Print the masternode voting PirateCash address\n",
         {
             {"mode", RPCArg::Type::STR, RPCArg::DefaultHint{"json"}, "The mode to run list in"},
             {"filter", RPCArg::Type::STR, RPCArg::Default{""}, "Filter results. Partial match by outpoint by default in all modes, additional matches in some modes are also available"},
@@ -741,17 +741,17 @@ void RegisterMasternodeRPCCommands(CRPCTable &t)
 static const CRPCCommand commands[] =
 { //  category              actor (function)
   //  --------------------- -----------------------
-    { "dash",               &masternode_help,          },
-    { "dash",               &masternodelist_composite, },
-    { "dash",               &masternodelist,           },
-    { "dash",               &masternode_connect,       },
-    { "dash",               &masternode_count,         },
+    { "pirate",             &masternode_help,          },
+    { "pirate",             &masternodelist_composite, },
+    { "pirate",             &masternodelist,           },
+    { "pirate",             &masternode_connect,       },
+    { "pirate",             &masternode_count,         },
 #ifdef ENABLE_WALLET
-    { "dash",               &masternode_outputs,       },
+    { "pirate",             &masternode_outputs,       },
 #endif // ENABLE_WALLET
-    { "dash",               &masternode_status,        },
-    { "dash",               &masternode_payments,      },
-    { "dash",               &masternode_winners,       },
+    { "pirate",             &masternode_status,        },
+    { "pirate",             &masternode_payments,      },
+    { "pirate",             &masternode_winners,       },
     { "hidden",             &masternode_current,       },
     { "hidden",             &masternode_winner,        },
 };

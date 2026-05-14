@@ -1207,9 +1207,9 @@ static RPCHelpMan gettxout()
                         {RPCResult::Type::STR_HEX, "hex", ""},
                         {RPCResult::Type::NUM, "reqSigs", /* optional */ true, "(DEPRECATED, returned only if config option -deprecatedrpc=addresses is passed) Number of required signatures"},
                         {RPCResult::Type::STR_HEX, "type", "The type, eg pubkeyhash"},
-                        {RPCResult::Type::STR, "address", /* optional */ true, "Dash address (only if a well-defined address exists)"},
-                        {RPCResult::Type::ARR, "addresses", /* optional */ true, "(DEPRECATED, returned only if config option -deprecatedrpc=addresses is passed) Array of Dash addresses",
-                            {{RPCResult::Type::STR, "address", "Dash address"}}},
+                        {RPCResult::Type::STR, "address", /* optional */ true, "PirateCash address (only if a well-defined address exists)"},
+                        {RPCResult::Type::ARR, "addresses", /* optional */ true, "(DEPRECATED, returned only if config option -deprecatedrpc=addresses is passed) Array of PirateCash addresses",
+                            {{RPCResult::Type::STR, "address", "PirateCash address"}}},
                     }},
                 {RPCResult::Type::BOOL, "coinbase", "Coinbase or not"},
             }},
@@ -1921,7 +1921,7 @@ static constexpr size_t PER_UTXO_OVERHEAD = sizeof(COutPoint) + sizeof(uint32_t)
 static RPCHelpMan getblockstats()
 {
     return RPCHelpMan{"getblockstats",
-                "\nCompute per block statistics for a given window. All amounts are in duffs.\n"
+                "\nCompute per block statistics for a given window. All amounts are in units.\n"
                 "It won't work for some heights with pruning.\n",
                 {
                     {"hash_or_height", RPCArg::Type::NUM, RPCArg::Optional::NO, "The block hash or height of the target block", "", {"", "string or numeric"}},
@@ -1936,10 +1936,10 @@ static RPCHelpMan getblockstats()
             RPCResult::Type::OBJ, "", "",
             {
                 {RPCResult::Type::NUM, "avgfee", "Average fee in the block"},
-                {RPCResult::Type::NUM, "avgfeerate", "Average feerate (in duffs per virtual byte)"},
+                {RPCResult::Type::NUM, "avgfeerate", "Average feerate (in units per virtual byte)"},
                 {RPCResult::Type::NUM, "avgtxsize", "Average transaction size"},
                 {RPCResult::Type::STR_HEX, "blockhash", "The block hash (to check for potential reorgs)"},
-                {RPCResult::Type::ARR_FIXED, "feerate_percentiles", "Feerates at the 10th, 25th, 50th, 75th, and 90th percentile weight unit (in duffs per byte)",
+                {RPCResult::Type::ARR_FIXED, "feerate_percentiles", "Feerates at the 10th, 25th, 50th, 75th, and 90th percentile weight unit (in units per byte)",
                 {
                     {RPCResult::Type::NUM, "10th_percentile_feerate", "The 10th percentile feerate"},
                     {RPCResult::Type::NUM, "25th_percentile_feerate", "The 25th percentile feerate"},
@@ -1950,13 +1950,13 @@ static RPCHelpMan getblockstats()
                 {RPCResult::Type::NUM, "height", "The height of the block"},
                 {RPCResult::Type::NUM, "ins", "The number of inputs (excluding coinbase)"},
                 {RPCResult::Type::NUM, "maxfee", "Maximum fee in the block"},
-                {RPCResult::Type::NUM, "maxfeerate", "Maximum feerate (in duffs per virtual byte)"},
+                {RPCResult::Type::NUM, "maxfeerate", "Maximum feerate (in units per virtual byte)"},
                 {RPCResult::Type::NUM, "maxtxsize", "Maximum transaction size"},
                 {RPCResult::Type::NUM, "medianfee", "Truncated median fee in the block"},
                 {RPCResult::Type::NUM, "mediantime", "The block median time past"},
                 {RPCResult::Type::NUM, "mediantxsize", "Truncated median transaction size"},
                 {RPCResult::Type::NUM, "minfee", "Minimum fee in the block"},
-                {RPCResult::Type::NUM, "minfeerate", "Minimum feerate (in duffs per virtual byte)"},
+                {RPCResult::Type::NUM, "minfeerate", "Minimum feerate (in units per virtual byte)"},
                 {RPCResult::Type::NUM, "mintxsize", "Minimum transaction size"},
                 {RPCResult::Type::NUM, "outs", "The number of outputs"},
                 {RPCResult::Type::NUM, "subsidy", "The block subsidy"},

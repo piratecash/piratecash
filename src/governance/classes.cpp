@@ -211,7 +211,7 @@ void CSuperblock::ParsePaymentSchedule(const std::string& strPaymentAddresses, c
         CTxDestination dest = DecodeDestination(vecPaymentAddresses[i]);
         if (!IsValidDestination(dest)) {
             std::ostringstream ostr;
-            ostr << "CSuperblock::ParsePaymentSchedule -- Invalid Dash Address : " << vecPaymentAddresses[i];
+            ostr << "CSuperblock::ParsePaymentSchedule -- Invalid PirateCash Address : " << vecPaymentAddresses[i];
             LogPrintf("%s\n", ostr.str());
             throw std::runtime_error(ostr.str());
         }
@@ -448,4 +448,3 @@ CGovernancePayment::CGovernancePayment(const CTxDestination& destIn, CAmount nAm
                   EncodeDestination(destIn), nAmountIn);
     }
 }
-
