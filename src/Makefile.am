@@ -670,32 +670,11 @@ crypto_libbitcoin_crypto_avx2_a_CXXFLAGS += $(AVX2_CXXFLAGS)
 crypto_libbitcoin_crypto_avx2_a_CPPFLAGS += -DENABLE_AVX2
 crypto_libbitcoin_crypto_avx2_a_SOURCES = crypto/sha256_avx2.cpp
 
-# x11
+# scrypt
 crypto_libbitcoin_crypto_base_a_SOURCES += \
-  crypto/x11/aes_helper.c \
-  crypto/x11/blake.c \
-  crypto/x11/bmw.c \
-  crypto/x11/cubehash.c \
-  crypto/x11/echo.c \
-  crypto/x11/groestl.c \
-  crypto/x11/jh.c \
-  crypto/x11/keccak.c \
-  crypto/x11/luffa.c \
-  crypto/x11/shavite.c \
-  crypto/x11/simd.c \
-  crypto/x11/skein.c \
-  crypto/x11/sph_blake.h \
-  crypto/x11/sph_bmw.h \
-  crypto/x11/sph_cubehash.h \
-  crypto/x11/sph_echo.h \
-  crypto/x11/sph_groestl.h \
-  crypto/x11/sph_jh.h \
-  crypto/x11/sph_keccak.h \
-  crypto/x11/sph_luffa.h \
-  crypto/x11/sph_shavite.h \
-  crypto/x11/sph_simd.h \
-  crypto/x11/sph_skein.h \
-  crypto/x11/sph_types.h
+  crypto/scrypt.cpp \
+  crypto/scrypt-sse2.cpp \
+  crypto/scrypt.h
 
 crypto_libbitcoin_crypto_x86_shani_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 crypto_libbitcoin_crypto_x86_shani_a_CPPFLAGS = $(AM_CPPFLAGS)
@@ -725,7 +704,6 @@ libbitcoin_consensus_a_SOURCES = \
   consensus/validation.h \
   hash.cpp \
   hash.h \
-  hash_x11.h \
   prevector.h \
   primitives/block.cpp \
   primitives/block.h \
