@@ -94,7 +94,7 @@ class ProposalModel : public QAbstractTableModel
 private:
     QList<const Proposal*> m_data;
     int nAbsVoteReq = 0;
-    int m_display_unit{BitcoinUnits::DASH};
+    int m_display_unit{BitcoinUnits::PIRATECASH};
 
 public:
     explicit ProposalModel(QObject* parent = nullptr) :

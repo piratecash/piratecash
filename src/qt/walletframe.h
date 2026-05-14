@@ -102,6 +102,8 @@ public Q_SLOTS:
     void changePassphrase();
     /** Ask for passphrase to unlock wallet temporarily */
     void unlockWallet();
+    /** Ask for passphrase to unlock wallet for mixing and staking only */
+    void unlockWalletForMixingOnly();
     /** Lock wallet */
     void lockWallet();
 

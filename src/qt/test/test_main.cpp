@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
 
     BitcoinApplication app;
     app.setNode(*node);
-    app.setApplicationName("Dash-Qt-test");
+    app.setApplicationName("PirateCash-Qt-test");
 
     app.node().context()->args = &gArgs;     // Make gArgs available in the NodeContext
     AppTests app_tests(app);
