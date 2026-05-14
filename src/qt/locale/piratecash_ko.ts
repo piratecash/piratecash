@@ -74,11 +74,11 @@
         <translation>받기 주소</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <source>These are your PirateCash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
         <translation>송금을 위한 대시 주소입니다. 코인을 보내기 전에 항상 금액과 받는 주소를 확인하세요.</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <source>These are your PirateCash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
         <translation>이것은 지불을 받는 데 사용되는 당신의 대시 주소입니다. 새로운 주소를 생성하기 위해서는 수신 탭의 '새로운 받기 주소 생성하기' 버튼을 클릭하세요.</translation>
     </message>
     <message>
@@ -211,7 +211,7 @@
         <translation>지갑 암호화 승인</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATE&lt;/b&gt;!</source>
         <translation>경고: 지갑을 암호화하고 암호문을 잃어버리는 경우 당신은 &lt;b&gt;모든 대시를 잃게 됩니다&lt;/b&gt;!</translation>
     </message>
     <message>
@@ -302,9 +302,6 @@
     </message>
 </context>
 <context>
-    <name>BitcoinApplication</name>
-    </context>
-<context>
     <name>BitcoinGUI</name>
     <message>
         <source>&amp;Overview</source>
@@ -319,7 +316,7 @@
         <translation>보내기(&amp;S)</translation>
     </message>
     <message>
-        <source>Send coins to a Dash address</source>
+        <source>Send coins to a PirateCash address</source>
         <translation>대시 주소로 코인 전송</translation>
     </message>
     <message>
@@ -327,36 +324,8 @@
         <translation>받기(&amp;R)</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
         <translation>지불 요청하기 (QR코드와 대시 URI가 생성됩니다.)</translation>
-    </message>
-    <message>
-        <source>&amp;Options…</source>
-        <translation>옵션(&amp;O)</translation>
-    </message>
-    <message>
-        <source>&amp;Encrypt Wallet…</source>
-        <translation>지갑 암호화(&amp;E)…</translation>
-    </message>
-    <message>
-        <source>&amp;Backup Wallet…</source>
-        <translation>지갑 백업(&amp;B)…</translation>
-    </message>
-    <message>
-        <source>&amp;Change Passphrase…</source>
-        <translation>암호문 변경(&amp;C)…</translation>
-    </message>
-    <message>
-        <source>&amp;Unlock Wallet…</source>
-        <translation>지갑 잠금해제 (&amp;U)</translation>
-    </message>
-    <message>
-        <source>Sign &amp;message…</source>
-        <translation>메시지 서명…(&amp;M)</translation>
-    </message>
-    <message>
-        <source>&amp;Verify message…</source>
-        <translation>메시지 검증…(&amp;V)</translation>
     </message>
     <message>
         <source>&amp;Sending addresses</source>
@@ -367,16 +336,16 @@
         <translation>받기 주소(&amp;R)</translation>
     </message>
     <message>
-        <source>Open &amp;URI…</source>
-        <translation>URI 열기(&amp;U)…</translation>
-    </message>
-    <message>
         <source>Open Wallet</source>
         <translation>지갑 열기</translation>
     </message>
     <message>
         <source>Open a wallet</source>
         <translation>지갑을 엽니다</translation>
+    </message>
+    <message>
+        <source>Close Wallet...</source>
+        <translation>지갑을 닫습니다...</translation>
     </message>
     <message>
         <source>Close wallet</source>
@@ -435,11 +404,15 @@
         <translation>Qt 정보를 표시합니다</translation>
     </message>
     <message>
+        <source>&amp;Options...</source>
+        <translation>옵션(&amp;O)</translation>
+    </message>
+    <message>
         <source>&amp;About %1</source>
         <translation>%1 정보(&amp;A)</translation>
     </message>
     <message>
-        <source>Send %1 funds to a Dash address</source>
+        <source>Send %1 funds to a PirateCash address</source>
         <translation>%1 금액을 대시 주소로 전송</translation>
     </message>
     <message>
@@ -455,16 +428,32 @@
         <translation>메인창 보이기 또는 숨기기</translation>
     </message>
     <message>
+        <source>&amp;Encrypt Wallet...</source>
+        <translation>지갑 암호화(&amp;E)...</translation>
+    </message>
+    <message>
         <source>Encrypt the private keys that belong to your wallet</source>
         <translation>지갑에 해당하는 개인 키 암호화하기</translation>
+    </message>
+    <message>
+        <source>&amp;Backup Wallet...</source>
+        <translation>지갑 백업(&amp;B)...</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
         <translation>지갑을 다른 장소에 백업</translation>
     </message>
     <message>
+        <source>&amp;Change Passphrase...</source>
+        <translation>암호문 변경(&amp;C)...</translation>
+    </message>
+    <message>
         <source>Change the passphrase used for wallet encryption</source>
         <translation>지갑 암호화에 사용되는 암호문을 변경합니다</translation>
+    </message>
+    <message>
+        <source>&amp;Unlock Wallet...</source>
+        <translation>지갑 잠금해제 (&amp;U)</translation>
     </message>
     <message>
         <source>Unlock wallet</source>
@@ -475,11 +464,19 @@
         <translation>지갑 잠금(&amp;L)</translation>
     </message>
     <message>
-        <source>Sign messages with your Dash addresses to prove you own them</source>
+        <source>Sign &amp;message...</source>
+        <translation>메시지 서명...(&amp;M)</translation>
+    </message>
+    <message>
+        <source>Sign messages with your PirateCash addresses to prove you own them</source>
         <translation>본인의 대시 주소임을 증명하기 위하여 메시지에 서명합니다.</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dash addresses</source>
+        <source>&amp;Verify message...</source>
+        <translation>메시지 검증...(&amp;V)</translation>
+    </message>
+    <message>
+        <source>Verify messages to ensure they were signed with specified PirateCash addresses</source>
         <translation>특정 대시 주소에 서명된 것인지 확인하기 위하여 메시지를 검증합니다.</translation>
     </message>
     <message>
@@ -543,11 +540,15 @@
         <translation>사용한 받기 주소와 라벨을 표시합니다.</translation>
     </message>
     <message>
+        <source>Open &amp;URI...</source>
+        <translation>URI 열기(&amp;U)...</translation>
+    </message>
+    <message>
         <source>&amp;Command-line options</source>
         <translation>명령줄 옵션(&amp;C)</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Dash command-line options</source>
+        <source>Show the %1 help message to get a list with possible PirateCash command-line options</source>
         <translation>사용 가능한 대시 명령줄 옵션 목록을 가져오기 위해 %1 도움말 메시지를 표시합니다.</translation>
     </message>
     <message>
@@ -575,6 +576,10 @@
     <message>
         <source>Show information about %1</source>
         <translation>%1에 관한 정보를 표시합니다</translation>
+    </message>
+    <message>
+        <source>Create Wallet...</source>
+        <translation>지갑을 생성합니다...</translation>
     </message>
     <message>
         <source>Create a new wallet</source>
@@ -609,12 +614,36 @@
         <translation>거버넌스 제안서 보기</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Dash network</source>
+        <source>%n active connection(s) to PirateCash network</source>
         <translation><numerusform>대시 네트워크의 활성 연결 수는 %n 입니다.</numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
         <translation>네트워크 활동 정지</translation>
+    </message>
+    <message>
+        <source>Syncing Headers (%1%)...</source>
+        <translation>헤더 동기화중 (%1%)...</translation>
+    </message>
+    <message>
+        <source>Synchronizing with network...</source>
+        <translation>네트워크와 동기화중...</translation>
+    </message>
+    <message>
+        <source>Indexing blocks on disk...</source>
+        <translation>디스크에서 블록 색인중...</translation>
+    </message>
+    <message>
+        <source>Processing blocks on disk...</source>
+        <translation>디스크에서 블록 처리중...</translation>
+    </message>
+    <message>
+        <source>Reindexing blocks on disk...</source>
+        <translation>디스크에서 블록 다시 색인중...</translation>
+    </message>
+    <message>
+        <source>Connecting to peers...</source>
+        <translation>피어에 연결중...</translation>
     </message>
     <message numerus="yes">
         <source>Processed %n block(s) of transaction history.</source>
@@ -625,40 +654,8 @@
         <translation>%1 전의 정보 처리 중</translation>
     </message>
     <message>
-        <source>Close Wallet…</source>
-        <translation>지갑을 닫습니다…</translation>
-    </message>
-    <message>
-        <source>Create Wallet…</source>
-        <translation>지갑을 생성합니다…</translation>
-    </message>
-    <message>
-        <source>Syncing Headers (%1%)…</source>
-        <translation>헤더 동기화중 (%1%)…</translation>
-    </message>
-    <message>
-        <source>Synchronizing with network…</source>
-        <translation>네트워크와 동기화중…</translation>
-    </message>
-    <message>
-        <source>Indexing blocks on disk…</source>
-        <translation>디스크에서 블록 색인중…</translation>
-    </message>
-    <message>
-        <source>Processing blocks on disk…</source>
-        <translation>디스크에서 블록 처리중…</translation>
-    </message>
-    <message>
-        <source>Reindexing blocks on disk…</source>
-        <translation>디스크에서 블록 다시 색인중…</translation>
-    </message>
-    <message>
-        <source>Connecting to peers…</source>
-        <translation>피어에 연결중…</translation>
-    </message>
-    <message>
-        <source>Catching up…</source>
-        <translation>블록 따라잡기…</translation>
+        <source>Catching up...</source>
+        <translation>블록 따라잡기...</translation>
     </message>
     <message>
         <source>Last received block was generated %1 ago.</source>
@@ -782,7 +779,7 @@
         <source>Original message:</source>
         <translation>원본 메시지:</translation>
     </message>
-</context>
+    </context>
 <context>
     <name>CoinControlDialog</name>
     <message>
@@ -977,8 +974,8 @@
 <context>
     <name>CreateWalletActivity</name>
     <message>
-        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;…</source>
-        <translation>지갑 &lt;b&gt;%1&lt;/b&gt; 생성중…</translation>
+        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
+        <translation>지갑 &lt;b&gt;%1&lt;/b&gt; 생성중...</translation>
     </message>
     <message>
         <source>Create wallet failed</source>
@@ -1027,7 +1024,7 @@
         <source>Create</source>
         <translation>생성하기</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>EditAddressDialog</name>
     <message>
@@ -1063,7 +1060,7 @@
         <translation>보내기 주소 편집</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Dash address.</source>
+        <source>The entered address "%1" is not a valid PirateCash address.</source>
         <translation>입력한 주소 "%1" 는 올바른 대시 주소가 아닙니다.</translation>
     </message>
     <message>
@@ -1148,7 +1145,7 @@
         <translation>%1 정보</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Dash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH and 10 DASH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE and 10 PIRATE -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
         <translation>&lt;h3&gt;%1 기본 정보&lt;/h3&gt; %1은 당신의 자금 출처를 가려 진정한 재정적 프라이버시를 보장합니다. 당신의 지갑에 보관된 모든 대시는 각기 다른 "입력값"으로 구성되어 있습니다. 쉽게 생각하면 별도의 분리된 동전으로 구성되어 있다고 볼 수 있습니다.&lt;br&gt;  %1은 당신의 코인이 지갑을 떠나지 않고도 그 입력값을 다른 두 사람의 입력값과 섞는 혁신적인 방식을 사용합니다. 이로써 당신의 자금은 언제나 당신의 통제 하에 있습니다.&lt;hr&gt;&lt;b&gt; %1은 다음과 같은 방식으로 작동합니다.&lt;/b&gt;&lt;ol type="1"&gt;&lt;li&gt; %1은 당신의 거래 입력값을 표준 단위로 쪼개는 것으로 시작합니다. 이렇게 분할하는 단위는 0.001대시, 0.01대시, 0.1대시, 1대시 혹은 10대시 입니다 - 귀하가 일상적으로 사용하는 지폐와 비슷하다고 생각하셔도 좋습니다. &lt;/li&gt;&lt;li&gt;이후 당신의 지갑은 "마스터노드"라고 불리는 네트워크의 특수 구성 소프트웨어 노드에 요청을 전송합니다. 이로써 이들 마스터노드는 당신이 특정 금액을 믹싱하고자 한다는 정보를 수신합니다. 마스터노드에는 당신의 개인 정보를 식별할 수 있는 어떤 내용도 전송되지 않습니다. 즉 당신이 "누구"인지 알 수 있는 방법은 없습니다.&lt;/li&gt;&lt;li&gt; 두 명의 다른 사람이 비슷한 메시지를 보내어 그들 역시 같은 단위의 금액을 믹싱하고 싶다는 정보를 나타내면 믹싱 세션이 시작됩니다. 마스터노드는 이들 입력값을 믹싱하여 세 사용자의 지갑에 변환된 입력을 지불하도록 지시합니다. 당신의 지갑은 해당 입력값을 곧바로 스스로에게 지불하지만, 지불되는 주소는 '변경 주소'라고 불리는 다른 주소로 보내집니다.&lt;/li&gt;&lt;li&gt; 당신의 자금을 완전히 가리기 위해서, 당신의 지갑은 이 과정을 각 대시 분할 단위만큼 여러번 반복합니다. 이러한 반복을 ‘라운드’라고 부릅니다. 프라이빗샌드의 각 라운드가 진행됨에 따라 당신이 송금하고자 하는 자금의 출처는 기하급수적으로 높은 수준으로 가려집니다.&lt;/li&gt;&lt;li&gt; 이 믹싱 과정은 당신이 개입할 필요 없이 백그라운드에서 진행됩니다. 당신이 거래를 원하는 경우, 당신의 자금은 이미 믹싱을 거친 것입니다. 추가적으로 대기할 필요 역시 없습니다. &lt;/li&gt;&lt;/ol&gt;&lt;hr&gt;&lt;b&gt;중요:&lt;/b&gt; 당신의 지갑은 1,000개의 ‘변경 주소’만을 가지고 있습니다. 믹싱을 실행할 때마다 최대 9개의 주소가 사용됩니다. 이는 곧 이들 1000개의 주소가 약 100개의 믹싱 작업을 위해 사용될 수 있다는 것을 의미합니다. 전체 1,000개의 주소 중 900개가 사용된 경우 당신의 지갑은 더 많은 주소를 만들어야 합니다. 그러나 이 작업은 당신이 자동 백업을 설정한 경우에만 수행됩니다. &lt;br&gt;따라서 백업이 비활성화된 사용자는 %1 역시 비활성화 됩니다. &lt;hr&gt;더 많은 정보를 위해서는 &lt;a style="%2" href="%3"&gt;%1 문서&lt;/a&gt;를 참조하세요.</translation>
     </message>
 </context>
@@ -1165,6 +1162,10 @@
     <message>
         <source>As this is the first time the program is launched, you can choose where %1 will store its data.</source>
         <translation>프로그램을 처음으로 실행합니다. 어디에 %1 데이터를 저장 할 지 선택할 수 있습니다. </translation>
+    </message>
+    <message>
+        <source>When you click OK, %1 will begin to download and process the full %4 block chain (%2GB) starting with the earliest transactions in %3 when %4 initially launched.</source>
+        <translation>확인을 클릭하면 %1은 모든 %4블록 체인 (%2GB) 장부를 %3 안에 다운로드하고 처리하기 시작합니다.  이는 %4가 시작될 때 생성된 가장 오래된 트랜잭션부터 시작합니다.</translation>
     </message>
     <message>
         <source>This initial synchronisation is very demanding, and may expose hardware problems with your computer that had previously gone unnoticed. Each time you run %1, it will continue downloading where it left off.</source>
@@ -1191,7 +1192,7 @@
         <translation>약 %1 GB의 데이터가 이 디렉토리에 저장됩니다.</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Dash block chain.</source>
+        <source>%1 will download and store a copy of the PirateCash block chain.</source>
         <translation>%1은 비트코인 블록체인의 사본을 다운로드하여 저장합니다.</translation>
     </message>
     <message>
@@ -1286,12 +1287,8 @@
         <translation>콜래트럴 아웃포인트 복사</translation>
     </message>
     <message>
-        <source>Please wait…</source>
-        <translation>기다려주십시오…</translation>
-    </message>
-    <message>
-        <source>Updating…</source>
-        <translation>업데이트 중…</translation>
+        <source>Updating...</source>
+        <translation>업데이트 중...</translation>
     </message>
     <message>
         <source>ENABLED</source>
@@ -1326,6 +1323,10 @@
         <translation>모든 속성으로 검색하기 (예: 주소 혹은 protx 해시)</translation>
     </message>
     <message>
+        <source>Please wait...</source>
+        <translation>기다려주십시오...</translation>
+    </message>
+    <message>
         <source>Additional information for DIP3 Masternode %1</source>
         <translation>DIP3 마스터노드 %1에 대한 추가 정보</translation>
     </message>
@@ -1337,11 +1338,11 @@
         <translation>유형</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the PirateCash network, as detailed below.</source>
         <translation>최근 거래는 아직 표시되지 않을 수 있으며, 따라서 당신 지갑의 잔고 역시 실제와 다를 수 있습니다. 이는 당신의 지갑이 대시 네트워크와 동기화를 마치는대로 아래의 세부 내용과 같이 정확히 표시될 예정입니다.</translation>
     </message>
     <message>
-        <source>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <source>Attempting to spend PirateCash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
         <translation>'아직 표시 되지 않은 거래'의 영향을 받는 대시를 사용하시려는 경우, 네트워크에 의해 승인되지 않습니다.</translation>
     </message>
     <message>
@@ -1349,12 +1350,8 @@
         <translation>남은 블록의 수</translation>
     </message>
     <message>
-        <source>Unknown…</source>
-        <translation>알 수 없음…</translation>
-    </message>
-    <message>
-        <source>calculating…</source>
-        <translation>계산 중…</translation>
+        <source>Unknown...</source>
+        <translation>알 수 없음...</translation>
     </message>
     <message>
         <source>Last block time</source>
@@ -1369,6 +1366,10 @@
         <translation>시간당 진행 증가율</translation>
     </message>
     <message>
+        <source>calculating...</source>
+        <translation>계산 중...</translation>
+    </message>
+    <message>
         <source>Estimated time left until synced</source>
         <translation>동기화 완료까지 예상 시간</translation>
     </message>
@@ -1377,8 +1378,8 @@
         <translation>숨기기</translation>
     </message>
     <message>
-        <source>Unknown. Syncing Headers (%1, %2%)…</source>
-        <translation>알 수 없음. 헤더 동기화중 (%1, %2%)…</translation>
+        <source>Unknown. Syncing Headers (%1, %2%)...</source>
+        <translation>알 수 없음. 헤더 동기화중 (%1, %2%)...</translation>
     </message>
 </context>
 <context>
@@ -1407,8 +1408,8 @@
         <translation>기본 지갑</translation>
     </message>
     <message>
-        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;…</source>
-        <translation>지갑 &lt;b&gt;%1&lt;/b&gt; 여는 중…</translation>
+        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
+        <translation>지갑 &lt;b&gt;%1&lt;/b&gt; 여는 중...</translation>
     </message>
 </context>
 <context>
@@ -1526,7 +1527,7 @@
         <translation>타깃 잔고</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <source>Automatically open the PirateCash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
         <translation>라우터에서 대시 코어 클라이언트를 자동으로 엽니다. 이 기능은 당신의 라우터가 UPnP를 지원하고 해당 기능이 작동하는 경우에만 가능합니다.</translation>
     </message>
     <message>
@@ -1542,7 +1543,7 @@
         <translation>수신 연결 허용</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a SOCKS5 proxy.</source>
+        <source>Connect to the PirateCash network through a SOCKS5 proxy.</source>
         <translation>SOCKS5 프록시를 통해 대시 네트워크 연결</translation>
     </message>
     <message>
@@ -1556,6 +1557,14 @@
     <message>
         <source>Options set in this dialog are overridden by the command line or in the configuration file:</source>
         <translation>이 대화의 옵션 세트는 명령줄에 의해, 혹은 설정 파일에서 중단됩니다:</translation>
+    </message>
+    <message>
+        <source>Hide the icon from the system tray.</source>
+        <translation>시스템 트레이에서 아이콘을 숨깁니다.</translation>
+    </message>
+    <message>
+        <source>&amp;Hide tray icon</source>
+        <translation>트레이 아이콘 숨김(&amp;H)</translation>
     </message>
     <message>
         <source>Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Exit in the menu.</source>
@@ -1662,6 +1671,12 @@
         <translation>이곳에서 사용자 인터페이스 언어를 설정 할 수 있습니다. 이 설정은 %1을/를 다시 시작할 때 적용됩니다.</translation>
     </message>
     <message>
+        <source>Language missing or translation incomplete? Help contributing translations here:
+https://www.transifex.com/projects/p/piratecash/</source>
+        <translation>지정하려는 언어가 목록에 없거나 번역이 완성되지 않았다면? 다음의 주소에서 번역을 도와주세요:
+https://www.transifex.com/projects/p/piratecash/</translation>
+    </message>
+    <message>
         <source>&amp;Unit to show amounts in:</source>
         <translation>거래액을 표시할 단위(&amp;U):</translation>
     </message>
@@ -1725,7 +1740,7 @@
         <translation>유형</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Dash network after a connection is established, but this process has not completed yet.</source>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
         <translation>표시된 정보가 오래된 것으로 보입니다. 당신의 지갑은 대시 네트워크에 연결되는 대로 동기화 될 예정입니다. 이 과정은 아직 종료되지 않았습니다.</translation>
     </message>
     <message>
@@ -1805,7 +1820,7 @@
         <translation>금액과 라운드:</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
+        <source>0 PIRATE / 0 Rounds</source>
         <translation>0 대시 / 0 라운드</translation>
     </message>
     <message>
@@ -1951,7 +1966,7 @@
         <translation>지불 요청 오류</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
+        <source>Cannot start piratecash: click-to-pay handler</source>
         <translation>대시를 시작할 수 없습니다: 원클릭 지불 핸들러</translation>
     </message>
     <message>
@@ -1959,11 +1974,15 @@
         <translation>URI 처리</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash://' 는 유효하지 않은 URI 입니다. 'dash:' 를 사용하세요.</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>'piratecash://' 는 유효하지 않은 URI 입니다. 'piratecash:' 를 사용하세요.</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Dash address or malformed URI parameters.</source>
+        <source>Invalid payment address %1</source>
+        <translation>유효하지 않은 지불 주소 %1</translation>
+    </message>
+    <message>
+        <source>URI cannot be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
         <translation>URI를 분석할 수 없습니다! 대시 주소가 유효하지 않거나 URI 파라미터 구성에 오류가 존재할 수 있습니다.</translation>
     </message>
     <message>
@@ -1975,22 +1994,18 @@
     <name>PeerTableModel</name>
     <message>
         <source>User Agent</source>
-        <extracomment>Title of Peers Table column which contains the peer's User Agent string.</extracomment>
         <translation>사용자 에이전트</translation>
     </message>
     <message>
         <source>Ping</source>
-        <extracomment>Title of Peers Table column which indicates the current latency of the connection with the peer.</extracomment>
         <translation>Ping</translation>
     </message>
     <message>
         <source>Sent</source>
-        <extracomment>Title of Peers Table column which indicates the total amount of network information we have sent to the peer.</extracomment>
         <translation>보냄</translation>
     </message>
     <message>
         <source>Received</source>
-        <extracomment>Title of Peers Table column which indicates the total amount of network information we have received from the peer.</extracomment>
         <translation>받음</translation>
     </message>
     </context>
@@ -2123,15 +2138,15 @@
         <translation>오류: %1 CSS 파일이 -custom-css-dir 경로에서 누락되었습니다.</translation>
     </message>
     <message>
-        <source>%1 didn't yet exit safely…</source>
-        <translation>%1가 아직 안전하게 종료되지 않았습니다…</translation>
+        <source>%1 didn't yet exit safely...</source>
+        <translation>%1가 아직 안전하게 종료되지 않았습니다...</translation>
     </message>
     <message>
         <source>Amount</source>
         <translation>거래액</translation>
     </message>
     <message>
-        <source>Enter a Dash address (e.g. %1)</source>
+        <source>Enter a PirateCash address (e.g. %1)</source>
         <translation>대시 주소 입력 (예: %1)</translation>
     </message>
     <message>
@@ -2234,15 +2249,15 @@
         <translation>QR 코드</translation>
     </message>
     <message>
-        <source>&amp;Save Image…</source>
-        <translation>이미지 저장(&amp;S)…</translation>
+        <source>&amp;Save Image...</source>
+        <translation>이미지 저장(&amp;S)...</translation>
     </message>
 </context>
 <context>
     <name>QRImageWidget</name>
     <message>
-        <source>&amp;Save Image…</source>
-        <translation>이미지 저장(&amp;S)…</translation>
+        <source>&amp;Save Image...</source>
+        <translation>이미지 저장(&amp;S)...</translation>
     </message>
     <message>
         <source>&amp;Copy Image</source>
@@ -2368,6 +2383,10 @@
         <translation>자세한 정보를 보려면 피어를 선택하세요.</translation>
     </message>
     <message>
+        <source>Direction</source>
+        <translation>방향</translation>
+    </message>
+    <message>
         <source>Version</source>
         <translation>버전</translation>
     </message>
@@ -2474,6 +2493,10 @@
     <message>
         <source>Services</source>
         <translation>서비스</translation>
+    </message>
+    <message>
+        <source>Ban Score</source>
+        <translation>밴 스코어</translation>
     </message>
     <message>
         <source>Connection Time</source>
@@ -2600,6 +2623,18 @@
         <translation>%1 경유</translation>
     </message>
     <message>
+        <source>never</source>
+        <translation>없음</translation>
+    </message>
+    <message>
+        <source>Inbound</source>
+        <translation>인바운드</translation>
+    </message>
+    <message>
+        <source>Outbound</source>
+        <translation>아웃바운드</translation>
+    </message>
+    <message>
         <source>Regular</source>
         <translation>일반</translation>
     </message>
@@ -2615,11 +2650,11 @@
         <source>Unknown</source>
         <translation>알 수 없음</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Dash network.</source>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the PirateCash network.</source>
         <translation>지불 요청에 메시지를 첨부할 지 선택할 수 있습니다. 해당 메세지는 지불 요청이 열릴 때 표시될 것 입니다. 메모: 이 메시지는 대시 네트워크로 전송되지 않습니다.</translation>
     </message>
     <message>
@@ -2631,7 +2666,7 @@
         <translation>새로운 받기 주소와 결합하는 임의의 라벨</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Dash network.</source>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the PirateCash network.</source>
         <translation>지불 요청에 메시지를 첨부할 지 선택할 수 있습니다. 해당 메세지는 지불 요청이 열릴 때 표시될 것 입니다. 메모: 이 메시지는 대시 네트워크로 전송되지 않습니다.</translation>
     </message>
     <message>
@@ -2710,7 +2745,7 @@
         <source>Copy amount</source>
         <translation>거래액 복사</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>ReceiveRequestDialog</name>
     <message>
@@ -2722,8 +2757,8 @@
         <translation>주소 복사(&amp;A)</translation>
     </message>
     <message>
-        <source>&amp;Save Image…</source>
-        <translation>이미지 저장(&amp;S)…</translation>
+        <source>&amp;Save Image...</source>
+        <translation>이미지 저장(&amp;S)...</translation>
     </message>
     <message>
         <source>Request payment to %1</source>
@@ -2776,6 +2811,10 @@
         <translation>코인 컨트롤 기능</translation>
     </message>
     <message>
+        <source>Inputs...</source>
+        <translation>입력...</translation>
+    </message>
+    <message>
         <source>automatically selected</source>
         <translation>자동 선택</translation>
     </message>
@@ -2804,10 +2843,6 @@
         <translation>더스트:</translation>
     </message>
     <message>
-        <source>Inputs…</source>
-        <translation>입력…</translation>
-    </message>
-    <message>
         <source>After Fee:</source>
         <translation>수수료 이후:</translation>
     </message>
@@ -2828,15 +2863,15 @@
         <translation>거래 수수료:</translation>
     </message>
     <message>
-        <source>(Smart fee not initialized yet. This usually takes a few blocks…)</source>
-        <translation>(Smart fee가 아직 초기화 되지 않았습니다. 이 과정에는 수 블록이 소요됩니다…)</translation>
+        <source>Choose...</source>
+        <translation>선택...</translation>
     </message>
     <message>
         <source>Confirmation time target:</source>
         <translation>승인 시간 목표:</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <source>If the custom fee is set to 1000 units and the transaction is only 250 bytes, then "per kilobyte" only pays 250 units in fee,&lt;br /&gt;while "at least" pays 1000 units. For transactions bigger than a kilobyte both pay by kilobyte.</source>
         <translation>만일 사용자 지정 수수료가 1000 더프로 설정되어 있으나 거래는 250바이트에 불과한 경우, 'KB 당'은 오직 250 더프를 수수료로 지불하는 한편 &lt;br /&gt;'최소'는 1000더프를 지불합니다. 1 KB보다 큰 거래를 진행하는 경우 두 옵션 모두 KB 당으로 지불합니다.</translation>
     </message>
     <message>
@@ -2846,10 +2881,6 @@
     <message>
         <source>Using the fallbackfee can result in sending a transaction that will take several hours or days (or never) to confirm. Consider choosing your fee manually or wait until you have validated the complete chain.</source>
         <translation>폴백수수료(fallbackfee)를 사용하는 경우 거래를 전송하는 데 수 시간, 수 일이 소요되거나 거래가 전송되지 않을 수 있습니다. 수수료를 수동으로 선택하시거나 완전한 블록체인에 승인할 때 까지 기다리실 것을 권장합니다.</translation>
-    </message>
-    <message>
-        <source>Choose…</source>
-        <translation>선택…</translation>
     </message>
     <message>
         <source>Note: Not enough data for fee estimation, using the fallback fee instead.</source>
@@ -2870,6 +2901,10 @@
     <message>
         <source>Custom:</source>
         <translation>사용자 정의:</translation>
+    </message>
+    <message>
+        <source>(Smart fee not initialized yet. This usually takes a few blocks...)</source>
+        <translation>(Smart fee가 아직 초기화 되지 않았습니다. 이 과정에는 수 블록이 소요됩니다...)</translation>
     </message>
     <message>
         <source>Confirm the send action</source>
@@ -3036,7 +3071,7 @@
         <translation><numerusform>%n 블록 내 거래 확인을 시작하기 위해 추정 완료</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Dash address</source>
+        <source>Warning: Invalid PirateCash address</source>
         <translation>경고: 잘못된 대시 주소입니다</translation>
     </message>
     <message>
@@ -3063,7 +3098,7 @@
         <translation>송금할 대상(&amp;T):</translation>
     </message>
     <message>
-        <source>The Dash address to send the payment to</source>
+        <source>The PirateCash address to send the payment to</source>
         <translation>이 대시 주소로 송금합니다.</translation>
     </message>
     <message>
@@ -3103,7 +3138,7 @@
         <translation>선택한 단위로 표시한 송금 금액</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PirateCash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>수수료는 보내는 금액에서 차감됩니다. 수령인은 당신이 수량란에 입력한 것 보다 적은 금액을 받게 됩니다. 만일 다중의 수령인이 선택되었다면 수수료는 수령인간에 동일하게 분할됩니다.</translation>
     </message>
     <message>
@@ -3119,7 +3154,7 @@
         <translation>메시지:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Dash network.</source>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
         <translation>대시: URI에 첨부된 메시지는 거래와 함께 참고용으로 저장됩니다. 주의: 이 메시지는 대시 네트워크로 전송되지 않습니다.</translation>
     </message>
     <message>
@@ -3142,8 +3177,8 @@
 <context>
     <name>ShutdownWindow</name>
     <message>
-        <source>%1 is shutting down…</source>
-        <translation>%1 을/를 종료 중입니다…</translation>
+        <source>%1 is shutting down...</source>
+        <translation>%1 을/를 종료 중입니다...</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
@@ -3161,11 +3196,11 @@
         <translation>메시지 서명(&amp;S)</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Dash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <source>You can sign messages/agreements with your addresses to prove you can receive PirateCash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
         <translation>당신의 주소로 대시를 받을 수 있다는 점을 증명하기 위하여 메시지/계약서에 서명할 수 있습니다. 내용이 분명하지 않거나 무작위인 경우 서명하지 않도록 주의하세요. 피싱 공격이 당신의 서명을 얻기 위해 유도하는 것일 수 있습니다. 오직 완전한 세부 내용을 갖추고 당신이 동의하는 내용에만 서명하세요.</translation>
     </message>
     <message>
-        <source>The Dash address to sign the message with</source>
+        <source>The PirateCash address to sign the message with</source>
         <translation>메시지에 서명하기 위한 대시 주소</translation>
     </message>
     <message>
@@ -3197,7 +3232,7 @@
         <translation>현재 서명을 시스템 클립보드에 복사</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Dash address</source>
+        <source>Sign the message to prove you own this PirateCash address</source>
         <translation>이 대시 주소가 당신의 소유임을 증명하기 위해 메시지에 서명하세요.</translation>
     </message>
     <message>
@@ -3221,7 +3256,7 @@
         <translation>메시지를 검증하기 위하여 아래에 수신인의 주소, 메시지(띄어쓰기, 들여쓰기, 행 나눔 등을 정확히 입력하기 위해 복사하여 입력) 및 서명을 입력하세요. 중간자 공격에 의한 피해를 피하기 위해 서명된 메시지 자체에 필요한 것 보다 많은 정보를 읽어 들이지 않도록 주의하세요. 이 기능은 서명 당사자가 해당 주소로 수신하였다는 점을 증명할 뿐이며, 거래의 발송 정보를 담지 않습니다.</translation>
     </message>
     <message>
-        <source>The Dash address the message was signed with</source>
+        <source>The PirateCash address the message was signed with</source>
         <translation>메시지에 서명된 대시 주소</translation>
     </message>
     <message>
@@ -3233,7 +3268,7 @@
         <translation>메시지가 서명된 때 특정된 서명</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Dash address</source>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
         <translation>특정 대시 주소에 서명된 것인지 확인하기 위하여 메시지를 검증합니다.</translation>
     </message>
     <message>
@@ -3672,8 +3707,8 @@
         <translation>올 해</translation>
     </message>
     <message>
-        <source>Range…</source>
-        <translation>범위…</translation>
+        <source>Range...</source>
+        <translation>범위...</translation>
     </message>
     <message>
         <source>Most Common</source>
@@ -3904,7 +3939,7 @@
     </message>
 </context>
 <context>
-    <name>dash-core</name>
+    <name>piratecash-core</name>
     <message>
         <source>Error: Listening for incoming connections failed (listen returned error %s)</source>
         <translation>오류: 들어오는 연결을 수신하는 데 실패했습니다 (수신 반환 오류 %s)</translation>
@@ -4010,6 +4045,14 @@
         <translation>충분한 사용자를 감지하였습니다. 신호를 보내는 중입니다. ( %s 기다리기 )</translation>
     </message>
     <message>
+        <source>Found enough users, signing ...</source>
+        <translation>충분한 사용자를 감지하였습니다. 신호를 보내는 중입니다...</translation>
+    </message>
+    <message>
+        <source>Importing...</source>
+        <translation>가져오는 중...</translation>
+    </message>
+    <message>
         <source>Incompatible mode.</source>
         <translation>호환 불가 모드</translation>
     </message>
@@ -4042,8 +4085,16 @@
         <translation>-minsporkkeys로 지정된 스포크 서명자의 최소 숫자가 유효하지 않습니다.</translation>
     </message>
     <message>
+        <source>Loading banlist...</source>
+        <translation>추방 리스트를 불러오는 중...</translation>
+    </message>
+    <message>
         <source>Lock is already in place.</source>
         <translation>이미 잠금 상태입니다.</translation>
+    </message>
+    <message>
+        <source>Mixing in progress...</source>
+        <translation>믹싱이 진행 중입니다...</translation>
     </message>
     <message>
         <source>Need to specify a port with -whitebind: '%s'</source>
@@ -4066,36 +4117,12 @@
         <translation>마스터노드 리스트에 없습니다.</translation>
     </message>
     <message>
-        <source>Pruning blockstore…</source>
-        <translation>블록 데이터를 축소 중입니다..</translation>
-    </message>
-    <message>
-        <source>Replaying blocks…</source>
-        <translation>블록 재실행 중…</translation>
-    </message>
-    <message>
-        <source>Rescanning…</source>
-        <translation>다시 스캔 중…</translation>
-    </message>
-    <message>
-        <source>Starting network threads…</source>
-        <translation>네트워크 스레드 시작중…</translation>
-    </message>
-    <message>
         <source>Submitted to masternode, waiting in queue %s</source>
         <translation>마스터노드에 제출, 대기열에서 기다리는 중 %s</translation>
     </message>
     <message>
         <source>Synchronization finished</source>
         <translation>동기화가 끝났습니다.</translation>
-    </message>
-    <message>
-        <source>Synchronizing blockchain…</source>
-        <translation>블록체인 동기화 중…</translation>
-    </message>
-    <message>
-        <source>Synchronizing governance objects…</source>
-        <translation>거버넌스 객체 동기화중…</translation>
     </message>
     <message>
         <source>Unable to start HTTP server. See debug log for details.</source>
@@ -4108,6 +4135,14 @@
     <message>
         <source>User Agent comment (%s) contains unsafe characters.</source>
         <translation>사용자 정의 코멘트 (%s)에 안전하지 못한 글자가 포함되어 있습니다.</translation>
+    </message>
+    <message>
+        <source>Verifying wallet(s)...</source>
+        <translation>지갑(들)을 검증 중...</translation>
+    </message>
+    <message>
+        <source>Will retry...</source>
+        <translation>다시 시도할 예정입니다...</translation>
     </message>
     <message>
         <source>Can't find random Masternode.</source>
@@ -4226,6 +4261,10 @@
         <translation>에러: %s를 위한 디스크 공간이 부족합니다</translation>
     </message>
     <message>
+        <source>Error: failed to add socket to epollfd (epoll_ctl returned error %s)</source>
+        <translation>오류: epollfd에 소켓을 추가하는 데 실패하였습니다 (epoll_ctl 반환 오류 %s)</translation>
+    </message>
+    <message>
         <source>Exceeded max tries.</source>
         <translation>최대 시도 횟수를 초과하였습니다.</translation>
     </message>
@@ -4250,10 +4289,6 @@
         <translation>초기치 설정 중 지갑을 재 스캔하는 데 실패하였습니다</translation>
     </message>
     <message>
-        <source>Found enough users, signing…</source>
-        <translation>충분한 사용자를 감지하였습니다. 신호를 보내는 중입니다…</translation>
-    </message>
-    <message>
         <source>Invalid P2P permission: '%s'</source>
         <translation>유효하지 않은 P2P 허용: '%s'</translation>
     </message>
@@ -4266,6 +4301,14 @@
         <translation>유효하지 않은 masternodeblsprivkey 입니다. 문서를 확인하세요.</translation>
     </message>
     <message>
+        <source>Loading block index...</source>
+        <translation>블록 인덱스를 불러오는 중...</translation>
+    </message>
+    <message>
+        <source>Loading wallet...</source>
+        <translation>지갑을 불러오는 중...</translation>
+    </message>
+    <message>
         <source>Masternode queue is full.</source>
         <translation>마스터노드 대기열이 가득 찼습니다.</translation>
     </message>
@@ -4276,10 +4319,6 @@
     <message>
         <source>Missing input transaction information.</source>
         <translation>누락된 입력값 거래 정보</translation>
-    </message>
-    <message>
-        <source>Mixing in progress…</source>
-        <translation>믹싱이 진행 중입니다…</translation>
     </message>
     <message>
         <source>No errors detected.</source>
@@ -4310,6 +4349,10 @@
         <translation>블록 축소 모드는 -txindex와 호환되지 않습니다.</translation>
     </message>
     <message>
+        <source>Pruning blockstore...</source>
+        <translation>블록 데이터를 축소 중입니다..</translation>
+    </message>
+    <message>
         <source>Section [%s] is not recognized.</source>
         <translation>섹션 [%s]이 인식되지 않습니다.</translation>
     </message>
@@ -4324,6 +4367,10 @@
     <message>
         <source>Specified -walletdir "%s" is not a directory</source>
         <translation>지정된 -walletdir "%s" 은/는 디렉토리가 아닙니다.</translation>
+    </message>
+    <message>
+        <source>Synchronizing blockchain...</source>
+        <translation>블록체인 동기화 중...</translation>
     </message>
     <message>
         <source>The wallet will avoid paying less than the minimum relay fee.</source>
@@ -4358,6 +4405,10 @@
         <translation>거래액이 너무 큽니다</translation>
     </message>
     <message>
+        <source>Trying to connect...</source>
+        <translation>연결 시도 중...</translation>
+    </message>
+    <message>
         <source>Unable to bind to %s on this computer. %s is probably already running.</source>
         <translation>이 컴퓨터의 %s에 바인딩 할 수 없습니다. %s이 이미 실행 중인 것으로 보입니다.</translation>
     </message>
@@ -4376,14 +4427,6 @@
     <message>
         <source>Upgrading UTXO database</source>
         <translation>UTXO 데이터베이스 업그레이드</translation>
-    </message>
-    <message>
-        <source>Verifying blocks…</source>
-        <translation>블록 검증 중…</translation>
-    </message>
-    <message>
-        <source>Verifying wallet(s)…</source>
-        <translation>지갑(들)을 검증 중…</translation>
     </message>
     <message>
         <source>Wallet needed to be rewritten: restart %s to complete</source>
@@ -4534,20 +4577,8 @@
         <translation>체인 상태 데이터베이스 업그레이드 중 오류가 발생했습니다.</translation>
     </message>
     <message>
-        <source>Loading P2P addresses…</source>
-        <translation>P2P 주소 불러오는 중…</translation>
-    </message>
-    <message>
-        <source>Loading banlist…</source>
-        <translation>추방 리스트를 불러오는 중…</translation>
-    </message>
-    <message>
-        <source>Loading block index…</source>
-        <translation>블록 인덱스를 불러오는 중…</translation>
-    </message>
-    <message>
-        <source>Loading wallet…</source>
-        <translation>지갑을 불러오는 중…</translation>
+        <source>Error: failed to add socket to kqueuefd (kevent returned error %s)</source>
+        <translation>오류: kqeuefd에 소켓을 추가하는 데 실패하였습니다 (kevent 반환 오류 %s)</translation>
     </message>
     <message>
         <source>Failed to clear fulfilled requests cache at %s</source>
@@ -4586,10 +4617,6 @@
         <translation>새로운 믹싱 대기열을 시작하는 데 실패하였습니다.</translation>
     </message>
     <message>
-        <source>Importing…</source>
-        <translation>가져오는 중…</translation>
-    </message>
-    <message>
         <source>Incorrect -rescan mode, falling back to default value</source>
         <translation>잘못된 -rescan 모드, 기본 값으로 돌아갑니다</translation>
     </message>
@@ -4618,8 +4645,20 @@
         <translation>-sporkaddr로 지정된 스포크 주소가 유효하지 않습니다.</translation>
     </message>
     <message>
+        <source>Loading P2P addresses...</source>
+        <translation>P2P 주소 불러오는 중...</translation>
+    </message>
+    <message>
         <source>Reducing -maxconnections from %d to %d, because of system limitations.</source>
         <translation>시스템 상 한계로 인하여 -maxconnections를 %d 에서 %d로 줄였습니다.</translation>
+    </message>
+    <message>
+        <source>Replaying blocks...</source>
+        <translation>블록 재실행 중...</translation>
+    </message>
+    <message>
+        <source>Rescanning...</source>
+        <translation>다시 스캔 중...</translation>
     </message>
     <message>
         <source>Session not complete!</source>
@@ -4642,12 +4681,20 @@
         <translation>지난 큐가 너무 최근 생성되었습니다.</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup.</source>
-        <translation>%s이(가) 손상되었습니다. 지갑 도구 dash-wallet을 사용하여 백업을 복구하거나 복원하십시오.</translation>
+        <source>%s corrupt. Try using the wallet tool piratecash-wallet to salvage or restoring a backup.</source>
+        <translation>%s이(가) 손상되었습니다. 지갑 도구 piratecash-wallet을 사용하여 백업을 복구하거나 복원하십시오.</translation>
     </message>
     <message>
         <source>Last successful action was too recent.</source>
         <translation>지난 성공적 액션이 너무 최신입니다.</translation>
+    </message>
+    <message>
+        <source>Starting network threads...</source>
+        <translation>네트워크 스레드 시작중...</translation>
+    </message>
+    <message>
+        <source>Synchronizing governance objects...</source>
+        <translation>거버넌스 객체 동기화중...</translation>
     </message>
     <message>
         <source>The source code is available from %s.</source>
@@ -4676,10 +4723,6 @@
     <message>
         <source>Transaction not valid.</source>
         <translation>거래가 유효하지 않습니다.</translation>
-    </message>
-    <message>
-        <source>Trying to connect…</source>
-        <translation>연결 시도 중…</translation>
     </message>
     <message>
         <source>Unable to bind to %s on this computer (bind returned error %s)</source>
@@ -4714,6 +4757,10 @@
         <translation>txindex 데이터베이스 업그레이드</translation>
     </message>
     <message>
+        <source>Verifying blocks...</source>
+        <translation>블록 검증 중...</translation>
+    </message>
+    <message>
         <source>Very low number of keys left: %d</source>
         <translation>매우 적은 숫자의 키가 남았습니다: %d</translation>
     </message>
@@ -4728,10 +4775,6 @@
     <message>
         <source>Warning: incorrect parameter %s, path must exist! Using default path.</source>
         <translation>경고: 잘못된 %s 파라미터입니다. 경로가 필요합니다! 디폴트 경로를 이용합니다.</translation>
-    </message>
-    <message>
-        <source>Will retry…</source>
-        <translation>다시 시도할 예정입니다…</translation>
     </message>
     <message>
         <source>You are starting with governance validation disabled.</source>

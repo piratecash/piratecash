@@ -47,7 +47,7 @@
     </message>
     <message>
         <source>&amp;Export</source>
-        <translation>Vi&amp;e…</translation>
+        <translation>Vi&amp;e...</translation>
     </message>
     <message>
         <source>C&amp;lose</source>
@@ -74,12 +74,12 @@
         <translation>Vastaanottava osoite</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Nämä ovat Dash osoitteesi maksujen lähetykseen. Tarkista aina lähetettävä määrä ja vastaanottajan osoite ennen kuin lähetät kolikoita.</translation>
+        <source>These are your PirateCash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Nämä ovat PirateCash osoitteesi maksujen lähetykseen. Tarkista aina lähetettävä määrä ja vastaanottajan osoite ennen kuin lähetät kolikoita.</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>Nämä ovat Dash osoitteesi maksujen vastaanottoon. Käytä 'Luo uusi osoite' painiketta vastaanota välilehdellä luodaksesi uusia osoitteita.</translation>
+        <source>These are your PirateCash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <translation>Nämä ovat PirateCash osoitteesi maksujen vastaanottoon. Käytä 'Luo uusi osoite' painiketta vastaanota välilehdellä luodaksesi uusia osoitteita.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -211,8 +211,8 @@
         <translation>Vahvista lompakon salaus</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
-        <translation>Varoitus: Jos salaat lompakon ja unohdat salasanan, &lt;b&gt;MENETÄT KAIKKI DASHisi&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATE&lt;/b&gt;!</source>
+        <translation>Varoitus: Jos salaat lompakon ja unohdat salasanan, &lt;b&gt;MENETÄT KAIKKI PIRATEisi&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -302,9 +302,6 @@
     </message>
 </context>
 <context>
-    <name>BitcoinApplication</name>
-    </context>
-<context>
     <name>BitcoinGUI</name>
     <message>
         <source>&amp;Overview</source>
@@ -319,44 +316,16 @@
         <translation>L&amp;ähetä</translation>
     </message>
     <message>
-        <source>Send coins to a Dash address</source>
-        <translation>Lähetä kolikoita Dash osoitteeseen</translation>
+        <source>Send coins to a PirateCash address</source>
+        <translation>Lähetä kolikoita PirateCash osoitteeseen</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>&amp;Vastaanota</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
-        <translation>Pyydä maksuja (Luo QR koodit ja Dash: URIt)</translation>
-    </message>
-    <message>
-        <source>&amp;Options…</source>
-        <translation>&amp;Asetukset…</translation>
-    </message>
-    <message>
-        <source>&amp;Encrypt Wallet…</source>
-        <translation>&amp;Salaa Lompakko…</translation>
-    </message>
-    <message>
-        <source>&amp;Backup Wallet…</source>
-        <translation>&amp;Varmuuskopioi Lompakko…</translation>
-    </message>
-    <message>
-        <source>&amp;Change Passphrase…</source>
-        <translation>&amp;Vaihda Salasana…</translation>
-    </message>
-    <message>
-        <source>&amp;Unlock Wallet…</source>
-        <translation>&amp;Avaa Lukitus…</translation>
-    </message>
-    <message>
-        <source>Sign &amp;message…</source>
-        <translation>&amp;Allekirjoita Viesti…</translation>
-    </message>
-    <message>
-        <source>&amp;Verify message…</source>
-        <translation>&amp;Tarkista Viesti…</translation>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
+        <translation>Pyydä maksuja (Luo QR koodit ja PirateCash: URIt)</translation>
     </message>
     <message>
         <source>&amp;Sending addresses</source>
@@ -367,16 +336,16 @@
         <translation>&amp;Vastaanottavat Osoitteet</translation>
     </message>
     <message>
-        <source>Open &amp;URI…</source>
-        <translation>Avaa &amp;URI…</translation>
-    </message>
-    <message>
         <source>Open Wallet</source>
         <translation>Avaa Lompakko</translation>
     </message>
     <message>
         <source>Open a wallet</source>
         <translation>Avaa lompakko</translation>
+    </message>
+    <message>
+        <source>Close Wallet...</source>
+        <translation>Sulje Lompakko...</translation>
     </message>
     <message>
         <source>Close wallet</source>
@@ -435,12 +404,16 @@
         <translation>Näytä tietoja QT:sta</translation>
     </message>
     <message>
+        <source>&amp;Options...</source>
+        <translation>&amp;Asetukset...</translation>
+    </message>
+    <message>
         <source>&amp;About %1</source>
         <translation>&amp;Tietoja %1</translation>
     </message>
     <message>
-        <source>Send %1 funds to a Dash address</source>
-        <translation>Lähetä %1 kolikoita Dash osoitteeseen</translation>
+        <source>Send %1 funds to a PirateCash address</source>
+        <translation>Lähetä %1 kolikoita PirateCash osoitteeseen</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -455,16 +428,32 @@
         <translation>Näytä tai piilota pääikkuna</translation>
     </message>
     <message>
+        <source>&amp;Encrypt Wallet...</source>
+        <translation>&amp;Salaa Lompakko...</translation>
+    </message>
+    <message>
         <source>Encrypt the private keys that belong to your wallet</source>
         <translation>Salaa yksityiset avaimet jotka kuuluvat lompakkoosi</translation>
+    </message>
+    <message>
+        <source>&amp;Backup Wallet...</source>
+        <translation>&amp;Varmuuskopioi Lompakko...</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
         <translation>Varmuuskopioi lompakko toiseen paikkaan</translation>
     </message>
     <message>
+        <source>&amp;Change Passphrase...</source>
+        <translation>&amp;Vaihda Salasana...</translation>
+    </message>
+    <message>
         <source>Change the passphrase used for wallet encryption</source>
         <translation>Vaihda lompakon salaukseen käytettävä salasana</translation>
+    </message>
+    <message>
+        <source>&amp;Unlock Wallet...</source>
+        <translation>&amp;Avaa Lukitus...</translation>
     </message>
     <message>
         <source>Unlock wallet</source>
@@ -475,12 +464,20 @@
         <translation>&amp;Lukitse Lompakko</translation>
     </message>
     <message>
-        <source>Sign messages with your Dash addresses to prove you own them</source>
-        <translation>Allekirjoita viestit Dash osoitteillasi todistaaksesi että omistat ne</translation>
+        <source>Sign &amp;message...</source>
+        <translation>&amp;Allekirjoita Viesti...</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dash addresses</source>
-        <translation>Tarkista viestit ollaksesi varma että ne on allekirjoitettu määritetyillä Dash osoitteilla</translation>
+        <source>Sign messages with your PirateCash addresses to prove you own them</source>
+        <translation>Allekirjoita viestit PirateCash osoitteillasi todistaaksesi että omistat ne</translation>
+    </message>
+    <message>
+        <source>&amp;Verify message...</source>
+        <translation>&amp;Tarkista Viesti...</translation>
+    </message>
+    <message>
+        <source>Verify messages to ensure they were signed with specified PirateCash addresses</source>
+        <translation>Tarkista viestit ollaksesi varma että ne on allekirjoitettu määritetyillä PirateCash osoitteilla</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -543,11 +540,15 @@
         <translation>Näytä vastaanottamiseen käytettyjen osoitteiden ja nimien lista</translation>
     </message>
     <message>
+        <source>Open &amp;URI...</source>
+        <translation>Avaa &amp;URI...</translation>
+    </message>
+    <message>
         <source>&amp;Command-line options</source>
         <translation>&amp;Komentorivin valinnat</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Dash command-line options</source>
+        <source>Show the %1 help message to get a list with possible PirateCash command-line options</source>
         <translation>Näytä %1 ohjelista komentorivin valinnoista</translation>
     </message>
     <message>
@@ -575,6 +576,10 @@
     <message>
         <source>Show information about %1</source>
         <translation>Näytä tietoja %1</translation>
+    </message>
+    <message>
+        <source>Create Wallet...</source>
+        <translation>Luo Lompakko...</translation>
     </message>
     <message>
         <source>Create a new wallet</source>
@@ -609,12 +614,36 @@
         <translation>Näytä hallinnon ehdotukset</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Dash network</source>
-        <translation><numerusform>%n aktiivinen yhteys Dash verkkoon</numerusform><numerusform>%n aktiivista yhteyttä Dash verkkoon</numerusform></translation>
+        <source>%n active connection(s) to PirateCash network</source>
+        <translation><numerusform>%n aktiivinen yhteys PirateCash verkkoon</numerusform><numerusform>%n aktiivista yhteyttä PirateCash verkkoon</numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
         <translation>Verkkotoiminnot ei käytössä</translation>
+    </message>
+    <message>
+        <source>Syncing Headers (%1%)...</source>
+        <translation>Synkronoidaan otsikoita (%1%)...</translation>
+    </message>
+    <message>
+        <source>Synchronizing with network...</source>
+        <translation>Synkronoidaan verkkoon...</translation>
+    </message>
+    <message>
+        <source>Indexing blocks on disk...</source>
+        <translation>Indeksoidaan lohkoja levyllä...</translation>
+    </message>
+    <message>
+        <source>Processing blocks on disk...</source>
+        <translation>Käsitellään lohkoja levyllä...</translation>
+    </message>
+    <message>
+        <source>Reindexing blocks on disk...</source>
+        <translation>Uudelleen indeksoidaan lohkoja...</translation>
+    </message>
+    <message>
+        <source>Connecting to peers...</source>
+        <translation>Kytkeydytään peers...</translation>
     </message>
     <message numerus="yes">
         <source>Processed %n block(s) of transaction history.</source>
@@ -625,40 +654,8 @@
         <translation>%1 jäljessä</translation>
     </message>
     <message>
-        <source>Close Wallet…</source>
-        <translation>Sulje Lompakko…</translation>
-    </message>
-    <message>
-        <source>Create Wallet…</source>
-        <translation>Luo Lompakko…</translation>
-    </message>
-    <message>
-        <source>Syncing Headers (%1%)…</source>
-        <translation>Synkronoidaan otsikoita (%1%)…</translation>
-    </message>
-    <message>
-        <source>Synchronizing with network…</source>
-        <translation>Synkronoidaan verkkoon…</translation>
-    </message>
-    <message>
-        <source>Indexing blocks on disk…</source>
-        <translation>Indeksoidaan lohkoja levyllä…</translation>
-    </message>
-    <message>
-        <source>Processing blocks on disk…</source>
-        <translation>Käsitellään lohkoja levyllä…</translation>
-    </message>
-    <message>
-        <source>Reindexing blocks on disk…</source>
-        <translation>Uudelleen indeksoidaan lohkoja…</translation>
-    </message>
-    <message>
-        <source>Connecting to peers…</source>
-        <translation>Kytkeydytään peers…</translation>
-    </message>
-    <message>
-        <source>Catching up…</source>
-        <translation>Saavutetaan verkkoa…</translation>
+        <source>Catching up...</source>
+        <translation>Saavutetaan verkkoa...</translation>
     </message>
     <message>
         <source>Last received block was generated %1 ago.</source>
@@ -782,7 +779,7 @@
         <source>Original message:</source>
         <translation>Alkuperäinen viesti:</translation>
     </message>
-</context>
+    </context>
 <context>
     <name>CoinControlDialog</name>
     <message>
@@ -935,7 +932,7 @@
     </message>
     <message>
         <source>Can vary +/- %1 duff(s) per input.</source>
-        <translation>Voi vaihdella +/- %1 duffs per syöte.</translation>
+        <translation>Voi vaihdella +/- %1 units per syöte.</translation>
     </message>
     <message>
         <source>Some coins were unselected because they were spent.</source>
@@ -977,8 +974,8 @@
 <context>
     <name>CreateWalletActivity</name>
     <message>
-        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;…</source>
-        <translation>Luodaan Lompakko &lt;b&gt;%1&lt;/b&gt;…</translation>
+        <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
+        <translation>Luodaan Lompakko &lt;b&gt;%1&lt;/b&gt;...</translation>
     </message>
     <message>
         <source>Create wallet failed</source>
@@ -1027,7 +1024,7 @@
         <source>Create</source>
         <translation>Luo</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>EditAddressDialog</name>
     <message>
@@ -1063,8 +1060,8 @@
         <translation>Muokkaa lähettävää osoitetta</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Dash address.</source>
-        <translation>Annettu osoite "%1" ei ole pätevä Dash osoite.</translation>
+        <source>The entered address "%1" is not a valid PirateCash address.</source>
+        <translation>Annettu osoite "%1" ei ole pätevä PirateCash osoite.</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -1148,8 +1145,8 @@
         <translation>%1 Tietoja</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Dash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH and 10 DASH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;%1 Perusteet&lt;/h3&gt; %1 tarjoaa yksityisyyden hämärtämällä kolikoiden alkuperäisen osoitteen. Kaikki Dash:it lompakossasi muodostuvat erillisistä "syötteistä", joita voit ajatella erillisinä kolikkoina.&lt;br&gt; %1 käyttää innovatiivista prosessia sekoittaakseen lompakkosi syötteet kahden muun ihmisen syötteisiin, siirtämättä kolikoita pois lompakostasi. Kolikoiden kontrolli pysyy aina sinulla.&lt;hr&gt; &lt;b&gt; %1 prosessi toimii seuraavasti:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 aloittaa pilkkomalla siirtotapahtumiesi syötteet pienemmiksi standardi arvoiksi. Nämä arvot ovat 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH ja 10 DASH.&lt;/li&gt; &lt;li&gt;Sitten lompakkosi lähettää pyynnön verkon palvelimille, joita kutsutaan "masternode:iksi". Masternodet saavat tiedon että haluat sekoittaa pilkottuja standardi arvoja. Mitään tunnistetietoja ei lähetetä masternode:ille, ne eivät koskaan tiedä "kuka" olet.&lt;/li&gt; &lt;li&gt;Kun 2 tai enemmän käyttäjää ilmoittaa että he haluavat myös sekoittaa kolikoita, alkaa sekoitus-sessio. Masternodet sekoittavat standardi arvot ja ilmoittavat kaikille 3:lle käyttäjän lompakoille että maksavat sekoitetut arvot takaisin itselleen. Lompakkosi maksaa nuo sekoitetut arvot suoraan itselleen, mutta eri osoitteeseen (vaihto-osoite).&lt;/li&gt; &lt;li&gt;Jotta kolikoiden alkuperäinen lähde hämärretään, lompakkosi suorittaa tämän prosessin useita kertoja kaikilla standardi arvoilla. Aina kun prosessi on valmis, sitä kutsutaan "kierrokseksi". Jokainen %1 kierros tekee eksponentiaalisesti vaikeammaksi löytää kolikoiden alkuperäinen osoitte.&lt;/li&gt; &lt;li&gt;Tämä sekoitusprosessi tapahtuu taustalla ilman käyttäjän toimenpiteitä. Kun haluat myöhemmin tehdä kolikoiden siirron, on ne valmiiksi sekoitettu. Erillistä sekoitusta/odotusta ei tarvita.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;TÄRKEÄÄ:&lt;/b&gt; Lompakkosi sisältää vain 1000 "vaihto-osoitetta". Aina kun sekoitustapahtuma tehdään, max 9 osoitetta käytetään. Tämä tarkoittaa sitä että nuo 1000 osoitetta kestää noin 100 sekoitustapahtumaa. Kun 900 osoitetta on käytetty, lompakkosi täytyy tehdä lisää osoitteita. Se voi tehdä niitä vain jos automaattinen varmistus on käytössä.&lt;br&gt; Tästä seuraa että jos varmistus ei ole käytössä, myös %1 on pois käytöstä. &lt;hr&gt;Katso lisätietoja &lt;a style="%2" href="%3"&gt;%1 dokumentaatiosta&lt;/a&gt;.</translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE and 10 PIRATE -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;%1 Perusteet&lt;/h3&gt; %1 tarjoaa yksityisyyden hämärtämällä kolikoiden alkuperäisen osoitteen. Kaikki PirateCash:it lompakossasi muodostuvat erillisistä "syötteistä", joita voit ajatella erillisinä kolikkoina.&lt;br&gt; %1 käyttää innovatiivista prosessia sekoittaakseen lompakkosi syötteet kahden muun ihmisen syötteisiin, siirtämättä kolikoita pois lompakostasi. Kolikoiden kontrolli pysyy aina sinulla.&lt;hr&gt; &lt;b&gt; %1 prosessi toimii seuraavasti:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 aloittaa pilkkomalla siirtotapahtumiesi syötteet pienemmiksi standardi arvoiksi. Nämä arvot ovat 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE ja 10 PIRATE.&lt;/li&gt; &lt;li&gt;Sitten lompakkosi lähettää pyynnön verkon palvelimille, joita kutsutaan "masternode:iksi". Masternodet saavat tiedon että haluat sekoittaa pilkottuja standardi arvoja. Mitään tunnistetietoja ei lähetetä masternode:ille, ne eivät koskaan tiedä "kuka" olet.&lt;/li&gt; &lt;li&gt;Kun 2 tai enemmän käyttäjää ilmoittaa että he haluavat myös sekoittaa kolikoita, alkaa sekoitus-sessio. Masternodet sekoittavat standardi arvot ja ilmoittavat kaikille 3:lle käyttäjän lompakoille että maksavat sekoitetut arvot takaisin itselleen. Lompakkosi maksaa nuo sekoitetut arvot suoraan itselleen, mutta eri osoitteeseen (vaihto-osoite).&lt;/li&gt; &lt;li&gt;Jotta kolikoiden alkuperäinen lähde hämärretään, lompakkosi suorittaa tämän prosessin useita kertoja kaikilla standardi arvoilla. Aina kun prosessi on valmis, sitä kutsutaan "kierrokseksi". Jokainen %1 kierros tekee eksponentiaalisesti vaikeammaksi löytää kolikoiden alkuperäinen osoitte.&lt;/li&gt; &lt;li&gt;Tämä sekoitusprosessi tapahtuu taustalla ilman käyttäjän toimenpiteitä. Kun haluat myöhemmin tehdä kolikoiden siirron, on ne valmiiksi sekoitettu. Erillistä sekoitusta/odotusta ei tarvita.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;TÄRKEÄÄ:&lt;/b&gt; Lompakkosi sisältää vain 1000 "vaihto-osoitetta". Aina kun sekoitustapahtuma tehdään, max 9 osoitetta käytetään. Tämä tarkoittaa sitä että nuo 1000 osoitetta kestää noin 100 sekoitustapahtumaa. Kun 900 osoitetta on käytetty, lompakkosi täytyy tehdä lisää osoitteita. Se voi tehdä niitä vain jos automaattinen varmistus on käytössä.&lt;br&gt; Tästä seuraa että jos varmistus ei ole käytössä, myös %1 on pois käytöstä. &lt;hr&gt;Katso lisätietoja &lt;a style="%2" href="%3"&gt;%1 dokumentaatiosta&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -1165,6 +1162,10 @@
     <message>
         <source>As this is the first time the program is launched, you can choose where %1 will store its data.</source>
         <translation>Tämä on ensimmäinen kerta, kun %1 on käynnistetty, joten voit valita datahakemiston paikan.</translation>
+    </message>
+    <message>
+        <source>When you click OK, %1 will begin to download and process the full %4 block chain (%2GB) starting with the earliest transactions in %3 when %4 initially launched.</source>
+        <translation>Kun klikkaat OK, %1 alkaa latautua ja prosessoida %4 lohkoketjua (%2GB) alkaen esimmäisestä siirtotapahtumasta %3 kun %4 ensi kerran käynnistettiin.</translation>
     </message>
     <message>
         <source>This initial synchronisation is very demanding, and may expose hardware problems with your computer that had previously gone unnoticed. Each time you run %1, it will continue downloading where it left off.</source>
@@ -1191,8 +1192,8 @@
         <translation>Arviolta %1 GB dataa tallennetaan tähän hakemistoon.</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Dash block chain.</source>
-        <translation>%1 lataa ja tallentaa kopion Dash lohkoketjusta.</translation>
+        <source>%1 will download and store a copy of the PirateCash block chain.</source>
+        <translation>%1 lataa ja tallentaa kopion PirateCash lohkoketjusta.</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1286,12 +1287,8 @@
         <translation>Kopioi Vakuus Lähtöpiste</translation>
     </message>
     <message>
-        <source>Please wait…</source>
-        <translation>Odota…</translation>
-    </message>
-    <message>
-        <source>Updating…</source>
-        <translation>Päivitetään…</translation>
+        <source>Updating...</source>
+        <translation>Päivitetään...</translation>
     </message>
     <message>
         <source>ENABLED</source>
@@ -1326,6 +1323,10 @@
         <translation>Suodata minkä tahansa ominaisuuden (esim. osoite tai protx tarkiste) mukaan</translation>
     </message>
     <message>
+        <source>Please wait...</source>
+        <translation>Odota...</translation>
+    </message>
+    <message>
         <source>Additional information for DIP3 Masternode %1</source>
         <translation>Masternode DIP3 lisätietoja %1</translation>
     </message>
@@ -1337,24 +1338,20 @@
         <translation>Lomake</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
-        <translation>Viimeisimmät siirtotapahtumat eivät välttämättä ole vielä näkyvissä, ja siksi lompakon saldo voi olla väärin. Saldo korjaantuu oikeaksi kun lompakon synkronointi Dash verkkoon on valmis.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the PirateCash network, as detailed below.</source>
+        <translation>Viimeisimmät siirtotapahtumat eivät välttämättä ole vielä näkyvissä, ja siksi lompakon saldo voi olla väärin. Saldo korjaantuu oikeaksi kun lompakon synkronointi PirateCash verkkoon on valmis.</translation>
     </message>
     <message>
-        <source>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>Yritys käyttää Dash:eja joihin vaikuttaa ei näkyvissä olevat siirtotapahtumat, tulevat hylätyksi Dash verkossa.</translation>
+        <source>Attempting to spend PirateCash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>Yritys käyttää PirateCash:eja joihin vaikuttaa ei näkyvissä olevat siirtotapahtumat, tulevat hylätyksi PirateCash verkossa.</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
         <translation>Lohkoja jäljellä</translation>
     </message>
     <message>
-        <source>Unknown…</source>
-        <translation>Tuntematon…</translation>
-    </message>
-    <message>
-        <source>calculating…</source>
-        <translation>lasketaan…</translation>
+        <source>Unknown...</source>
+        <translation>Tuntematon...</translation>
     </message>
     <message>
         <source>Last block time</source>
@@ -1369,6 +1366,10 @@
         <translation>Edistymisen kasvu per tunti</translation>
     </message>
     <message>
+        <source>calculating...</source>
+        <translation>lasketaan...</translation>
+    </message>
+    <message>
         <source>Estimated time left until synced</source>
         <translation>Synkronoinnin jäljellä oleva aika</translation>
     </message>
@@ -1377,8 +1378,8 @@
         <translation>Piilota</translation>
     </message>
     <message>
-        <source>Unknown. Syncing Headers (%1, %2%)…</source>
-        <translation>Tuntematon. Synkronoidaan otsikoita (%1, %2%)…</translation>
+        <source>Unknown. Syncing Headers (%1, %2%)...</source>
+        <translation>Tuntematon. Synkronoidaan otsikoita (%1, %2%)...</translation>
     </message>
 </context>
 <context>
@@ -1407,8 +1408,8 @@
         <translation>oletus lompakko</translation>
     </message>
     <message>
-        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;…</source>
-        <translation>Avataan Lompakko &lt;b&gt;%1&lt;/b&gt;…</translation>
+        <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;...</source>
+        <translation>Avataan Lompakko &lt;b&gt;%1&lt;/b&gt;...</translation>
     </message>
 </context>
 <context>
@@ -1526,8 +1527,8 @@
         <translation>Haluttu saldo</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Avaa automaattisesti Dash Core asiakasohjelmalle portti reitittimeen. Tämä toimii vain jos reitittimesi tukee UPnP:tä ja se on käytössä.</translation>
+        <source>Automatically open the PirateCash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Avaa automaattisesti PirateCash Core asiakasohjelmalle portti reitittimeen. Tämä toimii vain jos reitittimesi tukee UPnP:tä ja se on käytössä.</translation>
     </message>
     <message>
         <source>Map port using NA&amp;T-PMP</source>
@@ -1542,8 +1543,8 @@
         <translation>Salli sisää&amp;n tulevat yhteydet</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a SOCKS5 proxy.</source>
-        <translation>Kytkeydy Dash verkkoon käyttäen SOCKS5 proxy:a.</translation>
+        <source>Connect to the PirateCash network through a SOCKS5 proxy.</source>
+        <translation>Kytkeydy PirateCash verkkoon käyttäen SOCKS5 proxy:a.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1556,6 +1557,14 @@
     <message>
         <source>Options set in this dialog are overridden by the command line or in the configuration file:</source>
         <translation>Asetukset tässä dialogissa ylikirjoitetaan joko komentorivin tai asetustiedostosta:</translation>
+    </message>
+    <message>
+        <source>Hide the icon from the system tray.</source>
+        <translation>Piilota kuvake tehtäväpalkista.</translation>
+    </message>
+    <message>
+        <source>&amp;Hide tray icon</source>
+        <translation>Piilota tehtäväpalkin kuvake</translation>
     </message>
     <message>
         <source>Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Exit in the menu.</source>
@@ -1662,6 +1671,12 @@
         <translation>Tässä voit määritellä käyttöliittymän kielen. Muutokset astuvat voimaan seuraavan kerran, kun %1 käynnistetään.</translation>
     </message>
     <message>
+        <source>Language missing or translation incomplete? Help contributing translations here:
+https://www.transifex.com/projects/p/piratecash/</source>
+        <translation>Puuttuuko sopiva kieli tai käännös on kesken? Auta käännöstyössä täällä:
+https://www.transifex.com/projects/p/piratecash/</translation>
+    </message>
+    <message>
         <source>&amp;Unit to show amounts in:</source>
         <translation>Yksikkö joina määrät näytetään</translation>
     </message>
@@ -1725,8 +1740,8 @@
         <translation>Lomake</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Dash network after a connection is established, but this process has not completed yet.</source>
-        <translation>Näytetyt tiedot eivät välttämättä ole ajan tasalla.&lt;br&gt;Lompakkosi synkronoituu automaattisesti Dash verkkoon kun&lt;br&gt;yhteys on muodostettu, mutta tämä prosessi ei vielä ole valmis.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
+        <translation>Näytetyt tiedot eivät välttämättä ole ajan tasalla.&lt;br&gt;Lompakkosi synkronoituu automaattisesti PirateCash verkkoon kun&lt;br&gt;yhteys on muodostettu, mutta tämä prosessi ei vielä ole valmis.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -1805,8 +1820,8 @@
         <translation>Määrä ja Kierrokset:</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
-        <translation>0 DASH / 0 Kierrosta</translation>
+        <source>0 PIRATE / 0 Rounds</source>
+        <translation>0 PIRATE / 0 Kierrosta</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -1951,20 +1966,24 @@
         <translation>Maksupyyntövirhe</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
-        <translation>Ei voi käynnistää Dashia: click-to-pay handler</translation>
+        <source>Cannot start piratecash: click-to-pay handler</source>
+        <translation>Ei voi käynnistää PirateCashia: click-to-pay handler</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>URI käsittely</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash://' ei ole validi URI. Käytä sen sijaan 'dash:'.</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>'piratecash://' ei ole validi URI. Käytä sen sijaan 'piratecash:'.</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Dash address or malformed URI parameters.</source>
-        <translation>URI:a ei voida jäsentää! Tämä voi johtua virheellisestä Dash osoitteesta tai virheellisestä URI:n muuttujasta. </translation>
+        <source>Invalid payment address %1</source>
+        <translation>Virheellinen maksuosoite %1</translation>
+    </message>
+    <message>
+        <source>URI cannot be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
+        <translation>URI:a ei voida jäsentää! Tämä voi johtua virheellisestä PirateCash osoitteesta tai virheellisestä URI:n muuttujasta. </translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -1975,22 +1994,18 @@
     <name>PeerTableModel</name>
     <message>
         <source>User Agent</source>
-        <extracomment>Title of Peers Table column which contains the peer's User Agent string.</extracomment>
         <translation>Käyttäjäohjelma</translation>
     </message>
     <message>
         <source>Ping</source>
-        <extracomment>Title of Peers Table column which indicates the current latency of the connection with the peer.</extracomment>
         <translation>Ping</translation>
     </message>
     <message>
         <source>Sent</source>
-        <extracomment>Title of Peers Table column which indicates the total amount of network information we have sent to the peer.</extracomment>
         <translation>Lähetetty</translation>
     </message>
     <message>
         <source>Received</source>
-        <extracomment>Title of Peers Table column which indicates the total amount of network information we have received from the peer.</extracomment>
         <translation>Vastaanotettu</translation>
     </message>
     </context>
@@ -2123,16 +2138,16 @@
         <translation>Virhe: %1 CSS tiedosto(t) puuttuu custom-css-dir polusta.</translation>
     </message>
     <message>
-        <source>%1 didn't yet exit safely…</source>
-        <translation>%1 ei vielä sulkeutunut turvallisesti…</translation>
+        <source>%1 didn't yet exit safely...</source>
+        <translation>%1 ei vielä sulkeutunut turvallisesti...</translation>
     </message>
     <message>
         <source>Amount</source>
         <translation>Määrä</translation>
     </message>
     <message>
-        <source>Enter a Dash address (e.g. %1)</source>
-        <translation>Anna Dash osoite (esim. %1)</translation>
+        <source>Enter a PirateCash address (e.g. %1)</source>
+        <translation>Anna PirateCash osoite (esim. %1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
@@ -2234,15 +2249,15 @@
         <translation>QR Koodi</translation>
     </message>
     <message>
-        <source>&amp;Save Image…</source>
+        <source>&amp;Save Image...</source>
         <translation>&amp;Tallenna Kuva</translation>
     </message>
 </context>
 <context>
     <name>QRImageWidget</name>
     <message>
-        <source>&amp;Save Image…</source>
-        <translation>&amp;Tallenna Kuva…</translation>
+        <source>&amp;Save Image...</source>
+        <translation>&amp;Tallenna Kuva...</translation>
     </message>
     <message>
         <source>&amp;Copy Image</source>
@@ -2368,6 +2383,10 @@
         <translation>Valitse peer nähdäksesi tarkempia tietoja.</translation>
     </message>
     <message>
+        <source>Direction</source>
+        <translation>Suunta</translation>
+    </message>
+    <message>
         <source>Version</source>
         <translation>Versio</translation>
     </message>
@@ -2474,6 +2493,10 @@
     <message>
         <source>Services</source>
         <translation>Palvelut</translation>
+    </message>
+    <message>
+        <source>Ban Score</source>
+        <translation>Estopisteet</translation>
     </message>
     <message>
         <source>Connection Time</source>
@@ -2600,6 +2623,18 @@
         <translation>kautta %1</translation>
     </message>
     <message>
+        <source>never</source>
+        <translation>ei koskaan</translation>
+    </message>
+    <message>
+        <source>Inbound</source>
+        <translation>Saapuva</translation>
+    </message>
+    <message>
+        <source>Outbound</source>
+        <translation>Lähtevä</translation>
+    </message>
+    <message>
         <source>Regular</source>
         <translation>Normaali</translation>
     </message>
@@ -2615,12 +2650,12 @@
         <source>Unknown</source>
         <translation>Tuntematon</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>Valinnainen viesti liitettäväksi maksupyyntöön, joka näytetään kun pyyntö on avattu.&lt;br&gt;Huomio: Viestiä ei lähetetä maksun mukana Dash verkkoon.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>Valinnainen viesti liitettäväksi maksupyyntöön, joka näytetään kun pyyntö on avattu.&lt;br&gt;Huomio: Viestiä ei lähetetä maksun mukana PirateCash verkkoon.</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -2631,8 +2666,8 @@
         <translation>Valinnainen nimi liitetään uuteen vastaanottavaan osoitteeseen.</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>Valinnainen viesti liitettäväksi maksupyyntöön, joka näytetään kun pyyntö on avattu.&lt;br&gt;Huomio: Viestiä ei lähetetä maksun mukana Dash verkkoon.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>Valinnainen viesti liitettäväksi maksupyyntöön, joka näytetään kun pyyntö on avattu.&lt;br&gt;Huomio: Viestiä ei lähetetä maksun mukana PirateCash verkkoon.</translation>
     </message>
     <message>
         <source>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</source>
@@ -2710,7 +2745,7 @@
         <source>Copy amount</source>
         <translation>Kopioi määrä</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>ReceiveRequestDialog</name>
     <message>
@@ -2722,7 +2757,7 @@
         <translation>Kopioi &amp;Osoite</translation>
     </message>
     <message>
-        <source>&amp;Save Image…</source>
+        <source>&amp;Save Image...</source>
         <translation>&amp;Tallenna Kuva</translation>
     </message>
     <message>
@@ -2776,6 +2811,10 @@
         <translation>Kolikkokontrolli ominaisuudet</translation>
     </message>
     <message>
+        <source>Inputs...</source>
+        <translation>Sisääntulot...</translation>
+    </message>
+    <message>
         <source>automatically selected</source>
         <translation>automaattisesti valitut</translation>
     </message>
@@ -2804,10 +2843,6 @@
         <translation>Tomu:</translation>
     </message>
     <message>
-        <source>Inputs…</source>
-        <translation>Sisääntulot…</translation>
-    </message>
-    <message>
         <source>After Fee:</source>
         <translation>Siirtomaksun jälkeen:</translation>
     </message>
@@ -2828,16 +2863,16 @@
         <translation>Siirtomaksu:</translation>
     </message>
     <message>
-        <source>(Smart fee not initialized yet. This usually takes a few blocks…)</source>
-        <translation>(Älykästä siirtomaksua ei ole alustettu vielä. Tämä kestää yleensä muutaman lohkon…)</translation>
+        <source>Choose...</source>
+        <translation>Valitse...</translation>
     </message>
     <message>
         <source>Confirmation time target:</source>
         <translation>Vahvistusajan tavoite:</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
-        <translation>Jos mukautettu siirtomaksu on asetettu 1000 duff ja siirtotapahtuma on vain 250 tavua,&lt;br /&gt;tällöin "per kilotavu" maksaa vain 250 duffs siirtomaksun, kun taas "vähintään" maksaa 1000 duffs.&lt;br /&gt;Siirtotapahtumat jotka ovat isompia kuin kilotavu, molemmat maksaa "per kilotavu".</translation>
+        <source>If the custom fee is set to 1000 units and the transaction is only 250 bytes, then "per kilobyte" only pays 250 units in fee,&lt;br /&gt;while "at least" pays 1000 units. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <translation>Jos mukautettu siirtomaksu on asetettu 1000 duff ja siirtotapahtuma on vain 250 tavua,&lt;br /&gt;tällöin "per kilotavu" maksaa vain 250 units siirtomaksun, kun taas "vähintään" maksaa 1000 units.&lt;br /&gt;Siirtotapahtumat jotka ovat isompia kuin kilotavu, molemmat maksaa "per kilotavu".</translation>
     </message>
     <message>
         <source>per kilobyte</source>
@@ -2846,10 +2881,6 @@
     <message>
         <source>Using the fallbackfee can result in sending a transaction that will take several hours or days (or never) to confirm. Consider choosing your fee manually or wait until you have validated the complete chain.</source>
         <translation>Fallbackfee:n käyttö saattaa aiheuttaa että maksutapahtuman vahvistus kestää useita tunteja tai päiviä (tai ei koskaan). Harkitse että valitset siirtomaksun manuaalisesti tai odota että lohkoketju on täysin vahvistettu.</translation>
-    </message>
-    <message>
-        <source>Choose…</source>
-        <translation>Valitse…</translation>
     </message>
     <message>
         <source>Note: Not enough data for fee estimation, using the fallback fee instead.</source>
@@ -2870,6 +2901,10 @@
     <message>
         <source>Custom:</source>
         <translation>Mukautettu:</translation>
+    </message>
+    <message>
+        <source>(Smart fee not initialized yet. This usually takes a few blocks...)</source>
+        <translation>(Älykästä siirtomaksua ei ole alustettu vielä. Tämä kestää yleensä muutaman lohkon...)</translation>
     </message>
     <message>
         <source>Confirm the send action</source>
@@ -3036,8 +3071,8 @@
         <translation><numerusform>Arvioitu vahvistuksen aloitus %n lohkon kuluessa.</numerusform><numerusform>Arvioitu vahvistuksen aloitus %n lohkon kuluessa.</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Dash address</source>
-        <translation>Varoitus: Virheellinen Dash osoite</translation>
+        <source>Warning: Invalid PirateCash address</source>
+        <translation>Varoitus: Virheellinen PirateCash osoite</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -3063,8 +3098,8 @@
         <translation>Maksun &amp;saaja:</translation>
     </message>
     <message>
-        <source>The Dash address to send the payment to</source>
-        <translation>Dash osoite johon maksu lähetetään</translation>
+        <source>The PirateCash address to send the payment to</source>
+        <translation>PirateCash osoite johon maksu lähetetään</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3103,7 +3138,7 @@
         <translation>Valitun yksikön lähetettävä määrä</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PirateCash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>Siirtomaksu vähennetään lähetettävästä määrästä. Vastaanottaja saa pienemmän määrän kuin mitä laitoit määrä kenttään. Jos useampia vastaanottajia on valittu, siirtomaksu jaetaan tasan.</translation>
     </message>
     <message>
@@ -3119,8 +3154,8 @@
         <translation>Viesti:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Dash network.</source>
-        <translation>Viesti joka liitettiin Dash: URI joka tallenetaan siirtotapahtuman kanssa viitteeksi sinulle. Huomio: Tätä viestiä ei lähetetä Dash verkkoon.</translation>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <translation>Viesti joka liitettiin PirateCash: URI joka tallenetaan siirtotapahtuman kanssa viitteeksi sinulle. Huomio: Tätä viestiä ei lähetetä PirateCash verkkoon.</translation>
     </message>
     <message>
         <source>This is an unauthenticated payment request.</source>
@@ -3142,8 +3177,8 @@
 <context>
     <name>ShutdownWindow</name>
     <message>
-        <source>%1 is shutting down…</source>
-        <translation>%1 sulkeutuu…</translation>
+        <source>%1 is shutting down...</source>
+        <translation>%1 sulkeutuu...</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
@@ -3161,12 +3196,12 @@
         <translation>&amp;Allekirjoita viesti</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Dash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <source>You can sign messages/agreements with your addresses to prove you can receive PirateCash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
         <translation>Voit allekirjoittaa viestit/sopimukset omilla osoitteillasi todistaaksesi että omistat ne. Ole huolellinen että et allekirjoita mitään epämääräistä, satunnaista, phishing hyökkääjä voi huijata sinua allekirjoittamaan henkilöllisyytesi omasta puolestaan. Allekirjoita vain yksityiskohtaisesti täytetty selvitys johon sitoudut.</translation>
     </message>
     <message>
-        <source>The Dash address to sign the message with</source>
-        <translation>Dash osoite jolla viesti allekirjoitetaan</translation>
+        <source>The PirateCash address to sign the message with</source>
+        <translation>PirateCash osoite jolla viesti allekirjoitetaan</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -3197,8 +3232,8 @@
         <translation>Kopioi tämän hetkinen allekirjoitus leikepöydälle</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Dash address</source>
-        <translation>Allekirjoita viesti todistaaksesi että omistat tämän Dash osoitteen</translation>
+        <source>Sign the message to prove you own this PirateCash address</source>
+        <translation>Allekirjoita viesti todistaaksesi että omistat tämän PirateCash osoitteen</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -3221,8 +3256,8 @@
         <translation>Anna allekirjoittava osoite, viesti (varmista että kopioit rivinvaihdot, välilyönnit, tabulaattorit, jne täsmälleen oikein) ja allekirjoitus alla oleviin kenttiin varmistaaksesi allekirjoituksen aitouden. Varo lukemasta enempää allekirjoitukseen kuin kuin mitä itse viestissä on, välttääksesi man-in-the-middle hyökkäyksen. Huom. tämä todistaa vain että allekirjoittava osapuoli vastaanottaa osoitteella, se ei voi todistaa lähettäjää.</translation>
     </message>
     <message>
-        <source>The Dash address the message was signed with</source>
-        <translation>Dash osoite jolla viesti on allekirjoitettu</translation>
+        <source>The PirateCash address the message was signed with</source>
+        <translation>PirateCash osoite jolla viesti on allekirjoitettu</translation>
     </message>
     <message>
         <source>The signed message to verify</source>
@@ -3233,12 +3268,12 @@
         <translation>Annettu allekirjoitus milloin viesti on vahvistettu</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Dash address</source>
-        <translation>Tarkista että viesti on allekirjoitettu määritetyllä Dash osoitteella</translation>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
+        <translation>Tarkista että viesti on allekirjoitettu määritetyllä PirateCash osoitteella</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
-        <translation>Tarkista &amp;Viesti…</translation>
+        <translation>Tarkista &amp;Viesti...</translation>
     </message>
     <message>
         <source>Reset all verify message fields</source>
@@ -3672,8 +3707,8 @@
         <translation>Tänä vuonna</translation>
     </message>
     <message>
-        <source>Range…</source>
-        <translation>Arvoalue…</translation>
+        <source>Range...</source>
+        <translation>Arvoalue...</translation>
     </message>
     <message>
         <source>Most Common</source>
@@ -3868,7 +3903,7 @@
     <name>WalletView</name>
     <message>
         <source>&amp;Export</source>
-        <translation>&amp;Vie…</translation>
+        <translation>&amp;Vie...</translation>
     </message>
     <message>
         <source>Export the data in the current tab to a file</source>
@@ -3904,7 +3939,7 @@
     </message>
 </context>
 <context>
-    <name>dash-core</name>
+    <name>piratecash-core</name>
     <message>
         <source>Error: Listening for incoming connections failed (listen returned error %s)</source>
         <translation>Virhe: Sisääntulevien yhteyksien kuuntelu epäonnistui (kuuntelu palautti virheen %s)</translation>
@@ -4010,6 +4045,14 @@
         <translation>Löytyi tarpeeksi käyttäjiä, kirjaudutaan ( odotetaan %s )</translation>
     </message>
     <message>
+        <source>Found enough users, signing ...</source>
+        <translation>Löytyi tarpeeksi käyttäjiä, kirjaudutaan ...</translation>
+    </message>
+    <message>
+        <source>Importing...</source>
+        <translation>Tuodaan...</translation>
+    </message>
+    <message>
         <source>Incompatible mode.</source>
         <translation>Yhteensopimaton tila.</translation>
     </message>
@@ -4042,8 +4085,16 @@
         <translation>Virheellinen minimi määrä spork allekirjoittajia määritelty -minsporkkeys</translation>
     </message>
     <message>
+        <source>Loading banlist...</source>
+        <translation>Ladataan estolistaa...</translation>
+    </message>
+    <message>
         <source>Lock is already in place.</source>
         <translation>On jo lukittu.</translation>
+    </message>
+    <message>
+        <source>Mixing in progress...</source>
+        <translation>Sekoitus käynnissä...</translation>
     </message>
     <message>
         <source>Need to specify a port with -whitebind: '%s'</source>
@@ -4066,36 +4117,12 @@
         <translation>Ei ole Masternodet listassa.</translation>
     </message>
     <message>
-        <source>Pruning blockstore…</source>
-        <translation>Karsitaan lohkoja…</translation>
-    </message>
-    <message>
-        <source>Replaying blocks…</source>
-        <translation>Toistetaan lohkoja…</translation>
-    </message>
-    <message>
-        <source>Rescanning…</source>
-        <translation>Skannataan uudelleen…</translation>
-    </message>
-    <message>
-        <source>Starting network threads…</source>
-        <translation>Käynnistetään verkkoa…</translation>
-    </message>
-    <message>
         <source>Submitted to masternode, waiting in queue %s</source>
         <translation>Lähetetty masternodelle, odotetaan jonossa %s</translation>
     </message>
     <message>
         <source>Synchronization finished</source>
         <translation>Synkronointi valmis</translation>
-    </message>
-    <message>
-        <source>Synchronizing blockchain…</source>
-        <translation>Synkronoidaan lohkoketju…</translation>
-    </message>
-    <message>
-        <source>Synchronizing governance objects…</source>
-        <translation>Ladataan hallinnon objekteja…</translation>
     </message>
     <message>
         <source>Unable to start HTTP server. See debug log for details.</source>
@@ -4108,6 +4135,14 @@
     <message>
         <source>User Agent comment (%s) contains unsafe characters.</source>
         <translation>Käyttäjä toimijan kommentti (%s) sisältää ei suositeltuja merkkejä.</translation>
+    </message>
+    <message>
+        <source>Verifying wallet(s)...</source>
+        <translation>Tarkistetaan lompakko(ja)...</translation>
+    </message>
+    <message>
+        <source>Will retry...</source>
+        <translation>Yritetään uudelleen...</translation>
     </message>
     <message>
         <source>Can't find random Masternode.</source>
@@ -4227,6 +4262,10 @@ Vähennä uakommenttien määrää tai kokoa.</translation>
         <translation>Virhe: Levytila on alhainen %s</translation>
     </message>
     <message>
+        <source>Error: failed to add socket to epollfd (epoll_ctl returned error %s)</source>
+        <translation>Virhe: socket lisäys epollfd:ään epäonnistui (epoll_ctl palautti virheen %s)</translation>
+    </message>
+    <message>
         <source>Exceeded max tries.</source>
         <translation>Maksimi yritykset ylitetty.</translation>
     </message>
@@ -4251,10 +4290,6 @@ Vähennä uakommenttien määrää tai kokoa.</translation>
         <translation>Lompakon uudelleen skannaaminen epäonnistui alustuksen aikana</translation>
     </message>
     <message>
-        <source>Found enough users, signing…</source>
-        <translation>Löytyi tarpeeksi käyttäjiä, kirjaudutaan…</translation>
-    </message>
-    <message>
         <source>Invalid P2P permission: '%s'</source>
         <translation>Virheellinen P2P oikeus: '%s'</translation>
     </message>
@@ -4267,6 +4302,14 @@ Vähennä uakommenttien määrää tai kokoa.</translation>
         <translation>Virheellinen masternodeblsprivkey. Katso lisätietoja dokumentaatiosta.</translation>
     </message>
     <message>
+        <source>Loading block index...</source>
+        <translation>Ladataan lohkoindeksiä...</translation>
+    </message>
+    <message>
+        <source>Loading wallet...</source>
+        <translation>Ladataan lompakkoa...</translation>
+    </message>
+    <message>
         <source>Masternode queue is full.</source>
         <translation>Masternode jono on täysi.</translation>
     </message>
@@ -4277,10 +4320,6 @@ Vähennä uakommenttien määrää tai kokoa.</translation>
     <message>
         <source>Missing input transaction information.</source>
         <translation>Puuttuva siirtotapahtuman tieto.</translation>
-    </message>
-    <message>
-        <source>Mixing in progress…</source>
-        <translation>Sekoitus käynnissä…</translation>
     </message>
     <message>
         <source>No errors detected.</source>
@@ -4311,6 +4350,10 @@ Vähennä uakommenttien määrää tai kokoa.</translation>
         <translation>Karsintatila on epäyhteensopiva -txindex kanssa.</translation>
     </message>
     <message>
+        <source>Pruning blockstore...</source>
+        <translation>Karsitaan lohkoja...</translation>
+    </message>
+    <message>
         <source>Section [%s] is not recognized.</source>
         <translation>Osio [%s] ei ole tunnistettavissa.</translation>
     </message>
@@ -4325,6 +4368,10 @@ Vähennä uakommenttien määrää tai kokoa.</translation>
     <message>
         <source>Specified -walletdir "%s" is not a directory</source>
         <translation>Määritelty -walletdir "%s" ei ole hakemisto</translation>
+    </message>
+    <message>
+        <source>Synchronizing blockchain...</source>
+        <translation>Synkronoidaan lohkoketju...</translation>
     </message>
     <message>
         <source>The wallet will avoid paying less than the minimum relay fee.</source>
@@ -4359,6 +4406,10 @@ Vähennä uakommenttien määrää tai kokoa.</translation>
         <translation>Siirtotapahtuma on liian iso</translation>
     </message>
     <message>
+        <source>Trying to connect...</source>
+        <translation>Yritetään kytkeytyä...</translation>
+    </message>
+    <message>
         <source>Unable to bind to %s on this computer. %s is probably already running.</source>
         <translation>Kytkeytyminen kohteeseen %s ei onnistu tällä tietokoneella. %s on luultavasti jo käynnissä.</translation>
     </message>
@@ -4377,14 +4428,6 @@ Vähennä uakommenttien määrää tai kokoa.</translation>
     <message>
         <source>Upgrading UTXO database</source>
         <translation>Päivitetään UTXO tietokantaa</translation>
-    </message>
-    <message>
-        <source>Verifying blocks…</source>
-        <translation>Tarkistetaan lohkoja…</translation>
-    </message>
-    <message>
-        <source>Verifying wallet(s)…</source>
-        <translation>Tarkistetaan lompakko(ja)…</translation>
     </message>
     <message>
         <source>Wallet needed to be rewritten: restart %s to complete</source>
@@ -4535,20 +4578,8 @@ Vähennä uakommenttien määrää tai kokoa.</translation>
         <translation>Virhe ketjutilan tietokannan päivityksessä</translation>
     </message>
     <message>
-        <source>Loading P2P addresses…</source>
-        <translation>Ladataan P2P osoitteita…</translation>
-    </message>
-    <message>
-        <source>Loading banlist…</source>
-        <translation>Ladataan estolistaa…</translation>
-    </message>
-    <message>
-        <source>Loading block index…</source>
-        <translation>Ladataan lohkoindeksiä…</translation>
-    </message>
-    <message>
-        <source>Loading wallet…</source>
-        <translation>Ladataan lompakkoa…</translation>
+        <source>Error: failed to add socket to kqueuefd (kevent returned error %s)</source>
+        <translation>Virhe: socket lisäys kqueuefd:ään epäonnistui (kevent palautti virheen %s)</translation>
     </message>
     <message>
         <source>Failed to clear fulfilled requests cache at %s</source>
@@ -4587,10 +4618,6 @@ Vähennä uakommenttien määrää tai kokoa.</translation>
         <translation>Uuden sekoitusjonon käynnistys ei onnistunut</translation>
     </message>
     <message>
-        <source>Importing…</source>
-        <translation>Tuodaan…</translation>
-    </message>
-    <message>
         <source>Incorrect -rescan mode, falling back to default value</source>
         <translation>Virheellinen -rescan moodi, palataan takaisin oletusarvoon</translation>
     </message>
@@ -4619,8 +4646,20 @@ Vähennä uakommenttien määrää tai kokoa.</translation>
         <translation>Virheellinen spork osoite määritelty -sporkaddr</translation>
     </message>
     <message>
+        <source>Loading P2P addresses...</source>
+        <translation>Ladataan P2P osoitteita...</translation>
+    </message>
+    <message>
         <source>Reducing -maxconnections from %d to %d, because of system limitations.</source>
         <translation>Vähennetään -maxconnections %d -&gt; %d, järjestelmän rajoituksien takia.</translation>
+    </message>
+    <message>
+        <source>Replaying blocks...</source>
+        <translation>Toistetaan lohkoja...</translation>
+    </message>
+    <message>
+        <source>Rescanning...</source>
+        <translation>Skannataan uudelleen...</translation>
     </message>
     <message>
         <source>Session not complete!</source>
@@ -4643,12 +4682,20 @@ Vähennä uakommenttien määrää tai kokoa.</translation>
         <translation>Viimeisin jono on luotu liian äskettäin.</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup.</source>
-        <translation> %s vioittunut. Yritä käyttää lompakkotyökalua dash-wallet pelastaaksesi tai palauttaaksesi varmuuskopion.</translation>
+        <source>%s corrupt. Try using the wallet tool piratecash-wallet to salvage or restoring a backup.</source>
+        <translation> %s vioittunut. Yritä käyttää lompakkotyökalua piratecash-wallet pelastaaksesi tai palauttaaksesi varmuuskopion.</translation>
     </message>
     <message>
         <source>Last successful action was too recent.</source>
         <translation>Viimeinen onnistunut tapahtuma oli liian äskettäin.</translation>
+    </message>
+    <message>
+        <source>Starting network threads...</source>
+        <translation>Käynnistetään verkkoa...</translation>
+    </message>
+    <message>
+        <source>Synchronizing governance objects...</source>
+        <translation>Ladataan hallinnon objekteja...</translation>
     </message>
     <message>
         <source>The source code is available from %s.</source>
@@ -4677,10 +4724,6 @@ Vähennä uakommenttien määrää tai kokoa.</translation>
     <message>
         <source>Transaction not valid.</source>
         <translation>Siirtotapahtuma ei ole voimassa.</translation>
-    </message>
-    <message>
-        <source>Trying to connect…</source>
-        <translation>Yritetään kytkeytyä…</translation>
     </message>
     <message>
         <source>Unable to bind to %s on this computer (bind returned error %s)</source>
@@ -4715,6 +4758,10 @@ Vähennä uakommenttien määrää tai kokoa.</translation>
         <translation>Päivitetään txindex tietokantaa</translation>
     </message>
     <message>
+        <source>Verifying blocks...</source>
+        <translation>Tarkistetaan lohkoja...</translation>
+    </message>
+    <message>
         <source>Very low number of keys left: %d</source>
         <translation>Osoitteita vähän jäljellä: %d</translation>
     </message>
@@ -4729,10 +4776,6 @@ Vähennä uakommenttien määrää tai kokoa.</translation>
     <message>
         <source>Warning: incorrect parameter %s, path must exist! Using default path.</source>
         <translation>Varoitus: väärä parametri %s, tiedostopolku on oltava olemassa! Käytetään oletuspolkua.</translation>
-    </message>
-    <message>
-        <source>Will retry…</source>
-        <translation>Yritetään uudelleen…</translation>
     </message>
     <message>
         <source>You are starting with governance validation disabled.</source>
