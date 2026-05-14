@@ -261,7 +261,12 @@ bool CalcCbTxMerkleRootQuorums(const CBlock& block, const CBlockIndex* pindexPre
 
     // now add the commitments from the current block, which are not returned by GetMinedAndActiveCommitmentsUntilBlock
     // due to the use of pindexPrev (we don't have the tip index here)
+    const bool is_proof_of_stake = block.IsProofOfStake();
     for (size_t i = 1; i < block.vtx.size(); i++) {
+        if (is_proof_of_stake && i == 1) {
+            // Skip the coinstake transaction at vtx[1] in PoS blocks.
+            continue;
+        }
         const auto& tx = block.vtx[i];
 
         if (tx->IsSpecialTxVersion() && tx->nType == TRANSACTION_QUORUM_COMMITMENT) {

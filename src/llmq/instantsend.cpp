@@ -456,6 +456,12 @@ void CInstantSendManager::Stop()
 
 void CInstantSendManager::ProcessTx(const CTransaction& tx, bool fRetroactive, const Consensus::Params& params)
 {
+    // Coinstake transactions are consensus-level staking operations and must not
+    // be constrained by InstantSend input locks.
+    if (tx.IsCoinStake()) {
+        return;
+    }
+
     if (!m_is_masternode || !IsInstantSendEnabled() || !m_mn_sync.IsBlockchainSynced()) {
         return;
     }
@@ -1571,6 +1577,11 @@ bool CInstantSendManager::IsWaitingForTx(const uint256& txHash) const
 CInstantSendLockPtr CInstantSendManager::GetConflictingLock(const CTransaction& tx) const
 {
     if (!IsInstantSendEnabled()) {
+        return nullptr;
+    }
+
+    // Ignore InstantSend conflicts for coinstake transactions.
+    if (tx.IsCoinStake()) {
         return nullptr;
     }
 
