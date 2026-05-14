@@ -22,29 +22,29 @@ class ConfArgsTest(BitcoinTestFramework):
         self.stop_node(0)
 
         inc_conf_file_path = os.path.join(self.nodes[0].datadir, 'include.conf')
-        with open(os.path.join(self.nodes[0].datadir, 'dash.conf'), 'a', encoding='utf-8') as conf:
+        with open(os.path.join(self.nodes[0].datadir, 'piratecash.conf'), 'a', encoding='utf-8') as conf:
             conf.write(f'includeconf={inc_conf_file_path}\n')
 
         self.nodes[0].assert_start_raises_init_error(
-            expected_msg='Error: Error parsing command line arguments: Invalid parameter -dash_cli=1',
-            extra_args=['-dash_cli=1'],
+            expected_msg='Error: Error parsing command line arguments: Invalid parameter -piratecash_cli=1',
+            extra_args=['-piratecash_cli=1'],
         )
         with open(inc_conf_file_path, 'w', encoding='utf-8') as conf:
-            conf.write('dash_conf=1\n')
-        with self.nodes[0].assert_debug_log(expected_msgs=['Ignoring unknown configuration value dash_conf']):
+            conf.write('piratecash_conf=1\n')
+        with self.nodes[0].assert_debug_log(expected_msgs=['Ignoring unknown configuration value piratecash_conf']):
             self.start_node(0)
         self.stop_node(0)
 
         with open(inc_conf_file_path, 'w', encoding='utf-8') as conf:
-            conf.write('-dash=1\n')
-        self.nodes[0].assert_start_raises_init_error(expected_msg='Error: Error reading configuration file: parse error on line 1: -dash=1, options in configuration file must be specified without leading -')
+            conf.write('-piratecash=1\n')
+        self.nodes[0].assert_start_raises_init_error(expected_msg='Error: Error reading configuration file: parse error on line 1: -piratecash=1, options in configuration file must be specified without leading -')
 
         if self.is_wallet_compiled():
             with open(inc_conf_file_path, 'w', encoding='utf8') as conf:
                 conf.write("wallet=foo\n")
             self.nodes[0].assert_start_raises_init_error(expected_msg=f'Error: Config setting for -wallet only applied on {self.chain} network when in [{self.chain}] section.')
 
-        main_conf_file_path = os.path.join(self.options.tmpdir, 'node0', 'dash_main.conf')
+        main_conf_file_path = os.path.join(self.options.tmpdir, 'node0', 'piratecash_main.conf')
         util.write_config(main_conf_file_path, n=0, chain='', extra_config=f'includeconf={inc_conf_file_path}\n')
         with open(inc_conf_file_path, 'w', encoding='utf-8') as conf:
             conf.write('acceptnonstdtxn=1\n')
@@ -67,7 +67,7 @@ class ConfArgsTest(BitcoinTestFramework):
         self.nodes[0].assert_start_raises_init_error(expected_msg='Error: Error reading configuration file: parse error on line 4, using # in rpcpassword can be ambiguous and should be avoided')
 
         inc_conf_file2_path = os.path.join(self.nodes[0].datadir, 'include2.conf')
-        with open(os.path.join(self.nodes[0].datadir, 'dash.conf'), 'a', encoding='utf-8') as conf:
+        with open(os.path.join(self.nodes[0].datadir, 'piratecash.conf'), 'a', encoding='utf-8') as conf:
             conf.write(f'includeconf={inc_conf_file2_path}\n')
 
         with open(inc_conf_file_path, 'w', encoding='utf-8') as conf:
@@ -266,7 +266,7 @@ class ConfArgsTest(BitcoinTestFramework):
         self.nodes[0].assert_start_raises_init_error([f'-datadir={new_data_dir}'], f'Error: Specified data directory "{new_data_dir}" does not exist.')
 
         # Check that using non-existent datadir in conf file fails
-        conf_file = os.path.join(default_data_dir, "dash.conf")
+        conf_file = os.path.join(default_data_dir, "piratecash.conf")
 
         # datadir needs to be set before [chain] section
         conf_file_contents = open(conf_file, encoding='utf8').read()
@@ -277,7 +277,7 @@ class ConfArgsTest(BitcoinTestFramework):
         self.nodes[0].assert_start_raises_init_error([f'-conf={conf_file}'], f'Error: Error reading configuration file: specified data directory "{new_data_dir}" does not exist.')
 
         # Check that an explicitly specified config file that cannot be opened fails
-        none_existent_conf_file = os.path.join(default_data_dir, "none_existent_dash.conf")
+        none_existent_conf_file = os.path.join(default_data_dir, "none_existent_piratecash.conf")
         self.nodes[0].assert_start_raises_init_error(['-conf=' + none_existent_conf_file], 'Error: Error reading configuration file: specified config file "' + none_existent_conf_file + '" could not be opened.')
 
         # Create the directory and ensure the config file now works
