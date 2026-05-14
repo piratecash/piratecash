@@ -453,10 +453,18 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 pindexNew->nTime          = diskindex.nTime;
                 pindexNew->nBits          = diskindex.nBits;
                 pindexNew->nNonce         = diskindex.nNonce;
+                pindexNew->posStakeHash   = diskindex.posStakeHash;
+                pindexNew->posStakeN      = diskindex.posStakeN;
+                pindexNew->posBlockSig    = diskindex.posBlockSig;
                 pindexNew->nStatus        = diskindex.nStatus;
                 pindexNew->nTx            = diskindex.nTx;
 
-                if (!CheckProofOfWork(pindexNew->GetBlockHash(), pindexNew->nBits, consensusParams)) {
+                // PirateCash related block index fields
+                pindexNew->nFlags         = diskindex.nFlags;
+
+                if (pindexNew->IsProofOfWork() &&
+                    pindexNew->GetBlockHash() != consensusParams.hashGenesisBlock &&
+                    !CheckProofOfWork(pindexNew->GetBlockHeader().GetPoWHash(), pindexNew->nBits, consensusParams)) {
                     return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());
                 }
 
@@ -480,6 +488,7 @@ class CCoins
 public:
     //! whether transaction is a coinbase
     bool fCoinBase;
+    bool fCoinStake;
 
     //! unspent transaction outputs; spent outputs are .IsNull(); spent outputs at the end of the array are dropped
     std::vector<CTxOut> vout;
@@ -498,11 +507,12 @@ public:
         ::Unserialize(s, VARINT(nVersionDummy));
         // header code
         ::Unserialize(s, VARINT(nCode));
-        fCoinBase = nCode & 1;
+        fCoinBase = nCode & 1;         //0001 - means coinbase
+        fCoinStake = (nCode & 2) != 0; //0010 coinstake
         std::vector<bool> vAvail(2, false);
-        vAvail[0] = (nCode & 2) != 0;
-        vAvail[1] = (nCode & 4) != 0;
-        unsigned int nMaskCode = (nCode / 8) + ((nCode & 6) != 0 ? 0 : 1);
+        vAvail[0] = (nCode & 4) != 0; // 0100
+        vAvail[1] = (nCode & 8) != 0; // 1000
+        unsigned int nMaskCode = (nCode / 16) + ((nCode & 12) != 0 ? 0 : 1);
         // spentness bitmask
         while (nMaskCode > 0) {
             unsigned char chAvail = 0;
@@ -569,7 +579,7 @@ bool CCoinsViewDB::Upgrade() {
             COutPoint outpoint(key.second, 0);
             for (size_t i = 0; i < old_coins.vout.size(); ++i) {
                 if (!old_coins.vout[i].IsNull() && !old_coins.vout[i].scriptPubKey.IsUnspendable()) {
-                    Coin newcoin(std::move(old_coins.vout[i]), old_coins.nHeight, old_coins.fCoinBase);
+                    Coin newcoin(std::move(old_coins.vout[i]), old_coins.nHeight, old_coins.fCoinBase, old_coins.fCoinStake);
                     outpoint.n = i;
                     CoinEntry entry(&outpoint);
                     batch.Write(entry, newcoin);
