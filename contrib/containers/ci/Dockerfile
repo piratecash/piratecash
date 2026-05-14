@@ -115,12 +115,13 @@ RUN pip3 install \
     pyzmq==22.3.0 \
     vulture==2.3
 
-ARG DASH_HASH_VERSION=1.4.0
+# piratecash_hash
+ARG PIRATECASH_HASH_VERSION=1.4.0
 RUN set -ex; \
     cd /tmp; \
-    git clone --depth 1 --no-tags --branch=${DASH_HASH_VERSION} https://github.com/dashpay/dash_hash; \
-    cd dash_hash && pip3 install -r requirements.txt .; \
-    cd .. && rm -rf dash_hash
+    git clone --depth 1 --no-tags --branch=${PIRATECASH_HASH_VERSION} https://github.com/piratecash/piratecash_hash; \
+    cd piratecash_hash && pip3 install -r requirements.txt .; \
+    cd .. && rm -rf piratecash_hash
 
 ARG CPPCHECK_VERSION=2.13.0
 RUN set -ex; \
@@ -142,11 +143,11 @@ ENV PATH="/opt/shellcheck:${PATH}"
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 RUN set -ex; \
-    groupadd -g ${GROUP_ID} dash; \
-    useradd -u ${USER_ID} -g dash -s /bin/bash -m -d /home/dash dash; \
-    mkdir -p /home/dash/.config/gdb; \
-    echo "add-auto-load-safe-path /usr/lib/llvm-${LLVM_VERSION}/lib" | tee /home/dash/.config/gdb/gdbinit; \
-    chown ${USER_ID}:${GROUP_ID} -R /home/dash
+    groupadd -g ${GROUP_ID} piratecash; \
+    useradd -u ${USER_ID} -g piratecash -s /bin/bash -m -d /home/piratecash piratecash; \
+    mkdir -p /home/piratecash/.config/gdb; \
+    echo "add-auto-load-safe-path /usr/lib/llvm-${LLVM_VERSION}/lib" | tee /home/piratecash/.config/gdb/gdbinit; \
+    chown ${USER_ID}:${GROUP_ID} -R /home/piratecash
 
 # Packages needed for all target builds
 RUN apt-get update && apt-get install $APT_ARGS \
@@ -179,7 +180,7 @@ RUN \
   exit 0
 
 RUN \
-  mkdir -p /src/dash && \
+  mkdir -p /src/piratecash && \
   mkdir -p /cache/ccache && \
   mkdir /cache/depends && \
   mkdir /cache/sdk-sources && \
@@ -188,6 +189,6 @@ RUN \
   chown ${USER_ID}:${GROUP_ID} /cache && \
   chown ${USER_ID}:${GROUP_ID} -R /cache
 
-WORKDIR /src/dash
+WORKDIR /src/piratecash
 
-USER dash
+USER piratecash

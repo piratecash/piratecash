@@ -2,10 +2,14 @@
 
 set -eo pipefail
 
-WORKSPACE_PATH="${1:-$(pwd)}"
+if [[ -n "${1}" ]]; then
+    WORKSPACE_PATH="$1"
+else
+    WORKSPACE_PATH="/src/piratecash"
+fi
 
 if [[ ! -d "${WORKSPACE_PATH}" || ! "${WORKSPACE_PATH}" = /* || ! -f "${WORKSPACE_PATH}/contrib/guix/libexec/prelude.bash" ]]; then
-    echo "${0##*/}: ${WORKSPACE_PATH} is not the top directory of the Dash Core repository, exiting!"
+    echo "${0##*/}: ${WORKSPACE_PATH} is not the top directory of the PirateCash Core repository, exiting!"
     exit 1
 fi
 
@@ -16,9 +20,9 @@ source "contrib/guix/libexec/prelude.bash"
 printf "\nBinaries:\n\n"
 ( \
 SRC_PATH_PREFIX="${VERSION_BASE}/distsrc-" && \
-sha256sum ${SRC_PATH_PREFIX}*/src/dash{d,-cli,-tx,-wallet}{,.exe} && \
-sha256sum ${SRC_PATH_PREFIX}*/src/qt/dash-qt{,.exe} && \
-sha256sum ${SRC_PATH_PREFIX}*/src/test/test_dash{,.exe} \
+sha256sum ${SRC_PATH_PREFIX}*/src/piratecash{d,-cli,-tx,-wallet}{,.exe} && \
+sha256sum ${SRC_PATH_PREFIX}*/src/qt/piratecash-qt{,.exe} && \
+sha256sum ${SRC_PATH_PREFIX}*/src/test/test_piratecash{,.exe} \
 ) | sort -k 2
 
 printf "\nArchives:\n\n"

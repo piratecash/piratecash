@@ -25,7 +25,7 @@ import requests
 import hjson
 
 def get_pr_json(pr_num):
-    return requests.get(f'https://api.github.com/repos/dashpay/dash/pulls/{pr_num}').json()
+    return requests.get(f'https://api.github.com/repos/piratecash/piratecash-core/pulls/{pr_num}').json()
 
 def main():
     if len(sys.argv) != 2:
@@ -61,7 +61,7 @@ def main():
             print(f'{conflict_pr_num} is a draft. Skipping conflict check')
             continue
 
-        pre_mergeable = requests.get(f'https://github.com/dashpay/dash/branches/pre_mergeable/{our_pr_label}...{conflict_pr_label}')
+        pre_mergeable = requests.get(f'https://github.com/piratecash/piratecash-core/branches/pre_mergeable/{our_pr_label}...{conflict_pr_label}')
         if "These branches can be automatically merged." in pre_mergeable.text:
             good.append(conflict_pr_num)
         elif "Can’t automatically merge" in pre_mergeable.text:

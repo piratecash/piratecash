@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Copyright (c) 2019-2021 The Bitcoin Core developers
+# Distributed under the MIT software license, see the accompanying
+# file COPYING or http://www.opensource.org/licenses/mit-license.php.
 export LC_ALL=C
 set -e -o pipefail
 export TZ=UTC
@@ -73,11 +76,9 @@ unset OBJCPLUS_INCLUDE_PATH
 
 export C_INCLUDE_PATH="${NATIVE_GCC}/include"
 export CPLUS_INCLUDE_PATH="${NATIVE_GCC}/include/c++:${NATIVE_GCC}/include"
-export OBJC_INCLUDE_PATH="${NATIVE_GCC}/include"
-export OBJCPLUS_INCLUDE_PATH="${NATIVE_GCC}/include/c++:${NATIVE_GCC}/include"
 
 case "$HOST" in
-    *darwin*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;;
+    *darwin*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;; # Required for qt/qmake
     *mingw*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;;
     *)
         NATIVE_GCC_STATIC="$(store_path gcc-toolchain static)"
@@ -182,6 +183,14 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    x86_64_linux_NM=x86_64-linux-gnu-gcc-nm \
                                    x86_64_linux_STRIP=x86_64-linux-gnu-strip
 
+case "$HOST" in
+    *darwin*)
+        # Unset now that Qt is built
+        unset C_INCLUDE_PATH
+        unset CPLUS_INCLUDE_PATH
+        unset LIBRARY_PATH
+        ;;
+esac
 
 ###########################
 # Source Tarball Building #
@@ -225,12 +234,15 @@ esac
 
 # LDFLAGS
 case "$HOST" in
-    *linux*)  HOST_LDFLAGS="-Wl,--as-needed -Wl,--dynamic-linker=$glibc_dynamic_linker -static-libstdc++ -Wl,-O2" ;;
+    *linux*)  HOST_LDFLAGS="-Wl,--as-needed -Wl,--dynamic-linker=$glibc_dynamic_linker -Wl,-O2" ;;
     *mingw*)  HOST_LDFLAGS="-Wl,--no-insert-timestamp" ;;
 esac
 
-# Make $HOST-specific native binaries from depends available in $PATH
-export PATH="${BASEPREFIX}/${HOST}/native/bin:${PATH}"
+# EXE FLAGS
+case "$HOST" in
+    *linux*)  HOST_LDFLAGS+=" -static-libstdc++ -static-libgcc" ;;
+esac
+
 mkdir -p "$DISTSRC"
 (
     cd "$DISTSRC"
@@ -255,7 +267,7 @@ mkdir -p "$DISTSRC"
     sed -i.old 's/-lstdc++ //g' {./,src/dashbls/,src/secp256k1/}{config.status,libtool}
 
 
-    # Build Dash Core
+    # Build PirateCash Core
     make --jobs="$JOBS" ${V:+V=1}
 
     # Make macos-specific debug symbols
@@ -265,8 +277,6 @@ mkdir -p "$DISTSRC"
             ;;
     esac
 
-    # Check that symbol/security checks tools are sane.
-    make test-security-check ${V:+V=1}
     # Perform basic security checks on a series of executables.
     make -C src --jobs=1 check-security ${V:+V=1}
     # Check that executables only contain allowed version symbols.
@@ -281,12 +291,12 @@ mkdir -p "$DISTSRC"
             ;;
     esac
 
-    # Setup the directory where our Dash Core build for HOST will be
+    # Setup the directory where our PirateCash Core build for HOST will be
     # installed. This directory will also later serve as the input for our
     # binary tarballs.
     INSTALLPATH="${PWD}/installed/${DISTNAME}"
     mkdir -p "${INSTALLPATH}"
-    # Install built Dash Core to $INSTALLPATH
+    # Install built PirateCash Core to $INSTALLPATH
     make install DESTDIR="${INSTALLPATH}" ${V:+V=1}
 
     case "$HOST" in
@@ -334,6 +344,61 @@ mkdir -p "$DISTSRC"
                     find "${DISTNAME}/bin" -type f -executable -print0
                     find "${DISTNAME}/lib" -type f -print0
                 } | xargs -0 -P"$JOBS" -I{} "${DISTSRC}/contrib/devtools/split-debug.sh" {} {} {}.dbg
+
+                case "$HOST" in
+                    *linux*)
+                        # Compress DWARF sections in debug files and set proper permissions
+                        find "${DISTNAME}" -name "*.dbg" -type f -print0 | xargs -0 -P"$JOBS" -I{} sh -c "${HOST}-objcopy --compress-debug-sections=zlib \"\$1\" \"\$1.tmp\" && mv \"\$1.tmp\" \"\$1\" && chmod 644 \"\$1\"" _ {}
+
+                        # Create .build-id tree for perf auto-discovery
+                        mkdir -p "${DISTNAME}/usr/lib/debug/.build-id"
+                        {
+                            find "${DISTNAME}/bin" -type f -executable -print0
+                            find "${DISTNAME}/lib" -type f -print0
+                        } | while IFS= read -r -d '' elf; do
+                            if file "$elf" | grep -q "ELF.*executable\|ELF.*shared object"; then
+                                build_id=$("${HOST}"-readelf -n "$elf" 2>/dev/null | awk '/Build ID/ {print $3; exit}')
+                                if [ -n "$build_id" ] && [ -f "${elf}.dbg" ]; then
+                                    dir="${DISTNAME}/usr/lib/debug/.build-id/${build_id:0:2}"
+                                    mkdir -p "$dir"
+                                    cp "${elf}.dbg" "${dir}/${build_id:2}.debug"
+                                    chmod 644 "${dir}/${build_id:2}.debug"
+                                fi
+                            fi
+                        done
+
+                        # Verify build-ids and debug links
+                        verification_output=$(
+                            {
+                                find "${DISTNAME}/bin" -type f -executable -print0
+                                find "${DISTNAME}/lib" -type f -print0
+                            } | {
+                                verification_failed=0
+                                while IFS= read -r -d '' elf; do
+                                    if file "$elf" | grep -q "ELF.*executable\|ELF.*shared object"; then
+                                        # Check for build-id
+                                        if ! "${HOST}"-readelf -n "$elf" 2>/dev/null | grep -q "Build ID"; then
+                                            echo "ERROR: No build-id found in $elf" >&2
+                                            verification_failed=1
+                                        fi
+
+                                        # Check for .gnu_debuglink
+                                        if ! "${HOST}"-readelf --string-dump=.gnu_debuglink "$elf" >/dev/null 2>&1; then
+                                            echo "ERROR: No .gnu_debuglink found in $elf" >&2
+                                            verification_failed=1
+                                        fi
+                                    fi
+                                done
+                                exit "$verification_failed"
+                            } 2>&1
+                        )
+                        verification_status=$?
+                        if [ "$verification_status" -ne 0 ]; then
+                            echo "$verification_output" >&2
+                            exit 1
+                        fi
+                        ;;
+                esac
                 ;;
         esac
 
@@ -345,6 +410,12 @@ mkdir -p "$DISTSRC"
                 cp "${DISTSRC}/README.md" "${DISTNAME}/"
                 ;;
         esac
+
+        # copy over the example piratecash.conf file. if contrib/devtools/gen-piratecash-conf.sh
+        # has not been run before buildling, this file will be a stub
+        cp "${DISTSRC}/contrib/debian/examples/piratecash.conf" "${DISTNAME}/"
+
+        cp -r "${DISTSRC}/share/rpcauth" "${DISTNAME}/share/"
 
         # Finally, deterministically produce {non-,}debug binary tarballs ready
         # for release
@@ -364,12 +435,14 @@ mkdir -p "$DISTSRC"
                     || ( rm -f "${OUTDIR}/${DISTNAME}-${HOST//x86_64-w64-mingw32/win64}-debug.zip" && exit 1 )
                 ;;
             *linux*)
-                find "${DISTNAME}" -not -name "*.dbg" -print0 \
+                # Main (non-debug) tarball: exclude separate debug files and the build-id debug tree
+                find "${DISTNAME}" -not -name "*.dbg" -not -path "${DISTNAME}/usr/lib/debug/*" -print0 \
                     | sort --zero-terminated \
                     | tar --create --no-recursion --mode='u+rw,go+r-w,a+X' --null --files-from=- \
                     | gzip -9n > "${OUTDIR}/${DISTNAME}-${HOST}.tar.gz" \
                     || ( rm -f "${OUTDIR}/${DISTNAME}-${HOST}.tar.gz" && exit 1 )
-                find "${DISTNAME}" -name "*.dbg" -print0 \
+                # Debug tarball: include .dbg files and the build-id debug tree
+                find "${DISTNAME}" \( -name "*.dbg" -o -path "${DISTNAME}/usr/lib/debug/*" \) -print0 \
                     | sort --zero-terminated \
                     | tar --create --no-recursion --mode='u+rw,go+r-w,a+X' --null --files-from=- \
                     | gzip -9n > "${OUTDIR}/${DISTNAME}-${HOST}-debug.tar.gz" \

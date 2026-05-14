@@ -3,11 +3,11 @@
              ((gnu packages bash) #:select (bash-minimal))
              (gnu packages bison)
              ((gnu packages certs) #:select (nss-certs))
+             ((gnu packages check) #:select (libfaketime))
              ((gnu packages cmake) #:select (cmake-minimal))
              (gnu packages commencement)
              (gnu packages compression)
              (gnu packages cross-base)
-             (gnu packages curl)
              (gnu packages file)
              (gnu packages gawk)
              (gnu packages gcc)
@@ -20,7 +20,6 @@
              ((gnu packages python) #:select (python-minimal))
              ((gnu packages python-build) #:select (python-tomli))
              ((gnu packages python-crypto) #:select (python-asn1crypto))
-             ((gnu packages python-xyz) #:select (python-altgraph))
              ((gnu packages tls) #:select (openssl))
              ((gnu packages version-control) #:select (git-minimal))
              (guix build-system cmake)
@@ -83,46 +82,36 @@ FILE-NAME found in ./patches relative to the current file."
       (build-system trivial-build-system)
       (arguments '(#:builder (begin (mkdir %output) #t)))
       (propagated-inputs
-       `(("binutils" ,xbinutils)
-         ("libc" ,xlibc)
-         ("libc:static" ,xlibc "static")
-         ("gcc" ,xgcc)
-         ("gcc-lib" ,xgcc "lib")))
+        (list xbinutils
+              xlibc
+              xgcc
+              `(,xlibc "static")
+              `(,xgcc "lib")))
       (synopsis (string-append "Complete GCC tool chain for " target))
       (description (string-append "This package provides a complete GCC tool
 chain for " target " development."))
       (home-page (package-home-page xgcc))
       (license (package-license xgcc)))))
 
-(define base-gcc
-  (package
-    (inherit gcc-12) ;; 12.3.0
-    (version "12.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/gcc/gcc-"
-                                  version "/gcc-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0xcida8l2wykvvzvpcrcn649gj0ijn64gwxbplacpg6c0hk6akvh"))))))
+(define base-gcc gcc-13) ;; 13.3.0
 
 (define base-linux-kernel-headers linux-libre-headers-6.1)
 
 (define* (make-bitcoin-cross-toolchain target
                                        #:key
-                                       (base-gcc-for-libc linux-base-gcc)
+                                       (base-gcc-for-libc (gcc-libgcc-patches linux-base-gcc))
                                        (base-kernel-headers base-linux-kernel-headers)
                                        (base-libc glibc-2.31)
-                                       (base-gcc linux-base-gcc))
+                                       (base-gcc (gcc-libgcc-patches linux-base-gcc)))
   "Convenience wrapper around MAKE-CROSS-TOOLCHAIN with default values
-desirable for building Dash Core release binaries."
+desirable for building PirateCash Core release binaries."
   (make-cross-toolchain target
                         base-gcc-for-libc
                         base-kernel-headers
                         base-libc
                         base-gcc))
 
-(define (gcc-mingw-patches gcc)
+(define (gcc-libgcc-patches gcc)
   (package-with-extra-patches gcc
     (search-our-patches "gcc-remap-guix-store.patch")))
 
@@ -130,15 +119,19 @@ desirable for building Dash Core release binaries."
   (package-with-extra-patches binutils
     (search-our-patches "binutils-unaligned-default.patch")))
 
+(define (winpthreads-patches mingw-w64-x86_64-winpthreads)
+  (package-with-extra-patches mingw-w64-x86_64-winpthreads
+    (search-our-patches "winpthreads-remap-guix-store.patch")))
+
 (define (make-mingw-pthreads-cross-toolchain target)
   "Create a cross-compilation toolchain package for TARGET"
   (let* ((xbinutils (binutils-mingw-patches (cross-binutils target)))
          (machine (substring target 0 (string-index target #\-)))
-         (pthreads-xlibc (make-mingw-w64 machine
-                                         #:xgcc (cross-gcc target #:xgcc (gcc-mingw-patches base-gcc))
-                                         #:with-winpthreads? #t))
+         (pthreads-xlibc (winpthreads-patches (make-mingw-w64 machine
+                                         #:xgcc (cross-gcc target #:xgcc (gcc-libgcc-patches base-gcc))
+                                         #:with-winpthreads? #t)))
          (pthreads-xgcc (cross-gcc target
-                                    #:xgcc (gcc-mingw-patches mingw-w64-base-gcc)
+                                    #:xgcc (gcc-libgcc-patches mingw-w64-base-gcc)
                                     #:xbinutils xbinutils
                                     #:libc pthreads-xlibc)))
     ;; Define a meta-package that propagates the resulting XBINUTILS, XLIBC, and
@@ -150,10 +143,10 @@ desirable for building Dash Core release binaries."
       (build-system trivial-build-system)
       (arguments '(#:builder (begin (mkdir %output) #t)))
       (propagated-inputs
-       `(("binutils" ,xbinutils)
-         ("libc" ,pthreads-xlibc)
-         ("gcc" ,pthreads-xgcc)
-         ("gcc-lib" ,pthreads-xgcc "lib")))
+        (list xbinutils
+              pthreads-xlibc
+              pthreads-xgcc
+              `(,pthreads-xgcc "lib")))
       (synopsis (string-append "Complete GCC tool chain for " target))
       (description (string-append "This package provides a complete GCC tool
 chain for " target " development."))
@@ -218,11 +211,17 @@ and abstract ELF, PE and MachO formats.")
                (base32
                 "1j47vwq4caxfv0xw68kw5yh00qcpbd56d7rq6c483ma3y7s96yyz"))))
     (build-system cmake-build-system)
-    (inputs
-     `(("openssl", openssl)))
     (arguments
-     '(#:configure-flags
-        (list "-DCMAKE_DISABLE_FIND_PACKAGE_CURL=TRUE")))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "faketime" "-f" "@2025-01-01 00:00:00" ;; Tests fail after 2025.
+                          "ctest" "--output-on-failure" "--no-tests=error")
+                  (format #t "test suite not run~%")))))))
+    (inputs (list libfaketime openssl))
     (home-page "https://github.com/mtrojnar/osslsigncode")
     (synopsis "Authenticode signing and timestamping tool")
     (description "osslsigncode is a small tool that implements part of the
@@ -279,8 +278,7 @@ thus should be able to compile on most platforms where these exist.")
             (files '("etc/ssl/certs/ca-certificates.crt")))))
 
     (propagated-inputs
-     `(("python-asn1crypto" ,python-asn1crypto)
-       ("openssl" ,openssl)))
+      (list python-asn1crypto openssl))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -318,7 +316,7 @@ thus should be able to compile on most platforms where these exist.")
   (package (inherit python-oscrypto)
     (name "python-oscryptotests")
     (propagated-inputs
-      `(("python-oscrypto" ,python-oscrypto)))
+      (list python-oscrypto))
     (arguments
      `(#:tests? #f
        #:phases
@@ -345,9 +343,9 @@ thus should be able to compile on most platforms where these exist.")
            "1qw2k7xis53179lpqdqyylbcmp76lj7sagp883wmxg5i7chhc96k"))))
       (build-system python-build-system)
       (propagated-inputs
-       `(("python-asn1crypto" ,python-asn1crypto)
-         ("python-oscrypto" ,python-oscrypto)
-         ("python-oscryptotests", python-oscryptotests))) ;; certvalidator tests import oscryptotests
+        (list python-asn1crypto
+              python-oscrypto
+              python-oscryptotests)) ;; certvalidator tests import oscryptotests
       (arguments
        `(#:phases
          (modify-phases %standard-phases
@@ -395,56 +393,8 @@ certificates or paths. Supports various options, including: validation at a
 specific moment in time, whitelisting and revocation checks.")
       (license license:expat))))
 
-(define-public python-macholib
-  (package
-    (name "python-macholib")
-    (version "1.14")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ronaldoussoren/macholib")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0aislnnfsza9wl4f0vp45ivzlc0pzhp9d4r08700slrypn5flg42"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     `(("python-altgraph" ,python-altgraph)))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-broken-tests
-           (lambda _
-             ;; This test is broken as there is no keyboard interrupt.
-             (substitute* "macholib_tests/test_command_line.py"
-               (("^(.*)class TestCmdLine" line indent)
-                (string-append indent
-                               "@unittest.skip(\"Disabled by Guix\")\n"
-                               line)))
-             (substitute* "macholib_tests/test_dyld.py"
-               (("^(.*)def test_\\S+_find" line indent)
-                (string-append indent
-                               "@unittest.skip(\"Disabled by Guix\")\n"
-                               line))
-               (("^(.*)def testBasic" line indent)
-                (string-append indent
-                               "@unittest.skip(\"Disabled by Guix\")\n"
-                               line))
-               )
-             #t)))))
-    (home-page "https://github.com/ronaldoussoren/macholib")
-    (synopsis "Python library for analyzing and editing Mach-O headers")
-    (description "macholib is a Macho-O header analyzer and editor. It's
-typically used as a dependency analysis tool, and also to rewrite dylib
-references in Mach-O headers to be @executable_path relative. Though this tool
-targets a platform specific file format, it is pure python code that is platform
-and endian independent.")
-    (license license:expat)))
-
 (define-public python-signapple
-  (let ((commit "7a96b4171a360abf0f0f56e499f8f9ed2116280d"))
+  (let ((commit "62155712e7417aba07565c9780a80e452823ae6a"))
     (package
       (name "python-signapple")
       (version (git-version "0.1" "1" commit))
@@ -457,14 +407,13 @@ and endian independent.")
          (file-name (git-file-name name commit))
          (sha256
           (base32
-           "0aa4k180jnpal15yhncnm3g3z9gzmi7qb25q5l0kaj444a1p2pm4"))))
+           "1nm6rm4h4m7kbq729si4cm8rzild62mk4ni8xr5zja7l33fhv3gb"))))
       (build-system python-build-system)
       (propagated-inputs
-       `(("python-asn1crypto" ,python-asn1crypto)
-         ("python-oscrypto" ,python-oscrypto)
-         ("python-certvalidator" ,python-certvalidator)
-         ("python-elfesteem" ,python-elfesteem)
-         ("python-macholib" ,python-macholib)))
+        (list python-asn1crypto
+              python-oscrypto
+              python-certvalidator
+              python-elfesteem))
       ;; There are no tests, but attempting to run python setup.py test leads to
       ;; problems, just disable the test
       (arguments '(#:tests? #f))
@@ -483,12 +432,9 @@ inspecting signatures in Mach-O binaries.")
           `(append ,flags
             ;; https://gcc.gnu.org/install/configure.html
             (list "--enable-threads=posix",
-                  building-on)))
-        ((#:make-flags flags)
-          ;; Uses the SSP functions from glibc instead of from libssp.so.
-          ;; Our 'symbol-check' script will complain if we link against libssp.so,
-          ;; and thus will ensure that this works properly.
-          `(cons "gcc_cv_libc_provides_ssp=yes" ,flags))))))
+                  "--enable-default-ssp=yes",
+                  "--disable-gcov",
+                  building-on)))))))
 
 (define-public linux-base-gcc
   (package
@@ -503,6 +449,8 @@ inspecting signatures in Mach-O binaries.")
                   "--enable-default-pie=yes",
                   "--enable-standard-branch-protection=yes",
                   "--enable-cet=yes",
+                  "--disable-gcov",
+                  "--disable-libsanitizer",
                   building-on)))
         ((#:phases phases)
           `(modify-phases ,phases
@@ -517,9 +465,9 @@ inspecting signatures in Mach-O binaries.")
                #t))))))))
 
 (define-public glibc-2.31
-  (let ((commit "8e30f03744837a85e33d84ccd34ed3abe30d37c3"))
+  (let ((commit "7b27c450c34563a28e634cccb399cd415e71ebfe"))
   (package
-    (inherit glibc) ;; 2.35
+    (inherit glibc) ;; 2.39
     (version "2.31")
     (source (origin
               (method git-fetch)
@@ -529,8 +477,9 @@ inspecting signatures in Mach-O binaries.")
               (file-name (git-file-name "glibc" commit))
               (sha256
                (base32
-                "1zi0s9yy5zkisw823vivn7zlj8w6g9p3mm7lmlqiixcxdkz4dbn6"))
-              (patches (search-our-patches "glibc-guix-prefix.patch"))))
+                "017qdpr5id7ddb4lpkzj2li1abvw916m3fc6n7nw28z4h5qbv2n0"))
+              (patches (search-our-patches "glibc-guix-prefix.patch"
+                                           "glibc-riscv-jumptarget.patch"))))
     (arguments
       (substitute-keyword-arguments (package-arguments glibc)
         ((#:configure-flags flags)
@@ -539,6 +488,8 @@ inspecting signatures in Mach-O binaries.")
             (list "--enable-stack-protector=all",
                   "--enable-bind-now",
                   "--disable-werror",
+                  "--disable-timezone-tools",
+                  "--disable-profile",
                   building-on)))
     ((#:phases phases)
         `(modify-phases ,phases
@@ -573,18 +524,16 @@ inspecting signatures in Mach-O binaries.")
         moreutils
         ;; Compression and archiving
         tar
-        bzip2
         gzip
         xz
         ;; Build tools
-        gcc-toolchain-12
+        gcc-toolchain-13
         cmake-minimal
         gnu-make
         libtool
         autoconf-2.71
         automake
         pkg-config
-        bison
         ;; Scripting
         python-minimal ;; (3.10)
         ;; Git
@@ -599,12 +548,13 @@ inspecting signatures in Mach-O binaries.")
                  nss-certs
                  osslsigncode))
           ((string-contains target "-linux-")
-           (list (list gcc-toolchain-12 "static")
+           (list bison
+                 (list gcc-toolchain-13 "static")
                  (make-bitcoin-cross-toolchain target)))
           ((string-contains target "darwin")
-           (list clang-toolchain-18
-                 lld-18
-                 (make-lld-wrapper lld-18 #:lld-as-ld? #t)
+           (list clang-toolchain-19
+                 lld-19
+                 (make-lld-wrapper lld-19 #:lld-as-ld? #t)
                  python-signapple
                  zip))
           (else '())))))
