@@ -1,13 +1,13 @@
 AC_PREREQ([2.69])
 dnl Don't forget to push a corresponding tag when updating any of _CLIENT_VERSION_* numbers
-define(_CLIENT_VERSION_MAJOR, 23)
+define(_CLIENT_VERSION_MAJOR, 21)
 define(_CLIENT_VERSION_MINOR, 1)
-define(_CLIENT_VERSION_BUILD, 2)
-define(_CLIENT_VERSION_IS_RELEASE, true)
+define(_CLIENT_VERSION_BUILD, 1)
+define(_CLIENT_VERSION_IS_RELEASE, false)
 define(_COPYRIGHT_YEAR, 2026)
 define(_COPYRIGHT_HOLDERS,[The %s developers])
-define(_COPYRIGHT_HOLDERS_SUBSTITUTION,[[Dash Core]])
-AC_INIT([Dash Core],m4_join([.], _CLIENT_VERSION_MAJOR, _CLIENT_VERSION_MINOR, _CLIENT_VERSION_BUILD),[https://github.com/dashpay/dash/issues],[dashcore],[https://dash.org/])
+define(_COPYRIGHT_HOLDERS_SUBSTITUTION,[[PirateCash Core]])
+AC_INIT([PirateCash Core],m4_join([.], _CLIENT_VERSION_MAJOR, _CLIENT_VERSION_MINOR, _CLIENT_VERSION_BUILD),[https://github.com/piratecash/piratecash/issues],[piratecashcore],[https://p.cash/])
 AC_CONFIG_SRCDIR([src/validation.cpp])
 AC_CONFIG_HEADERS([src/config/bitcoin-config.h])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -29,16 +29,16 @@ if test -n "$PKG_CONFIG_LIBDIR"; then
   PKG_CONFIG="env PKG_CONFIG_LIBDIR=$PKG_CONFIG_LIBDIR $PKG_CONFIG"
 fi
 
-BITCOIN_DAEMON_NAME=dashd
-BITCOIN_GUI_NAME=dash-qt
-BITCOIN_TEST_NAME=test_dash
-BITCOIN_CLI_NAME=dash-cli
-BITCOIN_TX_NAME=dash-tx
-BITCOIN_UTIL_NAME=dash-util
-BITCOIN_WALLET_TOOL_NAME=dash-wallet
+BITCOIN_DAEMON_NAME=piratecashd
+BITCOIN_GUI_NAME=piratecash-qt
+BITCOIN_TEST_NAME=test_piratecash
+BITCOIN_CLI_NAME=piratecash-cli
+BITCOIN_TX_NAME=piratecash-tx
+BITCOIN_UTIL_NAME=piratecash-util
+BITCOIN_WALLET_TOOL_NAME=piratecash-wallet
 dnl Multi Process
-BITCOIN_MP_NODE_NAME=dash-node
-BITCOIN_MP_GUI_NAME=dash-gui
+BITCOIN_MP_NODE_NAME=piratecash-node
+BITCOIN_MP_GUI_NAME=piratecash-gui
 
 dnl Unless the user specified ARFLAGS, force it to be cr
 dnl This is also the default as-of libtool 2.4.7
@@ -49,9 +49,9 @@ fi
 
 AC_CANONICAL_HOST
 
-AH_TOP([#ifndef DASH_CONFIG_H])
-AH_TOP([#define DASH_CONFIG_H])
-AH_BOTTOM([#endif //DASH_CONFIG_H])
+AH_TOP([#ifndef PIRATECASH_CONFIG_H])
+AH_TOP([#define PIRATECASH_CONFIG_H])
+AH_BOTTOM([#endif //PIRATECASH_CONFIG_H])
 
 dnl Automake init set-up and checks
 AM_INIT_AUTOMAKE([1.13 no-define subdir-objects foreign])
@@ -198,6 +198,12 @@ AC_ARG_WITH([qrencode],
   [use_qr=$withval],
   [use_qr=auto])
 
+AC_ARG_WITH([openssl],
+  [AS_HELP_STRING([--with-openssl],
+  [enable openssl (default is yes if OpenSSL is found)])],
+  [use_openssl=$withval],
+  [use_openssl=yes])
+
 AC_ARG_ENABLE([hardening],
   [AS_HELP_STRING([--disable-hardening],
   [do not attempt to harden the resulting executables (default is to harden when possible)])],
@@ -258,7 +264,7 @@ AC_ARG_WITH([mpgen],
 
 AC_ARG_ENABLE([multiprocess],
   [AS_HELP_STRING([--enable-multiprocess],
-  [build multiprocess dash-node, dash-wallet, and dash-gui executables in addition to monolithic dashd and dash-qt executables. Requires libmultiprocess library. Experimental (default is no)])],
+  [build multiprocess piratecash-node, piratecash-wallet, and piratecash-gui executables in addition to monolithic piratecashd and piratecash-qt executables. Requires libmultiprocess library. Experimental (default is no)])],
   [enable_multiprocess=$enableval],
   [enable_multiprocess=no])
 
@@ -741,31 +747,31 @@ CORE_CPPFLAGS="$CORE_CPPFLAGS -DHAVE_BUILD_INFO -DGSL_NO_IOSTREAMS"
 
 AC_ARG_WITH([utils],
   [AS_HELP_STRING([--with-utils],
-  [build dash-cli dash-tx dash-util dash-wallet (default=yes)])],
+  [build piratecash-cli piratecash-tx piratecash-util piratecash-wallet (default=yes)])],
   [build_bitcoin_utils=$withval],
   [build_bitcoin_utils=yes])
 
 AC_ARG_ENABLE([util-cli],
   [AS_HELP_STRING([--enable-util-cli],
-  [build dash-cli])],
+  [build piratecash-cli])],
   [build_bitcoin_cli=$enableval],
   [build_bitcoin_cli=$build_bitcoin_utils])
 
 AC_ARG_ENABLE([util-tx],
   [AS_HELP_STRING([--enable-util-tx],
-  [build dash-tx])],
+  [build piratecash-tx])],
   [build_bitcoin_tx=$enableval],
   [build_bitcoin_tx=$build_bitcoin_utils])
 
 AC_ARG_ENABLE([util-wallet],
   [AS_HELP_STRING([--enable-util-wallet],
-  [build dash-wallet])],
+  [build piratecash-wallet])],
   [build_bitcoin_wallet=$enableval],
   [build_bitcoin_wallet=$build_bitcoin_utils])
 
 AC_ARG_ENABLE([util-util],
   [AS_HELP_STRING([--enable-util-util],
-  [build dash-util])],
+  [build piratecash-util])],
   [build_bitcoin_util=$enableval],
   [build_bitcoin_util=$build_bitcoin_utils])
 
@@ -777,7 +783,7 @@ AC_ARG_WITH([libs],
 
 AC_ARG_WITH([daemon],
   [AS_HELP_STRING([--with-daemon],
-  [build dashd daemon (default=yes)])],
+  [build piratecashd daemon (default=yes)])],
   [build_bitcoind=$withval],
   [build_bitcoind=yes])
 
@@ -851,6 +857,14 @@ case $host in
          dnl Homebrew where each one is located, then adjust paths accordingly.
          dnl It's safe to add these paths even if the functionality is disabled by
          dnl the user (--without-wallet or --without-gui for example).
+
+         if test "$use_openssl" != "no"; then
+           openssl_prefix=$($BREW --prefix openssl 2>/dev/null)
+           if test "$openssl_prefix" != ""; then
+             PKG_CONFIG_PATH="$openssl_prefix/lib/pkgconfig:$PKG_CONFIG_PATH"
+             export PKG_CONFIG_PATH
+           fi
+         fi
 
          dnl Homebrew may create symlinks in /usr/local/include for some packages.
          dnl Because MacOS's clang internally adds "-I /usr/local/include" to its search
@@ -1132,7 +1146,7 @@ AC_CHECK_DECLS([getifaddrs, freeifaddrs],[CHECK_SOCKET],,
     #include <ifaddrs.h>]
 )
 
-dnl These are used for daemonization in dashd
+dnl These are used for daemonization in piratecashd
 AC_CHECK_DECLS([fork])
 AC_CHECK_DECLS([setsid])
 
@@ -1450,6 +1464,7 @@ if test "$enable_fuzz" = "yes"; then
   use_upnp=no
   use_natpmp=no
   use_zmq=no
+  use_openssl=no
   enable_fuzz_binary=yes
 
   AX_CHECK_PREPROC_FLAG([-DABORT_ON_FAILED_ASSUME], [DEBUG_CPPFLAGS="$DEBUG_CPPFLAGS -DABORT_ON_FAILED_ASSUME"], [], [$CXXFLAG_WERROR])
@@ -1598,7 +1613,7 @@ if test "$use_boost" = "yes"; then
   dnl Check for Boost headers
   AX_BOOST_BASE([1.73.0],[],[AC_MSG_ERROR([Boost is not available!])])
   if test "$want_boost" = "no"; then
-      AC_MSG_ERROR([[only libdashconsensus can be built without boost]])
+      AC_MSG_ERROR([[only libpiratecashconsensus can be built without boost]])
   fi
 
   dnl we don't use multi_index serialization
@@ -1644,6 +1659,12 @@ if test "$use_tests" = "yes"; then
   if test "$HEXDUMP" = ""; then
     AC_MSG_ERROR([hexdump is required for tests])
   fi
+fi
+
+dnl OpenSSL/libcrypto check
+
+if test "$use_openssl" != "no"; then
+  PKG_CHECK_MODULES([CRYPTO], [libcrypto],, [use_openssl=no])
 fi
 
 dnl libevent check
@@ -1756,23 +1777,23 @@ if test "$build_multiprocess" != "no"; then
   AC_SUBST(MPGEN_PREFIX)
 fi
 
-AC_MSG_CHECKING([whether to build dashd])
+AC_MSG_CHECKING([whether to build piratecashd])
 AM_CONDITIONAL([BUILD_BITCOIND], [test $build_bitcoind = "yes"])
 AC_MSG_RESULT($build_bitcoind)
 
-AC_MSG_CHECKING([whether to build dash-cli])
+AC_MSG_CHECKING([whether to build piratecash-cli])
 AM_CONDITIONAL([BUILD_BITCOIN_CLI], [test $build_bitcoin_cli = "yes"])
 AC_MSG_RESULT($build_bitcoin_cli)
 
-AC_MSG_CHECKING([whether to build dash-tx])
+AC_MSG_CHECKING([whether to build piratecash-tx])
 AM_CONDITIONAL([BUILD_BITCOIN_TX], [test $build_bitcoin_tx = "yes"])
 AC_MSG_RESULT($build_bitcoin_tx)
 
-AC_MSG_CHECKING([whether to build dash-wallet])
+AC_MSG_CHECKING([whether to build piratecash-wallet])
 AM_CONDITIONAL([BUILD_BITCOIN_WALLET], [test $build_bitcoin_wallet = "yes"])
 AC_MSG_RESULT($build_bitcoin_wallet)
 
-AC_MSG_CHECKING([whether to build dash-util])
+AC_MSG_CHECKING([whether to build piratecash-util])
 AM_CONDITIONAL([BUILD_BITCOIN_UTIL], [test $build_bitcoin_util = "yes"])
 AC_MSG_RESULT($build_bitcoin_util)
 
@@ -1780,7 +1801,7 @@ AC_MSG_CHECKING([whether to build libraries])
 AM_CONDITIONAL([BUILD_BITCOIN_LIBS], [test $build_bitcoin_libs = "yes"])
 if test "$build_bitcoin_libs" = "yes"; then
   AC_DEFINE([HAVE_CONSENSUS_LIB], [1], [Define this symbol if the consensus lib has been built])
-  AC_CONFIG_FILES([libdashconsensus.pc:libdashconsensus.pc.in])
+  AC_CONFIG_FILES([libpiratecashconsensus.pc:libpiratecashconsensus.pc.in])
 fi
 AC_MSG_RESULT($build_bitcoin_libs)
 
@@ -1888,7 +1909,7 @@ if test "$bitcoin_enable_qt" != "no"; then
     AC_MSG_WARN([xgettext is required to update qt translations])
   fi
 
-  AC_MSG_CHECKING([whether to build test_dash-qt])
+  AC_MSG_CHECKING([whether to build test_piratecash-qt])
   if test "$use_gui_tests$bitcoin_enable_qt_test" = "yesyes"; then
     AC_MSG_RESULT([yes])
     BUILD_TEST_QT="yes"
@@ -1897,7 +1918,7 @@ if test "$bitcoin_enable_qt" != "no"; then
   fi
 fi
 
-AC_MSG_CHECKING([whether to build test_dash])
+AC_MSG_CHECKING([whether to build test_piratecash])
 if test "$use_tests" = "yes"; then
   if test "$enable_fuzz" = "yes"; then
     AC_MSG_RESULT([no, because fuzzing is enabled])
@@ -1915,6 +1936,10 @@ if test "$use_reduce_exports" = "yes"; then
   AC_MSG_RESULT([yes])
 else
   AC_MSG_RESULT([no])
+fi
+
+if test "$use_openssl" = "yes"; then
+  AC_DEFINE([USE_OPENSSL], [1], [Define to 1 to use OpenSSL])
 fi
 
 # When compiled natively on MacOS, we need to specify -flat to avoid producing a dSYM bundle
@@ -2031,6 +2056,8 @@ AC_SUBST(USE_BDB)
 AC_SUBST(ENABLE_EXTERNAL_SIGNER)
 AC_SUBST(USE_UPNP)
 AC_SUBST(USE_QRCODE)
+AC_SUBST(CRYPTO_CFLAGS)
+AC_SUBST(CRYPTO_LIBS)
 AC_SUBST(TESTDEFS)
 AC_SUBST(MINIUPNPC_CPPFLAGS)
 AC_SUBST(MINIUPNPC_LIBS)
@@ -2110,11 +2137,12 @@ echo "  with gui / qt       = $bitcoin_enable_qt"
 if test $bitcoin_enable_qt != "no"; then
     echo "    with qr       = $use_qr"
 fi
+echo "  with openssl    = $use_openssl"
 echo "  with zmq        = $use_zmq"
 if test $enable_fuzz = "no"; then
     echo "  with test       = $use_tests"
 else
-    echo "  with test       = not building test_dash because fuzzing is enabled"
+    echo "  with test       = not building test_piratecash because fuzzing is enabled"
 fi
 echo "  with fuzz binary= $enable_fuzz_binary"
 echo "  with bench      = $use_bench"

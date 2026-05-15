@@ -83,7 +83,7 @@ static void SetupCliArgs(ArgsManager& argsman)
     argsman.AddArg("-generate",
                    strprintf("Generate blocks, equivalent to RPC getnewaddress followed by RPC generatetoaddress. Optional positional integer "
                              "arguments are number of blocks to generate (default: %s) and maximum iterations to try (default: %s), equivalent to "
-                             "RPC generatetoaddress nblocks and maxtries arguments. Example: dash-cli -generate 4 1000",
+                             "RPC generatetoaddress nblocks and maxtries arguments. Example: piratecash-cli -generate 4 1000",
                              DEFAULT_NBLOCKS, DEFAULT_MAX_TRIES),
                    ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-addrinfo", "Get the number of addresses known to the node, per network and total, after filtering for quality and recency. The total number of addresses known to the node may be higher.", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
@@ -99,7 +99,7 @@ static void SetupCliArgs(ArgsManager& argsman)
     argsman.AddArg("-rpcport=<port>", strprintf("Connect to JSON-RPC on <port> (default: %u, testnet: %u, devnet: %u, regtest: %u)", defaultBaseParams->RPCPort(), testnetBaseParams->RPCPort(), devnetBaseParams->RPCPort(), regtestBaseParams->RPCPort()), ArgsManager::ALLOW_ANY | ArgsManager::NETWORK_ONLY, OptionsCategory::OPTIONS);
     argsman.AddArg("-rpcuser=<user>", "Username for JSON-RPC connections", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-rpcwait", "Wait for RPC server to start", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
-    argsman.AddArg("-rpcwallet=<walletname>", "Send RPC for non-default wallet on RPC server (needs to exactly match corresponding -wallet option passed to dashd). This changes the RPC endpoint used, e.g. http://127.0.0.1:9998/wallet/<walletname>", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
+    argsman.AddArg("-rpcwallet=<walletname>", "Send RPC for non-default wallet on RPC server (needs to exactly match corresponding -wallet option passed to piratecashd). This changes the RPC endpoint used, e.g. http://127.0.0.1:19606/wallet/<walletname>", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-rpcwaittimeout=<n>", strprintf("Timeout in seconds to wait for the RPC server to start, or 0 for no timeout. (default: %d)", DEFAULT_WAIT_CLIENT_TIMEOUT), ArgsManager::ALLOW_ANY | ArgsManager::DISALLOW_NEGATION, OptionsCategory::OPTIONS);
     argsman.AddArg("-stdin", "Read extra arguments from standard input, one per line until EOF/Ctrl-D (recommended for sensitive information such as passphrases). When combined with -stdinrpcpass, the first line from standard input is used for the RPC password.", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
     argsman.AddArg("-stdinrpcpass", "Read RPC password from standard input as a single line. When combined with -stdin, the first line from standard input is used for the RPC password. When combined with -stdinwalletpassphrase, -stdinrpcpass consumes the first line, and -stdinwalletpassphrase consumes the second.", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
@@ -156,10 +156,10 @@ static int AppInitRPC(int argc, char* argv[])
             strUsage += FormatParagraph(LicenseInfo());
         } else {
             strUsage += "\n"
-                "Usage:  dash-cli [options] <command> [params]  Send command to " PACKAGE_NAME "\n"
-                "or:     dash-cli [options] -named <command> [name=value]...  Send command to " PACKAGE_NAME " (with named arguments)\n"
-                "or:     dash-cli [options] help                List commands\n"
-                "or:     dash-cli [options] help <command>      Get help for a command\n";
+                "Usage:  piratecash-cli [options] <command> [params]  Send command to " PACKAGE_NAME "\n"
+                "or:     piratecash-cli [options] -named <command> [name=value]...  Send command to " PACKAGE_NAME " (with named arguments)\n"
+                "or:     piratecash-cli [options] help                List commands\n"
+                "or:     piratecash-cli [options] help <command>      Get help for a command\n";
             strUsage += "\n" + gArgs.GetHelpMessage();
         }
 
@@ -288,7 +288,7 @@ public:
         if (!reply["error"].isNull()) return reply;
         const std::vector<UniValue>& nodes{reply["result"].getValues()};
         if (!nodes.empty() && nodes.at(0)["network"].isNull()) {
-            throw std::runtime_error("-addrinfo requires dashd server to be running v21.0 and up");
+            throw std::runtime_error("-addrinfo requires piratecashd server to be running v21.0 and up");
         }
         // Count the number of peers known to our node, by network.
         std::array<uint64_t, NETWORKS.size()> counts{{}};
@@ -468,7 +468,7 @@ public:
             if (ParseUInt8(args.at(0), &n)) {
                 m_details_level = std::min(n, MAX_DETAIL_LEVEL);
             } else {
-                throw std::runtime_error(strprintf("invalid -netinfo argument: %s\nFor more information, run: dash-cli -netinfo help", args.at(0)));
+                throw std::runtime_error(strprintf("invalid -netinfo argument: %s\nFor more information, run: piratecash-cli -netinfo help", args.at(0)));
             }
         }
         UniValue result(UniValue::VARR);
@@ -485,7 +485,7 @@ public:
 
         const UniValue& networkinfo{batch[ID_NETWORKINFO]["result"]};
         if (networkinfo["version"].getInt<int>() < 200000) {
-            throw std::runtime_error("-netinfo requires dashd server to be running v20.0 and up");
+            throw std::runtime_error("-netinfo requires piratecashd server to be running v20.0 and up");
         }
         const int64_t time_now{TicksSinceEpoch<std::chrono::seconds>(CliClock::now())};
 
@@ -688,15 +688,15 @@ public:
         "* The local addresses table lists each local address broadcast by the node, the port, and the score.\n\n"
         "Examples:\n\n"
         "Peer counts table of reachable networks and list of local addresses\n"
-        "> dash-cli -netinfo\n\n"
+        "> piratecash-cli -netinfo\n\n"
         "The same, preceded by a peers listing without address and version columns\n"
-        "> dash-cli -netinfo 1\n\n"
+        "> piratecash-cli -netinfo 1\n\n"
         "Full dashboard\n"
-        + strprintf("> dash-cli -netinfo %d\n\n", MAX_DETAIL_LEVEL) +
+        + strprintf("> piratecash-cli -netinfo %d\n\n", MAX_DETAIL_LEVEL) +
         "Full live dashboard, adjust --interval or --no-title as needed (Linux)\n"
-        + strprintf("> watch --interval 1 --no-title dash-cli -netinfo %d\n\n", MAX_DETAIL_LEVEL) +
+        + strprintf("> watch --interval 1 --no-title piratecash-cli -netinfo %d\n\n", MAX_DETAIL_LEVEL) +
         "See this help\n"
-        "> dash-cli -netinfo help\n"};
+        "> piratecash-cli -netinfo help\n"};
 };
 
 /** Process RPC generatetoaddress request. */
@@ -830,8 +830,8 @@ static UniValue CallRPC(BaseRequestHandler* rh, const std::string& strMethod, co
             responseErrorMessage = strprintf(" (error code %d - \"%s\")", response.error, http_errorstring(response.error));
         }
         throw CConnectionFailed(strprintf("Could not connect to the server %s:%d%s\n\n"
-                    "Make sure the dashd server is running and that you are connecting to the correct RPC port.\n"
-                    "Use \"dash-cli -help\" for more info.",
+                    "Make sure the piratecashd server is running and that you are connecting to the correct RPC port.\n"
+                    "Use \"piratecash-cli -help\" for more info.",
                     host, port, responseErrorMessage));
     } else if (response.status == HTTP_UNAUTHORIZED) {
         if (failedToGetAuthCookie) {
@@ -917,7 +917,7 @@ static void ParseError(const UniValue& error, std::string& strPrint, int& nRet)
             strPrint += ("error message:\n" + err_msg.get_str());
         }
         if (err_code.isNum() && err_code.getInt<int>() == RPC_WALLET_NOT_SPECIFIED) {
-            strPrint += "\nTry adding \"-rpcwallet=<filename>\" option to dash-cli command line.";
+            strPrint += "\nTry adding \"-rpcwallet=<filename>\" option to piratecash-cli command line.";
         }
     } else {
         strPrint = "error: " + error.write();
