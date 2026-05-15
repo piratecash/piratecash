@@ -253,15 +253,15 @@ bool OptionsModel::Init(bilingual_str& error)
     fMinimizeOnClose = settings.value("fMinimizeOnClose").toBool();
 
     // Display
-    if (!settings.contains("DisplayDashUnit")) {
-        settings.setValue("DisplayDashUnit", QVariant::fromValue(BitcoinUnit::DASH));
+    if (!settings.contains("DisplayPirateCashUnit")) {
+        settings.setValue("DisplayPirateCashUnit", QVariant::fromValue(BitcoinUnit::PIRATECASH));
     }
-    QVariant unit = settings.value("DisplayDashUnit");
+    QVariant unit = settings.value("DisplayPirateCashUnit");
     if (unit.canConvert<BitcoinUnit>()) {
         m_display_bitcoin_unit = unit.value<BitcoinUnit>();
     } else {
-        m_display_bitcoin_unit = BitcoinUnit::DASH;
-        settings.setValue("DisplayDashUnit", QVariant::fromValue(m_display_bitcoin_unit));
+        m_display_bitcoin_unit = BitcoinUnit::PIRATECASH;
+        settings.setValue("DisplayPirateCashUnit", QVariant::fromValue(m_display_bitcoin_unit));
     }
 
     if (!settings.contains("strThirdPartyTxUrls"))
@@ -1088,7 +1088,7 @@ void OptionsModel::setDisplayUnit(const QVariant& new_unit)
     if (new_unit.isNull() || new_unit.value<BitcoinUnit>() == m_display_bitcoin_unit) return;
     m_display_bitcoin_unit = new_unit.value<BitcoinUnit>();
     QSettings settings;
-    settings.setValue("DisplayDashUnit", QVariant::fromValue(m_display_bitcoin_unit));
+    settings.setValue("DisplayPirateCashUnit", QVariant::fromValue(m_display_bitcoin_unit));
     Q_EMIT displayUnitChanged(m_display_bitcoin_unit);
 }
 

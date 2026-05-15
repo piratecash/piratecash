@@ -24,7 +24,7 @@ class Node;
 extern const char *DEFAULT_GUI_PROXY_HOST;
 static constexpr uint16_t DEFAULT_GUI_PROXY_PORT = 9050;
 
-/** Default threshold for dust attack protection (in duffs) */
+/** Default threshold for dust attack protection (in corsars) */
 static constexpr qint64 DEFAULT_DUST_PROTECTION_THRESHOLD = 10000;
 
 /**
@@ -100,7 +100,7 @@ public:
         EnablePSBTControls,     // bool
         MaskValues,             // bool
         DustProtection,         // bool
-        DustProtectionThreshold, // CAmount (in duffs)
+        DustProtectionThreshold, // CAmount (in corsars)
         OptionIDRowCount,
     };
 
