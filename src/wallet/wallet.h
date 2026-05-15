@@ -42,6 +42,7 @@
 #include <stdexcept>
 #include <stdint.h>
 #include <string>
+#include <tuple>
 #include <unordered_set>
 #include <utility>
 #include <unordered_map>
@@ -50,6 +51,8 @@
 #include <boost/signals2/signal.hpp>
 
 class CKey;
+class CBlock;
+class CBlockIndex;
 class CScript;
 class CTxDSIn;
 enum class FeeEstimateMode;
@@ -120,9 +123,24 @@ static constexpr size_t DUMMY_NESTED_P2PKH_INPUT_SIZE = 113;
 //! if set, all keys will be derived by using BIP39/BIP44
 static const bool DEFAULT_USE_HD_WALLET = true;
 
+static const size_t DEFAULT_STAKE_SPLIT_THRESHOLD = 500;
+static const int64_t MAX_STAKE_SPLIT_THRESHOLD = 1000000;
+static const int DEFAULT_STAKE_MAX_SPLIT = 500;
+static const unsigned int DEFAULT_POS_HASH_INTERVAL = 1;
+static const unsigned int MAX_POS_HASH_INTERVAL = 86400;
+static const bool DEFAULT_INPUT_STAKE_PROTECT = true;
+
+enum {
+    AUTOCOMBINE_DISABLE = 0,
+    AUTOCOMBINE_SAME = 1,
+    AUTOCOMBINE_ANY = 2,
+};
+static const int DEFAULT_STAKE_AUTOCOMBINE = AUTOCOMBINE_SAME;
+
 class CCoinControl;
 class CWalletTx;
 class ReserveDestination;
+using StakeCandidates = std::vector<std::tuple<CAmount, const CWalletTx*, unsigned int>>;
 
 extern RecursiveMutex cs_main;
 
@@ -459,6 +477,17 @@ public:
     MasterKeyMap mapMasterKeys;
     unsigned int nMasterKeyMaxID = 0;
 
+    unsigned int nHashDrift = 30;
+    unsigned int nHashInterval = DEFAULT_POS_HASH_INTERVAL;
+    CAmount nReserveBalance = 0;
+    size_t nStakeSplitThreshold = DEFAULT_STAKE_SPLIT_THRESHOLD;
+    int nStakeMaxSplit = DEFAULT_STAKE_MAX_SPLIT;
+    int fAutocombine = DEFAULT_STAKE_AUTOCOMBINE;
+    bool inputStakeProtect = DEFAULT_INPUT_STAKE_PROTECT;
+    mutable StakeCandidates setStakeCoins;
+    mutable int64_t nLastStakeSetUpdate = 0;
+    int64_t nStakeSetUpdateTime = 60;
+
     /** Construct wallet with specified name and database implementation. */
     CWallet(interfaces::Chain* chain, interfaces::CoinJoin::Loader* coinjoin_loader, const std::string& name, const ArgsManager& args, std::unique_ptr<WalletDatabase> database)
         : m_args(args),
@@ -467,6 +496,11 @@ public:
           m_name(name),
           m_database(std::move(database))
     {
+        nStakeSplitThreshold = static_cast<size_t>(m_args.GetIntArg("-stakesplitthreshold", DEFAULT_STAKE_SPLIT_THRESHOLD));
+        nStakeMaxSplit = static_cast<int>(m_args.GetIntArg("-stakemaxsplit", DEFAULT_STAKE_MAX_SPLIT));
+        fAutocombine = static_cast<int>(m_args.GetIntArg("-stakeautocombine", DEFAULT_STAKE_AUTOCOMBINE));
+        nHashInterval = static_cast<unsigned int>(m_args.GetIntArg("-poshashinterval", DEFAULT_POS_HASH_INTERVAL));
+        inputStakeProtect = m_args.GetBoolArg("-inputstakeprotect", DEFAULT_INPUT_STAKE_PROTECT);
     }
 
     ~CWallet()
@@ -480,6 +514,7 @@ public:
     bool IsCrypted() const;
     bool IsLocked(bool fForMixing = false) const override;
     bool Lock(bool fForMixing = false);
+    bool CreateCoinStake(const CBlockIndex* pindex_prev, CBlock& curr_block, CMutableTransaction& coinbaseTx);
 
     void UpdateProgress(const std::string& title, int nProgress) override;
 
@@ -551,6 +586,8 @@ public:
     // Coin selection
     bool SelectTxDSInsByDenomination(int nDenom, CAmount nValueMax, std::vector<CTxDSIn>& vecTxDSInRet);
     bool SelectDenominatedAmounts(CAmount nValueMax, std::set<CAmount>& setAmountsRet) const;
+    bool SelectStakeCoins(StakeCandidates& setCoins, CAmount nTargetAmount) const;
+    bool MintableCoins();
 
     std::vector<CompactTallyItem> SelectCoinsGroupedByAddresses(bool fSkipDenominated = true, bool fAnonymizable = true, bool fSkipUnconfirmed = true, int nMaxOupointsPerAddress = -1) const;
 

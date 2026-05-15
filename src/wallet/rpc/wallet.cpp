@@ -278,6 +278,64 @@ static RPCHelpMan getwalletinfo()
     };
 }
 
+static RPCHelpMan getstakingstatus()
+{
+    return RPCHelpMan{"getstakingstatus",
+        "\nReturns an object containing various staking information.\n",
+        {},
+        RPCResult{
+            RPCResult::Type::OBJ, "", "",
+            {
+                {RPCResult::Type::BOOL, "staking_status", "whether the wallet is staking or not"},
+                {RPCResult::Type::BOOL, "staking_enabled", "whether staking is enabled/disabled in piratecash.conf"},
+                {RPCResult::Type::BOOL, "haveconnections", "whether network connections are present"},
+                {RPCResult::Type::BOOL, "mnsync", "whether the required masternode/spork data is synced"},
+                {RPCResult::Type::BOOL, "walletunlocked", "whether the wallet is unlocked"},
+                {RPCResult::Type::BOOL, "mintable_coins", "whether there are coins eligible for staking"},
+                {RPCResult::Type::BOOL, "above_reserve_balance", "whether the wallet balance is above the reserve balance"},
+                {RPCResult::Type::NUM, "stakesplitthreshold", "value of the current threshold for stake split"},
+                {RPCResult::Type::NUM, "stakemaxsplit", "the number of max inputs & outputs of a stake"},
+                {RPCResult::Type::NUM, "stakeautocombine", "autocombine feature: 0 - disable, 1 - same account, 2 - any account"},
+                {RPCResult::Type::BOOL, "inputstakeprotect", "whether masternode collateral is excluded from staking"},
+                {RPCResult::Type::NUM, "poshashinterval", "number of seconds between stake hash attempts"},
+            },
+        },
+        RPCExamples{
+            HelpExampleCli("getstakingstatus", "") +
+            HelpExampleRpc("getstakingstatus", "")
+        },
+        [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue
+{
+    std::shared_ptr<CWallet> const pwallet = GetWalletForJSONRPCRequest(request);
+    if (!pwallet) return UniValue::VNULL;
+
+    pwallet->BlockUntilSyncedToCurrentChain();
+
+    const bool fHaveConnections = pwallet->chain().p2pEnabled();
+    const bool fMintableCoins = pwallet->MintableCoins();
+    const CAmount balance = GetBalance(*pwallet).m_mine_trusted;
+    const bool fLessReserveBalance = pwallet->nReserveBalance >= balance;
+    const bool fMnSynced = pwallet->chain().masternodeSyncDone();
+    const bool fStatus = !(pwallet->IsLocked(true) || !fMintableCoins || fLessReserveBalance || !fMnSynced || !fHaveConnections);
+
+    UniValue obj(UniValue::VOBJ);
+    obj.pushKV("staking_status", fStatus);
+    obj.pushKV("staking_enabled", gArgs.GetBoolArg("-staking", true));
+    obj.pushKV("haveconnections", fHaveConnections);
+    obj.pushKV("mnsync", fMnSynced);
+    obj.pushKV("walletunlocked", !pwallet->IsLocked(true));
+    obj.pushKV("mintable_coins", fMintableCoins);
+    obj.pushKV("above_reserve_balance", !fLessReserveBalance);
+    obj.pushKV("stakesplitthreshold", static_cast<uint64_t>(pwallet->nStakeSplitThreshold));
+    obj.pushKV("stakemaxsplit", pwallet->nStakeMaxSplit);
+    obj.pushKV("stakeautocombine", pwallet->fAutocombine);
+    obj.pushKV("inputstakeprotect", pwallet->inputStakeProtect);
+    obj.pushKV("poshashinterval", static_cast<uint64_t>(pwallet->nHashInterval));
+    return obj;
+},
+    };
+}
+
 static RPCHelpMan listwalletdir()
 {
     return RPCHelpMan{"listwalletdir",
@@ -1198,6 +1256,7 @@ Span<const CRPCCommand> GetWalletRPCCommands()
         {"wallet", &gettransaction},
         {"wallet", &getunconfirmedbalance},
         {"wallet", &getbalances},
+        {"wallet", &getstakingstatus},
         {"wallet", &getwalletinfo},
         {"wallet", &importaddress},
         {"wallet", &importelectrumwallet},

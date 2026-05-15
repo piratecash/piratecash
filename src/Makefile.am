@@ -186,6 +186,7 @@ BITCOIN_CORE_H = \
   consensus/tx_verify.h \
   core_io.h \
   core_memusage.h \
+  corsa/client.h \
   cuckoocache.h \
   ctpl_stl.h \
   cxxtimer.hpp \
@@ -488,6 +489,7 @@ libbitcoin_node_a_SOURCES = \
   coinjoin/server.cpp \
   coinjoin/walletman.cpp \
   consensus/tx_verify.cpp \
+  corsa/client.cpp \
   dbwrapper.cpp \
   deploymentstatus.cpp \
   dsnotificationinterface.cpp \
@@ -668,6 +670,7 @@ libbitcoin_wallet_a_SOURCES = \
   wallet/rpc/wallet.cpp \
   wallet/scriptpubkeyman.cpp \
   wallet/spend.cpp \
+  wallet/staking.cpp \
   wallet/transaction.cpp \
   wallet/wallet.cpp \
   wallet/walletdb.cpp \
