@@ -519,13 +519,13 @@ static RPCHelpMan masternodelist_helper(bool is_composite)
         "  json           - Print info in JSON format (can be additionally filtered, partial match)\n"
         "  lastpaidblock  - Print the last block height a node was paid on the network\n"
         "  lastpaidtime   - Print the last time a node was paid on the network\n"
-        "  owneraddress   - Print the masternode owner Dash address\n"
-        "  payee          - Print the masternode payout Dash address (can be additionally filtered,\n"
+        "  owneraddress   - Print the masternode owner PirateCash address\n"
+        "  payee          - Print the masternode payout PirateCash address (can be additionally filtered,\n"
         "                   partial match)\n"
         "  pubKeyOperator - Print the masternode operator public key\n"
         "  status         - Print masternode status: ENABLED / POSE_BANNED\n"
         "                   (can be additionally filtered, partial match)\n"
-        "  votingaddress  - Print the masternode voting Dash address\n",
+        "  votingaddress  - Print the masternode voting PirateCash address\n",
         {
             {"mode", RPCArg::Type::STR, RPCArg::DefaultHint{"json"}, "The mode to run list in"},
             {"filter", RPCArg::Type::STR, RPCArg::Default{""}, "Filter results. Partial match by outpoint by default in all modes, additional matches in some modes are also available"},
@@ -556,11 +556,11 @@ static RPCHelpMan masternodelist_helper(bool is_composite)
                 }},
                 RPCResult{"for mode = lastpaidblock", RPCResult::Type::NUM, "<height>", "Height masternode was last paid"},
                 RPCResult{"for mode = lastpaidtime", RPCResult::Type::NUM, "<time>", "Timestamp of block the masternode was last paid"},
-                RPCResult{"for mode = payee", RPCResult::Type::STR, "<addr>", "Dash address used for masternode reward payments"},
-                RPCResult{"for mode = owneraddress", RPCResult::Type::STR, "<addr>", "Dash address used for payee updates and proposal voting"},
+                RPCResult{"for mode = payee", RPCResult::Type::STR, "<addr>", "PirateCash address used for masternode reward payments"},
+                RPCResult{"for mode = owneraddress", RPCResult::Type::STR, "<addr>", "PirateCash address used for payee updates and proposal voting"},
                 RPCResult{"for mode = pubkeyoperator", RPCResult::Type::STR, "<addr>", "BLS public key used for operator signing"},
                 RPCResult{"for mode = status", RPCResult::Type::STR, "<status>", "Masternode status (human-readable string)"},
-                RPCResult{"for mode = votingaddress", RPCResult::Type::STR, "<addr>", "Dash address used for voting"},
+                RPCResult{"for mode = votingaddress", RPCResult::Type::STR, "<addr>", "PirateCash address used for voting"},
             }
         },
         RPCExamples{""},
@@ -757,7 +757,7 @@ static RPCHelpMan masternodelist_composite()
 Span<const CRPCCommand> GetWalletMasternodeRPCCommands()
 {
     static const CRPCCommand commands[]{
-        {"dash", &masternode_outputs},
+        {"pirate", &masternode_outputs},
     };
     return commands;
 }
@@ -766,14 +766,14 @@ Span<const CRPCCommand> GetWalletMasternodeRPCCommands()
 void RegisterMasternodeRPCCommands(CRPCTable &t)
 {
     static const CRPCCommand commands[]{
-        {"dash", &masternode_help},
-        {"dash", &masternodelist_composite},
-        {"dash", &masternodelist},
-        {"dash", &masternode_connect},
-        {"dash", &masternode_count},
-        {"dash", &masternode_status},
-        {"dash", &masternode_payments},
-        {"dash", &masternode_winners},
+        {"pirate", &masternode_help},
+        {"pirate", &masternodelist_composite},
+        {"pirate", &masternodelist},
+        {"pirate", &masternode_connect},
+        {"pirate", &masternode_count},
+        {"pirate", &masternode_status},
+        {"pirate", &masternode_payments},
+        {"pirate", &masternode_winners},
     };
     for (const auto& command : commands) {
         t.appendCommand(command.name, &command);
