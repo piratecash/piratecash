@@ -17,13 +17,13 @@ static const int PROTOCOL_VERSION = 70240;
 static const int INIT_PROTO_VERSION = 209;
 
 //! disconnect from peers older than this proto version
-static const int MIN_PEER_PROTO_VERSION = 70221;
+static const int MIN_PEER_PROTO_VERSION = 70227;
 
 //! minimum proto version of masternode to accept in DKGs
 static const int MIN_MASTERNODE_PROTO_VERSION = 70240;
 
 //! ADDRV2 was introduced in this version
-static const int ADDRV2_PROTO_VERSION = 70223;
+static const int ADDRV2_PROTO_VERSION = 70229;
 
 //! BLS scheme was introduced in this version
 static const int BLS_SCHEME_PROTO_VERSION = 70225;
