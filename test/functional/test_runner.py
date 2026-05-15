@@ -170,7 +170,7 @@ BASE_SCRIPTS = [
     'wallet_keypool_topup.py --legacy-wallet',
     'wallet_keypool_topup.py --descriptors',
     'feature_fee_estimation.py',
-    'interface_zmq_dash.py --legacy-wallet',
+    'interface_zmq_piratecash.py --legacy-wallet',
     'interface_zmq.py',
     'rpc_invalid_address_message.py',
     'interface_bitcoin_cli.py --legacy-wallet',
@@ -562,11 +562,11 @@ def main():
 def run_tests(*, test_list, src_dir, build_dir, tmpdir, jobs=1, attempts=1, enable_coverage=False, args=None, combined_logs_len=0, failfast=False, use_term_control, skipunit=False):
     args = args or []
 
-    # Warn if dashd is already running
+    # Warn if piratecashd is already running
     try:
         # pgrep exits with code zero when one or more matching processes found
-        if subprocess.run(["pgrep", "-x", "dashd"], stdout=subprocess.DEVNULL).returncode == 0:
-            print("%sWARNING!%s There is already a dashd process running on this system. Tests may fail unexpectedly due to resource contention!" % (BOLD[1], BOLD[0]))
+        if subprocess.run(["pgrep", "-x", "piratecashd"], stdout=subprocess.DEVNULL).returncode == 0:
+            print("%sWARNING!%s There is already a piratecashd process running on this system. Tests may fail unexpectedly due to resource contention!" % (BOLD[1], BOLD[0]))
     except OSError:
         # pgrep not supported
         pass
@@ -877,7 +877,7 @@ class RPCCoverage():
     Coverage calculation works by having each test script subprocess write
     coverage files into a particular directory. These files contain the RPC
     commands invoked during testing, as well as a complete listing of RPC
-    commands per `dash-cli help` (`rpc_interface.txt`).
+    commands per `piratecash-cli help` (`rpc_interface.txt`).
 
     After all tests complete, the commands run are combined and diff'd against
     the complete list to calculate uncovered RPC commands.
