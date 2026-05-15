@@ -1,95 +1,201 @@
-# Dash Core version v23.1.2
+# PirateCash Core version v19.0.0
 
-This is a new patch version release, bringing GUI improvements, new features, bugfixes, and performance optimizations.
-This release is **optional** for all nodes, although recommended.
+Release is now available from:
+
+  <https://p.cash/en/download/>
+
+This is the first major release of the PirateCash Core 19.x.x series. It is based
+on Dash Core v19.3.0 and includes the Dash Core 19.0.0 through 19.3.0 feature
+set, improvements and bug fixes adapted for the PirateCash network.
+
+This release is mandatory for all nodes.
 
 Please report bugs using the issue tracker at GitHub:
 
-  <https://github.com/dashpay/dash/issues>
+  <https://github.com/piratecash/piratecash/issues>
+
 
 # Upgrading and downgrading
 
 ## How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
-shut down (which might take a few minutes for older versions), then run the
-installer (on Windows) or just copy over /Applications/Dash-Qt (on Mac) or
-dashd/dash-qt (on Linux).
+shut down, which might take a few minutes for older versions, then run the
+installer on Windows or copy over `/Applications/PirateCash-Qt` on macOS or
+`piratecashd`/`piratecash-qt` on Linux.
+
+When upgrading from a version older than v19.0.0, PirateCash Core will run a
+migration process on first startup. This is expected to complete quickly, but
+can take up to thirty minutes on some systems. After this migration, a downgrade
+to an older version is only possible with a reindex or a full resync.
+
+Masternode operators should upgrade Sentinel to v1.7.3 or newer if Sentinel is
+used as part of their deployment.
+
+Masternode operators must also configure the local Corsa messenger RPC required
+by [PIP-0001](pips/pip-0001.md). Starting with v19.0.0, PirateCash Core refuses
+to start as a masternode unless the local authenticated Corsa service check
+passes.
 
 ## Downgrade warning
 
-### Downgrade to a version < v23.0.0
+### Downgrade to a version < v19.0.0
 
-Downgrading to a version older than v23.0.0 is not supported, and will
-require a reindex.
+Downgrading to a version older than v19.0.0 is not supported due to database
+changes. If you need to use an older version, you must either reindex or resync
+the whole chain.
 
-# Release Notes
 
-## GUI changes
+# Notable changes
 
-- Introduced a framework for sourcing and applying data with dedicated feeds, used by the Masternode and Proposal list views for improved data flow and separation of concerns (dash#7146).
-- Added a new "Proposal Information" widget to the Information tab with an interactive donut chart showing proposal budget allocation (dash#7159).
-- Added distinct widgets for Dash-specific reporting in the Debug window, including dedicated Information and Network tabs (dash#7118).
-- Added support for reporting `OP_RETURN` payloads as Data Transactions in the transaction list (dash#7144).
-- Added Tahoe styled icons for macOS with runtime styling for each network type (mainnet, testnet, devnet, regtest), updated bundle icon, and added mask-based tray icon with generation scripts (dash#7180).
-- Filter preferences in the masternode list are now persisted across sessions (dash#7148).
-- Fixed overview page font double scaling, recalculated minimum width correctly, fixed `SERVICE` and `STATUS` column sorting, and fixed common types filtering in masternode list (dash#7147).
-- Fixed `labelError` styling by moving it from `proposalcreate.ui` into `general.css` for consistency (dash#7145).
-- Fixed banned masternodes incorrectly returning status=0 instead of their actual ban status (dash#7157).
+## Dash Core v19.3.0 base
 
-## Bug Fixes
+PirateCash Core v19.0.0 is built from the Dash Core v19.3.0 codebase. This means
+the PirateCash release includes the major v19 feature work as well as the v19.1,
+v19.2 and v19.3 maintenance fixes that followed the original Dash v19.0.0
+release.
 
-- Fixed MN update notifications where the old and new masternode lists were swapped, causing incorrect change detection (dash#7154).
-- Reject identity elements in BLS deserialization and key generation to prevent invalid keys from being accepted (dash#7193).
-- Fixed quorum labels not being correctly reseated when new quorum types are inserted (dash#7191).
-- Skip collecting block txids during IBD to prevent unbounded memory growth in `ChainLockSigner` (dash#7208).
-- Serialize `TrySignChainTip` to prevent concurrent signing races that could split signing shares across different block hashes (dash#7209).
-- Properly skip evodb repair when reindexing to prevent unnecessary repair attempts (dash#7222).
+## High-Performance Masternodes
 
-## Miscellaneous
+A new high-performance masternode type has been added. High-performance
+masternodes are intended to host Platform services in addition to existing
+masternode responsibilities such as ChainLocks and InstantSend.
 
-- Renamed `bitcoin-util` manpage and test references to `dash-util` (dash#7221).
+Activation of the v19 hard fork enables registration of 40000 PIRATE collateral
+masternodes. In v19.0.0, regular masternodes and high-performance masternodes
+have equivalent rewards and voting power per 10000 PIRATE collateral.
 
-## Interfaces
+## PIP-0001 masternode Corsa requirement
 
-- Consolidated masternode counts into a single struct and exposed chainlock, InstantSend, credit pool, and quorum statistics through the node interface (dash#7160).
+This release ships Stage 1 of [PIP-0001](pips/pip-0001.md), the masternode
+messenger service integration. Masternodes must now run a local Corsa messenger
+node and configure PirateCash Core with its authenticated RPC credentials.
 
-## Performance Improvements
+The required options are:
 
-- Replaced two heavy `HashMap` constructions with linear lookups in hot paths where the maps were rarely used, reducing overhead (dash#7176).
+- `-corsarpcuser=<user>`
+- `-corsarpcpassword=<pw>`
+- `-corsarpcport=<port>`
 
-# v23.1.2 Change log
+When `-masternodeblsprivkey` is set, `piratecashd` probes
+`127.0.0.1:<port>/rpc/v1/system/node_status` before entering masternode mode.
+The Corsa node must be reachable, must return the required node status fields,
+must satisfy the network minimum Corsa protocol version, and must reject a
+deliberately invalid authentication probe. If the check fails, PirateCash Core
+exits instead of starting the masternode. Regular full nodes, wallets and
+`piratecash-cli` are not affected.
 
-See detailed [set of changes][set-of-changes].
+After startup, active masternodes run a background heartbeat monitor for the
+same local Corsa endpoint. In Stage 1, heartbeat failures are logged but do not
+apply PoSe penalties. Network-visible checks and PoSe enforcement are reserved
+for later PIP-0001 stages. See [doc/release-notes-pip-0001.md](release-notes-pip-0001.md)
+for the detailed operator notes.
+
+## BLS scheme upgrade
+
+The v19 hard fork migrates remaining BLS public key and signature usage to the
+basic BLS scheme, aligning serialization with IETF standards. This affects
+network messages, quorum commitments, deterministic masternode lists, ProTx
+transactions and related RPC behavior.
+
+The release also includes the later Dash v19 fixes for BLS database migration
+and historical masternode list handling, improving compatibility for upgraded
+nodes and light clients.
+
+## Wallet changes
+
+PirateCash Core no longer automatically creates new wallets on startup. Existing
+wallets specified by `-wallet`, `piratecash.conf` or `settings.json` are loaded as
+before. If a specified wallet does not exist, PirateCash Core logs a warning
+instead of creating a new wallet automatically.
+
+New wallets can be created through the GUI, the `piratecash-wallet create` command
+or the `createwallet` RPC.
+
+## P2P and network changes
+
+Support for BIP61 reject messages has been removed, including the
+`-enablebip61` option. Debugging and testing should use node logs and RPCs such
+as `submitblock`, `getblocktemplate`, `sendrawtransaction` and
+`testmempoolaccept`.
+
+CoinJoin-related network messages were updated to improve support for light
+clients. The release also includes Dash v19.2 and v19.3 fixes for mixing,
+masternode list handling and ChainLocks operation.
+
+## RPC, command and configuration changes
+
+New or updated RPC and command behavior includes:
+
+- `protx register_hpmn`, `protx register_fund_hpmn`,
+  `protx register_prepare_hpmn` and `protx update_service_hpmn`
+- `protx register_legacy`, `protx register_fund_legacy` and
+  `protx register_prepare_legacy`
+- `cleardiscouraged`
+- `upgradewallet`
+- `wipewallettxes`
+- `piratecash-wallet wipetxes`
+- `masternodelist` modes including `recent` and `hpmn`
+- `protx list hpmn`
+- additional quorum and BLS scheme fields in related RPC responses
+
+Command-line and configuration changes include:
+
+- new `llmqplatform` option for devnet
+- new `unsafesqlitesync` option
+- removed `enablebip61`
+- changed `llmqinstantsend` and `llmqinstantsenddip0024` handling on regtest
+- invalid `-rpcauth` values now cause startup failure
+- `-blockversion` is allowed on non-mainnet networks
+
+Please check `help <command>`, `piratecashd --help` or the Qt wallet command-line
+options dialog for detailed information.
+
+## Other fixes and improvements
+
+This release also includes:
+
+- fixes for v19 hard fork activation and database migration behavior
+- improved support for historical masternode list data on light clients
+- ability to keep ChainLocks enforced while disabling signing of new ChainLocks
+- wallet GUI improvements for large rescans and long-running wallet operations
+- fixes for startup with an empty `settings.json`
+- reduced sensitive value logging for masternode and spork keys
+- block processing optimizations
+- BLS library update to version 1.3.0
+- build, test and documentation fixes inherited from Dash Core v19.3.0
+
+## Backports from Bitcoin Core
+
+This release includes many updates from Bitcoin Core v0.18 through v0.21, as
+well as selected updates from Bitcoin Core v22 and newer versions. Changes that
+do not align with Dash or PirateCash network behavior, such as SegWit and RBF, are
+excluded from these backports.
+
+
+# v19.0.0 Change log
+
+PirateCash Core v19.0.0 is based on Dash Core v19.3.0.
+
+For upstream Dash Core changes included in this release, see:
+
+- <https://github.com/dashpay/dash/compare/v18.2.2...dashpay:v19.3.0>
+
+PirateCash-specific changes are tracked in the PirateCash Core repository history:
+
+- <https://github.com/piratecash/piratecash>
+
 
 # Credits
 
-Thanks to everyone who directly contributed to this release:
+Thanks to everyone who directly contributed to this release, submitted issues,
+reviewed pull requests, helped with release candidates, maintained
+infrastructure, or helped translate the project.
 
-- Kittywhiskers Van Gogh
-- Konstantin Akimov
-- PastaPastaPasta
-- UdjinM6
+Thanks also go to Dash Core and Bitcoin Core developers for the upstream work
+this release builds on.
 
-As well as everyone that submitted issues, reviewed pull requests and helped
-debug the release candidates.
 
 # Older releases
 
-These releases are considered obsolete. Old release notes can be found here:
-
-- [v23.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.1.0.md) released Feb/15/2026
-- [v23.0.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.0.2.md) released Dec/4/2025
-- [v23.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.0.0.md) released Nov/10/2025
-- [v22.1.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-22.1.3.md) released Jul/15/2025
-- [v22.1.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-22.1.2.md) released Apr/15/2025
-- [v22.1.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-22.1.1.md) released Feb/17/2025
-- [v22.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-22.1.0.md) released Feb/10/2025
-- [v22.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-22.0.0.md) released Dec/12/2024
-- [v21.1.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-21.1.1.md) released Oct/22/2024
-- [v21.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-21.1.0.md) released Aug/8/2024
-- [v21.0.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-21.0.2.md) released Aug/1/2024
-- [v21.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-21.0.0.md) released Jul/25/2024
-- [v20.1.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-20.1.1.md) released April/3/2024
-
-[set-of-changes]: https://github.com/dashpay/dash/compare/v23.1.0...dashpay:v23.1.2
+PirateCash was forked from Dash Core.
