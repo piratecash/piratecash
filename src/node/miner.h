@@ -12,6 +12,7 @@
 #include <memory>
 #include <optional>
 #include <stdint.h>
+#include <string>
 
 #include <boost/multi_index/identity.hpp>
 #include <boost/multi_index/indexed_by.hpp>
@@ -44,6 +45,10 @@ class BlockManager;
 struct NodeContext;
 
 static const bool DEFAULT_PRINTPRIORITY = false;
+
+extern int64_t nLastCoinStakeSearchTime;
+bool IsStakingActive();
+std::string getMiningStatus();
 
 struct CBlockTemplate
 {

@@ -30,7 +30,7 @@ SendCoinsEntry::SendCoinsEntry(QWidget* parent) :
 
     setButtonIcons();
 
-    // normal dash address field
+    // normal pirate address field
     GUIUtil::setupAddressWidget(ui->payTo, this, true);
 
     GUIUtil::setFont({ui->payToLabel,
