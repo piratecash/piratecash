@@ -1,16 +1,16 @@
-# Fuzzing Dash Core using libFuzzer
+# Fuzzing PirateCash Core using libFuzzer
 
 ## Quickstart guide
 
-To quickly get started fuzzing Dash Core using [libFuzzer](https://llvm.org/docs/LibFuzzer.html):
+To quickly get started fuzzing PirateCash Core using [libFuzzer](https://llvm.org/docs/LibFuzzer.html):
 
 ```sh
-$ git clone https://github.com/dashpay/dash
-$ cd dash/
+$ git clone https://github.com/piratecash/piratecash-core
+$ cd piratecash-core
 $ ./autogen.sh
 $ CC=clang CXX=clang++ ./configure --enable-fuzz --with-sanitizers=address,fuzzer,undefined
 # macOS users: If you have problem with this step then make sure to read "macOS hints for
-# libFuzzer" on https://github.com/dashpay/dash/blob/develop/doc/fuzzing.md#macos-hints-for-libfuzzer
+# libFuzzer" on https://github.com/piratecash/piratecash-core/blob/develop/doc/fuzzing.md#macos-hints-for-libfuzzer
 $ make
 $ FUZZ=process_message src/test/fuzz/fuzz
 # abort fuzzing using ctrl-c
@@ -19,13 +19,9 @@ $ FUZZ=process_message src/test/fuzz/fuzz
 There is also a runner script to execute all fuzz targets. Refer to
 `./test/fuzz/test_runner.py --help` for more details.
 
-## Overview of Bitcoin Core fuzzing
-
-[Google](https://github.com/google/fuzzing/) has a good overview of fuzzing in general, with contributions from key architects of some of the most-used fuzzers. [This paper](https://agroce.github.io/bitcoin_report.pdf) includes an external overview of the status of Bitcoin Core fuzzing, as of summer 2021.  [John Regehr](https://blog.regehr.org/archives/1687) provides good advice on writing code that assists fuzzers in finding bugs, which is useful for developers to keep in mind.
-
 ## Fuzzing harnesses and output
 
-[`process_message`](https://github.com/dashpay/dash/blob/develop/src/test/fuzz/process_message.cpp) is a fuzzing harness for the [`ProcessMessage(...)` function (`net_processing`)](https://github.com/dashpay/dash/blob/develop/src/net_processing.cpp). The available fuzzing harnesses are found in [`src/test/fuzz/`](https://github.com/dashpay/dash/tree/develop/src/test/fuzz).
+[`process_message`](https://github.com/piratecash/piratecash-core/blob/develop/src/test/fuzz/process_message.cpp) is a fuzzing harness for the [`ProcessMessage(...)` function (`net_processing`)](https://github.com/piratecash/piratecash-core/blob/develop/src/net_processing.cpp). The available fuzzing harnesses are found in [`src/test/fuzz/`](https://github.com/piratecash/piratecash-core/tree/develop/src/test/fuzz).
 
 The fuzzer will output `NEW` every time it has created a test input that covers new areas of the code under test. For more information on how to interpret the fuzzer output, see the [libFuzzer documentation](https://llvm.org/docs/LibFuzzer.html).
 
@@ -71,7 +67,7 @@ block^@M-^?M-^?M-^?M-^?M-^?nM-^?M-^?
 
 In this case the fuzzer managed to create a `block` message which when passed to `ProcessMessage(...)` increased coverage.
 
-It is possible to specify `dashd` arguments to the `fuzz` executable.
+It is possible to specify `piratecashd` arguments to the `fuzz` executable.
 Depending on the test, they may be ignored or consumed and alter the behavior
 of the test. Just make sure to use double-dash to distinguish them from the
 fuzzer's own arguments:
@@ -119,13 +115,18 @@ Fuzzing on a harness compiled with `--with-sanitizers=address,fuzzer,undefined` 
 
 If you find coverage increasing inputs when fuzzing you are highly encouraged to submit them for inclusion in the [`bitcoin-core/qa-assets`](https://github.com/bitcoin-core/qa-assets) repo.
 
-Every single pull request submitted against the Dash Core repo is automatically tested against all inputs in the [`bitcoin-core/qa-assets`](https://github.com/bitcoin-core/qa-assets) repo. Contributing new coverage increasing inputs is an easy way to help make Dash Core more robust.
+Every single pull request submitted against the PirateCash Core repo is automatically tested against all inputs in the [`bitcoin-core/qa-assets`](https://github.com/bitcoin-core/qa-assets) repo. Contributing new coverage increasing inputs is an easy way to help make PirateCash Core more robust.
 
 ## macOS hints for libFuzzer
 
 The default Clang/LLVM version supplied by Apple on macOS does not include
 fuzzing libraries, so macOS users will need to install a full version, for
 example using `brew install llvm`.
+
+Should you run into problems with the address sanitizer, it is possible you
+may need to run `./configure` with `--disable-asm` to avoid errors
+with certain assembly code from PirateCash Core's code. See [developer notes on sanitizers](https://github.com/piratecash/piratecash-core/blob/develop/doc/developer-notes.md#sanitizers)
+for more information.
 
 You may also need to take care of giving the correct path for `clang` and
 `clang++`, like `CC=/path/to/clang CXX=/path/to/clang++` if the non-systems
@@ -134,20 +135,20 @@ You may also need to take care of giving the correct path for `clang` and
 Full configure that was tested on macOS with `brew` installed `llvm`:
 
 ```sh
-./configure --enable-fuzz --with-sanitizers=fuzzer,address,undefined CC=$(brew --prefix llvm)/bin/clang CXX=$(brew --prefix llvm)/bin/clang++
+./configure --enable-fuzz --with-sanitizers=fuzzer,address,undefined --disable-asm CC=$(brew --prefix llvm)/bin/clang CXX=$(brew --prefix llvm)/bin/clang++
 ```
 
 Read the [libFuzzer documentation](https://llvm.org/docs/LibFuzzer.html) for more information. This [libFuzzer tutorial](https://github.com/google/fuzzing/blob/master/tutorial/libFuzzerTutorial.md) might also be of interest.
 
-# Fuzzing Dash Core using afl++
+# Fuzzing PirateCash Core using afl++
 
 ## Quickstart guide
 
-To quickly get started fuzzing Dash Core using [afl++](https://github.com/AFLplusplus/AFLplusplus):
+To quickly get started fuzzing PirateCash Core using [afl++](https://github.com/AFLplusplus/AFLplusplus):
 
 ```sh
-$ git clone https://github.com/dashpay/dash
-$ cd dash/
+$ git clone https://github.com/piratecash/piratecash-core
+$ cd piratecash-core
 $ git clone https://github.com/AFLplusplus/AFLplusplus
 $ make -C AFLplusplus/ source-only
 $ ./autogen.sh
@@ -166,15 +167,15 @@ $ FUZZ=bech32 AFLplusplus/afl-fuzz -i inputs/ -o outputs/ -- src/test/fuzz/fuzz
 
 Read the [afl++ documentation](https://github.com/AFLplusplus/AFLplusplus) for more information.
 
-# Fuzzing Dash Core using Honggfuzz
+# Fuzzing PirateCash Core using Honggfuzz
 
 ## Quickstart guide
 
-To quickly get started fuzzing Dash Core using [Honggfuzz](https://github.com/google/honggfuzz):
+To quickly get started fuzzing PirateCash Core using [Honggfuzz](https://github.com/google/honggfuzz):
 
 ```sh
-$ git clone https://github.com/dashpay/dash
-$ cd dash/
+$ git clone https://github.com/piratecash/piratecash-core
+$ cd piratecash-core
 $ ./autogen.sh
 $ git clone https://github.com/google/honggfuzz
 $ cd honggfuzz/
@@ -188,10 +189,10 @@ $ FUZZ=process_message honggfuzz/honggfuzz -i inputs/ -- src/test/fuzz/fuzz
 
 Read the [Honggfuzz documentation](https://github.com/google/honggfuzz/blob/master/docs/USAGE.md) for more information.
 
-## Fuzzing the Dash Core P2P layer using Honggfuzz NetDriver
+## Fuzzing the PirateCash Core P2P layer using Honggfuzz NetDriver
 
-Honggfuzz NetDriver allows for very easy fuzzing of TCP servers such as Dash
-Core without having to write any custom fuzzing harness. The `dashd` server
+Honggfuzz NetDriver allows for very easy fuzzing of TCP servers such as PirateCash
+Core without having to write any custom fuzzing harness. The `piratecashd` server
 process is largely fuzzed without modification.
 
 This makes the fuzzing highly realistic: a bug reachable by the fuzzer is likely
@@ -202,8 +203,8 @@ To quickly get started fuzzing the P2P layer using Honggfuzz NetDriver:
 ```sh
 $ mkdir bitcoin-honggfuzz-p2p/
 $ cd bitcoin-honggfuzz-p2p/
-$ git clone https://github.com/dashpay/dash/
-$ cd dash/
+$ git clone https://github.com/piratecash/piratecash-core/
+$ cd piratecash-core
 $ ./autogen.sh
 $ git clone https://github.com/google/honggfuzz
 $ cd honggfuzz/
@@ -254,81 +255,14 @@ index 7601a6ea84..702d0f56ce 100644
                   SanitizeString(msg.m_type), msg.m_message_size,
                   HexStr(Span{hash}.first(CMessageHeader::CHECKSUM_SIZE)),
 EOF
-$ make -C src/ dashd
+$ make -C src/ piratecashd
 $ mkdir -p inputs/
 $ honggfuzz/honggfuzz --exit_upon_crash --quiet --timeout 4 -n 1 -Q \
       -E HFND_TCP_PORT=18444 -f inputs/ -- \
-          src/dashd -regtest -discover=0 -dns=0 -dnsseed=0 -listenonion=0 \
+          src/piratecashd -regtest -discover=0 -dns=0 -dnsseed=0 -listenonion=0 \
                        -nodebuglogfile -bind=127.0.0.1:18444 -logthreadnames \
                        -debug
 ```
-
-# Fuzzing Bitcoin Core using Eclipser (v1.x)
-
-## Quickstart guide
-
-To quickly get started fuzzing Bitcoin Core using [Eclipser v1.x](https://github.com/SoftSec-KAIST/Eclipser/tree/v1.x):
-
-```sh
-$ git clone https://github.com/bitcoin/bitcoin
-$ cd bitcoin/
-$ sudo vim /etc/apt/sources.list # Uncomment the lines starting with 'deb-src'.
-$ sudo apt-get update
-$ sudo apt-get build-dep qemu
-$ sudo apt-get install libtool libtool-bin wget automake autoconf bison gdb
-```
-
-At this point, you must install the .NET core.  The process differs, depending on your Linux distribution.
-See [this link](https://learn.microsoft.com/en-us/dotnet/core/install/linux) for details.
-On Ubuntu 20.04, the following should work:
-
-```sh
-$ wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
-$ sudo dpkg -i packages-microsoft-prod.deb
-$ rm packages-microsoft-prod.deb
-$ sudo apt-get update
-$ sudo apt-get install -y dotnet-sdk-2.1
-```
-
-You will also want to make sure Python is installed as `python` for the Eclipser install to succeed.
-
-```sh
-$ git clone https://github.com/SoftSec-KAIST/Eclipser.git
-$ cd Eclipser
-$ git checkout v1.x
-$ make
-$ cd ..
-$ ./autogen.sh
-$ ./configure --enable-fuzz
-$ make
-$ mkdir -p outputs/
-$ FUZZ=bech32 dotnet Eclipser/build/Eclipser.dll fuzz -p src/test/fuzz/fuzz -t 36000 -o outputs --src stdin
-```
-
-This will perform 10 hours of fuzzing.
-
-To make further use of the inputs generated by Eclipser, you
-must first decode them:
-
-```sh
-$ dotnet Eclipser/build/Eclipser.dll decode -i outputs/testcase -o decoded_outputs
-```
-This will place raw inputs in the directory `decoded_outputs/decoded_stdins`.  Crashes are in the `outputs/crashes` directory, and must
-be decoded in the same way.
-
-Fuzzing with Eclipser will likely be much more effective if using an existing corpus:
-
-```sh
-$ git clone https://github.com/bitcoin-core/qa-assets
-$ FUZZ=bech32 dotnet Eclipser/build/Eclipser.dll fuzz -p src/test/fuzz/fuzz -t 36000 -i qa-assets/fuzz_seed_corpus/bech32 outputs --src stdin
-```
-
-Note that fuzzing with Eclipser on certain targets (those that create 'full nodes', e.g. `process_message*`) will,
-for now, slowly fill `/tmp/` with improperly cleaned-up files, which will cause spurious crashes.
-See [this proposed patch](https://github.com/bitcoin/bitcoin/pull/22472) for more information.
-
-Read the [Eclipser documentation for v1.x](https://github.com/SoftSec-KAIST/Eclipser/tree/v1.x) for more details on using Eclipser.
-
 
 # OSS-Fuzz
 
