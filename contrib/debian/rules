@@ -1,9 +1,9 @@
 #!/usr/bin/make -f
 # -*- mode: makefile; coding: utf-8 -*-
 
-#DEB_MAKE_CHECK_TARGET = test_dash
-#build/dashd::
-#	$(if $(filter nocheck,$(DEB_BUILD_OPTIONS)),,src/test_dash)
+#DEB_MAKE_CHECK_TARGET = test_piratecash
+#build/piratecashd::
+#	$(if $(filter nocheck,$(DEB_BUILD_OPTIONS)),,src/test_piratecash)
 
 %:
 	dh --with bash-completion $@
