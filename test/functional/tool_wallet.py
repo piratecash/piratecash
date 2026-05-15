@@ -2,7 +2,7 @@
 # Copyright (c) 2018-2020 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Test dash-wallet."""
+"""Test piratecash-wallet."""
 
 import os
 import stat
@@ -30,7 +30,7 @@ class ToolWalletTest(BitcoinTestFramework):
         self.skip_if_no_wallet()
         self.skip_if_no_wallet_tool()
 
-    def dash_wallet_process(self, *args):
+    def wallet_tool_process(self, *args):
         default_args = ['-datadir={}'.format(self.nodes[0].datadir), '-chain=%s' % self.chain]
         if self.options.descriptors and 'create' in args:
             default_args.append('-descriptors')
@@ -38,14 +38,14 @@ class ToolWalletTest(BitcoinTestFramework):
         return subprocess.Popen([self.options.bitcoinwallet] + default_args + list(args), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     def assert_raises_tool_error(self, error, *args):
-        p = self.dash_wallet_process(*args)
+        p = self.wallet_tool_process(*args)
         stdout, stderr = p.communicate()
         assert_equal(p.poll(), 1)
         assert_equal(stdout, '')
         assert_equal(stderr.strip(), error)
 
     def assert_tool_output(self, output, *args):
-        p = self.dash_wallet_process(*args)
+        p = self.wallet_tool_process(*args)
         stdout, stderr = p.communicate()
         assert_equal(stderr, '')
         assert_equal(stdout, output)
@@ -180,11 +180,11 @@ class ToolWalletTest(BitcoinTestFramework):
     def test_invalid_tool_commands_and_args(self):
         self.log.info('Testing that various invalid commands raise with specific error messages')
         self.assert_raises_tool_error("Error parsing command line arguments: Invalid command 'foo'", 'foo')
-        # `dash-wallet help` raises an error. Use `dash-wallet -help`.
+        # `piratecash-wallet help` raises an error. Use `piratecash-wallet -help`.
         self.assert_raises_tool_error("Error parsing command line arguments: Invalid command 'help'", 'help')
         self.assert_raises_tool_error('Error: Additional arguments provided (create). Methods do not take arguments. Please refer to `-help`.', 'info', 'create')
         self.assert_raises_tool_error('Error parsing command line arguments: Invalid parameter -foo', '-foo')
-        self.assert_raises_tool_error('No method provided. Run `dash-wallet -help` for valid methods.')
+        self.assert_raises_tool_error('No method provided. Run `piratecash-wallet -help` for valid methods.')
         self.assert_raises_tool_error('Wallet name must be provided when creating a new wallet.', 'create')
         locked_dir = os.path.join(self.options.tmpdir, "node0", self.chain, "wallets")
         error = 'Error initializing wallet database environment "{}"!'.format(locked_dir)
