@@ -40,17 +40,17 @@ RUN set -ex; \
 # unconditionally returns 0
 #
 RUN groupadd docker && \
-    usermod -aG sudo dash && \
+    usermod -aG sudo piratecash && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers; \
-    mkdir -p /home/dash/.config/gdb; \
-    echo "add-auto-load-safe-path /usr/lib/llvm-${LLVM_VERSION}/lib" | tee /home/dash/.config/gdb/gdbinit; \
-    chown ${USER_ID}:${GROUP_ID} -R /home/dash
+    mkdir -p /home/piratecash/.config/gdb; \
+    echo "add-auto-load-safe-path /usr/lib/llvm-${LLVM_VERSION}/lib" | tee /home/piratecash/.config/gdb/gdbinit; \
+    chown ${USER_ID}:${GROUP_ID} -R /home/piratecash
 
 # Disable noninteractive mode
 ENV DEBIAN_FRONTEND="dialog"
 
-# Expose Dash P2P and RPC ports for main network and test networks
-EXPOSE 9998 9999 19998 19999
+# Expose PirateCash P2P and RPC ports for main network and test networks
+EXPOSE 19606 63636 19696 50666
 
 # We're done, switch back to non-privileged user
-USER dash
+USER piratecash

@@ -19,4 +19,4 @@ assignees: ''
 
 #### Want to work on this issue?
 
-For guidance on contributing, please read [CONTRIBUTING.md](https://github.com/dashpay/dash/blob/master/CONTRIBUTING.md) before opening your pull request.
+For guidance on contributing, please read [CONTRIBUTING.md](https://github.com/piratecash/piratecash-core/blob/master/CONTRIBUTING.md) before opening your pull request.
