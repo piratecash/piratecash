@@ -24,10 +24,10 @@ BitcoinUnits::BitcoinUnits(QObject *parent):
 QList<BitcoinUnit> BitcoinUnits::availableUnits()
 {
     QList<BitcoinUnit> unitlist;
-    unitlist.append(Unit::DASH);
-    unitlist.append(Unit::mDASH);
-    unitlist.append(Unit::uDASH);
-    unitlist.append(Unit::duffs);
+    unitlist.append(Unit::PIRATECASH);
+    unitlist.append(Unit::mPIRATECASH);
+    unitlist.append(Unit::uPIRATECASH);
+    unitlist.append(Unit::corsars);
     return unitlist;
 }
 
@@ -35,10 +35,10 @@ QString BitcoinUnits::name(Unit unit)
 {
     const bool is_mainnet{Params().NetworkIDString() == CBaseChainParams::MAIN};
     switch (unit) {
-    case Unit::DASH:  return is_mainnet ? QString("DASH") : QString("tDASH");
-    case Unit::mDASH: return is_mainnet ? QString("mDASH") : QString("mtDASH");
-    case Unit::uDASH: return is_mainnet ? QString::fromUtf8("μDASH") : QString::fromUtf8("μtDASH");
-    case Unit::duffs: return is_mainnet ? QString("duffs") : QString("tduffs");
+    case Unit::PIRATECASH:  return is_mainnet ? QString("PIRATE") : QString("tPIRATE");
+    case Unit::mPIRATECASH: return is_mainnet ? QString("mPIRATE") : QString("mtPIRATE");
+    case Unit::uPIRATECASH: return is_mainnet ? QString::fromUtf8("μPIRATE") : QString::fromUtf8("μtPIRATE");
+    case Unit::corsars:     return is_mainnet ? QString("corsars") : QString("tcorsars");
     } // no default case, so the compiler can warn about missing cases
     assert(false);
 }
@@ -47,10 +47,10 @@ QString BitcoinUnits::description(Unit unit)
 {
     const QString maybe_prefix{Params().NetworkIDString() == CBaseChainParams::MAIN ? "" : "Test"};
     switch(unit) {
-    case Unit::DASH:  return QString("%1Dash");
-    case Unit::mDASH: return QString("Milli-%1Dash (1 / 1" THIN_SP_UTF8 "000)").arg(maybe_prefix);
-    case Unit::uDASH: return QString("Micro-%1Dash (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)").arg(maybe_prefix);
-    case Unit::duffs: return QString("Ten Nano-%1Dash (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)").arg(maybe_prefix);
+    case Unit::PIRATECASH:  return QString("%1PirateCash").arg(maybe_prefix);
+    case Unit::mPIRATECASH: return QString("Milli-%1PirateCash (1 / 1" THIN_SP_UTF8 "000)").arg(maybe_prefix);
+    case Unit::uPIRATECASH: return QString("Micro-%1PirateCash (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)").arg(maybe_prefix);
+    case Unit::corsars:     return QString("Corsars (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000 PirateCash)");
     } // no default case, so the compiler can warn about missing cases
     assert(false);
 }
@@ -58,10 +58,10 @@ QString BitcoinUnits::description(Unit unit)
 qint64 BitcoinUnits::factor(Unit unit)
 {
     switch (unit) {
-    case Unit::DASH:  return 100'000'000;
-    case Unit::mDASH: return 100'000;
-    case Unit::uDASH: return 100;
-    case Unit::duffs: return 1;
+    case Unit::PIRATECASH:  return 100'000'000;
+    case Unit::mPIRATECASH: return 100'000;
+    case Unit::uPIRATECASH: return 100;
+    case Unit::corsars:     return 1;
     } // no default case, so the compiler can warn about missing cases
     assert(false);
 }
@@ -69,10 +69,10 @@ qint64 BitcoinUnits::factor(Unit unit)
 int BitcoinUnits::decimals(Unit unit)
 {
     switch (unit) {
-    case Unit::DASH:  return 8;
-    case Unit::mDASH: return 5;
-    case Unit::uDASH: return 2;
-    case Unit::duffs: return 0;
+    case Unit::PIRATECASH:  return 8;
+    case Unit::mPIRATECASH: return 5;
+    case Unit::uPIRATECASH: return 2;
+    case Unit::corsars:     return 0;
     } // no default case, so the compiler can warn about missing cases
     assert(false);
 }
@@ -252,10 +252,10 @@ namespace {
 qint8 ToQint8(BitcoinUnit unit)
 {
     switch (unit) {
-    case BitcoinUnit::DASH: return 0;
-    case BitcoinUnit::mDASH: return 1;
-    case BitcoinUnit::uDASH: return 2;
-    case BitcoinUnit::duffs: return 3;
+    case BitcoinUnit::PIRATECASH: return 0;
+    case BitcoinUnit::mPIRATECASH: return 1;
+    case BitcoinUnit::uPIRATECASH: return 2;
+    case BitcoinUnit::corsars: return 3;
     } // no default case, so the compiler can warn about missing cases
     assert(false);
 }
@@ -263,10 +263,10 @@ qint8 ToQint8(BitcoinUnit unit)
 BitcoinUnit FromQint8(qint8 num)
 {
     switch (num) {
-    case 0: return BitcoinUnit::DASH;
-    case 1: return BitcoinUnit::mDASH;
-    case 2: return BitcoinUnit::uDASH;
-    case 3: return BitcoinUnit::duffs;
+    case 0: return BitcoinUnit::PIRATECASH;
+    case 1: return BitcoinUnit::mPIRATECASH;
+    case 2: return BitcoinUnit::uPIRATECASH;
+    case 3: return BitcoinUnit::corsars;
     }
     assert(false);
 }

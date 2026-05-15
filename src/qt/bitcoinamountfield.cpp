@@ -38,7 +38,7 @@ static CAmount parse(const QString &text, BitcoinUnit nUnit, bool *valid_out= nu
 class AmountValidator : public QValidator
 {
     Q_OBJECT
-    BitcoinUnit currentUnit{BitcoinUnit::DASH};
+    BitcoinUnit currentUnit{BitcoinUnit::PIRATECASH};
 
 public:
     explicit AmountValidator(QObject *parent) :
@@ -143,14 +143,14 @@ public:
         ensurePolished();
         const QFontMetrics fm(fontMetrics());
         int h = 0;
-        int w = GUIUtil::TextWidth(fm, BitcoinUnits::format(BitcoinUnit::DASH, BitcoinUnits::maxMoney(), false, BitcoinUnits::SeparatorStyle::ALWAYS));
+        int w = GUIUtil::TextWidth(fm, BitcoinUnits::format(BitcoinUnit::PIRATECASH, BitcoinUnits::maxMoney(), false, BitcoinUnits::SeparatorStyle::ALWAYS));
         w += 2; // cursor blinking space
         w += GUIUtil::dashThemeActive() ? 24 : 0; // counteract padding from css
         return QSize(w, h);
     }
 
 private:
-    BitcoinUnit currentUnit{BitcoinUnit::DASH};
+    BitcoinUnit currentUnit{BitcoinUnit::PIRATECASH};
     bool m_allow_empty{true};
     CAmount m_min_amount{CAmount(0)};
     CAmount m_max_amount{BitcoinUnits::maxMoney()};

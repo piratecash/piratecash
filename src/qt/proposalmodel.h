@@ -96,7 +96,7 @@ class ProposalModel : public QAbstractTableModel
     Q_OBJECT
 
 private:
-    BitcoinUnit m_display_unit{BitcoinUnit::DASH};
+    BitcoinUnit m_display_unit{BitcoinUnit::PIRATECASH};
     int nAbsVoteReq{0};
     Proposals m_data;
     QIcon m_icon_failing;

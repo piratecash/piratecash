@@ -309,8 +309,8 @@ void AddButtonShortcut(QAbstractButton* button, const QKeySequence& shortcut)
 
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
-    // return if URI is not valid or is no dash: URI
-    if(!uri.isValid() || uri.scheme() != QString("dash"))
+    // return if URI is not valid or is no piratecash: URI
+    if(!uri.isValid() || uri.scheme() != QString("piratecash"))
         return false;
 
     SendCoinsRecipient rv;
@@ -352,7 +352,7 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
         {
             if(!i->second.isEmpty())
             {
-                if (!BitcoinUnits::parse(BitcoinUnit::DASH, i->second, &rv.amount)) {
+                if (!BitcoinUnits::parse(BitcoinUnit::PIRATECASH, i->second, &rv.amount)) {
                     return false;
                 }
             }
@@ -383,12 +383,12 @@ bool validateBitcoinURI(const QString& uri)
 
 QString formatBitcoinURI(const SendCoinsRecipient &info)
 {
-    QString ret = QString("dash:%1").arg(info.address);
+    QString ret = QString("piratecash:%1").arg(info.address);
     int paramCount = 0;
 
     if (info.amount)
     {
-        ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnit::DASH, info.amount, false, BitcoinUnits::SeparatorStyle::NEVER));
+        ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnit::PIRATECASH, info.amount, false, BitcoinUnits::SeparatorStyle::NEVER));
         paramCount++;
     }
 

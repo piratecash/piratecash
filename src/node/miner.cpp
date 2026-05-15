@@ -19,6 +19,7 @@
 #include <policy/policy.h>
 #include <pow.h>
 #include <primitives/transaction.h>
+#include <sync.h>
 #include <timedata.h>
 #include <util/moneystr.h>
 #include <util/system.h>
@@ -44,9 +45,17 @@
 #include <spork.h>
 
 #include <algorithm>
+#include <string>
 #include <utility>
 
 namespace node {
+int64_t nLastCoinStakeSearchTime = 0;
+
+namespace {
+RecursiveMutex g_mining_status_mutex;
+std::string miningStatus GUARDED_BY(g_mining_status_mutex);
+} // namespace
+
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev)
 {
     int64_t nOldTime = pblock->nTime;
@@ -639,5 +648,16 @@ void BlockAssembler::addPackageTxs(const CTxMemPool& mempool, int& nPackagesSele
         // Update transactions that depend on each of these
         nDescendantsUpdated += UpdatePackagesForAdded(mempool, ancestors, mapModifiedTx);
     }
+}
+
+bool IsStakingActive()
+{
+    return (GetAdjustedTime() - nLastCoinStakeSearchTime) < 60;
+}
+
+std::string getMiningStatus()
+{
+    LOCK(g_mining_status_mutex);
+    return miningStatus;
 }
 } // namespace node

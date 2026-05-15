@@ -49,7 +49,7 @@ enum NumConnections {
 
 class CGovernanceObject;
 
-/** Model for Dash network client. */
+/** Model for PirateCash network client. */
 class ClientModel : public QObject
 {
     Q_OBJECT
