@@ -152,6 +152,8 @@ public:
     int MinSporkKeys() const { return nMinSporkKeys; }
     int CreditPoolPeriodBlocks() const { return nCreditPoolPeriodBlocks; }
     [[nodiscard]] std::optional<Consensus::LLMQParams> GetLLMQ(Consensus::LLMQType llmqType) const;
+    int64_t MinStakeAge() const { return nStakeMinAge; }
+    uint32_t FirstPoSv2Block() const { return nFirstPoSv2Block; }
 
 protected:
     CChainParams() {}
@@ -188,6 +190,8 @@ protected:
     uint16_t nDefaultPlatformHTTPPort;
     /// The number of blocks the credit pool tracks; 576 (one day) on mainnet, reduced on regtest
     int nCreditPoolPeriodBlocks;
+    int64_t nStakeMinAge;
+    uint32_t nFirstPoSv2Block;
 
     void AddLLMQ(Consensus::LLMQType llmqType);
 };

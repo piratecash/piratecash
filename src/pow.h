@@ -14,6 +14,9 @@ class CBlockHeader;
 class CBlockIndex;
 class uint256;
 
+static int64_t nTargetTimespan = 10 * 60;  // 10 mins
+
+unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake, const Consensus::Params& params);
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params&);
 unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nFirstBlockTime, const Consensus::Params&);
 

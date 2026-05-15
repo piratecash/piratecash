@@ -11,6 +11,51 @@
 #include <uint256.h>
 
 #include <math.h>
+#include <logging.h>
+
+unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake, const Consensus::Params& params)
+{
+    if (pindexLast == nullptr)
+        return UintToArith256(params.powLimit).GetCompact(); // genesis block
+    arith_uint256 bnTargetLimit = fProofOfStake ? UintToArith256(params.posLimit) : UintToArith256(params.powLimit);
+
+    const CBlockIndex* pindexPrev = GetLastBlockIndex(pindexLast, fProofOfStake);
+    if (pindexPrev->pprev == nullptr)
+        return bnTargetLimit.GetCompact(); // first block
+    const CBlockIndex* pindexPrevPrev = GetLastBlockIndex(pindexPrev->pprev, fProofOfStake);
+    if (pindexPrevPrev->pprev == nullptr)
+        return bnTargetLimit.GetCompact(); // second block
+
+    int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
+    int64_t target_Spacing_v1 = params.nPosTargetSpacingV1;
+    int64_t target_Spacing_v2 = params.nPosTargetSpacingV2;
+    if (pindexLast->nHeight < params.nSpecTargetFix)
+    {
+        if (nActualSpacing < 0)
+        {
+            nActualSpacing = target_Spacing_v1;
+        }
+    }
+    // ppcoin: target change every block
+    // ppcoin: retarget with exponential moving toward target spacing
+    arith_uint256 bnNew;
+    bnNew.SetCompact(pindexPrev->nBits);
+    int64_t nInterval;
+    if (pindexLast->nHeight > params.nSpecTargetFix){
+        nInterval = nTargetTimespan / target_Spacing_v2;
+        bnNew *= ((nInterval - 1) * target_Spacing_v2 + nActualSpacing + nActualSpacing);
+        bnNew /= ((nInterval + 1) * target_Spacing_v2);
+    }else{
+        nInterval = nTargetTimespan / target_Spacing_v1;
+        bnNew *= ((nInterval - 1) * target_Spacing_v1 + nActualSpacing + nActualSpacing);
+        bnNew /= ((nInterval + 1) * target_Spacing_v1);
+    }
+
+    if (bnNew <= 0 || bnNew > bnTargetLimit)
+        bnNew = bnTargetLimit;
+
+    return bnNew.GetCompact();
+}
 
 unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const Consensus::Params& params) {
     const CBlockIndex *BlockLastSolved = pindexLast;
@@ -78,9 +123,8 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const Conse
     return bnNew.GetCompact();
 }
 
-unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consensus::Params& params) {
+unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const arith_uint256& bnPowLimit, const Consensus::Params& params) {
     /* current difficulty formula, dash - DarkGravity v3, written by Evan Duffield - evan@dash.org */
-    const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
     int64_t nPastBlocks = 24;
 
     // make sure we have at least (nPastBlocks + 1) blocks, otherwise just return powLimit
@@ -168,6 +212,11 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 {
     assert(pindexLast != nullptr);
     assert(pblock != nullptr);
+    // Single unified limit at this layer matches master and the on-chain
+    // reality. The fPowAllowMinDifficultyBlocks branch on testnet must not
+    // diverge between PoW and PoS — otherwise the post-2h "min-difficulty"
+    // shortcut returns posLimit and mismatches the nBits actually mined,
+    // producing bad-diffbits at the first PoS block after a long testnet idle.
     const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
 
     // this is only active on devnets
@@ -204,7 +253,13 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         return KimotoGravityWell(pindexLast, params);
     }
 
-    return DarkGravityWave(pindexLast, params);
+    // DGW must use the same upper cap regardless of PoW/PoS to stay
+    // byte-for-byte compatible with v18 master's DarkGravityWave, which
+    // unconditionally clamps with params.powLimit. Substituting posLimit
+    // for PoS blocks (smaller, stricter cap) reshapes the resulting nBits
+    // and trips bad-diffbits on every PoS block whose v18-computed target
+    // landed between posLimit and powLimit. Keep the cap unified.
+    return DarkGravityWave(pindexLast, bnPowLimit, params);
 }
 
 // for DIFF_BTC only!

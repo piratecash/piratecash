@@ -25,6 +25,10 @@ static constexpr unsigned int DEFAULT_BLOCK_MAX_SIZE{2000000};
 static constexpr unsigned int DEFAULT_BLOCK_MIN_TX_FEE{1000};
 /** The maximum size for transactions we're willing to relay/mine */
 static constexpr unsigned int MAX_STANDARD_TX_SIZE{100000};
+/** Legacy upper bound on transaction size historically allowed by PirateCash.
+ *  Consensus still needs this so existing oversized transactions in old blocks
+ *  validate, while relay/mining policy stays on MAX_STANDARD_TX_SIZE. */
+static constexpr unsigned int MAX_LEGACY_TX_SIZE{2900000};
 /** The minimum size for transactions we're willing to relay/mine (1 empty scriptSig input + 1 P2SH output = 83 bytes) */
 static constexpr unsigned int MIN_STANDARD_TX_SIZE{83};
 /** Maximum number of signature check operations in an IsStandard() P2SH script */
