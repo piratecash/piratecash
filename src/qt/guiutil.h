@@ -54,7 +54,7 @@ class QUrl;
 class QWidget;
 QT_END_NAMESPACE
 
-/** Utility functions used by the Dash Qt UI.
+/** Utility functions used by the PirateCash Qt UI.
  */
 namespace GUIUtil
 {
@@ -142,7 +142,7 @@ namespace GUIUtil
      */
     void AddButtonShortcut(QAbstractButton* button, const QKeySequence& shortcut);
 
-    // Parse "dash:" URI into recipient object, return true on successful parsing
+    // Parse "piratecash:" URI into recipient object, return true on successful parsing
     bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out);
     bool parseBitcoinURI(QString uri, SendCoinsRecipient *out);
     bool validateBitcoinURI(const QString& uri);
@@ -246,7 +246,7 @@ namespace GUIUtil
     // Open debug.log
     void openDebugLogfile();
 
-    // Open dash.conf
+    // Open piratecash.conf
     void openConfigfile();
 
     // Browse backup folder
