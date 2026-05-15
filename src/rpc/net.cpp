@@ -316,8 +316,8 @@ static RPCHelpMan addnode()
                 },
                 RPCResult{RPCResult::Type::NONE, "", ""},
                 RPCExamples{
-                    HelpExampleCli("addnode", "\"192.168.0.6:9999\" \"onetry\" true")
-            + HelpExampleRpc("addnode", "\"192.168.0.6:9999\", \"onetry\" true")
+                    HelpExampleCli("addnode", "\"192.168.0.6:63636\" \"onetry\" true")
+            + HelpExampleRpc("addnode", "\"192.168.0.6:63636\", \"onetry\" true")
                 },
         [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue
 {
@@ -438,9 +438,9 @@ static RPCHelpMan disconnectnode()
                 },
                 RPCResult{RPCResult::Type::NONE, "", ""},
                 RPCExamples{
-                    HelpExampleCli("disconnectnode", "\"192.168.0.6:9999\"")
+                    HelpExampleCli("disconnectnode", "\"192.168.0.6:63636\"")
             + HelpExampleCli("disconnectnode", "\"\" 1")
-            + HelpExampleRpc("disconnectnode", "\"192.168.0.6:9999\"")
+            + HelpExampleRpc("disconnectnode", "\"192.168.0.6:63636\"")
             + HelpExampleRpc("disconnectnode", "\"\", 1")
                 },
         [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue
@@ -492,7 +492,7 @@ static RPCHelpMan getaddednodeinfo()
                             {
                                 {RPCResult::Type::OBJ, "", "",
                                 {
-                                    {RPCResult::Type::STR, "address", "The Dash server IP and port we're connected to"},
+                                    {RPCResult::Type::STR, "address", "The piratecash server IP and port we're connected to"},
                                     {RPCResult::Type::STR, "connected", "connection, inbound or outbound"},
                                 }},
                             }},
@@ -999,8 +999,8 @@ static RPCHelpMan addpeeraddress()
             },
         },
         RPCExamples{
-            HelpExampleCli("addpeeraddress", "\"1.2.3.4\" 9999 true")
-    + HelpExampleRpc("addpeeraddress", "\"1.2.3.4\", 9999, true")
+            HelpExampleCli("addpeeraddress", "\"1.2.3.4\" 63636 true")
+    + HelpExampleRpc("addpeeraddress", "\"1.2.3.4\", 63636, true")
         },
         [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue
 {
