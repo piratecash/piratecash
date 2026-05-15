@@ -32,8 +32,8 @@ except ImportError:
     sys.exit(1)
 
 def get_pr_json(pr_num):
-    # Get repository from environment or default to dashpay/dash
-    repo = os.environ.get('GITHUB_REPOSITORY', 'dashpay/dash')
+    # Get repository from environment or default to piratecash/piratecash-core
+    repo = os.environ.get('GITHUB_REPOSITORY', 'piratecash/piratecash-core')
 
     try:
         response = requests.get(f'https://api.github.com/repos/{repo}/pulls/{pr_num}')
@@ -137,7 +137,7 @@ def main():
             continue
 
         # Get repository from environment
-        repo = os.environ.get('GITHUB_REPOSITORY', 'dashpay/dash')
+        repo = os.environ.get('GITHUB_REPOSITORY', 'piratecash/piratecash-core')
         merge_check_url = f'https://github.com/{repo}/branches/pre_mergeable/{our_pr_label}...{conflict_pr_label}'
 
         try:
