@@ -196,8 +196,17 @@ public:
         consensus.WithdrawalsHeight = 2201472; // 00000000000000210518749e17c00b035a2a4982c906236c28c41ea2231bf7ef
         consensus.MinBIP9WarningHeight = 2201472 + 2016; // withdrawals activation height + miner confirmation window
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
+        consensus.posLimit = uint256S("0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 20
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Dash: 1 day
         consensus.nPowTargetSpacing = 2.5 * 60; // Dash: 2.5 minutes
+        consensus.nPosTargetSpacingV1 = 90;
+        consensus.nPosTargetSpacingV2 = 120;
+        consensus.nSpecTargetFix = 310000;
+        consensus.nRewForkDecreaseV18 = 1265000;
+        consensus.nForkHeight = 1265800;
+        consensus.nRestoreRewardV18 = 1268999;
+        consensus.nSkipTimeUntil = 1705104000;
+        consensus.nLastPowBlock = 100000;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nPowKGWHeight = 15200;
@@ -290,6 +299,8 @@ public:
 
         vSporkAddresses = {"Xgtyuk76vhuFW2iT7UAiHgNdWXCf3J34wh"};
         nMinSporkKeys = 1;
+        nStakeMinAge = 8 * 60 * 60;
+        nFirstPoSv2Block = consensus.nForkHeight;
 
         nCreditPoolPeriodBlocks = 576;
 
@@ -395,8 +406,17 @@ public:
         consensus.WithdrawalsHeight = 1148500; // 000000212a6fec2ee2af040c6d7a176360b154cbaa998888170cfd9ae7dd632d
         consensus.MinBIP9WarningHeight = 1148500 + 2016;  // withdrawals activation height + miner confirmation window
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
+        consensus.posLimit = uint256S("0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 20
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Dash: 1 day
         consensus.nPowTargetSpacing = 2.5 * 60; // Dash: 2.5 minutes
+        consensus.nPosTargetSpacingV1 = 90;
+        consensus.nPosTargetSpacingV2 = 120;
+        consensus.nSpecTargetFix = 104000;
+        consensus.nRewForkDecreaseV18 = 288882;
+        consensus.nForkHeight = 289000;
+        consensus.nRestoreRewardV18 = 290000;
+        consensus.nSkipTimeUntil = 1705276800;
+        consensus.nLastPowBlock = 3000;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nPowKGWHeight = 4002; // nPowKGWHeight >= nPowDGWHeight means "no KGW"
@@ -483,6 +503,8 @@ public:
 
         vSporkAddresses = {"yjPtiKh2uwk3bDutTEA2q9mCtXyiZRWn55"};
         nMinSporkKeys = 1;
+        nStakeMinAge = 8 * 60 * 60;
+        nFirstPoSv2Block = consensus.nForkHeight;
 
         nCreditPoolPeriodBlocks = 576;
 
@@ -567,8 +589,17 @@ public:
         consensus.WithdrawalsHeight = 2;   // withdrawals activated immediately on devnet
         consensus.MinBIP9WarningHeight = 2 + 2016; // withdrawals activation height + miner confirmation window
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
+        consensus.posLimit = uint256S("0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 4
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Dash: 1 day
         consensus.nPowTargetSpacing = 2.5 * 60; // Dash: 2.5 minutes
+        consensus.nPosTargetSpacingV1 = 90;
+        consensus.nPosTargetSpacingV2 = 120;
+        consensus.nSpecTargetFix = 100;
+        consensus.nRewForkDecreaseV18 = 0;
+        consensus.nForkHeight = 1;
+        consensus.nRestoreRewardV18 = 1;
+        consensus.nSkipTimeUntil = 1672531200;
+        consensus.nLastPowBlock = 3000;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nPowKGWHeight = 4001; // nPowKGWHeight >= nPowDGWHeight means "no KGW"
@@ -665,6 +696,8 @@ public:
 
         vSporkAddresses = {"yjPtiKh2uwk3bDutTEA2q9mCtXyiZRWn55"};
         nMinSporkKeys = 1;
+        nStakeMinAge = 24 * 60 * 60;
+        nFirstPoSv2Block = 78000ULL;
 
         nCreditPoolPeriodBlocks = 576;
 
@@ -800,8 +833,17 @@ public:
         consensus.WithdrawalsHeight = 600;
         consensus.MinBIP9WarningHeight = 0;
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
+        consensus.posLimit = uint256S("0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 4
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Dash: 1 day
         consensus.nPowTargetSpacing = 2.5 * 60; // Dash: 2.5 minutes
+        consensus.nPosTargetSpacingV1 = 90;
+        consensus.nPosTargetSpacingV2 = 120;
+        consensus.nSpecTargetFix = 100;
+        consensus.nRewForkDecreaseV18 = 0;
+        consensus.nForkHeight = 1;
+        consensus.nRestoreRewardV18 = 1;
+        consensus.nSkipTimeUntil = 1672531200;
+        consensus.nLastPowBlock = 3000;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
         consensus.nPowKGWHeight = 15200; // same as mainnet
@@ -865,6 +907,8 @@ public:
         // privKey: cP4EKFyJsHT39LDqgdcB43Y3YXjNyjb5Fuas1GQSeAtjnZWmZEQK
         vSporkAddresses = {"yj949n1UH6fDhw6HtVE5VMj2iSTaSWBMcW"};
         nMinSporkKeys = 1;
+        nStakeMinAge = 24 * 60 * 60;
+        nFirstPoSv2Block = 10000ULL;
 
         nCreditPoolPeriodBlocks = 100;
 
