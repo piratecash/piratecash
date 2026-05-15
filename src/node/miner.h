@@ -8,6 +8,7 @@
 
 #include <primitives/block.h>
 #include <txmempool.h>
+#include <util/threadinterrupt.h>
 
 #include <memory>
 #include <optional>
@@ -23,10 +24,15 @@
 class CBlockIndex;
 class CChainParams;
 class CChainstateHelper;
+class CChainState;
 class CConnman;
 class CEvoDB;
 class CScript;
 struct LLMQContext;
+
+namespace wallet {
+class CWallet;
+} // namespace wallet
 
 namespace chainlock
 {
@@ -52,7 +58,7 @@ std::string getMiningStatus();
 
 struct CBlockTemplate
 {
-    CBlock block;
+    std::shared_ptr<CBlock> block{new CBlock()};
     std::vector<CAmount> vTxFees;
     std::vector<int64_t> vTxSigOps;
     uint32_t nPrevBits; // nBits of previous block (for subsidy calculation)
@@ -197,7 +203,7 @@ public:
                             const Options& options);
 
     /** Construct a new block template with coinbase to scriptPubKeyIn */
-    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn);
+    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, std::shared_ptr<wallet::CWallet> pwallet = nullptr, int64_t block_time = 0, bool isPos = false);
 
     inline static std::optional<int64_t> m_last_block_num_txs{};
     inline static std::optional<int64_t> m_last_block_size{};
@@ -231,6 +237,8 @@ private:
 };
 
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev);
+void PoSMiner(std::shared_ptr<wallet::CWallet> pwallet, NodeContext& node, CThreadInterrupt& interrupt);
+void SetThreadPriority(int nPriority);
 } // namespace node
 
 #endif // BITCOIN_NODE_MINER_H

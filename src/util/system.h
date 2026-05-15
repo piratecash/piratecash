@@ -36,6 +36,7 @@
 //Dash only features
 
 extern int nWalletBackups;
+extern bool fMasternodeMode;
 extern const std::string gCoinJoinName;
 
 class UniValue;
@@ -184,6 +185,7 @@ enum class OptionsCategory {
     GUI,
     COMMANDS,
     REGISTER_COMMANDS,
+    POS,
 
     HIDDEN // Always the last option to avoid printing these in the help
 };
