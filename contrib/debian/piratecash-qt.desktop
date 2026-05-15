@@ -1,14 +1,13 @@
 [Desktop Entry]
-Version=1.0
-Name=Dash Core
-Comment=Dash P2P Cryptocurrency
-Comment[de]=Verbinde mit dem Dash peer-to-peer Netzwerk
-Comment[fr]=Dash, monnaie virtuelle cryptographique pair à pair
-Comment[tr]=Dash, eşten eşe kriptografik sanal para birimi
-Exec=dash-qt %u
+Encoding=UTF-8
+Name=PirateCash Core
+Comment=PirateCash P2P Cryptocurrency
+Comment[de]=Verbinde mit dem PirateCash peer-to-peer Netzwerk
+Comment[fr]=PirateCash, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=PirateCash, eşten eşe kriptografik sanal para birimi
+Exec=piratecash-qt %u
 Terminal=false
 Type=Application
-Icon=dash128
-MimeType=x-scheme-handler/dash;
-Categories=Office;Finance;P2P;Network;Qt;
-StartupWMClass=Dash-qt
+Icon=piratecash128
+MimeType=x-scheme-handler/piratecash;
+Categories=Office;Finance;
