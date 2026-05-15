@@ -12,7 +12,7 @@ export LC_ALL=C
 # Use GCOV_EXECUTABLE="llvm-cov gcov" if compiling with clang.
 GCOV_EXECUTABLE="gcov"
 
-# TODO this list is likely incomplete / incorrect for Dash
+# TODO this list is likely incomplete / incorrect for PirateCash
 # Disable tests known to cause non-deterministic behaviour and document the source or point of non-determinism.
 NON_DETERMINISTIC_TESTS=(
     "blockfilter_index_tests/blockfilter_index_initial_sync"  # src/checkqueue.h: In CCheckQueue::Loop(): while (queue.empty()) { ... }
@@ -35,7 +35,7 @@ NON_DETERMINISTIC_TESTS=(
     "wallet_tests/wallet_disableprivkeys"                     # validation.cpp: if (GetMainSignals().CallbacksPending() > 10)
 )
 
-TEST_BITCOIN_BINARY="src/test/test_dash"
+TEST_BITCOIN_BINARY="src/test/test_piratecash"
 
 print_usage() {
     echo "Usage: $0 [custom test filter (default: all but known non-deterministic tests)] [number of test runs (default: 2)]"

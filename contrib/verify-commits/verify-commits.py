@@ -67,11 +67,6 @@ def tree_sha512sum(commit='HEAD'):
     return overall.hexdigest()
 
 def main():
-
-    # Enable debug logging if running in CI
-    if 'CI' in os.environ and os.environ['CI'].lower() == "true":
-        logging.getLogger().setLevel(logging.DEBUG)
-
     # Parse arguments
     parser = argparse.ArgumentParser(usage='%(prog)s [options] [commit id]')
     parser.add_argument('--disable-tree-check', action='store_false', dest='verify_tree', help='disable SHA-512 tree check')
