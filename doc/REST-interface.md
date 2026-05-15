@@ -3,8 +3,7 @@ Unauthenticated REST Interface
 
 The REST API can be enabled with the `-rest` option.
 
-The interface runs on the same port as the JSON-RPC interface, by default port 9998 for mainnet, port 19998 for testnet,
-port 19788 for devnet, and port 19898 for regtest.
+The interface runs on the same port as the JSON-RPC interface, by default port 19606 for mainnet and port 19696 for testnet.
 
 REST Interface consistency guarantees
 -------------------------------------
@@ -48,23 +47,17 @@ The HTTP request and response are both handled entirely in-memory.
 With the /notxdetails/ option JSON response will only contain the transaction hash instead of the complete transaction details. The option only affects the JSON response.
 
 #### Blockheaders
-`GET /rest/headers/<BLOCK-HASH>.<bin|hex|json>?count=<COUNT=5>`
+`GET /rest/headers/<COUNT>/<BLOCK-HASH>.<bin|hex|json>`
 
 Given a block hash: returns <COUNT> amount of blockheaders in upward direction.
 Returns empty if the block doesn't exist or it isn't in the active chain.
 
-*Deprecated (but not removed) since 23.0:*
-`GET /rest/headers/<COUNT>/<BLOCK-HASH>.<bin|hex|json>`
-
 #### Blockfilter Headers
-`GET /rest/blockfilterheaders/<FILTERTYPE>/<BLOCK-HASH>.<bin|hex|json>?count=<COUNT=5>`
+`GET /rest/blockfilterheaders/<FILTERTYPE>/<COUNT>/<BLOCK-HASH>.<bin|hex|json>`
 
 Given a block hash: returns <COUNT> amount of blockfilter headers in upward
 direction for the filter type <FILTERTYPE>.
 Returns empty if the block doesn't exist or it isn't in the active chain.
-
-*Deprecated (but not removed) since 23.0:*
-`GET /rest/blockfilterheaders/<FILTERTYPE>/<COUNT>/<BLOCK-HASH>.<bin|hex|json>`
 
 #### Blockfilters
 `GET /rest/blockfilter/<FILTERTYPE>/<BLOCK-HASH>.<bin|hex|json>`
@@ -84,7 +77,17 @@ Responds with 404 if block not found.
 
 Returns various state info regarding block chain processing.
 Only supports JSON as output format.
-Refer to the `getblockchaininfo` RPC help for details.
+* chain : (string) current network name (main, test, regtest)
+* blocks : (numeric) the current number of blocks processed in the server
+* headers : (numeric) the current number of headers we have validated
+* bestblockhash : (string) the hash of the currently best block
+* difficulty : (numeric) the current difficulty
+* mediantime : (numeric) the median time of the 11 blocks before the most recent block on the blockchain
+* verificationprogress : (numeric) estimate of verification progress [0..1]
+* chainwork : (string) total amount of work in active chain, in hexadecimal
+* pruned : (boolean) if the blocks are subject to pruning
+* pruneheight : (numeric) highest block available
+* softforks : (array) status of softforks in progress
 
 #### Query UTXO set
 - `GET /rest/getutxos/<TXID>-<N>/<TXID>-<N>/.../<TXID>-<N>.<bin|hex|json>`
@@ -97,7 +100,7 @@ input and output serialization (relevant for `bin` and `hex` output formats).
 
 Example:
 ```
-$ curl localhost:19998/rest/getutxos/checkmempool/b2cdfd7b89def827ff8af7cd9bff7627ff72e5e8b0f71210f92ea7a4000c5d75-0.json 2>/dev/null | json_pp
+$ curl localhost:19606/rest/getutxos/checkmempool/b2cdfd7b89def827ff8af7cd9bff7627ff72e5e8b0f71210f92ea7a4000c5d75-0.json 2>/dev/null | json_pp
 {
    "chainHeight" : 325347,
    "chaintipHash" : "00000000fb01a7f3745a717f8caebee056c484e6e0bfe4a9591c235bb70506fb",
@@ -108,7 +111,6 @@ $ curl localhost:19998/rest/getutxos/checkmempool/b2cdfd7b89def827ff8af7cd9bff76
          "value" : 8.8687,
          "scriptPubKey" : {
             "asm" : "OP_DUP OP_HASH160 1c7cebb529b86a04c683dfa87be49de35bcf589e OP_EQUALVERIFY OP_CHECKSIG",
-            "desc" : "addr(mi7as51dvLJsizWnTMurtRmrP8hG2m1XvD)#gj9tznmy"
             "hex" : "76a9141c7cebb529b86a04c683dfa87be49de35bcf589e88ac",
             "type" : "pubkeyhash",
             "address" : "mi7as51dvLJsizWnTMurtRmrP8hG2m1XvD"
@@ -121,16 +123,16 @@ $ curl localhost:19998/rest/getutxos/checkmempool/b2cdfd7b89def827ff8af7cd9bff76
 #### Memory pool
 `GET /rest/mempool/info.json`
 
-Returns various information about the transaction mempool.
+Returns various information about the TX mempool.
 Only supports JSON as output format.
-Refer to the `getmempoolinfo` RPC help for details.
+Refer to the `getmempoolinfo` RPC for documentation of the fields.
 
 `GET /rest/mempool/contents.json`
 
-Returns the transactions in the mempool.
+Returns transactions in the TX mempool.
 Only supports JSON as output format.
 Refer to the `getrawmempool` RPC help for details.
 
 Risks
 -------------
-Running a web browser on the same node with a REST enabled dashd can be a risk. Accessing prepared XSS websites could read out tx/block data of your node by placing links like `<script src="http://127.0.0.1:19998/rest/tx/1234567890.json">` which might break the nodes privacy.
+Running a web browser on the same node with a REST enabled piratecashd can be a risk. Accessing prepared XSS websites could read out tx/block data of your node by placing links like `<script src="http://127.0.0.1:19606/rest/tx/1234567890.json">` which might break the nodes privacy.

@@ -1,22 +1,22 @@
 Translations
 ============
 
-The Dash Core project has been designed to support multiple localisations. This makes adding new phrases, and completely new languages easily achievable. For managing all application translations, Dash Core makes use of the Transifex online translation management tool.
+The PirateCash Core project has been designed to support multiple localisations. This makes adding new phrases, and completely new languages easily achievable. For managing all application translations, PirateCash Core makes use of the Transifex online translation management tool.
 
 ### Helping to translate (using Transifex)
 Transifex is setup to monitor the GitHub repo for updates, and when code containing new translations is found, Transifex will process any changes. It may take several hours after a pull-request has been merged, to appear in the Transifex web interface.
 
-Multiple language support is critical in assisting Dash’s global adoption, and growth. One of Dash’s greatest strengths is cross-border money transfers, any help making that easier is greatly appreciated.
+Multiple language support is critical in assisting PirateCash global adoption, and growth. One of PirateCash’s greatest strengths is cross-border money transfers, any help making that easier is greatly appreciated.
 
-See the [Transifex Dash project](https://explore.transifex.com/dash/dash/) to assist in translations. You should also join the translation mailing list for announcements - see details below.
+See the [Transifex PirateCash project](https://www.transifex.com/projects/p/piratecash/) to assist in translations. You should also join the translation mailing list for announcements - see details below.
 
 ### Writing code with translations
 We use automated scripts to help extract translations in both Qt, and non-Qt source files. It is rarely necessary to manually edit the files in `src/qt/locale/`. The translation source files must adhere to the following format:
-`dash_xx_YY.ts or dash_xx.ts`
+`piratecash_xx_YY.ts or piratecash_xx.ts`
 
-`src/qt/locale/dash_en.ts` is treated in a special way. It is used as the source for all other translations. Whenever a string in the source code is changed, this file must be updated to reflect those changes. A custom script is used to extract strings from the non-Qt parts. This script makes use of `gettext`, so make sure that utility is installed (ie, `apt-get install gettext` on Ubuntu/Debian). Once this has been updated, `lupdate` (included in the Qt SDK) is used to update `dash_en.ts`.
+`src/qt/locale/piratecash_en.ts` is treated in a special way. It is used as the source for all other translations. Whenever a string in the source code is changed, this file must be updated to reflect those changes. A custom script is used to extract strings from the non-Qt parts. This script makes use of `gettext`, so make sure that utility is installed (ie, `apt-get install gettext` on Ubuntu/Debian). Once this has been updated, `lupdate` (included in the Qt SDK) is used to update `piratecash_en.ts`.
 
-To automatically regenerate the `dash_en.ts` file, run the following commands:
+To automatically regenerate the `piratecash_en.ts` file, run the following commands:
 ```sh
 cd src/
 make translate
@@ -34,7 +34,7 @@ When an updated source file is merged into the GitHub repo, Transifex will autom
 
 To create the pull-request, use the following commands:
 ```
-git add src/qt/dashstrings.cpp src/qt/locale/dash_en.ts
+git add src/qt/piratecashstrings.cpp src/qt/locale/piratecash_en.ts
 git commit
 ```
 
@@ -42,7 +42,7 @@ git commit
 ### Creating a Transifex account
 Visit the [Transifex Signup](https://app.transifex.com/signup/) page to create an account. Take note of your username and password, as they will be required to configure the command-line tool.
 
-You can find the Dash translation project at <https://explore.transifex.com/dash/dash/>.
+You can find the PirateCash translation project at [https://www.transifex.com/projects/p/piratecash/](https://www.transifex.com/projects/p/piratecash/).
 
 ### Installing the Transifex client command-line tool
 The client is used to fetch updated translations. Please check installation instructions and any other details at <https://developers.transifex.com/docs/cli>.
@@ -51,16 +51,16 @@ The client is used to fetch updated translations. Please check installation inst
 
 Please see <https://developers.transifex.com/docs/cli#download-from-github-releases-linuxmacwindows> for details on installation.
 
-The Transifex Dash project config file is included as part of the repo. It can be found at `.tx/config`, however you shouldn’t need to change anything.
+The Transifex PirateCash project config file is included as part of the repo. It can be found at `.tx/config`, however you shouldn’t need change anything.
 
 ### Synchronising translations
 To assist in updating translations, we have created a script to help.
 
 1. `python contrib/devtools/update-translations.py`
-2. Update `src/qt/dash_locale.qrc` manually or via
-   `ls src/qt/locale/*ts|xargs -n1 basename|sed 's/\(dash_\(.*\)\).ts/<file alias="\2">locale\/\1.qm<\/file>/'`
-3. Update `src/Makefile.qt_locale.include` manually or via
-   `ls src/qt/locale/*ts|xargs -n1 basename|sed 's/\(dash_\(.*\)\).ts/  qt\/locale\/\1.ts \\/'`
+2. Update `src/qt/piratecash_locale.qrc` manually or via
+   `ls src/qt/locale/*ts|xargs -n1 basename|sed 's/\(piratecash_\(.*\)\).ts/<file alias="\2">locale\/\1.qm<\/file>/'`
+3. Update `src/Makefile.qt.include` manually or via
+   `ls src/qt/locale/*ts|xargs -n1 basename|sed 's/\(piratecash_\(.*\)\).ts/  qt\/locale\/\1.ts \\/'`
 4. `git add` new translations from `src/qt/locale/`
 
 **Do not directly download translations** one by one from the Transifex website, as we do a few post-processing steps before committing the translations.
@@ -68,7 +68,7 @@ To assist in updating translations, we have created a script to help.
 ### Handling Plurals (in source files)
 When new plurals are added to the source file, it's important to do the following steps:
 
-1. Open `dash_en.ts` in Qt Linguist (included in the Qt SDK)
+1. Open `piratecash_en.ts` in Qt Linguist (included in the Qt SDK)
 2. Search for `%n`, which will take you to the parts in the translation that use plurals
 3. Look for empty `English Translation (Singular)` and `English Translation (Plural)` fields
 4. Add the appropriate strings for the singular and plural form of the base string
@@ -77,11 +77,11 @@ When new plurals are added to the source file, it's important to do the followin
 7. Save the source file
 
 ### Translating a new language
-To create a new language template, you will need to edit the languages manifest file `src/qt/dash_locale.qrc` and add a new entry. Below is an example of the English language entry.
+To create a new language template, you will need to edit the languages manifest file `src/qt/piratecash_locale.qrc` and add a new entry. Below is an example of the English language entry.
 
 ```xml
 <qresource prefix="/translations">
-    <file alias="en">locale/dash_en.qm</file>
+    <file alias="en">locale/piratecash_en.qm</file>
     ...
 </qresource>
 ```
@@ -89,4 +89,4 @@ To create a new language template, you will need to edit the languages manifest 
 **Note:** that the language translation file **must end in `.qm`** (the compiled extension), and not `.ts`.
 
 ### Questions and general assistance
-Check official forum at <https://www.dash.org/forum/forums/dash-worldwide-collaboration.88/>.
+Check official forum at [https://t.me/joinchat/FtUaLREioKVyF6EPNVtnIQ](https://t.me/joinchat/FtUaLREioKVyF6EPNVtnIQ).
