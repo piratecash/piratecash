@@ -229,7 +229,7 @@ BOOST_FIXTURE_TEST_CASE(block_reward_reallocation, TestChainBRRBeforeActivationS
         const CAmount block_subsidy = GetBlockSubsidyInner(tip->nBits, tip->nHeight, consensus_params, isV20Active);
         const CAmount masternode_payment = GetMasternodePayment(tip->nHeight, block_subsidy, isV20Active);
         const auto pblocktemplate = BlockAssembler(m_node.chainman->ActiveChainstate(), m_node, m_node.mempool.get(), Params()).CreateNewBlock(coinbasePubKey);
-        BOOST_CHECK_EQUAL(pblocktemplate->block.vtx[0]->GetValueOut(), 28847249686);
+        BOOST_CHECK_EQUAL(pblocktemplate->block->vtx[0]->GetValueOut(), 28847249686);
         BOOST_CHECK_EQUAL(pblocktemplate->voutMasternodePayments[0].nValue, masternode_payment);
         BOOST_CHECK_EQUAL(pblocktemplate->voutMasternodePayments[0].nValue, 14423624841); // 0.4999999999
     }
@@ -264,8 +264,8 @@ BOOST_FIXTURE_TEST_CASE(block_reward_reallocation, TestChainBRRBeforeActivationS
 
         const CAmount masternode_payment = GetMasternodePayment(tip->nHeight, block_subsidy, isV20Active);
         const auto pblocktemplate = BlockAssembler(m_node.chainman->ActiveChainstate(), m_node, m_node.mempool.get(), Params()).CreateNewBlock(coinbasePubKey);
-        BOOST_CHECK_EQUAL(pblocktemplate->block.vtx[0]->GetValueOut(), expected_block_reward);
-        BOOST_CHECK_EQUAL(pblocktemplate->block.vtx[0]->GetValueOut(), 141734128);
+        BOOST_CHECK_EQUAL(pblocktemplate->block->vtx[0]->GetValueOut(), expected_block_reward);
+        BOOST_CHECK_EQUAL(pblocktemplate->block->vtx[0]->GetValueOut(), 141734128);
         BOOST_CHECK_EQUAL(pblocktemplate->voutMasternodePayments[0].nValue, masternode_payment);
         BOOST_CHECK_EQUAL(pblocktemplate->voutMasternodePayments[0].nValue, 106300596); // 0.75
     }
@@ -317,7 +317,7 @@ BOOST_FIXTURE_TEST_CASE(block_reward_reallocation, TestChainBRRBeforeActivationS
         CAmount expected_mn_platform_payment = PlatformShare(expected_masternode_reward);
         CAmount expected_mn_core_payment = expected_masternode_reward - expected_mn_platform_payment;
 
-        BOOST_CHECK_EQUAL(pblocktemplate->block.vtx[0]->GetValueOut(), expected_block_reward);
+        BOOST_CHECK_EQUAL(pblocktemplate->block->vtx[0]->GetValueOut(), expected_block_reward);
         BOOST_CHECK_EQUAL(pblocktemplate->voutMasternodePayments[1].nValue, masternode_payment);
         BOOST_CHECK_EQUAL(pblocktemplate->voutMasternodePayments[1].nValue, expected_mn_core_payment);
     }

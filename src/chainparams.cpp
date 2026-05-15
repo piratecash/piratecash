@@ -882,7 +882,7 @@ public:
         consensus.DIP0003EnforcementHeight = 500;
         consensus.DIP0003EnforcementHash = uint256();
         consensus.DIP0008Height = 1; // Always active unless overridden
-        consensus.BRRHeight = 1;     // Always active unless overridden
+        consensus.BRRHeight = 2500;  // see block_reward_reallocation_tests
         consensus.DIP0020Height = 1; // Always active unless overridden
         consensus.DIP0024Height = 1; // Always have dip0024 quorums unless overridden
         consensus.DIP0024QuorumsHeight = 1; // Always have dip0024 quorums unless overridden

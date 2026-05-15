@@ -315,6 +315,7 @@ public:
     bool isConfirmed() const { return state<TxStateConfirmed>(); }
     const uint256& GetHash() const LIFETIMEBOUND { return tx->GetHash(); }
     bool IsCoinBase() const { return tx->IsCoinBase(); }
+    bool IsCoinStake() const { return tx->IsCoinStake(); }
     bool IsPlatformTransfer() const { return tx->IsPlatformTransfer(); }
 
     // Disable copying of CWalletTx objects to prevent bugs where instances get
