@@ -1,36 +1,36 @@
 #!/usr/bin/env bash
 #
-#  dashd The Dash Core server.
+#  piratecashd The PirateCash Core server.
 #
 #
 # chkconfig: 345 80 20
-# description: dashd
-# processname: dashd
+# description: piratecashd
+# processname: piratecashd
 #
 
 # Source function library.
 . /etc/init.d/functions
 
-# you can override defaults in /etc/sysconfig/dashd, see below
-if [ -f /etc/sysconfig/dashd ]; then
-        . /etc/sysconfig/dashd
+# you can override defaults in /etc/sysconfig/piratecashd, see below
+if [ -f /etc/sysconfig/piratecashd ]; then
+        . /etc/sysconfig/piratecashd
 fi
 
 RETVAL=0
 
-prog=dashd
-# you can override the lockfile via BITCOIND_LOCKFILE in /etc/sysconfig/dashd
-lockfile=${BITCOIND_LOCKFILE-/var/lock/subsys/dashd}
+prog=piratecashd
+# you can override the lockfile via BITCOIND_LOCKFILE in /etc/sysconfig/piratecashd
+lockfile=${BITCOIND_LOCKFILE-/var/lock/subsys/piratecashd}
 
-# dashd defaults to /usr/bin/dashd, override with BITCOIND_BIN
-dashd=${BITCOIND_BIN-/usr/bin/dashd}
+# piratecashd defaults to /usr/bin/piratecashd, override with BITCOIND_BIN
+piratecashd=${BITCOIND_BIN-/usr/bin/piratecashd}
 
-# dashd opts default to -disablewallet, override with BITCOIND_OPTS
-dashd_opts=${BITCOIND_OPTS--disablewallet}
+# piratecashd opts default to -disablewallet, override with BITCOIND_OPTS
+piratecashd_opts=${BITCOIND_OPTS--disablewallet}
 
 start() {
     echo -n $"Starting $prog: "
-    daemon $DAEMONOPTS $dashd $dashd_opts
+    daemon $DAEMONOPTS $piratecashd $piratecashd_opts
     RETVAL=$?
     echo
     [ $RETVAL -eq 0 ] && touch $lockfile
@@ -39,7 +39,7 @@ start() {
 
 stop() {
     echo -n $"Stopping $prog: "
-    killproc $prog -t600
+    killproc $prog
     RETVAL=$?
     echo
     [ $RETVAL -eq 0 ] && rm -f $lockfile
