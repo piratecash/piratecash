@@ -478,7 +478,7 @@
            <item>
             <widget class="QLabel" name="dustProtectionThresholdUnitLabel">
              <property name="text">
-              <string>duffs</string>
+              <string>corsars</string>
              </property>
              <property name="textFormat">
               <enum>Qt::PlainText</enum>
@@ -771,7 +771,7 @@
        <item>
         <widget class="QCheckBox" name="mapPortUpnp">
          <property name="toolTip">
-          <string>Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</string>
+          <string>Automatically open the PirateCash Core client port on the router. This only works when your router supports UPnP and it is enabled.</string>
          </property>
          <property name="text">
           <string>Map port using &amp;UPnP</string>
@@ -781,7 +781,7 @@
        <item>
         <widget class="QCheckBox" name="mapPortNatpmp">
          <property name="toolTip">
-          <string>Automatically open the Dash Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</string>
+          <string>Automatically open the PirateCash Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</string>
          </property>
          <property name="text">
           <string>Map port using NA&amp;T-PMP</string>
@@ -801,7 +801,7 @@
        <item>
         <widget class="QCheckBox" name="connectSocks">
          <property name="toolTip">
-          <string>Connect to the Dash network through a SOCKS5 proxy.</string>
+          <string>Connect to the PirateCash network through a SOCKS5 proxy.</string>
          </property>
          <property name="text">
           <string>&amp;Connect through SOCKS5 proxy (default proxy):</string>
@@ -958,7 +958,7 @@
        <item>
         <widget class="QCheckBox" name="connectSocksTor">
          <property name="toolTip">
-          <string>Connect to the Dash network through a separate SOCKS5 proxy for Tor onion services.</string>
+          <string>Connect to the PirateCash network through a separate SOCKS5 proxy for Tor onion services.</string>
          </property>
          <property name="text">
           <string>Use separate SOCKS&amp;5 proxy to reach peers via Tor onion services:</string>

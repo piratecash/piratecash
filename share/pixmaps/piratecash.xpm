@@ -1,5 +1,5 @@
 /* XPM */
-static char *piratecash256[] = {
+static char *piratecash[] = {
 /* columns rows colors chars-per-pixel */
 "256 256 148 2 ",
 "   c black",

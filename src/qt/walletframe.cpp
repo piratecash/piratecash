@@ -326,6 +326,13 @@ void WalletFrame::unlockWallet()
         walletView->unlockWallet();
 }
 
+void WalletFrame::unlockWalletForMixingOnly()
+{
+    WalletView *walletView = currentWalletView();
+    if (walletView)
+        walletView->unlockWallet(true);
+}
+
 void WalletFrame::lockWallet()
 {
     WalletView *walletView = currentWalletView();

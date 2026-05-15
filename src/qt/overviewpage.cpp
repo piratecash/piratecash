@@ -128,7 +128,7 @@ public:
         return {ITEM_HEIGHT + 8 + minimum_text_width, ITEM_HEIGHT};
     }
 
-    BitcoinUnit unit{BitcoinUnit::DASH};
+    BitcoinUnit unit{BitcoinUnit::PIRATECASH};
 
 Q_SIGNALS:
     //! An intermediate signal for emitting from the `paint() const` member function.
@@ -309,7 +309,7 @@ void OverviewPage::setWalletModel(WalletModel *model)
     this->walletModel = model;
     if(model && model->getOptionsModel())
     {
-        // update the display unit, to not use the default ("DASH")
+        // update the display unit, to not use the default ("PIRATE")
         updateDisplayUnit();
         // Keep up to date with wallet
         interfaces::Wallet& wallet = model->wallet();

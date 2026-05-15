@@ -27,7 +27,7 @@
 #define THIN_SP_UTF8 REAL_THIN_SP_UTF8
 #define THIN_SP_HTML HTML_HACK_SP
 
-/** Dash unit definitions. Encapsulates parsing and formatting
+/** PirateCash unit definitions. Encapsulates parsing and formatting
    and serves as list model for drop-down selection boxes.
 */
 class BitcoinUnits: public QAbstractListModel
@@ -37,14 +37,14 @@ class BitcoinUnits: public QAbstractListModel
 public:
     explicit BitcoinUnits(QObject *parent);
 
-    /** Dash units.
+    /** PirateCash units.
       @note Source: https://en.bitcoin.it/wiki/Units . Please add only sensible ones
      */
     enum class Unit {
-        DASH,
-        mDASH,
-        uDASH,
-        duffs
+        PIRATECASH,
+        mPIRATECASH,
+        uPIRATECASH,
+        corsars
     };
     Q_ENUM(Unit)
 
@@ -65,7 +65,7 @@ public:
     static QString name(Unit unit);
     //! Longer description
     static QString description(Unit unit);
-    //! Number of Satoshis (1e-8) per unit
+    //! Number of corsars (1e-8) per unit
     static qint64 factor(Unit unit);
     //! Number of decimals left
     static int decimals(Unit unit);

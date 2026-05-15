@@ -47,7 +47,7 @@ private Q_SLOTS:
     void updateDisplayUnit(BitcoinUnit unit);
 
 private:
-    BitcoinUnit m_display_unit{BitcoinUnit::DASH};
+    BitcoinUnit m_display_unit{BitcoinUnit::PIRATECASH};
     CAmount m_creditpool_diff{0};
     CAmount m_creditpool_limit{0};
     CAmount m_creditpool_locked{0};
