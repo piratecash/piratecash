@@ -13,6 +13,7 @@
 
 #include <coinjoin/common.h>
 #include <coinjoin/options.h>
+#include <evo/dmn_types.h>
 
 namespace wallet {
 void CWallet::InitCJSaltFromDb()
@@ -155,7 +156,7 @@ std::vector<CompactTallyItem> CWallet::SelectCoinsGroupedByAddresses(bool fSkipD
 
         const CWalletTx& wtx{(*it).second};
 
-        if (wtx.IsCoinBase() && GetTxBlocksToMaturity(wtx) > 0) continue;
+        if (IsTxImmatureCoinBase(wtx)) continue;
         if (fSkipUnconfirmed && !CachedTxIsTrusted(*this, wtx)) continue;
         if (GetTxDepthInMainChain(wtx) < 0) continue;
 
@@ -180,6 +181,7 @@ std::vector<CompactTallyItem> CWallet::SelectCoinsGroupedByAddresses(bool fSkipD
             if (fAnonymizable) {
                 // ignore collaterals
                 if (CoinJoin::IsCollateralAmount(wtx.tx->vout[i].nValue)) continue;
+                if (fMasternodeMode && dmn_types::IsCollateralAmount(wtx.tx->vout[i].nValue)) continue;
                 // ignore outputs that are 10 times smaller then the smallest denomination
                 // otherwise they will just lead to higher fee / lower priority
                 if (wtx.tx->vout[i].nValue <= nSmallestDenom / 10) continue;
@@ -537,7 +539,7 @@ CoinJoinCredits CachedTxGetAvailableCoinJoinCredits(const CWallet& wallet, const
     AssertLockHeld(wallet.cs_wallet);
 
     // Must wait until coinbase is safely deep enough in the chain before valuing it
-    if (wtx.IsCoinBase() && wallet.GetTxBlocksToMaturity(wtx) > 0) return ret;
+    if (wallet.IsTxImmatureCoinBase(wtx)) return ret;
 
     int nDepth = wallet.GetTxDepthInMainChain(wtx);
     if (nDepth < 0) return ret;

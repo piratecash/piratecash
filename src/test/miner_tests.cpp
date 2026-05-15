@@ -134,10 +134,10 @@ void MinerTestingSetup::TestPackageSelection(const CChainParams& chainparams, co
     m_node.mempool->addUnchecked(entry.Fee(50000).Time(Now<NodeSeconds>()).SpendsCoinbase(false).FromTx(tx));
 
     std::unique_ptr<CBlockTemplate> pblocktemplate = AssemblerForTest(chainparams).CreateNewBlock(scriptPubKey);
-    BOOST_REQUIRE_EQUAL(pblocktemplate->block.vtx.size(), 4U);
-    BOOST_CHECK(pblocktemplate->block.vtx[1]->GetHash() == hashParentTx);
-    BOOST_CHECK(pblocktemplate->block.vtx[2]->GetHash() == hashHighFeeTx);
-    BOOST_CHECK(pblocktemplate->block.vtx[3]->GetHash() == hashMediumFeeTx);
+    BOOST_REQUIRE_EQUAL(pblocktemplate->block->vtx.size(), 4U);
+    BOOST_CHECK(pblocktemplate->block->vtx[1]->GetHash() == hashParentTx);
+    BOOST_CHECK(pblocktemplate->block->vtx[2]->GetHash() == hashHighFeeTx);
+    BOOST_CHECK(pblocktemplate->block->vtx[3]->GetHash() == hashMediumFeeTx);
 
     // Test that a package below the block min tx fee doesn't get included
     tx.vin[0].prevout.hash = hashHighFeeTx;
@@ -156,9 +156,9 @@ void MinerTestingSetup::TestPackageSelection(const CChainParams& chainparams, co
     m_node.mempool->addUnchecked(entry.Fee(feeToUse).FromTx(tx));
     pblocktemplate = AssemblerForTest(chainparams).CreateNewBlock(scriptPubKey);
     // Verify that the free tx and the low fee tx didn't get selected
-    for (size_t i=0; i<pblocktemplate->block.vtx.size(); ++i) {
-        BOOST_CHECK(pblocktemplate->block.vtx[i]->GetHash() != hashFreeTx);
-        BOOST_CHECK(pblocktemplate->block.vtx[i]->GetHash() != hashLowFeeTx);
+    for (size_t i=0; i<pblocktemplate->block->vtx.size(); ++i) {
+        BOOST_CHECK(pblocktemplate->block->vtx[i]->GetHash() != hashFreeTx);
+        BOOST_CHECK(pblocktemplate->block->vtx[i]->GetHash() != hashLowFeeTx);
     }
 
     // Test that packages above the min relay fee do get included, even if one
@@ -169,9 +169,9 @@ void MinerTestingSetup::TestPackageSelection(const CChainParams& chainparams, co
     hashLowFeeTx = tx.GetHash();
     m_node.mempool->addUnchecked(entry.Fee(feeToUse+2).FromTx(tx));
     pblocktemplate = AssemblerForTest(chainparams).CreateNewBlock(scriptPubKey);
-    BOOST_REQUIRE_EQUAL(pblocktemplate->block.vtx.size(), 6U);
-    BOOST_CHECK(pblocktemplate->block.vtx[4]->GetHash() == hashFreeTx);
-    BOOST_CHECK(pblocktemplate->block.vtx[5]->GetHash() == hashLowFeeTx);
+    BOOST_REQUIRE_EQUAL(pblocktemplate->block->vtx.size(), 6U);
+    BOOST_CHECK(pblocktemplate->block->vtx[4]->GetHash() == hashFreeTx);
+    BOOST_CHECK(pblocktemplate->block->vtx[5]->GetHash() == hashLowFeeTx);
 
     // Test that transaction selection properly updates ancestor fee
     // calculations as ancestor transactions get included in a block.
@@ -193,9 +193,9 @@ void MinerTestingSetup::TestPackageSelection(const CChainParams& chainparams, co
     pblocktemplate = AssemblerForTest(chainparams).CreateNewBlock(scriptPubKey);
 
     // Verify that this tx isn't selected.
-    for (size_t i=0; i<pblocktemplate->block.vtx.size(); ++i) {
-        BOOST_CHECK(pblocktemplate->block.vtx[i]->GetHash() != hashFreeTx2);
-        BOOST_CHECK(pblocktemplate->block.vtx[i]->GetHash() != hashLowFeeTx2);
+    for (size_t i=0; i<pblocktemplate->block->vtx.size(); ++i) {
+        BOOST_CHECK(pblocktemplate->block->vtx[i]->GetHash() != hashFreeTx2);
+        BOOST_CHECK(pblocktemplate->block->vtx[i]->GetHash() != hashLowFeeTx2);
     }
 
     // This tx will be mineable, and should cause hashLowFeeTx2 to be selected
@@ -204,8 +204,8 @@ void MinerTestingSetup::TestPackageSelection(const CChainParams& chainparams, co
     tx.vout[0].nValue = 100000000 - 10000; // 10k satoshi fee
     m_node.mempool->addUnchecked(entry.Fee(10000).FromTx(tx));
     pblocktemplate = AssemblerForTest(chainparams).CreateNewBlock(scriptPubKey);
-    BOOST_REQUIRE_EQUAL(pblocktemplate->block.vtx.size(), 9U);
-    BOOST_CHECK(pblocktemplate->block.vtx[8]->GetHash() == hashLowFeeTx2);
+    BOOST_REQUIRE_EQUAL(pblocktemplate->block->vtx.size(), 9U);
+    BOOST_CHECK(pblocktemplate->block->vtx[8]->GetHash() == hashLowFeeTx2);
 }
 
 void MinerTestingSetup::TestBasicMining(const CChainParams& chainparams, const CScript& scriptPubKey, const std::vector<CTransactionRef>& txFirst, int baseheight)
@@ -474,7 +474,7 @@ void MinerTestingSetup::TestBasicMining(const CChainParams& chainparams, const C
     // it into the template because we still check IsFinalTx in CreateNewBlock,
     // but relative locked txs will if inconsistently added to mempool.
     // For now these will still generate a valid template until BIP68 soft fork
-    BOOST_CHECK_EQUAL(pblocktemplate->block.vtx.size(), 3U);
+    BOOST_CHECK_EQUAL(pblocktemplate->block->vtx.size(), 3U);
     // However if we advance height by 1 and time by SEQUENCE_LOCK_TIME, all of them should be mined
     for (int i = 0; i < CBlockIndex::nMedianTimeSpan; ++i) {
         CBlockIndex* ancestor{Assert(m_node.chainman->ActiveChain().Tip()->GetAncestor(m_node.chainman->ActiveChain().Tip()->nHeight - i))};
@@ -543,17 +543,17 @@ void MinerTestingSetup::TestPrioritisedMining(const CChainParams& chainparams, c
     m_node.mempool->addUnchecked(entry.Fee(0).SpendsCoinbase(false).FromTx(tx));
 
     auto pblocktemplate = AssemblerForTest(chainparams).CreateNewBlock(scriptPubKey);
-    BOOST_REQUIRE_EQUAL(pblocktemplate->block.vtx.size(), 6U);
-    BOOST_CHECK(pblocktemplate->block.vtx[1]->GetHash() == hashFreeParent);
-    BOOST_CHECK(pblocktemplate->block.vtx[2]->GetHash() == hashFreePrioritisedTx);
-    BOOST_CHECK(pblocktemplate->block.vtx[3]->GetHash() == hashParentTx);
-    BOOST_CHECK(pblocktemplate->block.vtx[4]->GetHash() == hashPrioritsedChild);
-    BOOST_CHECK(pblocktemplate->block.vtx[5]->GetHash() == hashFreeChild);
-    for (size_t i=0; i<pblocktemplate->block.vtx.size(); ++i) {
+    BOOST_REQUIRE_EQUAL(pblocktemplate->block->vtx.size(), 6U);
+    BOOST_CHECK(pblocktemplate->block->vtx[1]->GetHash() == hashFreeParent);
+    BOOST_CHECK(pblocktemplate->block->vtx[2]->GetHash() == hashFreePrioritisedTx);
+    BOOST_CHECK(pblocktemplate->block->vtx[3]->GetHash() == hashParentTx);
+    BOOST_CHECK(pblocktemplate->block->vtx[4]->GetHash() == hashPrioritsedChild);
+    BOOST_CHECK(pblocktemplate->block->vtx[5]->GetHash() == hashFreeChild);
+    for (size_t i=0; i<pblocktemplate->block->vtx.size(); ++i) {
         // The FreeParent and FreeChild's prioritisations should not impact the child.
-        BOOST_CHECK(pblocktemplate->block.vtx[i]->GetHash() != hashFreeGrandchild);
+        BOOST_CHECK(pblocktemplate->block->vtx[i]->GetHash() != hashFreeGrandchild);
         // De-prioritised transaction should not be included.
-        BOOST_CHECK(pblocktemplate->block.vtx[i]->GetHash() != hashMediumFeeTx);
+        BOOST_CHECK(pblocktemplate->block->vtx[i]->GetHash() != hashMediumFeeTx);
     }
 }
 
@@ -576,7 +576,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
 
     auto createAndProcessEmptyBlock = [&]() {
         int i = m_node.chainman->ActiveChain().Height() % blockinfo_size;
-        CBlock *pblock = &pemptyblocktemplate->block; // pointer for convenience
+        CBlock *pblock = pemptyblocktemplate->block.get(); // pointer for convenience
         {
             LOCK(cs_main);
             pblock->nVersion = VERSIONBITS_TOP_BITS;
@@ -625,7 +625,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
     SetMockTime(m_node.chainman->ActiveChain().Tip()->GetMedianTimePast() + 1);
 
     BOOST_CHECK(pblocktemplate = AssemblerForTest(chainparams).CreateNewBlock(scriptPubKey));
-    BOOST_CHECK_EQUAL(pblocktemplate->block.vtx.size(), 5U);
+    BOOST_CHECK_EQUAL(pblocktemplate->block->vtx.size(), 5U);
     } // unlock cs_main while calling InvalidateBlock
 
     BlockValidationState state;

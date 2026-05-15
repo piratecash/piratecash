@@ -209,6 +209,28 @@ void CachedTxGetAmounts(const CWallet& wallet, const CWalletTx& wtx,
     }
 
     LOCK(wallet.cs_wallet);
+    if (wtx.IsCoinStake()) {
+        CAmount coinstake_credit = 0;
+        for (unsigned int i = 0; i < wtx.tx->vout.size(); ++i) {
+            const CTxOut& txout = wtx.tx->vout[i];
+            const isminetype fIsMine = wallet.IsMine(txout);
+            if (!(fIsMine & filter)) continue;
+
+            CTxDestination address;
+            if (!ExtractDestination(txout.scriptPubKey, address) && !txout.scriptPubKey.IsUnspendable()) {
+                wallet.WalletLogPrintf("CWalletTx::GetAmounts: Unknown transaction type found, txid %s\n",
+                                        wtx.GetHash().ToString());
+                address = CNoDestination();
+            }
+
+            COutputEntry output = {address, txout.nValue, static_cast<int>(i)};
+            listReceived.push_back(output);
+            coinstake_credit += txout.nValue;
+        }
+        nFee = nDebit - coinstake_credit;
+        return;
+    }
+
     // Sent/received.
     for (unsigned int i = 0; i < wtx.tx->vout.size(); ++i)
     {
