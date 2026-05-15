@@ -11,22 +11,22 @@ set -ueo pipefail
 NETWORK_DISABLED=false
 
 if (( $# < 3 )); then
-  echo 'Usage: utxo_snapshot.sh <generate-at-height> <snapshot-out-path> <dash-cli-call ...>'
+  echo 'Usage: utxo_snapshot.sh <generate-at-height> <snapshot-out-path> <piratecash-cli-call ...>'
   echo
   echo "  if <snapshot-out-path> is '-', don't produce a snapshot file but instead print the "
   echo "  expected assumeutxo hash"
   echo
   echo 'Examples:'
   echo
-  echo "  ./contrib/devtools/utxo_snapshot.sh 570000 utxo.dat ./src/dash-cli -datadir=\$(pwd)/testdata"
-  echo '  ./contrib/devtools/utxo_snapshot.sh 570000 - ./src/dash-cli'
+  echo "  ./contrib/devtools/utxo_snapshot.sh 570000 utxo.dat ./src/piratecash-cli -datadir=\$(pwd)/testdata"
+  echo '  ./contrib/devtools/utxo_snapshot.sh 570000 - ./src/piratecash-cli'
   exit 1
 fi
 
 GENERATE_AT_HEIGHT="${1}"; shift;
 OUTPUT_PATH="${1}"; shift;
 # Most of the calls we make take a while to run, so pad with a lengthy timeout.
-BITCOIN_CLI_CALL="${*} -rpcclienttimeout=9999999"
+BITCOIN_CLI_CALL="${*} -rpcclienttimeout=60606999"
 
 # Check if the node is pruned and get the pruned block height
 PRUNED=$( ${BITCOIN_CLI_CALL} getblockchaininfo | awk '/pruneheight/ {print $2}' | tr -d ',' )
