@@ -64,6 +64,7 @@
 #include <algorithm>
 #include <cassert>
 #include <deque>
+#include <limits>
 #include <numeric>
 #include <optional>
 #include <ranges>
@@ -6156,7 +6157,9 @@ bool ChainstateManager::IsQuorumTypeEnabled(const Consensus::LLMQType llmqType,
                                             std::optional<bool> optDIP0024IsActive,
                                             std::optional<bool> optHaveDIP0024Quorums) const
 {
-    constexpr int TESTNET_LLMQ_25_67_ACTIVATION_HEIGHT = 847000;
+    // PirateCash: LLMQ_25_67 was not produced by v18 testnet history, so do
+    // not require those commitments on the existing chain.
+    constexpr int TESTNET_LLMQ_25_67_ACTIVATION_HEIGHT = std::numeric_limits<int>::max();
 
     const bool fDIP0024IsActive{optDIP0024IsActive.value_or(
         DeploymentActiveAfter(pindexPrev, GetConsensus(), Consensus::DEPLOYMENT_DIP0024))};

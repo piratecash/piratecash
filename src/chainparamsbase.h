@@ -11,8 +11,8 @@
 class ArgsManager;
 
 /**
- * CBaseChainParams defines the base parameters (shared between dash-cli and dashd)
- * of a given instance of the Dash system.
+ * CBaseChainParams defines the base parameters (shared between piratecash-cli and piratecashd)
+ * of a given instance of the PirateCash system.
  */
 class CBaseChainParams
 {

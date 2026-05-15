@@ -699,6 +699,11 @@ bool CInstantSendManager::IsWaitingForTx(const uint256& txHash) const
 
 instantsend::InstantSendLockPtr CInstantSendManager::GetConflictingLock(const CTransaction& tx) const
 {
+    // Ignore InstantSend conflicts for coinstake transactions.
+    if (tx.IsCoinStake()) {
+        return nullptr;
+    }
+
     if (!IsInstantSendEnabled()) {
         return nullptr;
     }
