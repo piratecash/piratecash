@@ -1,22 +1,59 @@
 # macOS Build Guide
 
-**Updated for macOS [11](https://developer.apple.com/documentation/macos-release-notes/macos-big-sur-11_0_1-release-notes/)**
+**Updated for MacOS [11.2](https://www.apple.com/macos/big-sur/)**
 
-This guide describes how to build dashd, command-line utilities, and GUI on macOS.
+This guide describes how to build piratecashd, command-line utilities, and GUI on macOS
+
+**Note:** The following is for Intel Macs only!
+
+## Dependencies
+
+The following dependencies are **required**:
+
+Library                                                    | Purpose    | Description
+-----------------------------------------------------------|------------|----------------------
+[automake](https://formulae.brew.sh/formula/automake)      | Build      | Generate makefile
+[libtool](https://formulae.brew.sh/formula/libtool)        | Build      | Shared library support
+[pkg-config](https://formulae.brew.sh/formula/pkg-config)  | Build      | Configure compiler and linker flags
+[boost](https://formulae.brew.sh/formula/boost)            | Utility    | Library for threading, data structures, etc
+[libevent](https://formulae.brew.sh/formula/libevent)      | Networking | OS independent asynchronous networking
+
+The following dependencies are **optional**:
+
+Library                                                         | Purpose          | Description
+--------------------------------------------------------------- |------------------|----------------------
+[berkeley-db@4](https://formulae.brew.sh/formula/berkeley-db@4) | Berkeley DB      | Wallet storage (only needed when wallet enabled)
+[qt@5](https://formulae.brew.sh/formula/qt@5)                   | GUI              | GUI toolkit (only needed when GUI enabled)
+[qrencode](https://formulae.brew.sh/formula/qrencode)           | QR codes in GUI  | Generating QR codes (only needed when GUI enabled)
+[zeromq](https://formulae.brew.sh/formula/zeromq)               | ZMQ notification | Allows generating ZMQ notifications (requires ZMQ version >= 4.0.0)
+[sqlite](https://formulae.brew.sh/formula/sqlite)               | SQLite DB        | Wallet storage (only needed when wallet enabled)
+[miniupnpc](https://formulae.brew.sh/formula/miniupnpc)         | UPnP Support     | Firewall-jumping support (needed for port mapping support)
+[libnatpmp](https://formulae.brew.sh/formula/libnatpmp)         | NAT-PMP Support  | Firewall-jumping support (needed for port mapping support)
+[python3](https://formulae.brew.sh/formula/python@3.9)          | Testing          | Python Interpreter (only needed when running the test suite)
+
+The following dependencies are **optional** packages required for deploying:
+
+Library                                             | Purpose          | Description
+----------------------------------------------------|------------------|----------------------
+[librsvg](https://formulae.brew.sh/formula/librsvg) | Deploy Dependency| Library to render SVG files
+[ds_store](https://pypi.org/project/ds-store/)      | Deploy Dependency| Examine and modify .DS_Store files
+[mac_alias](https://pypi.org/project/mac-alias/)    | Deploy Dependency| Generate/Read binary alias and bookmark records
+
+See [dependencies.md](dependencies.md) for a complete overview.
 
 ## Preparation
 
 The commands in this guide should be executed in a Terminal application.
 macOS comes with a built-in Terminal located in:
 
-```bash
+```
 /Applications/Utilities/Terminal.app
 ```
 
 ### 1. Xcode Command Line Tools
 
 The Xcode Command Line Tools are a collection of build tools for macOS.
-These tools must be installed in order to build Dash Core from source.
+These tools must be installed in order to build PirateCash Core from source.
 
 To install, run the following command from your terminal:
 
@@ -44,56 +81,49 @@ The first step is to download the required dependencies.
 These dependencies represent the packages required to get a barebones installation up and running.
 To install, run the following from your terminal:
 
-See [dependencies.md](dependencies.md) for a complete overview.
-
 ``` bash
 brew install automake libtool boost gmp pkg-config libevent
 ```
 
-For macOS 11 (Big Sur) and 12 (Monterey) you need to install a more recent version of llvm.
-
-``` bash
-brew install llvm
-```
-
-And append the following to the configure commands below:
-
-``` bash
-CC=$(brew --prefix llvm)/bin/clang CXX=$(brew --prefix llvm)/bin/clang++
-```
-
-Try `llvm@17` if compilation fails with the default version of llvm.
-
-### 4. Clone Dash repository
+### 4. Clone PirateCash repository
 
 `git` should already be installed by default on your system.
-Now that all the required dependencies are installed, let's clone the Dash Core repository to a directory.
+Now that all the required dependencies are installed, let's clone the PirateCash Core repository to a directory.
 All build scripts and commands will run from this directory.
 
 ``` bash
-git clone https://github.com/dashpay/dash.git
+git clone https://github.com/piratecash/piratecash-core.git
+cd piratecash-core
 ```
 
 ### 5. Install Optional Dependencies
 
 #### Wallet Dependencies
 
-It is not necessary to build wallet functionality to run `dashd` or  `dash-qt`.
-
-###### Descriptor Wallet Support
-
-`sqlite` is required to support for descriptor wallets.
-
-macOS ships with a useable `sqlite` package, meaning you don't need to
-install anything.
+It is not necessary to build wallet functionality to run `piratecashd` or `piratecash-qt`.
+To enable legacy wallets, you must install `berkeley-db@4`.
+To enable [descriptor wallets](descriptors.md), `sqlite` is required.
+Skip `berkeley-db@4` if you intend to *exclusively* use descriptor wallets.
 
 ###### Legacy Wallet Support
 
-`berkeley-db@4` is only required to support for legacy wallets.
+`berkeley-db@4` is required to enable support for legacy wallets.
 Skip if you don't intend to use legacy wallets.
 
 ``` bash
 brew install berkeley-db@4
+```
+
+###### Descriptor Wallet Support
+
+Note: Apple has included a useable `sqlite` package since macOS 10.14.
+You may not need to install this package.
+
+`sqlite` is required to enable support for descriptor wallets.
+Skip if you don't intend to use descriptor wallets.
+
+``` bash
+brew install sqlite
 ```
 ---
 
@@ -101,7 +131,7 @@ brew install berkeley-db@4
 
 ###### Qt
 
-Dash Core includes a GUI built with the cross-platform Qt Framework.
+PirateCash Core includes a GUI built with the cross-platform Qt Framework.
 To compile the GUI, we need to install `qt@5`.
 Skip if you don't intend to use the GUI.
 
@@ -109,8 +139,16 @@ Skip if you don't intend to use the GUI.
 brew install qt@5
 ```
 
+Ensure that the `qt@5` package is installed, not the `qt` package.
+If 'qt' is installed, the build process will fail.
+if installed, remove the `qt` package with the following command:
+
+``` bash
+brew uninstall qt
+```
+
 Note: Building with Qt binaries downloaded from the Qt website is not officially supported.
-See the notes in [#7714](https://github.com/dashpay/dash/issues/7714).
+See the notes in [#7714](https://github.com/bitcoin/bitcoin/issues/7714).
 
 ###### qrencode
 
@@ -176,14 +214,14 @@ brew install python
 
 #### Deploy Dependencies
 
-You can deploy a `.zip` containing the Dash Core application using `make deploy`.
+You can deploy a `.zip` containing the PirateCash Core application using `make deploy`.
 It is required that you have `python` installed.
 
-## Building Dash Core
+## Building PirateCash Core
 
 ### 1. Configuration
 
-There are many ways to configure Dash Core, here are a few common examples:
+There are many ways to configure PirateCash Core, here are a few common examples:
 
 ##### Wallet (BDB + SQlite) Support, No GUI:
 
@@ -195,6 +233,17 @@ Additionally, this explicitly disables the GUI.
 ./autogen.sh
 ./configure --with-gui=no
 ```
+
+###### Berkeley DB
+
+It is recommended to use Berkeley DB 4.8. If you have to build it yourself,
+you can use [the installation script included in contrib/](contrib/install_db4.sh)
+like so:
+
+```shell
+./contrib/install_db4.sh .
+```
+
 ##### Wallet (only SQlite) and GUI Support:
 
 This explicitly enables the GUI and disables legacy wallet support.
@@ -211,7 +260,7 @@ If `sqlite` is not installed, then wallet functionality will be disabled.
 
 ``` bash
 ./autogen.sh
-./configure --without-wallet --with-gui=no
+./configure --disable-wallet --with-gui=no
 ```
 
 ##### Further Configuration
@@ -226,7 +275,7 @@ Examine the output of the following command for a full list of configuration opt
 ### 2. Compile
 
 After configuration, you are ready to compile.
-Run the following in your terminal to compile Dash Core:
+Run the following in your terminal to compile PirateCash Core:
 
 ``` bash
 make        # use "-j N" here for N parallel jobs
@@ -241,41 +290,41 @@ You can also create a  `.zip` containing the `.app` bundle by running the follow
 make deploy
 ```
 
-## Running Dash Core
+## Running PirateCash Core
 
-Dash Core should now be available at `./src/dashd`.
-If you compiled support for the GUI, it should be available at `./src/qt/dash-qt`.
+PirateCash Core should now be available at `./src/piratecashd`.
+If you compiled support for the GUI, it should be available at `./src/qt/piratecash-qt`.
 
-The first time you run `dashd` or `dash-qt`, it will start downloading the blockchain.
+The first time you run `piratecashd` or `piratecash-qt`, it will start downloading the blockchain.
 This process could take many hours, or even days on slower than average systems.
 
 By default, blockchain and wallet data files will be stored in:
 
 ``` bash
-/Users/${USER}/Library/Application Support/Dash/
+/Users/${USER}/Library/Application Support/PirateCashCore/
 ```
 
 Before running, you may create an empty configuration file:
 
 ```shell
-mkdir -p "/Users/${USER}/Library/Application Support/DashCore"
+mkdir -p "/Users/${USER}/Library/Application Support/PirateCashCore"
 
-touch "/Users/${USER}/Library/Application Support/DashCore/dash.conf"
+touch "/Users/${USER}/Library/Application Support/PirateCashCore/piratecash.conf"
 
-chmod 600 "/Users/${USER}/Library/Application Support/DashCore/dash.conf"
+chmod 600 "/Users/${USER}/Library/Application Support/PirateCashCore/piratecash.conf"
 ```
 
 You can monitor the download process by looking at the debug.log file:
 
 ```shell
-tail -f $HOME/Library/Application\ Support/DashCore/debug.log
+tail -f $HOME/Library/Application\ Support/PirateCashCore/debug.log
 ```
 
 ## Other commands:
 
 ```shell
-./src/dashd -daemon      # Starts the dashd daemon.
-./src/dash-cli --help    # Outputs a list of command-line options.
-./src/dash-cli help      # Outputs a list of RPC commands when the daemon is running.
-./src/qt/dash-qt -server # Starts the dash-qt server mode, allows dash-cli control
+./src/piratecashd -daemon      # Starts the PirateCash daemon.
+./src/piratecash-cli --help    # Outputs a list of command-line options.
+./src/piratecash-cli help      # Outputs a list of RPC commands when the daemon is running.
+./src/qt/piratecash-qt -server # Starts the PirateCash Qt server mode, allows piratecash-cli control
 ```

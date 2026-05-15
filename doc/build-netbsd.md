@@ -1,118 +1,84 @@
-# NetBSD Build Guide
+NetBSD Build Guide
+======================
+**Updated for NetBSD [8.0](https://www.netbsd.org/releases/formal-8/NetBSD-8.0.html)**
 
-Updated for NetBSD [9.2](https://netbsd.org/releases/formal-9/NetBSD-9.2.html).
+This guide describes how to build piratecashd and command-line utilities on NetBSD.
 
-This guide describes how to build dashd, command-line utilities, and GUI on NetBSD.
+This guide does not contain instructions for building the GUI.
 
-**This guide has not been tested for building Dash Core and may fail. Please report your results; contributions welcome.**
+**This guide has not been tested for building PirateCash Core and is expected to fail due to missing `bls_piratecash` and `backtrace`. Please report your results; contributions welcome.**
 
-## Preparation
+Preparation
+-------------
 
-### 1. Install Required Dependencies
-
-Install the required dependencies the usual way you [install software on NetBSD](https://www.netbsd.org/docs/guide/en/chap-boot.html#chap-boot-pkgsrc).
-The example commands below use `pkgin`.
-
-```bash
-pkgin install autoconf automake libtool pkg-config git gmake boost libevent gmp
+You will need the following modules, which can be installed via pkgsrc or pkgin:
 
 ```
+autoconf
+automake
+boost
+git
+gmake
+gmp
+libevent
+libtool
+pkg-config
+python37
 
-NetBSD currently ships with an older version of `gcc` than is needed to build. You should upgrade your `gcc` and then pass this new version to the configure script.
-
-For example, grab `gcc9`:
-```
-pkgin install gcc9
-```
-
-Then, when configuring, pass the following:
-```bash
-./configure
-    ...
-    CC="/usr/pkg/gcc9/bin/gcc" \
-    CXX="/usr/pkg/gcc9/bin/g++" \
-    ...
+git clone https://github.com/piratecash/piratecash-core.git
 ```
 
 See [dependencies.md](dependencies.md) for a complete overview.
 
-### 2. Clone Dash Core Repo
+### Building BerkeleyDB
 
-Clone the Dash Core repository to a directory. All build scripts and commands will run from this directory.
+BerkeleyDB is only necessary for the wallet functionality. To skip this, pass
+`--disable-wallet` to `./configure` and skip to the next section.
 
-```bash
-git clone https://github.com/dashpay/dash.git
-```
-
-### 3. Install Optional Dependencies
-
-#### Wallet Dependencies
-
-It is not necessary to build wallet functionality to run dashd or the GUI.
-
-###### Descriptor Wallet Support
-
-`sqlite3` is required to enable support for [descriptor wallets](https://github.com/dashpay/dash/blob/master/doc/descriptors.md).
+It is recommended to use Berkeley DB 4.8. You cannot use the BerkeleyDB library
+from ports, for the same reason as boost above (g++/libstd++ incompatibility).
+If you have to build it yourself, you can use [the installation script included
+in contrib/](/contrib/install_db4.sh) like so:
 
 ```bash
-pkgin install sqlite3
+./contrib/install_db4.sh `pwd`
 ```
 
-###### Legacy Wallet Support
-
-`db4` is required to enable support for legacy wallets.
+from the root of the repository. Then set `BDB_PREFIX` for the next section:
 
 ```bash
-pkgin install db4
+export BDB_PREFIX="$PWD/db4"
 ```
 
-#### GUI Dependencies
+### Building PirateCash Core
 
-Dash Core includes a GUI built with the cross-platform Qt Framework. To compile the GUI, we need to install `qt5`.
+**Important**: Use `gmake` (the non-GNU `make` will exit with an error).
 
-```bash
-pkgin install qt5
-```
-
-The GUI can encode addresses in a QR Code. To build in QR support for the GUI, install `qrencode`.
-
-```bash
-pkgin install qrencode
-```
-
-#### Test Suite Dependencies
-
-There is an included test suite that is useful for testing code changes when developing.
-To run the test suite (recommended), you will need to have Python 3 installed:
-
-```bash
-pkgin install python37
-```
-
-### Building Dash Core
-
-**Note**: Use `gmake` (the non-GNU `make` will exit with an error).
-
-
-### 1. Configuration
-
-There are many ways to configure Dash Core. Here is an example that
-explicitly disables the wallet and GUI:
-
+With wallet:
 ```bash
 ./autogen.sh
-./configure --without-wallet --with-gui=no \
-    CPPFLAGS="-I/usr/pkg/include" \
+./configure --with-gui=no CPPFLAGS="-I/usr/pkg/include" \
+    LDFLAGS="-L/usr/pkg/lib" \
+    BOOST_CPPFLAGS="-I/usr/pkg/include" \
+    BOOST_LDFLAGS="-L/usr/pkg/lib" \
+    BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" \
+    BDB_CFLAGS="-I${BDB_PREFIX}/include" \
     MAKE=gmake
 ```
 
-For a full list of configuration options, see the output of `./configure --help`
-
-### 2. Compile
+Without wallet:
+```bash
+./autogen.sh
+./configure --with-gui=no --disable-wallet \
+    CPPFLAGS="-I/usr/pkg/include" \
+    LDFLAGS="-L/usr/pkg/lib" \
+    BOOST_CPPFLAGS="-I/usr/pkg/include" \
+    BOOST_LDFLAGS="-L/usr/pkg/lib" \
+    MAKE=gmake
+```
 
 Build and run the tests:
-
 ```bash
 gmake # use "-j N" here for N parallel jobs
-gmake check # Run tests if Python 3 is available
+gmake check
 ```

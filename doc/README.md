@@ -1,37 +1,37 @@
-Dash Core
+PirateCash Core
 ==========
 
-This is the official reference wallet for Dash digital currency and comprises the backbone of the Dash peer-to-peer network. You can [download Dash Core](https://www.dash.org/downloads/) or [build it yourself](#building) using the guides below.
+This is the official reference wallet for PirateCash digital currency and comprises the backbone of the PirateCash peer-to-peer network. You can [download PirateCash Core](https://p.cash/en/download/) or [build it yourself](#building) using the guides below.
 
 Running
 ---------------------
-The following are some helpful notes on how to run Dash Core on your native platform.
+The following are some helpful notes on how to run PirateCash Core on your native platform.
 
 ### Unix
 
 Unpack the files into a directory and run:
 
-- `bin/dash-qt` (GUI) or
-- `bin/dashd` (headless)
+- `bin/piratecash-qt` (GUI) or
+- `bin/piratecashd` (headless)
 
 ### Windows
 
-Unpack the files into a directory, and then run dash-qt.exe.
+Unpack the files into a directory, and then run piratecash-qt.exe.
 
 ### macOS
 
-Drag Dash Core to your applications folder, and then run Dash Core.
+Drag PirateCash Core to your applications folder, and then run PirateCash Core.
 
 ### Need Help?
 
-* See the [Dash documentation](https://docs.dash.org)
+* See the [PirateCash documentation](https://piratecash.net/)
 for help and more information.
-* Ask for help on [Dash Discord](http://staydashy.com)
-* Ask for help on the [Dash Forum](https://dash.org/forum)
+* Ask for help on [PirateCash Discord](https://discord.gg/cbTdqxx)
+* Ask for help on the [PirateCash Forum](https://t.me/joinchat/FtUaLREioKVyF6EPNVtnIQ)
 
 Building
 ---------------------
-The following are developer notes on how to build Dash Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build PirateCash Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
 - [Dependencies](dependencies.md)
 - [macOS Build Notes](build-osx.md)
@@ -43,7 +43,7 @@ The following are developer notes on how to build Dash Core on your native platf
 
 Development
 ---------------------
-The Dash Core repo's [root README](/README.md) contains relevant information on the development process and automated testing.
+The PirateCash Core repo's [root README](/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Productivity Notes](productivity.md)
@@ -58,25 +58,24 @@ The Dash Core repo's [root README](/README.md) contains relevant information on 
 - [BIPS](bips.md)
 - [Dnsseed Policy](dnsseed-policy.md)
 - [Benchmarking](benchmarking.md)
-- [Internal Design Docs](design/)
 
 ### Resources
-* See the [Dash Developer Documentation](https://dashcore.readme.io/)
+* See the [PirateCash Developer Documentation](https://piratecashcore.readme.io/)
   for technical specifications and implementation details.
-* Discuss on the [Dash Forum](https://dash.org/forum), in the Development & Technical Discussion board.
-* Discuss on [Dash Discord](http://staydashy.com)
-* Discuss on [Dash Developers Discord](http://chat.dashdevs.org/)
+* Discuss on the [PirateCash Forum](https://t.me/joinchat/FtUaLREioKVyF6EPNVtnIQ), in the Development & Technical Discussion board.
+* Discuss on [PirateCash Discord](https://discord.gg/cbTdqxx)
+* Discuss on [PirateCash Developers Discord](http://chat.piratecashdevs.org/)
 
 ### Miscellaneous
 - [Assets Attribution](assets-attribution.md)
-- [dash.conf Configuration File](dash-conf.md)
+- [Assumeutxo design](assumeutxo.md)
+- [piratecash.conf Configuration File](piratecash-conf.md)
 - [CJDNS Support](cjdns.md)
 - [Files](files.md)
 - [Fuzz-testing](fuzzing.md)
 - [I2P Support](i2p.md)
 - [Init Scripts (systemd/upstart/openrc)](init.md)
 - [Managing Wallets](managing-wallets.md)
-- [Multisig Tutorial](multisig-tutorial.md)
 - [P2P bad ports definition and list](p2p-bad-ports.md)
 - [PSBT support](psbt.md)
 - [Reduce Memory](reduce-memory.md)
