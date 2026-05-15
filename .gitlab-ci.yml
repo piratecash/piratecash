@@ -1,0 +1,396 @@
+image: "ubuntu:jammy"
+
+variables:
+  DOCKER_DRIVER: overlay2
+  FAST_MODE: "false" # when "true", only run linter on arm and unit/functional tests on linux64, skip everything else
+  CI_FAILFAST_TEST_LEAVE_DANGLING: "1"  # Gitlab CI does not care about dangling process and setting this variable avoids killing the CI script itself on error
+
+workflow:
+  rules:
+    - when: always
+
+stages:
+  - builder-image
+  - build-depends
+  - build
+  - test
+
+builder-image:
+  stage: builder-image
+  image: docker:20.10.20
+  services:
+    - name: docker:20.10.20-dind
+      command: ["--tls=false"]
+  variables:
+    DOCKER_HOST: "tcp://docker:2375"
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  before_script:
+    - echo $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
+  script:
+    - cd contrib/containers/ci
+    - docker pull $CI_REGISTRY_IMAGE:builder-$CI_COMMIT_REF_SLUG || true
+    - docker pull $CI_REGISTRY_IMAGE:builder-develop || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE:builder-$CI_COMMIT_REF_SLUG --cache-from $CI_REGISTRY_IMAGE:builder-develop -t $CI_REGISTRY_IMAGE:builder-$CI_COMMIT_REF_SLUG -f Dockerfile .
+    - docker push $CI_REGISTRY_IMAGE:builder-$CI_COMMIT_REF_SLUG
+
+.build-depends-template:
+  stage: build-depends
+  rules:
+    - when: on_success
+  needs:
+    - builder-image
+  image: $CI_REGISTRY_IMAGE:builder-$CI_COMMIT_REF_SLUG
+  before_script:
+    - |
+      echo HOST=${HOST}
+      if [[ "${HOST}" == "x86_64-apple-darwin" ]]; then
+        ./contrib/containers/guix/scripts/setup-sdk
+      fi
+  script:
+    - make -j$(nproc) -C depends HOST=$HOST $DEP_OPTS
+  cache:
+    # Let all branches share the same cache, which is ok because the depends subsystem is able to handle this properly (it works with hashes of all scripts)
+    key:
+      files:
+        - contrib/containers/ci/Dockerfile
+      prefix: ${CI_JOB_NAME}
+    paths:
+      - depends/built
+      - depends/sdk-sources
+  artifacts:
+    name: depends-${CI_JOB_NAME}
+    when: on_success
+    paths:
+      - depends/$HOST
+      - depends/SDKs
+
+.base-template:
+  image: $CI_REGISTRY_IMAGE:builder-$CI_COMMIT_REF_SLUG
+  rules:
+    - when: on_success
+  before_script:
+    - export CACHE_DIR=$CI_PROJECT_DIR/cache
+    - echo BUILD_TARGET=$BUILD_TARGET
+    - source ./ci/matrix.sh
+
+    # Setup some environment variables
+    - |
+      if [ "$CI_EXTERNAL_PULL_REQUEST_IID" != "" ]; then
+        export PULL_REQUEST="true"
+      else
+        # CI_EXTERNAL_PULL_REQUEST_IID is false every time until https://gitlab.com/gitlab-org/gitlab/issues/5667 is done
+        # Until then, we're using https://github.com/brndnmtthws/labhub atm to mirror Github pull requests as branches into Gitlab,
+        # which allows us to use Gitlab CI for Github.
+        if [[ $CI_COMMIT_REF_NAME = "master" ]] || [[ $CI_COMMIT_REF_NAME = "develop" ]] || [[ $CI_COMMIT_REF_NAME =~ ^v([0-9]{1,2}\.)*x$ ]]; then
+          # These names are reserved for protected branches
+          export PULL_REQUEST="false"
+        else
+          # Everything else including experemental "feat/smth" branches must be merged via PRs, treat them as such
+          export PULL_REQUEST="true"
+          # CI_COMMIT_BEFORE_SHA is also invalid until #5667 is implemented, so we need to figure it out by ourself
+          git fetch origin develop
+          export CI_COMMIT_BEFORE_SHA="$(git merge-base origin/develop HEAD)"
+        fi
+      fi
+    - export COMMIT_RANGE="$CI_COMMIT_BEFORE_SHA..$CI_COMMIT_SHA"
+    - export JOB_NUMBER="$CI_JOB_ID"
+    - export HOST_SRC_DIR=$CI_PROJECT_DIR
+    - echo PULL_REQUEST=$PULL_REQUEST COMMIT_RANGE=$COMMIT_RANGE HOST_SRC_DIR=$HOST_SRC_DIR CACHE_DIR=$CACHE_DIR
+    - echo "Commit log:" && git log --format=fuller -1
+
+.build-template:
+  stage: build
+  extends: .base-template
+  variables:
+    CCACHE_SIZE: "400M"
+  script:
+    - ./ci/build_src.sh
+    - ./ci/test_unittests.sh # Run unit tests in build stage to avoid creating too many parallel jobs
+  cache:
+    # Let all branches share the same cache, which is ok because ccache is able to handle it
+    key:
+      files:
+        - contrib/containers/ci/Dockerfile
+      prefix: ${CI_JOB_NAME}
+    paths:
+      - cache/ccache
+  artifacts:
+    name: build-${BUILD_TARGET}
+    when: always
+    paths:
+      - build-ci
+    # Exclude some less important binaries to reduce the size of the artifacts
+    exclude:
+      - build-ci/piratecashcore-$BUILD_TARGET/src/**/*.a
+      - build-ci/piratecashcore-$BUILD_TARGET/src/**/*.o
+      - build-ci/piratecashcore-$BUILD_TARGET/src/bench/bench_piratecash
+      - build-ci/piratecashcore-$BUILD_TARGET/src/bench/bench_piratecash.exe
+      - build-ci/piratecashcore-$BUILD_TARGET/src/qt/test/test_piratecash-qt
+      - build-ci/piratecashcore-$BUILD_TARGET/src/qt/test/test_piratecash-qt.exe
+      - build-ci/piratecashcore-$BUILD_TARGET/src/test/test_piratecash
+      - build-ci/piratecashcore-$BUILD_TARGET/src/test/test_piratecash.exe
+      - build-ci/piratecashcore-$BUILD_TARGET/src/test/fuzz/*
+    expire_in: 3 days
+
+.test-template:
+  stage: test
+  extends: .base-template
+  variables:
+    INTEGRATION_TESTS_ARGS: "--extended --exclude feature_pruning,feature_dbcrash"
+  script:
+    - echo "INTEGRATION_TESTS_ARGS=${INTEGRATION_TESTS_ARGS}"
+    - ./ci/test_integrationtests.sh $INTEGRATION_TESTS_ARGS
+  cache:
+    # Let all branches share the same cache, which is ok because get_previous_releases.py extracts release binaries in separate folders
+    key:
+      files:
+        # CI files where $PREVIOUS_RELEASES_TO_DOWNLOAD is defined
+        - ci/test/00_setup_env_native_qt5.sh
+      prefix: ${CI_JOB_NAME}
+    paths:
+      - releases
+  after_script:
+    - mkdir -p $CI_PROJECT_DIR/testlogs
+  artifacts:
+    name: testlogs
+    when: always
+    paths:
+      - testlogs
+    expire_in: 3 days
+
+.skip-in-fast-mode-template:
+  rules:
+    - if: '$FAST_MODE == "true"'
+      when: never
+    - when: on_success
+
+###
+
+arm-linux-gnueabihf:
+  extends: .build-depends-template
+  variables:
+    HOST: arm-linux-gnueabihf
+
+x86_64-w64-mingw32:
+  extends:
+    - .build-depends-template
+    - .skip-in-fast-mode-template
+  variables:
+    HOST: x86_64-w64-mingw32
+
+x86_64-pc-linux-gnu_debug:
+  extends: .build-depends-template
+  variables:
+    HOST: x86_64-pc-linux-gnu
+    DEP_OPTS: "DEBUG=1"
+
+x86_64-pc-linux-gnu_nowallet:
+  extends:
+    - .build-depends-template
+    - .skip-in-fast-mode-template
+  variables:
+    HOST: x86_64-pc-linux-gnu
+    DEP_OPTS: "NO_WALLET=1"
+
+x86_64-pc-linux-gnu_multiprocess:
+  extends:
+    - .build-depends-template
+    - .skip-in-fast-mode-template
+  variables:
+    HOST: x86_64-pc-linux-gnu
+    DEP_OPTS: "DEBUG=1 MULTIPROCESS=1"
+
+x86_64-apple-darwin:
+  extends:
+    - .build-depends-template
+    - .skip-in-fast-mode-template
+  variables:
+    HOST: x86_64-apple-darwin
+
+###
+
+arm-linux-build:
+  extends: .build-template
+  needs:
+    - arm-linux-gnueabihf
+  variables:
+    BUILD_TARGET: arm-linux
+
+win64-build:
+  extends:
+    - .build-template
+    - .skip-in-fast-mode-template
+  needs:
+    - x86_64-w64-mingw32
+  variables:
+    BUILD_TARGET: win64
+
+linux64-build:
+  extends: .build-template
+  needs:
+    - x86_64-pc-linux-gnu_debug
+  variables:
+    BUILD_TARGET: linux64
+
+linux64_cxx20-build:
+  extends:
+    - .build-template
+    - .skip-in-fast-mode-template
+  needs:
+    - x86_64-pc-linux-gnu_debug
+  variables:
+    BUILD_TARGET: linux64_cxx20
+
+linux64_sqlite-build:
+  extends:
+    - .build-template
+    - .skip-in-fast-mode-template
+  needs:
+    - x86_64-pc-linux-gnu_debug
+  variables:
+    BUILD_TARGET: linux64_sqlite
+
+linux64_fuzz-build:
+  extends:
+    - .build-template
+    - .skip-in-fast-mode-template
+  needs:
+    - x86_64-pc-linux-gnu_debug
+  variables:
+    BUILD_TARGET: linux64_fuzz
+
+#linux64_asan-build:
+#  extends:
+#    - .build-template
+#    - .skip-in-fast-mode-template
+#  needs:
+#    - x86_64-pc-linux-gnu_debug
+#  variables:
+#    BUILD_TARGET: linux64_asan
+
+linux64_tsan-build:
+  extends:
+    - .build-template
+    - .skip-in-fast-mode-template
+  needs:
+    - x86_64-pc-linux-gnu_debug
+  variables:
+    BUILD_TARGET: linux64_tsan
+
+linux64_ubsan-build:
+  extends:
+    - .build-template
+    - .skip-in-fast-mode-template
+  needs:
+    - x86_64-pc-linux-gnu_debug
+  variables:
+    BUILD_TARGET: linux64_ubsan
+
+linux64_nowallet-build:
+  extends:
+    - .build-template
+    - .skip-in-fast-mode-template
+  needs:
+    - x86_64-pc-linux-gnu_nowallet
+  variables:
+    BUILD_TARGET: linux64_nowallet
+
+linux64_multiprocess-build:
+  extends:
+    - .build-template
+    - .skip-in-fast-mode-template
+  needs:
+    - x86_64-pc-linux-gnu_multiprocess
+  variables:
+    BUILD_TARGET: linux64_multiprocess
+
+#linux64_valgrind-build:
+#  extends:
+#    - .build-template
+#    - .skip-in-fast-mode-template
+#  needs:
+#    - x86_64-pc-linux-gnu_debug
+#  variables:
+#    BUILD_TARGET: linux64_valgrind
+
+mac-build:
+  extends:
+    - .build-template
+    - .skip-in-fast-mode-template
+  needs:
+    - x86_64-apple-darwin
+  variables:
+    BUILD_TARGET: mac
+
+###
+
+linux64-test:
+  extends: .test-template
+  needs:
+    - linux64-build
+  variables:
+    BUILD_TARGET: linux64
+
+linux64_sqlite-test:
+  extends:
+    - .test-template
+    - .skip-in-fast-mode-template
+  needs:
+    - linux64_sqlite-build
+  variables:
+    BUILD_TARGET: linux64_sqlite
+
+#linux64_asan-test:
+#  extends:
+#    - .test-template
+#    - .skip-in-fast-mode-template
+#  needs:
+#    - linux64_asan-build
+#  variables:
+#    BUILD_TARGET: linux64_asan
+
+linux64_tsan-test:
+  extends:
+    - .test-template
+    - .skip-in-fast-mode-template
+  needs:
+    - linux64_tsan-build
+  variables:
+    BUILD_TARGET: linux64_tsan
+
+linux64_ubsan-test:
+  extends:
+    - .test-template
+    - .skip-in-fast-mode-template
+  needs:
+    - linux64_ubsan-build
+  variables:
+    BUILD_TARGET: linux64_ubsan
+
+linux64_multiprocess-test:
+  extends:
+    - .test-template
+    - .skip-in-fast-mode-template
+  needs:
+    - linux64_multiprocess-build
+  variables:
+    BUILD_TARGET: linux64_multiprocess
+
+linux64_nowallet-test:
+  extends:
+    - .test-template
+    - .skip-in-fast-mode-template
+  needs:
+    - linux64_nowallet-build
+  variables:
+    BUILD_TARGET: linux64_nowallet
+
+#linux64_valgrind-test:
+#  extends:
+#    - .test-template
+#    - .skip-in-fast-mode-template
+#  needs:
+#    - linux64_valgrind-build
+#  variables:
+#    BUILD_TARGET: linux64_valgrind

@@ -8,10 +8,10 @@ export LC_ALL=C.UTF-8
 
 # Make sure default datadir does not exist and is never read by creating a dummy file
 if [ "$CI_OS_NAME" == "macos" ]; then
-  echo > "${HOME}/Library/Application Support/DashCore"
+  echo > "${HOME}/Library/Application Support/PirateCore"
 else
-  CI_EXEC echo \> \$HOME/.dashcore
-  CI_EXEC_ROOT echo \> \$HOME/.dashcore
+  CI_EXEC echo \> \$HOME/.piratecore
+  CI_EXEC_ROOT echo \> \$HOME/.piratecore
 fi
 
 CI_EXEC mkdir -p "${DEPENDS_DIR}/SDKs" "${DEPENDS_DIR}/sdk-sources"
