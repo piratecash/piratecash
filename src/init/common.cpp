@@ -9,7 +9,6 @@
 #include <bls/bls.h>
 #include <clientversion.h>
 #include <crypto/sha256.h>
-#include <crypto/x11/dispatch.h>
 #include <fs.h>
 #include <key.h>
 #include <logging.h>
@@ -28,7 +27,6 @@
 namespace init {
 void SetGlobals()
 {
-    SapphireAutoDetect();
     std::string sha256_algo = SHA256AutoDetect();
     LogPrintf("Using the '%s' SHA256 implementation\n", sha256_algo);
     RandomInit();
