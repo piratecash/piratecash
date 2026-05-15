@@ -17,8 +17,12 @@ static const int32_t VERSIONBITS_LAST_OLD_BLOCK_VERSION = 4;
 static const int32_t VERSIONBITS_TOP_BITS = 0x20000000UL;
 /** What bitmask determines whether versionbits is in use */
 static const int32_t VERSIONBITS_TOP_MASK = 0xE0000000UL;
+/** What bits to set for Proof-of-Stake blocks */
+static const int32_t VERSIONBITS_POS_BIT  = CBlockHeader::POS_BIT;
+/** What bits to set for Proof-of-Stake v2 blocks */
+static const int32_t VERSIONBITS_POSV2_BITS = CBlockHeader::POSV2_BITS;
 /** Total bits available for versionbits */
-static const int32_t VERSIONBITS_NUM_BITS = 29;
+static const int32_t VERSIONBITS_NUM_BITS = 27;
 
 /** BIP 9 defines a finite-state-machine to deploy a softfork in multiple stages.
  *  State transitions happen during retarget period if conditions are met
