@@ -248,8 +248,8 @@ public:
         consensus.DIP0020Height = 1278144;
         consensus.DIP0024Height = 1278144;
         consensus.DIP0024QuorumsHeight = 1387050;
-        consensus.V19Height = 0;
-        consensus.MinBIP9WarningHeight = 0;
+        consensus.V19Height = 1858752;
+        consensus.MinBIP9WarningHeight = consensus.V19Height + consensus.nMinerConfirmationWindow;
         consensus.powLimit = uint256S("0x0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 16
         consensus.posLimit = uint256S("0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 20
         consensus.nPowTargetTimespan = 8 * 60 * 60;
@@ -1468,7 +1468,4 @@ void SelectParams(const std::string& network)
 {
     SelectBaseParams(network);
     globalChainParams = CreateChainParams(gArgs, network);
-    if (network == CBaseChainParams::MAIN) {
-        throw std::runtime_error("PirateCash mainnet is disabled until V19 activation height is configured; remove this guard deliberately");
-    }
 }
