@@ -382,7 +382,7 @@ public:
 
         nStakeMinAge = 8 * 60 * 60;
         nFirstPoSv2Block = consensus.nForkHeight;
-        nMinCorsaProtocolVersion = 13;
+        nMinCorsaProtocolVersion = 15;
 
         checkpointData = {
             {
