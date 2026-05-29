@@ -300,8 +300,8 @@ public:
         pchMessageStart[2] = 0x6d;
         pchMessageStart[3] = 0x70;
         nDefaultPort = 63636;
-        nDefaultPlatformP2PPort = 0;
-        nDefaultPlatformHTTPPort = 0;
+        nDefaultPlatformP2PPort = 26666;
+        nDefaultPlatformHTTPPort = 443;
         nPruneAfterHeight = 100000;
         m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 1;
@@ -494,8 +494,8 @@ public:
         pchMessageStart[2] = 0x72;
         pchMessageStart[3] = 0x61;
         nDefaultPort = 50666;
-        nDefaultPlatformP2PPort = 0;
-        nDefaultPlatformHTTPPort = 0;
+        nDefaultPlatformP2PPort = 26662;
+        nDefaultPlatformHTTPPort = 36663;
         nPruneAfterHeight = 1000;
         m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 1;
