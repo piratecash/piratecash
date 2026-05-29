@@ -6,8 +6,7 @@ permissions:
   attestations: write
 
 on:
-  pull_request_target:
-  push:
+  workflow_dispatch:
 
 jobs:
   build-image:
