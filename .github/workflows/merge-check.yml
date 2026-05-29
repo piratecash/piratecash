@@ -1,11 +1,6 @@
 name: Check Merge Fast-Forward Only
 
 on:
-  push:
-    branches-ignore:
-      - 'backport*'
-      - 'v1*'
-      - 'v2*'
   pull_request:
     branches-ignore:
       - 'backport*'
@@ -27,11 +22,14 @@ jobs:
           git config user.email "noreply@example.com"
 
       - name: Check merge --ff-only
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          git fetch origin master:refs/remotes/origin/master
-          git checkout -B master origin/master
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            git merge --ff-only ${{ github.event.pull_request.head.sha }}
-          else
-            git merge --ff-only ${{ github.sha }}
+          git fetch --no-tags origin \
+            "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}" \
+            "+refs/pull/${PR_NUMBER}/head:refs/remotes/pull/${PR_NUMBER}/head"
+          if ! git merge-base --is-ancestor "refs/remotes/origin/${BASE_REF}" "refs/remotes/pull/${PR_NUMBER}/head"; then
+            echo "::error::Pull request branch cannot be fast-forwarded from ${BASE_REF}. Rebase or merge the latest ${BASE_REF} first."
+            exit 1
           fi
