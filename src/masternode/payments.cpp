@@ -96,7 +96,7 @@ CAmount PlatformShare(const CAmount reward)
         CTxDestination dest;
         ExtractDestination(txout.scriptPubKey, dest);
 
-        LogPrintf("CMNPaymentsProcessor::%s -- Masternode payment %lld to %s\n", __func__, txout.nValue, EncodeDestination(dest));
+        // LogPrintf("CMNPaymentsProcessor::%s -- Masternode payment %lld to %s\n", __func__, txout.nValue, EncodeDestination(dest));
     }
 
     return true;
