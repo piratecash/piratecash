@@ -1,4 +1,4 @@
-PirateCash Core staging tree 20.0
+PirateCash Core staging tree 21.x
 ===========================
 
 https://p.cash/ https://pirate.cash/ https://piratecash.net/
