@@ -222,7 +222,7 @@ private:
     bool is_valid{false};
 
     mutable Mutex cs_mapSporksCachedActive;
-    mutable std::unordered_map<const SporkId, bool> mapSporksCachedActive GUARDED_BY(cs_mapSporksCachedActive);
+    mutable std::unordered_map<SporkId, bool> mapSporksCachedActive GUARDED_BY(cs_mapSporksCachedActive);
 
     mutable Mutex cs_mapSporksCachedValues;
     mutable std::unordered_map<SporkId, SporkValue> mapSporksCachedValues GUARDED_BY(cs_mapSporksCachedValues);

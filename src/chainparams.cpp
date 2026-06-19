@@ -281,7 +281,7 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_V20].nFalloffCoeff = 5;            // this corresponds to 10 periods
 
         consensus.vDeployments[Consensus::DEPLOYMENT_MN_RR].bit = 10;
-        consensus.vDeployments[Consensus::DEPLOYMENT_MN_RR].nStartTime = 1788220800;   // September 1, 2026
+        consensus.vDeployments[Consensus::DEPLOYMENT_MN_RR].nStartTime = 1783900800;   // July 13, 2026
         consensus.vDeployments[Consensus::DEPLOYMENT_MN_RR].nTimeout = 1819756800;     // September 1, 2027
         // NOTE: nWindowSize for MN_RR __MUST__ be greater than or equal to nSuperblockMaturityWindow for CSuperblock::GetPaymentsLimit() to work correctly
         consensus.vDeployments[Consensus::DEPLOYMENT_MN_RR].nWindowSize = 4032;
@@ -291,10 +291,10 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_MN_RR].useEHF = true;
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000004a8338c9235aa43fefb");
+        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000004b4eb4630ff3ed12777");
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x87db224be78ad0acb185f171962bb423efd9cffb7e5d90d769bbd91bc0245477");
+        consensus.defaultAssumeValid = uint256S("0x491e1503d56511a076c3a98b1702406dffb90d4f127704641b14b96fbca0f3b2");
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -382,7 +382,7 @@ public:
 
         nStakeMinAge = 8 * 60 * 60;
         nFirstPoSv2Block = consensus.nForkHeight;
-        nMinCorsaProtocolVersion = 13;
+        nMinCorsaProtocolVersion = 26;
 
         checkpointData = {
             {
@@ -399,6 +399,7 @@ public:
                 {1804000, uint256S("0x1b5864f32d005d1655ca67abb5b554a958187bf0560430273e3f9caa9d7725f9")},
                 {1841000, uint256S("0xaf7fa7803716773e15d7f24c7082ed35ebdb3261b45a6df647f5c49d08df447e")},
                 {1845505, uint256S("0x87db224be78ad0acb185f171962bb423efd9cffb7e5d90d769bbd91bc0245477")},
+                {1872222, uint256S("0x491e1503d56511a076c3a98b1702406dffb90d4f127704641b14b96fbca0f3b2")},
             }
         };
 
@@ -406,11 +407,11 @@ public:
             // TODO to be specified in a future patch.
         };
 
-        // getchaintxstats 17280 af7fa7803716773e15d7f24c7082ed35ebdb3261b45a6df647f5c49d08df447e
+        // getchaintxstats 17280 491e1503d56511a076c3a98b1702406dffb90d4f127704641b14b96fbca0f3b2
         chainTxData = ChainTxData{
-            1777779218,
-            4329712,
-            0.0193
+            1781744195,
+            4427689,
+            0.02693785415766748
         };
     }
 };
@@ -579,7 +580,7 @@ public:
 
         nStakeMinAge = 8 * 60 * 60;
         nFirstPoSv2Block = consensus.nForkHeight;
-        nMinCorsaProtocolVersion = 13;
+        nMinCorsaProtocolVersion = 26;
 
         checkpointData = {
             {
@@ -774,7 +775,7 @@ public:
 
         nStakeMinAge = 24 * 60 * 60; // 24 hours
         nFirstPoSv2Block = 78000ULL;
-        nMinCorsaProtocolVersion = 13;
+        nMinCorsaProtocolVersion = 26;
 
         checkpointData = (CCheckpointData) {
             {
@@ -1002,7 +1003,7 @@ public:
 
         nStakeMinAge = 24 * 60 * 60; // 24 hours
         nFirstPoSv2Block = 10000ULL;
-        nMinCorsaProtocolVersion = 13;
+        nMinCorsaProtocolVersion = 26;
 
         checkpointData = {
             {
