@@ -4,8 +4,11 @@ permissions:
   pull-requests: write
 
 on:
-  push:
   pull_request_target:
+    branches-ignore:
+      - 'backport*'
+      - 'v1*'
+      - 'v2*'
   pull_request_review:
     types: [submitted]
 
@@ -24,21 +27,16 @@ jobs:
           git config user.email "noreply@example.com"
 
       - name: Check merge --ff-only
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          if [[ "${{ github.ref_name }}" == "master" ]]; then
-            echo "Already on master, no need to check --ff-only"
-          else
-            git fetch --no-tags origin master:master
-            if [[ "${{ github.event_name }}" == "pull_request"* ]]; then
-              git fetch origin ${{ github.event.pull_request.base.ref }}:base_branch
-              git checkout base_branch
-              git pull --rebase=false origin pull/${{ github.event.pull_request.number }}/head
-              git checkout master
-              git merge --ff-only base_branch
-            else
-              git checkout master
-              git merge --ff-only ${{ github.sha }}
-            fi
+          git fetch --no-tags origin \
+            "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}" \
+            "+refs/pull/${PR_NUMBER}/head:refs/remotes/pull/${PR_NUMBER}/head"
+          if ! git merge-base --is-ancestor "refs/remotes/origin/${BASE_REF}" "refs/remotes/pull/${PR_NUMBER}/head"; then
+            echo "::error::Pull request branch cannot be fast-forwarded from ${BASE_REF}. Rebase or merge the latest ${BASE_REF} first."
+            exit 1
           fi
 
       - name: add labels

@@ -6,8 +6,7 @@ permissions:
   attestations: write
 
 on:
-  pull_request_target:
-  push:
+  workflow_dispatch:
 
 jobs:
   build-image:
@@ -105,6 +104,13 @@ jobs:
       - name: Create .cache folder if missing
         if: steps.guix-cache-restore.outputs.cache-hit != 'true'
         run: mkdir -p .cache
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run Guix build
         timeout-minutes: 480
