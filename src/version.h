@@ -17,10 +17,10 @@ static const int PROTOCOL_VERSION = 70237;
 static const int INIT_PROTO_VERSION = 209;
 
 //! disconnect from peers older than this proto version
-static const int MIN_PEER_PROTO_VERSION = 70227;
+static const int MIN_PEER_PROTO_VERSION = 70231;
 
 //! minimum proto version of masternode to accept in DKGs
-static const int MIN_MASTERNODE_PROTO_VERSION = 70235;
+static const int MIN_MASTERNODE_PROTO_VERSION = 70233;
 
 //! protocol version is included in MNAUTH starting with this version
 static const int MNAUTH_NODE_VER_VERSION = 70218;
