@@ -67,18 +67,27 @@ CMNHFManager::Signals CMNHFManager::GetSignalsStage(const CBlockIndex* const pin
 
     for (auto signal : signals_tmp) {
         bool expired{false};
+        bool has_deployment{false};
         const auto signal_pindex = pindexPrev->GetAncestor(signal.second);
         assert(signal_pindex != nullptr);
         const int64_t signal_time = signal_pindex->GetMedianTimePast();
         for (int index = 0; index < Consensus::MAX_VERSION_BITS_DEPLOYMENTS; ++index) {
             const auto& deployment = Params().GetConsensus().vDeployments[index];
             if (deployment.bit != signal.first) continue;
+            has_deployment = true;
             if (signal_time < deployment.nStartTime) {
                 // new deployment is using the same bit as the old one
                 LogPrintf("CMNHFManager::GetSignalsStage: mnhf signal bit=%d height:%d is expired at height=%d\n",
                           signal.first, signal.second, height);
                 expired = true;
             }
+        }
+        if (!has_deployment && signal.first == Consensus::MN_RR_VERSION_BIT) {
+            // A buried deployment is activated by height and no longer needs
+            // its historical signal in the staged EHF state.
+            LogPrint(BCLog::EHF, "CMNHFManager::GetSignalsStage: mnhf signal bit=%d height:%d is buried at height=%d\n",
+                     signal.first, signal.second, height);
+            continue;
         }
         if (!expired) {
             signals_ret.insert(signal);
