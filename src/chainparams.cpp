@@ -164,8 +164,10 @@ bool CChainParams::IsValidMNActivation(int nBit, int64_t timePast) const
 {
     assert(nBit < VERSIONBITS_NUM_BITS);
 
+    bool has_deployment{false};
     for (int index = 0; index < Consensus::MAX_VERSION_BITS_DEPLOYMENTS; ++index) {
         if (consensus.vDeployments[index].bit == nBit) {
+            has_deployment = true;
             auto& deployment = consensus.vDeployments[index];
             if (timePast > deployment.nTimeout || timePast < deployment.nStartTime) {
                 LogPrintf("%s: activation by bit=%d deployment='%s' is out of time range start=%lld timeout=%lld\n", __func__, nBit, VersionBitsDeploymentInfo[Consensus::DeploymentPos(index)].name, deployment.nStartTime, deployment.nTimeout);
@@ -178,6 +180,10 @@ bool CChainParams::IsValidMNActivation(int nBit, int64_t timePast) const
             LogPrintf("%s: set MnEHF for bit=%d is valid\n", __func__, nBit);
             return true;
         }
+    }
+    if (!has_deployment && nBit == Consensus::MN_RR_VERSION_BIT) {
+        LogPrintf("%s: MnEHF fork bit=%d belongs to buried MN_RR deployment\n", __func__, nBit);
+        return true;
     }
     LogPrintf("%s: WARNING: unknown MnEHF fork bit=%d\n", __func__, nBit);
     return true;
