@@ -266,7 +266,7 @@ static RPCHelpMan getstakingstatus()
 
     pwallet->BlockUntilSyncedToCurrentChain();
 
-    const bool fHaveConnections = pwallet->chain().p2pEnabled();
+    const bool fHaveConnections = pwallet->chain().hasP2PConnections();
     const bool fMintableCoins = pwallet->MintableCoins();
     const CAmount balance = GetBalance(*pwallet).m_mine_trusted;
     const bool fLessReserveBalance = pwallet->nReserveBalance >= balance;
