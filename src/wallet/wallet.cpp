@@ -4381,9 +4381,15 @@ bool CWallet::CreateCoinStake(const CBlockIndex *pindex_prev, CBlock &curr_block
             LogPrint(BCLog::STAKING, "%s : split stake vout into %llu pieces\n", __func__,
                      stakeTx.vout.size());
 
-            for (size_t i = 0; i < vin_scripts.size(); ++i) {
-                if (!SignSignature(*GetLegacyScriptPubKeyMan(), vin_scripts[i], stakeTx, i, reward, SIGHASH_ALL)) {
-                    return error("CreateCoinStake : failed to sign coinstake");
+            {
+                // Keep the wallet/key-store lock order consistent with wallet UI
+                // paths (cs_wallet -> cs_KeyStore). SignSignature() retrieves the
+                // private key and therefore locks cs_KeyStore.
+                LOCK(cs_wallet);
+                for (size_t i = 0; i < vin_scripts.size(); ++i) {
+                    if (!SignSignature(*GetLegacyScriptPubKeyMan(), vin_scripts[i], stakeTx, i, reward, SIGHASH_ALL)) {
+                        return error("CreateCoinStake : failed to sign coinstake");
+                    }
                 }
             }
 

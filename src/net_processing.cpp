@@ -88,6 +88,8 @@ static std::deque<const CBlockIndex*> vToFetchCache GUARDED_BY(cs_main);
 static constexpr int32_t MAX_PEER_OBJECT_IN_FLIGHT = 100;
 /** Maximum number of announced objects from a peer */
 static constexpr int32_t MAX_PEER_OBJECT_ANNOUNCEMENTS = 2 * MAX_INV_SZ;
+/** Minimum delay between retries of PoS headers postponed for missing block data. */
+static constexpr auto POSTPONED_HEADERS_RETRY_INTERVAL{1s};
 /** How many microseconds to delay requesting transactions from inbound peers */
 static constexpr auto INBOUND_PEER_TX_DELAY{2s};
 /** How long to wait before downloading a transaction from an additional peer */
@@ -480,6 +482,8 @@ struct CNodeState {
 
     //! Headers postponed until current in-flight blocks are processed.
     std::deque<CBlockHeader> vPostponedHeaders;
+    //! Earliest time at which postponed headers may be retried.
+    std::chrono::microseconds m_postponed_headers_retry_time{0us};
 
     /** State used to enforce CHAIN_SYNC_TIMEOUT and EXTRA_PEER_CHECK_INTERVAL logic.
       *
@@ -3296,6 +3300,7 @@ void PeerManagerImpl::ProcessHeadersMessage(CNode& pfrom, Peer& peer,
             // making progress (direct fetch below would walk back from
             // pindexLast and find nothing to request).
             nodestate->vPostponedHeaders.swap(headers);
+            nodestate->m_postponed_headers_retry_time = GetTime<std::chrono::microseconds>() + POSTPONED_HEADERS_RETRY_INTERVAL;
             postponed_headers = true;
             LogPrint(BCLog::NET, "saving postponed headers for peer %d \n", pfrom.GetId());
         }
@@ -5491,7 +5496,9 @@ bool PeerManagerImpl::ProcessMessages(CNode* pfrom, std::atomic<bool>& interrupt
     {
         LOCK(cs_main);
         auto state = State(pfrom->GetId());
-        if ((state->nBlocksInFlight == 0) && !state->vPostponedHeaders.empty()) {
+        if ((state->nBlocksInFlight == 0) &&
+            !state->vPostponedHeaders.empty() &&
+            GetTime<std::chrono::microseconds>() >= state->m_postponed_headers_retry_time) {
             postponed_headers.swap(state->vPostponedHeaders);
             fMoreWork = true;
         }
