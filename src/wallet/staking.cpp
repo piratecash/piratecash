@@ -232,12 +232,18 @@ bool CWallet::CreateCoinStake(const CBlockIndex* pindex_prev, CBlock& curr_block
 
         LogPrint(BCLog::STAKING, "%s: split stake vout into %u pieces\n", __func__, stakeTx.vout.size());
 
-        LegacyScriptPubKeyMan* spk_man = GetLegacyScriptPubKeyMan();
-        if (!spk_man) return error("%s: legacy script pub key manager missing", __func__);
+        {
+            // Keep the wallet/key-store lock order consistent with wallet UI
+            // paths (cs_wallet -> cs_KeyStore). SignSignature() retrieves the
+            // private key and therefore locks cs_KeyStore.
+            LOCK(cs_wallet);
+            LegacyScriptPubKeyMan* spk_man = GetLegacyScriptPubKeyMan();
+            if (!spk_man) return error("%s: legacy script pub key manager missing", __func__);
 
-        for (size_t i = 0; i < vin_scripts.size(); ++i) {
-            if (!SignSignature(*spk_man, vin_scripts[i], stakeTx, i, vin_values[i], SIGHASH_ALL)) {
-                return error("%s: failed to sign coinstake", __func__);
+            for (size_t i = 0; i < vin_scripts.size(); ++i) {
+                if (!SignSignature(*spk_man, vin_scripts[i], stakeTx, i, vin_values[i], SIGHASH_ALL)) {
+                    return error("%s: failed to sign coinstake", __func__);
+                }
             }
         }
 
