@@ -14,6 +14,9 @@
 
 namespace Consensus {
 
+/** Historical version bit used by the MN_RR EHF before it was buried. */
+inline constexpr int MN_RR_VERSION_BIT{10};
+
 /**
  * A buried deployment is one where the height of the activation has been hardcoded into
  * the client implementation long after the consensus change has activated. See BIP 90.
