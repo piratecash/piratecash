@@ -222,9 +222,14 @@ bool CSpecialTxProcessor::RebuildListFromBlock(const CBlock& block, gsl::not_nul
     const bool isMNRewardReallocation{
         DeploymentActiveAfter(pindexPrev, m_chainman.GetConsensus(), Consensus::DEPLOYMENT_MN_RR)};
     const bool is_v24_deployed{DeploymentActiveAfter(pindexPrev, m_chainman, Consensus::DEPLOYMENT_V24)};
+    const bool isProofOfStake{block.IsProofOfStake()};
 
     // we skip the coinbase
     for (int i = 1; i < (int)block.vtx.size(); i++) {
+        if (isProofOfStake && i == 1) {
+            // skip coinstake transaction at vtx[1] in PoS blocks
+            continue;
+        }
         const CTransaction& tx = *block.vtx[i];
 
         if (!tx.IsSpecialTxVersion()) {
@@ -455,6 +460,10 @@ bool CSpecialTxProcessor::RebuildListFromBlock(const CBlock& block, gsl::not_nul
 
     // we skip the coinbase
     for (int i = 1; i < (int)block.vtx.size(); i++) {
+        if (isProofOfStake && i == 1) {
+            // skip coinstake transaction at vtx[1] in PoS blocks
+            continue;
+        }
         const CTransaction& tx = *block.vtx[i];
 
         // check if any existing MN collateral is spent by this transaction

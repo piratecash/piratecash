@@ -264,6 +264,12 @@ void InstantSendSigner::HandleNewInstantSendLockRecoveredSig(const llmq::CRecove
 
 void InstantSendSigner::ProcessTx(const CTransaction& tx, bool fRetroactive, const Consensus::Params& params)
 {
+    // Coinstake transactions are consensus-level staking operations and must not
+    // be constrained by InstantSend input locks.
+    if (tx.IsCoinStake()) {
+        return;
+    }
+
     if (!m_isman.IsInstantSendEnabled() || !m_mn_sync.IsBlockchainSynced()) {
         return;
     }
