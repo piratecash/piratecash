@@ -247,12 +247,10 @@ public:
         consensus.DIP0020Height = 1278144;
         consensus.DIP0024Height = 1278144;
         consensus.DIP0024QuorumsHeight = 1387050;
-        // Mainnet is guarded below until these activation heights are configured.
-        consensus.V19Height = 0;
-        consensus.V20Height = 0;
-        consensus.MN_RRHeight = 0;
-        consensus.WithdrawalsHeight = 0;
-        consensus.MinBIP9WarningHeight = consensus.V20Height == 0 ? 0 : consensus.V20Height + 2016;
+        consensus.V19Height = 1858752;
+        consensus.V20Height = 1878912;
+        consensus.MN_RRHeight = 1910840;
+        consensus.WithdrawalsHeight = 1944072;
         consensus.powLimit = uint256S("0x0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 16
         consensus.posLimit = uint256S("0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 20
         consensus.nPowTargetTimespan = 8 * 60 * 60;
@@ -271,6 +269,7 @@ public:
         consensus.nPowDGWHeight = 1266100;
         consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
         consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
+        consensus.MinBIP9WarningHeight = consensus.WithdrawalsHeight + consensus.nMinerConfirmationWindow;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = VERSIONBITS_NUM_BITS - 1;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = Consensus::BIP9Deployment::NEVER_ACTIVE;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = Consensus::BIP9Deployment::NO_TIMEOUT;
@@ -286,10 +285,10 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_V24].useEHF = true;
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000004a8338c9235aa43fefb");
+        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000004b4eb4630ff3ed12777");
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x87db224be78ad0acb185f171962bb423efd9cffb7e5d90d769bbd91bc0245477");
+        consensus.defaultAssumeValid = uint256S("0x491e1503d56511a076c3a98b1702406dffb90d4f127704641b14b96fbca0f3b2");
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -376,7 +375,7 @@ public:
 
         nStakeMinAge = 8 * 60 * 60;
         nFirstPoSv2Block = consensus.nForkHeight;
-        nMinCorsaProtocolVersion = 13;
+        nMinCorsaProtocolVersion = 26;
 
         nCreditPoolPeriodBlocks = 576;
 
@@ -395,6 +394,7 @@ public:
                 {1804000, uint256S("0x1b5864f32d005d1655ca67abb5b554a958187bf0560430273e3f9caa9d7725f9")},
                 {1841000, uint256S("0xaf7fa7803716773e15d7f24c7082ed35ebdb3261b45a6df647f5c49d08df447e")},
                 {1845505, uint256S("0x87db224be78ad0acb185f171962bb423efd9cffb7e5d90d769bbd91bc0245477")},
+                {1872222, uint256S("0x491e1503d56511a076c3a98b1702406dffb90d4f127704641b14b96fbca0f3b2")},
             }
         };
 
@@ -402,11 +402,11 @@ public:
             // TODO to be specified in a future patch.
         };
 
-        // getchaintxstats 17280 af7fa7803716773e15d7f24c7082ed35ebdb3261b45a6df647f5c49d08df447e
+        // getchaintxstats 17280 491e1503d56511a076c3a98b1702406dffb90d4f127704641b14b96fbca0f3b2
         chainTxData = ChainTxData{
-            1777779218,
-            4329712,
-            0.0193
+            1781744195,
+            4427689,
+            0.02693785415766748
         };
     }
 };
@@ -449,11 +449,8 @@ public:
         consensus.DIP0024QuorumsHeight = 290900;
         consensus.V19Height = 1078600;
         consensus.V20Height = 1084100;
-        // TODO: Set MN_RRHeight once the testnet activation height is known.
-        consensus.MN_RRHeight = 0;
-        // TODO: Set WithdrawalsHeight once the testnet activation height is known.
-        consensus.WithdrawalsHeight = 0;
-        consensus.MinBIP9WarningHeight = consensus.V20Height + 2016;
+        consensus.MN_RRHeight = 1149864; // First superblock boundary after height 1149843
+        consensus.WithdrawalsHeight = 1149912;
         consensus.powLimit = uint256S("0x0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 16
         consensus.posLimit = uint256S("0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"); // ~uint256(0) >> 20
         consensus.nPowTargetTimespan = 8 * 60 * 60;
@@ -472,6 +469,7 @@ public:
         consensus.nPowDGWHeight = 290040; // TODO: make sure to drop all spork6 related code on next testnet reset
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
         consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
+        consensus.MinBIP9WarningHeight = consensus.WithdrawalsHeight + consensus.nMinerConfirmationWindow;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = VERSIONBITS_NUM_BITS - 1;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = Consensus::BIP9Deployment::NEVER_ACTIVE;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = Consensus::BIP9Deployment::NO_TIMEOUT;
@@ -571,7 +569,7 @@ public:
 
         nStakeMinAge = 8 * 60 * 60;
         nFirstPoSv2Block = consensus.nForkHeight;
-        nMinCorsaProtocolVersion = 13;
+        nMinCorsaProtocolVersion = 26;
 
         nCreditPoolPeriodBlocks = 576;
 
@@ -759,7 +757,7 @@ public:
 
         nStakeMinAge = 24 * 60 * 60; // 24 hours
         nFirstPoSv2Block = 78000ULL;
-        nMinCorsaProtocolVersion = 13;
+        nMinCorsaProtocolVersion = 26;
 
         nCreditPoolPeriodBlocks = 576;
 
@@ -979,7 +977,7 @@ public:
 
         nStakeMinAge = 24 * 60 * 60; // 24 hours
         nFirstPoSv2Block = 10000ULL;
-        nMinCorsaProtocolVersion = 13;
+        nMinCorsaProtocolVersion = 26;
 
         nCreditPoolPeriodBlocks = 100;
 
@@ -1484,9 +1482,6 @@ void SelectParams(const std::string& network)
 {
     SelectBaseParams(network);
     globalChainParams = CreateChainParams(gArgs, network);
-    if (network == CBaseChainParams::MAIN || network == CBaseChainParams::TESTNET) {
-        throw std::runtime_error("PirateCash mainnet/testnet are disabled until activation heights are configured; remove this guard deliberately");
-    }
 }
 
 void SetupChainParamsOptions(ArgsManager& argsman)
