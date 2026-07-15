@@ -986,7 +986,7 @@ std::string getMiningStatus() {
 void SetThreadPriority(int nPriority)
 {
 #ifdef WIN32
-    SetThreadPriority(GetCurrentThread(), nPriority);
+    ::SetThreadPriority(::GetCurrentThread(), nPriority);
 #else // WIN32
 #ifdef PRIO_THREAD
     setpriority(PRIO_THREAD, 0, nPriority);
