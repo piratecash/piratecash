@@ -1,4 +1,4 @@
-PirateCash Core version 0.14.0.0
+Dash Core version 0.14.0.0
 ==========================
 
 Release is now available from:
@@ -20,8 +20,8 @@ How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), then run the
-installer (on Windows) or just copy over /Applications/PirateCash-Qt (on Mac) or
-piratecashd/piratecash-qt (on Linux). If you upgrade after DIP0003 activation and you were
+installer (on Windows) or just copy over /Applications/Dash-Qt (on Mac) or
+dashd/dash-qt (on Linux). If you upgrade after DIP0003 activation and you were
 using version < 0.13 you will have to reindex (start with -reindex-chainstate
 or -reindex) to make sure your wallet has all the new data synced. Upgrading from
 version 0.13 should not require any additional actions.
@@ -163,7 +163,7 @@ New cmd-line options:
 Few cmd-line options are no longer supported: `-limitfreerelay`, `-relaypriority`, `-blockprioritysize`,
 `-sendfreetransactions`, `-mnconf`, `-mnconflock`, `-masternodeprivkey`
 
-See `Help -> Command-line options` in Qt wallet or `piratecashd --help` for more info.
+See `Help -> Command-line options` in Qt wallet or `dashd --help` for more info.
 
 Miscellaneous
 -------------
@@ -201,7 +201,7 @@ See detailed [set of changes](https://github.com/dashpay/dash/compare/v0.13.3.0.
 - [`3d993ee8f`](https://github.com/dashpay/dash/commit/3d993ee8f) Translations v14 (#2638)
 - [`fbd244dde`](https://github.com/dashpay/dash/commit/fbd244dde) Bail out in few more places when blockchain is not synced yet (#2888)
 - [`fd6aaae7f`](https://github.com/dashpay/dash/commit/fd6aaae7f) Add proTxHash to masternode list rpc response (#2887)
-- [`dd3977523`](https://github.com/dashpay/dash/commit/dd3977523) More "bench" log for PirateCash specific parts (#2884)
+- [`dd3977523`](https://github.com/dashpay/dash/commit/dd3977523) More "bench" log for Dash specific parts (#2884)
 - [`8ffdcbf99`](https://github.com/dashpay/dash/commit/8ffdcbf99) A bunch of mostly trivial tweaks/fixes (#2889)
 - [`195100161`](https://github.com/dashpay/dash/commit/195100161) New LLMQ-based IS should have no legacy IS strings in UI and no legacy restrictions (#2883)
 - [`7f419ae7f`](https://github.com/dashpay/dash/commit/7f419ae7f) Accept non-spent LLMQ IS locked outpoints from mempool in PS mixing (#2878)
@@ -368,7 +368,7 @@ See detailed [set of changes](https://github.com/dashpay/dash/compare/v0.13.3.0.
 - [`609114a80`](https://github.com/dashpay/dash/commit/609114a80) Code review: re-add string cast in mininode.py
 - [`85ffc1d64`](https://github.com/dashpay/dash/commit/85ffc1d64) drop `swap_outputs_in_rawtx` and `DecimalEncoder` in smartfees.py
 - [`bc593c84b`](https://github.com/dashpay/dash/commit/bc593c84b) Revert "Fix use of missing self.log in blockchain.py"
-- [`0e91ebcf4`](https://github.com/dashpay/dash/commit/0e91ebcf4) Use logging framework in PirateCash specific tests
+- [`0e91ebcf4`](https://github.com/dashpay/dash/commit/0e91ebcf4) Use logging framework in Dash specific tests
 - [`dd1245c2a`](https://github.com/dashpay/dash/commit/dd1245c2a) Update dnsseed-policy.md (#2751)
 - [`f351145e6`](https://github.com/dashpay/dash/commit/f351145e6) Use GetVoteForId instead of maintaining votes on inputs
 - [`d4cf78fe2`](https://github.com/dashpay/dash/commit/d4cf78fe2) Add HasVotedOnId/GetVoteForId to CSigningManager
@@ -555,7 +555,7 @@ See detailed [set of changes](https://github.com/dashpay/dash/compare/v0.13.3.0.
 - [`9f211ef12`](https://github.com/dashpay/dash/commit/9f211ef12) Add listener interface to listen for recovered sigs
 - [`189cee210`](https://github.com/dashpay/dash/commit/189cee210) Don't pass poolSize to SelectQuorum and instead use consensus params
 - [`13855674d`](https://github.com/dashpay/dash/commit/13855674d) Add missing new-line character in log output
-- [`d31edf66a`](https://github.com/dashpay/dash/commit/d31edf66a) Wait for script checks to finish before messing with txes in PirateCash-specific way (#2652)
+- [`d31edf66a`](https://github.com/dashpay/dash/commit/d31edf66a) Wait for script checks to finish before messing with txes in Dash-specific way (#2652)
 - [`2c477b0d4`](https://github.com/dashpay/dash/commit/2c477b0d4) Fix no_wallet for rpcmasternode/rpcevo
 - [`fc00b7bae`](https://github.com/dashpay/dash/commit/fc00b7bae) add import to rpcevo fixing backport 8775
 - [`30b03863e`](https://github.com/dashpay/dash/commit/30b03863e) Apply suggestions from code review #2646
@@ -599,7 +599,7 @@ See detailed [set of changes](https://github.com/dashpay/dash/compare/v0.13.3.0.
 - [`b8d069bcd`](https://github.com/dashpay/dash/commit/b8d069bcd) fix/cleanup qt rpcnestedtests
 - [`b970c20a9`](https://github.com/dashpay/dash/commit/b970c20a9) Avoid using immature coinbase UTXOs for dummy TXins
 - [`4d25148c0`](https://github.com/dashpay/dash/commit/4d25148c0) Add llmq-signing.py tests
-- [`d020ffa00`](https://github.com/dashpay/dash/commit/d020ffa00) Add wait_for_sporks_same and mine_quorum to PirateCashTestFramework
+- [`d020ffa00`](https://github.com/dashpay/dash/commit/d020ffa00) Add wait_for_sporks_same and mine_quorum to DashTestFramework
 - [`0cc1cf279`](https://github.com/dashpay/dash/commit/0cc1cf279) Add receivedFinalCommitment flag to CDKGDebugSessionStatus
 - [`23d7ed80d`](https://github.com/dashpay/dash/commit/23d7ed80d) Implement "quorum sign/hasrecsig/isconflicting" RPCs
 - [`316b6bf0d`](https://github.com/dashpay/dash/commit/316b6bf0d) Faster re-requesting of recovered sigs
@@ -726,12 +726,12 @@ the 0.8.x tree and was first released on Mar/13/2014.
 Darkcoin tree 0.10.x used to be the closed source implementation of Darksend
 which was released open source on Sep/25/2014.
 
-PirateCash Core tree 0.11.x was a fork of Bitcoin Core tree 0.9,
+Dash Core tree 0.11.x was a fork of Bitcoin Core tree 0.9,
 Darkcoin was rebranded to Dash.
 
-PirateCash Core tree 0.12.0.x was a fork of Bitcoin Core tree 0.10.
+Dash Core tree 0.12.0.x was a fork of Bitcoin Core tree 0.10.
 
-PirateCash Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
+Dash Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
 
 These release are considered obsolete. Old release notes can be found here:
 
