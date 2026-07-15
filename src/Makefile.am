@@ -809,6 +809,7 @@ libbitcoin_consensus_a_SOURCES = \
   script/script.h \
   script/script_error.cpp \
   script/script_error.h \
+  script/standard.cpp \
   serialize.h \
   span.h \
   streams.h \
@@ -865,7 +866,6 @@ libbitcoin_common_a_SOURCES = \
   script/miniscript.cpp \
   script/sign.cpp \
   script/signingprovider.cpp \
-  script/standard.cpp \
   warnings.cpp \
   $(BITCOIN_CORE_H)
 #
