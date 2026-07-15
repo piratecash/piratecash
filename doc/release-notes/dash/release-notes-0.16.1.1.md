@@ -1,13 +1,11 @@
-Dash Core version 0.14.0.5
+Dash Core version 0.16.1.1
 ==========================
 
 Release is now available from:
 
   <https://www.dash.org/downloads/#wallets>
 
-This is a new minor version release, bringing various bugfixes and improvements.
-It is highly recommended to upgrade to this release as it contains a critical
-fix for a possible DoS vector.
+This is a new hotfix release.
 
 Please report bugs using the issue tracker at github:
 
@@ -25,69 +23,53 @@ shut down (which might take a few minutes for older versions), then run the
 installer (on Windows) or just copy over /Applications/Dash-Qt (on Mac) or
 dashd/dash-qt (on Linux). If you upgrade after DIP0003 activation and you were
 using version < 0.13 you will have to reindex (start with -reindex-chainstate
-or -reindex) to make sure your wallet has all the new data synced. Upgrading from
-version 0.13 should not require any additional actions.
+or -reindex) to make sure your wallet has all the new data synced. Upgrading
+from version 0.13 should not require any additional actions.
 
 When upgrading from a version prior to 0.14.0.3, the
-first startup of Dash Core will run a migration process which can take a few minutes
-to finish. After the migration, a downgrade to an older version is only possible with
-a reindex (or reindex-chainstate).
+first startup of Dash Core will run a migration process which can take a few
+minutes to finish. After the migration, a downgrade to an older version is only
+possible with a reindex (or reindex-chainstate).
 
 Downgrade warning
 -----------------
 
 ### Downgrade to a version < 0.14.0.3
 
-Downgrading to a version smaller than 0.14.0.3 is not supported anymore due to changes
-in the "evodb" database format. If you need to use an older version, you have to perform
-a reindex or re-sync the whole chain.
+Downgrading to a version older than 0.14.0.3 is no longer supported due to
+changes in the "evodb" database format. If you need to use an older version,
+you must either reindex or re-sync the whole chain.
+
+### Downgrade of masternodes to < 0.16
+
+Starting with this release, masternodes will verify the protocol version of other
+masternodes. This will result in PoSe punishment/banning for outdated masternodes,
+so downgrading is not recommended.
 
 Notable changes
 ===============
 
-Fix for a DoS vector
---------------------
+There was an unexpected behaviour of the "Encrypt wallet" menu item for unencrypted wallets
+which was showing users the "Decrypt wallet" dialog instead. This was a GUI only issue,
+internal encryption logic and RPC behaviour were not affected.
 
-This release fixes a serious DoS vector which allows to cause memory exhaustion until the point of
-out-of-memory related crashes. We highly recommend upgrading all nodes. Thanks to Bitcoin ABC
-developers for finding and reporting this issue to us.
-
-Better handling of non-locked transactions in mined blocks
-----------------------------------------------------------
-
-We observed multiple cases of ChainLocks failing on mainnet. We tracked this down to a situation where
-PrivateSend mixing transactions were first rejected by parts of the network (0.14.0.4 nodes) while other parts
-(<=0.14.0.3) accepted the transaction into the mempool. This caused InstantSend locking to fail for these
-transactions, while non-upgraded miners still included the transactions into blocks after 10 minutes.
-This caused blocks to not get ChainLocked for at least 10 minutes. This release improves an already existent
-fallback mechanism (retroactive InstantSend locking) to also work for transaction which are already partially
-known in the network. This should cause ChainLocks to succeed in such situations.
-
-0.14.0.5 Change log
+0.16.1.1 Change log
 ===================
 
-See detailed [set of changes](https://github.com/dashpay/dash/compare/v0.14.0.4...dashpay:v0.14.0.5).
+See detailed [set of changes](https://github.com/dashpay/dash/compare/v0.16.1.0...dashpay:v0.16.1.1).
 
-- [`20d4a27778`](https://github.com/dashpay/dash/commit/dc07a0c5e1) Make sure mempool txes are properly processed by CChainLocksHandler despite node restarts (#3230)
-- [`dc07a0c5e1`](https://github.com/dashpay/dash/commit/dc07a0c5e1) [v0.14.0.x] Bump version and prepare release notes (#3228)
-- [`401da32090`](https://github.com/dashpay/dash/commit/401da32090) More fixes in llmq-is-retroactive tests
-- [`33721eaa11`](https://github.com/dashpay/dash/commit/33721eaa11) Make llmq-is-retroactive test compatible with 0.14.0.x
-- [`85bd162a3e`](https://github.com/dashpay/dash/commit/85bd162a3e) Make wait_for_xxx methods compatible with 0.14.0.x
-- [`22cfddaf12`](https://github.com/dashpay/dash/commit/22cfddaf12) Allow re-signing of IS locks when performing retroactive signing (#3219)
-- [`a8b8891a1d`](https://github.com/dashpay/dash/commit/a8b8891a1d) Add wait_for_xxx methods as found in develop
-- [`8dae12cc60`](https://github.com/dashpay/dash/commit/8dae12cc60) More/better logging for InstantSend
-- [`fdd19cf667`](https://github.com/dashpay/dash/commit/fdd19cf667) Tests: Fix the way nodes are connected to each other in setup_network/start_masternodes (#3221)
-- [`41f0e9d028`](https://github.com/dashpay/dash/commit/41f0e9d028) More fixes related to extra_args
-- [`5213118601`](https://github.com/dashpay/dash/commit/5213118601) Tests: Allow specifying different cmd-line params for each masternode (#3222)
-- [`2fef21fd80`](https://github.com/dashpay/dash/commit/2fef21fd80) Don't join thread in CQuorum::~CQuorum when called from within the thread (#3223)
-- [`e69c6c3207`](https://github.com/dashpay/dash/commit/e69c6c3207) Merge #12392: Fix ignoring tx data requests when fPauseSend is set on a peer (#3225)
+- [`ccef3b4836`](https://github.com/dashpay/dash/commit/ccef3b48363d8bff4b919d9119355182e3902ef3) qt: Fix wallet encryption dialog (#3816)
+
+Python Support
+--------------
+
+Support for Python 2 has been discontinued for all test files and tools.
 
 Credits
 =======
 
 Thanks to everyone who directly contributed to this release:
 
-- Alexander Block (codablock)
 - UdjinM6
 
 As well as everyone that submitted issues and reviewed pull requests.
@@ -115,6 +97,10 @@ Dash Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
 
 These release are considered obsolete. Old release notes can be found here:
 
+- [v0.16.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.16.1.0.md) released November/14/2020
+- [v0.16.0.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.16.0.1.md) released September/30/2020
+- [v0.15.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.15.0.0.md) released Febrary/18/2020
+- [v0.14.0.5](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.14.0.5.md) released December/08/2019
 - [v0.14.0.4](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.14.0.4.md) released November/22/2019
 - [v0.14.0.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.14.0.3.md) released August/15/2019
 - [v0.14.0.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.14.0.2.md) released July/4/2019
@@ -138,4 +124,3 @@ These release are considered obsolete. Old release notes can be found here:
 - [v0.11.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.11.0.md) released Jan/15/2015
 - [v0.10.x](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.10.0.md) released Sep/25/2014
 - [v0.9.x](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.9.0.md) released Mar/13/2014
-

@@ -1,14 +1,12 @@
-# Dash Core version v19.2.0
+# Dash Core version v20.0.1
 
 Release is now available from:
 
   <https://www.dash.org/downloads/#wallets>
 
-This is a new minor version release, bringing various bugfixes and other
-improvements.
+This is a new patch version release, bringing small bug fixes and build system enhancements.
 
-This release is mandatory for all nodes. This release resolves issues around the
-v19 Hard Fork activation. All nodes must upgrade to continue syncing properly.
+This release is optional for all nodes.
 
 Please report bugs using the issue tracker at GitHub:
 
@@ -27,15 +25,6 @@ using version < 0.13 you will have to reindex (start with -reindex-chainstate
 or -reindex) to make sure your wallet has all the new data synced. Upgrading
 from version 0.13 should not require any additional actions.
 
-At the first startup Dash Core will run a migration process which can take
-anywhere from a few minutes to thirty minutes to finish. After the migration,
-a downgrade to an older version is only possible with a reindex.
-
-Please note that seamless migration is only possible on nodes which did not
-reach the v19 fork block. Nodes that reached it can either rewind a couple
-of blocks back to a pre-v19 block using `invalidateblock` RPC while still
-running the old version or they can reindex instead.
-
 ## Downgrade warning
 
 ### Downgrade to a version < v19.2.0
@@ -46,81 +35,26 @@ reindex or re-sync the whole chain.
 
 # Notable changes
 
-## Resolve v19 Hard Fork Issues
+## Qt Testnet Crash
 
-One of the goals for the v19 Hard Fork was to activate basic BLS scheme and
-start using it in various on-chain and p2p messages. The motivation behind this
-change is the need to be aligned with IETF standards. Unfortunately, a few edge
-cases were missed in our functional tests and were not caught on testnet either.
-v19 activation attempt on mainnet hit one of these edge cases and mainnet
-stopped producing blocks. As an intermediate solution v19.1.0 was released which
-delayed the start of the signaling for the v19 Hard Fork until June 14th.
+A crash has been fixed which has only been seen on testnet and only affects QT clients. 
 
-To resolve these issues we had to rework the way BLS public keys are handled
-including the way they are serialized in the internal database. This made it
-incompatible with older versions of Dash Core, so a db migration path was
-implemented for all recent versions.
+## Guix Build System Enhancements
+The Guix build system has been enhanced to enable building with custom options when needed.
+This will be used to support custom builds such as for nightly builds with extra debug options.
 
-## Improve migration and historical data support on light clients
+Additionally, the Guix system will now produce debug symbols for MacOS. 
 
-As a side-effect, the solution implemented to resolve v19 Hard Fork issues
-opened a path to simplify v19 migration for mobile wallets.
+# v20.0.1 Change log
 
-With previous implementation mobile wallets would have to convert 4k+ pubkeys
-at the v19 fork point and that can easily take 10-15 seconds if not more.
-Also, after the v19 Hard Fork, if a masternode list is requested from a block
-before the v19 Hard Fork, the operator keys were coming in basic BLS scheme,
-but the masternode merkleroot hash stored in coinbase transaction at that time
-was calculated with legacy BLS scheme. Hence it was impossible to verify the
-merkleroot hash.
-
-To fix these issues a new field `nVersion` was introduced for every entry in
-`mnlistdiff` p2p message. This field indicates which BLS scheme should be used
-when deserialising the message - legacy or basic. `nVersion` of the `mnlistdiff`
-message itself will no longer indicate the scheme and must always be set to `1`.
-
-## Improve mixing support on light clients
-
-Recent changes to `dsq` and `dstx` messages allowed mobile clients that get
-masternode lists from `mnlistdiff` message to determine the masternode related
-to these messages because the `proTxHash` was used instead of the
-`masternodeOutpoint`. Once the v19 Hard Fork activates the signature of `dsq`
-and `dstx` messages will be based on the `proTxHash` which should make it
-possible for mobile clients to verify it.
-
-## Allow keeping Chainlocks enabled without signing new ones
-
-Before this version Chainlocks were either enabled or disabled. Starting with
-this version it's possible to set `SPORK_19_CHAINLOCKS_ENABLED` to a non-zero
-value to disable the signing of new Chainlocks while still enforcing the best
-known one.
-
-## Other changes
-
-There were a few other minor changes too, specifically:
-- reindex on DB corruption should now start properly in Qt
-- a mnemonic passphrase longer than 256 symbols no longer crashes the wallet
-- a Qt node running with `-disablewawllet` flag should not crash in Settings now
-- `-masternodeblsprivkey` and `-sporkkey` values are no longer printed in
-`debug.log`
-- should use less memory in the long run comparing to older versions
-- gmp library detection should work better on macos
-- fixed a couple of typos
-
-# v19.2.0 Change log
-
-See detailed [set of changes](https://github.com/dashpay/dash/compare/v19.1.0...dashpay:v19.2.0).
+See detailed [set of changes][set-of-changes].
 
 # Credits
 
 Thanks to everyone who directly contributed to this release:
 
-- Kittywhiskers Van Gogh (kittywhiskers)
 - Konstantin Akimov (knst)
-- Nathan Marley (nmarley)
-- Odysseas Gabrielides (ogabrielides)
 - PastaPastaPasta
-- thephez
 - UdjinM6
 
 As well as everyone that submitted issues, reviewed pull requests and helped
@@ -148,6 +82,9 @@ Dash Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
 
 These release are considered obsolete. Old release notes can be found here:
 
+- [v20.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-20.0.0.md) released November/15/2023
+- [v19.3.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-19.3.0.md) released July/31/2023
+- [v19.2.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-19.2.0.md) released June/19/2023
 - [v19.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-19.1.0.md) released May/22/2023
 - [v19.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-19.0.0.md) released Apr/14/2023
 - [v18.2.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-18.2.2.md) released Mar/21/2023
@@ -187,3 +124,5 @@ These release are considered obsolete. Old release notes can be found here:
 - [v0.11.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.11.0.md) released Jan/15/2015
 - [v0.10.x](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.10.0.md) released Sep/25/2014
 - [v0.9.x](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.9.0.md) released Mar/13/2014
+
+[set-of-changes]: https://github.com/dashpay/dash/compare/v20.0.0...dashpay:v20.0.1
