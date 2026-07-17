@@ -421,6 +421,9 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
         pblocktemplate->vTxSigOps[0] = GetLegacySigOpCount(*pblock->CoinBase());
 
         if (sign_block) {
+            // Keep the cs_wallet -> cs_KeyStore lock order: GetKey() locks
+            // cs_wallet via WithEncryptionKey() on encrypted wallets.
+            LOCK(pwallet->cs_wallet);
             const SigningProvider* provider = pwallet->GetLegacyScriptPubKeyMan();
             CKey key;
             if (!provider || !provider->GetKey(pblock->posPubKey.GetID(), key) ||
