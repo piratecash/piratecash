@@ -2675,6 +2675,7 @@ bool CChainState::ConnectBlock(const CBlock& block, BlockValidationState& state,
     int64_t nTime5_2 = GetTimeMicros(); nTimeSubsidy += nTime5_2 - nTime5_1;
     LogPrint(BCLog::BENCHMARK, "      - GetBlockSubsidy: %.2fms [%.2fs (%.2fms/blk)]\n", MILLI * (nTime5_2 - nTime5_1), nTimeSubsidy * MICRO, nTimeSubsidy * MILLI / nBlocksTotal);
 
+
     const bool check_superblock = m_chain_helper->GetBestChainLockHeight() < pindex->nHeight;
 
     if (!m_chain_helper->mn_payments->IsBlockValueValid(block, pindex->nHeight, blockSubsidy + feeReward, strError, check_superblock)) {
@@ -3045,20 +3046,6 @@ void CChainState::UpdateTip(const CBlockIndex* pindexNew)
                     AppendWarning(warning_messages, warning);
                 }
             }
-        }
-        // Check the version of the last 100 blocks to see if we need to upgrade:
-        int nUpgraded = 0;
-        pindex = pindexNew;
-        for (int i = 0; i < 100 && pindex != nullptr; i++)
-        {
-            int32_t nExpectedVersion = ComputeBlockVersion(pindex->pprev, m_params.GetConsensus());
-            int nExpectedPOSVersion = nExpectedVersion | CBlockHeader::POS_BIT | CBlockHeader::POSV2_BITS ;
-            if (pindex->nVersion > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->nVersion & ~nExpectedVersion) != 0 &&  (pindex->nVersion & ~nExpectedPOSVersion) != 0)
-                ++nUpgraded;
-            pindex = pindex->pprev;
-        }
-        if (nUpgraded > 0) {
-            AppendWarning(warning_messages, strprintf(_("%d of last 100 blocks have unexpected version"), nUpgraded));
         }
     }
     UpdateTipLog(coins_tip, pindexNew, m_params, m_evoDb, __func__, "", warning_messages.original);
