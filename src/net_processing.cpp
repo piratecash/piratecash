@@ -1483,6 +1483,11 @@ void PeerManagerImpl::FindNextBlocksToDownload(const Peer& peer, unsigned int co
         auto curr = begin;
 
         while ((curr != vToFetchCache.end()) && (vBlocks.size() < count)) {
+            // Opportunistic assumption of block availability
+            if ((*curr)->nHeight > peer.m_starting_height) {
+                break;
+            }
+
             vBlocks.push_back(*curr);
             ++curr;
         }
