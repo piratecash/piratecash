@@ -392,6 +392,12 @@ bool CheckStakeKernelHash(
     uint32_t &nStakeModifier = current.nStakeModifier();
     //
 
+    // Guard against an out-of-range stake output index before dereferencing
+    // txPrev.vout[prevout.n] (prevout.n is attacker-controlled via the header).
+    if (prevout.n >= txPrev.vout.size()) {
+        return error("CheckStakeKernelHash() : stake prevout index %u out of range (vout size %u)", prevout.n, (unsigned int)txPrev.vout.size());
+    }
+
     //assign new variables to make it easier to read
     CAmount nValueIn = txPrev.vout[prevout.n].nValue;
     unsigned int nTimeBlockFrom = blockFrom.GetBlockTime();
@@ -630,6 +636,15 @@ bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& header, 
     ) {
         return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-stake-coinbase-maturity",
                             "coinbase maturity mismatch for stake");
+    }
+
+    // Guard against an out-of-range stake output index before dereferencing
+    // vout[prevout.n]. prevout.n comes from the attacker-controlled header
+    // (posStakeN); a crafted header referencing a real transaction hash but
+    // a bogus index would otherwise cause an out-of-bounds read / crash.
+    if (prevout.n >= txinPrevRef->vout.size()) {
+        return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-pos-input",
+                             "stake prevout index out of range");
     }
 
     // Extract stake public key ID and verify block signature
