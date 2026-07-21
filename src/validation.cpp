@@ -4058,6 +4058,12 @@ bool CheckBlock(const CBlock& block, BlockValidationState& state, const Consensu
         if (block.vtx[i]->IsCoinStake())
             return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-cs-missing", "coinstake in wrong position");
 
+    // Coinbase must carry at least one output element (vout is non-empty). This is
+    // separate from the pre-v18 rule just below (where vout[0] must itself be an
+    // *empty* output, CTxOut::IsEmpty()) and makes that vout[0] read safe.
+    if (block.vtx[0]->vout.empty())
+        return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-cb-vout-empty", "coinbase has no outputs");
+
     // PirateCash: first coinbase output should be empty in pre-v18 PoS blocks.
     if (block.IsProofOfStake() && !block.IsProofOfStakeV2() && !block.vtx[0]->vout[0].IsEmpty())
         return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-cb-notempty", "coinbase output not empty in PoS block");
@@ -4163,6 +4169,14 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, BlockValidatio
         (block.nVersion < 4 && DeploymentActiveAfter(pindexPrev, chainman.GetConsensus(), Consensus::DEPLOYMENT_CLTV))) {
             return state.Invalid(BlockValidationResult::BLOCK_INVALID_HEADER, strprintf("bad-version(0x%08x)", block.nVersion),
                                  strprintf("rejected nVersion=0x%08x block", block.nVersion));
+    }
+
+    // Enforce the post-fork block-version rule at header-acceptance time,
+    // consistent with the equivalent check in ConnectBlock (nForkHeight):
+    // after the hard-fork height only PoSv2 block versions are accepted.
+    if (!block.IsProofOfStakeV2() && nHeight >= consensusParams.nForkHeight) {
+        return state.Invalid(BlockValidationResult::BLOCK_INVALID_HEADER, "hard-fork-active",
+                             "legacy block version rejected after fork height");
     }
 
     if (fCheckProof && !CheckProof(state, block, consensusParams, &blockman, active_chain)) {

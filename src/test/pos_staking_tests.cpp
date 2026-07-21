@@ -50,6 +50,7 @@
 #include <util/time.h>
 #include <validation.h>
 #include <validationinterface.h>
+#include <index/txindex.h>
 
 #include <thread>
 
@@ -1204,6 +1205,101 @@ BOOST_AUTO_TEST_CASE(pos_concurrent_block_processing)
     // Verify the chain advanced
     LOCK(cs_main);
     BOOST_CHECK(m_node.chainman->ActiveChain().Height() >= 100);
+}
+
+// ============================================================================
+// OOB stake-index regression tests
+// (bounds guards added in pos_kernel.cpp: CheckStakeKernelHash + CheckProofOfStake)
+// ============================================================================
+
+BOOST_AUTO_TEST_CASE(pos_check_stake_kernel_hash_rejects_oob_index)
+{
+    // Direct-call regression for the out-of-range stake-output guard in
+    // CheckStakeKernelHash. prevout.n comes from the attacker-controlled header
+    // (posStakeN); the function must reject an index >= txPrev.vout.size()
+    // instead of reading past the vector. A valid stake amount is used so the
+    // index is the only thing at fault.
+    CKey stakeKey;
+    stakeKey.MakeNewKey(true);
+
+    CMutableTransaction mtx;
+    mtx.vin.resize(1);
+    mtx.vin[0].prevout.SetNull();
+    mtx.vin[0].scriptSig = CScript() << 0x51;
+    mtx.vout.resize(1); // single output -> the only valid index is 0
+    mtx.vout[0].nValue = MIN_STAKE_AMOUNT * 10;
+    mtx.vout[0].scriptPubKey = ScriptForKey(stakeKey);
+    CTransaction txPrev(mtx);
+
+    CBlockIndex blockFrom;
+    blockFrom.nHeight = 10;
+    blockFrom.nTime = 1000;
+
+    CBlockIndex blockPrev;
+    blockPrev.nHeight = m_node.chainman->ActiveChain().Tip()->nHeight;
+    blockPrev.nTime = m_node.chainman->ActiveChain().Tip()->nTime;
+
+    const uint32_t stakeTime = blockFrom.nTime + Params().MinStakeAge() + 100;
+
+    // First out-of-range index (== vout.size()) and the extreme value.
+    for (uint32_t badN : {static_cast<uint32_t>(txPrev.vout.size()), ~uint32_t(0)}) {
+        COutPoint prevout(txPrev.GetHash(), badN);
+        CBlockHeader header = MakePoSHeader(
+            m_node.chainman->ActiveChain().Tip()->GetBlockHash(),
+            stakeTime, prevout.hash, prevout.n);
+
+        uint256 hashProofOfStake;
+        bool result = CheckStakeKernelHash(
+            header, blockPrev, blockFrom, txPrev, prevout,
+            0, true, hashProofOfStake, false);
+
+        BOOST_CHECK_MESSAGE(!result, "out-of-range stake index must be rejected, not read OOB");
+        BOOST_CHECK_MESSAGE(hashProofOfStake.IsNull(), "must reject before computing the kernel hash");
+    }
+}
+
+BOOST_AUTO_TEST_CASE(pos_check_proof_of_stake_rejects_oob_index)
+{
+    // Full-path regression: a header referencing a real, confirmed transaction
+    // hash but an out-of-range stake index must be rejected with "bad-pos-input"
+    // instead of dereferencing txinPrevRef->vout out of bounds.
+    //
+    // Reaching the guarded dereference requires the stake tx to be resolvable by
+    // hash. TestChain100Setup already creates and runs g_txindex, so we reuse it
+    // (creating or stopping our own would break the fixture's teardown). Mine past
+    // COINBASE_MATURITY so the height-1 coinbase clears the maturity gate, then let
+    // the existing index catch up.
+    BOOST_REQUIRE(g_txindex);
+
+    MineBlocks(COINBASE_MATURITY + 5);
+    BOOST_REQUIRE(g_txindex->BlockUntilSyncedToCurrentChain());
+
+    const uint256 realStakeHash = m_coinbase_txns[0]->GetHash();
+    const uint32_t voutSize = static_cast<uint32_t>(m_coinbase_txns[0]->vout.size());
+
+    for (uint32_t badN : {voutSize, ~uint32_t(0)}) {
+        const CBlockIndex* tip = m_node.chainman->ActiveChain().Tip();
+
+        CBlockHeader header;
+        header.nVersion = CBlockHeader::POS_BIT | 1;
+        header.posBlockSig = {0x01, 0x02, 0x03}; // non-empty: pass the sig-presence gate
+        header.posStakeHash = realStakeHash;
+        header.posStakeN = badN;
+        header.hashPrevBlock = tip->GetBlockHash();
+        header.nTime = tip->nTime + 60;
+        header.nBits = 0x207fffff;
+
+        BlockValidationState state;
+        uint256 hashProofOfStake;
+        bool result = CheckProofOfStake(
+            state, header, hashProofOfStake, Params().GetConsensus(),
+            /*mempool=*/nullptr,
+            &m_node.chainman->m_blockman,
+            &m_node.chainman->ActiveChain());
+
+        BOOST_CHECK_MESSAGE(!result, "out-of-range stake index must be rejected via the full path");
+        BOOST_CHECK_EQUAL(state.GetRejectReason(), "bad-pos-input");
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
