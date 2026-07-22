@@ -523,6 +523,30 @@ bool CheckStakeKernelHash(
     return false;
 }
 
+bool HasHeaderOnlyStakeReuse(const CBlockIndex* pindex_prev,
+                            const CBlockIndex* pindex_fork,
+                            const COutPoint& prevout)
+{
+    // Walk from pindex_prev down to the fork point, advancing by each node's
+    // own parent (pindex_walk->pprev). The leading null check guards the case
+    // where the fork point is genesis (pprev == nullptr). Only the
+    // still-unvalidated PoS header tail is inspected; the walk terminates as
+    // soon as it reaches the fork point, a fully-validated block, or a
+    // non-PoS block.
+    for (auto pindex_walk = pindex_prev;
+         pindex_walk &&
+            (pindex_walk != pindex_fork) &&
+            pindex_walk->IsProofOfStake() &&
+            !pindex_walk->IsValid(BLOCK_VALID_SCRIPTS);
+        pindex_walk = pindex_walk->pprev
+    ) {
+        if (prevout == pindex_walk->StakeInput()) {
+            return true;
+        }
+    }
+    return false;
+}
+
 // Check kernel hash target and coinstake signature
 bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& header, uint256& hashProofOfStake, const Consensus::Params& consensus, const CTxMemPool* mempool, const node::BlockManager* blockman, const CChain* active_chain)
 {
@@ -605,17 +629,11 @@ bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& header, 
                                 "rogue fork tries to use UTXO from the current chain");
         }
 
-        // Check if UTXO is used in headers before the last known fully validated block
-        for (auto pindex_walk = pindex_prev;
-             (pindex_walk != pindex_fork) &&
-                pindex_walk->IsProofOfStake() &&
-                !pindex_walk->IsValid(BLOCK_VALID_SCRIPTS);
-            pindex_walk = pindex_fork->pprev
-        ) {
-            if (prevout == pindex_walk->StakeInput()) {
-                return state.Invalid(BlockValidationResult::BLOCK_INVALID_PREV, "bad-header-double-spent",
-                                 "rogue fork tries use the same UTXO twice");
-            }
+        // Reject a rogue fork that reuses the same stake UTXO anywhere in its
+        // still-unvalidated header tail (see HasHeaderOnlyStakeReuse).
+        if (HasHeaderOnlyStakeReuse(pindex_prev, pindex_fork, prevout)) {
+            return state.Invalid(BlockValidationResult::BLOCK_INVALID_PREV, "bad-header-double-spent",
+                             "rogue fork tries use the same UTXO twice");
         }
     }
 
