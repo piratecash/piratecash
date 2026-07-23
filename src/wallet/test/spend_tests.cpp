@@ -24,8 +24,11 @@ BOOST_FIXTURE_TEST_CASE(SubtractFee, TestChain100Setup)
     // be uneconomical to add and spend the output), and make sure it pays the
     // leftover input amount which would have been change to the recipient
     // instead of the miner.
-    auto check_tx = [&wallet](CAmount leftover_input_amount) {
-        CRecipient recipient{GetScriptForRawPubKey({}), 500 * COIN - leftover_input_amount, true /* subtract fee */};
+    // The spendable coin is the first coinbase; its value follows the
+    // PirateCash reward schedule
+    const CAmount cb_value{m_coinbase_txns[0]->vout[0].nValue};
+    auto check_tx = [&](CAmount leftover_input_amount) {
+        CRecipient recipient{GetScriptForRawPubKey({}), cb_value - leftover_input_amount, true /* subtract fee */};
         bilingual_str error;
         CCoinControl coin_control;
         coin_control.m_feerate.emplace(10000);

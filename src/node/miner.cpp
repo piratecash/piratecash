@@ -113,7 +113,9 @@ BlockAssembler::BlockAssembler(CChainState& chainstate, const NodeContext& node,
       m_qman(*Assert(Assert(node.llmq_ctx)->qman))
 {
     blockMinFeeRate = options.blockMinFeeRate;
-    nBlockMaxSize = options.nBlockMaxSize;
+    // Clamp before the narrowing conversion, size_t values above UINT_MAX must not be truncated
+    nBlockMaxSize = static_cast<unsigned int>(std::min<size_t>(options.nBlockMaxSize, std::numeric_limits<unsigned int>::max()));
+    nBlockMaxSizeConfigured = nBlockMaxSize;
 }
 
 static BlockAssembler::Options DefaultOptions()
@@ -122,7 +124,8 @@ static BlockAssembler::Options DefaultOptions()
     BlockAssembler::Options options;
     options.nBlockMaxSize = DEFAULT_BLOCK_MAX_SIZE;
     if (gArgs.IsArgSet("-blockmaxsize")) {
-        options.nBlockMaxSize = gArgs.GetIntArg("-blockmaxsize", DEFAULT_BLOCK_MAX_SIZE);
+        // Clamp before the conversion to unsigned, a negative value must not wrap around
+        options.nBlockMaxSize = std::max<int64_t>(1000, gArgs.GetIntArg("-blockmaxsize", DEFAULT_BLOCK_MAX_SIZE));
     }
     if (gArgs.IsArgSet("-blockmintxfee")) {
         std::optional<CAmount> parsed = ParseMoney(gArgs.GetArg("-blockmintxfee", ""));
@@ -248,9 +251,25 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     const bool fDIP0008Active_context{DeploymentActiveAfter(pindexPrev, chainparams.GetConsensus(), Consensus::DEPLOYMENT_DIP0008)};
     const bool fV20Active_context{DeploymentActiveAfter(pindexPrev, chainparams.GetConsensus(), Consensus::DEPLOYMENT_V20)};
 
-    // Limit size to between 1K and MaxBlockSize()-1K for sanity:
-    nBlockMaxSize = std::max<unsigned int>(1000, std::min<unsigned int>(MaxBlockSize(fDIP0001Active_context) - 1000, nBlockMaxSize));
+    // Limit size to between 1K and MaxBlockSize()-1K for sanity,
+    // recomputing from the configured value on every call:
+    nBlockMaxSize = std::max<unsigned int>(1000, std::min<unsigned int>(MaxBlockSize(fDIP0001Active_context) - 1000, nBlockMaxSizeConfigured));
     nBlockMaxSigOps = MaxBlockSigOps(fDIP0001Active_context);
+
+    // PoS: reserve room for the minimal coinstake within the size limit;
+    // a PoS block needs at least the coinbase reservation + the coinstake
+    // (a warning about too small -blockmaxsize is issued at startup)
+    constexpr unsigned int MIN_STAKE_SIZE_BUDGET = 1000;
+    const unsigned int block_size_limit = isPos ? std::max<unsigned int>(nBlockMaxSize, 1000 + MIN_STAKE_SIZE_BUDGET) : nBlockMaxSize;
+    if (isPos) {
+        nBlockMaxSize = block_size_limit - MIN_STAKE_SIZE_BUDGET;
+        // Reserve sigops for the coinstake outputs (one per P2PKH output,
+        // bounded by nStakeMaxSplit and by the coinstake size budget)
+        const unsigned int stake_sigops_reserve = std::min<unsigned int>(
+            static_cast<unsigned int>(Assert(pwallet)->nStakeMaxSplit) + 2,
+            MAX_STANDARD_TX_SIZE / 36 + 2);
+        nBlockMaxSigOps -= std::min(nBlockMaxSigOps, stake_sigops_reserve);
+    }
 
     pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus(), chainparams.BIP9CheckMasternodesUpgraded(), isPos);
     // Non-mainnet only: allow overriding block.nVersion with
@@ -393,7 +412,11 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
         }
 
         CMutableTransaction coinbaseTx(*(pblock->CoinBase()));
-        bool fStakeFound = pwallet->CreateCoinStake(pindexPrev, *pblock, coinbaseTx);
+        // Coinstake is capped by what is left within the configured block limits
+        const size_t stake_size_budget = block_size_limit > nBlockSize ? block_size_limit - nBlockSize : 0;
+        const unsigned int max_block_sigops = MaxBlockSigOps(fDIP0001Active_context);
+        const size_t stake_sigops_budget = max_block_sigops > nBlockSigOps ? max_block_sigops - nBlockSigOps : 0;
+        bool fStakeFound = pwallet->CreateCoinStake(pindexPrev, *pblock, coinbaseTx, stake_size_budget, stake_sigops_budget);
 
         if (fStakeFound) {
             if (fV20Active_context) {

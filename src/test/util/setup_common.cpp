@@ -427,21 +427,21 @@ TestChain100Setup::TestChain100Setup(const std::string& chain_name, const std::v
 TestChainSetup::TestChainSetup(int num_blocks, const std::string& chain_name, const std::vector<const char*>& extra_args)
     : TestingSetup{chain_name, extra_args}
 {
-    SetMockTime(1598887952);
+    // The inherited mock timestamp predates the PirateCash regtest genesis
+    // by years, so mining fails time-too-new. Keep the mock clock one minute
+    // behind the genesis instead: blocks then take the canonical MTP+1
+    // timestamps, and the ~1 minute drift stays within
+    // MAX_POS_BLOCK_AHEAD_TIME (180s). The PoS allowance applies even to
+    // these PoW blocks: on regtest the TESTDUMMY deployment signals version
+    // bit 28, which collides with CBlockHeader::POS_BIT (0x10000000), so
+    // ContextualCheckBlockHeader() classifies the templates as proof-of-stake
+    SetMockTime(std::max<int64_t>(1598887952, Params().GenesisBlock().GetBlockTime() - 60));
     constexpr std::array<unsigned char, 32> vchKey = {
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}};
     coinbaseKey.Set(vchKey.begin(), vchKey.end(), true);
 
     // Generate a num_blocks length chain:
     this->mineBlocks(num_blocks);
-
-    // Initialize transaction index *after* chain has been constructed
-    g_txindex = std::make_unique<TxIndex>(1 << 20, true);
-    assert(!g_txindex->BlockUntilSyncedToCurrentChain());
-    if (!g_txindex->Start(m_node.chainman->ActiveChainstate())) {
-        throw std::runtime_error("TxIndex::Start() failed.");
-    }
-    IndexWaitSynced(*g_txindex);
 
     CCheckpointData checkpoints{
         {
@@ -460,11 +460,29 @@ TestChainSetup::TestChainSetup(int num_blocks, const std::string& chain_name, co
 
     {
         LOCK(::cs_main);
-        auto hash = checkpoints.mapCheckpoints.find(num_blocks);
-        assert(
-            hash != checkpoints.mapCheckpoints.end() &&
-            m_node.chainman->ActiveChain().Tip()->GetBlockHash() == hash->second);
+        const auto hash = checkpoints.mapCheckpoints.find(num_blocks);
+        if (hash == checkpoints.mapCheckpoints.end()) {
+            throw std::runtime_error(strprintf("TestChainSetup: no chain checkpoint defined for height %d", num_blocks));
+        }
+        const uint256 tip_hash = m_node.chainman->ActiveChain().Tip()->GetBlockHash();
+        if (tip_hash != hash->second) {
+            throw std::runtime_error(strprintf(
+                "TestChainSetup: deterministic chain checkpoint mismatch at height %d: got %s, expected %s "
+                "(update the checkpoint if the chain setup changed intentionally)",
+                num_blocks, tip_hash.ToString(), hash->second.ToString()));
+        }
     }
+
+    // Initialize transaction index *after* chain has been constructed
+    // (and after the checkpoint verification: a throw must not leak a
+    // running global index into the next test case)
+    g_txindex = std::make_unique<TxIndex>(1 << 20, true);
+    assert(!g_txindex->BlockUntilSyncedToCurrentChain());
+    if (!g_txindex->Start(m_node.chainman->ActiveChainstate())) {
+        throw std::runtime_error("TxIndex::Start() failed.");
+    }
+    IndexWaitSynced(*g_txindex);
+
 }
 
 void TestChainSetup::mineBlocks(int num_blocks)

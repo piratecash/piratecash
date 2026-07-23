@@ -17,6 +17,14 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <chainparams.h>
+#include <evo/dmn_types.h>
+#include <policy/policy.h>
+#include <util/time.h>
+#include <test/util/txmempool.h>
+#include <txmempool.h>
+#include <wallet/test/util.h>
+
 #include <consensus/consensus.h>
 #include <interfaces/chain.h>
 #include <key.h>
@@ -405,6 +413,291 @@ BOOST_AUTO_TEST_CASE(wallet_tx_delegates_is_coinstake)
 
     BOOST_CHECK(wtx.IsCoinStake());
     BOOST_CHECK_EQUAL(wtx.IsCoinStake(), txStake->IsCoinStake());
+}
+
+// ============================================================================
+// AUTOCOMBINE INPUT SELECTION (CWallet::AutocombineCoinStake)
+//
+// NOTE: the cases below are disabled because the PirateCash unit-test mining
+// fixture (TestChainSetup/TestChain100Setup) currently cannot build a chain
+// on regtest (nForkHeight=1 rejects the PoW test miner; the deterministic
+// checkpoint hashes below in setup_common.cpp are stale). Re-enable them
+// once the mining fixture is fixed. Beware: boost's disabled() does NOT
+// skip a test that is force-run via an explicit --run_test=<name>.
+// ============================================================================
+
+namespace {
+
+struct AutocombineParams {
+    CAmount reward{0};
+    size_t max_tx_size{MAX_STANDARD_TX_SIZE};
+    size_t max_sigops{1000};
+    CAmount target_amount{MAX_MONEY};
+};
+
+struct AutocombineResult {
+    CMutableTransaction stakeTx;
+    std::vector<CScript> vin_scripts;
+    std::vector<CAmount> vin_values;
+    CAmount reward{0};
+    size_t est_tx_size{0};
+    size_t est_tx_sigops{0};
+};
+
+AutocombineResult RunAutocombine(CWallet& wallet, const COutPoint& kernel_prevout,
+                                 const CPubKey& kernel_pubkey, const AutocombineParams& params)
+{
+    AutocombineResult res;
+    res.stakeTx.vin.emplace_back(kernel_prevout);
+    CScript empty_script;
+    res.stakeTx.vout.push_back(CTxOut(0, empty_script));
+    const CScript kernel_spk = GetScriptForDestination(PKHash(kernel_pubkey));
+    res.stakeTx.vout.emplace_back(params.reward, kernel_spk);
+    res.vin_scripts.emplace_back(kernel_spk);
+    res.vin_values.emplace_back(params.reward);
+    res.reward = params.reward;
+    res.est_tx_size = 250; // conservative: overhead + signed kernel input + two outputs
+    res.est_tx_sigops = 1;
+    wallet.AutocombineCoinStake(kernel_prevout, kernel_pubkey, params.target_amount,
+                                params.max_tx_size, params.max_sigops,
+                                res.stakeTx, res.vin_scripts, res.vin_values, res.reward,
+                                res.est_tx_size, res.est_tx_sigops);
+    return res;
+}
+
+bool VinContains(const CMutableTransaction& tx, const COutPoint& outpoint)
+{
+    for (const auto& in : tx.vin) {
+        if (in.prevout == outpoint) return true;
+    }
+    return false;
+}
+
+//! A wallet UTXO with a chosen amount. Candidates are faked instead of mined
+//! so the scenarios do not depend on the regtest reward schedule: confirmed
+//! from the wallet's point of view and, when in_utxo_set is true, visible to
+//! FindCoins() through the mempool view.
+CTransactionRef AddFakeCandidate(CWallet& wallet, CTxMemPool& mempool, const CBlockIndex* tip,
+                                 const CScript& spk, CAmount value,
+                                 bool in_utxo_set = true, bool confirmed = true)
+{
+    auto tx = MakeRegularTx(COutPoint(InsecureRand256(), 0), spk, value);
+    {
+        LOCK(wallet.cs_wallet);
+        if (confirmed) {
+            wallet.AddToWallet(tx, TxStateConfirmed{tip->GetBlockHash(), tip->nHeight, 1});
+        } else {
+            wallet.AddToWallet(tx, TxStateInactive{});
+        }
+    }
+    if (in_utxo_set) {
+        TestMemPoolEntryHelper entry;
+        LOCK2(::cs_main, mempool.cs);
+        mempool.addUnchecked(entry.FromTx(tx));
+    }
+    return tx;
+}
+
+} // anonymous namespace
+
+//! The mainnet scenario: 50 PIRATE outputs sweep into a 950 PIRATE kernel at
+//! stakesplitthreshold=500 / stakecombinemax=100, crossing the 64-outpoint
+//! findCoins() batching window. The old dead zone would combine nothing:
+//! 950 + 50 >= 2*500 - 1.
+BOOST_FIXTURE_TEST_CASE(autocombine_sweeps_small_inputs, TestChain100Setup, * boost::unit_test::disabled())
+{
+    auto wallet = CreateSyncedWallet(*m_node.chain, *m_node.coinjoin_loader, m_node.chainman->ActiveChain(), m_args, coinbaseKey);
+    const CScript wallet_spk = GetScriptForDestination(PKHash(coinbaseKey.GetPubKey()));
+    const CBlockIndex* tip = WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Tip());
+
+    for (int i = 0; i < 70; ++i) {
+        AddFakeCandidate(*wallet, *m_node.mempool, tip, wallet_spk, 50 * COIN);
+    }
+
+    SetMockTime(tip->GetBlockTime() + Params().MinStakeAge() + 3600);
+
+    wallet->fAutocombine = AUTOCOMBINE_SAME;
+    wallet->nStakeSplitThreshold = 500;
+    wallet->nStakeCombineMax = 100;
+
+    const COutPoint kernel(InsecureRand256(), 0);
+    AutocombineParams params;
+    params.reward = 950 * COIN;
+
+    const auto res = RunAutocombine(*wallet, kernel, coinbaseKey.GetPubKey(), params);
+
+    BOOST_CHECK_EQUAL(res.stakeTx.vin.size(), 71U);
+    BOOST_CHECK_EQUAL(res.vin_scripts.size(), res.stakeTx.vin.size());
+    BOOST_CHECK_EQUAL(res.reward, params.reward + 70 * 50 * COIN);
+    // P2PKH inputs carry no P2SH sigops, the estimate must not grow
+    BOOST_CHECK_EQUAL(res.est_tx_sigops, 1U);
+    BOOST_CHECK_GT(res.est_tx_size, 250U);
+
+    SetMockTime(0);
+}
+
+//! -stakecombinemax bounds the sweep: a zero setting disables it and
+//! candidates above the limit are not taken.
+BOOST_FIXTURE_TEST_CASE(autocombine_respects_stakecombinemax, TestChain100Setup, * boost::unit_test::disabled())
+{
+    auto wallet = CreateSyncedWallet(*m_node.chain, *m_node.coinjoin_loader, m_node.chainman->ActiveChain(), m_args, coinbaseKey);
+    const CScript wallet_spk = GetScriptForDestination(PKHash(coinbaseKey.GetPubKey()));
+    const CBlockIndex* tip = WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Tip());
+
+    for (int i = 0; i < 3; ++i) {
+        AddFakeCandidate(*wallet, *m_node.mempool, tip, wallet_spk, 50 * COIN);
+    }
+
+    SetMockTime(tip->GetBlockTime() + Params().MinStakeAge() + 3600);
+
+    wallet->fAutocombine = AUTOCOMBINE_SAME;
+    wallet->nStakeSplitThreshold = 500;
+
+    const COutPoint kernel(InsecureRand256(), 0);
+    AutocombineParams params;
+    params.reward = 950 * COIN;
+
+    // Sweep disabled entirely
+    wallet->nStakeCombineMax = 0;
+    auto res = RunAutocombine(*wallet, kernel, coinbaseKey.GetPubKey(), params);
+    BOOST_CHECK_EQUAL(res.stakeTx.vin.size(), 1U);
+    BOOST_CHECK_EQUAL(res.reward, params.reward);
+
+    // Candidates are larger than the limit
+    wallet->nStakeCombineMax = 49;
+    res = RunAutocombine(*wallet, kernel, coinbaseKey.GetPubKey(), params);
+    BOOST_CHECK_EQUAL(res.stakeTx.vin.size(), 1U);
+    BOOST_CHECK_EQUAL(res.reward, params.reward);
+
+    SetMockTime(0);
+}
+
+//! The historic below-target path still combines when the kernel is small:
+//! a 100 PIRATE kernel grows by 50 PIRATE inputs up to just below
+//! 2*stakesplitthreshold - 1.
+BOOST_FIXTURE_TEST_CASE(autocombine_old_target_path, TestChain100Setup, * boost::unit_test::disabled())
+{
+    auto wallet = CreateSyncedWallet(*m_node.chain, *m_node.coinjoin_loader, m_node.chainman->ActiveChain(), m_args, coinbaseKey);
+    const CScript wallet_spk = GetScriptForDestination(PKHash(coinbaseKey.GetPubKey()));
+    const CBlockIndex* tip = WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Tip());
+
+    for (int i = 0; i < 25; ++i) {
+        AddFakeCandidate(*wallet, *m_node.mempool, tip, wallet_spk, 50 * COIN);
+    }
+
+    SetMockTime(tip->GetBlockTime() + Params().MinStakeAge() + 3600);
+
+    wallet->fAutocombine = AUTOCOMBINE_SAME;
+    wallet->nStakeSplitThreshold = 500;
+    wallet->nStakeCombineMax = 0; // isolate the old path
+
+    const COutPoint kernel(InsecureRand256(), 0);
+    AutocombineParams params;
+    params.reward = 100 * COIN;
+
+    const auto res = RunAutocombine(*wallet, kernel, coinbaseKey.GetPubKey(), params);
+
+    // 100 + 17*50 = 950; the next input would reach 1000 >= 2*500 - 1
+    BOOST_CHECK_EQUAL(res.stakeTx.vin.size(), 18U);
+    BOOST_CHECK_EQUAL(res.reward, 950 * COIN);
+
+    SetMockTime(0);
+}
+
+//! Size, sigops and reserve-balance budgets each stop the sweep on their own.
+BOOST_FIXTURE_TEST_CASE(autocombine_respects_budgets, TestChain100Setup, * boost::unit_test::disabled())
+{
+    auto wallet = CreateSyncedWallet(*m_node.chain, *m_node.coinjoin_loader, m_node.chainman->ActiveChain(), m_args, coinbaseKey);
+    const CScript wallet_spk = GetScriptForDestination(PKHash(coinbaseKey.GetPubKey()));
+    const CBlockIndex* tip = WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Tip());
+
+    for (int i = 0; i < 5; ++i) {
+        AddFakeCandidate(*wallet, *m_node.mempool, tip, wallet_spk, 50 * COIN);
+    }
+
+    SetMockTime(tip->GetBlockTime() + Params().MinStakeAge() + 3600);
+
+    wallet->fAutocombine = AUTOCOMBINE_SAME;
+    wallet->nStakeSplitThreshold = 500;
+    wallet->nStakeCombineMax = 100;
+
+    const COutPoint kernel(InsecureRand256(), 0);
+    AutocombineParams params;
+    params.reward = 950 * COIN;
+
+    // Sanity: with roomy budgets all five candidates combine
+    auto res = RunAutocombine(*wallet, kernel, coinbaseKey.GetPubKey(), params);
+    BOOST_REQUIRE_EQUAL(res.stakeTx.vin.size(), 6U);
+
+    // No sigops budget left
+    AutocombineParams no_sigops = params;
+    no_sigops.max_sigops = 1;
+    res = RunAutocombine(*wallet, kernel, coinbaseKey.GetPubKey(), no_sigops);
+    BOOST_CHECK_EQUAL(res.stakeTx.vin.size(), 1U);
+
+    // No room left in the block for another input
+    AutocombineParams no_size = params;
+    no_size.max_tx_size = 260; // helper starts est_tx_size at 250
+    res = RunAutocombine(*wallet, kernel, coinbaseKey.GetPubKey(), no_size);
+    BOOST_CHECK_EQUAL(res.stakeTx.vin.size(), 1U);
+
+    // Reserve balance: any candidate would exceed the target amount
+    AutocombineParams reserve = params;
+    reserve.target_amount = params.reward + 25 * COIN;
+    res = RunAutocombine(*wallet, kernel, coinbaseKey.GetPubKey(), reserve);
+    BOOST_CHECK_EQUAL(res.stakeTx.vin.size(), 1U);
+
+    SetMockTime(0);
+}
+
+//! Stale (not in the UTXO set), zero-conf, immature and collateral outputs
+//! are skipped while healthy candidates still combine (via the historic
+//! path, with a threshold large enough that even the collateral-sized
+//! output would be accepted were it not filtered).
+BOOST_FIXTURE_TEST_CASE(autocombine_skips_bad_candidates, TestChain100Setup, * boost::unit_test::disabled())
+{
+    auto wallet = CreateSyncedWallet(*m_node.chain, *m_node.coinjoin_loader, m_node.chainman->ActiveChain(), m_args, coinbaseKey);
+    const CScript wallet_spk = GetScriptForDestination(PKHash(coinbaseKey.GetPubKey()));
+    const CBlockIndex* tip = WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Tip());
+
+    const CAmount collat = dmn_types::Regular.collat_amount;
+
+    std::vector<CTransactionRef> healthy;
+    for (int i = 0; i < 3; ++i) {
+        healthy.push_back(AddFakeCandidate(*wallet, *m_node.mempool, tip, wallet_spk, 50 * COIN));
+    }
+    // Confirmed in the wallet's view but absent from the UTXO set
+    auto stale_tx = AddFakeCandidate(*wallet, *m_node.mempool, tip, wallet_spk, 50 * COIN, /*in_utxo_set=*/false);
+    // Never confirmed at all
+    auto zeroconf_tx = AddFakeCandidate(*wallet, *m_node.mempool, tip, wallet_spk, 50 * COIN, true, /*confirmed=*/false);
+    // Masternode collateral amount
+    auto collateral_tx = AddFakeCandidate(*wallet, *m_node.mempool, tip, wallet_spk, collat);
+
+    SetMockTime(tip->GetBlockTime() + Params().MinStakeAge() + 3600);
+
+    wallet->fAutocombine = AUTOCOMBINE_SAME;
+    wallet->nStakeSplitThreshold = static_cast<size_t>(collat / COIN) * 2;
+    wallet->nStakeCombineMax = 0;
+
+    const COutPoint kernel(InsecureRand256(), 0);
+    AutocombineParams params;
+    params.reward = collat; // (reward + collat) is still below the target
+
+    const auto res = RunAutocombine(*wallet, kernel, coinbaseKey.GetPubKey(), params);
+
+    // Healthy candidates combined...
+    BOOST_CHECK_EQUAL(res.stakeTx.vin.size(), 4U);
+    for (const auto& tx : healthy) {
+        BOOST_CHECK(VinContains(res.stakeTx, COutPoint(tx->GetHash(), 0)));
+    }
+    // ...while each bad candidate stayed out
+    BOOST_CHECK(!VinContains(res.stakeTx, COutPoint(stale_tx->GetHash(), 0)));
+    BOOST_CHECK(!VinContains(res.stakeTx, COutPoint(zeroconf_tx->GetHash(), 0)));
+    BOOST_CHECK(!VinContains(res.stakeTx, COutPoint(collateral_tx->GetHash(), 0)));
+    // An immature fixture coinbase must not be selected either
+    BOOST_CHECK(!VinContains(res.stakeTx, COutPoint(m_coinbase_txns.back()->GetHash(), 0)));
+
+    SetMockTime(0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

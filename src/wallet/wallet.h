@@ -126,6 +126,7 @@ static const bool DEFAULT_USE_HD_WALLET = true;
 static const size_t DEFAULT_STAKE_SPLIT_THRESHOLD = 500;
 static const int64_t MAX_STAKE_SPLIT_THRESHOLD = 1000000;
 static const int DEFAULT_STAKE_MAX_SPLIT = 500;
+static const int64_t DEFAULT_STAKE_COMBINE_MAX = 100;
 static const unsigned int DEFAULT_POS_HASH_INTERVAL = 1;
 static const unsigned int MAX_POS_HASH_INTERVAL = 86400;
 static const bool DEFAULT_INPUT_STAKE_PROTECT = true;
@@ -482,6 +483,7 @@ public:
     CAmount nReserveBalance = 0;
     size_t nStakeSplitThreshold = DEFAULT_STAKE_SPLIT_THRESHOLD;
     int nStakeMaxSplit = DEFAULT_STAKE_MAX_SPLIT;
+    int64_t nStakeCombineMax = DEFAULT_STAKE_COMBINE_MAX;
     int fAutocombine = DEFAULT_STAKE_AUTOCOMBINE;
     bool inputStakeProtect = DEFAULT_INPUT_STAKE_PROTECT;
     mutable StakeCandidates setStakeCoins;
@@ -498,6 +500,11 @@ public:
     {
         nStakeSplitThreshold = static_cast<size_t>(m_args.GetIntArg("-stakesplitthreshold", DEFAULT_STAKE_SPLIT_THRESHOLD));
         nStakeMaxSplit = static_cast<int>(m_args.GetIntArg("-stakemaxsplit", DEFAULT_STAKE_MAX_SPLIT));
+        nStakeCombineMax = static_cast<int64_t>(m_args.GetIntArg("-stakecombinemax", DEFAULT_STAKE_COMBINE_MAX));
+        if (nStakeCombineMax >= static_cast<int64_t>(nStakeSplitThreshold)) {
+            nStakeCombineMax = static_cast<int64_t>(nStakeSplitThreshold) - 1;
+            LogPrintf("Warning: -stakecombinemax is limited to %d (must be less than -stakesplitthreshold)\n", nStakeCombineMax);
+        }
         fAutocombine = static_cast<int>(m_args.GetIntArg("-stakeautocombine", DEFAULT_STAKE_AUTOCOMBINE));
         nHashInterval = static_cast<unsigned int>(m_args.GetIntArg("-poshashinterval", DEFAULT_POS_HASH_INTERVAL));
         inputStakeProtect = m_args.GetBoolArg("-inputstakeprotect", DEFAULT_INPUT_STAKE_PROTECT);
@@ -514,7 +521,12 @@ public:
     bool IsCrypted() const;
     bool IsLocked(bool fForMixing = false) const override;
     bool Lock(bool fForMixing = false);
-    bool CreateCoinStake(const CBlockIndex* pindex_prev, CBlock& curr_block, CMutableTransaction& coinbaseTx);
+    bool CreateCoinStake(const CBlockIndex* pindex_prev, CBlock& curr_block, CMutableTransaction& coinbaseTx, size_t max_tx_size, size_t max_sigops);
+    void AutocombineCoinStake(const COutPoint& kernel_prevout, const CPubKey& kernel_pubkey,
+                              CAmount target_amount, size_t max_tx_size, size_t max_sigops,
+                              CMutableTransaction& stakeTx, std::vector<CScript>& vin_scripts,
+                              std::vector<CAmount>& vin_values, CAmount& reward,
+                              size_t& est_tx_size, size_t& est_tx_sigops);
 
     void UpdateProgress(const std::string& title, int nProgress) override;
 
