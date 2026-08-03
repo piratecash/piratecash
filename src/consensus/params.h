@@ -99,8 +99,6 @@ struct Params {
     int nSubsidyHalvingInterval;
     /** Block height at which BIP16 becomes active */
     int nMasternodePaymentsStartBlock;
-    int nMasternodePaymentsIncreaseBlock;
-    int nMasternodePaymentsIncreasePeriod; // in blocks
     int nInstantSendConfirmationsRequired; // in blocks
     int nInstantSendKeepLock; // in blocks
     int nBudgetPaymentsStartBlock;
