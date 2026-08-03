@@ -251,6 +251,7 @@ static RPCHelpMan getstakingstatus()
                 {RPCResult::Type::NUM, "stakesplitthreshold", "value of the current threshold for stake split"},
                 {RPCResult::Type::NUM, "stakemaxsplit", "the number of max inputs & outputs of a stake"},
                 {RPCResult::Type::NUM, "stakeautocombine", "autocombine feature: 0 - disable, 1 - same account, 2 - any account"},
+                {RPCResult::Type::NUM, "stakecombinemax", "maximum input amount in coins to autocombine above the split threshold (0 - disabled)"},
                 {RPCResult::Type::BOOL, "inputstakeprotect", "whether masternode collateral is excluded from staking"},
                 {RPCResult::Type::NUM, "poshashinterval", "number of seconds between stake hash attempts"},
             },
@@ -284,6 +285,7 @@ static RPCHelpMan getstakingstatus()
     obj.pushKV("stakesplitthreshold", static_cast<uint64_t>(pwallet->nStakeSplitThreshold));
     obj.pushKV("stakemaxsplit", pwallet->nStakeMaxSplit);
     obj.pushKV("stakeautocombine", pwallet->fAutocombine);
+    obj.pushKV("stakecombinemax", pwallet->nStakeCombineMax);
     obj.pushKV("inputstakeprotect", pwallet->inputStakeProtect);
     obj.pushKV("poshashinterval", static_cast<uint64_t>(pwallet->nHashInterval));
     return obj;

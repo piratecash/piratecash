@@ -8,13 +8,16 @@
 #include <iostream>
 #include <memory>
 #include <stdint.h>
+#include <string>
 #include <vector>
 
 #include <coinjoin/client.h>
+#include <init.h>
 #include <interfaces/chain.h>
 #include <interfaces/coinjoin.h>
 #include <key_io.h>
 #include <node/blockstorage.h>
+#include <node/miner.h>
 #include <policy/policy.h>
 #include <rpc/rawtransaction_util.h>
 #include <rpc/server.h>
@@ -77,10 +80,186 @@ static void TestUnloadWallet(WalletContext& context, std::shared_ptr<CWallet>&& 
     UnloadWallet(std::move(wallet));
 }
 
+static constexpr const char* STAKING_ARG_NAMES[] = {
+    "stakesplitthreshold",
+    "stakemaxsplit",
+    "stakeautocombine",
+    "stakecombinemax",
+    "inputstakeprotect",
+    "poshashinterval",
+};
+
+static void ClearStakingArgs()
+{
+    for (const char* arg : STAKING_ARG_NAMES) {
+        gArgs.ForceRemoveArg(arg);
+    }
+}
+
+static void SetStakingArg(const std::string& arg, const std::string& value)
+{
+    gArgs.ForceSetArg("-" + arg, value);
+}
+
+struct ScopedStakingArgsCleanup {
+    ~ScopedStakingArgsCleanup()
+    {
+        ClearStakingArgs();
+    }
+};
+
+static void CheckInvalidStakingArg(const std::string& arg, const std::string& value, const std::string& expected_error)
+{
+    const ScopedStakingArgsCleanup cleanup;
+    SetStakingArg(arg, value);
+    {
+        BOOST_TEST_INFO("arg=-" << arg << " value=" << value);
+        ASSERT_DEBUG_LOG(expected_error);
+        BOOST_CHECK(!AppInitParameterInteraction(gArgs));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(wallet_constructor_reads_staking_args)
+{
+    const ScopedStakingArgsCleanup cleanup;
+    SetStakingArg("stakesplitthreshold", "123");
+    SetStakingArg("stakemaxsplit", "45");
+    SetStakingArg("stakeautocombine", "2");
+    SetStakingArg("stakecombinemax", "77");
+    SetStakingArg("inputstakeprotect", "0");
+    SetStakingArg("poshashinterval", "7");
+
+    const bool params_valid = AppInitParameterInteraction(gArgs);
+    WalletContext context;
+    context.args = &gArgs;
+    context.chain = m_node.chain.get();
+    context.coinjoin_loader = m_node.coinjoin_loader.get();
+    auto wallet = TestLoadWallet(context);
+    const bool loaded = wallet != nullptr;
+    size_t stake_split_threshold = 0;
+    int stake_max_split = 0;
+    int stake_autocombine = 0;
+    int64_t stake_combine_max = 0;
+    bool input_stake_protect = true;
+    unsigned int pos_hash_interval = 0;
+    if (loaded) {
+        stake_split_threshold = wallet->nStakeSplitThreshold;
+        stake_max_split = wallet->nStakeMaxSplit;
+        stake_autocombine = wallet->fAutocombine;
+        stake_combine_max = wallet->nStakeCombineMax;
+        input_stake_protect = wallet->inputStakeProtect;
+        pos_hash_interval = wallet->nHashInterval;
+        TestUnloadWallet(context, std::move(wallet));
+    }
+
+    BOOST_REQUIRE(params_valid);
+    BOOST_REQUIRE(loaded);
+    BOOST_CHECK_EQUAL(stake_split_threshold, 123U);
+    BOOST_CHECK_EQUAL(stake_max_split, 45);
+    BOOST_CHECK_EQUAL(stake_autocombine, AUTOCOMBINE_ANY);
+    BOOST_CHECK_EQUAL(stake_combine_max, 77);
+    BOOST_CHECK(!input_stake_protect);
+    BOOST_CHECK_EQUAL(pos_hash_interval, 7U);
+}
+
+BOOST_AUTO_TEST_CASE(wallet_accepts_boundary_staking_args)
+{
+    const ScopedStakingArgsCleanup cleanup;
+    SetStakingArg("stakesplitthreshold", "1");
+    SetStakingArg("stakemaxsplit", "0");
+    SetStakingArg("poshashinterval", std::to_string(MAX_POS_HASH_INTERVAL));
+
+    BOOST_REQUIRE(AppInitParameterInteraction(gArgs));
+    WalletContext context;
+    context.args = &gArgs;
+    context.chain = m_node.chain.get();
+    context.coinjoin_loader = m_node.coinjoin_loader.get();
+    auto wallet = TestLoadWallet(context);
+    BOOST_REQUIRE(wallet != nullptr);
+
+    BOOST_CHECK_EQUAL(wallet->nStakeSplitThreshold, 1U);
+    BOOST_CHECK_EQUAL(wallet->nStakeMaxSplit, 0);
+    BOOST_CHECK_EQUAL(wallet->nHashInterval, MAX_POS_HASH_INTERVAL);
+
+    TestUnloadWallet(context, std::move(wallet));
+
+    ClearStakingArgs();
+    SetStakingArg("stakesplitthreshold", std::to_string(MAX_STAKE_SPLIT_THRESHOLD));
+
+    BOOST_REQUIRE(AppInitParameterInteraction(gArgs));
+    wallet = TestLoadWallet(context);
+    BOOST_REQUIRE(wallet != nullptr);
+
+    BOOST_CHECK_EQUAL(wallet->nStakeSplitThreshold, static_cast<size_t>(MAX_STAKE_SPLIT_THRESHOLD));
+
+    TestUnloadWallet(context, std::move(wallet));
+}
+
+BOOST_AUTO_TEST_CASE(wallet_clamps_stakecombinemax_to_split_threshold)
+{
+    const ScopedStakingArgsCleanup cleanup;
+    SetStakingArg("stakesplitthreshold", "50");
+    SetStakingArg("stakecombinemax", "100");
+
+    BOOST_REQUIRE(AppInitParameterInteraction(gArgs));
+    WalletContext context;
+    context.args = &gArgs;
+    context.chain = m_node.chain.get();
+    context.coinjoin_loader = m_node.coinjoin_loader.get();
+    auto wallet = TestLoadWallet(context);
+    BOOST_REQUIRE(wallet != nullptr);
+
+    BOOST_CHECK_EQUAL(wallet->nStakeCombineMax, 49);
+
+    TestUnloadWallet(context, std::move(wallet));
+}
+
+BOOST_AUTO_TEST_CASE(pos_block_assembler_reuse_keeps_block_max_size)
+{
+    WalletContext context;
+    context.args = &gArgs;
+    context.chain = m_node.chain.get();
+    context.coinjoin_loader = m_node.coinjoin_loader.get();
+    auto wallet = TestLoadWallet(context);
+    BOOST_REQUIRE(wallet != nullptr);
+
+    node::BlockAssembler::Options options;
+    options.nBlockMaxSize = 10000;
+    node::BlockAssembler assembler(m_node.chainman->ActiveChainstate(), m_node, m_node.mempool.get(), Params(), options);
+    const CScript script_pub_key = CScript() << OP_TRUE;
+
+    for (int i = 0; i < 3; ++i) {
+        assembler.CreateNewBlock(script_pub_key, wallet, GetTime(), /*isPos=*/true);
+        // The working limit must be recomputed from the configured value on
+        // every call: 10000 minus the coinstake reserve, with no cumulative drift
+        BOOST_CHECK_EQUAL(assembler.GetBlockMaxSize(), 9000U);
+    }
+
+    TestUnloadWallet(context, std::move(wallet));
+}
+
+BOOST_AUTO_TEST_CASE(wallet_rejects_invalid_staking_args)
+{
+    CheckInvalidStakingArg("stakesplitthreshold", "0", "-stakesplitthreshold must be between 1 and");
+    CheckInvalidStakingArg("stakesplitthreshold", "-1", "-stakesplitthreshold must be between 1 and");
+    CheckInvalidStakingArg("stakesplitthreshold", "1000001", "-stakesplitthreshold must be between 1 and 1000000");
+    CheckInvalidStakingArg("stakemaxsplit", "-1", "-stakemaxsplit must be between 0 and");
+    CheckInvalidStakingArg("stakeautocombine", "-1", "-stakeautocombine must be between 0 and 2");
+    CheckInvalidStakingArg("stakeautocombine", "3", "-stakeautocombine must be between 0 and 2");
+    CheckInvalidStakingArg("stakecombinemax", "-1", "-stakecombinemax must be between 0 and");
+    CheckInvalidStakingArg("stakecombinemax", "1000001", "-stakecombinemax must be between 0 and 1000000");
+    CheckInvalidStakingArg("poshashinterval", "0", "-poshashinterval must be between 1 and");
+    CheckInvalidStakingArg("poshashinterval", "-1", "-poshashinterval must be between 1 and");
+    CheckInvalidStakingArg("poshashinterval", "86401", "-poshashinterval must be between 1 and 86400");
+}
+
 static CMutableTransaction TestSimpleSpend(const CTransaction& from, uint32_t index, const CKey& key, const CScript& pubkey)
 {
     CMutableTransaction mtx;
-    mtx.vout.push_back({from.vout[index].nValue - DEFAULT_TRANSACTION_MAXFEE, pubkey});
+    // The reward schedule may pay coinbases below DEFAULT_TRANSACTION_MAXFEE,
+    // leave a fee the spent coin can actually cover
+    const CAmount fee{std::min(DEFAULT_TRANSACTION_MAXFEE, from.vout[index].nValue / 2)};
+    mtx.vout.push_back({from.vout[index].nValue - fee, pubkey});
     mtx.vin.push_back({CTxIn{from.GetHash(), index}});
     FillableSigningProvider keystore;
     keystore.AddKey(key);
@@ -107,8 +286,11 @@ BOOST_FIXTURE_TEST_CASE(scan_for_wallet_transactions, TestChain100Setup)
     // Cap last block file size, and mine new block in a new block file.
     CBlockIndex* oldTip = m_node.chainman->ActiveChain().Tip();
     WITH_LOCK(::cs_main, m_node.chainman->m_blockman.GetBlockFileInfo(oldTip->GetBlockPos().nFile)->nSize = MAX_BLOCKFILE_SIZE);
-    CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey()));
+    const CBlock new_block = CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey()));
     CBlockIndex* newTip = m_node.chainman->ActiveChain().Tip();
+    // Coinbase values follow the PirateCash reward schedule, do not hardcode them
+    const CAmount old_cb_value{m_coinbase_txns.back()->vout[0].nValue};
+    const CAmount new_cb_value{new_block.vtx[0]->vout[0].nValue};
 
     // Verify ScanForWalletTransactions fails to read an unknown start block.
     {
@@ -156,7 +338,7 @@ BOOST_FIXTURE_TEST_CASE(scan_for_wallet_transactions, TestChain100Setup)
         BOOST_CHECK(result.last_failed_block.IsNull());
         BOOST_CHECK_EQUAL(result.last_scanned_block, newTip->GetBlockHash());
         BOOST_CHECK_EQUAL(*result.last_scanned_height, newTip->nHeight);
-        BOOST_CHECK_EQUAL(GetBalance(wallet).m_mine_immature, 1000 * COIN);
+        BOOST_CHECK_EQUAL(GetBalance(wallet).m_mine_immature, old_cb_value + new_cb_value);
 
         {
             CBlockLocator locator;
@@ -191,7 +373,7 @@ BOOST_FIXTURE_TEST_CASE(scan_for_wallet_transactions, TestChain100Setup)
         BOOST_CHECK_EQUAL(result.last_failed_block, oldTip->GetBlockHash());
         BOOST_CHECK_EQUAL(result.last_scanned_block, newTip->GetBlockHash());
         BOOST_CHECK_EQUAL(*result.last_scanned_height, newTip->nHeight);
-        BOOST_CHECK_EQUAL(GetBalance(wallet).m_mine_immature, 500 * COIN);
+        BOOST_CHECK_EQUAL(GetBalance(wallet).m_mine_immature, new_cb_value);
     }
 
     // Prune the remaining block file.
@@ -298,8 +480,9 @@ BOOST_FIXTURE_TEST_CASE(importwallet_rescan, TestChain100Setup)
     m_coinbase_txns.emplace_back(CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey())).vtx[0]);
 
     // Set key birthday to block time increased by the timestamp window, so
-    // rescan will start at the block time.
-    const int64_t KEY_TIME = BLOCK_TIME + 7200;
+    // rescan will start at the block time. NOTE: PirateCash uses a 5 minute
+    // TIMESTAMP_WINDOW / MAX_FUTURE_BLOCK_TIME, not the upstream 2 hours.
+    const int64_t KEY_TIME = BLOCK_TIME + TIMESTAMP_WINDOW;
     SetMockTime(KEY_TIME);
     m_coinbase_txns.emplace_back(CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey())).vtx[0]);
 
@@ -381,7 +564,7 @@ BOOST_FIXTURE_TEST_CASE(coin_mark_dirty_immature_credit, TestChain100Setup)
     // credit amount is calculated.
     wtx.MarkDirty();
     AddKey(wallet, coinbaseKey);
-    BOOST_CHECK_EQUAL(CachedTxGetImmatureCredit(wallet, wtx, ISMINE_SPENDABLE), 500*COIN);
+    BOOST_CHECK_EQUAL(CachedTxGetImmatureCredit(wallet, wtx, ISMINE_SPENDABLE), m_coinbase_txns.back()->vout[0].nValue);
 }
 
 static int64_t AddTx(ChainstateManager& chainman, CWallet& wallet, uint32_t lockTime, int64_t mockTime, int64_t blockTime)
@@ -589,13 +772,14 @@ BOOST_FIXTURE_TEST_CASE(ListCoinsTest, ListCoinsTestingSetup)
     BOOST_CHECK_EQUAL(list.begin()->second.size(), 1U);
 
     // Check initial balance from one mature coinbase transaction.
-    BOOST_CHECK_EQUAL(500 * COIN, GetAvailableBalance(*wallet));
+    const CAmount cb_value{m_coinbase_txns[0]->vout[0].nValue};
+    BOOST_CHECK_EQUAL(cb_value, GetAvailableBalance(*wallet));
 
     // Add a transaction creating a change address, and confirm ListCoins still
     // returns the coin associated with the change address underneath the
     // coinbaseKey pubkey, even though the change address has a different
     // pubkey.
-    AddTx(CRecipient{GetScriptForRawPubKey({}), 1 * COIN, false /* subtract fee */});
+    AddTx(CRecipient{GetScriptForRawPubKey({}), cb_value / 2, false /* subtract fee */});
     {
         LOCK(wallet->cs_wallet);
         list = ListCoins(*wallet);
@@ -1378,7 +1562,9 @@ BOOST_FIXTURE_TEST_CASE(CreateTransactionTest, CreateTransactionTestSetup)
         }
 
         // Just to create nCount output recipes to use in tests below
-        std::vector<std::pair<CAmount, bool>> vecOutputEntries{{5000, false}};
+        // 546 duff is the smallest accepted amount (see the strTooSmall cases
+        // above), keeping the many-output size-boundary cases affordable
+        std::vector<std::pair<CAmount, bool>> vecOutputEntries{{546, false}};
         auto createOutputEntries = [&](int nCount) {
             while (vecOutputEntries.size() <= size_t(nCount)) {
                 vecOutputEntries.push_back(vecOutputEntries.back());
@@ -1391,7 +1577,11 @@ BOOST_FIXTURE_TEST_CASE(CreateTransactionTest, CreateTransactionTestSetup)
 
         coinControl = CCoinControl();
         coinControl.m_feerate = CFeeRate(fallbackFee);
-        coinControl.Select(GetCoins({{100 * COIN, false}})[0]);
+        // A coin large enough for the 2934-output cases below: 2934 * 546 duff
+        // outputs plus the ~100k duff fee of a ~100 kB transaction at
+        // fallbackFee, without depending on the regtest reward schedule
+        // being able to fund the 100 COIN the upstream test selected here.
+        coinControl.Select(GetCoins({{1800000, false}})[0]);
 
         BOOST_CHECK(CreateTransaction({{-5000, false}}, strAmountNotNegative, false));
         BOOST_CHECK(CreateTransaction({}, strAtLeastOneRecipient, false));
@@ -1421,7 +1611,8 @@ BOOST_FIXTURE_TEST_CASE(CreateTransactionTest, CreateTransactionTestSetup)
 BOOST_FIXTURE_TEST_CASE(select_coins_grouped_by_addresses, ListCoinsTestingSetup)
 {
     // Check initial balance from one mature coinbase transaction.
-    BOOST_CHECK_EQUAL(GetAvailableBalance(*wallet), 500 * COIN);
+    const CAmount cb_value{m_coinbase_txns[0]->vout[0].nValue};
+    BOOST_CHECK_EQUAL(GetAvailableBalance(*wallet), cb_value);
 
     {
         std::vector<CompactTallyItem> vecTally = wallet->SelectCoinsGroupedByAddresses(/*fSkipDenominated=*/false,
@@ -1429,17 +1620,17 @@ BOOST_FIXTURE_TEST_CASE(select_coins_grouped_by_addresses, ListCoinsTestingSetup
                 /*fSkipUnconfirmed=*/false,
                 /*nMaxOupointsPerAddress=*/100);
         BOOST_CHECK_EQUAL(vecTally.size(), 1);
-        BOOST_CHECK_EQUAL(vecTally.at(0).nAmount, 500 * COIN);
+        BOOST_CHECK_EQUAL(vecTally.at(0).nAmount, cb_value);
         BOOST_CHECK_EQUAL(vecTally.at(0).outpoints.size(), 1);
     }
 
     // Create two conflicting transactions, add one to the wallet and mine the other one.
     CCoinControl dummy;
-    auto ret1 = CreateTransaction(*wallet, {CRecipient{GetScriptForRawPubKey({}), 2 * COIN, true /* subtract fee */}},
+    auto ret1 = CreateTransaction(*wallet, {CRecipient{GetScriptForRawPubKey({}), cb_value / 2, true /* subtract fee */}},
                                   RANDOM_CHANGE_POSITION, dummy);
     BOOST_CHECK(ret1);
     const auto& txr1 = ret1->tx;
-    auto ret2 = CreateTransaction(*wallet, {CRecipient{GetScriptForRawPubKey({}), 1 * COIN, true /* subtract fee */}},
+    auto ret2 = CreateTransaction(*wallet, {CRecipient{GetScriptForRawPubKey({}), cb_value / 4, true /* subtract fee */}},
                                   RANDOM_CHANGE_POSITION, dummy);
     BOOST_CHECK(ret2);
     const auto& txr2 = ret2->tx;
@@ -1473,8 +1664,8 @@ BOOST_FIXTURE_TEST_CASE(select_coins_grouped_by_addresses, ListCoinsTestingSetup
     BOOST_CHECK_EQUAL(vecTally.size(), 2);
     BOOST_CHECK_EQUAL(vecTally.at(0).outpoints.size(), 1);
     BOOST_CHECK_EQUAL(vecTally.at(1).outpoints.size(), 1);
-    BOOST_CHECK_EQUAL(vecTally.at(0).nAmount + vecTally.at(1).nAmount, (500 + 499) * COIN);
-    BOOST_CHECK_EQUAL(GetAvailableBalance(*wallet), (500 + 499) * COIN);
+    BOOST_CHECK_EQUAL(vecTally.at(0).nAmount + vecTally.at(1).nAmount, cb_value + (cb_value - cb_value / 4));
+    BOOST_CHECK_EQUAL(GetAvailableBalance(*wallet), cb_value + (cb_value - cb_value / 4));
 }
 
 /** RAII class that provides access to a FailDatabase. Which fails if needed. */

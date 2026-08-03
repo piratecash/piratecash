@@ -879,6 +879,7 @@ void SetupServerArgs(ArgsManager& argsman)
     argsman.AddArg("-stakesplitthreshold=<n>", strprintf("Splits stake reward by threshold (1-%d, default: %d)", wallet::MAX_STAKE_SPLIT_THRESHOLD, wallet::DEFAULT_STAKE_SPLIT_THRESHOLD), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
     argsman.AddArg("-stakemaxsplit=<n>", strprintf("Sets the number of max inputs & outputs of a stake (default: %d)", wallet::DEFAULT_STAKE_MAX_SPLIT), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
     argsman.AddArg("-stakeautocombine=<n>", strprintf("Autocombine feature: 0 - disable, 1 - same account, 2 - any account (default: %d)", wallet::DEFAULT_STAKE_AUTOCOMBINE), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
+    argsman.AddArg("-stakecombinemax=<n>", strprintf("Autocombine only inputs of at most <n> coins when the stake input is already above -stakesplitthreshold (0 to disable, values above -stakesplitthreshold - 1 are limited to it, default: %d)", wallet::DEFAULT_STAKE_COMBINE_MAX), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
     argsman.AddArg("-inputstakeprotect=<n>", strprintf("Don't use masternode collateral for staking (0-1, default: %u)", wallet::DEFAULT_INPUT_STAKE_PROTECT), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
     argsman.AddArg("-printcoinstake", "", ArgsManager::ALLOW_ANY, OptionsCategory::HIDDEN);
     argsman.AddArg("-poshashinterval=<n>", strprintf("Specify the number of seconds between stake hash attempts (1-%u, default: %u)", wallet::MAX_POS_HASH_INTERVAL, wallet::DEFAULT_POS_HASH_INTERVAL), ArgsManager::ALLOW_ANY, OptionsCategory::POS);
@@ -1238,6 +1239,16 @@ bool AppInitParameterInteraction(const ArgsManager& args)
     const int64_t stake_autocombine = args.GetIntArg("-stakeautocombine", wallet::DEFAULT_STAKE_AUTOCOMBINE);
     if (stake_autocombine < wallet::AUTOCOMBINE_DISABLE || stake_autocombine > wallet::AUTOCOMBINE_ANY) {
         return InitError(strprintf(_("-stakeautocombine must be between %d and %d"), wallet::AUTOCOMBINE_DISABLE, wallet::AUTOCOMBINE_ANY));
+    }
+
+    const int64_t stake_combine_max = args.GetIntArg("-stakecombinemax", wallet::DEFAULT_STAKE_COMBINE_MAX);
+    if (stake_combine_max < 0 || stake_combine_max > wallet::MAX_STAKE_SPLIT_THRESHOLD) {
+        return InitError(strprintf(_("-stakecombinemax must be between 0 and %d"), wallet::MAX_STAKE_SPLIT_THRESHOLD));
+    }
+
+    // Keep in sync with MIN_STAKE_SIZE_BUDGET in node/miner.cpp
+    if (args.GetBoolArg("-staking", true) && args.GetIntArg("-blockmaxsize", DEFAULT_BLOCK_MAX_SIZE) < 2000) {
+        InitWarning(_("-blockmaxsize is too small for proof-of-stake blocks, a minimum of 2000 bytes will be used"));
     }
 
     const int64_t pos_hash_interval = args.GetIntArg("-poshashinterval", wallet::DEFAULT_POS_HASH_INTERVAL);
