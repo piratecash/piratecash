@@ -5896,7 +5896,7 @@ bool PeerManagerImpl::ProcessMessages(CNode* pfrom, std::atomic<bool>& interrupt
     {
         LOCK(cs_main);
         auto state = State(pfrom->GetId());
-        if ((state->nBlocksInFlight == 0) &&
+        if (state->vBlocksInFlight.empty() &&
             !state->vPostponedHeaders.empty() &&
             GetTime<std::chrono::microseconds>() >= state->m_postponed_headers_retry_time) {
             postponed_headers.swap(state->vPostponedHeaders);
