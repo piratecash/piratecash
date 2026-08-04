@@ -5,10 +5,14 @@ Release is now available from:
   <https://p.cash/en/download/>
 
 This release ports PirateCash Core to the Dash Core v23.1.8 codebase. It fixes
-three remotely reachable crashes and brings further hardening of the peer-to-peer
-message handlers along with networking, RPC and build fixes. The upstream changes
-are adapted for the PirateCash network without replacing PirateCash-specific
-consensus and service changes.
+three remotely reachable crashes inherited from Dash Core and brings further
+hardening of the peer-to-peer message handlers along with networking, RPC and
+build fixes. The upstream changes are adapted for the PirateCash network without
+replacing PirateCash-specific consensus and service changes.
+
+PirateCash-specific changes in this release also harden Proof-of-Stake header
+and block validation, fix the header-only stake double-spend scan and improve
+stake input auto-combining.
 
 This release is mandatory for all nodes.
 
@@ -52,9 +56,10 @@ the whole chain.
 
 ## Critical fixes
 
-This release fixes three crashes that a remote party could trigger. None of
-them affect consensus rules or put funds at risk, but each one can take a node
-offline, so all operators should upgrade promptly.
+This release includes fixes for three crashes inherited from Dash Core that a
+remote party could trigger. None of them affect consensus rules or put funds at
+risk, but each one can take a node offline, so all operators should upgrade
+promptly.
 
 - Fixed a crash while removing provider transactions that a masternode's
   operator-key change invalidates. Those transactions are collected before any
@@ -149,6 +154,20 @@ PirateCash Core v23.1.8 is built from the Dash Core v23.1.8 codebase. Upstream
 changes are adapted without replacing PirateCash consensus, network parameters,
 staking, rewards or Corsa integration.
 
+## Proof-of-Stake validation hardening
+
+- Crafted PoS headers that reference an output index outside the referenced
+  transaction are now rejected before that output is accessed.
+- Blocks whose coinbase transaction has no outputs are now rejected before the
+  pre-v18 PoS coinbase rules inspect its first output.
+- After the PoSv2 fork height, legacy block versions are now rejected during
+  header acceptance as well as during full block connection.
+- Fixed a header-validation loop that could stop advancing while checking an
+  unvalidated PoS fork for reuse of a stake input. The scan now follows each
+  header's parent back toward the fork point, stops safely at genesis or a
+  validated or non-PoS block, and reliably rejects repeated use of the same
+  staking output in the header-only tail.
+
 ## High-Performance Masternodes
 
 A new high-performance masternode type has been added. High-performance
@@ -205,6 +224,24 @@ instead of creating a new wallet automatically.
 
 New wallets can be created through the GUI, the `piratecash-wallet create` command
 or the `createwallet` RPC.
+
+Stake input auto-combining has been improved. Previously, a staking output could
+settle just below twice `-stakesplitthreshold`, after which small staking reward
+outputs could accumulate without being combined. The wallet can now sweep small
+inputs into a kernel that is already above the split threshold, and the normal
+split pass turns the result back into threshold-sized outputs.
+
+The new `-stakecombinemax=<n>` option sets the largest input, in PIRATE, that may
+be swept in this situation. It defaults to `100`; `0` disables this additional
+sweep, and values at or above `-stakesplitthreshold` are limited to one PIRATE
+below that threshold. The effective value is reported by `getstakingstatus` as
+`stakecombinemax`.
+
+Auto-combine candidates must be confirmed, mature and still unspent. Selection
+now respects `-reservebalance` and `-inputstakeprotect`, and coinstake
+construction observes the block's remaining size and signature-operation
+budgets. When staking is enabled, a configured `-blockmaxsize` below 2000 bytes
+produces a warning and the minimum space required for a PoS block is reserved.
 
 ## P2P and network changes
 
