@@ -430,7 +430,7 @@ RPCResult CDKGDebugSessionStatus::GetJsonHelp(const std::string& key, bool optio
         GetRpcResult("llmqType", /*optional=*/true),
         GetRpcResult("quorumHash", /*optional=*/true),
         {RPCResult::Type::NUM, "quorumHeight", /*optional=*/true, "Block height of the quorum"},
-        {RPCResult::Type::NUM, "phase", /*optional=*/true, "Active DKG phase"},
+        {RPCResult::Type::NUM, "phase", /*optional=*/true, "Latest DKG phase whose messages this node has already sent"},
         {RPCResult::Type::BOOL, "sentContributions", /*optional=*/true, "Returns true if contributions sent"},
         {RPCResult::Type::BOOL, "sentComplaint", /*optional=*/true, "Returns true if complaints sent"},
         {RPCResult::Type::BOOL, "sentJustification", /*optional=*/true, "Returns true if justifications sent"},
