@@ -4057,6 +4057,8 @@ void PeerManagerImpl::ProcessMessage(
         }
 
         pfrom.m_has_all_wanted_services = HasAllDesirableServiceFlags(nServices);
+        pfrom.m_version_services = nServices;
+        pfrom.m_version_relay_txs = fRelay;
         peer->m_their_services = nServices;
         pfrom.SetAddrLocal(addrMe);
         {
