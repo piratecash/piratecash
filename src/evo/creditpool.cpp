@@ -253,7 +253,11 @@ CCreditPool CCreditPoolManager::GetCreditPool(const CBlockIndex* block_index)
 
     std::optional<CCreditPool> poolTmp;
     while (block_index != nullptr && !(poolTmp = GetFromCache(*block_index)).has_value()) {
-        to_calculate.emplace(block_index);
+        // Not emplace: gsl::not_null captures the caller's source_location as a
+        // default argument, so constructing it inside the container would
+        // report an Expects() failure against a standard library header
+        // instead of this loop, and embed that header's path in the binary.
+        to_calculate.push(block_index); // NOLINT(modernize-use-emplace)
         block_index = block_index->pprev;
     }
     if (block_index == nullptr) poolTmp = CCreditPool{};
