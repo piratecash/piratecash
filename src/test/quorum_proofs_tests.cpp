@@ -315,7 +315,7 @@ struct QuorumProofGenerationSetup : TestingSetup {
                 block.vtx.push_back(MakeTransactionRef(tx));
             }
             block.hashMerkleRoot = BlockMerkleRoot(block);
-            while (!CheckProofOfWork(block.GetHash(), block.nBits, consensus))
+            while (!CheckProofOfWork(block.GetPoWHash(), block.nBits, consensus))
                 ++block.nNonce;
             const auto pos = chainman.m_blockman.SaveBlockToDisk(block, height, nullptr);
             BOOST_REQUIRE(!pos.IsNull());

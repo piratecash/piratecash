@@ -142,6 +142,8 @@ enum
     SER_NETWORK         = (1 << 0),
     SER_DISK            = (1 << 1),
     SER_GETHASH         = (1 << 2),
+    // modifiers
+    SER_POSMARKER       = (1 << 18),  // PirateCash: for sending block headers with PoS marker, to allow headers-first syncronization
 };
 
 //! Convert the reference base type to X, without changing constness or reference type.
@@ -1430,9 +1432,11 @@ class CSizeComputer
 protected:
     size_t nSize{0};
 
+    const int nType;
     const int nVersion;
 public:
-    explicit CSizeComputer(int nVersionIn) : nVersion(nVersionIn) {}
+    explicit CSizeComputer(int nVersionIn) : nType(SER_NETWORK), nVersion(nVersionIn) {}
+    CSizeComputer(int nTypeIn, int nVersionIn) : nType(nTypeIn), nVersion(nVersionIn) {}
 
     void write(Span<const std::byte> src)
     {
@@ -1457,6 +1461,7 @@ public:
     }
 
     int GetVersion() const { return nVersion; }
+    int GetType() const { return nType; }
 };
 
 template <typename Stream, typename... Args>
@@ -1520,6 +1525,12 @@ template <typename T>
 size_t GetSerializeSize(const T& t, int nVersion)
 {
     return (CSizeComputer(nVersion) << t).size();
+}
+
+template <typename T>
+size_t GetSerializeSize(const T& t, int nType, int nVersion)
+{
+    return (CSizeComputer(nType, nVersion) << t).size();
 }
 
 template <typename... T>
