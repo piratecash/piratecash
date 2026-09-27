@@ -1,10 +1,10 @@
 RPC Tools
 ---------------------
 
-### [RPCAuth](/share/rpcauth) ###
+### [RPCUser](/share/rpcuser) ###
 
 ```
-usage: rpcauth.py [-h] username [password]
+usage: rpcuser.py [-h] [-j] username [password]
 
 Create login credentials for a JSON-RPC user
 
