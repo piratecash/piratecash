@@ -2,7 +2,7 @@
 # Copyright (c) 2015-2018 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Test share/rpcauth/rpcauth.py
+"""Test share/rpcuser/rpcuser.py
 """
 import re
 import configparser
@@ -21,7 +21,7 @@ class TestRPCAuth(unittest.TestCase):
         with open(config_path, encoding="utf8") as config_file:
             config.read_file(config_file)
         sys.path.insert(0, os.path.dirname(config['environment']['RPCAUTH']))
-        self.rpcauth = importlib.import_module('rpcauth')
+        self.rpcauth = importlib.import_module('rpcuser')
 
     def test_generate_salt(self):
         for i in range(16, 32 + 1):
