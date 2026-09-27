@@ -14,6 +14,7 @@
 #include <bls/bls.h>
 #include <coinjoin/client.h>
 #include <coinjoin/coinjoin.h>
+#include <consensus/consensus.h>
 #include <evo/deterministicmns.h>
 #include <evo/dmn_types.h>
 #include <interfaces/chain.h>
@@ -450,10 +451,10 @@ BOOST_FIXTURE_TEST_CASE(importwallet_rescan, TestChain100Setup)
         RemoveWallet(context, wallet, /*load_on_start=*/std::nullopt);
 
         BOOST_CHECK_EQUAL(wallet->mapWallet.size(), 3U);
-        BOOST_CHECK_EQUAL(m_coinbase_txns.size(), 103U);
+        BOOST_CHECK_EQUAL(m_coinbase_txns.size(), COINBASE_MATURITY + 3U);
         for (size_t i = 0; i < m_coinbase_txns.size(); ++i) {
             bool found = wallet->GetWalletTx(m_coinbase_txns[i]->GetHash());
-            bool expected = i >= 100;
+            bool expected = i >= COINBASE_MATURITY;
             BOOST_CHECK_EQUAL(found, expected);
         }
     }
@@ -681,7 +682,7 @@ class ListCoinsTestingSetup : public TestChain100Setup
 public:
     ListCoinsTestingSetup()
     {
-        CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey()));
+        m_coinbase_txns.push_back(CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey())).vtx[0]);
         wallet = CreateSyncedWallet(*m_node.chain, *m_node.coinjoin_loader, *Assert(m_node.chainman), m_args, coinbaseKey);
     }
 
@@ -1893,7 +1894,7 @@ BOOST_FIXTURE_TEST_CASE(AbandonedSpendRestoresActiveMasternodeCollateralLock, Li
     const CScript wallet_script{GetScriptForDestination(PKHash(coinbaseKey.GetPubKey()))};
     while (WITH_LOCK(m_node.chainman->GetMutex(), return m_node.chainman->ActiveChain().Height()) <
            Params().GetConsensus().DIP0003Height) {
-        CreateAndProcessBlock({}, wallet_script);
+        m_coinbase_txns.push_back(CreateAndProcessBlock({}, wallet_script).vtx[0]);
     }
 
     CKey owner_key;

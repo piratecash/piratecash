@@ -80,8 +80,8 @@ static constexpr auto FEELER_INTERVAL = 2min;
 static const unsigned int MAX_INV_SZ = 50000;
 /** Run the extra block-relay-only connection loop once every 5 minutes. **/
 static constexpr auto EXTRA_BLOCK_RELAY_ONLY_PEER_INTERVAL = 5min;
-/** Maximum length of incoming protocol messages (no message over 3 MiB is currently acceptable). */
-static const unsigned int MAX_PROTOCOL_MESSAGE_LENGTH = 3 * 1024 * 1024;
+/** Maximum length of incoming protocol messages, including 6 MB blocks and their PoS marker. */
+static const unsigned int MAX_PROTOCOL_MESSAGE_LENGTH = 6 * 1024 * 1024;
 /** Maximum length of the user agent string in `version` message */
 static const unsigned int MAX_SUBVERSION_LENGTH = 256;
 /** Maximum number of automatic outgoing nodes over which we'll relay everything (blocks, tx, addrs, etc) */

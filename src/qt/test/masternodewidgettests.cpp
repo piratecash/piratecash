@@ -1030,8 +1030,8 @@ void MasternodeWidgetTests::sharedMasternodeOwnedFilter()
     // voting key matches. The refund destination is still a stake in the
     // masternode, because that is where the principal returns on dissolution.
     std::vector<interfaces::MnShare> shares{
-        {400 * COIN, TestScript(0x11), TestScript(0x12), TestKeyID(0x13)},
-        {600 * COIN, GetScriptForDestination(refund), TestScript(0x14), TestKeyID(0x15)}};
+        {4000 * COIN, TestScript(0x11), TestScript(0x12), TestKeyID(0x13)},
+        {6000 * COIN, GetScriptForDestination(refund), TestScript(0x14), TestKeyID(0x15)}};
     const auto mine{MakeListEntry(std::make_shared<TestListMnEntry>(0x20, shares))};
     QVERIFY(MasternodeList::isOwnedBy(wallet_model.wallet(), {}, *mine));
 
@@ -1069,8 +1069,8 @@ void MasternodeWidgetTests::sharedMasternodeContextMenu()
     list.setWalletModel(&wallet_model);
     list.setClientModel(&models.client);
 
-    const std::vector<interfaces::MnShare> theirs{{400 * COIN, TestScript(0x41), CScript{}, TestKeyID(0x42)},
-                                                  {600 * COIN, TestScript(0x43), CScript{}, TestKeyID(0x44)}};
+    const std::vector<interfaces::MnShare> theirs{{4000 * COIN, TestScript(0x41), CScript{}, TestKeyID(0x42)},
+                                                  {6000 * COIN, TestScript(0x43), CScript{}, TestKeyID(0x44)}};
     std::vector<interfaces::MnShare> mine{theirs};
     mine[1].keyIDOwner = ToKeyID(*owner_hash);
 
@@ -1122,8 +1122,8 @@ void MasternodeWidgetTests::sharedMasternodeContextMenu()
 
 void MasternodeWidgetTests::standbyDissolutionDescription()
 {
-    const std::vector<interfaces::MnShare> shares{{400 * COIN, TestScript(0xa1), CScript{}, TestKeyID(0xa2)},
-                                                  {600 * COIN, TestScript(0xa3), CScript{}, TestKeyID(0xa4)}};
+    const std::vector<interfaces::MnShare> shares{{4000 * COIN, TestScript(0xa1), CScript{}, TestKeyID(0xa2)},
+                                                  {6000 * COIN, TestScript(0xa3), CScript{}, TestKeyID(0xa4)}};
     const auto entry{MakeListEntry(std::make_shared<TestListMnEntry>(0xa0, shares))};
     constexpr CAmount fee{100000};
 
@@ -1152,7 +1152,7 @@ void MasternodeWidgetTests::standbyDissolutionDescription()
         entry.get())};
     QVERIFY2(unilateral.contains("Share 2 of 2"), qPrintable(unilateral));
     QVERIFY(unilateral.contains("Approved by: your signature only"));
-    QVERIFY(unilateral.contains("Share 1 of 2 → " + SharedMnFormatAmount(BitcoinUnits::Unit::PIRATECASH, 400 * COIN)));
+    QVERIFY(unilateral.contains("Share 1 of 2 → " + SharedMnFormatAmount(BitcoinUnits::Unit::PIRATECASH, 4000 * COIN)));
     QVERIFY(unilateral.contains("Fee: " + SharedMnFormatAmount(BitcoinUnits::Unit::PIRATECASH, fee)));
     QVERIFY(unilateral.contains("Every share's principal is returned"));
     QVERIFY(!unilateral.contains("not in the current masternode list"));
@@ -1178,8 +1178,8 @@ void MasternodeWidgetTests::standbyDissolutionDescription()
 
 void MasternodeWidgetTests::sharedMasternodeDetails()
 {
-    const std::vector<interfaces::MnShare> shares{{400 * COIN, TestScript(0x81), TestScript(0x82), TestKeyID(0x83)},
-                                                  {600 * COIN, TestScript(0x84), CScript{}, TestKeyID(0x85)}};
+    const std::vector<interfaces::MnShare> shares{{4000 * COIN, TestScript(0x81), TestScript(0x82), TestKeyID(0x83)},
+                                                  {6000 * COIN, TestScript(0x84), CScript{}, TestKeyID(0x85)}};
     auto dmn{std::make_shared<TestListMnEntry>(0x90, shares)};
     dmn->m_early_period_blocks = 100;
     dmn->m_early_penalty = 5 * COIN;

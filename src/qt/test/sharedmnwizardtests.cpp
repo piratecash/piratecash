@@ -74,7 +74,7 @@ namespace {
 //! no addresses and no funding yet
 MnShareSession InvitationSession()
 {
-    return MasternodeTestUtil::MakeInvitation({{"alice", 400 * COIN}, {"bob", 350 * COIN}, {"carol", 250 * COIN}});
+    return MasternodeTestUtil::MakeInvitation({{"alice", 4000 * COIN}, {"bob", 3500 * COIN}, {"carol", 2500 * COIN}});
 }
 
 //! `draft` locked the way shared_register_prepare would lock it, with every
@@ -440,7 +440,7 @@ void SharedMnWizardTests::refusesToSignShortChangedOwnContribution()
     m_node.setContext(&test.m_node);
     WalletContext& context{*m_node.walletLoader().context()};
 
-    // bob's wallet funds its 350 DASH share with one 450 DASH coin, so 100 DASH
+    // bob's wallet funds its 3500 PIRATE share with one 4500 PIRATE coin, so 1000 PIRATE
     // of change has to come back to it
     CKey victim_key;
     victim_key.MakeNewKey(/*fCompressed=*/true);
@@ -450,7 +450,7 @@ void SharedMnWizardTests::refusesToSignShortChangedOwnContribution()
 
     CMutableTransaction coin;
     coin.vin.emplace_back(COutPoint(uint256::ONE, 0));
-    coin.vout.emplace_back(450 * COIN, GetScriptForDestination(PKHash(victim_key.GetPubKey())));
+    coin.vout.emplace_back(4500 * COIN, GetScriptForDestination(PKHash(victim_key.GetPubKey())));
     const QString coin_txid{QString::fromStdString(coin.GetHash().ToString())};
     QVERIFY(wallet->AddToWallet(MakeTransactionRef(coin), wallet::TxStateInactive{}) != nullptr);
     const QString own_address{QString::fromStdString(EncodeDestination(PKHash(victim_key.GetPubKey())))};
@@ -498,7 +498,7 @@ void SharedMnWizardTests::refusesToSignShortChangedOwnContribution()
         QCOMPARE(dialog.myShareIndex(), 1);
         QCOMPARE(int(dialog.currentPage()), int(SharedMnCreateDialog::PageSignatures));
         const QString refusal{dialog.m_funding_refusal};
-        QVERIFY2(refusal.contains(QStringLiteral("spends %1").arg(amount(450 * COIN))), qPrintable(refusal));
+        QVERIFY2(refusal.contains(QStringLiteral("spends %1").arg(amount(4500 * COIN))), qPrintable(refusal));
         QVERIFY2(refusal.contains(QStringLiteral("returns only %1").arg(amount(returned))), qPrintable(refusal));
         QVERIFY(!dialog.m_next_button->isEnabled());
         bool complete{true};
@@ -509,7 +509,7 @@ void SharedMnWizardTests::refusesToSignShortChangedOwnContribution()
 
     // Honest: the change comes back to this wallet, so nothing stands in the way
     // of signing (the sign itself fails on the unconfirmed coin, not the check)
-    const MnShareSession honest{session_with_change(own_address, 100 * COIN)};
+    const MnShareSession honest{session_with_change(own_address, 1000 * COIN)};
     QCOMPARE(int(honest.stage()), int(MnShareSession::Stage::Combined));
     {
         SharedMnCreateDialog dialog(m_node, &wallet_model, /*parent=*/nullptr);
@@ -517,12 +517,12 @@ void SharedMnWizardTests::refusesToSignShortChangedOwnContribution()
         QVERIFY2(dialog.m_funding_refusal.isEmpty(), qPrintable(dialog.m_funding_refusal));
         QVERIFY2(dialog.m_next_button->isEnabled(), qPrintable(dialog.m_next_button->toolTip()));
     }
-    // Honest coordinator paying a 0.05 DASH fee, above the usual cap, out of its
+    // Honest coordinator paying a 0.05 PIRATE fee, above the usual cap, out of its
     // own coin: what leaves on top of the share is the fee it chose
     {
         SharedMnCreateDialog dialog(m_node, &wallet_model, /*parent=*/nullptr);
         dialog.m_fee_field->setValue(5 * COIN / 100);
-        dialog.handleImportedText(session_with_change(own_address, 100 * COIN - 5 * COIN / 100,
+        dialog.handleImportedText(session_with_change(own_address, 1000 * COIN - 5 * COIN / 100,
                                                       /*coordinated=*/true)
                                       .toJsonString());
         QCOMPARE(int(dialog.m_role), int(SharedMnCreateDialog::Role::Coordinator));
@@ -532,7 +532,7 @@ void SharedMnWizardTests::refusesToSignShortChangedOwnContribution()
     // of its transaction is not a coin of ours, and must not crash the import
     {
         SharedMnCreateDialog dialog(m_node, &wallet_model, /*parent=*/nullptr);
-        dialog.handleImportedText(session_with_change(own_address, 100 * COIN, /*coordinated=*/false,
+        dialog.handleImportedText(session_with_change(own_address, 1000 * COIN, /*coordinated=*/false,
                                                       /*vout=*/std::numeric_limits<uint32_t>::max())
                                       .toJsonString());
         QCOMPARE(int(dialog.currentPage()), int(SharedMnCreateDialog::PageSignatures));
@@ -541,9 +541,9 @@ void SharedMnWizardTests::refusesToSignShortChangedOwnContribution()
 
     // The change goes to somebody else's address
     CKey attacker_key;
-    expect_refusal(session_with_change(FreshP2PKHAddress(&attacker_key), 100 * COIN), 0);
-    // The change comes back to this wallet, but 50 DASH short
-    expect_refusal(session_with_change(own_address, 50 * COIN), 50 * COIN);
+    expect_refusal(session_with_change(FreshP2PKHAddress(&attacker_key), 1000 * COIN), 0);
+    // The change comes back to this wallet, but 500 PIRATE short
+    expect_refusal(session_with_change(own_address, 500 * COIN), 500 * COIN);
 }
 
 void SharedMnWizardTests::savingWaitsForTheOperatorKeyBackup()
@@ -694,7 +694,7 @@ void SharedMnWizardTests::participantsPageGating()
 
     // Amounts that do not add up to the collateral are refused with both totals
     dialog.m_session.shares()[1].label = QStringLiteral("bob");
-    dialog.m_session.shares()[2].amount = 100 * COIN;
+    dialog.m_session.shares()[2].amount = 1000 * COIN;
     dialog.refreshShareTable();
     QVERIFY(!dialog.validatePage(SharedMnCreateDialog::PageParticipants, error));
     QVERIFY(!error.isEmpty());

@@ -54,7 +54,7 @@ MnShareSession ValidSession(std::vector<CKey>& owner_keys)
     owner_keys.resize(3);
     CKey dummy;
     const char* labels[]{"alice", "bob", "carol"};
-    const CAmount amounts[]{400 * COIN, 350 * COIN, 250 * COIN};
+    const CAmount amounts[]{4000 * COIN, 3500 * COIN, 2500 * COIN};
     for (size_t i = 0; i < 3; ++i) {
         MnShareSession::Share share{MakeShare(amounts[i], FreshP2PKHAddress(&owner_keys[i]), FreshP2PKHAddress(&dummy))};
         share.label = QString::fromLatin1(labels[i]);
@@ -101,7 +101,7 @@ CBLSSecretKey SetFreshOperatorKey(MnShareSession& session)
 MnShareSession InvitationSession()
 {
     return MasternodeTestUtil::MakeInvitation(
-        {{"alice", 250 * COIN}, {"bob", 250 * COIN}, {"carol", 250 * COIN}, {"dave", 250 * COIN}});
+        {{"alice", 2500 * COIN}, {"bob", 2500 * COIN}, {"carol", 2500 * COIN}, {"dave", 2500 * COIN}});
 }
 
 } // anonymous namespace
@@ -125,8 +125,8 @@ void MnShareSessionTests::validateSharesMirror()
 
     // Minimum share amount
     MnShareSession too_small{ValidSession(keys)};
-    too_small.shares()[0].amount = 950 * COIN;
-    too_small.shares()[1].amount = 25 * COIN; // below the 100 DASH minimum
+    too_small.shares()[0].amount = 9950 * COIN;
+    too_small.shares()[1].amount = 25 * COIN; // below the 100 PIRATE minimum
     too_small.shares()[2].amount = 25 * COIN;
     QVERIFY(!too_small.validateShares().isEmpty());
 
@@ -147,7 +147,7 @@ void MnShareSessionTests::validateSharesMirror()
 
     // The early penalty must stay below the smallest share
     MnShareSession bad_penalty{ValidSession(keys)};
-    bad_penalty.terms().earlyPenalty = 250 * COIN;
+    bad_penalty.terms().earlyPenalty = 2500 * COIN;
     QVERIFY(!bad_penalty.validateShares().isEmpty());
 
     // The early period is capped
@@ -175,7 +175,7 @@ void MnShareSessionTests::envelopeRoundTrip()
     QCOMPARE(int(restored.stage()), int(MnShareSession::Stage::Draft));
     QCOMPARE(restored.shares().size(), session.shares().size());
     QCOMPARE(restored.shares()[0].label, QString("alice"));
-    QCOMPARE(restored.shares()[2].amount, 250 * COIN);
+    QCOMPARE(restored.shares()[2].amount, 2500 * COIN);
     QCOMPARE(restored.terms().earlyPenalty, 5 * COIN);
     QCOMPARE(restored.operatorSecretHolder(), QString("bob"));
 
@@ -324,8 +324,8 @@ void MnShareSessionTests::draftRepliesMergeInAnyOrder()
 
     // A reply that changed the draft it was answering is a conflict
     MnShareSession edited_invitation{invitation};
-    edited_invitation.shares()[1].amount = 300 * COIN;
-    edited_invitation.shares()[2].amount = 200 * COIN;
+    edited_invitation.shares()[1].amount = 3000 * COIN;
+    edited_invitation.shares()[2].amount = 2000 * COIN;
     const MnShareSession changed_amount{DraftReply(edited_invitation, 1, FakeTxid('5'))};
     MnShareSession amount_target{invitation};
     QCOMPARE(int(amount_target.absorbDraftReply(changed_amount, error)), int(MnShareSession::MergeResult::Conflict));
@@ -440,7 +440,7 @@ void MnShareSessionTests::lockedTermsAdoption()
 void MnShareSessionTests::penaltyPreviewMath()
 {
     BasicTestingSetup setup{CBaseChainParams::REGTEST};
-    const std::vector<CAmount> amounts{400 * COIN, 350 * COIN, 250 * COIN};
+    const std::vector<CAmount> amounts{4000 * COIN, 3500 * COIN, 2500 * COIN};
     const CAmount penalty{5 * COIN};
     const CAmount fee{100000};
     const uint32_t early_period{5000};
@@ -455,22 +455,22 @@ void MnShareSessionTests::penaltyPreviewMath()
     QCOMPARE(preview.penalty, penalty);
     QCOMPARE(preview.penaltyFreeHeight, registered + int(early_period));
     QCOMPARE(preview.payouts.size(), amounts.size());
-    QCOMPARE(preview.payouts[0], 400 * COIN - penalty - fee);
-    // 350:250 pro-rata split of 5 DASH = 2.916... : 2.083...; floor to the
+    QCOMPARE(preview.payouts[0], 4000 * COIN - penalty - fee);
+    // 3500:2500 pro-rata split of 5 PIRATE = 2.916... : 2.083...; floor to the
     // first share, remainder to the last
     const CAmount bonus_1{penalty * 350 / 600};
-    QCOMPARE(preview.payouts[1], 350 * COIN + bonus_1);
-    QCOMPARE(preview.payouts[2], 250 * COIN + (penalty - bonus_1));
-    QCOMPARE(preview.payouts[0] + preview.payouts[1] + preview.payouts[2], 1000 * COIN - fee);
+    QCOMPARE(preview.payouts[1], 3500 * COIN + bonus_1);
+    QCOMPARE(preview.payouts[2], 2500 * COIN + (penalty - bonus_1));
+    QCOMPARE(preview.payouts[0] + preview.payouts[1] + preview.payouts[2], 10000 * COIN - fee);
 
     // Past the boundary: no penalty
     preview = MnShareSession::PenaltyPreviewFor(amounts, /*actor_index=*/0, penalty, early_period, fee,
                                                 /*at_height=*/registered + int(early_period), registered);
     QVERIFY2(preview.valid, qPrintable(preview.error));
     QVERIFY(!preview.early);
-    QCOMPARE(preview.payouts[0], 400 * COIN - fee);
-    QCOMPARE(preview.payouts[1], 350 * COIN);
-    QCOMPARE(preview.payouts[2], 250 * COIN);
+    QCOMPARE(preview.payouts[0], 4000 * COIN - fee);
+    QCOMPARE(preview.payouts[1], 3500 * COIN);
+    QCOMPARE(preview.payouts[2], 2500 * COIN);
 
     // A share the session does not have is reported in the 1-based numbering
     // every screen shows, not the 0-based index the caller passed

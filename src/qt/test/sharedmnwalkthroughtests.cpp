@@ -252,10 +252,11 @@ void SyncWallet(interfaces::Node& node, CWallet& wallet)
 
 //! Run one RPC through the node the dialogs use. Returns the error text, or an
 //! empty string on success, with the result in `out`.
-QString RunRpc(interfaces::Node& node, const std::string& method, const UniValue& params, UniValue& out)
+QString RunRpc(interfaces::Node& node, const std::string& method, const UniValue& params, UniValue& out,
+               const std::string& uri = {})
 {
     try {
-        out = node.executeRpc(method, params, /*uri=*/"");
+        out = node.executeRpc(method, params, uri);
     } catch (const UniValue& error) {
         return QString::fromStdString(error.write());
     } catch (const std::exception& error) {
@@ -359,11 +360,12 @@ void SharedMnWalkthroughTests::walkthrough()
         wallets.keep(wallet);
     }
 
-    // Fifteen coinbases cover 700 COIN even though height 2 only pays 150 corsars.
+    // Eighty-two coinbases cover the largest 4000-PIRATE share plus fees,
+    // even though height 2 only pays 150 corsars.
     for (const auto& wallet : {coord_wallet, alice_wallet, bob_wallet}) {
         const auto dest{wallet->GetNewDestination("mining")};
         QVERIFY(dest);
-        QVERIFY2(MineTo(m_node, *dest, 15).isEmpty(), "generatetoaddress must succeed");
+        QVERIFY2(MineTo(m_node, *dest, 82).isEmpty(), "generatetoaddress must succeed");
     }
     // Past the regtest DIP3 enforcement height (500): below DIP3 activation
     // (432) a special transaction is rejected outright, and between activation
@@ -381,10 +383,26 @@ void SharedMnWalkthroughTests::walkthrough()
     for (const auto& wallet : {coord_wallet, alice_wallet, bob_wallet}) {
         SyncWallet(m_node, *wallet);
         const CAmount balance{wallet::GetBalance(*wallet).m_mine_trusted};
-        QVERIFY2(balance >= 700 * COIN,
+        QVERIFY2(balance > 4000 * COIN,
                  qPrintable(QStringLiteral("wallet %1 only has %2 duffs")
                                 .arg(QString::fromStdString(wallet->GetName()))
                                 .arg(balance)));
+
+        // A 4000-PIRATE share would need more than the session's 64-input cap
+        // from 50-PIRATE coinbases. Consolidate real coins before reserving them.
+        const auto dest{wallet->GetNewDestination("consolidation")};
+        QVERIFY(dest);
+        UniValue params(UniValue::VOBJ);
+        params.pushKV("address", EncodeDestination(*dest));
+        params.pushKV("amount", 4001);
+        params.pushKV("fee_rate", 1);
+        UniValue txid;
+        const QString error{RunRpc(m_node, "sendtoaddress", params, txid, "/wallet/" + wallet->GetName())};
+        QVERIFY2(error.isEmpty(), qPrintable(error));
+    }
+    QVERIFY2(MineTo(m_node, PKHash(sink_key.GetPubKey()), 1).isEmpty(), "the consolidation block must be mined");
+    for (const auto& wallet : {coord_wallet, alice_wallet, bob_wallet}) {
+        SyncWallet(m_node, *wallet);
     }
 
     MasternodeTestUtil::GuiModels models{m_node};
@@ -439,26 +457,26 @@ void SharedMnWalkthroughTests::walkthrough()
     };
 
     // Deliberately invalid roster first: a duplicate name and a share below the
-    // 100 DASH minimum, to capture how the dialog reports them.
-    set_share_row(0, QStringLiteral("Coordinator"), 400 * COIN);
+    // 100 PIRATE minimum, to capture how the dialog reports them.
+    set_share_row(0, QStringLiteral("Coordinator"), 4000 * COIN);
     set_share_row(1, QStringLiteral("Coordinator"), 50 * COIN);
-    set_share_row(2, QStringLiteral("Bob"), 300 * COIN);
+    set_share_row(2, QStringLiteral("Bob"), 3000 * COIN);
     if (auto* const me = qobject_cast<QRadioButton*>(coord.m_me_group->button(0)); me != nullptr) me->setChecked(true);
     coord.m_next_button->click();
     QCOMPARE(int(coord.currentPage()), int(SharedMnCreateDialog::PageParticipants));
     QVERIFY2(!coord.m_error_label->text().isEmpty(), "a duplicate name must be reported");
     Shots().capture(&coord, "coord", "03-participants-invalid",
-                    "Participants page refusing a duplicate name and a 50 DASH share (below the 100 DASH minimum)");
+                    "Participants page refusing a duplicate name and a 50 PIRATE share (below the 100 PIRATE minimum)");
 
-    set_share_row(1, QStringLiteral("Alice"), 300 * COIN);
-    set_share_row(2, QStringLiteral("Bob"), 300 * COIN);
+    set_share_row(1, QStringLiteral("Alice"), 3000 * COIN);
+    set_share_row(2, QStringLiteral("Bob"), 3000 * COIN);
     Shots().capture(&coord, "coord", "04-participants",
-                    "Participants page with a valid roster: 400 / 300 / 300 and the sum meter at 1000 of 1000");
+                    "Participants page with a valid roster: 4000 / 3000 / 3000 and the sum meter at 10000 of 10000");
 
     coord.m_next_button->click();
     QCOMPARE(int(coord.currentPage()), int(SharedMnCreateDialog::PageSettings));
     QCOMPARE(coord.m_session.shares().size(), size_t{3});
-    QCOMPARE(coord.m_session.shares()[0].amount, 400 * COIN);
+    QCOMPARE(coord.m_session.shares()[0].amount, 4000 * COIN);
 
     // --- masternode settings ------------------------------------------------
     coord.m_service_edit->setText(QStringLiteral("127.0.0.1:19999"));
