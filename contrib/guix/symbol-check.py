@@ -36,7 +36,7 @@ MAX_VERSIONS = {
     lief.ELF.ARCH.PPC64:  (2,31),
     lief.ELF.ARCH.RISCV:  (2,31),
 },
-'V':         (0,5,0),  # xkb (bitcoin-qt only)
+'V':         (0,5,0),  # xkb (piratecash-qt only)
 }
 
 # Ignore symbols that are exported as part of every executable
@@ -90,7 +90,7 @@ ELF_ABIS: Dict[lief.ELF.ARCH, Dict[lief.ENDIANNESS, List[int]]] = {
 
 # Allowed NEEDED libraries
 ELF_ALLOWED_LIBRARIES = {
-# dashd and dash-qt
+# piratecashd and piratecash-qt
 'libc.so.6', # C library
 'libpthread.so.0', # threading
 'libm.so.6', # math library
@@ -102,7 +102,7 @@ ELF_ALLOWED_LIBRARIES = {
 'ld64.so.2', # POWER64 ABIv2 dynamic linker
 'ld-linux-riscv64-lp64d.so.1', # 64-bit RISC-V dynamic linker
 'libz.so.1', # zlib
-# dash-qt only
+# piratecash-qt only
 'libxcb.so.1', # part of X11
 'libxcb-shm.so.0', # X11 shared memory extension
 'libxkbcommon.so.0', # keyboard keymapping
@@ -125,10 +125,10 @@ ELF_ALLOWED_LIBRARIES = {
 }
 
 MACHO_ALLOWED_LIBRARIES = {
-# bitcoind and bitcoin-qt
+# piratecashd and piratecash-qt
 'libc++.1.dylib', # C++ Standard Library
 'libSystem.B.dylib', # libc, libm, libpthread, libinfo
-# bitcoin-qt only
+# piratecash-qt only
 'AppKit', # user interface
 'ApplicationServices', # common application tasks.
 'Carbon', # deprecated c back-compat API
@@ -157,7 +157,7 @@ PE_ALLOWED_LIBRARIES = {
 'SHELL32.dll', # shell API
 'WS2_32.dll', # sockets
 'dbghelp.dll', # debugging routines
-# bitcoin-qt only
+# piratecash-qt only
 'dwmapi.dll', # desktop window manager
 'GDI32.dll', # graphics device interface
 'IMM32.dll', # input method editor
@@ -278,7 +278,7 @@ def check_ELF_ABI(binary) -> bool:
 CHECKS = {
 lief.EXE_FORMATS.ELF: [
     ('IMPORTED_SYMBOLS', check_imported_symbols),
-    # Dash: We export symbols aggressively to aid in backtrace generation
+    # PirateCash: We export symbols aggressively to aid in backtrace generation
     # ('EXPORTED_SYMBOLS', check_exported_symbols),
     ('LIBRARY_DEPENDENCIES', check_ELF_libraries),
     ('INTERPRETER_NAME', check_ELF_interpreter),
