@@ -111,3 +111,5 @@ src/wallet/test/platformkeys_tests.cpp
 src/crypto/scrypt.cpp
 src/crypto/scrypt-sse2.cpp
 src/crypto/scrypt.h
+src/pos_kernel.cpp
+src/pos_kernel.h

@@ -4305,7 +4305,7 @@ void ChainstateManager::ReceivedBlockTransactions(const CBlock& block, CBlockInd
 static bool CheckBlockHeader(const CBlockHeader& block, const uint256& hash, BlockValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true)
 {
     // PirateCash's historical genesis was not mined.
-    if (fCheckPOW && !CheckProofOfWork(hash, block.nBits, consensusParams) && block.GetBlockTime() != 1541202300)
+    if (fCheckPOW && !CheckProofOfWork(block.GetPoWHash(), block.nBits, consensusParams) && block.GetBlockTime() != 1541202300)
         return state.Invalid(BlockValidationResult::BLOCK_INVALID_HEADER, "high-hash", "proof of work failed");
 
     // Check DevNet

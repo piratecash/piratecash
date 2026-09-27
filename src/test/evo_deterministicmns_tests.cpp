@@ -784,7 +784,7 @@ void FuncMNPaymentMultiplicityV24Boundary(TestChainSetup& setup)
         merged.vtx[0] = MakeTransactionRef(std::move(cb));
         merged.hashMerkleRoot = BlockMerkleRoot(merged);
         merged.nNonce = 0;
-        while (!CheckProofOfWork(merged.GetHash(), merged.nBits, consensus)) ++merged.nNonce;
+        while (!CheckProofOfWork(merged.GetPoWHash(), merged.nBits, consensus)) ++merged.nNonce;
         return merged;
     };
 

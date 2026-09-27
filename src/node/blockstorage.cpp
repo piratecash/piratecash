@@ -823,7 +823,7 @@ std::optional<uint256> ReadBlockFromDisk(CBlock& block, const FlatFilePos& pos, 
 
     // Check the header
     const uint256 hash{block.GetHash()};
-    if (!CheckProofOfWork(hash, block.nBits, consensusParams) && block.GetBlockTime() != 1541202300) {
+    if (!CheckProofOfWork(block.GetPoWHash(), block.nBits, consensusParams) && block.GetBlockTime() != 1541202300) {
         LogError("ReadBlockFromDisk: Errors in block header at %s\n", pos.ToString());
         return std::nullopt;
     }

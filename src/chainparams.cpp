@@ -93,7 +93,7 @@ static CBlock FindDevNetGenesisBlock(const CBlock &prevBlock, const CAmount& rew
     for (uint32_t nNonce = 0; nNonce < UINT32_MAX; nNonce++) {
         block.nNonce = nNonce;
 
-        uint256 hash = block.GetHash();
+        uint256 hash = block.GetPoWHash();
         if (UintToArith256(hash) <= bnTarget)
             return block;
     }
@@ -895,11 +895,11 @@ public:
         m_assumeutxo_data = MapAssumeutxo{
             {
                 110,
-                {AssumeutxoHash{uint256S("0x6ad51b07cfc9336cdaf2665bb98864139a87c916e34231fb968eb4433df09841")}, EvoSnapshotHash{uint256{}}, 110},
+                {AssumeutxoHash{uint256S("0x4567bce7eebe4a65feae1d80150d9dfe2c2056ba8e1c5fd4e4085a7b7bd14042")}, EvoSnapshotHash{uint256{}}, 110},
             },
             {
                 200,
-                {AssumeutxoHash{uint256S("0x31faecfcb219fb9a7401d11a46719149a165ba7ad9fc35e8e1418f17f154505d")}, EvoSnapshotHash{uint256{}}, 200},
+                {AssumeutxoHash{uint256S("0x9e9004d9180f42486b554302ed89e40e5cdefc9b6ed69a637bb633938ab833c0")}, EvoSnapshotHash{uint256{}}, 200},
             },
         };
 
