@@ -11,15 +11,15 @@ set -ueo pipefail
 NETWORK_DISABLED=false
 
 if (( $# < 3 )); then
-  echo 'Usage: utxo_snapshot.sh <generate-at-height> <snapshot-out-path> <dash-cli-call ...>'
+  echo 'Usage: utxo_snapshot.sh <generate-at-height> <snapshot-out-path> <piratecash-cli-call ...>'
   echo
   echo "  if <snapshot-out-path> is '-', don't produce a snapshot file but instead print the "
   echo "  expected assumeutxo hash"
   echo
   echo 'Examples:'
   echo
-  echo "  ./contrib/devtools/utxo_snapshot.sh 570000 utxo.dat ./src/dash-cli -datadir=\$(pwd)/testdata"
-  echo '  ./contrib/devtools/utxo_snapshot.sh 570000 - ./src/dash-cli'
+  echo "  ./contrib/devtools/utxo_snapshot.sh 570000 utxo.dat ./src/piratecash-cli -datadir=\$(pwd)/testdata"
+  echo '  ./contrib/devtools/utxo_snapshot.sh 570000 - ./src/piratecash-cli'
   exit 1
 fi
 
