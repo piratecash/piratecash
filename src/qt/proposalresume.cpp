@@ -120,7 +120,7 @@ QString ProposalResume::formatProposalHtml(const Governance::Object& obj, int co
         if (m_client_model.getOptionsModel()) {
             return m_client_model.getOptionsModel()->getDisplayUnit();
         }
-        return BitcoinUnit::DASH;
+        return BitcoinUnit::PIRATECASH;
     }();
     const QString fund_summary{tr("For %1 payment(s) of %2 to %3")
         .arg(proposal.paymentsRequested())

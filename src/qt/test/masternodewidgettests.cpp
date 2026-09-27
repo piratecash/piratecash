@@ -1150,8 +1150,8 @@ void MasternodeWidgetTests::standbyDissolutionDescription()
         entry.get())};
     QVERIFY2(unilateral.contains("Share 2 of 2"), qPrintable(unilateral));
     QVERIFY(unilateral.contains("Approved by: your signature only"));
-    QVERIFY(unilateral.contains("Share 1 of 2 → " + SharedMnFormatAmount(BitcoinUnits::Unit::DASH, 400 * COIN)));
-    QVERIFY(unilateral.contains("Fee: " + SharedMnFormatAmount(BitcoinUnits::Unit::DASH, fee)));
+    QVERIFY(unilateral.contains("Share 1 of 2 → " + SharedMnFormatAmount(BitcoinUnits::Unit::PIRATECASH, 400 * COIN)));
+    QVERIFY(unilateral.contains("Fee: " + SharedMnFormatAmount(BitcoinUnits::Unit::PIRATECASH, fee)));
     QVERIFY(unilateral.contains("Every share's principal is returned"));
     QVERIFY(!unilateral.contains("not in the current masternode list"));
 
