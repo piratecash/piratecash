@@ -148,7 +148,7 @@ private:
     std::vector<Row> m_rows;
     std::vector<std::vector<State>> m_states;
     int m_you_row{-1};
-    BitcoinUnits::Unit m_unit{BitcoinUnits::Unit::DASH};
+    BitcoinUnits::Unit m_unit{BitcoinUnits::Unit::PIRATECASH};
 };
 
 //! Largest message any shared-masternode screen will read from the clipboard

@@ -81,7 +81,7 @@ QString LabelledRow(const QString& label, const QString& value)
 BitcoinUnits::Unit SharedMnDisplayUnit(const WalletModel* wallet_model)
 {
     if (wallet_model && wallet_model->getOptionsModel()) return wallet_model->getOptionsModel()->getDisplayUnit();
-    return BitcoinUnits::Unit::DASH;
+    return BitcoinUnits::Unit::PIRATECASH;
 }
 
 bool SharedMnWalletOwnsShare(const WalletModel* wallet_model, const interfaces::MnShare& share)
@@ -337,7 +337,7 @@ SharedMnDissolution SharedMnReadDissolution(const CMutableTransaction& tx, uint1
                            "SharedMnWidgets",
                            "This request keeps %1 of the shares' principal as a transaction fee. Do not approve it; "
                            "ask whoever prepared it for a fresh request.")
-                           .arg(SharedMnFormatAmount(BitcoinUnits::Unit::DASH, result.fee));
+                           .arg(SharedMnFormatAmount(BitcoinUnits::Unit::PIRATECASH, result.fee));
         return result;
     }
 

@@ -769,7 +769,7 @@ void MasternodeMaintenanceTests::dissolveDialogTabsAndPayouts()
     QVERIFY(preview.early);
     for (int row = 0; row < 3; ++row) {
         QCOMPARE(dialog.m_now_table->item(row, 2)->text(),
-                 SharedMnFormatAmount(BitcoinUnits::Unit::DASH, preview.payouts[row]));
+                 SharedMnFormatAmount(BitcoinUnits::Unit::PIRATECASH, preview.payouts[row]));
     }
     // The actor pays the penalty and the fee out of its principal; everybody
     // else is paid their principal plus a share of that penalty
@@ -977,9 +977,9 @@ void MasternodeMaintenanceTests::dissolveRequestMustReturnPrincipal()
     QCOMPARE(dialog.m_un_table->rowCount(), 3);
     QCOMPARE(dialog.m_un_table->item(0, 0)->text(), QString("Share 1 of 3"));
     QCOMPARE(dialog.m_un_table->item(0, 2)->text(),
-             SharedMnFormatAmount(BitcoinUnits::Unit::DASH, amounts[0] - TEST_DISSOLVE_FEE));
-    QCOMPARE(dialog.m_un_table->item(1, 2)->text(), SharedMnFormatAmount(BitcoinUnits::Unit::DASH, amounts[1]));
-    QCOMPARE(dialog.m_un_table->item(2, 2)->text(), SharedMnFormatAmount(BitcoinUnits::Unit::DASH, amounts[2]));
-    QVERIFY(dialog.m_un_fee_label->text().contains(SharedMnFormatAmount(BitcoinUnits::Unit::DASH, TEST_DISSOLVE_FEE)));
+             SharedMnFormatAmount(BitcoinUnits::Unit::PIRATECASH, amounts[0] - TEST_DISSOLVE_FEE));
+    QCOMPARE(dialog.m_un_table->item(1, 2)->text(), SharedMnFormatAmount(BitcoinUnits::Unit::PIRATECASH, amounts[1]));
+    QCOMPARE(dialog.m_un_table->item(2, 2)->text(), SharedMnFormatAmount(BitcoinUnits::Unit::PIRATECASH, amounts[2]));
+    QVERIFY(dialog.m_un_fee_label->text().contains(SharedMnFormatAmount(BitcoinUnits::Unit::PIRATECASH, TEST_DISSOLVE_FEE)));
     QVERIFY(dialog.m_un_fee_label->text().contains("Share 1 of 3"));
 }

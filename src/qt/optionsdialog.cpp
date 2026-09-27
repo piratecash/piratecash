@@ -71,7 +71,7 @@ OptionsDialog::OptionsDialog(QWidget* parent, bool enableWallet)
 
     /* Dust protection */
     ui->dustProtectionThreshold->setEnabled(false);
-    ui->dustProtectionThresholdUnitLabel->setText(BitcoinUnits::name(BitcoinUnits::Unit::duffs));
+    ui->dustProtectionThresholdUnitLabel->setText(BitcoinUnits::name(BitcoinUnits::Unit::corsars));
     connect(ui->dustProtection, &QCheckBox::toggled, ui->dustProtectionThreshold, &QWidget::setEnabled);
 
     /* Wallet */
@@ -308,7 +308,7 @@ void OptionsDialog::setModel(OptionsModel *_model)
     connect(ui->digits, qOverload<>(&QValueComboBox::valueChanged), [this]{ showRestartWarning(); });
     connect(ui->lang, qOverload<>(&QValueComboBox::valueChanged), [this]{ showRestartWarning(); });
     connect(ui->thirdPartyTxUrls, &QLineEdit::textChanged, [this]{ showRestartWarning(); });
-    /* Display, Dash-specific */
+    /* Display, PirateCash-specific */
     connect(ui->coinJoinEnabled, &QCheckBox::clicked, [this](bool fChecked) {
         model->setOption(OptionsModel::CoinJoinEnabled, fChecked);
         updateCoinJoinVisibility();

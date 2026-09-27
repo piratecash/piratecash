@@ -159,7 +159,7 @@ void SharedMnWidgetTests::termSheetEscapesUntrustedText()
 {
     BasicTestingSetup setup{CBaseChainParams::REGTEST};
     const MnShareSession session{TwoShareSession()};
-    const QString html{SharedMnTermSheetHtml(session, /*you_share_index=*/1, BitcoinUnits::Unit::DASH)};
+    const QString html{SharedMnTermSheetHtml(session, /*you_share_index=*/1, BitcoinUnits::Unit::PIRATECASH)};
 
     // A participant name is data, not markup: it must not be able to inject a
     // tag into the sheet everybody reads before approving
@@ -178,7 +178,7 @@ void SharedMnWidgetTests::termSheetEscapesUntrustedText()
 
     // With no share of our own, nothing is marked as ours; a share with no
     // reward address falls back to the refund address
-    const QString anonymous{SharedMnTermSheetHtml(session, /*you_share_index=*/-1, BitcoinUnits::Unit::DASH)};
+    const QString anonymous{SharedMnTermSheetHtml(session, /*you_share_index=*/-1, BitcoinUnits::Unit::PIRATECASH)};
     QVERIFY(!anonymous.contains("(you)"));
     QVERIFY(anonymous.contains("same as refund"));
 
