@@ -115,6 +115,90 @@ BOOST_AUTO_TEST_CASE(genesis_without_pow_load_block_index)
     check_load(genesis, false);
 }
 
+BOOST_AUTO_TEST_CASE(pos_metadata_load_block_index)
+{
+    const auto params{CreateChainParams(*m_node.args, CBaseChainParams::MAIN)};
+    const auto& consensus{params->GetConsensus()};
+    const unsigned int modifier_flags{CBlockIndex::BLOCK_STAKE_ENTROPY | CBlockIndex::BLOCK_STAKE_MODIFIER};
+    const struct {
+        int32_t version;
+        unsigned int flags;
+        bool proof_of_stake;
+    } cases[]{
+        {1, modifier_flags | CBlockIndex::BLOCK_PROOF_OF_STAKE, true},
+        {CBlockHeader::POSV2_BITS | 4, modifier_flags, true},
+        {1, modifier_flags, false},
+    };
+
+    for (const auto& test : cases) {
+        BOOST_TEST_CONTEXT("version=" << test.version << ", flags=" << test.flags) {
+            CBlockHeader header;
+            header.nVersion = test.version;
+            header.hashPrevBlock = consensus.hashGenesisBlock;
+            header.hashMerkleRoot = uint256S("1234");
+            header.nTime = params->GenesisBlock().nTime + 120;
+            header.nBits = 0x1d00ffff;
+            header.nNonce = 12345;
+            header.nFlags = test.flags;
+            header.posStakeHash = uint256S("5678");
+            header.posStakeN = 2;
+            header.posBlockSig = {0x30, 0x01, 0x02};
+            const auto hash{header.GetHash()};
+            BOOST_REQUIRE(hash != consensus.hashGenesisBlock);
+            BOOST_REQUIRE(!CheckProofOfWork(header.GetPoWHash(), header.nBits, consensus));
+
+            BlockManager source{BlockManager::Options{.chainparams = *params}};
+            BlockManager restored{BlockManager::Options{.chainparams = *params}};
+            CBlockTreeDB block_tree_db{1 << 20, /*fMemory=*/true};
+            LOCK(cs_main);
+            CBlockIndex* best_header{nullptr};
+            source.AddToBlockIndex(params->GenesisBlock(), consensus.hashGenesisBlock, best_header);
+            auto* index{source.AddToBlockIndex(header, hash, best_header)};
+            BOOST_REQUIRE_EQUAL(index->nFlags, test.flags);
+            BOOST_REQUIRE_EQUAL(index->IsProofOfStake(), test.proof_of_stake);
+            index->nFile = 3;
+            index->nDataPos = 80;
+            index->nUndoPos = 120;
+            index->nStatus |= BLOCK_HAVE_DATA | BLOCK_HAVE_UNDO;
+            index->nTx = 2;
+            BOOST_REQUIRE(block_tree_db.WriteBatchSync({}, 3, {index}));
+            const auto insert = [&](const uint256& block_hash) EXCLUSIVE_LOCKS_REQUIRED(cs_main) {
+                return restored.InsertBlockIndex(block_hash);
+            };
+            // Legacy PoS relies on the restored flag before the PoW check.
+            BOOST_REQUIRE_EQUAL(block_tree_db.LoadBlockIndexGuts(consensus, insert), test.proof_of_stake);
+            if (!test.proof_of_stake) continue;
+
+            const auto* loaded{restored.LookupBlockIndex(hash)};
+            BOOST_REQUIRE(loaded);
+            BOOST_REQUIRE(loaded->pprev);
+            BOOST_CHECK_EQUAL(loaded->pprev->GetBlockHash(), header.hashPrevBlock);
+            BOOST_CHECK_EQUAL(loaded->nHeight, index->nHeight);
+            BOOST_CHECK_EQUAL(loaded->nFile, index->nFile);
+            BOOST_CHECK_EQUAL(loaded->nDataPos, index->nDataPos);
+            BOOST_CHECK_EQUAL(loaded->nUndoPos, index->nUndoPos);
+            BOOST_CHECK_EQUAL(loaded->nStatus, index->nStatus);
+            BOOST_CHECK_EQUAL(loaded->nTx, index->nTx);
+            BOOST_CHECK_EQUAL(loaded->nVersion, header.nVersion);
+            BOOST_CHECK_EQUAL(loaded->hashMerkleRoot, header.hashMerkleRoot);
+            BOOST_CHECK_EQUAL(loaded->nTime, header.nTime);
+            BOOST_CHECK_EQUAL(loaded->nBits, header.nBits);
+            BOOST_CHECK_EQUAL(loaded->nNonce, header.nNonce);
+            BOOST_CHECK_EQUAL(loaded->nFlags, header.nFlags);
+            BOOST_CHECK(loaded->IsProofOfStake());
+            BOOST_CHECK_EQUAL(loaded->posStakeHash, header.posStakeHash);
+            BOOST_CHECK_EQUAL(loaded->posStakeN, header.posStakeN);
+            BOOST_CHECK(loaded->posBlockSig == header.posBlockSig);
+            const auto restored_header{loaded->GetBlockHeader()};
+            BOOST_CHECK_EQUAL(restored_header.GetHash(), hash);
+            BOOST_CHECK_EQUAL(restored_header.nFlags, header.nFlags);
+            BOOST_CHECK_EQUAL(restored_header.posStakeHash, header.posStakeHash);
+            BOOST_CHECK_EQUAL(restored_header.posStakeN, header.posStakeN);
+            BOOST_CHECK(restored_header.posBlockSig == header.posBlockSig);
+        }
+    }
+}
+
 BOOST_FIXTURE_TEST_CASE(blockmanager_scan_unlink_already_pruned_files, TestChain100Setup)
 {
     // Cap last block file size, and mine new block in a new block file.

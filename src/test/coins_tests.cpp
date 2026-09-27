@@ -503,19 +503,21 @@ BOOST_AUTO_TEST_CASE(updatecoins_simulation_test)
 BOOST_AUTO_TEST_CASE(ccoins_serialization)
 {
     // Good example
-    DataStream ss1{ParseHex("97f23c835800816115944e077fe7c803cfa57f29b36bf87c1d35")};
+    DataStream ss1{ParseHex("b0e578835800816115944e077fe7c803cfa57f29b36bf87c1d35")};
     Coin cc1;
     ss1 >> cc1;
     BOOST_CHECK_EQUAL(cc1.fCoinBase, false);
+    BOOST_CHECK_EQUAL(cc1.fCoinStake, false);
     BOOST_CHECK_EQUAL(cc1.nHeight, 203998U);
     BOOST_CHECK_EQUAL(cc1.out.nValue, CAmount{60000000000});
     BOOST_CHECK_EQUAL(HexStr(cc1.out.scriptPubKey), HexStr(GetScriptForDestination(PKHash(uint160(ParseHex("816115944e077fe7c803cfa57f29b36bf87c1d35"))))));
 
     // Good example
-    DataStream ss2{ParseHex("8ddf77bbd123008c988f1a4a4de2161e0f50aac7f17e7f9555caa4")};
+    DataStream ss2{ParseHex("9cc06ebbd123008c988f1a4a4de2161e0f50aac7f17e7f9555caa4")};
     Coin cc2;
     ss2 >> cc2;
     BOOST_CHECK_EQUAL(cc2.fCoinBase, true);
+    BOOST_CHECK_EQUAL(cc2.fCoinStake, false);
     BOOST_CHECK_EQUAL(cc2.nHeight, 120891U);
     BOOST_CHECK_EQUAL(cc2.out.nValue, 110397);
     BOOST_CHECK_EQUAL(HexStr(cc2.out.scriptPubKey), HexStr(GetScriptForDestination(PKHash(uint160(ParseHex("8c988f1a4a4de2161e0f50aac7f17e7f9555caa4"))))));
@@ -525,6 +527,7 @@ BOOST_AUTO_TEST_CASE(ccoins_serialization)
     Coin cc3;
     ss3 >> cc3;
     BOOST_CHECK_EQUAL(cc3.fCoinBase, false);
+    BOOST_CHECK_EQUAL(cc3.fCoinStake, false);
     BOOST_CHECK_EQUAL(cc3.nHeight, 0U);
     BOOST_CHECK_EQUAL(cc3.out.nValue, 0);
     BOOST_CHECK_EQUAL(cc3.out.scriptPubKey.size(), 0U);
@@ -549,6 +552,50 @@ BOOST_AUTO_TEST_CASE(ccoins_serialization)
         ss5 >> cc5;
         BOOST_CHECK_MESSAGE(false, "We should have thrown");
     } catch (const std::ios_base::failure&) {
+    }
+}
+
+BOOST_AUTO_TEST_CASE(coinstake_coin_and_undo_serialization)
+{
+    const struct {
+        uint32_t height;
+        bool coinstake;
+        const char* coin_hex;
+        const char* undo_hex;
+    } cases[]{
+        {0, false, "000006", "000006"},
+        {0, true, "010006", "010006"},
+        {1, false, "040006", "04000006"},
+        {1, true, "050006", "05000006"},
+        {203998, false, "b0e5780006", "b0e578000006"},
+        {203998, true, "b0e5790006", "b0e579000006"},
+    };
+    for (const auto& test : cases) {
+        BOOST_TEST_CONTEXT("height=" << test.height << " coinstake=" << test.coinstake) {
+            const Coin coin{CTxOut{0, CScript{}}, int(test.height), /*fCoinBaseIn=*/false, test.coinstake};
+            DataStream coin_stream{};
+            coin_stream << coin;
+            BOOST_CHECK_EQUAL(HexStr(coin_stream), test.coin_hex);
+            DataStream undo_stream{};
+            undo_stream << Using<TxInUndoFormatter>(coin);
+            BOOST_CHECK_EQUAL(HexStr(undo_stream), test.undo_hex);
+
+            const auto check_coin = [&](const Coin& restored) {
+                BOOST_CHECK_EQUAL(restored.nHeight, test.height);
+                BOOST_CHECK_EQUAL(restored.fCoinBase, false);
+                BOOST_CHECK_EQUAL(restored.fCoinStake, test.coinstake);
+                BOOST_CHECK_EQUAL(restored.out.nValue, 0);
+                BOOST_CHECK(restored.out.scriptPubKey.empty());
+            };
+            Coin restored_coin;
+            coin_stream >> restored_coin;
+            check_coin(restored_coin);
+            BOOST_CHECK(coin_stream.empty());
+            Coin restored_undo;
+            undo_stream >> Using<TxInUndoFormatter>(restored_undo);
+            check_coin(restored_undo);
+            BOOST_CHECK(undo_stream.empty());
+        }
     }
 }
 
