@@ -90,7 +90,7 @@ BOOST_FIXTURE_TEST_CASE(historical_coinbase_lookup_from_disk, RegTestingSetup)
         block.nTime = Params().GenesisBlock().nTime + height;
         block.vtx = {MakeTransactionRef(coinbase)};
         block.hashMerkleRoot = BlockMerkleRoot(block);
-        while (!CheckProofOfWork(block.GetHash(), block.nBits, Params().GetConsensus()))
+        while (!CheckProofOfWork(block.GetPoWHash(), block.nBits, Params().GetConsensus()))
             ++block.nNonce;
         hashes.push_back(block.GetHash());
         indexes.emplace_back(block);

@@ -50,7 +50,7 @@ public:
             block.vtx.front() = MakeTransactionRef(std::move(coinbase));
             block.hashMerkleRoot = BlockMerkleRoot(block);
             block.nNonce = 0;
-            while (!CheckProofOfWork(block.GetHash(), block.nBits, m_testing_setup->m_node.chainman->GetConsensus())) {
+            while (!CheckProofOfWork(block.GetPoWHash(), block.nBits, m_testing_setup->m_node.chainman->GetConsensus())) {
                 ++block.nNonce;
             }
 
