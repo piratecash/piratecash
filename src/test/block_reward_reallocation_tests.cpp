@@ -9,6 +9,7 @@
 #include <evo/deterministicmns.h>
 #include <masternode/payments.h>
 #include <util/helpers.h>
+#include <util/time.h>
 
 #include <chainparams.h>
 #include <deploymentstatus.h>
@@ -17,6 +18,8 @@
 #include <validation.h>
 
 #include <boost/test/unit_test.hpp>
+
+#include <algorithm>
 
 using node::BlockAssembler;
 
@@ -27,6 +30,14 @@ struct TestChainBRRBeforeActivationSetup : public TestChainSetup
         TestChainSetup(497, CBaseChainParams::REGTEST,
                        {"-dip3params=30:50", "-testactivationheight=brr@1000", "-testactivationheight=v20@1200", "-testactivationheight=mn_rr@2200"})
     {
+    }
+
+    CBlock CreateAndProcessBlock(const std::vector<CMutableTransaction>& txns, const CScript& scriptPubKey)
+    {
+        // Advance the mock clock to the time UpdateTime would already choose from MTP.
+        const auto min_time = WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Tip()->GetMedianTimePast() + 1);
+        SetMockTime(std::max(GetMockTime(), std::chrono::seconds{min_time}));
+        return TestChainSetup::CreateAndProcessBlock(txns, scriptPubKey);
     }
 };
 
