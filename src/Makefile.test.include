@@ -52,6 +52,7 @@ FUZZ_SUITE_LD_COMMON = \
  $(LIBDASHBLS) \
  $(BDB_LIBS) \
  $(SQLITE_LIBS) \
+ $(CRYPTO_LIBS) \
  $(LIBUNIVALUE) \
  $(LIBLEVELDB) \
  $(LIBMEMENV) \
@@ -477,7 +478,13 @@ endif
 	  cat $< | \
 	  grep -E "(BOOST_FIXTURE_TEST_SUITE\\(|BOOST_AUTO_TEST_SUITE\\()" | \
 	  cut -d '(' -f 2 | cut -d ',' -f 1 | cut -d ')' -f 1\
-	)" -- DEBUG_LOG_OUT > "$$TEST_LOGFILE" 2>&1 || (cat "$$TEST_LOGFILE" && false)
+	)" -- DEBUG_LOG_OUT > "$$TEST_LOGFILE" 2>&1 || ( \
+	  printf 'FAIL: %s (full log: %s)\n' "$<" "$$TEST_LOGFILE"; \
+	  $(AWK) '{ tail[NR % 20] = $$0 } \
+	    tolower($$0) ~ /(fatal error:|error: in |assertion.*fail|failed assertion|terminate called|uncaught exception|segmentation fault|bus error|abort(ed| trap)|sanitizer|runtime error:|\*\*\*.*(failure|error))/ { print; if (++errors == 20) exit } \
+	    END { if (!errors) for (i = (NR > 20 ? NR - 20 : 0) + 1; i <= NR; ++i) print tail[i % 20] }' "$$TEST_LOGFILE"; \
+	  false \
+	)
 
 test/data/%.json.h: test/data/%.json
 	@$(MKDIR_P) $(@D)

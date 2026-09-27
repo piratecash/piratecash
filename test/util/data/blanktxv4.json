@@ -1,0 +1,12 @@
+{
+    "txid": "1b98852d2c123622838ec3cd7a2d3720760fdefef54b80dc2c5171611f21cc2a",
+    "version": 4,
+    "type": 0,
+    "size": 10,
+    "locktime": 0,
+    "vin": [
+    ],
+    "vout": [
+    ],
+    "hex": "04000000000000000000"
+}

@@ -75,29 +75,30 @@ BlockAssembler MinerTestingSetup::AssemblerForTest(CTxMemPool& tx_mempool)
     return BlockAssembler(m_node.chainman->ActiveChainstate(), m_node, &tx_mempool, options);
 }
 
+// Precomputed scrypt nonces for the PirateCash mainnet test chain.
 constexpr static struct {
     unsigned char extranonce;
     unsigned int nonce;
-} BLOCKINFO[]{{0, 1123860}, {0, 1148713}, {0, 2157897}, {0, 6137383}, {0, 1440467}, {0, 1248137},
-              {0, 974559},  {0, 3450180}, {0, 2050647}, {0, 1174391}, {0, 3336468}, {0, 464427},
-              {0, 470596},  {0, 182567},  {0, 2534464}, {0, 1926037}, {0, 3526872}, {0, 2481471},
-              {0, 1294544}, {0, 367787},  {0, 3164800}, {0, 917651},  {0, 654264},  {0, 3621441},
-              {0, 4300293}, {0, 3692002}, {0, 3171815}, {0, 2334617}, {0, 2655536}, {0, 4862462},
-              {0, 3306418}, {0, 720711},  {0, 3443522}, {0, 1435662}, {0, 833747},  {0, 2754854},
-              {0, 1788881}, {0, 1006158}, {0, 3889636}, {0, 1065940}, {0, 2637337}, {0, 1540467},
-              {0, 809898},  {0, 414399},  {0, 5978379}, {0, 2301882}, {0, 3224887}, {0, 2557012},
-              {0, 8076465}, {0, 73633},   {0, 1285282}, {0, 3114919}, {0, 1762402}, {0, 3343293},
-              {0, 3822496}, {0, 2957067}, {0, 1943866}, {0, 5933446}, {0, 886955},  {0, 975375},
-              {0, 1626364}, {0, 4337875}, {0, 522971},  {0, 979749},  {0, 2343272}, {0, 2530995},
-              {0, 1060534}, {0, 2522523}, {0, 1315215}, {0, 1730093}, {0, 2547908}, {0, 2889564},
-              {0, 5456339}, {0, 3881378}, {0, 4533810}, {0, 1700063}, {0, 1086006}, {0, 2797169},
-              {0, 2019861}, {0, 883169},  {0, 1750363}, {0, 1721942}, {0, 5058071}, {0, 3225093},
-              {0, 307451},  {0, 1653602}, {0, 2281488}, {0, 1947311}, {0, 4993782}, {0, 325324},
-              {0, 6304803}, {0, 4880118}, {0, 1401148}, {0, 4640270}, {0, 2548166}, {0, 3369900},
-              {0, 2800169}, {0, 3305191}, {0, 2122926}, {0, 336011},  {0, 1722772}, {0, 1044908},
-              {0, 642154},  {0, 5835730}, {0, 164952},  {0, 1584353}, {0, 666367},  {0, 854797},
-              {0, 2407599}, {0, 3328128}, {0, 245451},  {0, 2154593}, {0, 4043042}, {0, 2939387},
-              {0, 3509685}, {0, 635871},  {0, 2645814}, {0, 1788871}, {0, 2263667}};
+} BLOCKINFO[]{{0, 1142086}, {0, 1176511}, {0, 2200700}, {0, 6176994}, {0, 1462029}, {0, 1294627},
+              {0, 990071},  {0, 3499795}, {0, 2106667}, {0, 1236636}, {0, 3348002}, {0, 472458},
+              {0, 518509},  {0, 273441},  {0, 2550328}, {0, 1947018}, {0, 3562231}, {0, 2544650},
+              {0, 1344877}, {0, 382798},  {0, 3217783}, {0, 939733},  {0, 803800},  {0, 3666919},
+              {0, 4450057}, {0, 3695060}, {0, 3218192}, {0, 2344456}, {0, 2709119}, {0, 4924311},
+              {0, 3358889}, {0, 928583},  {0, 3510918}, {0, 1460646}, {0, 883843},  {0, 2804066},
+              {0, 1821462}, {0, 1272106}, {0, 3940683}, {0, 1075304}, {0, 2671210}, {0, 1573832},
+              {0, 863139},  {0, 415898},  {0, 6073949}, {0, 2321945}, {0, 3323277}, {0, 2645056},
+              {0, 8232333}, {0, 141881},  {0, 1315571}, {0, 3198847}, {0, 1911382}, {0, 3576756},
+              {0, 3830414}, {0, 2994646}, {0, 1946581}, {0, 5942658}, {0, 986424},  {0, 1134582},
+              {0, 1849298}, {0, 4356409}, {0, 539085},  {0, 1024070}, {0, 2503805}, {0, 2539262},
+              {0, 1170181}, {0, 2650036}, {0, 1349049}, {0, 1825737}, {0, 2627328}, {0, 2945832},
+              {0, 5535831}, {0, 3915645}, {0, 4573300}, {0, 1785604}, {0, 1236945}, {0, 2839452},
+              {0, 2204776}, {0, 983246},  {0, 1783090}, {0, 1728257}, {0, 5065309}, {0, 3294133},
+              {0, 318458},  {0, 1682273}, {0, 2296864}, {0, 1976744}, {0, 5016846}, {0, 404538},
+              {0, 6373070}, {0, 4919130}, {0, 1579844}, {0, 4671218}, {0, 2548986}, {0, 3377245},
+              {0, 2836583}, {0, 3352076}, {0, 2181302}, {0, 347246},  {0, 1731585}, {0, 1081034},
+              {0, 654007},  {0, 5944813}, {0, 182991},  {0, 1590817}, {0, 695912},  {0, 862470},
+              {0, 2483319}, {0, 3437463}, {0, 413190},  {0, 2163508}, {0, 4130535}, {0, 3129833},
+              {0, 3602132}, {0, 713752},  {0, 2748463}, {0, 1817132}, {0, 2320223}};
 
 static std::unique_ptr<CBlockIndex> CreateBlockIndex(int nHeight, CBlockIndex* active_chain_tip) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
 {
@@ -128,20 +129,20 @@ void MinerTestingSetup::TestPackageSelection(const CScript& scriptPubKey, const 
     tx.vin[0].prevout.hash = txFirst[0]->GetHash();
     tx.vin[0].prevout.n = 0;
     tx.vout.resize(1);
-    tx.vout[0].nValue = 5000000000LL - 1000;
+    tx.vout[0].nValue = txFirst[0]->vout[0].nValue - 1000;
     // This tx has a low fee: 1000 satoshis
     uint256 hashParentTx = tx.GetHash(); // save this txid for later use
     tx_mempool.addUnchecked(entry.Fee(1000).Time(Now<NodeSeconds>()).SpendsCoinbase(true).FromTx(tx));
 
     // This tx has a medium fee: 10000 satoshis
     tx.vin[0].prevout.hash = txFirst[1]->GetHash();
-    tx.vout[0].nValue = 5000000000LL - 10000;
+    tx.vout[0].nValue = txFirst[1]->vout[0].nValue - 10000;
     uint256 hashMediumFeeTx = tx.GetHash();
     tx_mempool.addUnchecked(entry.Fee(10000).Time(Now<NodeSeconds>()).SpendsCoinbase(true).FromTx(tx));
 
     // This tx has a high fee, but depends on the first transaction
     tx.vin[0].prevout.hash = hashParentTx;
-    tx.vout[0].nValue = 5000000000LL - 1000 - 50000; // 50k satoshi fee
+    tx.vout[0].nValue = txFirst[0]->vout[0].nValue - 1000 - 50000; // 50k satoshi fee
     uint256 hashHighFeeTx = tx.GetHash();
     tx_mempool.addUnchecked(entry.Fee(50000).Time(Now<NodeSeconds>()).SpendsCoinbase(false).FromTx(tx));
 
@@ -155,7 +156,7 @@ void MinerTestingSetup::TestPackageSelection(const CScript& scriptPubKey, const 
 
     // Test that a package below the block min tx fee doesn't get included
     tx.vin[0].prevout.hash = hashHighFeeTx;
-    tx.vout[0].nValue = 5000000000LL - 1000 - 50000; // 0 fee
+    tx.vout[0].nValue = txFirst[0]->vout[0].nValue - 1000 - 50000; // 0 fee
     uint256 hashFreeTx = tx.GetHash();
     // Age transaction for InstantSend
     m_node.clhandler->UpdateTxFirstSeenMap({hashFreeTx}, std::chrono::duration_cast<std::chrono::seconds>(Now<NodeSeconds>().time_since_epoch()).count() - WAIT_FOR_ISLOCK_TIMEOUT);
@@ -167,7 +168,7 @@ void MinerTestingSetup::TestPackageSelection(const CScript& scriptPubKey, const 
     CAmount feeToUse = blockMinFeeRate.GetFee(2*freeTxSize) - 1;
 
     tx.vin[0].prevout.hash = hashFreeTx;
-    tx.vout[0].nValue = 5000000000LL - 1000 - 50000 - feeToUse;
+    tx.vout[0].nValue = txFirst[0]->vout[0].nValue - 1000 - 50000 - feeToUse;
     uint256 hashLowFeeTx = tx.GetHash();
     tx_mempool.addUnchecked(entry.Fee(feeToUse).FromTx(tx));
     pblocktemplate = AssemblerForTest(tx_mempool).CreateNewBlock(scriptPubKey);
@@ -196,7 +197,7 @@ void MinerTestingSetup::TestPackageSelection(const CScript& scriptPubKey, const 
     // Add a 0-fee transaction that has 2 outputs.
     tx.vin[0].prevout.hash = txFirst[2]->GetHash();
     tx.vout.resize(2);
-    tx.vout[0].nValue = 5000000000LL - 100000000;
+    tx.vout[0].nValue = txFirst[2]->vout[0].nValue - 100000000;
     tx.vout[1].nValue = 100000000; // 1BTC output
     uint256 hashFreeTx2 = tx.GetHash();
     tx_mempool.addUnchecked(entry.Fee(0).SpendsCoinbase(true).FromTx(tx));
@@ -207,7 +208,7 @@ void MinerTestingSetup::TestPackageSelection(const CScript& scriptPubKey, const 
     tx.vin[0].prevout.hash = hashFreeTx2;
     tx.vout.resize(1);
     feeToUse = blockMinFeeRate.GetFee(freeTxSize);
-    tx.vout[0].nValue = 5000000000LL - 100000000 - feeToUse;
+    tx.vout[0].nValue = txFirst[2]->vout[0].nValue - 100000000 - feeToUse;
     uint256 hashLowFeeTx2 = tx.GetHash();
     tx_mempool.addUnchecked(entry.Fee(feeToUse).SpendsCoinbase(false).FromTx(tx));
     // Age transaction for InstantSend
@@ -240,7 +241,7 @@ void MinerTestingSetup::TestBasicMining(const CScript& scriptPubKey, const std::
     entry.nFee = 11;
     entry.nHeight = 11;
 
-    const CAmount BLOCKSUBSIDY = 500*COIN;
+    const CAmount BLOCKSUBSIDY = txFirst[0]->vout[0].nValue;
     const CAmount LOWFEE = CENT;
     const CAmount HIGHFEE = COIN;
     const CAmount HIGHERFEE = 4 * COIN;
@@ -606,28 +607,28 @@ void MinerTestingSetup::TestPrioritisedMining(const CScript& scriptPubKey, const
     tx.vin[0].prevout.n = 0;
     tx.vin[0].scriptSig = CScript() << OP_1;
     tx.vout.resize(1);
-    tx.vout[0].nValue = 5000000000LL; // 0 fee
+    tx.vout[0].nValue = txFirst[0]->vout[0].nValue; // 0 fee
     uint256 hashFreePrioritisedTx = tx.GetHash();
     tx_mempool.addUnchecked(entry.Fee(0).Time(Now<NodeSeconds>()).SpendsCoinbase(true).FromTx(tx));
     tx_mempool.PrioritiseTransaction(hashFreePrioritisedTx, 5 * COIN);
 
     tx.vin[0].prevout.hash = txFirst[1]->GetHash();
     tx.vin[0].prevout.n = 0;
-    tx.vout[0].nValue = 5000000000LL - 1000;
+    tx.vout[0].nValue = txFirst[1]->vout[0].nValue - 1000;
     // This tx has a low fee: 1000 satoshis
     uint256 hashParentTx = tx.GetHash(); // save this txid for later use
     tx_mempool.addUnchecked(entry.Fee(1000).Time(Now<NodeSeconds>()).SpendsCoinbase(true).FromTx(tx));
 
     // This tx has a medium fee: 10000 satoshis
     tx.vin[0].prevout.hash = txFirst[2]->GetHash();
-    tx.vout[0].nValue = 5000000000LL - 10000;
+    tx.vout[0].nValue = txFirst[2]->vout[0].nValue - 10000;
     uint256 hashMediumFeeTx = tx.GetHash();
     tx_mempool.addUnchecked(entry.Fee(10000).Time(Now<NodeSeconds>()).SpendsCoinbase(true).FromTx(tx));
     tx_mempool.PrioritiseTransaction(hashMediumFeeTx, -5 * COIN);
 
     // This tx also has a low fee, but is prioritised
     tx.vin[0].prevout.hash = hashParentTx;
-    tx.vout[0].nValue = 5000000000LL - 1000 - 1000; // 1000 satoshi fee
+    tx.vout[0].nValue = txFirst[1]->vout[0].nValue - 1000 - 1000; // 1000 satoshi fee
     uint256 hashPrioritsedChild = tx.GetHash();
     tx_mempool.addUnchecked(entry.Fee(1000).Time(Now<NodeSeconds>()).SpendsCoinbase(false).FromTx(tx));
     tx_mempool.PrioritiseTransaction(hashPrioritsedChild, 2 * COIN);
@@ -639,19 +640,19 @@ void MinerTestingSetup::TestPrioritisedMining(const CScript& scriptPubKey, const
     // FreeParent's prioritisation should not be included in that entry.
     // When FreeChild is included, FreeChild's prioritisation should also not be included.
     tx.vin[0].prevout.hash = txFirst[3]->GetHash();
-    tx.vout[0].nValue = 5000000000LL; // 0 fee
+    tx.vout[0].nValue = txFirst[3]->vout[0].nValue; // 0 fee
     uint256 hashFreeParent = tx.GetHash();
     tx_mempool.addUnchecked(entry.Fee(0).SpendsCoinbase(true).FromTx(tx));
     tx_mempool.PrioritiseTransaction(hashFreeParent, 10 * COIN);
 
     tx.vin[0].prevout.hash = hashFreeParent;
-    tx.vout[0].nValue = 5000000000LL; // 0 fee
+    tx.vout[0].nValue = txFirst[3]->vout[0].nValue; // 0 fee
     uint256 hashFreeChild = tx.GetHash();
     tx_mempool.addUnchecked(entry.Fee(0).SpendsCoinbase(false).FromTx(tx));
     tx_mempool.PrioritiseTransaction(hashFreeChild, 1 * COIN);
 
     tx.vin[0].prevout.hash = hashFreeChild;
-    tx.vout[0].nValue = 5000000000LL; // 0 fee
+    tx.vout[0].nValue = txFirst[3]->vout[0].nValue; // 0 fee
     uint256 hashFreeGrandchild = tx.GetHash();
     tx_mempool.addUnchecked(entry.Fee(0).SpendsCoinbase(false).FromTx(tx));
 

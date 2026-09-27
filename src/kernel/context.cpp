@@ -6,7 +6,6 @@
 
 #include <bls/bls.h>
 #include <crypto/sha256.h>
-#include <crypto/x11/dispatch.h>
 #include <key.h>
 #include <logging.h>
 #include <pubkey.h>
@@ -19,7 +18,6 @@ namespace kernel {
 
 Context::Context()
 {
-    SapphireAutoDetect();
     std::string sha256_algo = SHA256AutoDetect();
     LogPrintf("Using the '%s' SHA256 implementation\n", sha256_algo);
     RandomInit();

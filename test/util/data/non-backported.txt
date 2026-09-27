@@ -108,4 +108,6 @@ src/wallet/hdchain.*
 src/wallet/platformkeys.*
 src/wallet/platformtypes.h
 src/wallet/test/platformkeys_tests.cpp
-src/hash_x11.h
+src/crypto/scrypt.cpp
+src/crypto/scrypt-sse2.cpp
+src/crypto/scrypt.h

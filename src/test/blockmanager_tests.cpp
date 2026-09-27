@@ -5,7 +5,9 @@
 #include <chainparams.h>
 #include <node/blockstorage.h>
 #include <node/context.h>
+#include <pow.h>
 #include <streams.h>
+#include <txdb.h>
 #include <validation.h>
 
 #include <boost/test/unit_test.hpp>
@@ -42,6 +44,75 @@ BOOST_AUTO_TEST_CASE(blockmanager_find_block_pos)
     // add another 8 bytes for the second block's serialization header and we get 293 + 8 = 301
     FlatFilePos actual{blockman.SaveBlockToDisk(params->GenesisBlock(), 1, nullptr)};
     BOOST_CHECK_EQUAL(actual.nPos, BLOCK_SERIALIZATION_HEADER_SIZE + ::GetSerializeSize(params->GenesisBlock(), CLIENT_VERSION) + BLOCK_SERIALIZATION_HEADER_SIZE);
+}
+
+BOOST_AUTO_TEST_CASE(genesis_without_pow_read_from_disk)
+{
+    const auto params{CreateChainParams(*m_node.args, CBaseChainParams::MAIN)};
+    const auto& consensus{params->GetConsensus()};
+    CBlock genesis{params->GenesisBlock()};
+    genesis.fChecked = false;
+    genesis.m_checked_merkle_root = false;
+    BOOST_REQUIRE_EQUAL(genesis.GetHash().ToString(), "33422d3f8e94bae7cd2544e737d64ff8ec3ee140cc3fdc4db3d14656f9a60912");
+    BOOST_REQUIRE(!CheckProofOfWork(genesis.GetHash(), genesis.nBits, consensus));
+
+    BlockValidationState genesis_state;
+    BOOST_CHECK_MESSAGE(CheckBlock(genesis, genesis_state, consensus), genesis_state.ToString());
+
+    BlockManager blockman{BlockManager::Options{.chainparams = *params}};
+    const auto genesis_pos{blockman.SaveBlockToDisk(genesis, 0, nullptr)};
+    BOOST_REQUIRE(!genesis_pos.IsNull());
+    CBlock read_block;
+    const auto read_hash{node::ReadBlockFromDisk(read_block, genesis_pos, consensus)};
+    BOOST_REQUIRE(read_hash);
+    BOOST_CHECK_EQUAL(*read_hash, genesis.GetHash());
+
+    CBlock invalid{genesis};
+    ++invalid.nTime;
+    invalid.fChecked = false;
+    invalid.m_checked_merkle_root = false;
+    BOOST_REQUIRE(!CheckProofOfWork(invalid.GetHash(), invalid.nBits, consensus));
+    BlockValidationState invalid_state;
+    BOOST_CHECK(!CheckBlock(invalid, invalid_state, consensus));
+    BOOST_CHECK_EQUAL(invalid_state.GetRejectReason(), "high-hash");
+
+    const auto invalid_pos{blockman.SaveBlockToDisk(invalid, 1, nullptr)};
+    BOOST_REQUIRE(!invalid_pos.IsNull());
+    BOOST_CHECK(!node::ReadBlockFromDisk(read_block, invalid_pos, consensus));
+}
+
+BOOST_AUTO_TEST_CASE(genesis_without_pow_load_block_index)
+{
+    const auto params{CreateChainParams(*m_node.args, CBaseChainParams::MAIN)};
+    const auto& consensus{params->GetConsensus()};
+    const auto check_load = [&](const CBlock& block, bool expected) {
+        const auto hash{block.GetHash()};
+        BOOST_REQUIRE(!CheckProofOfWork(hash, block.nBits, consensus));
+        BlockManager source{BlockManager::Options{.chainparams = *params}};
+        BlockManager restored{BlockManager::Options{.chainparams = *params}};
+        CBlockTreeDB block_tree_db{1 << 20, /*fMemory=*/true};
+        LOCK(cs_main);
+        CBlockIndex* best_header{nullptr};
+        const auto* index{source.AddToBlockIndex(block, hash, best_header)};
+        BOOST_REQUIRE(block_tree_db.WriteBatchSync({}, 0, {index}));
+        const auto insert = [&](const uint256& block_hash) EXCLUSIVE_LOCKS_REQUIRED(cs_main) {
+            return restored.InsertBlockIndex(block_hash);
+        };
+        BOOST_CHECK_EQUAL(block_tree_db.LoadBlockIndexGuts(consensus, insert), expected);
+        if (expected) {
+            const auto* loaded{restored.LookupBlockIndex(hash)};
+            BOOST_REQUIRE(loaded);
+            BOOST_CHECK_EQUAL(loaded->GetBlockHeader().GetHash(), hash);
+        }
+    };
+
+    CBlock genesis{params->GenesisBlock()};
+    BOOST_REQUIRE_EQUAL(genesis.GetHash(), consensus.hashGenesisBlock);
+    check_load(genesis, true);
+    ++genesis.nTime;
+    genesis.fChecked = false;
+    genesis.m_checked_merkle_root = false;
+    check_load(genesis, false);
 }
 
 BOOST_FIXTURE_TEST_CASE(blockmanager_scan_unlink_already_pruned_files, TestChain100Setup)

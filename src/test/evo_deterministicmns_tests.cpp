@@ -216,7 +216,7 @@ void FuncDIP3Activation(TestChainSetup& setup)
     auto utxos = BuildSimpleUtxoMap(setup.m_coinbase_txns);
     CKey ownerKey;
     CBLSSecretKey operatorKey;
-    CTxDestination payoutDest = DecodeDestination("yRq1Ky1AfFmf597rnotj7QRxsDUKePVWNF");
+    CTxDestination payoutDest = DecodeDestination("sPkxZLXr1YpWoe2ZRWtwqXMARecAyFQSLF");
     auto tx = CreateProRegTx(chainman, utxos, 1, GetScriptForDestination(payoutDest), setup.coinbaseKey, ownerKey, operatorKey);
     std::vector<CMutableTransaction> txns = {tx};
 
@@ -1796,7 +1796,8 @@ struct TestMNChainSetup : public TestChainSetup {
 struct TestChainV24SignalBeforeV19Setup : public TestMNChainSetup {
     TestChainV24SignalBeforeV19Setup() :
         TestMNChainSetup(494,
-                         {"-testactivationheight=v19@500", "-testactivationheight=v20@500",
+                         // Keep the Dash reward schedule used by the v24 boundary scenarios.
+                         {"-testactivationheight=brr@1", "-testactivationheight=v19@500", "-testactivationheight=v20@500",
                           "-testactivationheight=mn_rr@511", "-vbparams=v24:0:9999999999:510:1:1:1:5:0"})
     {
         assert(!IsV19Active());

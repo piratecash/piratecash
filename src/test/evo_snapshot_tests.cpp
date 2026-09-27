@@ -316,8 +316,9 @@ BOOST_AUTO_TEST_CASE(rotation_bitset_larger_than_quorum_roundtrips)
 
 BOOST_FIXTURE_TEST_CASE(populated_v3_golden_value, BasicTestingSetup)
 {
+    // The MN records include the PirateCash mainnet P2P port (63636).
     BOOST_CHECK_EQUAL(GetEvoSnapshotHash(SyntheticSnapshot()).ToString(),
-                      "5b5d496a66d93775a6a6d1badf2ea2d5bbb25b58031fe0dd2c3c670674c6908d");
+                      "c25df47037a2cf067d57f16d1e6b22454bd60cbbbe4d07893ed5c0612c58e60e");
 }
 
 BOOST_FIXTURE_TEST_CASE(canonical_mn_reader_rejects_order_and_counter, BasicTestingSetup)

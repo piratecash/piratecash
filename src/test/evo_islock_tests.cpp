@@ -9,11 +9,14 @@
 #include <instantsend/instantsend.h>
 #include <instantsend/lock.h>
 #include <instantsend/net_instantsend.h>
+#include <key.h>
+#include <key_io.h>
 #include <llmq/context.h>
 #include <llmq/quorumsman.h>
 #include <llmq/signhash.h>
 #include <llmq/signing.h>
 #include <primitives/transaction.h>
+#include <script/standard.h>
 #include <spork.h>
 #include <streams.h>
 #include <test/util/llmq_tests.h>
@@ -41,7 +44,9 @@ BOOST_FIXTURE_TEST_CASE(received_genesis_cycle_has_no_quorum, TestChain100Setup)
 {
     LOCK(NetEventsInterface::g_msgproc_mutex);
     constexpr const char* REGTEST_SPORK_PRIVKEY{"cP4EKFyJsHT39LDqgdcB43Y3YXjNyjb5Fuas1GQSeAtjnZWmZEQK"};
-    BOOST_REQUIRE(m_node.sporkman->SetSporkAddress(Params().SporkAddress()));
+    const CKey spork_key{DecodeSecret(REGTEST_SPORK_PRIVKEY)};
+    BOOST_REQUIRE(spork_key.IsValid());
+    BOOST_REQUIRE(m_node.sporkman->SetSporkAddress(EncodeDestination(PKHash{spork_key.GetPubKey()})));
     BOOST_REQUIRE(m_node.sporkman->SetPrivKey(REGTEST_SPORK_PRIVKEY));
     BOOST_REQUIRE(m_node.sporkman->UpdateSpork(SPORK_2_INSTANTSEND_ENABLED, 0).has_value());
     auto& isman = *m_node.isman;
@@ -94,7 +99,9 @@ BOOST_FIXTURE_TEST_CASE(received_genesis_cycle_has_no_quorum, TestChain100Setup)
 BOOST_FIXTURE_TEST_CASE(missing_quorum_does_not_drop_batch, NetInstantSendTest)
 {
     constexpr const char* REGTEST_SPORK_PRIVKEY{"cP4EKFyJsHT39LDqgdcB43Y3YXjNyjb5Fuas1GQSeAtjnZWmZEQK"};
-    BOOST_REQUIRE(m_node.sporkman->SetSporkAddress(Params().SporkAddress()));
+    const CKey spork_key{DecodeSecret(REGTEST_SPORK_PRIVKEY)};
+    BOOST_REQUIRE(spork_key.IsValid());
+    BOOST_REQUIRE(m_node.sporkman->SetSporkAddress(EncodeDestination(PKHash{spork_key.GetPubKey()})));
     BOOST_REQUIRE(m_node.sporkman->SetPrivKey(REGTEST_SPORK_PRIVKEY));
     BOOST_REQUIRE(m_node.sporkman->UpdateSpork(SPORK_2_INSTANTSEND_ENABLED, 0).has_value());
     auto& sigman = *m_node.llmq_ctx->sigman;
