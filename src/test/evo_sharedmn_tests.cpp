@@ -104,14 +104,14 @@ BOOST_AUTO_TEST_CASE(share_list_validation)
     const CKeyID voting_id = voting_key.GetPubKey().GetID();
 
     CKey refund_keys[8], owner_keys[8];
-    CollateralShares two_shares{NewShare(600 * COIN, refund_keys[0], owner_keys[0]),
-                                NewShare(400 * COIN, refund_keys[1], owner_keys[1])};
+    CollateralShares two_shares{NewShare(6000 * COIN, refund_keys[0], owner_keys[0]),
+                                NewShare(4000 * COIN, refund_keys[1], owner_keys[1])};
     CheckShares(two_shares, 0, 0, voting_id, std::nullopt);
-    CheckShares(two_shares, CProRegTx::MAX_EARLY_PERIOD_BLOCKS, 399 * COIN, voting_id, std::nullopt);
+    CheckShares(two_shares, CProRegTx::MAX_EARLY_PERIOD_BLOCKS, 3999 * COIN, voting_id, std::nullopt);
 
     CollateralShares eight_shares;
     for (size_t i = 0; i < 8; i++) {
-        eight_shares.push_back(NewShare(125 * COIN, refund_keys[i], owner_keys[i]));
+        eight_shares.push_back(NewShare(1250 * COIN, refund_keys[i], owner_keys[i]));
     }
     CheckShares(eight_shares, 100, 100 * COIN, voting_id, std::nullopt);
 
@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE(share_list_validation)
     {
         CollateralShares nine_shares{eight_shares};
         CKey k1, k2;
-        nine_shares.push_back(NewShare(125 * COIN, k1, k2));
+        nine_shares.push_back(NewShare(1250 * COIN, k1, k2));
         CheckShares(nine_shares, 0, 0, voting_id, "bad-protx-shares-count");
     }
 
@@ -129,20 +129,20 @@ BOOST_AUTO_TEST_CASE(share_list_validation)
     CheckShares(two_shares, CProRegTx::MAX_EARLY_PERIOD_BLOCKS + 1, 0, voting_id, "bad-protx-shares-early-period");
     CheckShares(two_shares, 100, -1, voting_id, "bad-protx-shares-penalty");
     // earlyPenalty must be strictly below the smallest share amount
-    CheckShares(two_shares, 100, 400 * COIN, voting_id, "bad-protx-shares-penalty");
+    CheckShares(two_shares, 100, 4000 * COIN, voting_id, "bad-protx-shares-penalty");
     // A penalty without an early period is never required, but it would still set the unilateral
     // bonus ceiling, leaving that much of the actor's share extractable by a stolen owner key
     CheckShares(two_shares, 0, 1, voting_id, "bad-protx-shares-penalty");
     CheckShares(two_shares, 100, 0, voting_id, std::nullopt);
 
-    // Amount bounds: below the 100 DASH minimum and sums different from the collateral
+    // Amount bounds: below the 100 PIRATE minimum and sums different from the collateral
     {
         CollateralShares shares{two_shares};
         shares[0].amount = 99 * COIN;
         CheckShares(shares, 0, 0, voting_id, "bad-protx-shares-amount");
-        shares[0].amount = 599 * COIN;
+        shares[0].amount = 5999 * COIN;
         CheckShares(shares, 0, 0, voting_id, "bad-protx-shares-amount-sum");
-        shares[0].amount = 601 * COIN;
+        shares[0].amount = 6001 * COIN;
         CheckShares(shares, 0, 0, voting_id, "bad-protx-shares-amount-sum");
     }
 
@@ -207,7 +207,7 @@ BOOST_AUTO_TEST_CASE(shared_proregtx_shape_validation)
         proTx.nVersion = ProTxVersion::ExtAddr;
         proTx.netInfo = NetInfoInterface::MakeNetInfo(proTx.nVersion);
         CKey r1, r2, o1, o2;
-        proTx.shares = {NewShare(600 * COIN, r1, o1), NewShare(400 * COIN, r2, o2)};
+        proTx.shares = {NewShare(6000 * COIN, r1, o1), NewShare(4000 * COIN, r2, o2)};
         proTx.vchJoinSigs = DummyJoinSigs(2);
         return proTx;
     };
@@ -315,8 +315,8 @@ BOOST_AUTO_TEST_CASE(shared_proregtx_serialization)
         CProRegTx mismatched;
         mismatched.nVersion = ProTxVersion::ExtAddr;
         mismatched.netInfo = NetInfoInterface::MakeNetInfo(mismatched.nVersion);
-        mismatched.shares.push_back(NewShare(600 * COIN, refund_keys[0], owner_keys[0]));
-        mismatched.shares.push_back(NewShare(400 * COIN, refund_keys[1], owner_keys[1]));
+        mismatched.shares.push_back(NewShare(6000 * COIN, refund_keys[0], owner_keys[0]));
+        mismatched.shares.push_back(NewShare(4000 * COIN, refund_keys[1], owner_keys[1]));
         mismatched.vchJoinSigs = DummyJoinSigs(1);
         CDataStream ss_mismatch(SER_NETWORK, CLIENT_VERSION);
         BOOST_CHECK_THROW(ss_mismatch << mismatched, std::ios_base::failure);
@@ -412,8 +412,8 @@ BOOST_AUTO_TEST_CASE(shared_reg_consent_hash)
     proTx.netInfo = NetInfoInterface::MakeNetInfo(proTx.nVersion);
     proTx.keyIDVoting = voting_key.GetPubKey().GetID();
     proTx.collateralOutpoint = COutPoint(uint256(), 0);
-    proTx.shares.push_back(NewShare(600 * COIN, refund_keys[0], owner_keys[0]));
-    proTx.shares.push_back(NewShare(400 * COIN, refund_keys[1], owner_keys[1]));
+    proTx.shares.push_back(NewShare(6000 * COIN, refund_keys[0], owner_keys[0]));
+    proTx.shares.push_back(NewShare(4000 * COIN, refund_keys[1], owner_keys[1]));
     proTx.vchJoinSigs = DummyJoinSigs(2);
     proTx.nEarlyPeriodBlocks = 1000;
     proTx.nEarlyPenalty = 50 * COIN;
@@ -512,9 +512,9 @@ BOOST_AUTO_TEST_CASE(shared_reg_consent_hash)
 BOOST_AUTO_TEST_CASE(split_amount_by_shares)
 {
     CKey refund_keys[3], owner_keys[3];
-    CollateralShares shares{NewShare(600 * COIN, refund_keys[0], owner_keys[0]),
-                            NewShare(300 * COIN, refund_keys[1], owner_keys[1]),
-                            NewShare(100 * COIN, refund_keys[2], owner_keys[2])};
+    CollateralShares shares{NewShare(6000 * COIN, refund_keys[0], owner_keys[0]),
+                            NewShare(3000 * COIN, refund_keys[1], owner_keys[1]),
+                            NewShare(1000 * COIN, refund_keys[2], owner_keys[2])};
 
     // Conservation and remainder-to-last for an amount that doesn't divide evenly
     const CAmount total{123456789};
@@ -525,7 +525,7 @@ BOOST_AUTO_TEST_CASE(split_amount_by_shares)
     BOOST_CHECK_EQUAL(amounts[1], total * 3 / 10);
     BOOST_CHECK_EQUAL(amounts[2], total - amounts[0] - amounts[1]);
 
-    // No 64-bit overflow for realistic values: reward in duffs times a 1000 DASH share
+    // No 64-bit overflow for realistic values: reward in corsars times a 10000 PIRATE collateral
     const auto big = SplitAmountByShares(566 * COIN, shares);
     BOOST_CHECK_EQUAL(big[0] + big[1] + big[2], 566 * COIN);
     BOOST_CHECK_EQUAL(big[0], 566 * COIN * 6 / 10);
@@ -540,8 +540,8 @@ BOOST_AUTO_TEST_CASE(dmn_state_shares_roundtrip)
     proTx.nVersion = ProTxVersion::ExtAddr;
     proTx.netInfo = NetInfoInterface::MakeNetInfo(proTx.nVersion);
     proTx.keyIDVoting = voting_key.GetPubKey().GetID();
-    proTx.shares.push_back(NewShare(600 * COIN, refund_keys[0], owner_keys[0]));
-    proTx.shares.push_back(NewShare(400 * COIN, refund_keys[1], owner_keys[1]));
+    proTx.shares.push_back(NewShare(6000 * COIN, refund_keys[0], owner_keys[0]));
+    proTx.shares.push_back(NewShare(4000 * COIN, refund_keys[1], owner_keys[1]));
     proTx.vchJoinSigs = DummyJoinSigs(2);
     proTx.nEarlyPeriodBlocks = 123;
     proTx.nEarlyPenalty = 7 * COIN;
@@ -597,8 +597,8 @@ BOOST_AUTO_TEST_CASE(shared_unique_properties)
     proTx.nVersion = ProTxVersion::ExtAddr;
     proTx.netInfo = NetInfoInterface::MakeNetInfo(proTx.nVersion);
     proTx.keyIDVoting = voting_key.GetPubKey().GetID();
-    proTx.shares.push_back(NewShare(600 * COIN, refund_keys[0], owner_keys[0]));
-    proTx.shares.push_back(NewShare(400 * COIN, refund_keys[1], owner_keys[1]));
+    proTx.shares.push_back(NewShare(6000 * COIN, refund_keys[0], owner_keys[0]));
+    proTx.shares.push_back(NewShare(4000 * COIN, refund_keys[1], owner_keys[1]));
 
     CDeterministicMNList list(uint256(), 0, 0);
     auto dmn = std::make_shared<CDeterministicMN>(0, MnType::Regular);
@@ -636,9 +636,9 @@ struct ProDisTestSetup {
         proTx.nVersion = ProTxVersion::ExtAddr;
         proTx.netInfo = NetInfoInterface::MakeNetInfo(proTx.nVersion);
         proTx.keyIDVoting = voting_key.GetPubKey().GetID();
-        proTx.shares.push_back(NewShare(500 * COIN, refund_keys[0], owner_keys[0]));
-        proTx.shares.push_back(NewShare(300 * COIN, refund_keys[1], owner_keys[1]));
-        proTx.shares.push_back(NewShare(200 * COIN, refund_keys[2], owner_keys[2]));
+        proTx.shares.push_back(NewShare(5000 * COIN, refund_keys[0], owner_keys[0]));
+        proTx.shares.push_back(NewShare(3000 * COIN, refund_keys[1], owner_keys[1]));
+        proTx.shares.push_back(NewShare(2000 * COIN, refund_keys[2], owner_keys[2]));
         proTx.nEarlyPeriodBlocks = EARLY_PERIOD;
         proTx.nEarlyPenalty = PENALTY;
 
@@ -922,8 +922,8 @@ BOOST_AUTO_TEST_CASE(shared_tx_filter_matching)
     proTx.netInfo = NetInfoInterface::MakeNetInfo(proTx.nVersion);
     proTx.keyIDVoting = voting_key.GetPubKey().GetID();
     proTx.collateralOutpoint = COutPoint(uint256(), 0);
-    proTx.shares.push_back(NewShare(600 * COIN, refund_keys[0], owner_keys[0]));
-    proTx.shares.push_back(NewShare(400 * COIN, refund_keys[1], owner_keys[1]));
+    proTx.shares.push_back(NewShare(6000 * COIN, refund_keys[0], owner_keys[0]));
+    proTx.shares.push_back(NewShare(4000 * COIN, refund_keys[1], owner_keys[1]));
     proTx.shares[1].scriptReward = NewP2PKHScript(reward_key);
     proTx.vchJoinSigs = DummyJoinSigs(2);
 
@@ -965,7 +965,7 @@ BOOST_AUTO_TEST_CASE(shared_tx_filter_matching)
     dis_mtx.nVersion = 3;
     dis_mtx.nType = TRANSACTION_PROVIDER_DISSOLVE;
     dis_mtx.vin.emplace_back(COutPoint(protx_hash, 0));
-    dis_mtx.vout.emplace_back(400 * COIN, proTx.shares[1].scriptRefund);
+    dis_mtx.vout.emplace_back(4000 * COIN, proTx.shares[1].scriptRefund);
     SetTxPayload(dis_mtx, dis);
     const CTransaction dis_tx(dis_mtx);
 

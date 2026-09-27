@@ -384,8 +384,11 @@ BOOST_AUTO_TEST_CASE(util_ParseMoney)
     BOOST_CHECK_EQUAL(ParseMoney("0.00000001 ").value(), COIN/100000000);
     BOOST_CHECK_EQUAL(ParseMoney(" 0.00000001").value(), COIN/100000000);
 
-    // Parsing amount that cannot be represented should fail
-    BOOST_CHECK(!ParseMoney("100000000.00"));
+    BOOST_CHECK_EQUAL(ParseMoney("100000000.00").value(), COIN * 100000000);
+    BOOST_CHECK_EQUAL(ParseMoney("105000000.00").value(), MAX_MONEY);
+
+    // Parsing an amount above MAX_MONEY or below the smallest unit should fail.
+    BOOST_CHECK(!ParseMoney("105000000.00000001"));
     BOOST_CHECK(!ParseMoney("0.000000001"));
 
     // Parsing empty string should fail

@@ -34,7 +34,7 @@ MnShareSession TwoShareSession()
     MnShareSession session;
     MnShareSession::Share alice;
     alice.label = "alice";
-    alice.amount = 600 * COIN;
+    alice.amount = 6000 * COIN;
     alice.ownerAddress = FreshP2PKHAddress();
     alice.refundAddress = FreshP2PKHAddress();
     session.shares().push_back(alice);
@@ -42,7 +42,7 @@ MnShareSession TwoShareSession()
     // A participant name is written by somebody else and is never trusted
     MnShareSession::Share bob;
     bob.label = "<b>bob</b>";
-    bob.amount = 400 * COIN;
+    bob.amount = 4000 * COIN;
     bob.ownerAddress = FreshP2PKHAddress();
     bob.refundAddress = FreshP2PKHAddress();
     bob.rewardAddress = FreshP2PKHAddress();
@@ -72,7 +72,7 @@ QString TransactionHex(uint16_t type)
     tx.nVersion = 3;
     tx.nType = type;
     tx.vin.emplace_back(COutPoint(uint256::ONE, 0));
-    tx.vout.emplace_back(1000 * COIN, CScript() << OP_TRUE);
+    tx.vout.emplace_back(10000 * COIN, CScript() << OP_TRUE);
     return QString::fromStdString(EncodeHexTx(CTransaction(tx)));
 }
 } // anonymous namespace
@@ -121,7 +121,7 @@ void SharedMnWidgetTests::statusBoardCells()
     SharedMnStatusBoard board;
     board.setColumns({QStringLiteral("Details"), QStringLiteral("Funded"), QStringLiteral("Approved"),
                       QStringLiteral("Signed")});
-    board.setShares({{QStringLiteral("alice"), 600 * COIN, QString()}, {QStringLiteral("bob"), 400 * COIN, QString()}});
+    board.setShares({{QStringLiteral("alice"), 6000 * COIN, QString()}, {QStringLiteral("bob"), 4000 * COIN, QString()}});
     QCOMPARE(board.rowCount(), 2);
     QCOMPARE(board.columnCount(), 4);
     QCOMPARE(int(board.cellState(1, 3)), int(SharedMnStatusBoard::State::Pending));

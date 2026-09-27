@@ -3,8 +3,10 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <consensus/amount.h>
+#include <consensus/consensus.h>
 #include <evo/chainhelper.h>
 #include <evo/deterministicmns.h>
+#include <evo/dmn_types.h>
 #include <governance/governance.h>
 #include <governance/object.h>
 #include <governance/vote.h>
@@ -32,6 +34,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <algorithm>
 #include <chrono>
 #include <memory>
 #include <string>
@@ -40,8 +43,8 @@
 using namespace std::chrono_literals;
 
 namespace {
-// Keep the checkpointed 107-block chain. SetUp advances past DIP3 until twenty
-// 50-PIRATE coinbases are mature enough to fund the collateral.
+// Keep the checkpointed 107-block chain. SetUp advances past DIP3 until enough
+// coinbases are mature to fund the collateral and proposal.
 constexpr int DIP3_ACTIVATION_HEIGHT{109};
 
 void SignWithVotingKey(CGovernanceVote& vote, const CKey& key)
@@ -99,8 +102,20 @@ struct GovernanceVoteSetup : public TestChainSetup {
 
         utxos = BuildSimpleUtxoMap(m_coinbase_txns);
 
-        // Activate DIP3 and mature twenty 50-PIRATE coinbases for the collateral.
-        MineBlocks(15);
+        // FundTransaction does not return change to utxos. Reserve one extra
+        // input so funding the collateral cannot consume the proposal's coins.
+        while (true) {
+            const int height{WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Height())};
+            CAmount mature_value{0};
+            CAmount largest_input{0};
+            for (const auto& [outpoint, coin] : utxos) {
+                if (height - coin.nHeight < COINBASE_MATURITY + 1) continue;
+                mature_value += coin.out.nValue;
+                largest_input = std::max(largest_input, coin.out.nValue);
+            }
+            if (mature_value >= dmn_types::Regular.collat_amount + GOVERNANCE_PROPOSAL_FEE_TX + largest_input) break;
+            MineBlock({});
+        }
         auto protx = CreateProRegTx(*m_node.chainman, utxos, /*port=*/1, payout_script(), coinbaseKey, mn_voting_key,
                                     mn_operator_key);
         mn_collateral = COutPoint(protx.GetHash(), 0);
@@ -152,6 +167,8 @@ struct GovernanceVoteSetup : public TestChainSetup {
         const CBlock block = CreateAndProcessBlock(txns, coinbase_script());
         const CBlockIndex* tip{WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Tip())};
         BOOST_REQUIRE_EQUAL(tip->GetBlockHash(), block.GetHash());
+        utxos.try_emplace(COutPoint(block.vtx[0]->GetHash(), 0),
+                          Coin(block.vtx[0]->vout[0], tip->nHeight, /*fCoinBaseIn=*/true));
         m_node.dmnman->UpdatedBlockTip(tip);
         SetMockTime(GetTime() + 1);
         IndexWaitSynced(*g_txindex);

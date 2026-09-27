@@ -8,6 +8,7 @@
 #include <chainparams.h>
 #include <clientversion.h>
 #include <compat/compat.h>
+#include <consensus/consensus.h>
 #include <net.h>
 #include <net_processing.h>
 #include <netaddress.h>
@@ -1707,6 +1708,74 @@ public:
 
 } // namespace
 
+BOOST_AUTO_TEST_CASE(transport_block_payload_size)
+{
+    // Network serialization adds the legacy PoS marker to the consensus block size.
+    const std::pair<size_t, bool> cases[]{
+        {MaxBlockSize() + sizeof(uint32_t), true},
+        {MAX_PROTOCOL_MESSAGE_LENGTH + 1, false},
+    };
+    for (const bool v2 : {false, true}) {
+        for (const auto [payload_size, accepted] : cases) {
+            BOOST_TEST_CONTEXT("v2=" << v2 << ", payload_size=" << payload_size) {
+                const std::vector<uint8_t> payload(payload_size, 0xab);
+                if (v2) {
+                    V2TransportTester tester(true);
+                    auto ret = tester.Interact();
+                    BOOST_REQUIRE(ret && ret->empty());
+                    tester.SendKey();
+                    tester.ReceiveKey();
+                    tester.SendGarbageTerm();
+                    tester.SendVersion();
+                    ret = tester.Interact();
+                    BOOST_REQUIRE(ret && ret->empty());
+                    tester.ReceiveGarbage();
+                    tester.ReceiveVersion();
+
+                    // Long command encoding exercises the exact payload limit.
+                    tester.SendMessage(NetMsgType::BLOCK, payload);
+                    ret = tester.Interact();
+                    BOOST_CHECK_EQUAL(ret.has_value(), accepted);
+                    if (ret) {
+                        BOOST_REQUIRE_EQUAL(ret->size(), 1);
+                        BOOST_REQUIRE((*ret)[0]);
+                        BOOST_CHECK_EQUAL((*ret)[0]->m_type, NetMsgType::BLOCK);
+                        BOOST_CHECK(Span{(*ret)[0]->m_recv} == MakeByteSpan(payload));
+                    }
+                } else {
+                    V1Transport sender{0, SER_NETWORK, INIT_PROTO_VERSION};
+                    V1Transport receiver{1, SER_NETWORK, INIT_PROTO_VERSION};
+                    CSerializedNetMsg message;
+                    message.m_type = NetMsgType::BLOCK;
+                    message.data = payload;
+                    BOOST_REQUIRE(sender.SetMessageToSend(message));
+                    bool received{true};
+                    while (true) {
+                        const auto& [bytes, more, type] = sender.GetBytesToSend(false);
+                        if (bytes.empty()) break;
+                        auto remaining = bytes;
+                        if (!receiver.ReceivedBytes(remaining)) {
+                            received = false;
+                            break;
+                        }
+                        BOOST_REQUIRE_LT(remaining.size(), bytes.size());
+                        sender.MarkBytesSent(bytes.size() - remaining.size());
+                    }
+                    BOOST_CHECK_EQUAL(received, accepted);
+                    BOOST_CHECK_EQUAL(receiver.ReceivedMessageComplete(), accepted);
+                    if (received) {
+                        bool reject{false};
+                        const auto msg = receiver.GetReceivedMessage({}, reject);
+                        BOOST_CHECK(!reject);
+                        BOOST_CHECK_EQUAL(msg.m_type, NetMsgType::BLOCK);
+                        BOOST_CHECK(Span{msg.m_recv} == MakeByteSpan(payload));
+                    }
+                }
+            }
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(v2transport_test)
 {
     // A mostly normal scenario, testing a transport in initiator mode.
@@ -1775,7 +1844,7 @@ BOOST_AUTO_TEST_CASE(v2transport_test)
         BOOST_CHECK((*ret)[1] && (*ret)[1]->m_type == "pong" && Span{(*ret)[1]->m_recv} == MakeByteSpan(msg_data_2));
 
         // Then send a too-large message.
-        auto msg_data_3 = g_insecure_rand_ctx.randbytes<uint8_t>(4005000);
+        auto msg_data_3 = g_insecure_rand_ctx.randbytes<uint8_t>(MAX_PROTOCOL_MESSAGE_LENGTH + CMessageHeader::COMMAND_SIZE + 1);
         tester.SendMessage(uint8_t(11), msg_data_3); // getdata short id
         ret = tester.Interact();
         BOOST_CHECK(!ret);

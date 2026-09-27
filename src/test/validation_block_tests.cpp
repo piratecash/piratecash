@@ -25,6 +25,9 @@ using node::BlockAssembler;
 
 namespace validation_block_tests {
 struct MinerTestingSetup : public RegTestingSetup {
+    // These tests reparent legacy coinbases while constructing competing chains.
+    MinerTestingSetup() : RegTestingSetup{{"-dip3params=1000:1200", "-testactivationheight=v20@1000",
+                                          "-testactivationheight=mn_rr@1000"}} {}
     std::shared_ptr<CBlock> Block(const uint256& prev_hash);
     std::shared_ptr<const CBlock> GoodBlock(const uint256& prev_hash);
     std::shared_ptr<const CBlock> BadBlock(const uint256& prev_hash);

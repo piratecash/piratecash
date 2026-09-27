@@ -28,6 +28,10 @@
 
 namespace {
 
+struct SnapshotChainSetup : TestChainSetup {
+    SnapshotChainSetup() : TestChainSetup{100} {}
+};
+
 class TipEventCounter final : public CValidationInterface
 {
 public:
@@ -91,7 +95,7 @@ BOOST_AUTO_TEST_CASE(validation_chainstate_resize_caches)
 //!
 //! When run on the background chainstate, UpdateTip should do a subset
 //! of what it does for the active chainstate.
-BOOST_FIXTURE_TEST_CASE(chainstate_update_tip, TestChain100Setup)
+BOOST_FIXTURE_TEST_CASE(chainstate_update_tip, SnapshotChainSetup)
 {
     ChainstateManager& chainman = *Assert(m_node.chainman);
     uint256 curr_tip = ::g_best_block;
@@ -119,7 +123,7 @@ BOOST_FIXTURE_TEST_CASE(chainstate_update_tip, TestChain100Setup)
     curr_tip = ::g_best_block;
 
     // Mine a new block on top of the activated snapshot chainstate.
-    mineBlocks(1);  // Defined in TestChain100Setup.
+    mineBlocks(1);  // Defined in TestChainSetup.
 
     // After adding some blocks to the snapshot tip, best block should have changed.
     BOOST_CHECK(::g_best_block != curr_tip);
@@ -185,10 +189,10 @@ BOOST_FIXTURE_TEST_CASE(chainstate_update_tip, TestChain100Setup)
 //! A chain whose V19 activation sits above the assumeutxo height, so the
 //! background chainstate validates pre-V19 blocks while the snapshot chainstate
 //! is already past the fork.
-struct V19AboveSnapshotSetup : public TestChain100Setup {
+struct V19AboveSnapshotSetup : public TestChainSetup {
     static constexpr int V19_HEIGHT{150};
     V19AboveSnapshotSetup() :
-        TestChain100Setup{CBaseChainParams::REGTEST, {"-testactivationheight=v19@150"}}
+        TestChainSetup{100, CBaseChainParams::REGTEST, {"-testactivationheight=v19@150"}}
     {
     }
 };

@@ -102,7 +102,11 @@ constexpr static struct {
               {0, 3}, {0, 0}, {0, 0}, {0, 1}, {0, 0}, {0, 0},
               {0, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 1}, {0, 1},
               {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 2},
-              {0, 4}, {0, 0}, {0, 3}, {0, 1}, {0, 0}};
+              {0, 4}, {0, 0}, {0, 3}, {0, 1}, {0, 0}, {0, 0},
+              {0, 1}, {0, 2}, {0, 0}, {0, 3}, {0, 0}, {0, 0},
+              {0, 0}, {0, 2}, {0, 4}, {0, 0}, {0, 0}, {0, 1},
+              {0, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 2}, {0, 0},
+              {0, 2}};
 
 static std::unique_ptr<CBlockIndex> CreateBlockIndex(int nHeight, CBlockIndex* active_chain_tip) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
 {
@@ -258,7 +262,7 @@ void MinerTestingSetup::TestBasicMining(const CScript& scriptPubKey, const std::
         auto pblocktemplate = AssemblerForTest(tx_mempool).CreateNewBlock(scriptPubKey);
         BOOST_CHECK(pblocktemplate);
 
-        // block sigops > limit: 1000 CHECKMULTISIG + 1
+        // Exceed the pre-DIP1 block sigop limit by one CHECKMULTISIG.
         tx.vin.resize(1);
         // NOTE: OP_NOP is used to force 20 SigOps for the CHECKMULTISIG
         tx.vin[0].scriptSig = CScript() << OP_0 << OP_0 << OP_0 << OP_NOP << OP_CHECKMULTISIG << OP_1;
@@ -266,7 +270,7 @@ void MinerTestingSetup::TestBasicMining(const CScript& scriptPubKey, const std::
         tx.vin[0].prevout.n = 0;
         tx.vout.resize(1);
         tx.vout[0].nValue = BLOCKSUBSIDY;
-        for (unsigned int i = 0; i < 1001; ++i) {
+        for (unsigned int i = 0; i < MaxBlockSigOps(/*fDIP0001Active=*/false) / 20 + 1; ++i) {
             tx.vout[0].nValue -= LOWFEE;
             hash = tx.GetHash();
             // Age transaction for InstantSend
@@ -289,7 +293,7 @@ void MinerTestingSetup::TestBasicMining(const CScript& scriptPubKey, const std::
 
         tx.vin[0].prevout.hash = txFirst[0]->GetHash();
         tx.vout[0].nValue = BLOCKSUBSIDY;
-        for (unsigned int i = 0; i < 1001; ++i) {
+        for (unsigned int i = 0; i < MaxBlockSigOps(/*fDIP0001Active=*/false) / 20 + 1; ++i) {
             tx.vout[0].nValue -= LOWFEE;
             hash = tx.GetHash();
             bool spendsCoinbase = i == 0; // only first tx spends coinbase
@@ -316,7 +320,7 @@ void MinerTestingSetup::TestBasicMining(const CScript& scriptPubKey, const std::
         tx.vin[0].scriptSig << OP_1;
         tx.vin[0].prevout.hash = txFirst[0]->GetHash();
         tx.vout[0].nValue = BLOCKSUBSIDY;
-        for (unsigned int i = 0; i < 128; ++i) {
+        for (unsigned int i = 0; i < MAX_LEGACY_BLOCK_SIZE / 9433 + 1; ++i) {
             tx.vout[0].nValue -= LOWFEE;
             hash = tx.GetHash();
             bool spendsCoinbase = i == 0; // only first tx spends coinbase
@@ -710,7 +714,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
     BOOST_CHECK(pblocktemplate = AssemblerForTest(tx_mempool).CreateNewBlock(scriptPubKey));
 
     // We can't make transactions until we have inputs
-    // Therefore, load 100 blocks :)
+    // Pre-mine enough blocks to mature all four full-reward coinbases.
     int baseheight = 0;
     std::vector<CTransactionRef> txFirst;
     for (const auto& bi : BLOCKINFO) {

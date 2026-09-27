@@ -5,6 +5,7 @@
 #include <test/util/masternode.h>
 
 #include <bls/bls.h>
+#include <consensus/consensus.h>
 #include <evo/deterministicmns.h>
 #include <evo/providertx.h>
 #include <evo/specialtx.h>
@@ -30,7 +31,7 @@ SimpleUTXOMap SelectUTXOs(const CChain& active_chain, SimpleUTXOMap& utxos, CAmo
     while (!utxos.empty()) {
         bool found{false};
         for (auto it = utxos.begin(); it != utxos.end(); ++it) {
-            if (active_chain.Height() - it->second.nHeight < 101) {
+            if (active_chain.Height() - it->second.nHeight < COINBASE_MATURITY + 1) {
                 continue;
             }
 

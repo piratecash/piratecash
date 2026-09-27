@@ -346,9 +346,14 @@ bool CSpecialTxProcessor::RebuildListFromBlock(const CBlock& block, gsl::not_nul
     newList.DecreaseScores();
 
     const bool isMNRewardReallocation{DeploymentActiveAfter(pindexPrev, m_consensus_params, Consensus::DEPLOYMENT_MN_RR)};
+    const bool isProofOfStake{block.IsProofOfStake()};
 
     // we skip the coinbase
     for (int i = 1; i < static_cast<int>(block.vtx.size()); i++) {
+        if (isProofOfStake && i == 1) {
+            // skip coinstake transaction at vtx[1] in PoS blocks
+            continue;
+        }
         const CTransaction& tx = *block.vtx[i];
 
         if (!tx.IsSpecialTxVersion()) {
@@ -731,6 +736,10 @@ bool CSpecialTxProcessor::RebuildListFromBlock(const CBlock& block, gsl::not_nul
 
     // we skip the coinbase
     for (int i = 1; i < static_cast<int>(block.vtx.size()); i++) {
+        if (isProofOfStake && i == 1) {
+            // skip coinstake transaction at vtx[1] in PoS blocks
+            continue;
+        }
         const CTransaction& tx = *block.vtx[i];
 
         // check if any existing MN collateral is spent by this transaction

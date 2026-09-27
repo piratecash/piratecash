@@ -296,7 +296,7 @@ void FuncV19Activation(TestChainSetup& setup)
     CMutableTransaction tx_spend;
     COutPoint collateralOutpoint(tx_reg_hash, 0);
     tx_spend.vin.emplace_back(collateralOutpoint);
-    tx_spend.vout.emplace_back(999.99 * COIN, collateralScript);
+    tx_spend.vout.emplace_back(dmn_types::Regular.collat_amount - CENT, collateralScript);
 
     const auto spend_coins = BuildSimpleUtxoMap({MakeTransactionRef(tx_reg)});
     SignTransaction(tx_spend, spend_coins, collateral_key);
@@ -1700,9 +1700,8 @@ static void SmlCache(TestChainSetup& setup)
 
 BOOST_AUTO_TEST_SUITE(evo_dip3_activation_tests)
 
-// FuncDIP3Protx funds fifteen 1000-PIRATE collaterals from pre-mined 50-PIRATE coinbases.
-// Height 374 is the lowest boundary with enough mature outputs for all registrations and updates.
-constexpr int DIP3_ACTIVATION_HEIGHT{374};
+// Fund fifteen 10000-PIRATE collaterals without changing the real subsidy or coinbase maturity.
+constexpr int DIP3_ACTIVATION_HEIGHT{4000};
 
 BOOST_AUTO_TEST_CASE(deterministic_mn_list_diff_serialization_is_canonical)
 {
@@ -1726,9 +1725,10 @@ BOOST_AUTO_TEST_CASE(deterministic_mn_list_diff_serialization_is_canonical)
 struct TestChainDIP3BeforeActivationSetup : public TestChainSetup {
     TestChainDIP3BeforeActivationSetup() :
         TestChainSetup(DIP3_ACTIVATION_HEIGHT - 2, CBaseChainParams::REGTEST,
-                       {"-dip3params=374:500", "-testactivationheight=v19@697", "-testactivationheight=v20@697",
-                        "-testactivationheight=mn_rr@697"},
-                       /*coins_db_in_memory=*/true, /*block_tree_db_in_memory=*/true)
+                       {"-dip3params=4000:4126", "-testactivationheight=v19@4323", "-testactivationheight=v20@4323",
+                        "-testactivationheight=mn_rr@4323"},
+                       /*coins_db_in_memory=*/true, /*block_tree_db_in_memory=*/true,
+                       /*dash_dbs_in_memory=*/true, /*last_pow_block=*/5000)
     {
     }
 };
@@ -1796,10 +1796,10 @@ struct TestMNChainSetup : public TestChainSetup {
 
 struct TestChainV24SignalBeforeV19Setup : public TestMNChainSetup {
     TestChainV24SignalBeforeV19Setup() :
-        TestMNChainSetup(494,
-                         // Keep the Dash reward schedule used by the v24 boundary scenarios.
-                         {"-testactivationheight=brr@1", "-testactivationheight=v19@500", "-testactivationheight=v20@500",
-                          "-testactivationheight=mn_rr@511", "-vbparams=v24:0:9999999999:510:1:1:1:5:0"})
+        TestMNChainSetup(2494,
+                         // Complete BRR before the v24 boundary so both equal MN payments stay divisible by two.
+                         {"-testactivationheight=brr@1", "-testactivationheight=v19@2500", "-testactivationheight=v20@2500",
+                          "-testactivationheight=mn_rr@2511", "-vbparams=v24:0:9999999999:2510:1:1:1:5:0"})
     {
         assert(!IsV19Active());
         assert(!IsV24Active());
@@ -1813,7 +1813,7 @@ struct TestChainV24SignalBeforeV19Setup : public TestMNChainSetup {
 struct TestChainV24PendingSetup : public TestChainV24SignalBeforeV19Setup {
     TestChainV24PendingSetup()
     {
-        // Mine just enough to activate v19/v20 (height 500) while keeping v24 and mn_rr pending.
+        // Mine just enough to activate v19/v20 (height 2500) while keeping v24 and mn_rr pending.
         for (int i = 0; i < 20 && !IsV19Active(); ++i) {
             ProcessBlock();
         }

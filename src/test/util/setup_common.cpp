@@ -449,9 +449,27 @@ TestChain100Setup::TestChain100Setup(
         const bool coins_db_in_memory,
         const bool block_tree_db_in_memory,
         const bool dash_dbs_in_memory)
-    : TestChainSetup{100, chain_name, extra_args, coins_db_in_memory, block_tree_db_in_memory, dash_dbs_in_memory}
+    : TestChainSetup{COINBASE_MATURITY, chain_name, extra_args, coins_db_in_memory, block_tree_db_in_memory, dash_dbs_in_memory}
 {
 }
+
+class TestChainSetup::ScopedLastPoWBlock
+{
+    Consensus::Params& m_consensus;
+    const int64_t m_original;
+
+public:
+    explicit ScopedLastPoWBlock(int64_t last_pow_block) :
+        m_consensus(const_cast<Consensus::Params&>(Params().GetConsensus())),
+        m_original(m_consensus.nLastPowBlock)
+    {
+        assert(Params().NetworkIDString() == CBaseChainParams::REGTEST);
+        assert(last_pow_block < Params().FirstPoSv2Block());
+        m_consensus.nLastPowBlock = last_pow_block;
+    }
+
+    ~ScopedLastPoWBlock() { m_consensus.nLastPowBlock = m_original; }
+};
 
 TestChainSetup::TestChainSetup(
         int num_blocks,
@@ -459,8 +477,10 @@ TestChainSetup::TestChainSetup(
         const std::vector<const char*>& extra_args,
         const bool coins_db_in_memory,
         const bool block_tree_db_in_memory,
-        const bool dash_dbs_in_memory)
-    : TestingSetup{chain_name, extra_args, coins_db_in_memory, block_tree_db_in_memory, dash_dbs_in_memory}
+        const bool dash_dbs_in_memory,
+        const std::optional<int64_t> last_pow_block)
+    : TestingSetup{chain_name, extra_args, coins_db_in_memory, block_tree_db_in_memory, dash_dbs_in_memory},
+      m_last_pow_block(last_pow_block ? std::make_unique<ScopedLastPoWBlock>(*last_pow_block) : nullptr)
 {
     SetMockTime(std::max<int64_t>(1598887952, Params().GenesisBlock().GetBlockTime() - 60));
     constexpr std::array<unsigned char, 32> vchKey = {
@@ -474,20 +494,22 @@ TestChainSetup::TestChainSetup(
         {
             /*TestChainDATSetup=*/
             {   98, uint256S("0x8efc92a862530cfbb8094df13ca4616a26db297a1147071baa60198e6a9eb23c") },
-            /*TestChain100Setup=*/
+            /*Snapshot test chains=*/
             {  100, uint256S("0x44fd4cde1259695bde6f332827ddcba3ca5e52182d5f8236c56ef86601193f63") },
             /*GovernanceVoteSetup=*/
             {  107, uint256S("0xba440c1e597ac70a085358609c56b6634c6616579452cb9a30c01c1cb062b8f9") },
-            /*TestChainV19BeforeActivationSetup=*/
-            {  368, uint256S("0xc88f885480ee97757c266ca37f345e5953befd5d12ce616018650c8539c09dd9") },
-            /*TestChainDIP3BeforeActivationSetup=*/
-            {  372, uint256S("0x0e6913c9175d6ef5c4b2b87531378765348c0c6648ca496149b7b38dfbeaa4cd") },
+            /*TestChain100Setup=*/
+            {  120, uint256S("0x6347307cb42517e1d584237ac06c207919c80db7fb9fea04a7497603ee064649") },
             /*TestChainSetup with default DIP3 activation=*/
             {  430, uint256S("0x10dc3e85ca0e29cf708c61cb2503553d2350df6d5f0f5fbace155d7ef3c06b0e") },
-            /*TestChainV24SignalBeforeV19Setup=*/
-            {  494, uint256S("0xa83f1f1b832bbc9b84ed19e13af67b750339c05759e13fc547593c3dc5fd3c78") },
             /*TestChainBRRBeforeActivationSetup=*/
             {  497, uint256S("0x5c333c608371f62c4437bcb80a7e9973634f56c8fb9e3a7ccb759d00d371a30b") },
+            /*TestChainV24SignalBeforeV19Setup=*/
+            { 2494, uint256S("0x744db185b61c83b55e29f0352dfb21978e4a33fab8a856ad2e1af4378dab61bc") },
+            /*TestChainV19BeforeActivationSetup=*/
+            { 3994, uint256S("0x870f48c21958de69fc8114f8dc32a3a1dbcd9f1eb9a32c79a3af3a6150866bf1") },
+            /*TestChainDIP3BeforeActivationSetup=*/
+            { 3998, uint256S("0x5d0b6c186c2ed2108d881c85ab8fde393e6ee924f6552e7b5ea61b4e7bb95fcc") },
         }
     };
 
@@ -501,18 +523,19 @@ TestChainSetup::TestChainSetup(
 }
 
 namespace {
-// This is the lowest activation height that leaves enough mature pre-mined coinbases for all
-// consumers of the shared fixture. The DIP3 prerequisite is active before the v19 boundary work.
-constexpr int V19_ACTIVATION_HEIGHT{374};
+// Fifteen 10000-PIRATE collaterals need more funding than the default regtest PoW era supplies.
+constexpr int V19_ACTIVATION_HEIGHT{4000};
 } // namespace
 
 TestChainV19BeforeActivationSetup::TestChainV19BeforeActivationSetup() :
     TestChainSetup{V19_ACTIVATION_HEIGHT - 6,
                    CBaseChainParams::REGTEST,
-                   {"-dip3params=100:500", "-testactivationheight=v19@374", "-testactivationheight=v20@374",
-                    "-testactivationheight=mn_rr@374"},
+                   {"-dip3params=100:4126", "-testactivationheight=v19@4000", "-testactivationheight=v20@4000",
+                    "-testactivationheight=mn_rr@4000"},
                    /*coins_db_in_memory=*/true,
-                   /*block_tree_db_in_memory=*/true}
+                   /*block_tree_db_in_memory=*/true,
+                   /*dash_dbs_in_memory=*/true,
+                   /*last_pow_block=*/5000}
 {
     assert(WITH_LOCK(::cs_main, return !DeploymentActiveAfter(m_node.chainman->ActiveChain().Tip(), m_node.chainman->GetConsensus(),
                                                                Consensus::DEPLOYMENT_V19)));

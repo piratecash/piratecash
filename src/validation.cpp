@@ -79,6 +79,7 @@
 #include <cassert>
 #include <chrono>
 #include <deque>
+#include <limits>
 #include <numeric>
 #include <optional>
 #include <ranges>
@@ -6789,7 +6790,9 @@ bool ChainstateManager::IsQuorumTypeEnabled(const Consensus::LLMQType llmqType,
         return false;
     }
 
-    constexpr int TESTNET_LLMQ_25_67_ACTIVATION_HEIGHT = 847000;
+    // PirateCash: LLMQ_25_67 was not produced by v18 testnet history, so do
+    // not require those commitments on the existing chain.
+    constexpr int TESTNET_LLMQ_25_67_ACTIVATION_HEIGHT = std::numeric_limits<int>::max();
 
     const bool fDIP0024IsActive{optDIP0024IsActive.value_or(
         DeploymentActiveAfter(pindexPrev, GetConsensus(), Consensus::DEPLOYMENT_DIP0024))};
