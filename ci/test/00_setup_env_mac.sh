@@ -15,3 +15,4 @@ export RUN_UNIT_TESTS=false
 export RUN_FUNCTIONAL_TESTS=false
 export GOAL="all deploy"
 export BITCOIN_CONFIG="--with-gui --enable-reduce-exports --disable-miner"
+export RUN_STDLIB_PATH_CHECK=true
