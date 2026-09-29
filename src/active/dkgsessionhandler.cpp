@@ -136,12 +136,6 @@ void ActiveDKGSessionHandler::WaitForNextPhase(std::optional<QuorumPhase> curPha
 
     if (nextPhase == QuorumPhase::Initialized) {
         m_dkgdbgman.ResetLocalSessionStatus(params.type, quorumIndex);
-    } else {
-        m_dkgdbgman.UpdateLocalSessionStatus(params.type, quorumIndex, [&](CDKGDebugSessionStatus& status) {
-            bool changed = status.phase != nextPhase;
-            status.phase = nextPhase;
-            return changed;
-        });
     }
 }
 
@@ -244,6 +238,9 @@ void ActiveDKGSessionHandler::HandlePhase(QuorumPhase curPhase, QuorumPhase next
         throw AbortPhaseException();
     }
     startPhaseFunc();
+    // Reported only once this phase's own messages are out, so a `dkgstatus`
+    // reader can trust the sent* flags of every member that shows the phase
+    m_dkgdbgman.MarkPhaseAdvanced(params.type, quorumIndex, curPhase);
     WaitForNextPhase(curPhase, nextPhase, expectedQuorumHash, runWhileWaiting);
 
     LogPrint(BCLog::LLMQ_DKG, "ActiveDKGSessionHandler::%s -- %s qi[%d] - done, curPhase=%d, nextPhase=%d\n", __func__, params.name, quorumIndex, std23::to_underlying(curPhase), std23::to_underlying(nextPhase));

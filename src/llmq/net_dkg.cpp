@@ -859,6 +859,7 @@ void NetDKG::HandleDKGRound(ActiveDKGSessionHandler& handler)
                 m_peer_manager->PeerRelayInv(inv_opt.value());
             }
         }
+        active.dkgdbgman.MarkPhaseAdvanced(handler.params.type, handler.QuorumIndex(), QuorumPhase::Finalize);
         handler.WaitForNextPhase(QuorumPhase::Initialized, QuorumPhase::Contribute, curQuorumHash);
         return;
     }
@@ -931,6 +932,7 @@ void NetDKG::HandleDKGRound(ActiveDKGSessionHandler& handler)
             m_peer_manager->PeerRelayInv(inv_opt.value());
         }
     }
+    active.dkgdbgman.MarkPhaseAdvanced(handler.params.type, handler.QuorumIndex(), QuorumPhase::Finalize);
 }
 
 void NetDKGStub::ProcessMessage(CNode& pfrom, const std::string& msg_type, CDataStream& vRecv)
