@@ -426,6 +426,7 @@ public:
 
     int64_t nextAttemptTime{0};
     int attempt{0};
+    int sendCount{0};
 };
 
 struct PendingSignatureData {
@@ -508,6 +509,7 @@ public:
         EXCLUSIVE_LOCKS_REQUIRED(!cs);
 
     static CDeterministicMNCPtr SelectMemberForRecovery(const CQuorum& quorum, const uint256& id, int attempt);
+    static std::vector<CDeterministicMNCPtr> GetRecoveryMemberOrder(const CQuorum& quorum, const uint256& id);
 
     bool AsyncSignIfMember(Consensus::LLMQType llmqType, const uint256& id,
                            const uint256& msgHash, const uint256& quorumHash = uint256(), bool allowReSign = false,

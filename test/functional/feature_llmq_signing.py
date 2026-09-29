@@ -182,26 +182,32 @@ class LLMQSigningTest(DashTestFramework):
         if self.options.spork21:
             id = uint256_to_string(request_id + 1)
 
-            # Isolate the node that is responsible for the recovery of a signature and assert that recovery fails
+            # Isolate the node that is responsible for the recovery of a signature. The other members are not
+            # connected to it, so they send their shares to the next recovery member straight away instead of
+            # waiting for the retry timeout (mocktime is not advanced here).
             q = self.nodes[0].quorum('selectquorum', q_type, id)
             mn: MasternodeInfo = self.get_mninfo(q['recoveryMembers'][0])
             mn.get_node(self).setnetworkactive(False)
             self.wait_until(lambda: mn.get_node(self).getconnectioncount() == 0)
+            self.wait_until(lambda: all(peer.get('verified_proregtx_hash') != mn.proTxHash
+                                        for other in self.mninfo if other is not mn
+                                        for peer in other.get_node(self).getpeerinfo()))
             for i in range(4):
                 self.mninfo[i].get_node(self).quorum("sign", q_type, id, msgHash)
-            assert_sigs_nochange(False, False, False, 3)
-            # Need to re-connect so that it later gets the recovered sig
+            self.wait_until(lambda: all(other.get_node(self).quorum("hasrecsig", q_type, id, msgHash)
+                                        for other in self.mninfo if other is not mn), timeout=10)
+            assert not mn.get_node(self).quorum("hasrecsig", q_type, id, msgHash)
             mn.get_node(self).setnetworkactive(True)
             self.connect_nodes(mn.nodeIdx, 0)
             force_finish_mnsync(mn.get_node(self))
             # Make sure intra-quorum connections were also restored
             self.bump_mocktime(1)  # need this to bypass quorum connection retry timeout
-            self.wait_until(lambda: mn.get_node(self).getconnectioncount() == self.llmq_size, timeout=10)
+            self.wait_until(lambda: all(other.get_node(self).getconnectioncount() == self.llmq_size
+                                        for other in self.mninfo), timeout=10)
             mn.get_node(self).ping()
             self.wait_until(lambda: all('pingwait' not in peer for peer in mn.get_node(self).getpeerinfo()))
-            # Let 2 seconds pass so that the next node is used for recovery, which should succeed
+            # Without this the platform DKG below intermittently marks a member bad
             self.bump_mocktime(2)
-            wait_for_sigs(True, False, True, 2)
 
         self.test_platform_resigning()
 

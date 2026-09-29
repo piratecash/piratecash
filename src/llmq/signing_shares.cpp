@@ -747,10 +747,8 @@ std::shared_ptr<CRecoveredSig> CSigSharesManager::TryRecoverSig(const CQuorum& q
     return rs;
 }
 
-CDeterministicMNCPtr CSigSharesManager::SelectMemberForRecovery(const CQuorum& quorum, const uint256 &id, int attempt)
+std::vector<CDeterministicMNCPtr> CSigSharesManager::GetRecoveryMemberOrder(const CQuorum& quorum, const uint256& id)
 {
-    assert(attempt < quorum.params.recoveryMembers);
-
     std::vector<std::pair<uint256, CDeterministicMNCPtr>> v;
     v.reserve(quorum.members.size());
     for (const auto& dmn : quorum.members) {
@@ -759,7 +757,20 @@ CDeterministicMNCPtr CSigSharesManager::SelectMemberForRecovery(const CQuorum& q
     }
     std::sort(v.begin(), v.end());
 
-    return v[attempt % v.size()].second;
+    std::vector<CDeterministicMNCPtr> order;
+    order.reserve(v.size());
+    for (auto& [_, dmn] : v) {
+        order.emplace_back(std::move(dmn));
+    }
+    return order;
+}
+
+CDeterministicMNCPtr CSigSharesManager::SelectMemberForRecovery(const CQuorum& quorum, const uint256& id, int attempt)
+{
+    assert(attempt < quorum.params.recoveryMembers);
+
+    const auto order{GetRecoveryMemberOrder(quorum, id)};
+    return order[attempt % order.size()];
 }
 
 bool CSigSharesManager::AsyncSignIfMember(Consensus::LLMQType llmqType, const uint256& id,
@@ -1009,34 +1020,51 @@ void CSigSharesManager::CollectSigSharesToSendConcentrated(std::unordered_map<No
     }
 
     auto curTime = GetTime<std::chrono::milliseconds>().count();
+    const uint256 myProTxHash{m_mn_activeman.GetProTxHash()};
 
     for (auto& [_, signedSession] : signedSessions) {
-        if (!IsAllMembersConnectedEnabled(signedSession.quorum->params.type, m_sporkman)) {
+        const auto& quorum = *signedSession.quorum;
+        if (!IsAllMembersConnectedEnabled(quorum.params.type, m_sporkman)) {
             continue;
         }
 
-        if (signedSession.attempt >= signedSession.quorum->params.recoveryMembers) {
+        if (signedSession.attempt >= quorum.params.recoveryMembers || curTime < signedSession.nextAttemptTime) {
             continue;
         }
 
-        if (curTime >= signedSession.nextAttemptTime) {
-            int64_t waitTime = exp2(signedSession.attempt) * EXP_SEND_FOR_RECOVERY_TIMEOUT;
-            waitTime = std::min(MAX_SEND_FOR_RECOVERY_TIMEOUT, waitTime);
-            signedSession.nextAttemptTime = curTime + waitTime;
-            auto dmn = SelectMemberForRecovery(*signedSession.quorum, signedSession.sigShare.getId(), signedSession.attempt);
-            signedSession.attempt++;
-
-            LogPrint(BCLog::LLMQ_SIGS, "CSigSharesManager::%s -- signHash=%s, sending to %s, attempt=%d\n", __func__,
-                     signedSession.sigShare.GetSignHash().ToString(), dmn->proTxHash.ToString(), signedSession.attempt);
-
-            auto it = proTxToNode.find(dmn->proTxHash);
-            if (it == proTxToNode.end()) {
-                continue;
+        // Waiting out the timeout on a member that can't take our share only delays recovery, so go straight to
+        // the next valid, connected one in the same deterministic order. If there is none, keep the old behaviour.
+        const auto order{GetRecoveryMemberOrder(quorum, signedSession.sigShare.getId())};
+        for (int attempt = signedSession.attempt; attempt < quorum.params.recoveryMembers; ++attempt) {
+            const auto& proTxHash = order[attempt % order.size()]->proTxHash;
+            if (quorum.IsValidMember(proTxHash) && (proTxHash == myProTxHash || proTxToNode.contains(proTxHash))) {
+                if (attempt != signedSession.attempt) {
+                    LogPrint(BCLog::LLMQ_SIGS, /* Continued */
+                             "CSigSharesManager::%s -- signHash=%s, skipped %d unreachable recovery members\n",
+                             __func__, signedSession.sigShare.GetSignHash().ToString(), attempt - signedSession.attempt);
+                }
+                signedSession.attempt = attempt;
+                break;
             }
-
-            auto& m = sigSharesToSend[it->second->GetId()];
-            m.emplace_back(signedSession.sigShare);
         }
+
+        int64_t waitTime = exp2(signedSession.sendCount) * EXP_SEND_FOR_RECOVERY_TIMEOUT;
+        waitTime = std::min(MAX_SEND_FOR_RECOVERY_TIMEOUT, waitTime);
+        signedSession.nextAttemptTime = curTime + waitTime;
+        const auto& dmn = order[signedSession.attempt % order.size()];
+        signedSession.attempt++;
+        signedSession.sendCount++;
+
+        LogPrint(BCLog::LLMQ_SIGS, "CSigSharesManager::%s -- signHash=%s, sending to %s, attempt=%d\n", __func__,
+                 signedSession.sigShare.GetSignHash().ToString(), dmn->proTxHash.ToString(), signedSession.attempt);
+
+        auto it = proTxToNode.find(dmn->proTxHash);
+        if (it == proTxToNode.end()) {
+            continue;
+        }
+
+        auto& m = sigSharesToSend[it->second->GetId()];
+        m.emplace_back(signedSession.sigShare);
     }
 }
 
@@ -1499,12 +1527,9 @@ std::shared_ptr<CRecoveredSig> CSigSharesManager::SignAndProcessSingleShare(Pend
         auto rs = ProcessSigShare(sigShare, work.quorum);
 
         if (IsAllMembersConnectedEnabled(work.quorum->params.type, m_sporkman)) {
+            const uint256 signHash{sigShare.GetSignHash()};
             LOCK(cs);
-            auto& session = signedSessions[sigShare.GetSignHash()];
-            session.sigShare = std::move(sigShare);
-            session.quorum = work.quorum;
-            session.nextAttemptTime = 0;
-            session.attempt = 0;
+            signedSessions[signHash] = CSignedSession{std::move(sigShare), work.quorum};
         }
         return rs;
     }
