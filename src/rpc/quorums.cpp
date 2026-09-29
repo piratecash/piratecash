@@ -328,7 +328,7 @@ static RPCResult quorum_dkgstatus_help()
                     {RPCResult::Type::BOOL, "outbound", /*optional=*/true, "Returns true if outbound connection"},
             }}}}
         }}}});
-    mod_inner.push_back({RPCResult::Type::ARR, "minableCommitments", "Array of objects containing minable commitments", {
+    mod_inner.push_back({RPCResult::Type::ARR, "minableCommitments", "Array of objects containing commitments the next block would include", {
         llmq::CFinalCommitment::GetJsonHelp(/*key=*/"", /*optional=*/false)}});
     return RPCResult{ret.m_type, ret.m_key_name, ret.m_description, mod_inner};
 }
@@ -427,7 +427,7 @@ static RPCHelpMan quorum_dkgstatus()
         }
 
         LOCK(cs_main);
-        std::optional<std::vector<llmq::CFinalCommitment>> vfqc = llmq_ctx.quorum_block_processor->GetMineableCommitments(llmq_params, tipHeight);
+        std::optional<std::vector<llmq::CFinalCommitment>> vfqc = llmq_ctx.quorum_block_processor->GetMineableCommitments(llmq_params, tipHeight + 1);
         if (vfqc.has_value()) {
             for (const auto& fqc : vfqc.value()) {
                 minableCommitments.push_back(fqc.ToJson());
