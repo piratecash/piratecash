@@ -287,6 +287,8 @@ mkdir -p "$DISTSRC"
     make -C src --jobs=1 check-security ${V:+V=1}
     # Check that executables only contain allowed version symbols.
     make -C src --jobs=1 check-symbols  ${V:+V=1}
+    # Check that no executable embeds a standard library header path.
+    make -C src --jobs=1 check-stdlib-paths ${V:+V=1}
 
     mkdir -p "$OUTDIR"
 
