@@ -1633,7 +1633,7 @@ class CBLSIESEncryptedSecretKey:
 
 # Objects that correspond to messages on the wire
 class msg_version:
-    __slots__ = ("addrFrom", "addrTo", "nNonce", "relay", "nServices",
+    __slots__ = ("addrFrom", "addrTo", "mnauth_challenge", "nNonce", "other_masternode", "relay", "nServices",
                  "nStartingHeight", "nTime", "nVersion", "strSubVer")
     msgtype = b"version"
 
@@ -1647,6 +1647,8 @@ class msg_version:
         self.strSubVer = ''
         self.nStartingHeight = -1
         self.relay = 0
+        self.mnauth_challenge = 0
+        self.other_masternode = False
 
     def deserialize(self, f):
         self.nVersion = struct.unpack("<i", f.read(4))[0]
@@ -1669,6 +1671,12 @@ class msg_version:
         except struct.error:
             self.relay = 0
 
+        # Dash appends the MNAUTH challenge and whether the sender opened a masternode connection
+        rest = f.read(33)
+        if len(rest) == 33:
+            self.mnauth_challenge = int.from_bytes(rest[:32], 'little')
+            self.other_masternode = bool(rest[32])
+
     def serialize(self):
         r = b""
         r += struct.pack("<i", self.nVersion)
@@ -1680,13 +1688,15 @@ class msg_version:
         r += ser_string(self.strSubVer.encode('utf-8'))
         r += struct.pack("<i", self.nStartingHeight)
         r += struct.pack("<b", self.relay)
+        r += ser_uint256(self.mnauth_challenge)
+        r += struct.pack("<?", self.other_masternode)
         return r
 
     def __repr__(self):
-        return 'msg_version(nVersion=%i nServices=%i nTime=%s addrTo=%s addrFrom=%s nNonce=0x%016X strSubVer=%s nStartingHeight=%i relay=%i)' \
+        return 'msg_version(nVersion=%i nServices=%i nTime=%s addrTo=%s addrFrom=%s nNonce=0x%016X strSubVer=%s nStartingHeight=%i relay=%i mnauth_challenge=%064x other_masternode=%s)' \
                % (self.nVersion, self.nServices, time.ctime(self.nTime),
                   repr(self.addrTo), repr(self.addrFrom), self.nNonce,
-                  self.strSubVer, self.nStartingHeight, self.relay)
+                  self.strSubVer, self.nStartingHeight, self.relay, self.mnauth_challenge, self.other_masternode)
 
 
 class msg_verack:
