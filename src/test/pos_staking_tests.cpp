@@ -15,7 +15,12 @@
 //   6. Orphan block and reorganization safety with PoS
 //   7. Double-spend detection in PoS header chains
 //   8. Fork-point UTXO boundary checks
+//   9. Wallet releases the inputs of orphaned coinstakes (with wallet only)
 //
+
+#if defined(HAVE_CONFIG_H)
+#include <config/bitcoin-config.h>
+#endif
 
 #include <boost/test/unit_test.hpp>
 
@@ -63,6 +68,13 @@
 #include <validation.h>
 #include <validationinterface.h>
 #include <index/txindex.h>
+
+#ifdef ENABLE_WALLET
+#include <wallet/spend.h>
+#include <wallet/test/util.h>
+#include <wallet/transaction.h>
+#include <wallet/wallet.h>
+#endif // ENABLE_WALLET
 
 #include <memory>
 #include <optional>
@@ -1376,5 +1388,161 @@ BOOST_AUTO_TEST_CASE(pos_check_proof_of_stake_rejects_oob_index)
         BOOST_CHECK_EQUAL(state.GetRejectReason(), "bad-pos-input");
     }
 }
+
+#ifdef ENABLE_WALLET
+// ============================================================================
+// 18. WALLET: ORPHANED COINSTAKE RELEASES ITS INPUTS
+//
+// The behavior comes from Cosanta v18 and was
+// lost once already when rebasing onto Dash v23; Dash has no staking, so every
+// rebase can drop it again. Without it an orphaned coinstake keeps its stake
+// inputs spent forever: they vanish from balance and staking, and a restart
+// does not bring them back.
+// ============================================================================
+
+namespace {
+
+CScript WalletScript(const CKey& key) { return GetScriptForDestination(PKHash(key.GetPubKey())); }
+
+CTransactionRef MakeWalletTx(const COutPoint& prevout, const CScript& spk, CAmount value, bool coinstake)
+{
+    CMutableTransaction mtx;
+    mtx.vin.emplace_back(prevout);
+    if (coinstake) mtx.vout.emplace_back(0, CScript());
+    mtx.vout.emplace_back(value, spk);
+    return MakeTransactionRef(std::move(mtx));
+}
+
+//! A 50 PIRATE wallet coin confirmed ten blocks below the tip, so it stays
+//! confirmed when the tip block is disconnected.
+COutPoint AddConfirmedWalletCoin(wallet::CWallet& w, const CBlockIndex* tip, const CScript& spk)
+{
+    const CBlockIndex* at = tip->GetAncestor(tip->nHeight - 10);
+    const auto tx = MakeWalletTx(COutPoint(InsecureRand256(), 0), spk, 50 * COIN, /*coinstake=*/false);
+    LOCK(w.cs_wallet);
+    w.AddToWallet(tx, wallet::TxStateConfirmed{at->GetBlockHash(), at->nHeight, 1});
+    return COutPoint(tx->GetHash(), 0);
+}
+
+bool IsAvailable(const wallet::CWallet& w, const COutPoint& outpoint)
+{
+    LOCK(w.cs_wallet);
+    for (const wallet::COutput& out : wallet::AvailableCoins(w).All()) {
+        if (out.outpoint == outpoint) return true;
+    }
+    return false;
+}
+
+bool IsAbandoned(const wallet::CWallet& w, const uint256& txid)
+{
+    LOCK(w.cs_wallet);
+    const wallet::CWalletTx* wtx = w.GetWalletTx(txid);
+    return wtx && wtx->isAbandoned();
+}
+
+} // namespace
+
+BOOST_AUTO_TEST_CASE(pos_wallet_abandoned_spend_returns_input)
+{
+    auto w = wallet::CreateSyncedWallet(*m_node.chain, *m_node.coinjoin_loader, *Assert(m_node.chainman), m_args, coinbaseKey);
+    const CScript spk = WalletScript(coinbaseKey);
+    const CBlockIndex* tip = WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Tip());
+
+    const int inputs_before{w->CountInputsWithAmount(50 * COIN)};
+    const COutPoint coin = AddConfirmedWalletCoin(*w, tip, spk);
+    BOOST_REQUIRE(IsAvailable(*w, coin));
+    BOOST_CHECK_EQUAL(w->CountInputsWithAmount(50 * COIN), inputs_before + 1);
+
+    const auto spend = MakeWalletTx(coin, spk, 49 * COIN, /*coinstake=*/false);
+    WITH_LOCK(w->cs_wallet, w->AddToWallet(spend, wallet::TxStateInactive{}));
+    BOOST_REQUIRE(!IsAvailable(*w, coin));
+    BOOST_CHECK_EQUAL(w->CountInputsWithAmount(50 * COIN), inputs_before);
+
+    BOOST_REQUIRE(w->AbandonTransaction(spend->GetHash()));
+    BOOST_CHECK_MESSAGE(IsAvailable(*w, coin),
+        "abandoned spend left its input hidden: wallet UTXO reconciliation must restore it");
+    BOOST_CHECK_EQUAL(w->CountInputsWithAmount(50 * COIN), inputs_before + 1);
+}
+
+BOOST_AUTO_TEST_CASE(pos_wallet_orphaned_coinstake_released_on_disconnect)
+{
+    auto w = wallet::CreateSyncedWallet(*m_node.chain, *m_node.coinjoin_loader, *Assert(m_node.chainman), m_args, coinbaseKey);
+    const CScript spk = WalletScript(coinbaseKey);
+    const CBlockIndex* tip = WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Tip());
+
+    const COutPoint old_stake = AddConfirmedWalletCoin(*w, tip, spk);
+    const auto old_orphan = MakeWalletTx(old_stake, spk, 51 * COIN, /*coinstake=*/true);
+    const COutPoint stake = AddConfirmedWalletCoin(*w, tip, spk);
+    const auto coinstake = MakeWalletTx(stake, spk, 51 * COIN, /*coinstake=*/true);
+    BOOST_REQUIRE(coinstake->IsCoinStake());
+    {
+        LOCK(w->cs_wallet);
+        w->AddToWallet(old_orphan, wallet::TxStateInactive{});
+        w->AddToWallet(coinstake, wallet::TxStateConfirmed{tip->GetBlockHash(), tip->nHeight, 1});
+    }
+    BOOST_REQUIRE(!IsAvailable(*w, stake));
+
+    CMutableTransaction coinbase;
+    coinbase.vin.emplace_back(COutPoint());
+    coinbase.vin[0].scriptSig = CScript() << 0x01;
+    coinbase.vout.emplace_back(0, CScript() << OP_TRUE);
+    CBlock block;
+    block.hashPrevBlock = tip->pprev->GetBlockHash();
+    block.vtx = {MakeTransactionRef(std::move(coinbase)), coinstake};
+    const uint256 block_hash{tip->GetBlockHash()};
+    interfaces::BlockInfo block_info{block_hash};
+    block_info.height = tip->nHeight;
+    block_info.prev_hash = &block.hashPrevBlock;
+    block_info.data = &block;
+    w->blockDisconnected(block_info);
+
+    BOOST_CHECK_MESSAGE(IsAbandoned(*w, coinstake->GetHash()),
+        "CWallet::blockDisconnected must abandon the coinstake of a disconnected block");
+    BOOST_CHECK_MESSAGE(IsAvailable(*w, stake), "stake input of an orphaned coinstake is not spendable");
+    BOOST_CHECK_MESSAGE(IsAbandoned(*w, old_orphan->GetHash()),
+        "CWallet::blockDisconnected must deep scan and abandon other orphaned coinstakes");
+    BOOST_CHECK(IsAvailable(*w, old_stake));
+}
+
+BOOST_AUTO_TEST_CASE(pos_wallet_orphaned_coinstake_released_on_startup)
+{
+    auto w = wallet::CreateSyncedWallet(*m_node.chain, *m_node.coinjoin_loader, *Assert(m_node.chainman), m_args, coinbaseKey);
+    const CScript spk = WalletScript(coinbaseKey);
+    const CBlockIndex* tip = WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Tip());
+
+    const COutPoint stake = AddConfirmedWalletCoin(*w, tip, spk);
+    const auto coinstake = MakeWalletTx(stake, spk, 51 * COIN, /*coinstake=*/true);
+    WITH_LOCK(w->cs_wallet, w->AddToWallet(coinstake, wallet::TxStateInactive{}));
+    BOOST_REQUIRE(!IsAvailable(*w, stake));
+
+    const COutPoint ordinary_input = AddConfirmedWalletCoin(*w, tip, spk);
+    const auto ordinary = MakeWalletTx(ordinary_input, spk, 49 * COIN, /*coinstake=*/false);
+    const COutPoint confirmed_input = AddConfirmedWalletCoin(*w, tip, spk);
+    const auto confirmed = MakeWalletTx(confirmed_input, spk, 51 * COIN, /*coinstake=*/true);
+    {
+        LOCK(w->cs_wallet);
+        w->AddToWallet(ordinary, wallet::TxStateInactive{});
+        w->AddToWallet(confirmed, wallet::TxStateConfirmed{tip->GetBlockHash(), tip->nHeight, 1});
+    }
+
+    w->SetBroadcastTransactions(false);
+    w->ResubmitWalletTransactions(/*relay=*/false, /*force=*/true);
+    BOOST_CHECK(!IsAbandoned(*w, coinstake->GetHash()));
+
+    w->SetBroadcastTransactions(true);
+    w->ResubmitWalletTransactions(/*relay=*/true, /*force=*/false);
+    BOOST_CHECK(!IsAbandoned(*w, coinstake->GetHash()));
+
+    w->ResubmitWalletTransactions(/*relay=*/false, /*force=*/true);
+
+    BOOST_CHECK_MESSAGE(IsAbandoned(*w, coinstake->GetHash()),
+        "CWallet::ResubmitWalletTransactions must abandon unconfirmed coinstakes");
+    BOOST_CHECK(IsAvailable(*w, stake));
+    BOOST_CHECK(!IsAbandoned(*w, ordinary->GetHash()));
+    BOOST_CHECK(!IsAvailable(*w, ordinary_input));
+    BOOST_CHECK(!IsAbandoned(*w, confirmed->GetHash()));
+    BOOST_CHECK(!IsAvailable(*w, confirmed_input));
+}
+#endif // ENABLE_WALLET
 
 BOOST_AUTO_TEST_SUITE_END()
