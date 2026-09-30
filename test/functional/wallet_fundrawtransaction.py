@@ -526,7 +526,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         if not self.options.descriptors:
             wmulti.importaddress(mSigObj)
 
-        # send 12 DASH to msig addr
+        # send 12 PIRATE to msig addr
         self.nodes[0].sendtoaddress(mSigObj, 12)
         self.generate(self.nodes[0], 1)
 
