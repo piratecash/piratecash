@@ -32,8 +32,23 @@
 namespace gsl
 {
 
+    template <class T>
+    class not_null;
+
     namespace details
     {
+        // True for any specialisation, not just the one being constructed, so
+        // that converting between them does not run the constructor below.
+        template <typename T>
+        struct is_not_null : std::false_type
+        {
+        };
+
+        template <typename T>
+        struct is_not_null<not_null<T>> : std::true_type
+        {
+        };
+
         template <typename T, typename = void>
         struct is_comparable_to_nullptr : std::false_type
         {
@@ -98,7 +113,14 @@ namespace gsl
     public:
         static_assert(details::is_comparable_to_nullptr<T>::value, "T cannot be compared to nullptr.");
 
-        template <typename U, typename = std::enable_if_t<std::is_convertible<U, T>::value>>
+        // A not_null is excluded so that copying, moving or converting one does
+        // not run this constructor. It would otherwise be an exact match for a
+        // non-const lvalue or an rvalue, where the copy constructor needs an
+        // added const, and every relocation of a not_null would re-evaluate
+        // source_location::current() at whatever code moved it - inside a
+        // standard library header, when a container relocates its elements.
+        template <typename U, typename = std::enable_if_t<std::is_convertible<U, T>::value &&
+                                                          !details::is_not_null<std::decay_t<U>>::value>>
         constexpr not_null(U&& u, nostd::source_location loc = nostd::source_location::current()) : ptr_(std::forward<U>(u))
         {
             Expects(ptr_ != nullptr, loc);
@@ -110,9 +132,19 @@ namespace gsl
             Expects(ptr_ != nullptr, loc);
         }
 
+        // Not delegating to the constructor above, which would record this
+        // header as the origin of a failure. U is non-null, but nothing
+        // constrains a U to T conversion to preserve that, so the check stays,
+        // with its own location so that it names the caller. Converting inside
+        // a standard library header - emplacing a not_null<U> into a container
+        // of not_null<T> - still records that header, correctly: the conversion
+        // really does happen there, and belongs at the call site instead.
         template <typename U, typename = std::enable_if_t<std::is_convertible<U, T>::value>>
-        constexpr not_null(const not_null<U>& other) : not_null(other.get())
-        {}
+        constexpr not_null(const not_null<U>& other,
+                           nostd::source_location loc = nostd::source_location::current()) : ptr_(other.get())
+        {
+            Expects(ptr_ != nullptr, loc);
+        }
 
         not_null(const not_null& other) = default;
         not_null& operator=(const not_null& other) = default;
@@ -142,6 +174,22 @@ namespace gsl
     private:
         T ptr_;
     };
+
+    // Relocating a not_null must not run the location-capturing constructor,
+    // which would re-evaluate its source_location default argument at the point
+    // of the move. That constructor is not noexcept because it calls Expects(),
+    // so this fails if it is ever selected again.
+    static_assert(std::is_nothrow_move_constructible<not_null<void*>>::value &&
+                  std::is_nothrow_move_constructible<not_null<std::shared_ptr<void>>>::value,
+                  "relocating a not_null must not capture a source_location");
+
+    // There is deliberately no move constructor: moving would leave a
+    // smart-pointer T null and break the invariant, so a "move" copies, which
+    // is what strict_not_null's own move relies on. A move-only T is therefore
+    // not movable either, which is what this detects - the assertion above
+    // cannot, since a defaulted move constructor would satisfy it too.
+    static_assert(!std::is_move_constructible<not_null<std::unique_ptr<void>>>::value,
+                  "not_null must not gain a move constructor");
 
     template <class T>
     auto make_not_null(T&& t) noexcept
