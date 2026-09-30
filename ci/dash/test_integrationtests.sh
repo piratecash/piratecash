@@ -11,7 +11,7 @@ set -e
 
 PASS_ARGS="$*"
 
-source ./ci/dash/matrix.sh
+source ./ci/piratecash/matrix.sh
 
 if [ "$RUN_FUNCTIONAL_TESTS" != "true" ]; then
   echo "Skipping integration tests"
@@ -26,10 +26,10 @@ if [ "$DOWNLOAD_PREVIOUS_RELEASES" = "true" ]; then
   ./test/get_previous_releases.py -b -t "$PREVIOUS_RELEASES_DIR"
 fi
 
-cd "build-ci/dashcore-$BUILD_TARGET"
+cd "build-ci/piratecashcore-$BUILD_TARGET"
 
 if [ -n "${CI_LIMIT_STACK_SIZE}" ]; then
-  # Upstream uses 512, which segfaults dashd during test framework startup.
+  # Upstream uses 512, which segfaults piratecashd during test framework startup.
   ulimit -s 1024
 fi
 
@@ -45,7 +45,7 @@ if [ "$SOCKETEVENTS" = "" ]; then
   fi
 fi
 echo "Using socketevents mode: $SOCKETEVENTS"
-EXTRA_ARGS="--dashd-arg=-socketevents=$SOCKETEVENTS"
+EXTRA_ARGS="--piratecashd-arg=-socketevents=$SOCKETEVENTS"
 
 set +e
 # shellcheck disable=SC2086

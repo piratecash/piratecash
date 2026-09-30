@@ -14,6 +14,6 @@ services:
     privileged: true
     network_mode: host
     volumes:
-      - "../../..:/src/dash:rw"
-      - "../../../../dash-detached-sigs:/src/dash-detached-sigs:rw"
+      - "../../..:/src/piratecash:rw"
+      - "../../../../piratecash-detached-sigs:/src/piratecash-detached-sigs:rw"
       - "../../../../guix.sigs:/src/guix.sigs:rw"

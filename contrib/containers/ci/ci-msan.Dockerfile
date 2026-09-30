@@ -34,4 +34,4 @@ RUN set -ex; \
     du -sh /llvm-project; \
     rm -rf /llvm-project;
 
-USER dash
+USER piratecash
