@@ -4572,10 +4572,9 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, BlockValidatio
                                  strprintf("rejected nVersion=0x%08x block", block.nVersion));
     }
 
-    // Enforce the post-fork block-version rule at header-acceptance time,
-    // consistent with the equivalent check in ConnectBlock (nForkHeight):
-    // after the hard-fork height only PoSv2 block versions are accepted.
-    if (!block.IsProofOfStakeV2() && nHeight >= consensusParams.nForkHeight) {
+    // Enforce the same PoSv2 activation height as ConnectBlock. Devnet and
+    // regtest activate modern transactions before requiring PoSv2.
+    if (!block.IsProofOfStakeV2() && IsPoSV2EnforcedHeight(nHeight)) {
         return state.Invalid(BlockValidationResult::BLOCK_INVALID_HEADER, "hard-fork-active",
                              "legacy block version rejected after fork height");
     }

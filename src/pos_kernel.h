@@ -9,7 +9,10 @@
 #include <consensus/validation.h>
 #include <primitives/transaction.h>
 #include <streams.h>
+#include <sync.h>
 #include <uint256.h>
+
+extern RecursiveMutex cs_main; // NOLINT(readability-redundant-declaration)
 
 class CBlockHeader;
 class CBlockIndex;
@@ -48,5 +51,16 @@ bool CheckStakeKernelHash(
 // Check kernel hash target and coinstake signature
 // Sets hashProofOfStake on success return
 bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& block, uint256& hashProofOfStake, const Consensus::Params& consensus, const CTxMemPool* mempool = nullptr, const node::BlockManager* blockman = nullptr, const CChain* active_chain = nullptr);
+
+// Header-only stake double-spend guard, extracted from CheckProofOfStake so
+// the walk can be unit-tested directly. Walks the still-unvalidated PoS
+// header tail from `pindex_prev` toward the fork point `pindex_fork`
+// (exclusive) and returns true if `prevout` is reused as a stake input by any
+// node along the way. The walk stops at the fork point, at the first
+// fully-validated (BLOCK_VALID_SCRIPTS) or non-PoS node, or at genesis
+// (pprev == nullptr).
+bool HasHeaderOnlyStakeReuse(const CBlockIndex* pindex_prev,
+                            const CBlockIndex* pindex_fork,
+                            const COutPoint& prevout) EXCLUSIVE_LOCKS_REQUIRED(::cs_main);
 
 #endif // BITCOIN_KERNEL_H

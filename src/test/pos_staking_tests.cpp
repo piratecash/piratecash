@@ -33,6 +33,7 @@
 #include <llmq/context.h>
 #include <instantsend/instantsend.h>
 #include <evo/evodb.h>
+#include <interfaces/chain.h>
 #include <node/miner.h>
 #include <pos_kernel.h>
 #include <pow.h>
@@ -42,6 +43,7 @@
 #include <script/script.h>
 #include <script/standard.h>
 #include <spork.h>
+#include <test/util/index.h>
 #include <test/util/random.h>
 #include <test/util/setup_common.h>
 #include <timedata.h>
@@ -1284,14 +1286,21 @@ BOOST_AUTO_TEST_CASE(pos_check_proof_of_stake_rejects_oob_index)
     // hash but an out-of-range stake index must be rejected with "bad-pos-input"
     // instead of dereferencing txinPrevRef->vout out of bounds.
     //
-    // Reaching the guarded dereference requires the stake tx to be resolvable by
-    // hash. TestChain100Setup already creates and runs g_txindex, so we reuse it
-    // (creating or stopping our own would break the fixture's teardown). Mine past
-    // COINBASE_MATURITY so the height-1 coinbase clears the maturity gate, then let
-    // the existing index catch up.
-    BOOST_REQUIRE(g_txindex);
-
+    // The shared fixture no longer starts a tx index. This test needs one to
+    // resolve the confirmed stake transaction by hash before checking its index.
     MineBlocks(COINBASE_MATURITY + 5);
+    BOOST_REQUIRE(!g_txindex);
+    g_txindex = std::make_unique<TxIndex>(interfaces::MakeChain(m_node), 1 << 20, /*f_memory=*/true);
+    struct TxIndexCleanup {
+        ~TxIndexCleanup()
+        {
+            SyncWithValidationInterfaceQueue();
+            g_txindex->Stop();
+            g_txindex.reset();
+        }
+    } cleanup;
+    BOOST_REQUIRE(g_txindex->Start());
+    IndexWaitSynced(*g_txindex);
     BOOST_REQUIRE(g_txindex->BlockUntilSyncedToCurrentChain());
 
     const uint256 realStakeHash = m_coinbase_txns[0]->GetHash();
