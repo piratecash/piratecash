@@ -101,4 +101,4 @@ developers whose upstream work was backported into this release.
 
 # Older releases
 
-- [PirateCash Core v20.1.1](release-notes-20.1.1.md)
+- [PirateCash Core v20.1.1](../cosanta/release-notes-20.1.1.md)
