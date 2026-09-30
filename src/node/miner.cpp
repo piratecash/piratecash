@@ -115,14 +115,15 @@ BlockAssembler::BlockAssembler(Chainstate& chainstate, const NodeContext& node, 
       chainparams(chainstate.m_chainman.GetParams()),
       m_mempool{mempool},
       m_quorum_block_processor(*Assert(Assert(node.llmq_ctx)->quorum_block_processor)),
-      m_options{ClampOptions(options)}
+      m_options{ClampOptions(options)},
+      m_block_max_size_configured{m_options.nBlockMaxSize}
 {
 }
 
 void ApplyArgsManOptions(const ArgsManager& args, BlockAssembler::Options& options)
 {
     // Block resource limits
-    options.nBlockMaxSize  = args.GetIntArg("-blockmaxsize", options.nBlockMaxSize);
+    options.nBlockMaxSize = std::max<int64_t>(1000, args.GetIntArg("-blockmaxsize", options.nBlockMaxSize));
     if (const auto blockmintxfee{args.GetArg("-blockmintxfee")}) {
         if (const auto parsed{ParseMoney(*blockmintxfee)}) options.blockMinFeeRate = CFeeRate{*parsed};
     }
@@ -255,9 +256,26 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     const bool fV20Active_context{DeploymentActiveAfter(pindexPrev, chainparams.GetConsensus(), Consensus::DEPLOYMENT_V20)};
     const bool fV24Active_context{DeploymentActiveAfter(pindexPrev, m_chainstate.m_chainman, Consensus::DEPLOYMENT_V24)};
 
-    // Limit size to between 1K and MaxBlockSize()-1K for sanity:
-    m_options.nBlockMaxSize = std::max<unsigned int>(1000, std::min<unsigned int>(MaxBlockSize(fDIP0001Active_context) - 1000, m_options.nBlockMaxSize));
+    // Recompute from the configured limit so repeated PoS templates do not shrink it.
+    m_options.nBlockMaxSize = std::max<size_t>(1000, std::min<size_t>(MaxBlockSize(fDIP0001Active_context) - 1000, m_block_max_size_configured));
     m_options.nBlockMaxSigOps = MaxBlockSigOps(fDIP0001Active_context);
+
+#ifdef ENABLE_WALLET
+    // PoS: reserve room for the minimal coinstake within the size limit;
+    // a PoS block needs at least the coinbase reservation + the coinstake
+    // (a warning about too small -blockmaxsize is issued at startup)
+    constexpr size_t MIN_STAKE_SIZE_BUDGET = 1000;
+    const size_t block_size_limit = isPos ? std::max(m_options.nBlockMaxSize, 1000 + MIN_STAKE_SIZE_BUDGET) : m_options.nBlockMaxSize;
+    if (isPos) {
+        m_options.nBlockMaxSize = block_size_limit - MIN_STAKE_SIZE_BUDGET;
+        // Reserve sigops for the coinstake outputs (one per P2PKH output,
+        // bounded by nStakeMaxSplit and by the coinstake size budget)
+        const size_t stake_sigops_reserve = std::min<size_t>(
+            static_cast<size_t>(Assert(pwallet)->nStakeMaxSplit) + 2,
+            MAX_STANDARD_TX_SIZE / 36 + 2);
+        m_options.nBlockMaxSigOps -= std::min(m_options.nBlockMaxSigOps, stake_sigops_reserve);
+    }
+#endif
 
     pblock->nVersion = isPos
                           ? ComputeBlockVersion(pindexPrev, chainparams.GetConsensus(), chainparams.BIP9CheckMasternodesUpgraded(), true)
@@ -411,7 +429,11 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
         }
 
         CMutableTransaction coinbaseTx(*(pblock->CoinBase()));
-        bool fStakeFound = pwallet->CreateCoinStake(pindexPrev, *pblock, coinbaseTx);
+        // Coinstake is capped by what is left within the configured block limits
+        const size_t stake_size_budget = block_size_limit > nBlockSize ? block_size_limit - nBlockSize : 0;
+        const unsigned int max_block_sigops = MaxBlockSigOps(fDIP0001Active_context);
+        const size_t stake_sigops_budget = max_block_sigops > nBlockSigOps ? max_block_sigops - nBlockSigOps : 0;
+        bool fStakeFound = pwallet->CreateCoinStake(pindexPrev, *pblock, coinbaseTx, stake_size_budget, stake_sigops_budget);
 
         if (fStakeFound) {
             if (fV20Active_context) {
