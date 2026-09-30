@@ -251,6 +251,10 @@ details.
   the actual SDK (e.g. `SDK_PATH=$HOME/Downloads/macOS-SDKs` instead of
   `$HOME/Downloads/macOS-SDKs/Xcode-26.1.1-17B100-extracted-SDK-with-libcxx-headers`).
 
+  Where you keep the SDK does not affect the build outputs: the directory is
+  mounted at a fixed path inside the container. Its contents still have to match
+  what other builders use, as before.
+
   The path that this environment variable points to **must be a directory**, and
   **NOT a symlink to a directory**.
 

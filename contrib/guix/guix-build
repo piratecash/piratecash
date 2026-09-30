@@ -137,6 +137,7 @@ for host in $HOSTS; do
             OSX_SDK="$(make -C "${PWD}/depends" --no-print-directory HOST="$host" print-OSX_SDK | sed 's@^[^=]\+=@@g')"
             if [ -e "$OSX_SDK" ]; then
                 echo "Found macOS SDK at '${OSX_SDK}', using..."
+                HOST_SDK_PATH="$(make -C "${PWD}/depends" --no-print-directory HOST="$host" print-SDK_PATH | sed 's@^[^=]\+=@@g')"
                 break
             else
                 echo "macOS SDK does not exist at '${OSX_SDK}', please place the extracted, untarred SDK there to perform darwin builds, or define SDK_PATH environment variable. Exiting..."
@@ -422,6 +423,22 @@ EOF
         #     make the downloaded depends sources available to it. The sources
         #     should have been downloaded prior to this invocation.
         #
+        #   ${HOST_SDK_PATH:+--share="$HOST_SDK_PATH"=/macos-sdk}
+        #
+        #                     maps the directory holding the extracted macOS SDK
+        #                     to /macos-sdk inside the isolated container
+        #
+        #     For the same reason we map $PWD to a fixed path: the SDK's location
+        #     on the build host would otherwise be a source of irreproducibility.
+        #     depends passes it to the compiler as -isysroot, so it reaches the
+        #     outputs, and builders who keep their SDK in different places would
+        #     not agree on the darwin hashes. '/macos-sdk' was chosen arbitrarily.
+        #
+        #     Set whenever HOSTS contains a darwin host, so the share is made for
+        #     every host's container in that run, as it was before this mapping
+        #     existed. Only darwin's depends reads SDK_PATH, so the others ignore
+        #     it.
+        #
         #   --keep-failed     keep build tree of failed builds
         #
         #     When builds of the Guix environment itself (not Dash Core)
@@ -449,7 +466,7 @@ EOF
                                  --expose="$(git rev-parse --git-common-dir)" \
                                  ${SOURCES_PATH:+--share="$SOURCES_PATH"} \
                                  ${BASE_CACHE:+--share="$BASE_CACHE"} \
-                                 ${SDK_PATH:+--share="$SDK_PATH"} \
+                                 ${HOST_SDK_PATH:+--share="$HOST_SDK_PATH"=/macos-sdk} \
                                  --cores="$JOBS" \
                                  --keep-failed \
                                  --fallback \
@@ -465,7 +482,7 @@ EOF
                                         ${V:+V=1} \
                                         ${SOURCES_PATH:+SOURCES_PATH="$SOURCES_PATH"} \
                                         ${BASE_CACHE:+BASE_CACHE="$BASE_CACHE"} \
-                                        ${SDK_PATH:+SDK_PATH="$SDK_PATH"} \
+                                        ${HOST_SDK_PATH:+SDK_PATH=/macos-sdk} \
                                         DISTSRC="$(DISTSRC_BASE=/distsrc-base && distsrc_for_host "$HOST")" \
                                         OUTDIR="$(OUTDIR_BASE=/outdir-base && outdir_for_host "$HOST")" \
                                         DIST_ARCHIVE_BASE=/outdir-base/dist-archive \
