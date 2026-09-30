@@ -48,6 +48,8 @@ The PirateCash Core repo's [root README](/README.md) contains relevant informati
 - [Developer Notes](developer-notes.md)
 - [Productivity Notes](productivity.md)
 - [Release Notes](release-notes.md)
+- [PirateCash Release History](release-notes/cosanta/)
+- [Original Dash Release History](release-notes/dash/)
 - [Release Process](release-process.md)
 - Source Code Documentation ***TODO***
 - [Translation Process](translation_process.md)
@@ -56,6 +58,7 @@ The PirateCash Core repo's [root README](/README.md) contains relevant informati
 - [Unauthenticated REST Interface](REST-interface.md)
 - [Shared Libraries](shared-libraries.md)
 - [BIPS](bips.md)
+- [PirateCash Improvement Proposals](pips.md)
 - [Dnsseed Policy](dnsseed-policy.md)
 - [Benchmarking](benchmarking.md)
 - [Internal Design Docs](design/)

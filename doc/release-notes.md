@@ -1,36 +1,53 @@
-# Dash Core version v23.1.8
+# PirateCash Core version v23.1.8
 
-This is a new patch version release, fixing three remotely reachable crashes and
+Release is now available from:
+
+  <https://p.cash/en/download/>
+
+This is a new patch version release, fixing four remotely reachable crashes and
 bringing further hardening of the peer-to-peer message handlers along with
-networking, RPC and build fixes.
+Proof-of-Stake, wallet, networking, RPC and build fixes.
 Upgrading is **strongly recommended** for all nodes, and required for
 masternodes.
 
 Please report bugs using the issue tracker at GitHub:
 
-  <https://github.com/dashpay/dash/issues>
+  <https://github.com/piratecash/piratecash/issues>
+
 
 # Upgrading and downgrading
 
 ## How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
-shut down (which might take a few minutes for older versions), then run the
-installer (on Windows) or just copy over /Applications/Dash-Qt (on Mac) or
-dashd/dash-qt (on Linux).
+shut down, which might take a few minutes for older versions, then run the
+installer on Windows or copy over `/Applications/PirateCash-Qt` on macOS or
+`piratecashd`/`piratecash-qt` on Linux.
+
+When upgrading from a version older than v19.0.0, PirateCash Core will run a
+migration process on first startup. This is expected to complete quickly, but
+can take up to thirty minutes on some systems. After this migration, a downgrade
+to an older version is only possible with a reindex or a full resync.
+
+Masternode operators must also configure the local Corsa messenger RPC required
+by [PIP-0001](https://github.com/piratecash/piratecash/blob/master/doc/pips/pip-0001.md).
+Starting with v19.0.0, PirateCash Core refuses to start as a masternode unless
+the local authenticated Corsa service check passes.
 
 ## Downgrade warning
 
 ### Downgrade to a version < v23.0.0
 
-Downgrading to a version older than v23.0.0 is not supported, and will
-require a reindex.
+Downgrading to a version older than v23.0.0 is not supported due to database
+changes. If you need to use an older version, you must either reindex or resync
+the whole chain.
+
 
 # Release Notes
 
 ## Critical fixes
 
-This release fixes three crashes that a remote party could trigger. None of
+This release fixes four crashes that a remote party could trigger. None of
 them affect consensus rules or put funds at risk, but each one can take a node
 offline, so all operators should upgrade promptly.
 
@@ -52,6 +69,10 @@ offline, so all operators should upgrade promptly.
   no exception handler could contain. Commitments with a parentless quorum base
   block are now rejected, and the LLMQ activation check treats a null
   predecessor as "not enabled" rather than a contract violation.
+- Fixed a crash during Proof-of-Stake header validation when a crafted header
+  referenced a real staking transaction but supplied an out-of-range output
+  index. The peer-controlled index is now checked before transaction outputs
+  are accessed, and malformed headers are rejected.
 
 ## Security
 
@@ -104,6 +125,43 @@ masternodes in particular - so upgrading is recommended.
 - Fixed an abort when scaling widgets whose font was set in pixels rather than
   points (for example by a stylesheet's `font-size: Npx`); such fonts are now
   converted to a point size instead of being assumed to have one (dash#7465).
+- Introduced a framework for sourcing and applying data with dedicated feeds,
+  used by the Masternode and Proposal list views for improved data flow and
+  separation of concerns (dash#7146).
+- Added a new "Proposal Information" widget to the Information tab with an
+  interactive donut chart showing proposal budget allocation (dash#7159).
+- Added distinct widgets for PirateCash-specific reporting in the Debug window,
+  including dedicated Information and Network tabs (dash#7118).
+- Added support for reporting `OP_RETURN` payloads as Data Transactions in the
+  transaction list (dash#7144).
+- Added Tahoe-styled icons for macOS with runtime styling for each network type,
+  an updated bundle icon and a mask-based tray icon (dash#7180).
+- Filter preferences in the masternode list are now persisted across sessions
+  (dash#7148).
+- Fixed overview page font double scaling, minimum-width calculation, `SERVICE`
+  and `STATUS` column sorting, and common-type filtering in the masternode list
+  (dash#7147).
+- Fixed `labelError` styling by moving it from `proposalcreate.ui` into
+  `general.css` for consistency (dash#7145).
+- Fixed banned masternodes incorrectly returning status 0 instead of their
+  actual ban status (dash#7157).
+
+## Bug fixes
+
+- Fixed masternode update notifications where the old and new masternode lists
+  were swapped, causing incorrect change detection (dash#7154).
+- BLS deserialization and key generation now reject identity elements
+  (dash#7193).
+- Fixed quorum labels not being correctly reseated when new quorum types are
+  inserted (dash#7191).
+- Block transaction IDs are no longer collected during initial block download,
+  preventing unbounded memory growth in `ChainLockSigner` (dash#7208).
+- Serialized `TrySignChainTip` to prevent concurrent signing races that could
+  split signing shares across different block hashes (dash#7209).
+- EvoDB repair is now correctly skipped while reindexing (dash#7222).
+- Parallel block fetching during initial block download now respects each
+  peer's advertised starting height and does not request blocks the peer has not
+  claimed to possess.
 
 ## Build and CI
 
@@ -113,49 +171,106 @@ masternodes in particular - so upgrading is recommended.
   they no longer embed the core count of the build machine.
 - Updated GitHub Actions pins for the Node 24 runtime.
 - Fixed the circular-dependencies lint script under Python 3.15.
+- Added Perl to the Guix environment required for the PirateCash OpenSSL build.
+- Fixed PirateCash Windows installer generation and packaging.
 
 ## Tests
 
 - Governance inventory cache coverage moved from a functional test to unit
   tests, and governance vote test fixtures are now wire-valid.
 
+# PirateCash-specific changes
+
+## Dash Core v23.1.8 base
+
+PirateCash Core v23.1.8 is built from the Dash Core v23.1.8 codebase. Upstream
+changes are adapted without replacing PirateCash consensus, network parameters,
+staking, rewards or Corsa integration.
+
+## Proof of Stake and Wallet
+
+- Blocks whose coinbase transaction has no outputs are now rejected before the
+  pre-v18 PoS coinbase rules inspect its first output.
+- After the PoSv2 fork height, legacy block versions are now rejected during
+  header acceptance as well as during full block connection.
+- Fixed a header-validation loop that could stop advancing while checking an
+  unvalidated PoS fork for reuse of a stake input. The scan now follows each
+  header's parent back toward the fork point, stops safely at genesis or a
+  validated or non-PoS block, and reliably rejects repeated use of the same
+  staking output in the header-only tail.
+- Fixed a lock-order inversion while signing Proof-of-Stake blocks with an
+  encrypted wallet that could deadlock staking after prolonged operation.
+
+Stake input auto-combining has been improved. Previously, a staking output could
+settle just below twice `-stakesplitthreshold`, after which small staking reward
+outputs could accumulate without being combined. The wallet can now sweep small
+inputs into a kernel that is already above the split threshold, and the normal
+split pass turns the result back into threshold-sized outputs.
+
+The new `-stakecombinemax=<n>` option sets the largest input, in PIRATE, that may
+be swept in this situation. It defaults to `100`; `0` disables this additional
+sweep, and values at or above `-stakesplitthreshold` are limited to one PIRATE
+below that threshold. The effective value is reported by `getstakingstatus` as
+`stakecombinemax`.
+
+Auto-combine candidates must be confirmed, mature and still unspent. Selection
+now respects `-reservebalance` and `-inputstakeprotect`, and coinstake
+construction observes the block's remaining size and signature-operation
+budgets. When staking is enabled, a configured `-blockmaxsize` below 2000 bytes
+produces a warning and the minimum space required for a PoS block is reserved.
+
+## P2P and network changes
+
+- The minimum masternode protocol version is now 70240. `ADDRV2` compatibility
+  continues to use its actual introduction version, 70223.
+- Masternodes now require Corsa protocol version 28, which adds the datagram
+  transport required for further network development.
+
+## Miscellaneous
+
+- Renamed `bitcoin-util` manpage and test references to `piratecash-util`
+  (dash#7221).
+
+## Interfaces
+
+- Consolidated masternode counts into a single struct and exposed ChainLock,
+  InstantSend, credit pool and quorum statistics through the node interface
+  (dash#7160).
+
+## Performance improvements
+
+- Replaced two heavy `HashMap` constructions with linear lookups in hot paths
+  where the maps were rarely used, reducing overhead (dash#7176).
+
+
 # v23.1.8 Change log
 
-See detailed [set of changes][set-of-changes].
+See the detailed [set of changes][set-of-changes].
+
 
 # Credits
 
 Thanks to everyone who directly contributed to this release:
 
+- Dmitriy Korniychuk
 - Konstantin Akimov
 - PastaClaw
 - PastaPastaPasta
 - UdjinM6
 
-As well as everyone that submitted issues, reviewed pull requests and helped
-debug the release candidates.
+As well as everyone who submitted issues, reviewed pull requests and helped
+debug the release candidates. Thanks also go to Dash Core and Bitcoin Core
+developers for the upstream work this release builds on.
+
 
 # Older releases
 
-These releases are considered obsolete. Old release notes can be found here:
+These releases are considered obsolete. Old PirateCash release notes can be
+found here:
 
-- [v23.1.7](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.1.7.md) released Jun/30/2026
-- [v23.1.5](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.1.5.md) released Jun/19/2026
-- [v23.1.4](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.1.4.md) released Jun/18/2026
-- [v23.1.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.1.3.md) released May/28/2026
-- [v23.1.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.1.2.md) released Mar/12/2026
-- [v23.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.1.0.md) released Feb/15/2026
-- [v23.0.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.0.2.md) released Dec/4/2025
-- [v23.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.0.0.md) released Nov/10/2025
-- [v22.1.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-22.1.3.md) released Jul/15/2025
-- [v22.1.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-22.1.2.md) released Apr/15/2025
-- [v22.1.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-22.1.1.md) released Feb/17/2025
-- [v22.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-22.1.0.md) released Feb/10/2025
-- [v22.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-22.0.0.md) released Dec/12/2024
-- [v21.1.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-21.1.1.md) released Oct/22/2024
-- [v21.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-21.1.0.md) released Aug/8/2024
-- [v21.0.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-21.0.2.md) released Aug/1/2024
-- [v21.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-21.0.0.md) released Jul/25/2024
-- [v20.1.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-20.1.1.md) released April/3/2024
+- [v23.1.7](release-notes/cosanta/release-notes-23.1.7.md) released Jul/11/2026
+- [v22.1.4](release-notes/cosanta/release-notes-22.1.4.md)
+- [v21.1.1](release-notes/cosanta/release-notes-21.1.1.md)
+- [v20.1.1](release-notes/cosanta/release-notes-20.1.1.md)
 
-[set-of-changes]: https://github.com/dashpay/dash/compare/v23.1.7...dashpay:v23.1.8
+[set-of-changes]: https://github.com/piratecash/piratecash/compare/v23.1.7-pirate...v23.1.8-pirate
