@@ -327,12 +327,12 @@ class WalletTest(BitcoinTestFramework):
 
         # Test setting explicit fee rate just below the minimum.
         self.log.info("Test sendmany raises 'fee rate too low' if fee_rate of 0.99999999 is passed")
-        assert_raises_rpc_error(-6, "Fee rate (0.999 duff/B) is lower than the minimum fee rate setting (1.000 duff/B)",
+        assert_raises_rpc_error(-6, "Fee rate (0.999 corsars/B) is lower than the minimum fee rate setting (1.000 corsars/B)",
             self.nodes[2].sendmany, amounts={address: 10}, fee_rate=0.999)
 
         self.log.info("Test sendmany raises if an invalid fee_rate is passed")
         # Test fee_rate with zero values.
-        msg = "Fee rate (0.000 duff/B) is lower than the minimum fee rate setting (1.000 duff/B)"
+        msg = "Fee rate (0.000 corsars/B) is lower than the minimum fee rate setting (1.000 corsars/B)"
         for zero_value in [0, 0.000, 0.00000000, "0", "0.000", "0.00000000"]:
             assert_raises_rpc_error(-6, msg, self.nodes[2].sendmany, amounts={address: 1}, fee_rate=zero_value)
         msg = "Invalid amount"
@@ -491,13 +491,13 @@ class WalletTest(BitcoinTestFramework):
             assert_raises_rpc_error(-4, "Private key for address %s is not known" % temp_address, self.nodes[0].dumpprivkey, temp_address)
 
             # This will raise an exception for attempting to get the private key of an invalid Dash address
-            assert_raises_rpc_error(-5, "Invalid Dash address", self.nodes[0].dumpprivkey, "invalid")
+            assert_raises_rpc_error(-5, "Invalid PirateCash address", self.nodes[0].dumpprivkey, "invalid")
 
             # This will raise an exception for attempting to set a label for an invalid Dash address
             assert_raises_rpc_error(-5, "Invalid Dash address", self.nodes[0].setlabel, "invalid address", "label")
 
             # This will raise an exception for importing an invalid address
-            assert_raises_rpc_error(-5, "Invalid Dash address or script", self.nodes[0].importaddress, "invalid")
+            assert_raises_rpc_error(-5, "Invalid PirateCash address or script", self.nodes[0].importaddress, "invalid")
 
             # This will raise an exception for attempting to import a pubkey that isn't in hex
             assert_raises_rpc_error(-5, 'Pubkey "not hex" must be a hex string', self.nodes[0].importpubkey, "not hex")
@@ -548,12 +548,12 @@ class WalletTest(BitcoinTestFramework):
 
             # Test setting explicit fee rate just below the minimum.
             self.log.info("Test sendtoaddress raises 'fee rate too low' if fee_rate of 0.99999999 is passed")
-            assert_raises_rpc_error(-6, "Fee rate (0.999 duff/B) is lower than the minimum fee rate setting (1.000 duff/B)",
+            assert_raises_rpc_error(-6, "Fee rate (0.999 corsars/B) is lower than the minimum fee rate setting (1.000 corsars/B)",
                 self.nodes[2].sendtoaddress, address=address, amount=1, fee_rate=0.999)
 
             self.log.info("Test sendtoaddress raises if an invalid fee_rate is passed")
             # Test fee_rate with zero values.
-            msg = "Fee rate (0.000 duff/B) is lower than the minimum fee rate setting (1.000 duff/B)"
+            msg = "Fee rate (0.000 corsars/B) is lower than the minimum fee rate setting (1.000 corsars/B)"
             for zero_value in [0, 0.000, 0.00000000, "0", "0.000", "0.00000000"]:
                 assert_raises_rpc_error(-6, msg, self.nodes[2].sendtoaddress, address=address, amount=1, fee_rate=zero_value)
             msg = "Invalid amount"

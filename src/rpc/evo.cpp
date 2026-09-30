@@ -1,4 +1,5 @@
 // Copyright (c) 2018-2025 The Dash Core developers
+// Copyright (c) 2018-2026 The PirateCash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -57,7 +58,7 @@ using wallet::HELP_REQUIRING_PASSPHRASE;
 using wallet::isminetype;
 #endif // ENABLE_WALLET
 
-// Defined here rather than with the other ToJson() in evo/core_write.cpp: dash-tx never prints
+// Defined here rather than with the other ToJson() in evo/core_write.cpp: piratecash-tx never prints
 // a masternode entry, and the g_txindex lookup below needs libbitcoin_node anyway. Hosting it
 // in evo/deterministicmns.cpp instead would create four new circular dependencies.
 UniValue CDeterministicMN::ToJson() const
@@ -90,7 +91,7 @@ static RPCArg GetRpcArg(const std::string& strParamName)
     static const std::map<std::string, RPCArg> mapParamHelp = {
         {"collateralAddress",
             {"collateralAddress", RPCArg::Type::STR, RPCArg::Optional::NO,
-                "The Dash address to send the collateral to."}
+                "The PirateCash address to send the collateral to."}
         },
         {"collateralHash",
             {"collateralHash", RPCArg::Type::STR, RPCArg::Optional::NO,
@@ -174,18 +175,18 @@ static RPCArg GetRpcArg(const std::string& strParamName)
         },
         {"ownerAddress",
             {"ownerAddress", RPCArg::Type::STR, RPCArg::Optional::NO,
-                "The Dash address to use for payee updates and proposal voting.\n"
+                "The PirateCash address to use for payee updates and proposal voting.\n"
                 "The corresponding private key does not have to be known by your wallet.\n"
                 "The address must be unused and must differ from the collateralAddress."}
         },
         {"payoutAddress_register",
             {"payoutAddress", RPCArg::Type::ARR, RPCArg::Optional::NO,
-                "The Dash address to use for masternode reward payments, or after v24 activation, "
+                "The PirateCash address to use for masternode reward payments, or after v24 activation, "
                 "an array of payout shares. Not compatible with legacy bls operator key.",
                 {
                     {"", RPCArg::Type::OBJ, RPCArg::Optional::OMITTED, "",
                         {
-                            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Dash payout address."},
+                            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The PirateCash payout address."},
                             {"reward", RPCArg::Type::NUM, RPCArg::Optional::NO, "The payout share in basis points."},
                         }},
                 },
@@ -197,13 +198,13 @@ static RPCArg GetRpcArg(const std::string& strParamName)
         },
         {"payoutAddress_update",
             {"payoutAddress", RPCArg::Type::ARR, RPCArg::Optional::NO,
-                "The Dash address to use for masternode reward payments, or after v24 activation, "
+                "The PirateCash address to use for masternode reward payments, or after v24 activation, "
                 "an array of payout shares. Not compatible with legacy bls operator key.\n"
                 "If set to an empty string, the currently active payout address is reused.",
                 {
                     {"", RPCArg::Type::OBJ, RPCArg::Optional::OMITTED, "",
                         {
-                            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Dash payout address."},
+                            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The PirateCash payout address."},
                             {"reward", RPCArg::Type::NUM, RPCArg::Optional::NO, "The payout share in basis points."},
                         }},
                 },
@@ -373,7 +374,7 @@ static CTxDestination ParseRequiredFeeSource(const UniValue& value)
 {
     CTxDestination fee_source{DecodeDestination(value.get_str())};
     if (!IsValidDestination(fee_source)) {
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Dash address: ") + value.get_str());
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid PirateCash address: ") + value.get_str());
     }
     return fee_source;
 }
@@ -489,7 +490,7 @@ static std::optional<CTxDestination> ParseFeeSource(const UniValue& param)
     if (param.isNull()) return std::nullopt;
     CTxDestination fee_source{DecodeDestination(param.get_str())};
     if (!IsValidDestination(fee_source)) {
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Dash address: ") + param.get_str());
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid PirateCash address: ") + param.get_str());
     }
     return fee_source;
 }
@@ -588,7 +589,7 @@ static RPCHelpMan protx_register_fund_wrapper(const bool legacy)
     std::string pubkey_operator = legacy ? "\"0532646990082f4fd639f90387b1551f2c7c39d37392cb9055a06a7e85c1d23692db8f87f827886310bccc1e29db9aee\"" : "\"8532646990082f4fd639f90387b1551f2c7c39d37392cb9055a06a7e85c1d23692db8f87f827886310bccc1e29db9aee\"";
     std::string rpc_example = rpc_name.append(" \"" + EXAMPLE_ADDRESS[0] + "\" \"1.2.3.4:1234\" \"" + EXAMPLE_ADDRESS[1] + "\" ").append(pubkey_operator).append(" \"" + EXAMPLE_ADDRESS[1] + "\" 0 \"" + EXAMPLE_ADDRESS[0] + "\"");
     return RPCHelpMan{rpc_full_name,
-        "\nCreates, funds and sends a ProTx to the network. The resulting transaction will move 1000 Dash\n"
+        "\nCreates, funds and sends a ProTx to the network. The resulting transaction will move 10000 PIRATE\n"
         "to the address specified by collateralAddress and will then function as the collateral of your\n"
         "masternode.\n"
         "A few of the limitations you see in the arguments are temporary and might be lifted after DIP3\n"
@@ -743,7 +744,7 @@ static RPCHelpMan protx_register_fund_evo()
     const std::string command_name{"protx register_fund_evo"};
     return RPCHelpMan{
         command_name,
-        "\nCreates, funds and sends a ProTx to the network. The resulting transaction will move 4000 Dash\n"
+        "\nCreates, funds and sends a ProTx to the network. The resulting transaction will move 40000 PIRATE\n"
         "to the address specified by collateralAddress and will then function as the collateral of your\n"
         "EvoNode.\n"
         "A few of the limitations you see in the arguments are temporary and might be lifted after DIP3\n"
@@ -1332,7 +1333,7 @@ static RPCHelpMan protx_shared_dissolve()
         {
             {"proTxHash", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The hash of the initial ProRegTx."},
             {"actorIndex", RPCArg::Type::NUM, RPCArg::Optional::NO, "Index into the share table of the dissolving participant."},
-            {"fee", RPCArg::Type::NUM, RPCArg::Default{100000}, "Transaction fee in duffs, paid from the actor's share. At most 1000000 duffs (consensus ceiling)."},
+            {"fee", RPCArg::Type::NUM, RPCArg::Default{100000}, "Transaction fee in corsars, paid from the actor's share. At most 1000000 corsars (consensus ceiling)."},
             {"submit", RPCArg::Type::BOOL, RPCArg::Default{true}, "Submit the transaction to the network.",
              RPCArgOptions{.skip_type_check = true}},
             {"payPenalty", RPCArg::Type::BOOL, RPCArg::DefaultHint{"determined by the current height"}, "Pay the early-period penalty. Pass true to build a standby valid at any height, false for one valid only after the early period ends.",
@@ -2175,7 +2176,7 @@ static RPCHelpMan protx_shared_register_prepare()
             {
                 {"", RPCArg::Type::OBJ, RPCArg::Optional::OMITTED, "",
                 {
-                    {"amount", RPCArg::Type::NUM, RPCArg::Optional::NO, "Collateral contribution in duffs (at least 100 DASH)"},
+                    {"amount", RPCArg::Type::NUM, RPCArg::Optional::NO, "Collateral contribution in corsars (at least 100 PIRATE)"},
                     {"refundAddress", RPCArg::Type::STR, RPCArg::Optional::NO, "Immutable address the principal is refunded to at dissolution"},
                     {"rewardAddress", RPCArg::Type::STR, RPCArg::Optional::OMITTED, "Address this share's owner rewards are paid to (defaults to the refund address)"},
                     {"ownerAddress", RPCArg::Type::STR, RPCArg::Optional::NO, "P2PKH address of the immutable share owner key"},
@@ -2188,7 +2189,7 @@ static RPCHelpMan protx_shared_register_prepare()
             {"operatorReward", RPCArg::Type::STR, RPCArg::Optional::NO, "The fraction in %% to share with the operator (0.00 to 100.00).",
              RPCArgOptions{.skip_type_check = true}},
             {"earlyPeriodBlocks", RPCArg::Type::NUM, RPCArg::Optional::NO, "Length in blocks of the early period during which unilateral dissolution is penalized (up to 420480)."},
-            {"earlyPenalty", RPCArg::Type::NUM, RPCArg::Optional::NO, "Penalty in duffs for unilateral dissolution during the early period (must be below the smallest share, and zero when earlyPeriodBlocks is zero)."},
+            {"earlyPenalty", RPCArg::Type::NUM, RPCArg::Optional::NO, "Penalty in corsars for unilateral dissolution during the early period (must be below the smallest share, and zero when earlyPeriodBlocks is zero)."},
         },
         RPCResult{RPCResult::Type::OBJ, "", "",
         {
@@ -2256,7 +2257,7 @@ static RPCHelpMan protx_shared_dissolve_prepare()
         {
             {"proTxHash", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The hash of the initial ProRegTx."},
             {"actorIndex", RPCArg::Type::NUM, RPCArg::Optional::NO, "Index into the share table of the participant paying the transaction fee."},
-            {"fee", RPCArg::Type::NUM, RPCArg::Default{100000}, "Transaction fee in duffs, paid from the actor's share. At most 1000000 duffs (consensus ceiling)."},
+            {"fee", RPCArg::Type::NUM, RPCArg::Default{100000}, "Transaction fee in corsars, paid from the actor's share. At most 1000000 corsars (consensus ceiling)."},
         },
         RPCResult{RPCResult::Type::OBJ, "", "",
         {

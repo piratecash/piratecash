@@ -49,15 +49,15 @@ CTxDestination DecodeDestination(const std::string& str, const CChainParams& par
     bool is_bech32 = (ToLower(str.substr(0, params.Bech32PlatformHRP().size())) == params.Bech32PlatformHRP());
 
     if (!is_bech32 && DecodeBase58Check(str, data, 21)) {
-        // base58-encoded Dash addresses.
-        // Public-key-hash-addresses have version 76 (or 140 testnet).
+        // base58-encoded PirateCash addresses.
+        // Public-key-hash-addresses have version 55 (or 75 testnet).
         // The data vector contains RIPEMD160(SHA256(pubkey)), where pubkey is the serialized public key.
         const std::vector<unsigned char>& pubkey_prefix = params.Base58Prefix(CChainParams::PUBKEY_ADDRESS);
         if (data.size() == hash.size() + pubkey_prefix.size() && std::equal(pubkey_prefix.begin(), pubkey_prefix.end(), data.begin())) {
             std::copy(data.begin() + pubkey_prefix.size(), data.end(), hash.begin());
             return PKHash(hash);
         }
-        // Script-hash-addresses have version 16 (or 19 testnet).
+        // Script-hash-addresses have version 13 (or 18 testnet).
         // The data vector contains RIPEMD160(SHA256(cscript)), where cscript is the serialized redemption script.
         const std::vector<unsigned char>& script_prefix = params.Base58Prefix(CChainParams::SCRIPT_ADDRESS);
         if (data.size() == hash.size() + script_prefix.size() && std::equal(script_prefix.begin(), script_prefix.end(), data.begin())) {
@@ -85,7 +85,7 @@ CTxDestination DecodeDestination(const std::string& str, const CChainParams& par
         return CNoDestination();
     }
 
-    // Dash has no Bech32m encoding for L1 destinations: a string using the Platform
+    // PirateCash has no Bech32m encoding for L1 destinations: a string using the Platform
     // HRP can only be a DIP-18 Platform address, which never encodes an L1 destination.
     // Decode it anyway to tell the user why exactly it got rejected.
     std::string platform_error_str;
@@ -96,7 +96,7 @@ CTxDestination DecodeDestination(const std::string& str, const CChainParams& par
     error_str = res.first;
     if (error_locations) *error_locations = std::move(res.second);
     if (error_str.empty()) {
-        error_str = is_platform ? "This is a Dash Platform address, not a Dash Core address" : platform_error_str;
+        error_str = is_platform ? "This is a PirateCash Platform address, not a PirateCash Core address" : platform_error_str;
     }
     return CNoDestination();
 }

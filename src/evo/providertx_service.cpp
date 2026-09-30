@@ -638,7 +638,7 @@ std::variant<Dissolution, ProviderTxError> BuildDissolution(const CDeterministic
     }
     if (fee > CProDisTx::MAX_FEE) {
         return Error(ProviderTxErrorCode::INVALID_PARAMETER,
-                     strprintf("fee exceeds the consensus ceiling of %d duffs", CProDisTx::MAX_FEE));
+                     strprintf("fee exceeds the consensus ceiling of %d corsars", CProDisTx::MAX_FEE));
     }
     const CAmount actor_output = shares[actor_index].amount - penalty - fee;
     if (actor_output < 0) {
@@ -1288,7 +1288,7 @@ ProviderTxResult<ProviderTxSubmission> UpdateShare(node::NodeContext& node, Wall
     }
     if (!IsValidDestination(request.fee_source)) {
         return Error(ProviderTxErrorCode::INVALID_ADDRESS_OR_KEY,
-                     "Invalid Dash address: " + EncodeDestination(request.fee_source));
+                     "Invalid PirateCash address: " + EncodeDestination(request.fee_source));
     }
 
     CProUpShareTx payload;
@@ -1331,7 +1331,7 @@ ProviderTxResult<PreparedSharedConsent> PrepareSharedRegistrarUpdate(node::NodeC
     payload.keyIDVoting = request.voting_key.value_or(dmn->pdmnState->keyIDVoting);
     if (!IsValidDestination(request.fee_source)) {
         return Error(ProviderTxErrorCode::INVALID_ADDRESS_OR_KEY,
-                     "Invalid Dash address: " + EncodeDestination(request.fee_source));
+                     "Invalid PirateCash address: " + EncodeDestination(request.fee_source));
     }
 
     // make sure we get enough fees added: one signature per share

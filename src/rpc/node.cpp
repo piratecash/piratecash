@@ -57,7 +57,7 @@ static RPCHelpMan debug()
         "libevent logging is configured on startup and cannot be modified by this RPC during runtime.\n"
         "There are also a few meta-categories:\n"
         " - \"all\", \"1\" and \"\" activate all categories at once;\n"
-        " - \"dash\" activates all Dash-specific categories at once;\n"
+        " - \"piratecash\" activates all PirateCash-specific categories at once;\n"
         " - \"none\" (or \"0\") deactivates all categories at once.\n"
         "Note: If specified category doesn't match any of the above, no error is thrown.\n"
         "Note: Consider using 'logging' RPC which has more features.\n"
@@ -71,8 +71,8 @@ static RPCHelpMan debug()
             RPCResult::Type::STR, "result", "\"Debug mode: \" followed by the specified category",
         },
         RPCExamples {
-            HelpExampleCli("debug", "dash")
-    + HelpExampleRpc("debug", "dash+net")
+            HelpExampleCli("debug", "piratecash")
+    + HelpExampleRpc("debug", "piratecash+net")
         },
         [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue
 {
@@ -401,7 +401,7 @@ static RPCHelpMan getaddressmempool()
                     {RPCResult::Type::STR, "address", "The base58check encoded address"},
                     {RPCResult::Type::STR_HEX, "txid", "The related txid"},
                     {RPCResult::Type::NUM, "index", "The related input or output index"},
-                    {RPCResult::Type::NUM, "satoshis", "The difference of duffs"},
+                    {RPCResult::Type::NUM, "satoshis", "The difference of corsars"},
                     {RPCResult::Type::NUM_TIME, "timestamp", "The time the transaction entered the mempool (seconds)"},
                     {RPCResult::Type::STR_HEX, "prevtxid", /*optional=*/true, "The previous txid (if spending)"},
                     {RPCResult::Type::NUM, "prevout", /*optional=*/true, "The previous transaction output index (if spending)"},
@@ -485,7 +485,7 @@ static RPCHelpMan getaddressutxos()
                     {RPCResult::Type::STR_HEX, "txid", "The output txid"},
                     {RPCResult::Type::NUM, "outputIndex", "The output index"},
                     {RPCResult::Type::STR_HEX, "script", "The script hex-encoded"},
-                    {RPCResult::Type::NUM, "satoshis", "The number of duffs of the output"},
+                    {RPCResult::Type::NUM, "satoshis", "The number of corsars of the output"},
                     {RPCResult::Type::NUM, "height", "The block height"},
                 }},
             }},
@@ -557,7 +557,7 @@ static RPCHelpMan getaddressdeltas()
             {
                 {RPCResult::Type::OBJ, "", "",
                 {
-                    {RPCResult::Type::NUM, "satoshis", "The difference of duffs"},
+                    {RPCResult::Type::NUM, "satoshis", "The difference of corsars"},
                     {RPCResult::Type::STR_HEX, "txid", "The related txid"},
                     {RPCResult::Type::NUM, "index", "The related input or output index"},
                     {RPCResult::Type::NUM, "blockindex", "The related block index"},
@@ -647,10 +647,10 @@ static RPCHelpMan getaddressbalance()
         RPCResult{
             RPCResult::Type::OBJ, "", "",
                 {
-                    {RPCResult::Type::NUM, "balance", "The current total balance in duffs"},
-                    {RPCResult::Type::NUM, "balance_immature", "The current immature balance in duffs"},
-                    {RPCResult::Type::NUM, "balance_spendable", "The current spendable balance in duffs"},
-                    {RPCResult::Type::NUM, "received", "The total number of duffs received (including change)"},
+                    {RPCResult::Type::NUM, "balance", "The current total balance in corsars"},
+                    {RPCResult::Type::NUM, "balance_immature", "The current immature balance in corsars"},
+                    {RPCResult::Type::NUM, "balance_spendable", "The current spendable balance in corsars"},
+                    {RPCResult::Type::NUM, "received", "The total number of corsars received (including change)"},
                 }},
         RPCExamples{
             HelpExampleCli("getaddressbalance", "'{\"addresses\": [\"" + EXAMPLE_ADDRESS[0] + "\"]}'")
@@ -1036,7 +1036,7 @@ static RPCHelpMan logging()
             "The valid logging categories are: " + LogInstance().LogCategoriesString() + "\n"
             "In addition, the following are available as category names with special meanings:\n"
             "  - \"all\",  \"1\" : represent all logging categories.\n"
-            "  - \"dash\" activates all Dash-specific categories at once.\n"
+            "  - \"piratecash\" activates all PirateCash-specific categories at once.\n"
             "To deactivate all categories at once you can specify \"all\" in <exclude>.\n"
             "  - \"none\", \"0\" : even if other logging categories are specified, ignore all of them.\n"
             ,
@@ -1058,7 +1058,7 @@ static RPCHelpMan logging()
                 },
                 RPCExamples{
                     HelpExampleCli("logging", "\"[\\\"all\\\"]\" \"[\\\"http\\\"]\"")
-            + HelpExampleCli("logging", "'[\"dash\"]' '[\"llmq\",\"zmq\"]'")
+            + HelpExampleCli("logging", "'[\"piratecash\"]' '[\"llmq\",\"zmq\"]'")
             + HelpExampleRpc("logging", "[\"all\"], \"[libevent]\"")
                 },
         [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue
@@ -1095,7 +1095,7 @@ static RPCHelpMan echo(const std::string& name)
                 "\nSimply echo back the input arguments. This command is for testing.\n"
                 "\nIt will return an internal bug report when arg9='trigger_internal_bug' is passed.\n"
                 "\nThe difference between echo and echojson is that echojson has argument conversion enabled in the client-side table in "
-                "dash-cli and the GUI. There is no server-side difference.",
+                "piratecash-cli and the GUI. There is no server-side difference.",
         {
             {"arg0", RPCArg::Type::STR, RPCArg::Optional::OMITTED, "", RPCArgOptions{.skip_type_check = true}},
             {"arg1", RPCArg::Type::STR, RPCArg::Optional::OMITTED, "", RPCArgOptions{.skip_type_check = true}},
@@ -1146,7 +1146,7 @@ static RPCHelpMan echoipc()
                 // and spawn bitcoin-echo below instead of bitcoin-node. But
                 // using bitcoin-node avoids the need to build and install a
                 // new executable just for this one test.
-                auto init = ipc->spawnProcess("dash-node");
+                auto init = ipc->spawnProcess("piratecash-node");
                 echo = init->makeEcho();
                 ipc->addCleanup(*echo, [init = init.release()] { delete init; });
             } else {
@@ -1251,10 +1251,10 @@ static const CRPCCommand commands[] =
     { "addressindex",       &getaddresstxids,         },
     { "addressindex",       &getaddressbalance,       },
 
-    /* Dash features */
-    { "dash",               &mnsync,                  },
-    { "dash",               &spork,                   },
-    { "dash",               &sporkupdate,             },
+    /* PirateCash features */
+    { "piratecash",         &mnsync,                  },
+    { "piratecash",         &spork,                   },
+    { "piratecash",         &sporkupdate,             },
 
     /* Not shown in help */
     { "hidden",             &setmocktime,             },
