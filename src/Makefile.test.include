@@ -176,6 +176,7 @@ BITCOIN_TESTS =\
   test/pmt_tests.cpp \
   test/policyestimator_tests.cpp \
   test/pool_tests.cpp \
+  test/pos_header_double_spend_tests.cpp \
   test/pos_header_serialization_tests.cpp \
   test/pos_reorg_tests.cpp \
   test/pos_staking_tests.cpp \
