@@ -9,10 +9,12 @@ together with DIP-0026 multi-party payouts as part of the v24 hard fork
 - A version 3 (extended addresses) ProRegTx may carry a collateral share table: 2 to 8 participants
   fund the masternode collateral atomically in one registration, each recording
   an immutable amount, refund script and share owner key, plus an updatable
-  reward script. Every participant consents by signing a digest that binds the
+  reward script. Every share owner consents by signing a digest that binds the
   exact funding inputs, all outputs, the share table, the penalty terms and the
-  registrar configuration. The early-period penalty must be below the smallest
-  share and must be zero when no early period is configured.
+  registrar configuration. Consent is tied to the shares in the table, not to
+  the funding inputs: signing an input into a registration neither requires nor
+  creates a share for its owner. The early-period penalty must be below the
+  smallest share and must be zero when no early period is configured.
 - The shared collateral is paid to the 7-byte template script
   `04445348437551` (`0x04 "DSHC" OP_DROP OP_TRUE`). From activation, an output
   paying this exact script is valid only as the collateral of a valid shared
@@ -49,7 +51,10 @@ together with DIP-0026 multi-party payouts as part of the v24 hard fork
 - `protx shared_register_prepare` builds an unsigned shared registration from a
   caller-supplied funding transaction. The result echoes the decoded terms and
   carries a `warning` when `earlyPenalty` is zero, since any participant can
-  then force an early exit at no cost beyond the transaction fee.
+  then force an early exit at no cost beyond the transaction fee. Before signing
+  its funding inputs with `signrawtransactionwithwallet`, each participant should
+  confirm that the share table (`proRegTx.shares` in `decoderawtransaction`)
+  holds its share with its own amount and addresses.
 - `protx shared_sign` signs a shared registration, dissolution or shared
   registrar update with every share owner key the wallet holds. It returns the
   decoded terms being consented to (for a dissolution, including the outputs)
