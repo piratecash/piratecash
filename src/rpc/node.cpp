@@ -1252,9 +1252,9 @@ static const CRPCCommand commands[] =
     { "addressindex",       &getaddressbalance,       },
 
     /* PirateCash features */
-    { "piratecash",         &mnsync,                  },
-    { "piratecash",         &spork,                   },
-    { "piratecash",         &sporkupdate,             },
+    { "pirate",             &mnsync,                  },
+    { "pirate",             &spork,                   },
+    { "pirate",             &sporkupdate,             },
 
     /* Not shown in help */
     { "hidden",             &setmocktime,             },
