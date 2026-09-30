@@ -47,6 +47,13 @@ bash -c "${MAYBE_BEAR} ${MAYBE_TOKEN} make ${MAKEJOBS} ${GOAL}" || ( echo "Build
 
 ccache --version | head -n 1 && ccache --show-stats
 
+# A standard library header path in an executable means a source location was
+# captured inside one, which both misreports where a failure came from and, on
+# darwin, embeds a path that differs between builders.
+if [ "${RUN_STDLIB_PATH_CHECK}" = "true" ]; then
+  make -C src --jobs=1 check-stdlib-paths
+fi
+
 if [ -n "$USE_VALGRIND" ]; then
     echo "valgrind in USE!"
     "${BASE_ROOT_DIR}/ci/test/wrap-valgrind.sh"

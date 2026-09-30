@@ -16,3 +16,4 @@ export RUN_UNIT_TESTS="false"
 export GOAL="install"
 export DOWNLOAD_PREVIOUS_RELEASES="true"
 export BITCOIN_CONFIG="--enable-zmq --with-libs=no --enable-reduce-exports CPPFLAGS='-DBOOST_MULTI_INDEX_ENABLE_SAFE_MODE' LDFLAGS=-static-libstdc++"
+export RUN_STDLIB_PATH_CHECK=true

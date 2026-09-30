@@ -159,7 +159,7 @@ if BUILD_BITCOIN_CHAINSTATE
   bin_PROGRAMS += dash-chainstate
 endif
 
-.PHONY: FORCE check-symbols check-security
+.PHONY: FORCE check-symbols check-security check-stdlib-paths
 # dash core #
 BITCOIN_CORE_H = \
   active/context.h \
@@ -1494,6 +1494,10 @@ if HARDEN
 	@echo "Checking binary security..."
 	$(AM_V_at) $(PYTHON) $(top_srcdir)/contrib/guix/security-check.py $(bin_PROGRAMS)
 endif
+
+check-stdlib-paths: $(bin_PROGRAMS)
+	@echo "Checking for embedded standard library header paths..."
+	$(AM_V_at) $(PYTHON) $(top_srcdir)/contrib/guix/stdlib-path-check.py $(bin_PROGRAMS)
 
 
 osx_debug: $(bin_PROGRAMS)

@@ -55,6 +55,7 @@ DIST_SHARE = \
 
 BIN_CHECKS=$(top_srcdir)/contrib/guix/symbol-check.py \
            $(top_srcdir)/contrib/guix/security-check.py \
+           $(top_srcdir)/contrib/guix/stdlib-path-check.py \
            $(top_srcdir)/contrib/devtools/utils.py
 
 WINDOWS_PACKAGING = $(top_srcdir)/share/pixmaps/dash.ico \
