@@ -57,7 +57,7 @@ def github_headers() -> dict[str, str]:
 
 
 def repo_name() -> str:
-    return os.environ.get("GITHUB_REPOSITORY", "dashpay/dash")
+    return os.environ.get("GITHUB_REPOSITORY", "piratecash/piratecash")
 
 
 def api_url(path: str) -> str:

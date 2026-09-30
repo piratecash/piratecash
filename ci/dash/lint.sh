@@ -9,7 +9,7 @@ export LC_ALL=C.UTF-8
 
 set -e
 
-source ./ci/dash/matrix.sh
+source ./ci/piratecash/matrix.sh
 
 # Check commit scripts for PRs
 if [ "$PULL_REQUEST" != "false" ]; then

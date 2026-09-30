@@ -8,7 +8,7 @@ export LC_ALL=C
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$DIR"/../.. || exit
 
-DOCKER_IMAGE=${DOCKER_IMAGE:-dashpay/dashd-develop}
+DOCKER_IMAGE=${DOCKER_IMAGE:-piratecash/piratecashd-develop}
 DOCKER_TAG=${DOCKER_TAG:-latest}
 
 if [ -n "$DOCKER_REPO" ]; then

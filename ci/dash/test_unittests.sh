@@ -9,7 +9,7 @@ export LC_ALL=C.UTF-8
 
 set -e
 
-source ./ci/dash/matrix.sh
+source ./ci/piratecash/matrix.sh
 
 if [ "$RUN_UNIT_TESTS" != "true" ] && [ "$RUN_UNIT_TESTS_SEQUENTIAL" != "true" ]; then
   echo "Skipping unit tests"
@@ -22,17 +22,17 @@ export LD_LIBRARY_PATH="$DEPENDS_DIR/$HOST/lib"
 export WINEDEBUG=fixme-all
 export BOOST_TEST_LOG_LEVEL=test_suite
 
-cd "build-ci/dashcore-$BUILD_TARGET"
+cd "build-ci/piratecashcore-$BUILD_TARGET"
 
 export WINEPREFIX="/tmp/wine"
 mkdir -p "$WINEPREFIX"
 
 if [ "$DIRECT_WINE_EXEC_TESTS" = "true" ]; then
   # Inside Docker, binfmt isn't working so we can't trust in make invoking windows binaries correctly
-  wine ./src/test/test_dash.exe
+  wine ./src/test/test_piratecash.exe
 else
   if [ "$RUN_UNIT_TESTS_SEQUENTIAL" = "true" ]; then
-    ./src/test/test_dash --catch_system_errors=no -l test_suite
+    ./src/test/test_piratecash --catch_system_errors=no -l test_suite
   else
       make "$MAKEJOBS" check VERBOSE=1
   fi

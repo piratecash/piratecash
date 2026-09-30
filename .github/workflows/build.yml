@@ -104,7 +104,7 @@ jobs:
     with:
       context: ./contrib/containers/ci
       file: ./contrib/containers/ci/ci.Dockerfile
-      name: dashcore-ci-runner
+      name: piratecashcore-ci-runner
       runs-on-amd64: ${{ needs.check-skip.outputs['runner-amd64'] }}
       runs-on-arm64: ${{ needs.check-skip.outputs['runner-arm64'] }}
 
@@ -116,7 +116,7 @@ jobs:
     with:
       context: ./contrib/containers/ci
       file: ./contrib/containers/ci/ci-slim.Dockerfile
-      name: dashcore-ci-slim
+      name: piratecashcore-ci-slim
       runs-on-amd64: ${{ needs.check-skip.outputs['runner-amd64'] }}
       runs-on-arm64: ${{ needs.check-skip.outputs['runner-arm64'] }}
 

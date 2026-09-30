@@ -137,13 +137,13 @@ RUN set -ex; \
 ARG USER_ID=1000 \
     GROUP_ID=1000
 RUN set -ex; \
-    (getent group ${GROUP_ID} && usermod -g ${GROUP_ID} ubuntu) || groupmod -g ${GROUP_ID} -n dash ubuntu; \
-    usermod -u ${USER_ID} -md /home/dash -l dash ubuntu; \
-    chown ${USER_ID}:${GROUP_ID} -R /home/dash; \
-    mkdir -p /src/dash && \
+    (getent group ${GROUP_ID} && usermod -g ${GROUP_ID} ubuntu) || groupmod -g ${GROUP_ID} -n piratecash ubuntu; \
+    usermod -u ${USER_ID} -md /home/piratecash -l piratecash ubuntu; \
+    chown ${USER_ID}:${GROUP_ID} -R /home/piratecash; \
+    mkdir -p /src/piratecash && \
     chown ${USER_ID}:${GROUP_ID} /src && \
     chown ${USER_ID}:${GROUP_ID} -R /src
 
-WORKDIR /src/dash
+WORKDIR /src/piratecash
 
-USER dash
+USER piratecash
