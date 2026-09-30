@@ -27,7 +27,7 @@ export COMPOSE_DOCKER_CLI_BUILD=1
 ```
 
 You can use extensions for your IDE like Visual Studio Code's [Remote Containers](https://code.visualstudio.com/docs/remote/containers)
-to run terminal commands from inside the terminal and work with Dash Core.
+to run terminal commands from inside the terminal and build PirateCash Core.
 
 ```bash
 cd contrib/containers/develop

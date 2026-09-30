@@ -9,7 +9,7 @@ export LC_ALL=C.UTF-8
 
 set -e
 
-source ./ci/dash/matrix.sh
+source ./ci/piratecash/matrix.sh
 
 unset CC CXX DISPLAY;
 
@@ -33,7 +33,7 @@ cd build-ci
 bash -c "../configure $BITCOIN_CONFIG_ALL $BITCOIN_CONFIG" || ( cat config.log && false)
 make distdir VERSION="$BUILD_TARGET"
 
-cd "dashcore-$BUILD_TARGET"
+cd "piratecashcore-$BUILD_TARGET"
 bash -c "./configure $BITCOIN_CONFIG_ALL $BITCOIN_CONFIG" || ( cat config.log && false)
 
 # This step influences compilation and therefore will always be a part of the
