@@ -44,10 +44,11 @@ BOOST_AUTO_TEST_CASE(legacy_pos_coinbase_output)
         size_t output_count;
         CAmount output_value;
         bool valid;
+        const char* reject_reason;
     } cases[]{
-        {0, 0, false},
-        {1, 0, true},
-        {1, 1, false},
+        {0, 0, false, "bad-cb-vout-empty"},
+        {1, 0, true, ""},
+        {1, 1, false, "bad-cb-notempty"},
     };
     for (const auto& test : cases) {
         BOOST_TEST_CONTEXT("outputs=" << test.output_count << ", value=" << test.output_value) {
@@ -63,7 +64,7 @@ BOOST_AUTO_TEST_CASE(legacy_pos_coinbase_output)
             BlockValidationState state;
             BOOST_CHECK_EQUAL(CheckBlock(block, state, Params().GetConsensus()), test.valid);
             if (!test.valid) {
-                BOOST_CHECK_EQUAL(state.GetRejectReason(), "bad-cb-notempty");
+                BOOST_CHECK_EQUAL(state.GetRejectReason(), test.reject_reason);
             }
         }
     }
