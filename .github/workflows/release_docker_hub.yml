@@ -1,8 +1,12 @@
 name: Release to Docker Hub
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Release tag to publish (for example, v23.1.8-pirate)
+        required: true
+        type: string
 
 jobs:
   release:
@@ -11,6 +15,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v6
+      with:
+        ref: ${{ inputs.release_tag }}
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v4
@@ -28,17 +34,20 @@ jobs:
 
     - name: Set raw tag
       id: get_tag
+      env:
+        RELEASE_TAG: ${{ inputs.release_tag }}
       run: |
-        TAG=${{ github.event.release.tag_name }}
-        echo "build_tag=${TAG#v}" >> $GITHUB_OUTPUT
+        echo "build_tag=${RELEASE_TAG#v}" >> "$GITHUB_OUTPUT"
 
     - name: Set suffix
       uses: actions/github-script@v8
       id: suffix
+      env:
+        RELEASE_TAG: ${{ inputs.release_tag }}
       with:
         result-encoding: string
         script: |
-          const fullTag = '${{ github.event.release.tag_name }}';
+          const fullTag = process.env.RELEASE_TAG;
           if (fullTag.includes('-')) {
             const [, fullSuffix] = fullTag.split('-');
             const [suffix] = fullSuffix.split('.');
@@ -53,10 +62,10 @@ jobs:
       with:
         images: piratecash/piratecashd
         tags: |
-          type=match,pattern=v(\d+),group=1
-          type=match,pattern=v(\d+.\d+),group=1
-          type=match,pattern=v(\d+.\d+.\d+),group=1
-          type=match,pattern=v(.*),group=1,suffix=
+          type=match,value=${{ inputs.release_tag }},pattern=v(\d+),group=1
+          type=match,value=${{ inputs.release_tag }},pattern=v(\d+.\d+),group=1
+          type=match,value=${{ inputs.release_tag }},pattern=v(\d+.\d+.\d+),group=1
+          type=match,value=${{ inputs.release_tag }},pattern=v(.*),group=1,suffix=
         flavor: |
           suffix=${{ steps.suffix.outputs.result }},onlatest=true
 
