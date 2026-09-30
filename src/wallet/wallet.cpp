@@ -1580,27 +1580,19 @@ void CWallet::blockDisconnected(const interfaces::BlockInfo& block)
         }
     }
 
-    for (const CTransactionRef& ptx : block.data->vtx) {
-        if (!ptx->IsCoinStake()) continue;
-        const uint256 tx_hash = ptx->GetHash();
-        if (!mapWallet.count(tx_hash)) continue;
+    // PirateCash: a coinstake of a disconnected block can never be mined again
+    for (const CTransactionRef& ptx : Assert(block.data)->vtx) {
+        if (!ptx->IsCoinStake() || !mapWallet.count(ptx->GetHash())) continue;
 
-        WalletLogPrintf("Abandoning staking tx %s\n", tx_hash.ToString());
-        AbandonTransaction(tx_hash);
+        // Also abandons wallet transactions spending its outputs
+        WalletLogPrintf("Abandoning staking tx %s\n", ptx->GetHash().ToString());
+        AbandonTransaction(ptx->GetHash());
 
-        for (const auto& it : mapWallet) {
-            const uint256& wtxid = it.first;
-            const CWalletTx& wtx = it.second;
-            if (wtx.isAbandoned()) continue;
-            if (GetTxDepthInMainChain(wtx) != 0) continue;
-            if (!wtx.tx || wtx.tx->vin.empty()) continue;
-
-            for (const CTxIn& txin : wtx.tx->vin) {
-                if (txin.prevout.hash == tx_hash) {
-                    WalletLogPrintf("Abandoning orphan tx %s\n", wtx.GetHash().ToString());
-                    AbandonTransaction(wtxid);
-                    break;
-                }
+        // Deep scan other orphans, e.g. coinstakes of blocks that never connected
+        for (const auto& [wtxid, wtx] : mapWallet) {
+            if (wtx.tx->IsCoinStake() && GetTxDepthInMainChain(wtx) == 0 && !IsTxLockedByInstantSend(wtx) && !wtx.isAbandoned()) {
+                WalletLogPrintf("Abandoning orphan tx %s\n", wtxid.ToString());
+                AbandonTransaction(wtxid);
             }
         }
     }
