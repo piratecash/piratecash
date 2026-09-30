@@ -112,6 +112,8 @@ static constexpr int RECENT_OBJECT_REQUEST_TTL_INTERVALS{2};
  *  requests -- degrading them to the behaviour of the gate without this record -- never correctness,
  *  so it does not have to be proved large enough for any particular burst. */
 static constexpr size_t MAX_RECENT_OBJECT_REQUESTS{256};
+/** Minimum delay between retries of PoS headers postponed for missing block data. */
+static constexpr auto POSTPONED_HEADERS_RETRY_INTERVAL{1s};
 /** How long to wait before downloading a transaction from an additional peer */
 static constexpr auto GETDATA_TX_INTERVAL{60s};
 /** Limit to avoid sending big packets. Not used in processing incoming GETDATA for compatibility */
@@ -504,6 +506,8 @@ struct CNodeState {
 
     //! Headers postponed until current in-flight blocks are processed.
     std::deque<CBlockHeader> vPostponedHeaders;
+    //! Earliest time at which postponed headers may be retried.
+    std::chrono::microseconds m_postponed_headers_retry_time{0us};
 
     /** State used to enforce CHAIN_SYNC_TIMEOUT and EXTRA_PEER_CHECK_INTERVAL logic.
       *
@@ -3485,6 +3489,7 @@ void PeerManagerImpl::ProcessHeadersMessage(CNode& pfrom, Peer& peer,
             // making progress (direct fetch below would walk back from
             // pindexLast and find nothing to request).
             nodestate->vPostponedHeaders.swap(headers);
+            nodestate->m_postponed_headers_retry_time = GetTime<std::chrono::microseconds>() + POSTPONED_HEADERS_RETRY_INTERVAL;
             postponed_headers = true;
             LogPrint(BCLog::NET, "saving postponed headers for peer %d \n", pfrom.GetId());
         }
@@ -6025,7 +6030,9 @@ bool PeerManagerImpl::ProcessMessages(CNode* pfrom, std::atomic<bool>& interrupt
     {
         LOCK(cs_main);
         auto state = State(pfrom->GetId());
-        if (state->vBlocksInFlight.empty() && !state->vPostponedHeaders.empty()) {
+        if (state->vBlocksInFlight.empty() &&
+            !state->vPostponedHeaders.empty() &&
+            GetTime<std::chrono::microseconds>() >= state->m_postponed_headers_retry_time) {
             postponed_headers.swap(state->vPostponedHeaders);
             fMoreWork = true;
         }
