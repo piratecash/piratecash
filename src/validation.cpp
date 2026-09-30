@@ -3259,20 +3259,6 @@ void Chainstate::UpdateTip(const CBlockIndex* pindexNew)
                 }
             }
         }
-        // Check the version of the last 100 blocks to see if we need to upgrade:
-        int nUpgraded = 0;
-        pindex = pindexNew;
-        for (int i = 0; i < 100 && pindex != nullptr; i++)
-        {
-            int32_t nExpectedVersion = ComputeBlockVersion(pindex->pprev, params.GetConsensus());
-            int nExpectedPOSVersion = nExpectedVersion | CBlockHeader::POS_BIT | CBlockHeader::POSV2_BITS ;
-            if (pindex->nVersion > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->nVersion & ~nExpectedVersion) != 0 &&  (pindex->nVersion & ~nExpectedPOSVersion) != 0)
-                ++nUpgraded;
-            pindex = pindex->pprev;
-        }
-        if (nUpgraded > 0) {
-            AppendWarning(warning_messages, strprintf(_("%d of last 100 blocks have unexpected version"), nUpgraded));
-        }
     }
     UpdateTipLog(coins_tip, pindexNew, params, m_evoDb, __func__, "", warning_messages.original);
 }
