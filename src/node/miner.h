@@ -196,6 +196,8 @@ public:
     explicit BlockAssembler(Chainstate& chainstate, const node::NodeContext& node, const CTxMemPool* mempool);
     explicit BlockAssembler(Chainstate& chainstate, const node::NodeContext& node, const CTxMemPool* mempool, const Options& options);
 
+    size_t GetBlockMaxSize() const { return m_options.nBlockMaxSize; }
+
     /** Construct a new block template with coinbase to scriptPubKeyIn */
     std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, std::shared_ptr<wallet::CWallet> pwallet = nullptr, int64_t block_time = 0, bool isPos = false);
 
@@ -204,6 +206,7 @@ public:
 
 private:
     const Options m_options;
+    const size_t m_block_max_size_configured;
 
     // utility functions
     /** Clear the block's state and prepare for assembling a new block */

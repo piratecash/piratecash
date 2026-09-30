@@ -482,6 +482,8 @@ TestChainSetup::TestChainSetup(
     : TestingSetup{chain_name, extra_args, coins_db_in_memory, block_tree_db_in_memory, dash_dbs_in_memory},
       m_last_pow_block(last_pow_block ? std::make_unique<ScopedLastPoWBlock>(*last_pow_block) : nullptr)
 {
+    // Keep mock time near the PirateCash genesis so generated blocks pass the
+    // future-time check while retaining deterministic MTP+1 timestamps.
     SetMockTime(std::max<int64_t>(1598887952, Params().GenesisBlock().GetBlockTime() - 60));
     constexpr std::array<unsigned char, 32> vchKey = {
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}};
@@ -515,10 +517,17 @@ TestChainSetup::TestChainSetup(
 
     {
         LOCK(::cs_main);
-        auto hash = checkpoints.mapCheckpoints.find(num_blocks);
-        assert(
-            hash != checkpoints.mapCheckpoints.end() &&
-            m_node.chainman->ActiveChain().Tip()->GetBlockHash() == hash->second);
+        const auto hash = checkpoints.mapCheckpoints.find(num_blocks);
+        if (hash == checkpoints.mapCheckpoints.end()) {
+            throw std::runtime_error(strprintf("TestChainSetup: no chain checkpoint defined for height %d", num_blocks));
+        }
+        const uint256 tip_hash = m_node.chainman->ActiveChain().Tip()->GetBlockHash();
+        if (tip_hash != hash->second) {
+            throw std::runtime_error(strprintf(
+                "TestChainSetup: deterministic chain checkpoint mismatch at height %d: got %s, expected %s "
+                "(update the checkpoint if the chain setup changed intentionally)",
+                num_blocks, tip_hash.ToString(), hash->second.ToString()));
+        }
     }
 }
 
