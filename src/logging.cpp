@@ -198,7 +198,7 @@ const CLogCategoryDesc LogCategories[] =
     {BCLog::NETCONN, "netconn"},
     {BCLog::CREDITPOOL, "creditpool"},
     {BCLog::EHF, "ehf"},
-    {BCLog::DASH, "dash"},
+    {BCLog::DASH, "piratecash"},
     //End Dash
 };
 
@@ -206,6 +206,11 @@ bool GetLogCategory(BCLog::LogFlags& flag, const std::string& str)
 {
     if (str.empty()) {
         flag = BCLog::ALL;
+        return true;
+    }
+    // Keep the historical spelling as an alias for the canonical category.
+    if (str == "stake") {
+        flag = BCLog::STAKING;
         return true;
     }
     for (const CLogCategoryDesc& category_desc : LogCategories) {
@@ -328,7 +333,7 @@ std::string LogCategoryToStr(BCLog::LogFlags category)
     case BCLog::LogFlags::EHF:
         return "ehf";
     case BCLog::LogFlags::DASH:
-        return "dash";
+        return "piratecash";
     case BCLog::LogFlags::NET_NETCONN:
         return "net|netconn";
     /* End Dash */

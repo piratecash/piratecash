@@ -114,3 +114,9 @@ src/crypto/scrypt-sse2.cpp
 src/crypto/scrypt.h
 src/pos_kernel.cpp
 src/pos_kernel.h
+src/corsa/client.cpp
+src/corsa/client.h
+src/test/pos_header_serialization_tests.cpp
+src/test/pos_staking_tests.cpp
+src/wallet/staking.cpp
+src/wallet/test/coinstake_wallet_tests.cpp

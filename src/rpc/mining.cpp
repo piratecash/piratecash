@@ -1,6 +1,7 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2022 The Bitcoin Core developers
 // Copyright (c) 2014-2025 The Dash Core developers
+// Copyright (c) 2018-2026 The PirateCash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -48,6 +49,10 @@
 #include <validation.h>
 #include <validationinterface.h>
 #include <warnings.h>
+#ifdef ENABLE_WALLET
+#include <wallet/rpc/util.h>
+#include <wallet/wallet.h>
+#endif
 
 #include <memory>
 #include <stdint.h>
@@ -502,7 +507,7 @@ static RPCHelpMan prioritisetransaction()
         "Accepts the transaction into mined blocks at a higher (or lower) priority\n",
         {
             {"txid", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The transaction id."},
-            {"fee_delta", RPCArg::Type::NUM, RPCArg::Optional::NO, "The fee value (in duffs) to add (or subtract, if negative).\n"
+            {"fee_delta", RPCArg::Type::NUM, RPCArg::Optional::NO, "The fee value (in corsars) to add (or subtract, if negative).\n"
     "                  Note, that this value is not a fee rate. It is a value to modify absolute fee of the TX.\n"
     "                  The fee is not actually paid, only the algorithm for selecting transactions into a block\n"
     "                  considers the transaction as it would have paid a higher (or lower) fee."},
@@ -1103,6 +1108,74 @@ static RPCHelpMan submitheader()
 },
     };
 }
+
+#ifdef ENABLE_WALLET
+static RPCHelpMan reservebalance()
+{
+    return RPCHelpMan{"reservebalance",
+        "\nShow or set the selected wallet's reserve amount not participating in network protection.\n"
+        "If no parameters are provided, the current setting is printed.\n",
+        {
+            {"reserve", RPCArg::Type::BOOL, RPCArg::Optional::OMITTED, "True or false to turn balance reserve on or off."},
+            {"amount", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "Amount to reserve, rounded to cent."},
+        },
+        RPCResult{
+            RPCResult::Type::OBJ, "", "",
+            {
+                {RPCResult::Type::BOOL, "reserve", "Status of the reserve balance"},
+                {RPCResult::Type::STR_AMOUNT, "amount", "Amount reserved"},
+            }},
+        RPCExamples{
+            HelpExampleCli("reservebalance", "true 5000") +
+            HelpExampleRpc("reservebalance", "true 5000")
+        },
+        [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue
+{
+    const auto pwallet = wallet::GetWalletForJSONRPCRequest(request);
+    LOCK(pwallet->cs_wallet);
+    const auto& params = request.params;
+    static constexpr CAmount CENT = 1000000;
+
+    if (params.size() > 2) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Too many parameters");
+    }
+
+    if (params.size() > 0) {
+        const bool reserve = params[0].get_bool();
+        if (reserve) {
+            if (params.size() == 1) {
+                throw JSONRPCError(RPC_INVALID_PARAMETER, "Must provide amount to reserve balance");
+            }
+            CAmount amount = AmountFromValue(params[1]);
+            amount = (amount / CENT) * CENT;
+            if (amount < 0) {
+                throw JSONRPCError(RPC_INVALID_PARAMETER, "Amount cannot be negative");
+            }
+            pwallet->nReserveBalance = amount;
+        } else {
+            if (params.size() > 1) {
+                throw JSONRPCError(RPC_INVALID_PARAMETER, "Cannot specify amount to turn off reserve");
+            }
+            pwallet->nReserveBalance = 0;
+        }
+    }
+
+    UniValue result(UniValue::VOBJ);
+    result.pushKV("reserve", pwallet->nReserveBalance > 0);
+    result.pushKV("amount", ValueFromAmount(pwallet->nReserveBalance));
+    return result;
+},
+    };
+}
+
+Span<const CRPCCommand> GetWalletMiningRPCCommands()
+{
+    static const CRPCCommand commands[]{
+        {"mining", &reservebalance},
+    };
+    return commands;
+}
+#endif // ENABLE_WALLET
 
 void RegisterMiningRPCCommands(CRPCTable& t)
 {

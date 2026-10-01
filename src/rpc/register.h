@@ -41,6 +41,7 @@ Span<const CRPCCommand> GetWalletCoinJoinRPCCommands();
 Span<const CRPCCommand> GetWalletEvoRPCCommands();
 Span<const CRPCCommand> GetWalletGovernanceRPCCommands();
 Span<const CRPCCommand> GetWalletMasternodeRPCCommands();
+Span<const CRPCCommand> GetWalletMiningRPCCommands();
 #endif // ENABLE_WALLET
 
 static inline void RegisterAllCoreRPCCommands(CRPCTable &t)

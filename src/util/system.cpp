@@ -68,7 +68,8 @@
 // Application startup time (used for uptime calculation)
 const int64_t nStartupTime = GetTime();
 
-//Dash only features
+//PirateCash only features
+bool fMasternodeMode = false;
 const std::string gCoinJoinName = "CoinJoin";
 
 /**
@@ -80,7 +81,7 @@ const std::string gCoinJoinName = "CoinJoin";
 */
 int nWalletBackups = 10;
 
-const char * const BITCOIN_CONF_FILENAME = "dash.conf";
+const char * const BITCOIN_CONF_FILENAME = "piratecash.conf";
 const char * const BITCOIN_SETTINGS_FILENAME = "settings.json";
 
 ArgsManager gArgs;
@@ -237,7 +238,7 @@ bool ArgsManager::ParseParameters(int argc, const char* const argv[], std::strin
 
     for (int i = 1; i < argc; i++) {
         std::string key(argv[i]);
-        if (key == "-") break; //dash-tx using stdin
+        if (key == "-") break; // piratecash-tx using stdin
 
 #ifdef MAC_OSX
         // At the first time when a user gets the "App downloaded from the
@@ -715,6 +716,9 @@ std::string ArgsManager::GetHelpMessage() const
             case OptionsCategory::REGISTER_COMMANDS:
                 usage += HelpMessageGroup("Register Commands:");
                 break;
+            case OptionsCategory::POS:
+                usage += HelpMessageGroup("Staking options:");
+                break;
             default:
                 break;
         }
@@ -789,12 +793,12 @@ void PrintExceptionContinue(const std::exception_ptr pex, std::string_view threa
 
 fs::path GetDefaultDataDir()
 {
-    // Windows: C:\Users\Username\AppData\Roaming\DashCore
-    // macOS: ~/Library/Application Support/DashCore
-    // Unix-like: ~/.dashcore
+    // Windows: C:\Users\Username\AppData\Roaming\PirateCore
+    // macOS: ~/Library/Application Support/PirateCore
+    // Unix-like: ~/.piratecore
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "DashCore";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "PirateCore";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -804,10 +808,10 @@ fs::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // macOS
-    return pathRet / "Library/Application Support/DashCore";
+    return pathRet / "Library/Application Support/PirateCore";
 #else
     // Unix-like
-    return pathRet / ".dashcore";
+    return pathRet / ".piratecore";
 #endif
 #endif
 }
@@ -1000,7 +1004,7 @@ bool ArgsManager::ReadConfigFiles(std::string& error, bool ignore_invalid_keys)
             }
         }
     } else {
-        // Create an empty dash.conf if it does not exist
+        // Create an empty piratecash.conf if it does not exist
         std::ofstream configFile{conf_path, std::ios_base::app};
         if (!configFile.good())
             return false;
