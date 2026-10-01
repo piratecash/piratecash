@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2022 The Bitcoin Core developers
+// Copyright (c) 2018-2026 The PirateCash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,7 +10,9 @@
 #include <policy/policy.h>
 #include <primitives/block.h>
 #include <txmempool.h>
+#include <util/threadinterrupt.h>
 
+#include <atomic>
 #include <memory>
 #include <optional>
 #include <stdint.h>
@@ -30,6 +33,10 @@ class CEvoDB;
 class CScript;
 struct LLMQContext;
 
+namespace wallet {
+class CWallet;
+} // namespace wallet
+
 namespace chainlock
 {
 class Chainlocks;
@@ -45,7 +52,7 @@ struct NodeContext;
 
 static const bool DEFAULT_PRINTPRIORITY = false;
 
-extern int64_t nLastCoinStakeSearchTime;
+extern std::atomic<int64_t> nLastCoinStakeSearchTime;
 bool IsStakingActive();
 std::string getMiningStatus();
 
@@ -190,7 +197,7 @@ public:
     explicit BlockAssembler(Chainstate& chainstate, const node::NodeContext& node, const CTxMemPool* mempool, const Options& options);
 
     /** Construct a new block template with coinbase to scriptPubKeyIn */
-    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn);
+    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, std::shared_ptr<wallet::CWallet> pwallet = nullptr, int64_t block_time = 0, bool isPos = false);
 
     inline static std::optional<int64_t> m_last_block_num_txs{};
     inline static std::optional<int64_t> m_last_block_size{};
@@ -229,6 +236,8 @@ int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParam
 
 /** Apply -blockmintxfee and -blockmaxsize options from ArgsManager to BlockAssembler options. */
 void ApplyArgsManOptions(const ArgsManager& gArgs, BlockAssembler::Options& options);
+void PoSMiner(std::shared_ptr<wallet::CWallet> pwallet, NodeContext& node, CThreadInterrupt& interrupt);
+void SetThreadPriority(int nPriority);
 } // namespace node
 
 #endif // BITCOIN_NODE_MINER_H

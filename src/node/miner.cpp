@@ -1,10 +1,27 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2022 The Bitcoin Core developers
 // Copyright (c) 2014-2025 The Dash Core developers
+// Copyright (c) 2018-2026 The PirateCash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#if defined(HAVE_CONFIG_H)
+#include <config/bitcoin-config.h>
+#endif
+
 #include <node/miner.h>
+
+#include <net.h>
+#include <pos_kernel.h>
+#ifdef ENABLE_WALLET
+#include <wallet/wallet.h>
+#include <wallet/receive.h>
+#include <wallet/scriptpubkeyman.h>
+#endif
+
+#ifndef WIN32
+#include <sys/resource.h>
+#endif
 
 #include <chain.h>
 #include <chainparams.h>
@@ -19,10 +36,12 @@
 #include <policy/policy.h>
 #include <pow.h>
 #include <primitives/transaction.h>
+#include <script/signingprovider.h>
 #include <sync.h>
 #include <timedata.h>
 #include <util/moneystr.h>
 #include <util/system.h>
+#include <util/threadnames.h>
 #include <validation.h>
 
 #include <chainlock/chainlock.h>
@@ -41,17 +60,27 @@
 #include <llmq/options.h>
 #include <llmq/snapshot.h>
 #include <masternode/payments.h>
+#include <masternode/sync.h>
 
 #include <algorithm>
 #include <string>
 #include <utility>
 
 namespace node {
-int64_t nLastCoinStakeSearchTime = 0;
+std::atomic<int64_t> nLastCoinStakeSearchTime{0};
 
 namespace {
 RecursiveMutex g_mining_status_mutex;
 std::string miningStatus GUARDED_BY(g_mining_status_mutex);
+
+#ifdef ENABLE_WALLET
+void SetMiningStatus(std::string status)
+{
+    LOCK(g_mining_status_mutex);
+    miningStatus = std::move(status);
+}
+#endif
+
 } // namespace
 
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev)
@@ -181,8 +210,14 @@ static bool CalcCbTxBestChainlock(const chainlock::Chainlocks& chainlocks, const
 }
 
 
-std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
+std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn, std::shared_ptr<wallet::CWallet> pwallet, int64_t block_time, bool isPos)
 {
+#ifndef ENABLE_WALLET
+    if (isPos) {
+        LogError("%s: staking requires wallet support", __func__);
+        return nullptr;
+    }
+#endif
     const auto time_start{SteadyClock::now()};
 
     resetBlock();
@@ -199,7 +234,17 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     pblocktemplate->vTxFees.push_back(-1); // updated at end
     pblocktemplate->vTxSigOps.push_back(-1); // updated at end
 
-    LOCK(::cs_main);
+    if (isPos) {
+        // Keep the stake tx pinned at vtx[1] while the v19 block template
+        // machinery appends commitments and mempool transactions after it.
+        // The v20 credit pool balance is filled after CreateCoinStake() writes
+        // the real coinstake transaction into this slot.
+        pblock->vtx.emplace_back();
+        pblocktemplate->vTxFees.push_back(-1); // updated if stake is found
+        pblocktemplate->vTxSigOps.push_back(-1); // updated if stake is found
+    }
+
+    WAIT_LOCK(::cs_main, lock_main);
     CBlockIndex* pindexPrev = m_chainstate.m_chain.Tip();
     assert(pindexPrev != nullptr);
     nHeight = pindexPrev->nHeight + 1;
@@ -214,14 +259,16 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     m_options.nBlockMaxSize = std::max<unsigned int>(1000, std::min<unsigned int>(MaxBlockSize(fDIP0001Active_context) - 1000, m_options.nBlockMaxSize));
     m_options.nBlockMaxSigOps = MaxBlockSigOps(fDIP0001Active_context);
 
-    pblock->nVersion = m_chainstate.m_chainman.m_versionbitscache.ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
+    pblock->nVersion = isPos
+                          ? ComputeBlockVersion(pindexPrev, chainparams.GetConsensus(), chainparams.BIP9CheckMasternodesUpgraded(), true)
+                          : m_chainstate.m_chainman.m_versionbitscache.ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
     // Non-mainnet only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
     if (chainparams.NetworkIDString() != CBaseChainParams::MAIN) {
         pblock->nVersion = gArgs.GetIntArg("-blockversion", pblock->nVersion);
     }
 
-    pblock->nTime = TicksSinceEpoch<std::chrono::seconds>(NodeClock::now());
+    pblock->nTime = isPos ? block_time : TicksSinceEpoch<std::chrono::seconds>(NodeClock::now());
     m_lock_time_cutoff = pindexPrev->GetMedianTimePast();
 
     if (fDIP0003Active_context) {
@@ -268,6 +315,19 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     // Compute regular coinbase transaction.
     coinbaseTx.vout[0].nValue = blockReward;
 
+    const auto set_credit_pool_balance = [&](CCbTx& cbTx) {
+        BlockValidationState state;
+        const auto creditPoolDiff = GetCreditPoolDiffForBlock(*m_chain_helper.credit_pool_manager, *pblock, pindexPrev, chainparams.GetConsensus(), blockSubsidy, state);
+        if (creditPoolDiff == std::nullopt) {
+            throw std::runtime_error(strprintf("%s: GetCreditPoolDiffForBlock failed: %s", __func__, state.ToString()));
+        }
+
+        cbTx.creditPoolBalance = creditPoolDiff->GetTotalLocked();
+        if (cbTx.nVersion >= CCbTx::Version::MERKLE_ROOT_ASSETUNLOCKS) {
+            cbTx.merkleRootAssetUnlocks = CalcCbTxMerkleRootAssetUnlocks(*pblock);
+        }
+    };
+
     if (!fDIP0003Active_context) {
         coinbaseTx.vin[0].scriptSig = CScript() << nHeight << OP_0;
     } else {
@@ -311,16 +371,8 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
                     // not an error
                     LogPrintf("CreateNewBlock() h[%d] CbTx failed to find best CL. Inserting null CL\n", nHeight);
                 }
-                BlockValidationState state;
-                const auto creditPoolDiff = GetCreditPoolDiffForBlock(*m_chain_helper.credit_pool_manager, *pblock, pindexPrev, chainparams.GetConsensus(), blockSubsidy, state);
-                if (creditPoolDiff == std::nullopt) {
-                    throw std::runtime_error(strprintf("%s: GetCreditPoolDiffForBlock failed: %s", __func__, state.ToString()));
-                }
-
-                cbTx.creditPoolBalance = creditPoolDiff->GetTotalLocked();
-
-                if (cbTx.nVersion >= CCbTx::Version::MERKLE_ROOT_ASSETUNLOCKS) {
-                    cbTx.merkleRootAssetUnlocks = CalcCbTxMerkleRootAssetUnlocks(*pblock);
+                if (!isPos) {
+                    set_credit_pool_balance(cbTx);
                 }
             }
         }
@@ -338,14 +390,85 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
     // Fill in header
     pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
-    UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev);
+    if (!isPos) {
+        UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev);
+    }
     pblock->nBits          = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus());
     pblock->nNonce         = 0;
     pblocktemplate->nPrevBits = pindexPrev->nBits;
     pblocktemplate->vTxSigOps[0] = GetLegacySigOpCount(*pblock->vtx[0]);
 
+#ifdef ENABLE_WALLET
+    if (isPos) {
+        REVERSE_LOCK(lock_main);
+        bool sign_block{false};
+
+        assert(pwallet != nullptr);
+
+        if (pwallet->IsLocked(true)) {
+            LogError("%s: wallet is locked!", __func__);
+            return nullptr;
+        }
+
+        CMutableTransaction coinbaseTx(*(pblock->CoinBase()));
+        bool fStakeFound = pwallet->CreateCoinStake(pindexPrev, *pblock, coinbaseTx);
+
+        if (fStakeFound) {
+            if (fV20Active_context) {
+                auto opt_cbTx = GetTxPayload<CCbTx>(coinbaseTx.vExtraPayload);
+                if (!opt_cbTx) {
+                    throw std::runtime_error(strprintf("%s: failed to get CbTx payload", __func__));
+                }
+
+                CCbTx cbTx = *opt_cbTx;
+                {
+                    // Credit-pool snapshots share EvoDB state with block connection.
+                    LOCK(cs_main);
+                    if (pindexPrev != m_chainstate.m_chain.Tip()) return nullptr;
+                    set_credit_pool_balance(cbTx);
+                }
+                SetTxPayload(coinbaseTx, cbTx);
+            }
+
+            sign_block = true;
+            pblock->CoinBase() = MakeTransactionRef(std::move(coinbaseTx));
+            pblocktemplate->vTxFees[1] = 0;
+            pblocktemplate->vTxSigOps[1] = GetLegacySigOpCount(*pblock->Stake());
+        } else {
+            pblock->vtx.erase(pblock->vtx.begin() + 1);
+            pblocktemplate->vTxFees.erase(pblocktemplate->vTxFees.begin() + 1);
+            pblocktemplate->vTxSigOps.erase(pblocktemplate->vTxSigOps.begin() + 1);
+        }
+
+        pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
+        pblocktemplate->vTxSigOps[0] = GetLegacySigOpCount(*pblock->CoinBase());
+
+        if (sign_block) {
+            // GetKey() decrypts through cs_wallet; keep cs_wallet before cs_KeyStore.
+            LOCK(pwallet->cs_wallet);
+            const SigningProvider* provider = pwallet->GetLegacyScriptPubKeyMan();
+            CKey key;
+            if (!provider || !provider->GetKey(pblock->posPubKey.GetID(), key) ||
+                !key.SignCompact(pblock->GetHash(), pblock->posBlockSig)) {
+                LogError("%s: failed to sign block", __func__);
+                return nullptr;
+            }
+        }
+    }
+
+#endif
+
+    if (isPos && pindexPrev != m_chainstate.m_chain.Tip()) {
+        LogPrint(BCLog::STAKING, "%s: the network has already found another block", __func__);
+        return nullptr;
+    }
+
     BlockValidationState state;
     if (m_options.test_block_validity && !TestBlockValidity(state, m_chainlocks, m_evoDb, chainparams, m_chainstate, *pblock, pindexPrev, /*fCheckPOW=*/false, /*fCheckMerkleRoot=*/false)) {
+        if (isPos) {
+            LogError("%s: TestBlockValidity failed: %s", __func__, state.ToString());
+            return nullptr;
+        }
         throw std::runtime_error(strprintf("%s: TestBlockValidity failed: %s", __func__, state.ToString()));
     }
     const auto time_2{SteadyClock::now()};
@@ -705,14 +828,239 @@ void BlockAssembler::addPackageTxs(const CTxMemPool& mempool, int& nPackagesSele
     }
 }
 
-bool IsStakingActive()
+void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned int& nExtraNonce)
 {
-    return (TicksSinceEpoch<std::chrono::seconds>(GetAdjustedTime()) - nLastCoinStakeSearchTime) < 60;
+    // Update nExtraNonce
+    static uint256 hashPrevBlock;
+    if (hashPrevBlock != pblock->hashPrevBlock) {
+        nExtraNonce = 0;
+        hashPrevBlock = pblock->hashPrevBlock;
+    }
+    ++nExtraNonce;
+    unsigned int nHeight = pindexPrev->nHeight+1; // Height first in coinbase required for block.version=2
+    CMutableTransaction txCoinbase(*(pblock->CoinBase()));
+    txCoinbase.vin[0].scriptSig = (CScript() << nHeight << CScriptNum(nExtraNonce));
+    assert(txCoinbase.vin[0].scriptSig.size() <= 100);
+
+    pblock->CoinBase() = MakeTransactionRef(std::move(txCoinbase));
+    pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
 }
 
-std::string getMiningStatus()
+#ifdef ENABLE_WALLET
+void PoSMiner(std::shared_ptr<wallet::CWallet> pwallet, NodeContext& node, CThreadInterrupt& interrupt)
 {
+    LogPrintf("PoSMiner started\n");
+    util::ThreadRename("piratecash-miner");
+    SetThreadPriority(0);
+
+    BlockAssembler ba{Assert(node.chainman)->ActiveChainstate(), node, Assert(node.mempool.get())};
+    CScript coinbaseScript; // unused for PoS
+
+    //control the amount of times the client will check for mintable coins
+    bool fMintableCoins = false;
+    int nMintableLastCheck = 0;
+    int last_height = -1;
+    int64_t start_block_time = 0;
+    const CChainParams& chainparams = Params();
+
+    while (!interrupt) {
+        auto hash_interval = std::max(pwallet->nHashInterval, (unsigned int)1);
+        interrupt.sleep_for(std::chrono::seconds(hash_interval));
+
+        {
+            CBlockIndex* pindexPrev = WITH_LOCK(cs_main, return Assert(node.chainman)->ActiveChain().Tip());
+
+            if (!pindexPrev) {
+                interrupt.sleep_for(std::chrono::seconds(1));
+                SetMiningStatus(":<br>- no active blocks");
+                LogPrint(BCLog::STAKING, "%s : %s \n", __func__, getMiningStatus());
+                continue;
+            }
+
+            if (!IsPoSEnforcedHeight(pindexPrev->nHeight + 1) && !IsPoSV2EnforcedHeight(pindexPrev->nHeight + 1) && !pindexPrev->IsProofOfStake()) {
+                interrupt.sleep_for(std::chrono::seconds(hash_interval));
+                SetMiningStatus(":<br>- PoS is not enabled at height " + std::to_string(pindexPrev->nHeight + 1));
+                LogPrint(BCLog::STAKING, "%s : %s \n", __func__, getMiningStatus());
+                continue;
+            }
+        }
+
+        // Don't enter wallet staking checks until the node is operational
+        // enough for PoS. This avoids touching the wallet's cs_main/cs_wallet
+        // path while startup is still finishing.
+        const bool mn_sync_done = node.mn_sync != nullptr && node.mn_sync->IsSynced();
+        const size_t peer_count = node.connman ? node.connman->GetNodeCount(ConnectionDirection::Both) : 0;
+        if (!mn_sync_done || peer_count == 0) {
+            std::string status = ":";
+            if (!mn_sync_done) {
+                status += "<br>- masternode list isn't synced";
+            }
+            if (peer_count == 0) {
+                status += "<br>- no connections with network";
+            }
+            SetMiningStatus(std::move(status));
+            nLastCoinStakeSearchTime = 0;
+            interrupt.sleep_for(std::chrono::seconds(hash_interval));
+            LogPrint(BCLog::STAKING, "%s : node not ready mnsync=%d peers=%d\n",
+                                  __func__,
+                                  int(!mn_sync_done),
+                                  int(peer_count == 0));
+            continue;
+        }
+
+        if ((GetTime() - nMintableLastCheck > 60))
+        {
+            nMintableLastCheck = GetTime();
+            fMintableCoins = pwallet->MintableCoins();
+        }
+
+        {
+            CBlockIndex* pindexPrev = WITH_LOCK(cs_main, return Assert(node.chainman)->ActiveChain().Tip());
+
+            if (!pindexPrev) {
+                interrupt.sleep_for(std::chrono::seconds(1));
+                SetMiningStatus(":<br>- no active blocks");
+                LogPrint(BCLog::STAKING, "%s : %s \n", __func__, getMiningStatus());
+                continue;
+            }
+
+            if (!IsPoSEnforcedHeight(pindexPrev->nHeight + 1) && !IsPoSV2EnforcedHeight(pindexPrev->nHeight + 1) && !pindexPrev->IsProofOfStake()) {
+                interrupt.sleep_for(std::chrono::seconds(hash_interval));
+                SetMiningStatus(":<br>- PoS is not enabled at height " + std::to_string(pindexPrev->nHeight + 1));
+                LogPrint(BCLog::STAKING, "%s : %s \n", __func__, getMiningStatus());
+                continue;
+            }
+
+            if (pindexPrev->nHeight + 1  < chainparams.GetConsensus().nForkHeight) {
+                interrupt.sleep_for(std::chrono::seconds(hash_interval));
+                SetMiningStatus(":<br>- PoSv2 is not enabled at height <b>" + std::to_string(pindexPrev->nHeight + 1) + "</b>");
+                LogPrint(BCLog::STAKING, "%s : %s \n", __func__, getMiningStatus());
+                continue;
+            }
+        }
+
+        SetMiningStatus("");
+
+        bool wallet_locked;
+        bool below_reserve;
+        {
+            LOCK(pwallet->cs_wallet);
+            wallet_locked = pwallet->IsLocked(true);
+            below_reserve = pwallet->nReserveBalance >= wallet::GetBalance(*pwallet).m_mine_trusted;
+        }
+        if (wallet_locked || !fMintableCoins || below_reserve) {
+            std::string status = ":";
+            if (wallet_locked){
+                status += "<br>- wallet is currently <b>locked</b>";
+            }
+            if (below_reserve){
+                status += "<br>- your balance is less than the reserved amount";
+            }
+            if (!fMintableCoins){
+                status += "<br>- no mature or available coins for staking";
+            }
+            SetMiningStatus(std::move(status));
+            nLastCoinStakeSearchTime = 0;
+            interrupt.sleep_for(std::chrono::seconds(hash_interval));
+            LogPrint(BCLog::STAKING, "%s : wallet not ready locked=%d coins=%d reserve=%d\n",
+                                  __func__,
+                                  int(wallet_locked),
+                                  int(!fMintableCoins),
+                                  int(below_reserve));
+            continue;
+        }
+
+        const int current_height = WITH_LOCK(cs_main, return Assert(node.chainman)->ActiveChain().Height());
+        if (last_height == current_height)
+        {
+            if ((GetTime() - hash_interval) < nLastCoinStakeSearchTime.load())
+            {
+                continue;
+            }
+        } else {
+            last_height = current_height;
+            start_block_time = 0;
+        }
+
+        CBlockIndex* pindexPrev = WITH_LOCK(cs_main, return Assert(node.chainman)->ActiveChain().Tip());
+        if (!pindexPrev) {
+            interrupt.sleep_for(std::chrono::seconds(1));
+            continue;
+        }
+
+        // For now keep the staking path simple: build the PoS candidate
+        // directly and let CreateCoinStake()/CheckProof decide whether this
+        // pass actually found a valid kernel.
+        start_block_time = std::max<int64_t>(
+            start_block_time,
+            std::max<int64_t>(pindexPrev->GetMedianTimePast() + 1, TicksSinceEpoch<std::chrono::seconds>(GetAdjustedTime()))
+        );
+
+        //
+        // Create new block
+        //
+        auto pblocktemplate = ba.CreateNewBlock(coinbaseScript, pwallet, start_block_time, true);
+        nLastCoinStakeSearchTime = TicksSinceEpoch<std::chrono::seconds>(GetAdjustedTime());
+
+        if (!pblocktemplate.get())
+            continue;
+
+        auto pblock = std::make_shared<CBlock>(std::move(pblocktemplate->block));
+
+        BlockValidationState state;
+
+        const bool proof_ok = WITH_LOCK(cs_main, return CheckProof(state, *pblock, Params().GetConsensus(), &Assert(node.chainman)->m_blockman, &Assert(node.chainman)->ActiveChain()));
+        if (!proof_ok) {
+            // Mimics limit in pos_kernel.cpp
+            start_block_time = std::min<int64_t>(
+                pblock->nTime + pwallet->nHashDrift,
+                nLastCoinStakeSearchTime.load() + MAX_POS_BLOCK_AHEAD_TIME - MAX_POS_BLOCK_AHEAD_SAFETY_MARGIN
+            );
+
+            LogPrint(BCLog::STAKING, "%s : proof check failed: %s\n", __func__, state.ToString());
+            continue;
+        }
+
+        //Stake miner main
+        LogPrintf("PoSMiner : proof-of-stake block found %s \n", pblock->GetHash().ToString().c_str());
+
+        bool fNewBlock = false;
+        bool fAccepted = Assert(node.chainman)->ProcessNewBlock(pblock, true, &fNewBlock);
+        auto hash = pblock->GetHash();
+
+        if (fAccepted) {
+            if (fNewBlock) {
+                LogPrintf("PoSMiner : block is submitted %s\n", hash.ToString().c_str());
+            } else {
+                LogPrintf("PoSMiner : block duplicate %s\n", hash.ToString().c_str());
+            }
+        } else {
+            LogPrintf("PoSMiner : block is rejected %s\n", hash.ToString().c_str());
+        }
+    }
+}
+
+#endif // ENABLE_WALLET
+
+bool IsStakingActive() {
+    return (TicksSinceEpoch<std::chrono::seconds>(GetAdjustedTime()) - nLastCoinStakeSearchTime.load()) < 60;
+}
+
+std::string getMiningStatus() {
     LOCK(g_mining_status_mutex);
     return miningStatus;
+}
+
+void SetThreadPriority(int nPriority)
+{
+#ifdef WIN32
+    ::SetThreadPriority(::GetCurrentThread(), nPriority);
+#else // WIN32
+#ifdef PRIO_THREAD
+    setpriority(PRIO_THREAD, 0, nPriority);
+#else  // PRIO_THREAD
+    setpriority(PRIO_PROCESS, 0, nPriority);
+#endif // PRIO_THREAD
+#endif // WIN32
 }
 } // namespace node

@@ -19,6 +19,7 @@
 #include <key_io.h>
 #include <policy/fees.h>
 #include <policy/policy.h>
+#include <pos_kernel.h>
 #include <primitives/block.h>
 #include <primitives/transaction.h>
 #include <psbt.h>
@@ -27,6 +28,7 @@
 #include <script/script.h>
 #include <script/sign.h>
 #include <script/signingprovider.h>
+#include <shutdown.h>
 #include <support/cleanse.h>
 #include <txmempool.h>
 #include <util/check.h>
@@ -45,9 +47,11 @@
 #include <wallet/context.h>
 #include <wallet/external_signer_scriptpubkeyman.h>
 #include <wallet/platformkeys.h>
+#include <wallet/spend.h>
 #include <warnings.h>
 
 #include <coinjoin/options.h>
+#include <evo/dmn_types.h>
 #include <evo/providertx.h>
 #include <governance/vote.h>
 
@@ -1576,6 +1580,31 @@ void CWallet::blockDisconnected(const interfaces::BlockInfo& block)
         }
     }
 
+    for (const CTransactionRef& ptx : block.data->vtx) {
+        if (!ptx->IsCoinStake()) continue;
+        const uint256 tx_hash = ptx->GetHash();
+        if (!mapWallet.count(tx_hash)) continue;
+
+        WalletLogPrintf("Abandoning staking tx %s\n", tx_hash.ToString());
+        AbandonTransaction(tx_hash);
+
+        for (const auto& it : mapWallet) {
+            const uint256& wtxid = it.first;
+            const CWalletTx& wtx = it.second;
+            if (wtx.isAbandoned()) continue;
+            if (GetTxDepthInMainChain(wtx) != 0) continue;
+            if (!wtx.tx || wtx.tx->vin.empty()) continue;
+
+            for (const CTxIn& txin : wtx.tx->vin) {
+                if (txin.prevout.hash == tx_hash) {
+                    WalletLogPrintf("Abandoning orphan tx %s\n", wtx.GetHash().ToString());
+                    AbandonTransaction(wtxid);
+                    break;
+                }
+            }
+        }
+    }
+
     // reset cache to make sure no longer mature coins are excluded
     fAnonymizableTallyCached = false;
     fAnonymizableTallyCachedNonDenom = false;
@@ -2119,6 +2148,8 @@ bool CWallet::CanTxBeResent(const CWalletTx& wtx) const
         // Don't try to submit coinbase transactions. These would fail anyway but would
         // cause log spam.
         !wtx.IsCoinBase() &&
+        // Don't try to submit coinstake transactions.
+        !wtx.IsCoinStake() &&
         // Don't try to submit conflicted or confirmed transactions.
         GetTxDepthInMainChain(wtx) == 0 &&
         // Don't try to submit transactions locked via InstantSend.
@@ -2218,6 +2249,16 @@ void CWallet::ResubmitWalletTransactions(bool relay, bool force)
         for (auto& [txid, wtx] : mapWallet) {
             // Only rebroadcast unconfirmed txs
             if (!wtx.isUnconfirmed()) continue;
+
+            // On startup/import, release inputs of generated transactions that
+            // lost their block. They cannot be submitted to the mempool again.
+            if (force && !relay && (wtx.IsCoinBase() || wtx.IsCoinStake())) {
+                if (!IsTxLockedByInstantSend(wtx)) {
+                    WalletLogPrintf("Abandoning tx %s\n", txid.ToString());
+                    AbandonTransaction(txid);
+                }
+                continue;
+            }
 
             // Attempt to rebroadcast all txes more than 5 minutes older than
             // the last block, or all txs if forcing.
@@ -2418,6 +2459,23 @@ bool CWallet::SignGovernanceVote(const CKeyID& keyID, CGovernanceVote& vote) con
 
     vote.SetSignature(std::vector<unsigned char>(opt_decoded->data(), opt_decoded->data() + opt_decoded->size()));
     return true;
+}
+
+bool CWallet::MintableCoins()
+{
+    LOCK(cs_wallet);
+    const std::vector<COutput> available_coins{AvailableCoins(*this).All()};
+    for (const COutput& output : available_coins) {
+        if (!output.spendable || !output.safe) continue;
+        if (output.txout.nValue < MIN_STAKE_AMOUNT) continue;
+        if (inputStakeProtect && dmn_types::IsCollateralAmount(output.txout.nValue)) continue;
+
+        const CWalletTx* wtx = GetWalletTx(output.outpoint.hash);
+        if (!wtx) continue;
+        const int min_depth = wtx->IsCoinBase() ? COINBASE_MATURITY : 10;
+        if (output.depth >= min_depth) return true;
+    }
+    return false;
 }
 
 void CWallet::CommitTransaction(CTransactionRef tx, mapValue_t mapValue, std::vector<std::pair<std::string, std::string>> orderForm)
@@ -4091,11 +4149,13 @@ int CWallet::GetTxBlocksToMaturity(const CWalletTx& wtx) const
 {
     AssertLockHeld(cs_wallet);
 
-    if (!wtx.IsCoinBase()) {
+    if (!(wtx.IsCoinBase() || wtx.IsCoinStake())) {
         return 0;
     }
     int chain_depth = GetTxDepthInMainChain(wtx);
-    assert(chain_depth >= 0); // coinbase tx should not be conflicted
+    if (wtx.IsCoinBase()) {
+        assert(chain_depth >= 0); // coinbase tx should not be conflicted
+    }
     return std::max(0, (COINBASE_MATURITY+1) - chain_depth);
 }
 
@@ -4103,7 +4163,7 @@ bool CWallet::IsTxImmatureCoinBase(const CWalletTx& wtx) const
 {
     AssertLockHeld(cs_wallet);
 
-    // note GetBlocksToMaturity is 0 for non-coinbase tx
+    // note GetBlocksToMaturity is 0 for non-generated tx
     return GetTxBlocksToMaturity(wtx) > 0;
 }
 
