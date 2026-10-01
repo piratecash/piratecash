@@ -258,7 +258,7 @@ BOOST_FIXTURE_TEST_CASE(scan_for_wallet_transactions, TestChain100Setup)
         BOOST_CHECK(result.last_failed_block.IsNull());
         BOOST_CHECK_EQUAL(result.last_scanned_block, newTip->GetBlockHash());
         BOOST_CHECK_EQUAL(*result.last_scanned_height, newTip->nHeight);
-        BOOST_CHECK_EQUAL(GetBalance(wallet).m_mine_immature, 1000 * COIN);
+        BOOST_CHECK_EQUAL(GetBalance(wallet).m_mine_immature, 100 * COIN);
 
         {
             CBlockLocator locator;
@@ -293,7 +293,7 @@ BOOST_FIXTURE_TEST_CASE(scan_for_wallet_transactions, TestChain100Setup)
         BOOST_CHECK_EQUAL(result.last_failed_block, oldTip->GetBlockHash());
         BOOST_CHECK_EQUAL(result.last_scanned_block, newTip->GetBlockHash());
         BOOST_CHECK_EQUAL(*result.last_scanned_height, newTip->nHeight);
-        BOOST_CHECK_EQUAL(GetBalance(wallet).m_mine_immature, 500 * COIN);
+        BOOST_CHECK_EQUAL(GetBalance(wallet).m_mine_immature, 50 * COIN);
     }
 
     // Prune the remaining block file.
@@ -484,7 +484,7 @@ BOOST_FIXTURE_TEST_CASE(coin_mark_dirty_immature_credit, TestChain100Setup)
     // credit amount is calculated.
     wtx.MarkDirty();
     AddKey(wallet, coinbaseKey);
-    BOOST_CHECK_EQUAL(CachedTxGetImmatureCredit(wallet, wtx, ISMINE_SPENDABLE), 500*COIN);
+    BOOST_CHECK_EQUAL(CachedTxGetImmatureCredit(wallet, wtx, ISMINE_SPENDABLE), 50*COIN);
 }
 
 static int64_t AddTx(ChainstateManager& chainman, CWallet& wallet, uint32_t lockTime, int64_t mockTime, int64_t blockTime)
@@ -735,7 +735,7 @@ BOOST_FIXTURE_TEST_CASE(ListCoinsTest, ListCoinsTestingSetup)
     BOOST_CHECK_EQUAL(list.begin()->second.size(), 1U);
 
     // Check initial balance from one mature coinbase transaction.
-    BOOST_CHECK_EQUAL(500 * COIN, WITH_LOCK(wallet->cs_wallet, return AvailableCoins(*wallet).GetTotalAmount()));
+    BOOST_CHECK_EQUAL(50 * COIN, WITH_LOCK(wallet->cs_wallet, return AvailableCoins(*wallet).GetTotalAmount()));
 
     // Add a transaction creating a change address, and confirm ListCoins still
     // returns the coin associated with the change address underneath the
@@ -918,6 +918,8 @@ BOOST_FIXTURE_TEST_CASE(wallet_descriptor_test, BasicTestingSetup)
 //! rescanning where new transactions in new blocks could be lost.
 BOOST_FIXTURE_TEST_CASE(CreateWallet, TestChain100Setup)
 {
+    // Mature an extra full-reward coinbase; height 2 only pays 150 corsars.
+    m_coinbase_txns.push_back(CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey())).vtx[0]);
     m_args.ForceSetArg("-unsafesqlitesync", "1");
     // Create new wallet with known key and unload it.
     WalletContext context;
@@ -957,7 +959,7 @@ BOOST_FIXTURE_TEST_CASE(CreateWallet, TestChain100Setup)
     m_coinbase_txns.push_back(CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey())).vtx[0]);
     auto block_tx = TestSimpleSpend(*m_coinbase_txns[0], 0, coinbaseKey, GetScriptForRawPubKey(key.GetPubKey()));
     m_coinbase_txns.push_back(CreateAndProcessBlock({block_tx}, GetScriptForRawPubKey(coinbaseKey.GetPubKey())).vtx[0]);
-    auto mempool_tx = TestSimpleSpend(*m_coinbase_txns[1], 0, coinbaseKey, GetScriptForRawPubKey(key.GetPubKey()));
+    auto mempool_tx = TestSimpleSpend(*m_coinbase_txns[2], 0, coinbaseKey, GetScriptForRawPubKey(key.GetPubKey()));
     BOOST_CHECK(m_node.chain->broadcastTransaction(MakeTransactionRef(mempool_tx), DEFAULT_TRANSACTION_MAXFEE, false, error));
 
 
@@ -995,9 +997,9 @@ BOOST_FIXTURE_TEST_CASE(CreateWallet, TestChain100Setup)
     auto handler = HandleLoadWallet(context, [&](std::unique_ptr<interfaces::Wallet> wallet) {
             BOOST_CHECK(rescan_completed);
             m_coinbase_txns.push_back(CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey())).vtx[0]);
-            block_tx = TestSimpleSpend(*m_coinbase_txns[2], 0, coinbaseKey, GetScriptForRawPubKey(key.GetPubKey()));
+            block_tx = TestSimpleSpend(*m_coinbase_txns[3], 0, coinbaseKey, GetScriptForRawPubKey(key.GetPubKey()));
             m_coinbase_txns.push_back(CreateAndProcessBlock({block_tx}, GetScriptForRawPubKey(coinbaseKey.GetPubKey())).vtx[0]);
-            mempool_tx = TestSimpleSpend(*m_coinbase_txns[3], 0, coinbaseKey, GetScriptForRawPubKey(key.GetPubKey()));
+            mempool_tx = TestSimpleSpend(*m_coinbase_txns[4], 0, coinbaseKey, GetScriptForRawPubKey(key.GetPubKey()));
             BOOST_CHECK(m_node.chain->broadcastTransaction(MakeTransactionRef(mempool_tx), DEFAULT_TRANSACTION_MAXFEE, false, error));
             SyncWithValidationInterfaceQueue();
         });
@@ -1613,7 +1615,7 @@ BOOST_FIXTURE_TEST_CASE(CreateTransactionTest, CreateTransactionTestSetup)
 BOOST_FIXTURE_TEST_CASE(select_coins_grouped_by_addresses, ListCoinsTestingSetup)
 {
     // Check initial balance from one mature coinbase transaction.
-    BOOST_CHECK_EQUAL(WITH_LOCK(wallet->cs_wallet, return AvailableCoins(*wallet).GetTotalAmount()), 500 * COIN);
+    BOOST_CHECK_EQUAL(WITH_LOCK(wallet->cs_wallet, return AvailableCoins(*wallet).GetTotalAmount()), 50 * COIN);
 
     {
         std::vector<CompactTallyItem> vecTally = wallet->SelectCoinsGroupedByAddresses(/*fSkipDenominated=*/false,
@@ -1621,7 +1623,7 @@ BOOST_FIXTURE_TEST_CASE(select_coins_grouped_by_addresses, ListCoinsTestingSetup
                 /*fSkipUnconfirmed=*/false,
                 /*nMaxOupointsPerAddress=*/100);
         BOOST_CHECK_EQUAL(vecTally.size(), 1);
-        BOOST_CHECK_EQUAL(vecTally.at(0).nAmount, 500 * COIN);
+        BOOST_CHECK_EQUAL(vecTally.at(0).nAmount, 50 * COIN);
         BOOST_CHECK_EQUAL(vecTally.at(0).outpoints.size(), 1);
     }
 
@@ -1672,8 +1674,8 @@ BOOST_FIXTURE_TEST_CASE(select_coins_grouped_by_addresses, ListCoinsTestingSetup
     BOOST_CHECK_EQUAL(vecTally.size(), 2);
     BOOST_CHECK_EQUAL(vecTally.at(0).outpoints.size(), 1);
     BOOST_CHECK_EQUAL(vecTally.at(1).outpoints.size(), 1);
-    BOOST_CHECK_EQUAL(vecTally.at(0).nAmount + vecTally.at(1).nAmount, (500 + 499) * COIN);
-    BOOST_CHECK_EQUAL(WITH_LOCK(wallet->cs_wallet, return AvailableCoins(*wallet).GetTotalAmount()), (500 + 499) * COIN);
+    BOOST_CHECK_EQUAL(vecTally.at(0).nAmount + vecTally.at(1).nAmount, 49 * COIN + 150);
+    BOOST_CHECK_EQUAL(WITH_LOCK(wallet->cs_wallet, return AvailableCoins(*wallet).GetTotalAmount()), 49 * COIN + 150);
 }
 
 BOOST_FIXTURE_TEST_CASE(UnconfirmableOutputsAreNotWalletFunds, ListCoinsTestingSetup)

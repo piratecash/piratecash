@@ -1700,10 +1700,9 @@ static void SmlCache(TestChainSetup& setup)
 
 BOOST_AUTO_TEST_SUITE(evo_dip3_activation_tests)
 
-// FuncDIP3Protx registers six masternodes in successive blocks. Height 109 is the lowest boundary
-// that keeps two mature coinbases available for every 1000 DASH collateral; height 108 runs out on
-// the sixth registration.
-constexpr int DIP3_ACTIVATION_HEIGHT{109};
+// FuncDIP3Protx funds fifteen 1000-PIRATE collaterals from pre-mined 50-PIRATE coinbases.
+// Height 374 is the lowest boundary with enough mature outputs for all registrations and updates.
+constexpr int DIP3_ACTIVATION_HEIGHT{374};
 
 BOOST_AUTO_TEST_CASE(deterministic_mn_list_diff_serialization_is_canonical)
 {
@@ -1726,7 +1725,9 @@ BOOST_AUTO_TEST_CASE(deterministic_mn_list_diff_serialization_is_canonical)
 
 struct TestChainDIP3BeforeActivationSetup : public TestChainSetup {
     TestChainDIP3BeforeActivationSetup() :
-        TestChainSetup(DIP3_ACTIVATION_HEIGHT - 2, CBaseChainParams::REGTEST, {"-dip3params=109:500"},
+        TestChainSetup(DIP3_ACTIVATION_HEIGHT - 2, CBaseChainParams::REGTEST,
+                       {"-dip3params=374:500", "-testactivationheight=v19@697", "-testactivationheight=v20@697",
+                        "-testactivationheight=mn_rr@697"},
                        /*coins_db_in_memory=*/true, /*block_tree_db_in_memory=*/true)
     {
     }

@@ -21,7 +21,7 @@ from test_framework.util import (
     assert_raises_rpc_error,
 )
 
-PLATFORM_HRP = 'tdash'
+PLATFORM_HRP = 'tpirate'
 PLATFORM_KEYHASH = bytes.fromhex('f7da0a2b5cbd4ff6bb2c4d89b67d2f3ffeec0525')
 PLATFORM_SCRIPTHASH = bytes.fromhex('43fa183cf3fb6e9e7dc62b692aeb4fc8d8045636')
 
@@ -30,10 +30,10 @@ def platform_address(encoding, type_byte, payload):
     return bech32_encode(encoding, PLATFORM_HRP, convertbits([type_byte] + list(payload), 8, 5))
 
 
-# DIP-18 Platform addresses (test vectors of DIP-0018): valid Bech32m, but never Dash Core addresses
-BECH32_VALID = 'tdash1krma5z3ttj75la4m93xcndna9ullamq9y5fzq2j7'
-BECH32_VALID_CAPITALS = 'TDASH1KRMA5Z3TTJ75LA4M93XCNDNA9ULLAMQ9Y5FZQ2J7'
-BECH32_VALID_P2SH = 'tdash1sppl5xpu70aka8nacc4kj2htflydspzkxc8jtru5'
+# DIP-0018 payloads re-encoded with the PirateCash testnet HRP: valid Bech32m Platform addresses
+BECH32_VALID = 'tpirate1krma5z3ttj75la4m93xcndna9ullamq9y59mnuws'
+BECH32_VALID_CAPITALS = 'TPIRATE1KRMA5Z3TTJ75LA4M93XCNDNA9ULLAMQ9Y59MNUWS'
+BECH32_VALID_P2SH = 'tpirate1sppl5xpu70aka8nacc4kj2htflydspzkxcttc4q6'
 
 # Well-formed Bech32(m) strings whose DIP-18 payload is invalid
 BECH32_INVALID_ENCODING = platform_address(Encoding.BECH32, DIP18_TYPE_P2PKH, PLATFORM_KEYHASH)
@@ -41,17 +41,17 @@ BECH32_INVALID_TYPE_BYTE = platform_address(Encoding.BECH32M, 0x00, PLATFORM_KEY
 BECH32_INVALID_SIZE = platform_address(Encoding.BECH32M, DIP18_TYPE_P2PKH, PLATFORM_KEYHASH[:-1])
 
 BECH32_INVALID_PREFIX = 'bc1pw508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7k7grplx'
-BECH32_TOO_LONG = 'tdash1krma5z3ttj75la4m93xcndna9ullamq9y5fzq2j7krma5z3ttj75la4m93xcndna9ullamq9y5fzq2j7krma5z3ttj75la4m93xcndna9ullamq9y5fzq2j7'
-BECH32_ONE_ERROR = 'tdash1krma4z3ttj75la4m93xcndna9ullamq9y5fzq2j7'
-BECH32_ONE_ERROR_CAPITALS = 'TDASH1KRMA5Z3TTJ75LA4M93XCNDNA9ULLAMQ9Y4FZQ2J7'
-BECH32_TWO_ERRORS = 'tdash1krma4z3ttj75la4m93xcndna8ullamq9y5fzq2j7'  # should be tdash1krma5z3ttj75la4m93xcndna9ullamq9y5fzq2j7
-BECH32_P2SH_TWO_ERRORS = 'tdash1sppl5xpu70aka8nacd4kj2htflydspzkxc8jtrs5'  # should be tdash1sppl5xpu70aka8nacc4kj2htflydspzkxc8jtru5
-BECH32_NO_SEPARATOR = 'tdashkrma5z3ttj75la4m93xcndna9ullamq9y5fzq2j7'
-BECH32_INVALID_CHAR = 'tdash1krmo5z3ttj75la4m93xcndna9ullamq9y5fzq2j7'
+BECH32_TOO_LONG = 'tpirate1krma5z3ttj75la4m93xcndna9ullamq9y59mnuwskrma5z3ttj75la4m93xcndna9ullamq9y59mnuwskrma5z3ttj75la4m93xcndna9ullamq9y59mnuws'
+BECH32_ONE_ERROR = 'tpirate1krma4z3ttj75la4m93xcndna9ullamq9y59mnuws'
+BECH32_ONE_ERROR_CAPITALS = 'TPIRATE1KRMA5Z3TTJ75LA4M93XCNDNA9ULLAMQ9Y49MNUWS'
+BECH32_TWO_ERRORS = 'tpirate1krma4z3ttj75la4m93xcndna8ullamq9y59mnuws'  # should be tpirate1krma5z3ttj75la4m93xcndna9ullamq9y59mnuws
+BECH32_P2SH_TWO_ERRORS = 'tpirate1sppl5xpu70aka8nacd4kj2htflydspzkxcttc4v6'  # should be tpirate1sppl5xpu70aka8nacc4kj2htflydspzkxcttc4q6
+BECH32_NO_SEPARATOR = 'tpiratekrma5z3ttj75la4m93xcndna9ullamq9y59mnuws'
+BECH32_INVALID_CHAR = 'tpirate1krmo5z3ttj75la4m93xcndna9ullamq9y59mnuws'
 
-BASE58_VALID = 'yjQ5gLvGRtmq1cwc4kePLCrzQ8GVCh9Gaz'
+BASE58_VALID = 'shL2uiSwnBpgk7rJhTec4KnBxZQLXZbE2V'
 BASE58_INVALID_PREFIX = 'XpG61qAVhdyN7AqVZQsHfJL7AEk4dPVinc'
-BASE58_INVALID_CHECKSUM = 'yjQ5gLvGRtmq1cwc4kePLCrzQ8GVCh9Gaa'
+BASE58_INVALID_CHECKSUM = 'shL2uiSwnBpgk7rJhTec4KnBxZQLXZbE2a'
 BASE58_INVALID_LENGTH = '2VKf7XKMrp4bVNVmuRbyCewkP8FhGLP2E54LHDPakr9Sq5mtU2'
 
 INVALID_ADDRESS = 'asfah14i8fajz0123f'
@@ -97,12 +97,12 @@ class InvalidAddressErrorMessageTest(BitcoinTestFramework):
         # Invalid Bech32
         self.check_invalid(BECH32_INVALID_PREFIX, 'Not a valid Bech32m or Base58 encoding')
         self.check_invalid(BECH32_TOO_LONG, 'Bech32 string too long', list(range(90, len(BECH32_TOO_LONG))))
-        self.check_invalid(BECH32_ONE_ERROR, 'Invalid Bech32m checksum', [10])
-        self.check_invalid(BECH32_TWO_ERRORS, 'Invalid Bech32m checksum', [10, 30])
-        self.check_invalid(BECH32_ONE_ERROR_CAPITALS, 'Invalid Bech32m checksum', [39])
+        self.check_invalid(BECH32_ONE_ERROR, 'Invalid Bech32m checksum', [12])
+        self.check_invalid(BECH32_TWO_ERRORS, 'Invalid Bech32m checksum', [12, 32])
+        self.check_invalid(BECH32_ONE_ERROR_CAPITALS, 'Invalid Bech32m checksum', [41])
         self.check_invalid(BECH32_NO_SEPARATOR, 'Missing separator')
-        self.check_invalid(BECH32_INVALID_CHAR, 'Invalid Base 32 character', [9])
-        self.check_invalid(BECH32_P2SH_TWO_ERRORS, 'Invalid Bech32m checksum', [23, 44])
+        self.check_invalid(BECH32_INVALID_CHAR, 'Invalid Base 32 character', [11])
+        self.check_invalid(BECH32_P2SH_TWO_ERRORS, 'Invalid Bech32m checksum', [25, 46])
 
         # Bech32 strings with a valid checksum but an invalid DIP-18 Platform payload
         self.check_invalid(BECH32_INVALID_ENCODING, 'DIP-18 Platform addresses require bech32m checksum')
@@ -155,7 +155,7 @@ class InvalidAddressErrorMessageTest(BitcoinTestFramework):
         assert_equal(info['isplatform'], True)
         assert_equal(info['isscript'], True)
 
-        # A regular Dash address is not reported as a Platform one
+        # A regular PirateCash address is not reported as a Platform one
         assert 'isplatform' not in node.getaddressinfo(BASE58_VALID)
 
     def run_test(self):

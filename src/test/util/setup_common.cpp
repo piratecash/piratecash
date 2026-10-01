@@ -473,19 +473,21 @@ TestChainSetup::TestChainSetup(
     CCheckpointData checkpoints{
         {
             /*TestChainDATSetup=*/
-            {   98, uint256S("0x5644fe1ec2588f1052c13d833521cce12f0f051825f87c69792108ea7f06cc8b") },
+            {   98, uint256S("0x8efc92a862530cfbb8094df13ca4616a26db297a1147071baa60198e6a9eb23c") },
             /*TestChain100Setup=*/
-            {  100, uint256S("0xe941011be1ac056cc9a251fb45f1ad67d60edc255e22ecb182fd0008047a72f3") },
+            {  100, uint256S("0x44fd4cde1259695bde6f332827ddcba3ca5e52182d5f8236c56ef86601193f63") },
+            /*GovernanceVoteSetup=*/
+            {  107, uint256S("0xba440c1e597ac70a085358609c56b6634c6616579452cb9a30c01c1cb062b8f9") },
             /*TestChainV19BeforeActivationSetup=*/
-            {  103, uint256S("0x3f80d71d40a9f1ae7e3ad03c5652b56cc730006a9c9bde404468ee982a8cdaeb") },
+            {  368, uint256S("0xc88f885480ee97757c266ca37f345e5953befd5d12ce616018650c8539c09dd9") },
             /*TestChainDIP3BeforeActivationSetup=*/
-            {  107, uint256S("0x0bd6da43d024a39a25fa48c78190c63a4ffa631a32c65e7253104891d35d2f48") },
-            /*TestChainDIP3BeforeActivationSetup=*/
-            {  430, uint256S("0x7091641400f53220d5e798f1e27377e42fd82313ef65e32cdf0fd1da7347d282") },
+            {  372, uint256S("0x0e6913c9175d6ef5c4b2b87531378765348c0c6648ca496149b7b38dfbeaa4cd") },
+            /*TestChainSetup with default DIP3 activation=*/
+            {  430, uint256S("0x10dc3e85ca0e29cf708c61cb2503553d2350df6d5f0f5fbace155d7ef3c06b0e") },
             /*TestChainV24SignalBeforeV19Setup=*/
-            {  494, uint256S("0xc14c37bc7a7c79b0cb89a7c55cbd359e19b0ad945744e6a81bfe0e707486e12d") },
+            {  494, uint256S("0xa83f1f1b832bbc9b84ed19e13af67b750339c05759e13fc547593c3dc5fd3c78") },
             /*TestChainBRRBeforeActivationSetup=*/
-            {  497, uint256S("0x88c76a0b85095260fd2516f7a3ea7168676cf28e29de7101a9c3346c6c8fa317") },
+            {  497, uint256S("0x5c333c608371f62c4437bcb80a7e9973634f56c8fb9e3a7ccb759d00d371a30b") },
         }
     };
 
@@ -501,14 +503,14 @@ TestChainSetup::TestChainSetup(
 namespace {
 // This is the lowest activation height that leaves enough mature pre-mined coinbases for all
 // consumers of the shared fixture. The DIP3 prerequisite is active before the v19 boundary work.
-constexpr int V19_ACTIVATION_HEIGHT{109};
+constexpr int V19_ACTIVATION_HEIGHT{374};
 } // namespace
 
 TestChainV19BeforeActivationSetup::TestChainV19BeforeActivationSetup() :
     TestChainSetup{V19_ACTIVATION_HEIGHT - 6,
                    CBaseChainParams::REGTEST,
-                   {"-dip3params=100:500", "-testactivationheight=v19@109", "-testactivationheight=v20@109",
-                    "-testactivationheight=mn_rr@109"},
+                   {"-dip3params=100:500", "-testactivationheight=v19@374", "-testactivationheight=v20@374",
+                    "-testactivationheight=mn_rr@374"},
                    /*coins_db_in_memory=*/true,
                    /*block_tree_db_in_memory=*/true}
 {

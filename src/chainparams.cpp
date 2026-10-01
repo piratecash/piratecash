@@ -164,8 +164,6 @@ public:
         strNetworkID = CBaseChainParams::MAIN;
         consensus.nSubsidyHalvingInterval = 1266000;
         consensus.nMasternodePaymentsStartBlock = 1266000;
-        consensus.nMasternodePaymentsIncreaseBlock = 158000; // actual historical value
-        consensus.nMasternodePaymentsIncreasePeriod = 576*30; // 17280 - actual historical value
         consensus.nInstantSendConfirmationsRequired = 6;
         consensus.nInstantSendKeepLock = 24;
         consensus.nBudgetPaymentsStartBlock = 1899666;
@@ -274,8 +272,8 @@ public:
         // PirateCash BIP32 prvkeys start with 'xprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
 
-        // DIP-18 Dash Platform address HRP (bech32m)
-        bech32_platform_hrp = "dash";
+        // DIP-18 Platform address HRP (bech32m)
+        bech32_platform_hrp = "pirate";
 
         // PirateCash BIP44 coin type is '660'
         nExtCoinType = 660;
@@ -354,8 +352,6 @@ public:
         strNetworkID = CBaseChainParams::TESTNET;
         consensus.nSubsidyHalvingInterval = 290000;
         consensus.nMasternodePaymentsStartBlock = 290000;
-        consensus.nMasternodePaymentsIncreaseBlock = 4030;
-        consensus.nMasternodePaymentsIncreasePeriod = 10;
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = 1084666;
@@ -458,8 +454,8 @@ public:
         // Testnet PirateCash BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
 
-        // DIP-18 Dash Platform address HRP (bech32m)
-        bech32_platform_hrp = "tdash";
+        // DIP-18 Platform address HRP (bech32m)
+        bech32_platform_hrp = "tpirate";
 
         // Testnet PirateCash BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;
@@ -525,9 +521,7 @@ public:
     explicit CDevNetParams(const ArgsManager& args) {
         strNetworkID = CBaseChainParams::DEVNET;
         consensus.nSubsidyHalvingInterval = 210240;
-        consensus.nMasternodePaymentsStartBlock = 4010; // not true, but it's ok as long as it's less then nMasternodePaymentsIncreaseBlock
-        consensus.nMasternodePaymentsIncreaseBlock = 4030;
-        consensus.nMasternodePaymentsIncreasePeriod = 10;
+        consensus.nMasternodePaymentsStartBlock = 4010;
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = 4100;
@@ -629,8 +623,8 @@ public:
         // Devnet PirateCash BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
 
-        // DIP-18 Dash Platform address HRP (bech32m)
-        bech32_platform_hrp = "tdash";
+        // DIP-18 Platform address HRP (bech32m)
+        bech32_platform_hrp = "tpirate";
 
         // Devnet PirateCash BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;
@@ -771,8 +765,6 @@ public:
         strNetworkID =  CBaseChainParams::REGTEST;
         consensus.nSubsidyHalvingInterval = 150;
         consensus.nMasternodePaymentsStartBlock = 240;
-        consensus.nMasternodePaymentsIncreaseBlock = 350;
-        consensus.nMasternodePaymentsIncreasePeriod = 10;
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = 1000;
@@ -895,11 +887,11 @@ public:
         m_assumeutxo_data = MapAssumeutxo{
             {
                 110,
-                {AssumeutxoHash{uint256S("0x4567bce7eebe4a65feae1d80150d9dfe2c2056ba8e1c5fd4e4085a7b7bd14042")}, EvoSnapshotHash{uint256{}}, 110},
+                {AssumeutxoHash{uint256S("0x67c6de3291dd8ecd0430eec89171e86a25064e85e1709168333cae5004c3bd13")}, EvoSnapshotHash{uint256{}}, 110},
             },
             {
                 200,
-                {AssumeutxoHash{uint256S("0x9e9004d9180f42486b554302ed89e40e5cdefc9b6ed69a637bb633938ab833c0")}, EvoSnapshotHash{uint256{}}, 200},
+                {AssumeutxoHash{uint256S("0xaa38400322e7ea81df064341403199d8162ad6a0783076690eaae717375af1d8")}, EvoSnapshotHash{uint256{}}, 200},
             },
         };
 
@@ -920,8 +912,8 @@ public:
         // Regtest PirateCash BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
 
-        // DIP-18 Dash Platform address HRP (bech32m)
-        bech32_platform_hrp = "tdash";
+        // DIP-18 Platform address HRP (bech32m)
+        bech32_platform_hrp = "tpirate";
 
         // Regtest PirateCash BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;

@@ -821,9 +821,14 @@ std::optional<uint256> ReadBlockFromDisk(CBlock& block, const FlatFilePos& pos, 
         return std::nullopt;
     }
 
+    if (block.IsProofOfStakeTX()) {
+        block.nFlags |= CBlockIndex::BLOCK_PROOF_OF_STAKE;
+    }
+
     // Check the header
     const uint256 hash{block.GetHash()};
-    if (!CheckProofOfWork(block.GetPoWHash(), block.nBits, consensusParams) && block.GetBlockTime() != 1541202300) {
+    BlockValidationState state;
+    if (block.IsProofOfWork() && !CheckProof(state, block.GetBlockHeader(), consensusParams)) {
         LogError("ReadBlockFromDisk: Errors in block header at %s\n", pos.ToString());
         return std::nullopt;
     }

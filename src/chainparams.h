@@ -129,7 +129,7 @@ public:
     /** Return the list of hostnames to look up for DNS seeds */
     const std::vector<std::string>& DNSSeeds() const { return vSeeds; }
     const std::vector<unsigned char>& Base58Prefix(Base58Type type) const { return base58Prefixes[type]; }
-    /** DIP-18 Platform address bech32m HRP: "dash" on mainnet, "tdash" on test chains */
+    /** DIP-18 Platform address bech32m HRP: "pirate" on mainnet, "tpirate" on test chains */
     const std::string& Bech32PlatformHRP() const { return bech32_platform_hrp; }
     int ExtCoinType() const { return nExtCoinType; }
     const std::vector<uint8_t>& FixedSeeds() const { return vFixedSeeds; }

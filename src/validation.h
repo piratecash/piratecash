@@ -81,6 +81,9 @@ static const int DEFAULT_SCRIPTCHECK_THREADS = 0;
 static const unsigned int MAX_HEADERS_UNCOMPRESSED_RESULT = 2000;
 static const unsigned int MAX_HEADERS_COMPRESSED_RESULT = 8000;
 
+/** Due to high computation requirements for PirateCash PoW & PoS we need to limit message loop blocking */
+static constexpr unsigned int MAX_NEW_HEADER_BURST = 50;
+
 /** Default for -stopatheight */
 static const int DEFAULT_STOPATHEIGHT = 0;
 /** Block files containing a block-height within MIN_BLOCKS_TO_KEEP of ActiveChain().Tip() will not be pruned. */
@@ -105,13 +108,21 @@ enum class SynchronizationState {
     POST_INIT
 };
 
+struct StakeHasher
+{
+    size_t operator()(const COutPoint& op) const { return ReadLE64(op.hash.begin()) + op.n; }
+};
+
 extern GlobalMutex g_best_block_mutex;
 extern std::condition_variable g_best_block_cv;
 /** Used to notify getblocktemplate RPC of new tips. */
 extern uint256 g_best_block;
+extern int64_t nReserveBalance;
 
 /** Documentation for argument 'checklevel'. */
 extern const std::vector<std::string> CHECKLEVEL_DOC;
+
+extern uint32_t nFirstPoSBlock;
 
 /** Run instances of script checking worker threads */
 void StartScriptCheckWorkerThreads(int threads_num);
@@ -1179,7 +1190,7 @@ public:
      * @param[out] state This may be set to an Error state if any error occurred processing them
      * @param[out] ppindex If set, the pointer will be set to point to the last new block index object for the given headers
      */
-    bool ProcessNewBlockHeaders(const std::vector<CBlockHeader>& block, BlockValidationState& state, const CBlockIndex** ppindex = nullptr) LOCKS_EXCLUDED(cs_main);
+    bool ProcessNewBlockHeaders(const std::vector<CBlockHeader>& block, BlockValidationState& state, const CBlockIndex** ppindex = nullptr, CBlockHeader* first_invalid = nullptr) LOCKS_EXCLUDED(cs_main);
 
     /**
      * Sufficiently validate a block for disk storage (and store on disk).
@@ -1273,6 +1284,11 @@ bool DeploymentEnabled(const ChainstateManager& chainman, DEP dep)
     return DeploymentEnabled(chainman.GetConsensus(), dep);
 }
 
+/**
+ * Determine what nVersion a new block should use.
+ */
+int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params, bool fCheckMasternodesUpgraded = false, bool isPos = false);
+
 /** Get highest permissible ProTx version based on deployment status
  *  Note: The override is needed because some RPCs need to use deployment status information for everything *except*
  *        the BLS version upgrade since they are specializations for a specific BLS version. This is a one-off.
@@ -1283,6 +1299,14 @@ bool DeploymentEnabled(const ChainstateManager& chainman, DEP dep)
 
 /** Determine the masternode reward era for the block following pindexPrev. */
 MnRewardEra GetMnRewardEraAfter(const CBlockIndex* pindexPrev, const ChainstateManager& chainman);
+
+/** Check if Proof-of-Stake is required for particular height **/
+bool IsPoSEnforcedHeight(int nBlockHeight);
+bool IsPoSV2EnforcedHeight(int nFirstPoSv2Block);
+bool IsPowActiveHeight(int nBlockHeight);
+
+bool CheckProof(BlockValidationState& state, const CBlockIndex& pindex, const Consensus::Params& params);
+bool CheckProof(BlockValidationState& state, const CBlockHeader& block, const Consensus::Params& params, const node::BlockManager* blockman = nullptr, const CChain* active_chain = nullptr);
 
 /**
  * Return the expected assumeutxo value for a given height, if one exists.
