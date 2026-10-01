@@ -24,10 +24,10 @@ static const struct {
     const char *macIconPath;
     const std::string titleAddText;
 } network_styles[] = {
-    {"main",    QAPP_APP_NAME_DEFAULT, 0,   0,  ":/icons/dash_macos_mainnet",  ""},
-    {"test",    QAPP_APP_NAME_TESTNET, 190, 20, ":/icons/dash_macos_testnet",  ""},
-    {"devnet",  QAPP_APP_NAME_DEVNET,  35,  15, ":/icons/dash_macos_devnet",   "[devnet: %s]"},
-    {"regtest", QAPP_APP_NAME_REGTEST, 160, 30, ":/icons/dash_macos_regtest",  ""},
+    {"main",    QAPP_APP_NAME_DEFAULT, 0,   0,  ":/icons/piratecash_macos_mainnet",  ""},
+    {"test",    QAPP_APP_NAME_TESTNET, 190, 20, ":/icons/piratecash_macos_testnet",  ""},
+    {"devnet",  QAPP_APP_NAME_DEVNET,  35,  15, ":/icons/piratecash_macos_devnet",   "[devnet: %s]"},
+    {"regtest", QAPP_APP_NAME_REGTEST, 160, 30, ":/icons/piratecash_macos_regtest",  ""},
 };
 
 void NetworkStyle::rotateColor(QColor& col, const int iconColorHueShift, const int iconColorSaturationReduction)
@@ -67,12 +67,12 @@ NetworkStyle::NetworkStyle(const QString &_appName, const int iconColorHueShift,
                            const char *_macIconPath, const char *_titleAddText):
     appName(_appName),
     titleAddText(qApp->translate("SplashScreen", _titleAddText)),
-    badgeColor(QColor(0, 141, 228)) // default badge color is the original Dash's blue, regardless of the current theme
+    badgeColor(QColor(0, 141, 228)) // default badge color, regardless of the current theme
 {
     // Allow for separate UI settings for testnets
     QApplication::setApplicationName(appName);
     // load pixmap
-    QPixmap appIconPixmap(":/icons/dash");
+    QPixmap appIconPixmap(":/icons/piratecash");
 
     if(iconColorHueShift != 0 && iconColorSaturationReduction != 0)
     {
@@ -93,7 +93,7 @@ NetworkStyle::NetworkStyle(const QString &_appName, const int iconColorHueShift,
     if (_macIconPath) {
         m_macos_icon = QIcon(QPixmap(_macIconPath));
     }
-    m_macos_tray = QIcon(QPixmap(":/icons/dash_macos_tray"));
+    m_macos_tray = QIcon(QPixmap(":/icons/piratecash_macos_tray"));
     m_macos_tray->setIsMask(true);
 #endif // Q_OS_MACOS
 }
