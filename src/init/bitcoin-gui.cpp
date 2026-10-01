@@ -16,7 +16,7 @@
 
 namespace init {
 namespace {
-const char* EXE_NAME = "dash-gui";
+const char* EXE_NAME = "piratecash-gui";
 
 class BitcoinGuiInit : public interfaces::Init
 {
