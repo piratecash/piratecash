@@ -289,7 +289,7 @@ class SendallTest(BitcoinTestFramework):
     @cleanup
     def sendall_fails_on_low_fee(self):
         self.log.info("Test sendall fails if the transaction fee is lower than the minimum fee rate setting")
-        assert_raises_rpc_error(-8, "Fee rate (0.999 duff/B) is lower than the minimum fee rate setting (1.000 duff/B)",
+        assert_raises_rpc_error(-8, "Fee rate (0.999 corsars/B) is lower than the minimum fee rate setting (1.000 corsars/B)",
         self.wallet.sendall, recipients=[self.recipient], fee_rate=0.999)
 
     @cleanup
