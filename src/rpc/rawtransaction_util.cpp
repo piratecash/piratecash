@@ -108,7 +108,7 @@ void AddOutputs(CMutableTransaction& rawTx, const UniValue& outputs_in)
         } else {
             CTxDestination destination = DecodeDestination(name_);
             if (!IsValidDestination(destination)) {
-                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Dash address: ") + name_);
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid PirateCash address: ") + name_);
             }
 
             if (!destinations.insert(destination).second) {
