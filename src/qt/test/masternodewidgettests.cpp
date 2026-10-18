@@ -340,8 +340,10 @@ void MasternodeWidgetTests::providerNetInfoValidation_data()
     add_row("regular-extended-core-domain", regular, extended, true, {"example.com:9999"}, {}, {}, -1, -1, false,
             "invalid input");
 
-    add_row("evo-basic-ports", evo, basic, true, {core1}, {}, {}, 26656, 443, true);
-    add_row("evo-basic-zero-port", evo, basic, true, {core1}, {}, {}, 0, 443, false, "valid port");
+    add_row("evo-basic-ports", evo, basic, true, {core1}, {}, {}, Params().GetDefaultPlatformP2PPort(),
+            Params().GetDefaultPlatformHTTPPort(), true);
+    add_row("evo-basic-zero-port", evo, basic, true, {core1}, {}, {}, 0, Params().GetDefaultPlatformHTTPPort(), false,
+            "valid port");
     add_row("evo-extended-all-empty", evo, extended, true, {}, {}, {}, -1, -1, true);
     add_row("evo-extended-complete", evo, extended, true, {core1}, {"1.1.1.2:26656"}, {"example.com:443"}, -1, -1, true);
     add_row("evo-extended-platform-only", evo, extended, true, {}, {"1.1.1.2:26656"}, {"example.com:443"}, -1, -1,

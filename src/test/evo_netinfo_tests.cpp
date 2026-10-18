@@ -27,7 +27,7 @@ struct TestEntry {
 
 static const std::vector<TestEntry> addr_vals_main{
     // Address and port specified
-    {{NetInfoPurpose::CORE_P2P, "1.1.1.1:9999"}, NetInfoStatus::Success, NetInfoStatus::Success},
+    {{NetInfoPurpose::CORE_P2P, "1.1.1.1:63636"}, NetInfoStatus::Success, NetInfoStatus::Success},
     // - Port should default to default P2P core with MnNetInfo
     // - Ports are no longer implied with ExtNetInfo
     {{NetInfoPurpose::CORE_P2P, "1.1.1.1"}, NetInfoStatus::Success, NetInfoStatus::BadPort},
@@ -126,8 +126,8 @@ BOOST_AUTO_TEST_CASE(mnnetinfo_rules_main)
     {
         // MnNetInfo only stores one value, overwriting prohibited
         MnNetInfo netInfo;
-        BOOST_CHECK_EQUAL(netInfo.AddEntry(NetInfoPurpose::CORE_P2P, "1.1.1.1:9999"), NetInfoStatus::Success);
-        BOOST_CHECK_EQUAL(netInfo.AddEntry(NetInfoPurpose::CORE_P2P, "1.1.1.2:9999"), NetInfoStatus::MaxLimit);
+        BOOST_CHECK_EQUAL(netInfo.AddEntry(NetInfoPurpose::CORE_P2P, "1.1.1.1:63636"), NetInfoStatus::Success);
+        BOOST_CHECK_EQUAL(netInfo.AddEntry(NetInfoPurpose::CORE_P2P, "1.1.1.2:63636"), NetInfoStatus::MaxLimit);
         BOOST_CHECK(netInfo.HasEntries(NetInfoPurpose::CORE_P2P));
         ValidateGetEntries(netInfo.GetEntries(), /*expected_size=*/1);
     }
@@ -191,8 +191,8 @@ static const std::vector<TestEntry> addr_vals_reg{
     // - ExtNetInfo requires non-zero ports
     {{NetInfoPurpose::CORE_P2P, "1.1.1.1:0"}, NetInfoStatus::Success, NetInfoStatus::BadPort},
     // - Mainnet P2P port on non-mainnet cause failure in MnNetInfo
-    // - ExtNetInfo is indifferent to choice of port unless it's a bad port which 9999 isn't
-    {{NetInfoPurpose::CORE_P2P, "1.1.1.1:9999"}, NetInfoStatus::BadPort, NetInfoStatus::Success},
+    // - ExtNetInfo is indifferent to choice of port unless it's a bad port which 63636 isn't
+    {{NetInfoPurpose::CORE_P2P, "1.1.1.1:63636"}, NetInfoStatus::BadPort, NetInfoStatus::Success},
     // - Non-mainnet P2P port is allowed in MnNetInfo regardless of bad port status
     // - Port 22 (SSH) is below the privileged ports threshold (1023) and is therefore a bad port, disallowed in ExtNetInfo
     {{NetInfoPurpose::CORE_P2P, "1.1.1.1:22"}, NetInfoStatus::Success, NetInfoStatus::BadPort},
@@ -425,9 +425,9 @@ BOOST_AUTO_TEST_CASE(cservice_compatible)
     BOOST_CHECK(CheckIfSerSame(service, netInfo));
 
     // Valid IPv4 address, valid port
-    service = LookupNumeric("1.1.1.1", 9999);
+    service = LookupNumeric("1.1.1.1", 63636);
     netInfo.Clear();
-    BOOST_CHECK_EQUAL(netInfo.AddEntry(NetInfoPurpose::CORE_P2P, "1.1.1.1:9999"), NetInfoStatus::Success);
+    BOOST_CHECK_EQUAL(netInfo.AddEntry(NetInfoPurpose::CORE_P2P, "1.1.1.1:63636"), NetInfoStatus::Success);
     BOOST_CHECK(CheckIfSerSame(service, netInfo));
 
     // Valid IPv4 address, default P2P port implied
@@ -468,7 +468,7 @@ BOOST_AUTO_TEST_CASE(interface_equality)
     BOOST_CHECK(util::shared_ptr_equal(ptr_lhs, ptr_rhs) && !util::shared_ptr_not_equal(ptr_lhs, ptr_rhs));
 
     // Equal initialization state, same type, differing values
-    BOOST_CHECK_EQUAL(ptr_rhs->AddEntry(NetInfoPurpose::CORE_P2P, "1.1.1.1:9999"), NetInfoStatus::Success);
+    BOOST_CHECK_EQUAL(ptr_rhs->AddEntry(NetInfoPurpose::CORE_P2P, "1.1.1.1:63636"), NetInfoStatus::Success);
     BOOST_CHECK(!util::shared_ptr_equal(ptr_lhs, ptr_rhs) && util::shared_ptr_not_equal(ptr_lhs, ptr_rhs));
 
     // Equal initialization state, different type, same values

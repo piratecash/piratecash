@@ -11,6 +11,8 @@
 #include <instantsend/lock.h>
 #include <interfaces/chain.h>
 #include <interfaces/node.h>
+#include <key.h>
+#include <key_io.h>
 #include <llmq/commitment.h>
 #include <llmq/context.h>
 #include <script/standard.h>
@@ -374,8 +376,10 @@ BOOST_AUTO_TEST_CASE(getInstantSendLock)
     // SPORK_2 defaults to OFF: the stored lock must not leak through the interface.
     BOOST_CHECK(node->llmq().getInstantSendLock(islock->txid).empty());
 
-    // The fixture builds a bare CSporkManager, so wire up the regtest signer before setting the spork.
-    BOOST_REQUIRE(m_node.sporkman->SetSporkAddress(Params().SporkAddress()));
+    // The fixture builds a bare CSporkManager, so wire up the test signer before setting the spork.
+    const CKey spork_key{DecodeSecret(REGTEST_SPORK_PRIVKEY)};
+    BOOST_REQUIRE(spork_key.IsValid());
+    BOOST_REQUIRE(m_node.sporkman->SetSporkAddress(EncodeDestination(PKHash{spork_key.GetPubKey()})));
     BOOST_REQUIRE(m_node.sporkman->SetPrivKey(REGTEST_SPORK_PRIVKEY));
     BOOST_REQUIRE(m_node.sporkman->UpdateSpork(SPORK_2_INSTANTSEND_ENABLED, 0).has_value());
 

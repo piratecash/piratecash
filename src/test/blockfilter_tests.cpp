@@ -161,6 +161,7 @@ BOOST_AUTO_TEST_CASE(blockfilters_json_test)
 
         CBlock block;
         BOOST_REQUIRE(DecodeHexBlk(block, test[pos++].get_str()));
+        BOOST_CHECK_EQUAL(block.GetHash(), block_hash);
 
         CBlockUndo block_undo;
         block_undo.vtxundo.emplace_back();

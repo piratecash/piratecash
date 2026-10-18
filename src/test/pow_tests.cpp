@@ -7,6 +7,7 @@
 #include <pow.h>
 #include <test/util/random.h>
 #include <test/util/setup_common.h>
+#include <validation.h>
 
 #include <boost/test/unit_test.hpp>
 
@@ -17,6 +18,7 @@ BOOST_AUTO_TEST_CASE(get_next_work)
 {
     const auto chainParams = CreateChainParams(*m_node.args, CBaseChainParams::MAIN);
 
+    // Historical Dash blocks, reused with PirateCash target spacings below.
     static const std::vector<std::pair<uint32_t, uint32_t>> mainnet_data = {
         { 1408728124, 0x1b104be1U }, { 1408728332, 0x1b10e09eU }, { 1408728479, 0x1b11a33cU },
         { 1408728495, 0x1b121cf3U }, { 1408728608, 0x1b11951eU }, { 1408728744, 0x1b11abacU },
@@ -39,30 +41,39 @@ BOOST_AUTO_TEST_CASE(get_next_work)
         entry.pprev = blockIndexLast;
         blockIndexLast = &entry;
     }
-    blockIndexLast->nHeight = 123456;
+    blockIndexLast->nHeight = chainParams->GetConsensus().nPowDGWHeight;
     assert(mainnet_data.size() == blockidx.size());
 
     CBlockHeader blockHeader;
-    blockHeader.nTime = 1408732505; // Block #123457
-    BOOST_CHECK_EQUAL(GetNextWorkRequired(blockIndexLast, &blockHeader, chainParams->GetConsensus()), 0x1b1441deU); // Block #123457 has 0x1b1441de
+    blockHeader.nTime = 1408732505;
+    // Preserve the original Dash block #123457 result at its 150-second spacing.
+    auto dash_consensus = chainParams->GetConsensus();
+    dash_consensus.nPowTargetSpacing = 150;
+    BOOST_CHECK_EQUAL(GetNextWorkRequired(blockIndexLast, &blockHeader, dash_consensus), 0x1b1441deU);
+    BOOST_CHECK_EQUAL(GetNextWorkRequired(blockIndexLast, &blockHeader, chainParams->GetConsensus()), 0x1b195256U);
 
     // test special rules for slow blocks on devnet/testnet
     const auto chainParamsDev = CreateChainParams(*m_node.args, CBaseChainParams::DEVNET);
 
     // make sure normal rules apply
-    blockHeader.nTime = 1408732505; // Block #123457
-    BOOST_CHECK_EQUAL(GetNextWorkRequired(blockIndexLast, &blockHeader, chainParamsDev->GetConsensus()), 0x1b1441deU); // Block #123457 has 0x1b1441de
+    blockHeader.nTime = 1408732505;
+    BOOST_CHECK_EQUAL(GetNextWorkRequired(blockIndexLast, &blockHeader, chainParamsDev->GetConsensus()), 0x1b321f05U);
+
+    blockHeader.nTime = blockIndexLast->nTime + 4 * chainParamsDev->GetConsensus().nPowTargetSpacing;
+    BOOST_CHECK_EQUAL(GetNextWorkRequired(blockIndexLast, &blockHeader, chainParamsDev->GetConsensus()), 0x1b321f05U);
 
     // 10x higher target
-    blockHeader.nTime = 1408733090; // Block #123457 (10m+1sec)
-    BOOST_CHECK_EQUAL(GetNextWorkRequired(blockIndexLast, &blockHeader, chainParamsDev->GetConsensus()), 0x1c00c8f8U); // Block #123457 has 0x1c00c8f8
-    blockHeader.nTime = 1408733689; // Block #123457 (20m)
-    BOOST_CHECK_EQUAL(GetNextWorkRequired(blockIndexLast, &blockHeader, chainParamsDev->GetConsensus()), 0x1c00c8f8U); // Block #123457 has 0x1c00c8f8
+    ++blockHeader.nTime;
+    BOOST_CHECK_EQUAL(GetNextWorkRequired(blockIndexLast, &blockHeader, chainParamsDev->GetConsensus()), 0x1c00c8f8U);
+    blockHeader.nTime = blockIndexLast->nTime + 8 * chainParamsDev->GetConsensus().nPowTargetSpacing;
+    BOOST_CHECK_EQUAL(GetNextWorkRequired(blockIndexLast, &blockHeader, chainParamsDev->GetConsensus()), 0x1c00c8f8U);
+    blockHeader.nTime = blockIndexLast->nTime + 2 * 60 * 60;
+    BOOST_CHECK_EQUAL(GetNextWorkRequired(blockIndexLast, &blockHeader, chainParamsDev->GetConsensus()), 0x1c00c8f8U);
     // lowest diff possible
-    blockHeader.nTime = 1408739690; // Block #123457 (2h+1sec)
-    BOOST_CHECK_EQUAL(GetNextWorkRequired(blockIndexLast, &blockHeader, chainParamsDev->GetConsensus()), 0x207fffffU); // Block #123457 has 0x207fffff
-    blockHeader.nTime = 1408743289; // Block #123457 (3h)
-    BOOST_CHECK_EQUAL(GetNextWorkRequired(blockIndexLast, &blockHeader, chainParamsDev->GetConsensus()), 0x207fffffU); // Block #123457 has 0x207fffff
+    ++blockHeader.nTime;
+    BOOST_CHECK_EQUAL(GetNextWorkRequired(blockIndexLast, &blockHeader, chainParamsDev->GetConsensus()), 0x207fffffU);
+    blockHeader.nTime = blockIndexLast->nTime + 3 * 60 * 60;
+    BOOST_CHECK_EQUAL(GetNextWorkRequired(blockIndexLast, &blockHeader, chainParamsDev->GetConsensus()), 0x207fffffU);
 }
 
 /* Test the constraint on the upper bound for next work */
@@ -191,18 +202,57 @@ void sanity_check_chainparams(const ArgsManager& args, std::string chainName)
     // target timespan is an even multiple of spacing
     BOOST_CHECK_EQUAL(consensus.nPowTargetTimespan % consensus.nPowTargetSpacing, 0);
 
-    // genesis nBits is positive, doesn't overflow and is lower than powLimit
+    // genesis nBits is positive and doesn't overflow
     arith_uint256 pow_compact;
     bool neg, over;
     pow_compact.SetCompact(chainParams->GenesisBlock().nBits, &neg, &over);
     BOOST_CHECK(!neg && pow_compact != 0);
     BOOST_CHECK(!over);
-    BOOST_CHECK(UintToArith256(consensus.powLimit) >= pow_compact);
+    if (chainName == CBaseChainParams::TESTNET) {
+        // The historical testnet genesis exceeds powLimit and uses the legacy genesis exception.
+        CBlock genesis{chainParams->GenesisBlock()};
+        genesis.fChecked = false;
+        genesis.m_checked_merkle_root = false;
+        BOOST_CHECK_EQUAL(genesis.nTime, 1541202300U);
+        BOOST_CHECK_EQUAL(genesis.nBits, 0x1f04ade3U);
+        BOOST_CHECK(UintToArith256(consensus.powLimit) < pow_compact);
+        BOOST_CHECK(!CheckProofOfWork(genesis.GetHash(), genesis.nBits, consensus));
+        BlockValidationState genesis_state;
+        BOOST_CHECK_MESSAGE(CheckBlock(genesis, genesis_state, consensus), genesis_state.ToString());
 
-    // check max target * 4*nPowTargetTimespan doesn't overflow -- see pow.cpp:CalculateNextWorkRequired()
+        ++genesis.nTime;
+        genesis.fChecked = false;
+        genesis.m_checked_merkle_root = false;
+        BlockValidationState invalid_state;
+        BOOST_CHECK(!CheckBlock(genesis, invalid_state, consensus));
+        BOOST_CHECK_EQUAL(invalid_state.GetRejectReason(), "high-hash");
+    } else {
+        BOOST_CHECK(UintToArith256(consensus.powLimit) >= pow_compact);
+    }
+
+    // Check historical retarget results and the applicable multiplication bound.
     if (!consensus.fPowNoRetargeting) {
         arith_uint256 targ_max{UintToArith256(uint256S("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"))};
-        targ_max /= consensus.nPowTargetTimespan*4;
+        if (chainName == CBaseChainParams::MAIN || chainName == CBaseChainParams::TESTNET) {
+            // PirateCash retains BTC retarget overflow for historical consensus compatibility.
+            // These fixed vectors include both sides of the first overflow boundary.
+            CBlockIndex last;
+            last.nBits = UintToArith256(consensus.powLimit).GetCompact();
+            last.nTime = 4 * consensus.nPowTargetTimespan;
+            BOOST_REQUIRE_EQUAL(last.nBits, 0x1f00ffffU);
+            const std::vector<std::pair<int64_t, uint32_t>> legacy_btc_targets{
+                {7200, 0x1e3fffc0U}, {28800, 0x1f00ffffU},
+                {65537, 0x1f00ffffU}, {65538, 0x1d024686U},
+                {72000, 0x1e3972b0U}, {86400, 0x1f00b972U}, {115200, 0x1f00ffffU},
+            };
+            for (const auto& [timespan, expected] : legacy_btc_targets) {
+                BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&last, last.GetBlockTime() - timespan, consensus), expected);
+            }
+            // Bound the multiplication in DGW, which replaces BTC retargeting at nPowDGWHeight.
+            targ_max /= 24 * consensus.nPowTargetSpacing * 3;
+        } else {
+            targ_max /= consensus.nPowTargetTimespan*4;
+        }
         // for devnets pow-no-retargeting may work as non-expected but it's a breaking change to fix it
         // TODO: remove this special case for devnet
         if (chainName != CBaseChainParams::DEVNET) {
