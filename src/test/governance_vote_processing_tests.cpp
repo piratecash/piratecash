@@ -40,9 +40,8 @@
 using namespace std::chrono_literals;
 
 namespace {
-// TestChainSetup only accepts checkpointed chain lengths, so 107 blocks plus
-// -dip3params=109:500 is the shortest chain a ProRegTx can be mined on. Same setup as
-// TestChainDIP3Setup in evo_deterministicmns_tests.cpp.
+// Keep the checkpointed 107-block chain. SetUp advances past DIP3 until twenty
+// 50-PIRATE coinbases are mature enough to fund the collateral.
 constexpr int DIP3_ACTIVATION_HEIGHT{109};
 
 void SignWithVotingKey(CGovernanceVote& vote, const CKey& key)
@@ -100,8 +99,8 @@ struct GovernanceVoteSetup : public TestChainSetup {
 
         utxos = BuildSimpleUtxoMap(m_coinbase_txns);
 
-        // Activate DIP3, then register the masternode that votes in these tests.
-        MineBlocks(1);
+        // Activate DIP3 and mature twenty 50-PIRATE coinbases for the collateral.
+        MineBlocks(15);
         auto protx = CreateProRegTx(*m_node.chainman, utxos, /*port=*/1, payout_script(), coinbaseKey, mn_voting_key,
                                     mn_operator_key);
         mn_collateral = COutPoint(protx.GetHash(), 0);

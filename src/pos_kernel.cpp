@@ -12,13 +12,18 @@
 #include <chain.h>
 #include <chainparams.h>
 #include <consensus/validation.h>
-#include <db.h>
+#include <logging.h>
+#include <node/blockstorage.h>
+#include <node/transaction.h>
 #include <policy/policy.h>
 #include <pos_kernel.h>
 #include <script/interpreter.h>
 #include <timedata.h>
 #include <util/system.h>
+#include <util/time.h>
 #include <validation.h>
+
+#include <tuple>
 
 using namespace std;
 
@@ -35,8 +40,10 @@ static constexpr int MODIFIER_INTERVAL_SECTIONS_MAX = 64;
 // Get the last stake modifier and its generation time from a given block
 static bool GetLastStakeModifier(const CBlockIndex* pindex, uint32_t& nStakeModifier, int64_t& nModifierTime)
 {
-    if (!pindex)
-        return error("GetLastStakeModifier: null pindex");
+    if (!pindex) {
+        LogError("GetLastStakeModifier: null pindex\n");
+        return false;
+    }
     while (pindex && pindex->pprev && !pindex->IsGeneratedStakeModifier())
         pindex = pindex->pprev;
     nStakeModifier = pindex->nStakeModifier();
@@ -94,11 +101,13 @@ static constexpr int64_t GetStakeModifierSelectionInterval()
     return StakeModifierSelectionIntervalHelper<MODIFIER_INTERVAL_SECTIONS_MAX - 1>::value;
 }
 
+using StakeModifierCandidate = tuple<int64_t, uint256, const CBlockIndex*>;
+
 // select a block from the candidate blocks in vSortedByTimestamp, excluding
 // already selected blocks in vSelectedBlocks, and with timestamp up to
 // nSelectionIntervalStop.
 static bool SelectBlockFromCandidates(
-    vector<pair<int64_t, uint256> >& vSortedByTimestamp,
+    vector<StakeModifierCandidate>& vSortedByTimestamp,
     map<uint256, const CBlockIndex*>& mapSelectedBlocks,
     int64_t nSelectionIntervalStop,
     uint64_t nStakeModifierPrev,
@@ -114,11 +123,11 @@ static bool SelectBlockFromCandidates(
             break;
         }
 
-        CBlockIndex* pindex_lookup = g_chainman.m_blockman.LookupBlockIndex(iter->second);
-        if (!pindex_lookup)
-            return error("SelectBlockFromCandidates: failed to find block index for candidate block %s", iter->second.ToString().c_str());
-
-        const CBlockIndex* pindex = pindex_lookup;
+        const CBlockIndex* pindex = get<2>(*iter);
+        if (!pindex) {
+            LogError("SelectBlockFromCandidates: missing candidate block index\n");
+            return false;
+        }
         if (fSelected && pindex->GetBlockTime() > nSelectionIntervalStop) {
             // No point to re-consider the blocks
             vSortedByTimestamp.erase(vSortedByTimestamp.begin(), iter+1);
@@ -185,8 +194,10 @@ bool ComputeNextStakeModifier(const CBlockIndex* pindexPrev, uint32_t& nStakeMod
     // First find current stake modifier and its generation block time
     // if it's not old enough, return the same stake modifier
     int64_t nModifierTime = 0;
-    if (!GetLastStakeModifier(pindexPrev, nStakeModifier, nModifierTime))
-        return error("ComputeNextStakeModifier: unable to get last modifier");
+    if (!GetLastStakeModifier(pindexPrev, nStakeModifier, nModifierTime)) {
+        LogError("ComputeNextStakeModifier: unable to get last modifier\n");
+        return false;
+    }
 
     LogPrint(BCLog::STAKING, "%s: prev modifier=%08x time=%d\n",
              __func__, nStakeModifier, nModifierTime);
@@ -201,14 +212,14 @@ bool ComputeNextStakeModifier(const CBlockIndex* pindexPrev, uint32_t& nStakeMod
     }
 
     // Sort candidate blocks by timestamp
-    vector<pair<int64_t, uint256> > vSortedByTimestamp;
+    vector<StakeModifierCandidate> vSortedByTimestamp;
     vSortedByTimestamp.reserve(MODIFIER_INTERVAL_SECTIONS_MAX);
     int64_t nSelectionInterval = GetStakeModifierSelectionInterval();
     int64_t nSelectionIntervalStart = (pindexPrev->GetBlockTime() / MODIFIER_INTERVAL) * MODIFIER_INTERVAL - nSelectionInterval;
     const CBlockIndex* pindex = pindexPrev;
 
     while (pindex && pindex->GetBlockTime() >= nSelectionIntervalStart) {
-        vSortedByTimestamp.push_back(make_pair(pindex->GetBlockTime(), pindex->GetBlockHash()));
+        vSortedByTimestamp.push_back(make_tuple(pindex->GetBlockTime(), pindex->GetBlockHash(), pindex));
         pindex = pindex->pprev;
     }
 
@@ -241,7 +252,7 @@ bool ComputeNextStakeModifier(const CBlockIndex* pindexPrev, uint32_t& nStakeMod
     }
 
     // Print selection map for visualization of the selected blocks
-    if (LogAcceptCategory(BCLog::STAKING)) {
+    if (LogAcceptDebug(BCLog::STAKING)) {
         string strSelectionMap = "";
         // '-' indicates proof-of-work blocks not selected
         strSelectionMap.insert(0, pindexPrev->nHeight - nHeightFirstCandidate + 1, '-');
@@ -394,17 +405,20 @@ bool CheckStakeKernelHash(
     auto min_age = Params().MinStakeAge();
 
     if (nValueIn < MIN_STAKE_AMOUNT) {
-        return error("CheckStakeKernelHash() : stake value is too small %d < %d", nValueIn, MIN_STAKE_AMOUNT);
+        LogError("CheckStakeKernelHash() : stake value is too small %d < %d\n", nValueIn, MIN_STAKE_AMOUNT);
+        return false;
     }
 
-    if (nTimeTx < nTimeBlockFrom) // Transaction timestamp violation
-        return error("CheckStakeKernelHash() : nTime violation");
+    if (nTimeTx < nTimeBlockFrom) { // Transaction timestamp violation
+        LogError("CheckStakeKernelHash() : nTime violation\n");
+        return false;
+    }
 
     if (nTimeBlockFrom + min_age > nTimeTx) // Min age requirement
     {
         // During generation, some stakes may be not year ready
         if (fCheck) {
-            error("%s : min age violation - nTimeBlockFrom=%d nStakeMinAge=%d nTimeTx=%d",
+            LogError("%s : min age violation - nTimeBlockFrom=%d nStakeMinAge=%d nTimeTx=%d\n",
                   __func__, nTimeBlockFrom, min_age, nTimeTx);
         }
         return false;
@@ -444,10 +458,11 @@ bool CheckStakeKernelHash(
 
     if (fCheck) {
         if (nStakeModifier != nRequiredStakeModifier) {
-            return error(
-                "%s : nStakeModifier mismatch at %d %llx != %llx",
+            LogError(
+                "%s : nStakeModifier mismatch at %d %llx != %llx\n",
                 __func__, blockFrom.nHeight,
                 nStakeModifier, nRequiredStakeModifier );
+            return false;
         }
     } else {
         nStakeModifier = nRequiredStakeModifier;
@@ -469,7 +484,7 @@ bool CheckStakeKernelHash(
     auto min_time = nTimeTx;
     auto max_time = std::min<int64_t>(
                 min_time + nHashDrift,
-                GetAdjustedTime() + MAX_POS_BLOCK_AHEAD_TIME - MAX_POS_BLOCK_AHEAD_SAFETY_MARGIN);
+                TicksSinceEpoch<std::chrono::seconds>(GetAdjustedTime()) + MAX_POS_BLOCK_AHEAD_TIME - MAX_POS_BLOCK_AHEAD_SAFETY_MARGIN);
     LogPrint(BCLog::STAKING, "%s: looking for solution in range %lld .. %lld (%lld) \n",
              __func__, min_time, max_time, (max_time - min_time));
 
@@ -514,7 +529,7 @@ bool CheckStakeKernelHash(
 }
 
 // Check kernel hash target and coinstake signature
-bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& header, uint256& hashProofOfStake, const Consensus::Params& consensus, const CTxMemPool* mempool)
+bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& header, uint256& hashProofOfStake, const Consensus::Params& consensus, const CTxMemPool* mempool, const node::BlockManager* blockman, const CChain* active_chain)
 {
     if (header.posBlockSig.empty()) {
         return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-pos-sig", "missing PoS signature");
@@ -522,17 +537,22 @@ bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& header, 
 
     COutPoint prevout = header.StakeInput();
 
+    if (blockman == nullptr || active_chain == nullptr) {
+        return state.TransientError("tmp-missing-chain-context");
+    }
+
     // First try finding the previous transaction in database
     uint256 txinHashBlock;
     CTransactionRef txinPrevRef;
-    CBlockIndex* pindex_tx = nullptr;
-    CBlockIndex* pindex_prev = nullptr;
+    const CBlockIndex* pindex_tx = nullptr;
+    const CBlockIndex* pindex_prev = nullptr;
 
-    txinPrevRef = GetTransaction(/* block_index */ nullptr, mempool, prevout.hash, consensus, txinHashBlock);
+    txinPrevRef = node::GetTransaction(/* block_index */ nullptr, mempool, prevout.hash, consensus, txinHashBlock);
+    LOCK(::cs_main);
     if (!txinPrevRef) {
-        auto it = g_chainman.BlockIndex().find(header.hashPrevBlock);
+        const CBlockIndex* pindex_header_prev = blockman->LookupBlockIndex(header.hashPrevBlock);
 
-        if ((it != g_chainman.BlockIndex().end()) && ::ChainActive().Contains(it->second)) {
+        if (pindex_header_prev != nullptr && active_chain->Contains(pindex_header_prev)) {
             return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-unkown-stake");
         } else {
             // We do not have the previous block, so the block may be valid.
@@ -544,14 +564,14 @@ bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& header, 
 
     // Check tx input block is known
     {
-        auto it = g_chainman.BlockIndex().find(txinHashBlock);
+        const CBlockIndex* pindex_stake = blockman->LookupBlockIndex(txinHashBlock);
 
-        if ((it != g_chainman.BlockIndex().end()) && ::ChainActive().Contains(it->second)) {
-            pindex_tx = it->second;
+        if (pindex_stake != nullptr && active_chain->Contains(pindex_stake)) {
+            pindex_tx = pindex_stake;
         } else {
-            it = g_chainman.BlockIndex().find(header.hashPrevBlock);
+            const CBlockIndex* pindex_header_prev = blockman->LookupBlockIndex(header.hashPrevBlock);
 
-            if ((it != g_chainman.BlockIndex().end()) && ::ChainActive().Contains(it->second)) {
+            if (pindex_header_prev != nullptr && active_chain->Contains(pindex_header_prev)) {
                 return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-stake-mempool",
                                      "stake from mempool");
             } else {
@@ -567,16 +587,16 @@ bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& header, 
 
     // Header-only chain specific validation
     {
-        auto it = g_chainman.BlockIndex().find(header.hashPrevBlock);
+        const CBlockIndex* pindex_header_prev = blockman->LookupBlockIndex(header.hashPrevBlock);
 
         // It must never happen as it's part of header validation.
-        if (it == g_chainman.BlockIndex().end()) {
+        if (pindex_header_prev == nullptr) {
             return state.Invalid(BlockValidationResult::BLOCK_MISSING_PREV, "bad-prev-header",
                                 "previous PoS header is not known");
         }
 
-        pindex_prev = it->second;
-        const auto pindex_fork = ::ChainActive().FindFork(pindex_prev);
+        pindex_prev = pindex_header_prev;
+        const auto pindex_fork = active_chain->FindFork(pindex_prev);
 
         // Just in case, it must never happen.
         if (!pindex_fork) {

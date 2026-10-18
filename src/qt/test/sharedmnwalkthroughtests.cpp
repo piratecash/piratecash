@@ -359,10 +359,11 @@ void SharedMnWalkthroughTests::walkthrough()
         wallets.keep(wallet);
     }
 
+    // Fifteen coinbases cover 700 COIN even though height 2 only pays 150 corsars.
     for (const auto& wallet : {coord_wallet, alice_wallet, bob_wallet}) {
         const auto dest{wallet->GetNewDestination("mining")};
         QVERIFY(dest);
-        QVERIFY2(MineTo(m_node, *dest, 12).isEmpty(), "generatetoaddress must succeed");
+        QVERIFY2(MineTo(m_node, *dest, 15).isEmpty(), "generatetoaddress must succeed");
     }
     // Past the regtest DIP3 enforcement height (500): below DIP3 activation
     // (432) a special transaction is rejected outright, and between activation

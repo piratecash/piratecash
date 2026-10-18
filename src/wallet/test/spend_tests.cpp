@@ -24,8 +24,9 @@ BOOST_FIXTURE_TEST_CASE(SubtractFee, TestChain100Setup)
     // be uneconomical to add and spend the output), and make sure it pays the
     // leftover input amount which would have been change to the recipient
     // instead of the miner.
-    auto check_tx = [&wallet](CAmount leftover_input_amount) {
-        CRecipient recipient{GetScriptForRawPubKey({}), 500 * COIN - leftover_input_amount, /*subtract_fee=*/true};
+    const CAmount coinbase_value{m_coinbase_txns[0]->vout[0].nValue};
+    auto check_tx = [&wallet, coinbase_value](CAmount leftover_input_amount) {
+        CRecipient recipient{GetScriptForRawPubKey({}), coinbase_value - leftover_input_amount, /*subtract_fee=*/true};
         bilingual_str error;
         CCoinControl coin_control;
         coin_control.m_feerate.emplace(10000);
@@ -109,36 +110,36 @@ BOOST_FIXTURE_TEST_CASE(wallet_duplicated_preset_inputs_test, TestChain100Setup)
 {
     // Verify that the wallet's Coin Selection process does not include pre-selected inputs twice in a transaction.
 
-    // Add 4 spendable UTXO, 500 DASH each, to the wallet (total balance 2000 DASH)
+    // Add 4 spendable coinbase UTXOs to the wallet.
     for (int i = 0; i < 4; i++) CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey()));
     auto wallet = CreateSyncedWallet(*m_node.chain, *m_node.coinjoin_loader, *Assert(m_node.chainman), m_args, coinbaseKey);
 
     LOCK(wallet->cs_wallet);
     auto available_coins = AvailableCoins(*wallet);
     std::vector<COutput> coins = available_coins.All();
-    // Preselect the first 3 UTXO (1500 DASH total)
+    BOOST_REQUIRE_EQUAL(coins.size(), 4U);
+    // Preselect the first 3 UTXOs.
     std::set<COutPoint> preset_inputs = {coins[0].outpoint, coins[1].outpoint, coins[2].outpoint};
+    const CAmount preset_amount{coins[0].txout.nValue + coins[1].txout.nValue + coins[2].txout.nValue};
+    const CAmount target{available_coins.GetTotalAmount() + preset_amount - COIN};
 
-    // Try to create a tx that spends more than what preset inputs + wallet selected inputs are covering for.
-    // The wallet can cover up to 2000 DASH, and the tx target is 2999 DASH.
+    // The target exceeds the balance, but could be covered if preset inputs were counted twice.
     std::vector<CRecipient> recipients = {{GetScriptForDestination(*Assert(wallet->GetNewDestination("dummy"))),
-                                           /*nAmount=*/2999 * COIN, /*fSubtractFeeFromAmount=*/true}};
+                                           /*nAmount=*/target, /*fSubtractFeeFromAmount=*/true}};
     CCoinControl coin_control;
     coin_control.m_allow_other_inputs = true;
     for (const auto& outpoint : preset_inputs) {
         coin_control.Select(outpoint);
     }
 
-    // Attempt to send 2999 DASH from a wallet that only has 2000 DASH. The wallet should exclude
-    // the preset inputs from the pool of available coins, realize that there is not enough
-    // money to fund the 2999 DASH payment, and fail with "Insufficient funds".
+    // The wallet should exclude the preset inputs from the pool of available coins,
+    // realize that there is not enough money, and fail with "Insufficient funds".
     //
-    // Even with SFFO, the wallet can only afford to send 2000 DASH.
     // If the wallet does not properly exclude preset inputs from the pool of available coins
     // prior to coin selection, it may create a transaction that does not fund the full payment
     // amount or, through SFFO, incorrectly reduce the recipient's amount by the difference
-    // between the original target and the wrongly counted inputs (in this case 999 DASH)
-    // so that the recipient's amount is no longer equal to the user's selected target of 2999 DASH.
+    // between the original target and the wrongly counted inputs, so that the recipient's
+    // amount is no longer equal to the user's selected target.
 
     // First case, use 'subtract_fee_from_outputs=true'
     util::Result<CreatedTransactionResult> res_tx = CreateTransaction(*wallet, recipients, /*change_pos*/-1, coin_control);

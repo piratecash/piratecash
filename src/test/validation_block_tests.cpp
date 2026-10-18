@@ -35,6 +35,37 @@ struct MinerTestingSetup : public RegTestingSetup {
 
 BOOST_FIXTURE_TEST_SUITE(validation_block_tests, MinerTestingSetup)
 
+BOOST_AUTO_TEST_CASE(legacy_pos_coinbase_output)
+{
+    const struct {
+        size_t output_count;
+        CAmount output_value;
+        bool valid;
+    } cases[]{
+        {0, 0, false},
+        {1, 0, true},
+        {1, 1, false},
+    };
+    for (const auto& test : cases) {
+        BOOST_TEST_CONTEXT("outputs=" << test.output_count << ", value=" << test.output_value) {
+            CBlock block{Params().GenesisBlock()};
+            block.nVersion = 1;
+            block.nFlags = CBlockIndex::BLOCK_PROOF_OF_STAKE;
+            block.fChecked = false;
+            block.m_checked_merkle_root = false;
+            CMutableTransaction coinbase{*block.vtx[0]};
+            coinbase.vout.assign(test.output_count, CTxOut{test.output_value, CScript{}});
+            block.vtx[0] = MakeTransactionRef(std::move(coinbase));
+            block.hashMerkleRoot = BlockMerkleRoot(block);
+            BlockValidationState state;
+            BOOST_CHECK_EQUAL(CheckBlock(block, state, Params().GetConsensus()), test.valid);
+            if (!test.valid) {
+                BOOST_CHECK_EQUAL(state.GetRejectReason(), "bad-cb-notempty");
+            }
+        }
+    }
+}
+
 struct TestSubscriber final : public CValidationInterface {
     uint256 m_expected_tip;
 
@@ -71,6 +102,9 @@ std::shared_ptr<CBlock> MinerTestingSetup::Block(const uint256& prev_hash)
     auto pblock = std::make_shared<CBlock>(ptemplate->block);
     pblock->hashPrevBlock = prev_hash;
     pblock->nTime = ++time;
+    CBlockIndex index{*pblock};
+    index.pprev = WITH_LOCK(::cs_main, return m_node.chainman->m_blockman.LookupBlockIndex(prev_hash));
+    index.nHeight = index.pprev->nHeight + 1;
 
     // Make the coinbase transaction with two outputs:
     // One zero-value one that has a unique pubkey to make sure that blocks at
@@ -80,10 +114,10 @@ std::shared_ptr<CBlock> MinerTestingSetup::Block(const uint256& prev_hash)
     CMutableTransaction txCoinbase(*pblock->vtx[0]);
     txCoinbase.vout.resize(2);
     txCoinbase.vout[1].scriptPubKey = P2SH_OP_TRUE;
-    txCoinbase.vout[1].nValue = txCoinbase.vout[0].nValue;
+    txCoinbase.vout[1].nValue = GetBlockSubsidy(&index, Params().GetConsensus());
     txCoinbase.vout[0].nValue = 0;
     // Always pad with OP_0 at the end to avoid bad-cb-length error
-    txCoinbase.vin[0].scriptSig = CScript{} << WITH_LOCK(::cs_main, return m_node.chainman->m_blockman.LookupBlockIndex(prev_hash)->nHeight + 1) << OP_0;
+    txCoinbase.vin[0].scriptSig = CScript{} << index.nHeight << OP_0;
     pblock->vtx[0] = MakeTransactionRef(std::move(txCoinbase));
 
     return pblock;
@@ -265,6 +299,11 @@ BOOST_AUTO_TEST_CASE(mempool_locks_reorg)
     BOOST_REQUIRE(ProcessBlock(std::make_shared<CBlock>(Params().GenesisBlock())));
     auto last_mined = GoodBlock(Params().GenesisBlock().GetHash());
     BOOST_REQUIRE(ProcessBlock(last_mined));
+    // Start spending after the temporary 150-corsar reward, which cannot fund the outputs below.
+    for (int height = 1; height < Params().GetConsensus().nRestoreRewardV18 + 2; ++height) {
+        last_mined = GoodBlock(last_mined->GetHash());
+        BOOST_REQUIRE(ProcessBlock(last_mined));
+    }
 
     // Run the test multiple times
     for (int test_runs = 3; test_runs > 0; --test_runs) {

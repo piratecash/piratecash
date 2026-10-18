@@ -357,6 +357,7 @@ BITCOIN_CORE_H = \
   policy/packages.h \
   policy/policy.h \
   policy/settings.h \
+  pos_kernel.h \
   pow.h \
   protocol.h \
   psbt.h \
@@ -633,6 +634,7 @@ libbitcoin_node_a_SOURCES = \
   policy/packages.cpp \
   policy/policy.cpp \
   policy/settings.cpp \
+  pos_kernel.cpp \
   pow.cpp \
   rest.cpp \
   rpc/blockchain.cpp \
@@ -1258,6 +1260,7 @@ libpiratecashkernel_la_SOURCES = \
   policy/packages.cpp \
   policy/policy.cpp \
   policy/settings.cpp \
+  pos_kernel.cpp \
   pow.cpp \
   primitives/block.cpp \
   primitives/transaction.cpp \

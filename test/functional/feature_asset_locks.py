@@ -1325,9 +1325,9 @@ class AssetLocksTest(DashTestFramework):
 
         self.log.info("Spending RPCs refuse to pay a Platform address before the fork")
         assert_raises_rpc_error(-8, "only valid after v24 activation", node_wallet.sendtoaddress,
-                                encode_platform_p2pkh('tdash', hash160(pubkey)), 1)
+                                encode_platform_p2pkh('tpirate', hash160(pubkey)), 1)
         assert_raises_rpc_error(-8, "only valid after v24 activation", node_wallet.sendmany, "",
-                                {encode_platform_p2pkh('tdash', hash160(pubkey)): 1})
+                                {encode_platform_p2pkh('tpirate', hash160(pubkey)): 1})
 
     def test_asset_locks_v2(self, node_wallet, node, pubkey):
         self.log.info("Testing asset lock v2 after v24 activation...")
@@ -1345,7 +1345,7 @@ class AssetLocksTest(DashTestFramework):
         self.send_tx(lock_tx_v2)
 
         # v2 via sendtoaddress (two different platform addresses)
-        platform_addr_from_key = encode_platform_p2pkh('tdash', hash160(pubkey))
+        platform_addr_from_key = encode_platform_p2pkh('tpirate', hash160(pubkey))
         txid1 = node_wallet.sendtoaddress(platform_addr_from_key, 1.0)
 
         self.log.info("Test subtractfeefromamount for platform sendtoaddress")
@@ -1376,7 +1376,7 @@ class AssetLocksTest(DashTestFramework):
         # verify v2 raw tx JSON
         rpc_v2 = node.getrawtransaction(lock_tx_v2.rehash(), 1)
         assert_equal(rpc_v2['assetLockTx']['version'], 2)
-        assert rpc_v2['assetLockTx']['creditOutputs'][0]['address'].startswith('tdash1')
+        assert rpc_v2['assetLockTx']['creditOutputs'][0]['address'].startswith('tpirate1')
 
         # verify v2 sendtoaddress tx JSON
         raw1 = node.getrawtransaction(txid1, 1)
@@ -1432,7 +1432,7 @@ class AssetLocksTest(DashTestFramework):
         self.log.info("The wallet refuses to build a v2 asset lock the local mempool would reject")
         self.restart_node(0, self.extra_args[0] + ["-acceptnonstdtxn=0"])
         assert_raises_rpc_error(-6, "assetlocktx-version-2", node_wallet.sendtoaddress,
-                                encode_platform_p2pkh('tdash', hash160(pubkey)), 1)
+                                encode_platform_p2pkh('tpirate', hash160(pubkey)), 1)
         self.restart_node(0, self.extra_args[0])
 
         self.restart_node(1, self.extra_args[1])
