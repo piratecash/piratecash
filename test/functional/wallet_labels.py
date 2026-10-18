@@ -208,7 +208,7 @@ class WalletLabelsTest(BitcoinTestFramework):
             ad = INVALID[l]
             assert_raises_rpc_error(
                 -5,
-                "Address is not valid" if self.options.descriptors else "Invalid Dash address or script",
+                "Address is not valid" if self.options.descriptors else "Invalid PirateCash address or script",
                 lambda: wallet_watch_only.importaddress(label=l, rescan=False, address=ad),
             )
 

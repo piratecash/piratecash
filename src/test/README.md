@@ -1,7 +1,7 @@
 # Unit tests
 
 The sources in this directory are unit test cases. Boost includes a
-unit testing framework, and since Dash Core already uses Boost, it makes
+unit testing framework, and since PirateCash Core already uses Boost, it makes
 sense to simply use this framework rather than require developers to
 configure some other framework (we want as few impediments to creating
 unit tests as possible).
@@ -54,7 +54,7 @@ The `-printtoconsole=1` after the two dashes redirects the debug log, which
 would normally go to a file in the test datadir
 (`BasicTestingSetup::m_path_root`), to the standard terminal output.
 
-... or to run just the doubledash test:
+... or to run just the double-dash test:
 
 ```bash
 test_piratecash --run_test=getarg_tests/doubledash
