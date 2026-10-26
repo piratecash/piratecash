@@ -296,7 +296,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     if (fDIP0003Active_context) {
         // No list-transition logs: a package's trial may still be discarded, and block connection
         // logs the transitions that actually happen.
-        mn_list_builder.emplace(*m_chain_helper.special_tx, pindexPrev, fV24Active_context, m_chainstate.CoinsTip(),
+        mn_list_builder.emplace(*m_chain_helper.special_tx, gsl::not_null<const CBlockIndex*>{pindexPrev}, fV24Active_context, m_chainstate.CoinsTip(),
                                 /*debugLogs=*/false);
         for (const Consensus::LLMQParams& params : llmq::GetEnabledQuorumParams(m_chainstate.m_chainman, pindexPrev)) {
             std::vector<CTransactionRef> vqcTx;
