@@ -381,7 +381,7 @@ public:
 
         nStakeMinAge = 8 * 60 * 60;
         nFirstPoSv2Block = consensus.nForkHeight;
-        nMinCorsaProtocolVersion = 28;
+        nMinCorsaProtocolVersion = 31;
 
         nCreditPoolPeriodBlocks = 576;
 
@@ -575,7 +575,7 @@ public:
 
         nStakeMinAge = 8 * 60 * 60;
         nFirstPoSv2Block = consensus.nForkHeight;
-        nMinCorsaProtocolVersion = 28;
+        nMinCorsaProtocolVersion = 31;
 
         nCreditPoolPeriodBlocks = 576;
 
@@ -763,7 +763,7 @@ public:
 
         nStakeMinAge = 24 * 60 * 60; // 24 hours
         nFirstPoSv2Block = 78000ULL;
-        nMinCorsaProtocolVersion = 28;
+        nMinCorsaProtocolVersion = 31;
 
         nCreditPoolPeriodBlocks = 576;
 
@@ -983,7 +983,7 @@ public:
 
         nStakeMinAge = 24 * 60 * 60; // 24 hours
         nFirstPoSv2Block = 10000ULL;
-        nMinCorsaProtocolVersion = 28;
+        nMinCorsaProtocolVersion = 31;
 
         nCreditPoolPeriodBlocks = 100;
 

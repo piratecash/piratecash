@@ -57,7 +57,7 @@ sequence before flipping into masternode mode:
 3. Validate that the returned JSON contains `identity`, `address`,
    `public_key`, `protocol_version` and `client_version`.
 4. Compare `protocol_version` against the per-chain minimum,
-   `Params().MinCorsaProtocolVersion()` (`13` on mainnet, testnet,
+   `Params().MinCorsaProtocolVersion()` (`31` on mainnet, testnet,
    devnet and regtest in this release).
 5. **Negative auth probe.** Send the same request once more with
    deliberately invalid credentials and require the Corsa side to
@@ -85,7 +85,7 @@ background thread named `corsa-monitor`. The thread polls the same
 seconds and emits an INFO event:
 
 ```
-Corsa node up: peers=N, uptime=Ns, client=0.42-alpha, protocol=13
+Corsa node up: peers=N, uptime=Ns, client=0.42-alpha, protocol=31
 ```
 
 A failed heartbeat does **not** stop the daemon at Stage 1 — it is
