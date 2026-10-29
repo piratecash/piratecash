@@ -12,6 +12,10 @@ and backports a number of hardening and robustness fixes from later releases.
 The upstream changes are adapted for the PirateCash network without replacing
 PirateCash-specific consensus and service changes.
 
+PirateCash-specific changes in this release also harden Proof-of-Stake header
+and block validation, fix the header-only stake double-spend scan and improve
+stake input auto-combining.
+
 This release is mandatory for all nodes.
 
 Please report bugs using the issue tracker at GitHub:
@@ -143,6 +147,42 @@ These issues do not affect consensus and do not put funds at risk.
 PirateCash Core v23.1.9 is built from the Dash Core v23.1.9 codebase. Upstream
 changes are adapted without replacing PirateCash consensus, network parameters,
 staking, rewards or Corsa integration.
+
+## Proof-of-Stake validation hardening
+
+- Crafted PoS headers that reference an output index outside the referenced
+  transaction are now rejected before that output is accessed.
+- Blocks whose coinbase transaction has no outputs are now rejected before the
+  pre-v18 PoS coinbase rules inspect its first output.
+- After the PoSv2 fork height, legacy block versions are now rejected during
+  header acceptance as well as during full block connection.
+- Fixed a header-validation loop that could stop advancing while checking an
+  unvalidated PoS fork for reuse of a stake input. The scan now follows each
+  header's parent back toward the fork point, stops safely at genesis or a
+  validated or non-PoS block, and reliably rejects repeated use of the same
+  staking output in the header-only tail.
+
+## Stake input auto-combining
+
+Stake input auto-combining has been improved. Previously, a staking output could
+settle just below twice `-stakesplitthreshold`, after which small staking reward
+outputs could accumulate without being combined. The wallet can now sweep small
+inputs into a kernel that is already above the split threshold, and the normal
+split pass turns the result back into threshold-sized outputs.
+
+The new `-stakecombinemax=<n>` option sets the largest input, in PIRATE, that may
+be swept in this situation. It defaults to `100`; `0` disables this additional
+sweep, and values at or above `-stakesplitthreshold` are limited to one PIRATE
+below that threshold. The effective value is reported by `getstakingstatus` as
+`stakecombinemax`.
+
+Auto-combine candidates must be confirmed, mature and still unspent. Selection
+now respects `-reservebalance` and `-inputstakeprotect`, and coinstake
+construction observes the block's remaining size and signature-operation
+budgets. When staking is enabled, a configured `-blockmaxsize` below 2000 bytes
+produces a warning and the minimum space required for a PoS block is reserved.
+
+# Compatibility with earlier releases
 
 The following sections describe integration and migration behavior introduced
 in earlier PirateCash releases and retained in v23.1.9.
