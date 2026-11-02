@@ -1,15 +1,15 @@
-# bash programmable completion for dashd(1) and dash-qt(1)
+# bash programmable completion for piratecashd(1) and piratecash-qt(1)
 # Copyright (c) 2012-2019 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-_dashd() {
+_piratecashd() {
     local cur prev words=() cword
-    local dashd
+    local piratecashd
 
-    # save and use original argument to invoke dashd for -help
+    # save and use original argument to invoke piratecashd for -help
     # it might not be in $PATH
-    dashd="$1"
+    piratecashd="$1"
 
     COMPREPLY=()
     _get_comp_words_by_ref -n = cur prev words cword
@@ -33,7 +33,7 @@ _dashd() {
             # only parse -help if sensible
             if [[ -z "$cur" || "$cur" =~ ^- ]]; then
                 local helpopts
-                helpopts=$($dashd -help 2>&1 | awk '$1 ~ /^-/ { sub(/=.*/, "="); print $1 }' )
+                helpopts=$($piratecashd -help 2>&1 | awk '$1 ~ /^-/ { sub(/=.*/, "="); print $1 }' )
                 COMPREPLY=( $( compgen -W "$helpopts" -- "$cur" ) )
             fi
 
@@ -45,7 +45,7 @@ _dashd() {
             ;;
     esac
 } &&
-complete -F _dashd dashd dash-qt
+complete -F _piratecashd piratecashd piratecash-qt
 
 # Local variables:
 # mode: shell-script
