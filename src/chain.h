@@ -21,7 +21,7 @@
  * Maximum amount of time that a block timestamp is allowed to exceed the
  * current network-adjusted time before the block will be accepted.
  */
-static constexpr int64_t MAX_FUTURE_BLOCK_TIME = 2 * 60 * 60;
+static constexpr int64_t MAX_FUTURE_BLOCK_TIME = 5 * 60;
 
 /**
  * Timestamp window used as a grace period by code that compares external
@@ -191,12 +191,64 @@ public:
     //! @sa ActivateSnapshot
     uint32_t nStatus GUARDED_BY(::cs_main){0};
 
+    uint32_t& nStakeModifier() {
+        return nNonce;
+    }
+    const uint32_t& nStakeModifier() const {
+        return nNonce;
+    }
+
     //! block header
     int32_t nVersion{0};
     uint256 hashMerkleRoot{};
     uint32_t nTime{0};
     uint32_t nBits{0};
     uint32_t nNonce{0};
+
+    std::vector<unsigned char> posBlockSig{};
+    // PirateCash: money supply related block index fields
+    unsigned int nFlags{0};  // PirateCash: block index flags
+    enum
+    {
+        BLOCK_PROOF_OF_STAKE = (1 << 0), // is proof-of-stake block
+        BLOCK_STAKE_ENTROPY  = (1 << 1), // entropy bit for stake modifier
+        BLOCK_STAKE_MODIFIER = (1 << 2), // regenerated stake modifier
+    };
+    // proof-of-stake specific fields
+    uint256 posStakeHash{};
+    uint32_t posStakeN{0};
+    bool IsProofOfWork() const
+    {
+        return !((nFlags & BLOCK_PROOF_OF_STAKE)||(nVersion & CBlockHeader::POS_BIT));
+    }
+
+    bool IsProofOfStake() const
+    {
+        return ((nFlags & BLOCK_PROOF_OF_STAKE)||(nVersion & CBlockHeader::POS_BIT));
+    }
+
+    void SetProofOfStake()
+    {
+        nFlags |= BLOCK_PROOF_OF_STAKE;
+    }
+
+    unsigned int GetStakeEntropyBit() const
+    {
+        return ((nFlags & BLOCK_STAKE_ENTROPY) >> 1);
+    }
+
+    bool SetStakeEntropyBit(unsigned int nEntropyBit)
+    {
+        if (nEntropyBit > 1)
+            return false;
+        nFlags |= (nEntropyBit? BLOCK_STAKE_ENTROPY : 0);
+        return true;
+    }
+
+    bool GeneratedStakeModifier() const
+    {
+        return (nFlags & BLOCK_STAKE_MODIFIER);
+    }
 
     //! (memory only) Sequential id assigned to distinguish order in which blocks are received.
     int32_t nSequenceId{0};
@@ -209,7 +261,11 @@ public:
           hashMerkleRoot{block.hashMerkleRoot},
           nTime{block.nTime},
           nBits{block.nBits},
-          nNonce{block.nNonce}
+          nNonce{block.nNonce},
+          posBlockSig{block.posBlockSig},
+          nFlags{block.nFlags},
+          posStakeHash{block.posStakeHash},
+          posStakeN{block.posStakeN}
     {
     }
 
@@ -242,9 +298,13 @@ public:
         if (pprev)
             block.hashPrevBlock = pprev->GetBlockHash();
         block.hashMerkleRoot = hashMerkleRoot;
-        block.nTime = nTime;
-        block.nBits = nBits;
-        block.nNonce = nNonce;
+        block.nTime          = nTime;
+        block.nBits          = nBits;
+        block.nNonce         = nNonce;
+        block.posStakeHash   = posStakeHash;
+        block.posStakeN      = posStakeN;
+        block.posBlockSig    = posBlockSig;
+        block.nFlags         = nFlags;
         return block;
     }
 
@@ -278,6 +338,11 @@ public:
         return (int64_t)nTimeMax;
     }
 
+    bool IsProofOfStakeV2() const
+    {
+        return (nVersion & CBlockHeader::POSV2_BITS) == CBlockHeader::POSV2_BITS;
+    }
+
     static constexpr int nMedianTimeSpan = 11;
 
     int64_t GetMedianTimePast() const
@@ -292,6 +357,17 @@ public:
 
         std::sort(pbegin, pend);
         return pbegin[(pend - pbegin) / 2];
+    }
+
+    COutPoint StakeInput() const {
+        return COutPoint(posStakeHash, posStakeN);
+    }
+
+    bool IsGeneratedStakeModifier() const
+    {
+        return (pprev && (
+                    !pprev->IsProofOfStake() ||
+                    (pprev->nStakeModifier() != nStakeModifier())));
     }
 
     std::string ToString() const;
@@ -376,17 +452,13 @@ public:
     uint256 hash;
     uint256 hashPrev;
 
-    CDiskBlockIndex()
-    {
-        hash = uint256();
-        hashPrev = uint256();
-    }
+    CDiskBlockIndex() = default;
 
-    explicit CDiskBlockIndex(const CBlockIndex* pindex) : CBlockIndex(*pindex)
-    {
-        hash = (hash == uint256() ? pindex->GetBlockHash() : hash);
-        hashPrev = (pprev ? pprev->GetBlockHash() : uint256());
-    }
+    explicit CDiskBlockIndex(const CBlockIndex* pindex) :
+        CBlockIndex(*pindex),
+        hash(pindex->GetBlockHash()),
+        hashPrev(pprev ? pprev->GetBlockHash() : uint256())
+    {}
 
     SERIALIZE_METHODS(CDiskBlockIndex, obj)
     {
@@ -403,6 +475,7 @@ public:
 
         // block hash
         READWRITE(obj.hash);
+        READWRITE(obj.nFlags);
         // block header
         READWRITE(obj.nVersion);
         READWRITE(obj.hashPrev);
@@ -410,6 +483,11 @@ public:
         READWRITE(obj.nTime);
         READWRITE(obj.nBits);
         READWRITE(obj.nNonce);
+        if (obj.IsProofOfStake()) {
+            READWRITE(obj.posStakeHash);
+            READWRITE(obj.posStakeN);
+            READWRITE(obj.posBlockSig);
+        }
     }
 
     uint256 ConstructBlockHash() const
@@ -423,6 +501,10 @@ public:
         block.nTime = nTime;
         block.nBits = nBits;
         block.nNonce = nNonce;
+        block.posStakeHash = posStakeHash;
+        block.posStakeN = posStakeN;
+        block.posBlockSig = posBlockSig;
+        block.nFlags = nFlags;
         return block.GetHash();
     }
 
@@ -500,5 +582,7 @@ CBlockLocator GetLocator(const CBlockIndex* index);
 
 /** Construct a list of hash entries to put in a locator.  */
 std::vector<uint256> LocatorEntries(const CBlockIndex* index);
+
+const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfStake);
 
 #endif // BITCOIN_CHAIN_H
