@@ -66,12 +66,12 @@
         <translation>C&amp;họn</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Đây là các địa chỉ Dash của bạn để gửi thanh toán. Luôn luôn kiểm tra số tiền và địa chỉ nhận trước khi bạn gửi tiền.</translation>
+        <source>These are your PirateCash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Đây là các địa chỉ PirateCash của bạn để gửi thanh toán. Luôn luôn kiểm tra số tiền và địa chỉ nhận trước khi bạn gửi tiền.</translation>
     </message>
     <message>
         <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>Đây là các địa chỉ Dash của bạn để nhận thanh toán. Sử dụng nút 'Tạo địa chỉ nhận mới' trong tab nhận để tạo địa chỉ mới.</translation>
+        <translation>Đây là các địa chỉ PirateCash của bạn để nhận thanh toán. Sử dụng nút 'Tạo địa chỉ nhận mới' trong tab nhận để tạo địa chỉ mới.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -118,6 +118,10 @@
     <message>
         <source>Exporting Failed</source>
         <translation>Kết xuất không thành công</translation>
+    </message>
+    <message>
+        <source>These are your PirateCash addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Đây là các địa chỉ PirateCash của bạn để nhận thanh toán. Gợi ý là sử dụng một địa chỉ nhận mới cho mỗi giao dịch.</translation>
     </message>
 </context>
 <context>
@@ -225,8 +229,8 @@
         <translation>Xác nhận mã hoá ví</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
-        <translation>Chú ý: Nếu bạn mã hoá ví và mất mật khẩu, bạn sẽ &lt;b&gt;MẤT TẤT CẢ DASH CỦA BẠN&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATECASH&lt;/b&gt;!</source>
+        <translation>Chú ý: Nếu bạn mã hoá ví và mất mật khẩu, bạn sẽ &lt;b&gt;MẤT TẤT CẢ PIRATE CỦA BẠN&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -308,6 +312,10 @@
         <source>Warning: The Caps Lock key is on!</source>
         <translation>Cảnh báo: Khoá Caps Lock đang được bật!</translation>
     </message>
+    <message>
+        <source>Unlock wallet for mixing and staking only</source>
+        <translation>Mở ví chỉ để trộn</translation>
+    </message>
 </context>
 <context>
     <name>BanTableModel</name>
@@ -365,16 +373,16 @@
         <translation>&amp;Gửi</translation>
     </message>
     <message>
-        <source>Send coins to a Dash address</source>
-        <translation>Gửi tiền vào địa chỉ Dash</translation>
+        <source>Send coins to a PirateCash address</source>
+        <translation>Gửi tiền vào địa chỉ PirateCash</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>&amp;Nhận</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
-        <translation>Yêu cầu thanh toán (sinh mã QR và dash: URIs)</translation>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
+        <translation>Yêu cầu thanh toán (sinh mã QR và piratecash: URIs)</translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
@@ -382,31 +390,31 @@
     </message>
     <message>
         <source>&amp;Options…</source>
-        <translation>&amp;Tuỳ chọn…</translation>
+        <translation>&amp;Tuỳ chọn...</translation>
     </message>
     <message>
         <source>&amp;Encrypt Wallet…</source>
-        <translation>&amp;Mã hoá Ví…</translation>
+        <translation>&amp;Mã hoá Ví...</translation>
     </message>
     <message>
         <source>&amp;Backup Wallet…</source>
-        <translation>&amp;Sao lưu Ví…</translation>
+        <translation>&amp;Sao lưu Ví...</translation>
     </message>
     <message>
         <source>&amp;Change Passphrase…</source>
-        <translation>Đổi &amp;Mật khẩu…</translation>
+        <translation>Đổi &amp;Mật khẩu...</translation>
     </message>
     <message>
         <source>&amp;Unlock Wallet…</source>
-        <translation>&amp;Mở khoá Ví…</translation>
+        <translation>&amp;Mở khoá Ví...</translation>
     </message>
     <message>
         <source>Sign &amp;message…</source>
-        <translation>Ký vào &amp;thông điệp…</translation>
+        <translation>Ký vào &amp;thông điệp...</translation>
     </message>
     <message>
         <source>&amp;Verify message…</source>
-        <translation>&amp;Kiểm tra thông điệp…</translation>
+        <translation>&amp;Kiểm tra thông điệp...</translation>
     </message>
     <message>
         <source>&amp;Load PSBT from file…</source>
@@ -422,7 +430,7 @@
     </message>
     <message>
         <source>Open &amp;URI…</source>
-        <translation>Mở &amp;URI…</translation>
+        <translation>Mở &amp;URI...</translation>
     </message>
     <message>
         <source>Open Wallet</source>
@@ -489,8 +497,8 @@
         <translation>&amp;Khoảng %1</translation>
     </message>
     <message>
-        <source>Send %1 funds to a Dash address</source>
-        <translation>Gửi %1 tiền đến một địa chỉ Dash</translation>
+        <source>Send %1 funds to a PirateCash address</source>
+        <translation>Gửi %1 tiền đến một địa chỉ PirateCash</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -525,12 +533,12 @@
         <translation>&amp;Khoá Ví</translation>
     </message>
     <message>
-        <source>Sign messages with your Dash addresses to prove you own them</source>
-        <translation>Ký vào thông điệp với địa chỉ Dash để chứng minh bạn là chủ của chúng</translation>
+        <source>Sign messages with your PirateCash addresses to prove you own them</source>
+        <translation>Ký vào thông điệp với địa chỉ PirateCash để chứng minh bạn là chủ của chúng</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dash addresses</source>
-        <translation>Kiểm tra thông điệp để đảm bảo rằng nó đã được ký bằng địa chỉ Dash nhất định</translation>
+        <source>Verify messages to ensure they were signed with specified PirateCash addresses</source>
+        <translation>Kiểm tra thông điệp để đảm bảo rằng nó đã được ký bằng địa chỉ PirateCash nhất định</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -593,8 +601,8 @@
         <translation>&amp;Các Tuỳ chọn dòng lệnh</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Dash command-line options</source>
-        <translation>Hiển thị %1 tin nhắn hỗ trợ để nhận được danh sách Dash command-line khả dụng</translation>
+        <source>Show the %1 help message to get a list with possible PirateCash command-line options</source>
+        <translation>Hiển thị %1 tin nhắn hỗ trợ để nhận được danh sách PirateCash command-line khả dụng</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -643,8 +651,8 @@
         <translation>Mở tệp cấu hình &amp;ví</translation>
     </message>
     <message>
-        <source>Open a dash: URI</source>
-        <translation>Mở một dash: URI</translation>
+        <source>Open a piratecash: URI</source>
+        <translation>Mở một piratecash: URI</translation>
     </message>
     <message>
         <source>Create a new wallet</source>
@@ -733,9 +741,9 @@
         <translation>&amp;Hiển thị</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Dash network</source>
+        <source>%n active connection(s) to PirateCash network</source>
         <extracomment>A substring of the tooltip.</extracomment>
-        <translation><numerusform>%n kết nối hiện thời tới mạng lưới của Dash</numerusform></translation>
+        <translation><numerusform>%n kết nối hiện thời tới mạng lưới của PirateCash</numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
@@ -815,27 +823,27 @@
     </message>
     <message>
         <source>Syncing Headers (%1%)…</source>
-        <translation>Đang đồng bộ phần đầu (%1%)…</translation>
+        <translation>Đang đồng bộ phần đầu (%1%)...</translation>
     </message>
     <message>
         <source>Synchronizing with network…</source>
-        <translation>Đang đồng bộ với mạng lưới…</translation>
+        <translation>Đang đồng bộ với mạng lưới...</translation>
     </message>
     <message>
         <source>Indexing blocks on disk…</source>
-        <translation>Sắp xếp các khối trên đĩa…</translation>
+        <translation>Sắp xếp các khối trên đĩa...</translation>
     </message>
     <message>
         <source>Processing blocks on disk…</source>
-        <translation>Đang xử lý các khối trên đĩa…</translation>
+        <translation>Đang xử lý các khối trên đĩa...</translation>
     </message>
     <message>
         <source>Connecting to peers…</source>
-        <translation>Đang kết nối với các máy ngang hàng…</translation>
+        <translation>Đang kết nối với các máy ngang hàng...</translation>
     </message>
     <message>
         <source>Catching up…</source>
-        <translation>Đang nạp bộ đệm…</translation>
+        <translation>Đang nạp bộ đệm...</translation>
     </message>
     <message>
         <source>Last received block was generated %1 ago.</source>
@@ -974,6 +982,34 @@
     <message>
         <source>Original message:</source>
         <translation>Thông điệp gốc:</translation>
+    </message>
+    <message>
+        <source>Start Staking...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unlock wallet for mixing and staking only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load Partially Signed PirateCash Transaction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load Partially Signed PirateCash Transaction from clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Staking is &lt;b&gt;enabled&lt;/b&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Staking is &lt;b&gt;disabled&lt;/b&gt; %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;unlocked&lt;/b&gt; for mixing and staking only</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1483,7 +1519,7 @@
     </message>
     <message>
         <source>Dash shared masternode — standby dissolution</source>
-        <translation>Masternode chung Dash — giải thể dự phòng</translation>
+        <translation>Masternode chung PirateCash — giải thể dự phòng</translation>
     </message>
     <message>
         <source>Masternode: %1</source>
@@ -1512,6 +1548,10 @@
     <message>
         <source>Could not write to %1.</source>
         <translation>Không thể ghi vào %1.</translation>
+    </message>
+    <message>
+        <source>This dissolution cannot be approved.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1549,8 +1589,8 @@
         <translation>Sửa địa chỉ gửi</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Dash address.</source>
-        <translation>Địa chỉ vừa nhập "%1" không phải địa chỉ Dash hợp lệ.</translation>
+        <source>The entered address "%1" is not a valid PirateCash address.</source>
+        <translation>Địa chỉ vừa nhập "%1" không phải địa chỉ PirateCash hợp lệ.</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -1611,8 +1651,8 @@
         <translation>Thông tin %1</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Dash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH and 10 DASH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;Cơ bản về %1&lt;/h3&gt; %1 mang lại cho bạn sự riêng tư tài chính thực sự bằng cách che giấu nguồn gốc tiền của bạn. Tất cả Dash trong ví của bạn được tạo thành từ các "đầu vào" khác nhau mà bạn có thể coi như các đồng xu riêng biệt.&lt;br&gt; %1 sử dụng một quy trình sáng tạo để trộn đầu vào của bạn với đầu vào của hai hoặc nhiều người khác, mà không cần coin của bạn rời khỏi ví. Bạn giữ quyền kiểm soát tiền của mình mọi lúc.&lt;hr&gt; &lt;b&gt;Quy trình %1 hoạt động như sau:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 bắt đầu bằng cách chia nhỏ đầu vào giao dịch của bạn thành các mệnh giá tiêu chuẩn. Các mệnh giá này là 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH và 10 DASH -- giống như tiền giấy bạn sử dụng hàng ngày.&lt;/li&gt; &lt;li&gt;Ví của bạn sau đó gửi yêu cầu đến các nút phần mềm được cấu hình đặc biệt trên mạng, được gọi là "masternode". Các masternode này sau đó được thông báo rằng bạn quan tâm đến việc trộn một mệnh giá nhất định. Không có thông tin nhận dạng nào được gửi đến masternode, vì vậy chúng không bao giờ biết bạn "là ai".&lt;/li&gt; &lt;li&gt;Khi hai hoặc nhiều người khác gửi thông điệp tương tự, cho biết họ muốn trộn cùng một mệnh giá, một phiên trộn bắt đầu. Masternode trộn lẫn các đầu vào và hướng dẫn ví của cả ba người dùng trả đầu vào đã chuyển đổi về cho chính họ. Ví của bạn trả mệnh giá đó trực tiếp cho chính nó, nhưng ở một địa chỉ khác (được gọi là địa chỉ tiền thối).&lt;/li&gt; &lt;li&gt;Để che giấu hoàn toàn tiền của bạn, ví của bạn phải lặp lại quy trình này nhiều lần với mỗi mệnh giá. Mỗi lần quy trình hoàn thành, nó được gọi là một "vòng". Mỗi vòng %1 làm cho việc xác định nguồn gốc tiền của bạn trở nên khó khăn hơn theo cấp số nhân.&lt;/li&gt; &lt;li&gt;Quy trình trộn này diễn ra trong nền mà không cần sự can thiệp của bạn. Khi bạn muốn thực hiện giao dịch, tiền của bạn sẽ đã được trộn sẵn. Không cần chờ đợi thêm.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;QUAN TRỌNG:&lt;/b&gt; Ví của bạn chỉ chứa 1000 "địa chỉ tiền thối" này. Mỗi lần một sự kiện trộn xảy ra, tối đa 9 địa chỉ của bạn được sử dụng. Điều này có nghĩa là 1000 địa chỉ đó tồn tại cho khoảng 100 sự kiện trộn. Khi 900 trong số chúng được sử dụng, ví của bạn phải tạo thêm địa chỉ. Tuy nhiên, nó chỉ có thể làm điều này nếu bạn đã bật sao lưu tự động.&lt;br&gt; Do đó, người dùng tắt sao lưu cũng sẽ bị tắt %1. &lt;hr&gt;Để biết thêm thông tin, xem &lt;a style="%2" href="%3"&gt;tài liệu %1&lt;/a&gt;.</translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE and 10 PIRATE -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;Cơ bản về %1&lt;/h3&gt; %1 mang lại cho bạn sự riêng tư tài chính thực sự bằng cách che giấu nguồn gốc tiền của bạn. Tất cả PirateCash trong ví của bạn được tạo thành từ các "đầu vào" khác nhau mà bạn có thể coi như các đồng xu riêng biệt.&lt;br&gt; %1 sử dụng một quy trình sáng tạo để trộn đầu vào của bạn với đầu vào của hai hoặc nhiều người khác, mà không cần coin của bạn rời khỏi ví. Bạn giữ quyền kiểm soát tiền của mình mọi lúc.&lt;hr&gt; &lt;b&gt;Quy trình %1 hoạt động như sau:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 bắt đầu bằng cách chia nhỏ đầu vào giao dịch của bạn thành các mệnh giá tiêu chuẩn. Các mệnh giá này là 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE và 10 PIRATE -- giống như tiền giấy bạn sử dụng hàng ngày.&lt;/li&gt; &lt;li&gt;Ví của bạn sau đó gửi yêu cầu đến các nút phần mềm được cấu hình đặc biệt trên mạng, được gọi là "masternode". Các masternode này sau đó được thông báo rằng bạn quan tâm đến việc trộn một mệnh giá nhất định. Không có thông tin nhận dạng nào được gửi đến masternode, vì vậy chúng không bao giờ biết bạn "là ai".&lt;/li&gt; &lt;li&gt;Khi hai hoặc nhiều người khác gửi thông điệp tương tự, cho biết họ muốn trộn cùng một mệnh giá, một phiên trộn bắt đầu. Masternode trộn lẫn các đầu vào và hướng dẫn ví của cả ba người dùng trả đầu vào đã chuyển đổi về cho chính họ. Ví của bạn trả mệnh giá đó trực tiếp cho chính nó, nhưng ở một địa chỉ khác (được gọi là địa chỉ tiền thối).&lt;/li&gt; &lt;li&gt;Để che giấu hoàn toàn tiền của bạn, ví của bạn phải lặp lại quy trình này nhiều lần với mỗi mệnh giá. Mỗi lần quy trình hoàn thành, nó được gọi là một "vòng". Mỗi vòng %1 làm cho việc xác định nguồn gốc tiền của bạn trở nên khó khăn hơn theo cấp số nhân.&lt;/li&gt; &lt;li&gt;Quy trình trộn này diễn ra trong nền mà không cần sự can thiệp của bạn. Khi bạn muốn thực hiện giao dịch, tiền của bạn sẽ đã được trộn sẵn. Không cần chờ đợi thêm.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;QUAN TRỌNG:&lt;/b&gt; Ví của bạn chỉ chứa 1000 "địa chỉ tiền thối" này. Mỗi lần một sự kiện trộn xảy ra, tối đa 9 địa chỉ của bạn được sử dụng. Điều này có nghĩa là 1000 địa chỉ đó tồn tại cho khoảng 100 sự kiện trộn. Khi 900 trong số chúng được sử dụng, ví của bạn phải tạo thêm địa chỉ. Tuy nhiên, nó chỉ có thể làm điều này nếu bạn đã bật sao lưu tự động.&lt;br&gt; Do đó, người dùng tắt sao lưu cũng sẽ bị tắt %1. &lt;hr&gt;Để biết thêm thông tin, xem &lt;a style="%2" href="%3"&gt;tài liệu %1&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -1671,7 +1711,7 @@
     </message>
     <message>
         <source>Network addresses that your Dash node is currently using to communicate with other nodes.</source>
-        <translation>Các địa chỉ mạng mà nút Dash của bạn hiện đang dùng để giao tiếp với các nút khác.</translation>
+        <translation>Các địa chỉ mạng mà nút PirateCash của bạn hiện đang dùng để giao tiếp với các nút khác.</translation>
     </message>
     <message>
         <source>Block chain</source>
@@ -1794,8 +1834,8 @@
         <translation><numerusform>(đủ để khôi phục bản sao lưu %n ngày tuổi)</numerusform></translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Dash block chain.</source>
-        <translation>%1 sẽ download và lưu trữ một bản copy của Dash block chain.</translation>
+        <source>%1 will download and store a copy of the PirateCash block chain.</source>
+        <translation>%1 sẽ download và lưu trữ một bản copy của PirateCash block chain.</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -2274,6 +2314,10 @@ Mạng từ chối: %1</translation>
         <source>Details: %1</source>
         <translation>Chi tiết: %1</translation>
     </message>
+    <message>
+        <source>This dissolution pays a share less than the network requires: its full principal plus its part of any early-exit penalty. A dissolution that pays no penalty is accepted only once the early period has ended; if it has already ended, prepare a new dissolution.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MigrateWalletActivity</name>
@@ -2386,7 +2430,7 @@ Quá trình di chuyển sẽ tạo một bản sao lưu của ví trước khi d
     </message>
     <message>
         <source>The session file uses an unsupported format version. Update Dash Core to open it.</source>
-        <translation>Tệp phiên dùng phiên bản định dạng không được hỗ trợ. Hãy cập nhật Dash Core để mở nó.</translation>
+        <translation>Tệp phiên dùng phiên bản định dạng không được hỗ trợ. Hãy cập nhật PirateCash Core để mở nó.</translation>
     </message>
     <message>
         <source>The session file is for the "%1" network but this node runs "%2". It cannot be used here.</source>
@@ -2410,7 +2454,7 @@ Quá trình di chuyển sẽ tạo một bản sao lưu của ví trước khi d
     </message>
     <message>
         <source>The session file is at the unknown stage "%1". It was probably created by a newer Dash Core.</source>
-        <translation>Tệp phiên đang ở giai đoạn không xác định "%1". Có thể nó được tạo bởi một bản Dash Core mới hơn.</translation>
+        <translation>Tệp phiên đang ở giai đoạn không xác định "%1". Có thể nó được tạo bởi một bản PirateCash Core mới hơn.</translation>
     </message>
     <message>
         <source>The session file lists %1 shares; a shared masternode can have at most %2.</source>
@@ -2820,6 +2864,42 @@ Quá trình di chuyển sẽ tạo một bản sao lưu của ví trước khi d
         <source>%1 inputs</source>
         <translation>%1 đầu vào</translation>
     </message>
+    <message>
+        <source>A shared masternode needs between %1 and %2 shares.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Every share amount must be between %1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The share amounts must sum to exactly %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Every share needs its own, non-empty owner address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Every refund address must be unique.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Every refund and reward address must be a valid P2PKH or P2SH address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A refund or reward address must not be the voting address or any share's owner address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the early penalty to 0 when there is no early period.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The share table is not valid (%1).</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MnemonicVerificationDialog</name>
@@ -2927,12 +3007,12 @@ Quá trình di chuyển sẽ tạo một bản sao lưu của ví trước khi d
         <translation>Form</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
-        <translation>Những giao dịch mới có thể chưa hiện ra, và do đó số dư trong ví của bạn có thể chưa chính xác. Những thông tin này sẽ chính xác một khi ví của bạn đã hoàn tất việc đồng bộ với mạng lưới của Dash, như cụ thể bên dưới.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the PirateCash network, as detailed below.</source>
+        <translation>Những giao dịch mới có thể chưa hiện ra, và do đó số dư trong ví của bạn có thể chưa chính xác. Những thông tin này sẽ chính xác một khi ví của bạn đã hoàn tất việc đồng bộ với mạng lưới của PirateCash, như cụ thể bên dưới.</translation>
     </message>
     <message>
-        <source>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>Việc chi tiêu Dash khi mà các giao dịch của nó chưa được đồng bộ hết sẽ không được chấp nhận bởi mạng lưới.</translation>
+        <source>Attempting to spend PirateCash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>Việc chi tiêu PirateCash khi mà các giao dịch của nó chưa được đồng bộ hết sẽ không được chấp nhận bởi mạng lưới.</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -2940,11 +3020,11 @@ Quá trình di chuyển sẽ tạo một bản sao lưu của ví trước khi d
     </message>
     <message>
         <source>Unknown…</source>
-        <translation>Không xác định…</translation>
+        <translation>Không xác định...</translation>
     </message>
     <message>
         <source>calculating…</source>
-        <translation>đang tính…</translation>
+        <translation>đang tính...</translation>
     </message>
     <message>
         <source>Last block time</source>
@@ -3316,8 +3396,8 @@ Quá trình di chuyển sẽ tạo một bản sao lưu của ví trước khi d
         <translation>Các giao dịch có đầu ra bằng hoặc thấp hơn số tiền này sẽ được coi là bụi khi nhận từ nguồn bên ngoài.</translation>
     </message>
     <message>
-        <source>duffs</source>
-        <translation>duffs</translation>
+        <source>corsars</source>
+        <translation>corsars</translation>
     </message>
     <message>
         <source>External Signer (e.g. hardware wallet)</source>
@@ -3408,8 +3488,8 @@ Quá trình di chuyển sẽ tạo một bản sao lưu của ví trước khi d
         <translation>Tối đa</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Tự động mở cổng cho phần mềm Dash Core trên rounter. Điều này chỉ hoạt động được khi rounter của bạn hỗ trợ UpnP và tính năng đó được bật lên.</translation>
+        <source>Automatically open the PirateCash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Tự động mở cổng cho phần mềm PirateCash Core trên rounter. Điều này chỉ hoạt động được khi rounter của bạn hỗ trợ UpnP và tính năng đó được bật lên.</translation>
     </message>
     <message>
         <source>Map port using NA&amp;T-PMP</source>
@@ -3424,8 +3504,8 @@ Quá trình di chuyển sẽ tạo một bản sao lưu của ví trước khi d
         <translation>Cho phép &amp;nhận kết nối</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a SOCKS5 proxy.</source>
-        <translation>Kết nối với mạng lưới Dash thông qua một SOCK5 proxy.</translation>
+        <source>Connect to the PirateCash network through a SOCKS5 proxy.</source>
+        <translation>Kết nối với mạng lưới PirateCash thông qua một SOCK5 proxy.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -3490,8 +3570,8 @@ https://explore.transifex.com/dash/dash/</translation>
         <translation>Ánh xạ cổng sử dụng &amp;UPnP</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
-        <translation>Tự động mở cổng ứng dụng Dash Core trên router. Điều này chỉ hoạt động khi router của bạn hỗ trợ NAT-PMP và được bật. Cổng ngoài có thể là ngẫu nhiên.</translation>
+        <source>Automatically open the PirateCash Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
+        <translation>Tự động mở cổng ứng dụng PirateCash Core trên router. Điều này chỉ hoạt động khi router của bạn hỗ trợ NAT-PMP và được bật. Cổng ngoài có thể là ngẫu nhiên.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -3542,8 +3622,8 @@ https://explore.transifex.com/dash/dash/</translation>
         <translation>&amp;Hiển thị</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a separate SOCKS5 proxy for Tor onion services.</source>
-        <translation>Kết nối với mạng Dash thông qua proxy SOCKS5 riêng cho dịch vụ Tor onion.</translation>
+        <source>Connect to the PirateCash network through a separate SOCKS5 proxy for Tor onion services.</source>
+        <translation>Kết nối với mạng PirateCash thông qua proxy SOCKS5 riêng cho dịch vụ Tor onion.</translation>
     </message>
     <message>
         <source>Use separate SOCKS&amp;5 proxy to reach peers via Tor onion services:</source>
@@ -3645,8 +3725,8 @@ https://explore.transifex.com/dash/dash/</translation>
         <translation>Biểu mẫu</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Dash network after a connection is established, but this process has not completed yet.</source>
-        <translation>Thông tin được hiển thị có thể đã lỗi thời. Ví của bạn sẽ tự động đồng bộ với mạng lưới Dash sau khi kết nối được thiết lập, tuy nhiên quá trình này chưa hoàn thành.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
+        <translation>Thông tin được hiển thị có thể đã lỗi thời. Ví của bạn sẽ tự động đồng bộ với mạng lưới PirateCash sau khi kết nối được thiết lập, tuy nhiên quá trình này chưa hoàn thành.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -3725,8 +3805,8 @@ https://explore.transifex.com/dash/dash/</translation>
         <translation>Số tiền và số vòng:</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
-        <translation>0 DASH / 0 Vòng</translation>
+        <source>0 PIRATE / 0 Rounds</source>
+        <translation>0 PIRATE / 0 Vòng</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -4012,16 +4092,16 @@ https://explore.transifex.com/dash/dash/</translation>
         <translation>Yêu cầu thanh toán bị lỗi</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
-        <translation>Không thể khởi động dash: trình xử lý click-to-pay</translation>
+        <source>Cannot start piratecash: click-to-pay handler</source>
+        <translation>Không thể khởi động piratecash: trình xử lý click-to-pay</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>xử lý URI</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash://' không phải là URI hợp lệ. Sử dụng 'dash:' thay thế.</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>'piratecash://' không phải là URI hợp lệ. Sử dụng 'piratecash:' thay thế.</translation>
     </message>
     <message>
         <source>Cannot process payment request as BIP70 is no longer supported.
@@ -4030,8 +4110,8 @@ Due to discontinued support, you should request the merchant to provide you with
 Do ngừng hỗ trợ, bạn nên yêu cầu người bán cung cấp cho bạn URI tương thích BIP21 hoặc sử dụng ví vẫn tiếp tục hỗ trợ BIP70.</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Dash address or malformed URI parameters.</source>
-        <translation>URI không thể phân tích. Nó có thể bởi địa chỉ Dash không hợp lệ hoặc thông số URI dị hình.</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
+        <translation>URI không thể phân tích. Nó có thể bởi địa chỉ PirateCash không hợp lệ hoặc thông số URI dị hình.</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -4817,15 +4897,15 @@ Bạn có muốn tiếp tục không?</translation>
     </message>
     <message>
         <source>%1 didn't yet exit safely…</source>
-        <translation>%1 vẫn chưa thoát an toàn…</translation>
+        <translation>%1 vẫn chưa thoát an toàn...</translation>
     </message>
     <message>
         <source>Amount</source>
         <translation>Số lượng</translation>
     </message>
     <message>
-        <source>Enter a Dash address (e.g. %1)</source>
-        <translation>Hãy nhập một địa chỉ Dash (VD: %1)</translation>
+        <source>Enter a PirateCash address (e.g. %1)</source>
+        <translation>Hãy nhập một địa chỉ PirateCash (VD: %1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
@@ -5245,7 +5325,7 @@ Bạn có muốn tiếp tục không?</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation>Có</translation>
+        <translation>Đồng ý</translation>
     </message>
     <message>
         <source>No</source>
@@ -5273,7 +5353,7 @@ Bạn có muốn tiếp tục không?</translation>
     </message>
     <message>
         <source>Invalid Dash address: %1</source>
-        <translation>Địa chỉ Dash không hợp lệ: %1</translation>
+        <translation>Địa chỉ PirateCash không hợp lệ: %1</translation>
     </message>
     <message>
         <source>Copy</source>
@@ -5308,14 +5388,14 @@ Bạn có muốn tiếp tục không?</translation>
     </message>
     <message>
         <source>&amp;Save Image…</source>
-        <translation>&amp;Lưu ảnh…</translation>
+        <translation>&amp;Lưu ảnh...</translation>
     </message>
 </context>
 <context>
     <name>QRImageWidget</name>
     <message>
         <source>&amp;Save Image…</source>
-        <translation>&amp;Lưu ảnh…</translation>
+        <translation>&amp;Lưu ảnh...</translation>
     </message>
     <message>
         <source>&amp;Copy Image</source>
@@ -5831,7 +5911,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     </message>
     <message>
         <source>Yes</source>
-        <translation>Có</translation>
+        <translation>Đồng ý</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -5845,8 +5925,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>Một thông điệp tuỳ chọn để đính vào yêu cầu thanh toán, nó sẽ hiển thị khi yêu cầu được mở. Chú ý: Thông điệp sẽ không được gửi thông qua mạng lưới Dash.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>Một thông điệp tuỳ chọn để đính vào yêu cầu thanh toán, nó sẽ hiển thị khi yêu cầu được mở. Chú ý: Thông điệp sẽ không được gửi thông qua mạng lưới PirateCash.</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -5857,8 +5937,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Một nhãn tuỳ chọn để liên kết với địa chỉ nhận mới.</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>Một thông điệp tuỳ chọn để đính vào yêu cầu thanh toán, nó sẽ hiển thị khi yêu cầu được mở.&lt;br&gt;Chú ý: Thông điệp sẽ không được gửi thông qua mạng lưới Dash.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>Một thông điệp tuỳ chọn để đính vào yêu cầu thanh toán, nó sẽ hiển thị khi yêu cầu được mở.&lt;br&gt;Chú ý: Thông điệp sẽ không được gửi thông qua mạng lưới PirateCash.</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address (used by you to identify an invoice).  It is also attached to the payment request.</source>
@@ -5993,7 +6073,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     </message>
     <message>
         <source>&amp;Save Image…</source>
-        <translation>&amp;Lưu ảnh…</translation>
+        <translation>&amp;Lưu ảnh...</translation>
     </message>
     <message>
         <source>Request payment to %1</source>
@@ -6071,7 +6151,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     </message>
     <message>
         <source>Additionally hosts Dash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
-        <translation>Ngoài ra còn lưu trữ Dash Platform, có trọng số bỏ phiếu gấp bốn lần và nhận phần thưởng lớn hơn. Yêu cầu ID nút Platform và các dịch vụ bổ sung.</translation>
+        <translation>Ngoài ra còn lưu trữ PirateCash Platform, có trọng số bỏ phiếu gấp bốn lần và nhận phần thưởng lớn hơn. Yêu cầu ID nút Platform và các dịch vụ bổ sung.</translation>
     </message>
     <message>
         <source>Register EvoNode</source>
@@ -6291,7 +6371,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     </message>
     <message>
         <source>Add this line to dash.conf on your masternode server:</source>
-        <translation>Thêm dòng này vào dash.conf trên máy chủ masternode của bạn:</translation>
+        <translation>Thêm dòng này vào piratecash.conf trên máy chủ masternode của bạn:</translation>
     </message>
     <message>
         <source>Copy</source>
@@ -6691,7 +6771,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     </message>
     <message>
         <source>Provision the Dash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
-        <translation>Hãy thiết lập các dịch vụ Dash Platform (Tenderdash và Drive) với khóa nút Platform khớp với ID nút mà bạn đã đăng ký.</translation>
+        <translation>Hãy thiết lập các dịch vụ PirateCash Platform (Tenderdash và Drive) với khóa nút Platform khớp với ID nút mà bạn đã đăng ký.</translation>
     </message>
     <message>
         <source>The EvoNode becomes active once the registration is confirmed and the first update is signed by the operator.</source>
@@ -6806,6 +6886,10 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     <message>
         <source>Revoke</source>
         <translation>Thu hồi</translation>
+    </message>
+    <message>
+        <source>The fee is paid from this address of your wallet.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6963,7 +7047,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     </message>
     <message>
         <source>Inputs…</source>
-        <translation>Đầu vào…</translation>
+        <translation>Đầu vào...</translation>
     </message>
     <message>
         <source>After Fee:</source>
@@ -6987,7 +7071,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     </message>
     <message>
         <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
-        <translation>Khi có ít giao dịch hơn không gian trong các khối, thợ đào cũng như các nút chuyển tiếp có thể áp dụng mức phí tối thiểu. Chỉ trả mức phí tối thiểu này là được, nhưng hãy lưu ý rằng điều này có thể dẫn đến giao dịch không bao giờ được xác nhận khi có nhiều nhu cầu giao dịch dash hơn mức mạng có thể xử lý.</translation>
+        <translation>Khi có ít giao dịch hơn không gian trong các khối, thợ đào cũng như các nút chuyển tiếp có thể áp dụng mức phí tối thiểu. Chỉ trả mức phí tối thiểu này là được, nhưng hãy lưu ý rằng điều này có thể dẫn đến giao dịch không bao giờ được xác nhận khi có nhiều nhu cầu giao dịch piratecash hơn mức mạng có thể xử lý.</translation>
     </message>
     <message>
         <source>A too low fee might result in a never confirming transaction (read the tooltip)</source>
@@ -6995,14 +7079,14 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     </message>
     <message>
         <source>(Smart fee not initialized yet. This usually takes a few blocks…)</source>
-        <translation>(Phí khởi tạo thông minh chưa được khởi tạo. Thường thì sẽ mất vài block…)</translation>
+        <translation>(Phí khởi tạo thông minh chưa được khởi tạo. Thường thì sẽ mất vài block...)</translation>
     </message>
     <message>
         <source>Confirmation time target:</source>
         <translation>Thời gian xác nhận đối tượng:</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <source>If the custom fee is set to 1000 corsars and the transaction is only 250 bytes, then "per kilobyte" only pays 250 corsars in fee,&lt;br /&gt;while "at least" pays 1000 corsars. For transactions bigger than a kilobyte both pay by kilobyte.</source>
         <translation>Nếu mức phí tuỳ chỉnh được đặt là 1000 duff và giao dịch chỉ có 250 byte, thì "theo kilobyte" chỉ trả 250 duff cho phí,&lt;br /&gt;trong khi "ít nhất" phải trả 1000 duff. Cho các giao dịch lớn hơn 1 kilobyte thì cả hai đều trả theo kilobyte.</translation>
     </message>
     <message>
@@ -7015,7 +7099,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     </message>
     <message>
         <source>Choose…</source>
-        <translation>Chọn…</translation>
+        <translation>Chọn...</translation>
     </message>
     <message>
         <source>Note: Not enough data for fee estimation, using the fallback fee instead.</source>
@@ -7309,8 +7393,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation><numerusform>Ước lượng để bắt đầu xác thực trong vòng %n khối.</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Dash address</source>
-        <translation>Cảnh báo: Địa chỉ Dash không hợp lệ</translation>
+        <source>Warning: Invalid PirateCash address</source>
+        <translation>Cảnh báo: Địa chỉ PirateCash không hợp lệ</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -7328,6 +7412,24 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <source>(no label)</source>
         <translation>(không có nhãn)</translation>
     </message>
+    <message>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for piratecash transactions than the network can process.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creates a Partially Signed PirateCash Transaction (PSBT) for use with e.g. an offline %1 wallet, or a PSBT-compatible hardware wallet.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please, review your transaction proposal. This will produce a Partially Signed PirateCash Transaction (PSBT) which you can save or copy and then sign with e.g. an offline %1 wallet, or a PSBT-compatible hardware wallet.</source>
+        <extracomment>Text to inform a user attempting to create a transaction of their current options. At this stage, a user can only create a PSBT. This string is displayed when private keys are disabled and an external signer is not available.</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please, review your transaction. You can create and send this transaction or create a Partially Signed PirateCash Transaction (PSBT), which you can save or copy and then sign with, e.g., an offline %1 wallet, or a PSBT-compatible hardware wallet.</source>
+        <extracomment>Text to inform a user attempting to create a transaction of their current options. At this stage, a user can send their transaction or create a PSBT. This string is displayed when both private keys and PSBT controls are enabled.</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SendCoinsEntry</name>
@@ -7336,8 +7438,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Trả &amp;Cho</translation>
     </message>
     <message>
-        <source>The Dash address to send the payment to</source>
-        <translation>Địa chỉ Dash để gửi thanh toán</translation>
+        <source>The PirateCash address to send the payment to</source>
+        <translation>Địa chỉ PirateCash để gửi thanh toán</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -7377,7 +7479,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     </message>
     <message>
         <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>Phí sẽ được trừ trong khoản tiền mà bạn gửi. Bên nhận sẽ nhận được một khoản nhỏ hơn số Dash mà bạn nhập vào ở trong trường số lượng. Nếu có nhiều người nhận được chọn, phí được chia đều cho mọi người.</translation>
+        <translation>Phí sẽ được trừ trong khoản tiền mà bạn gửi. Bên nhận sẽ nhận được một khoản nhỏ hơn số PirateCash mà bạn nhập vào ở trong trường số lượng. Nếu có nhiều người nhận được chọn, phí được chia đều cho mọi người.</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -7392,8 +7494,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Thông điệp:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Dash network.</source>
-        <translation>Một thông điệp được đính với dash: URI đó sẽ được lưu trữ với các giao dịch cho các bạn tham khảo. Lưu ý: Thông điệp này sẽ không được gửi qua mạng Dash. </translation>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <translation>Một thông điệp được đính với piratecash: URI đó sẽ được lưu trữ với các giao dịch cho các bạn tham khảo. Lưu ý: Thông điệp này sẽ không được gửi qua mạng PirateCash. </translation>
     </message>
 </context>
 <context>
@@ -7731,7 +7833,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     </message>
     <message>
         <source>Add this line to dash.conf on the masternode server:</source>
-        <translation>Thêm dòng này vào dash.conf trên máy chủ masternode:</translation>
+        <translation>Thêm dòng này vào piratecash.conf trên máy chủ masternode:</translation>
     </message>
     <message>
         <source>The invitation you are about to send contains only the public key.</source>
@@ -8417,6 +8519,98 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <source>Discard and Release Coins</source>
         <translation>Hủy bỏ và bỏ dành riêng coin</translation>
     </message>
+    <message>
+        <source>%1 is already the service address of a registered masternode. Every service address must be unique on the network.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your coins are reserved for this row. Release them on the contribution page before removing it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy My Reply</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 already pays a refund or reward to this owner address. The owner address must differ from every refund and reward address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The refund address must differ from the voting address and every owner address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 already uses this refund address. Every refund address must be unique.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reserve and Sign</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose your share…</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 (taken)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>These coins pay %1 beyond your share, not the %2 Network fee shown below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To change your addresses or the network fee, release the coins first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To change your addresses, release the coins first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>✓ Your approval covers every amount, address, key and exit term below, and none of them has changed since. Participant names, "Node run by" and the Identity section are notes it does not cover.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All participants approved. Your coins were released, so nothing was signed. Press "Reserve and Sign" to reserve them again and continue.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transaction ID: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This newer invitation changes your share (%1), so it was not loaded. If you agreed to that change, close this window and open the new invitation to review it. Otherwise ask %2 to send an invitation with your share unchanged.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This newer invitation gives %1's share an owner address from this wallet, so it was not loaded. Ask %2 to send an invitation in which only your own share uses this wallet's addresses.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loaded the newer invitation; your share is unchanged. Review it, then send your details again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This invitation is older than the one you already have, so it was not loaded. Ask %1 for the latest invitation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This newer copy changes your share (%1), so it was not loaded. If you agreed to that change, close this window and open the copy again to review it. Otherwise ask %2 to send a copy with your share unchanged.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>whoever sent it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has already been taken by another participant.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The owner address must belong to this wallet.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SharedMnDialog</name>
@@ -8678,6 +8872,30 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <source>Identity</source>
         <translation>Định danh</translation>
     </message>
+    <message>
+        <source>✓ in this wallet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>cannot be valued on this node yet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>no coins reserved yet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 (%2 in, %3 change back)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>⚠ That is at least %1 more than your %2 share. Do not approve unless you meant to pay it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your contribution:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SharedSigCollector</name>
@@ -8846,7 +9064,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     <name>ShutdownWindow</name>
     <message>
         <source>%1 is shutting down…</source>
-        <translation>%1 đang shutting down…</translation>
+        <translation>%1 đang shutting down...</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
@@ -8864,12 +9082,12 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>&amp;Ký thông điệp</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Dash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>Bạn có thể ký vào thông điệp/thoả thuận với địa chỉ của bạn để chứng minh bạn có thể nhận Dash đã gửi cho họ. Hãy cẩn thận không ký vào những gì mơ hồ hay ngẫu nhiên, như là thứ lừa đảo để lừa bạn ký xác nhận của bạn vào đó cho họ. Chỉ ký vào những gì mà bạn hoàn thoàn đồng ý.</translation>
+        <source>You can sign messages/agreements with your addresses to prove you can receive PirateCash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <translation>Bạn có thể ký vào thông điệp/thoả thuận với địa chỉ của bạn để chứng minh bạn có thể nhận PirateCash đã gửi cho họ. Hãy cẩn thận không ký vào những gì mơ hồ hay ngẫu nhiên, như là thứ lừa đảo để lừa bạn ký xác nhận của bạn vào đó cho họ. Chỉ ký vào những gì mà bạn hoàn thoàn đồng ý.</translation>
     </message>
     <message>
-        <source>The Dash address to sign the message with</source>
-        <translation>Địa chỉ Dash để ký cho thông điệp</translation>
+        <source>The PirateCash address to sign the message with</source>
+        <translation>Địa chỉ PirateCash để ký cho thông điệp</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -8900,8 +9118,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Copy chữ ký hiện tại vào bộ đệm của hệ thống</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Dash address</source>
-        <translation>Ký vào thông điệp để chứng tỏ bạn sở hữu địa chỉ Dash</translation>
+        <source>Sign the message to prove you own this PirateCash address</source>
+        <translation>Ký vào thông điệp để chứng tỏ bạn sở hữu địa chỉ PirateCash</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -8921,11 +9139,11 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     </message>
     <message>
         <source>Enter the receiver's address, message (ensure you copy line breaks, spaces, tabs, etc. exactly) and signature below to verify the message. Be careful not to read more into the signature than what is in the signed message itself, to avoid being tricked by a man-in-the-middle attack. Note that this only proves the signing party receives with the address, it cannot prove sendership of any transaction!</source>
-        <translation>Hãy nhập vào địa chỉ của người nhận, thông điệp (hãy đảm bảo rằng bạn copy cả dấu xuống dòng, dấu cách, dấu tab,… một cách chính xác) và chữ ký bên dưới để kiểm tra thông điệp. Hãy cẩn thận để không đọc thêm vào phần chữ ký mà nó dùng để ký, để tránh bị đánh lừa bởi kiểu tấn công người trung gian. Chú ý đây chỉ để chứng minh chữ ký của bên nhận với địa chỉ đó, nó không thể chứng minh người gửi hoặc bất kỳ giao dich nào!</translation>
+        <translation>Hãy nhập vào địa chỉ của người nhận, thông điệp (hãy đảm bảo rằng bạn copy cả dấu xuống dòng, dấu cách, dấu tab,... một cách chính xác) và chữ ký bên dưới để kiểm tra thông điệp. Hãy cẩn thận để không đọc thêm vào phần chữ ký mà nó dùng để ký, để tránh bị đánh lừa bởi kiểu tấn công người trung gian. Chú ý đây chỉ để chứng minh chữ ký của bên nhận với địa chỉ đó, nó không thể chứng minh người gửi hoặc bất kỳ giao dich nào!</translation>
     </message>
     <message>
-        <source>The Dash address the message was signed with</source>
-        <translation>Địa chỉ Dash mà thông điệp được ký bởi</translation>
+        <source>The PirateCash address the message was signed with</source>
+        <translation>Địa chỉ PirateCash mà thông điệp được ký bởi</translation>
     </message>
     <message>
         <source>The signed message to verify</source>
@@ -8936,8 +9154,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Chữ ký được đưa ra khi thông điệp được ký</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Dash address</source>
-        <translation>Kiểm tra lại thông điệp để đảm bảo rằng nó được ký với địa chỉ Dash cụ thể</translation>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
+        <translation>Kiểm tra lại thông điệp để đảm bảo rằng nó được ký với địa chỉ PirateCash cụ thể</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -9361,7 +9579,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     </message>
     <message>
         <source>Locks funds for use on Dash Platform. The amount is this wallet's net balance change, including the network fee.</source>
-        <translation>Khóa tiền để dùng trên Dash Platform. Số tiền là thay đổi số dư ròng của ví này, bao gồm phí mạng.</translation>
+        <translation>Khóa tiền để dùng trên PirateCash Platform. Số tiền là thay đổi số dư ròng của ví này, bao gồm phí mạng.</translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -9420,7 +9638,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     </message>
     <message>
         <source>Range…</source>
-        <translation>Khoảng…</translation>
+        <translation>Khoảng...</translation>
     </message>
     <message>
         <source>Most Common</source>
@@ -9757,6 +9975,10 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <source>Enter a valid Platform node ID (40 hexadecimal characters).</source>
         <translation>Hãy nhập ID nút Platform hợp lệ (40 ký tự thập lục phân).</translation>
     </message>
+    <message>
+        <source>The fee is paid from this address of your wallet.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UpdateShareDialog</name>
@@ -9802,7 +10024,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
     </message>
     <message>
         <source>Enter a valid Dash address.</source>
-        <translation>Hãy nhập địa chỉ Dash hợp lệ.</translation>
+        <translation>Hãy nhập địa chỉ PirateCash hợp lệ.</translation>
     </message>
     <message>
         <source>The reward address must differ from the voting address and every owner address.</source>
@@ -9963,7 +10185,7 @@ Vào File &gt; Mở Ví để tải một ví.
     </message>
 </context>
 <context>
-    <name>dash-core</name>
+    <name>piratecash-core</name>
     <message>
         <source>This error could occur if this wallet was not shutdown cleanly and was last loaded using a build with a newer version of Berkeley DB. If so, please use the software that last loaded this wallet</source>
         <translation>Lỗi này có thể xảy ra nếu ví không được tắt đúng cách và được tải lần cuối bằng phiên bản mới hơn của Berkeley DB. Nếu vậy, vui lòng sử dụng phần mềm đã tải ví này lần cuối</translation>
@@ -10130,19 +10352,19 @@ Không thể khôi phục bản sao lưu của ví.</translation>
     </message>
     <message>
         <source>Pruning blockstore…</source>
-        <translation>Đang xén tỉa các khối lưu trữ…</translation>
+        <translation>Đang xén tỉa các khối lưu trữ...</translation>
     </message>
     <message>
         <source>Replaying blocks…</source>
-        <translation>Phát lại các khối…</translation>
+        <translation>Phát lại các khối...</translation>
     </message>
     <message>
         <source>Rescanning…</source>
-        <translation>Đang quét lại…</translation>
+        <translation>Đang quét lại...</translation>
     </message>
     <message>
         <source>Starting network threads…</source>
-        <translation>Starting network threads…</translation>
+        <translation>Starting network threads...</translation>
     </message>
     <message>
         <source>Submitted to masternode, waiting in queue %s</source>
@@ -10154,11 +10376,11 @@ Không thể khôi phục bản sao lưu của ví.</translation>
     </message>
     <message>
         <source>Synchronizing blockchain…</source>
-        <translation>Đang đồng bộ blockchain…</translation>
+        <translation>Đang đồng bộ blockchain...</translation>
     </message>
     <message>
         <source>Synchronizing governance objects…</source>
-        <translation>Đang đồng bộ các đối tượng quản trị…</translation>
+        <translation>Đang đồng bộ các đối tượng quản trị...</translation>
     </message>
     <message>
         <source>Transaction change output index out of range</source>
@@ -10221,8 +10443,8 @@ Không thể khôi phục bản sao lưu của ví.</translation>
         <translation>Lỗi khi tải %s: Ví người ký bên ngoài đang được tải mà không có hỗ trợ người ký bên ngoài được biên dịch</translation>
     </message>
     <message>
-        <source>Error: Dumpfile version is not supported. This version of dash-wallet only supports version 1 dumpfiles. Got dumpfile with version %s</source>
-        <translation>Lỗi: Phiên bản tệp kết xuất không được hỗ trợ. Phiên bản dash-wallet này chỉ hỗ trợ tệp kết xuất phiên bản 1. Nhận được tệp kết xuất phiên bản %s</translation>
+        <source>Error: Dumpfile version is not supported. This version of piratecash-wallet only supports version 1 dumpfiles. Got dumpfile with version %s</source>
+        <translation>Lỗi: Phiên bản tệp kết xuất không được hỗ trợ. Phiên bản piratecash-wallet này chỉ hỗ trợ tệp kết xuất phiên bản 1. Nhận được tệp kết xuất phiên bản %s</translation>
     </message>
     <message>
         <source>Failed to create backup, file already exists! This could happen if you restarted wallet in less than 60 seconds. You can continue if you are ok with this.</source>
@@ -10470,7 +10692,7 @@ Không thể khôi phục bản sao lưu của ví.</translation>
     </message>
     <message>
         <source>Mixing in progress…</source>
-        <translation>Đang trong quá trình trộn…</translation>
+        <translation>Đang trong quá trình trộn...</translation>
     </message>
     <message>
         <source>More than one spork address is provided. Using %s.</source>
@@ -10554,7 +10776,7 @@ Không thể khôi phục bản sao lưu của ví.</translation>
     </message>
     <message>
         <source>Sets a window title which is appended to "Dash Core - "</source>
-        <translation>Đặt tiêu đề cửa sổ được nối vào sau "Dash Core - "</translation>
+        <translation>Đặt tiêu đề cửa sổ được nối vào sau "PirateCash Core - "</translation>
     </message>
     <message>
         <source>Signer did not echo address</source>
@@ -10658,11 +10880,11 @@ Không thể khôi phục bản sao lưu của ví.</translation>
     </message>
     <message>
         <source>Verifying blocks…</source>
-        <translation>Đang kiểm tra các khối…</translation>
+        <translation>Đang kiểm tra các khối...</translation>
     </message>
     <message>
         <source>Verifying wallet(s)…</source>
-        <translation>Đang kiểm tra (các) ví…</translation>
+        <translation>Đang kiểm tra (các) ví...</translation>
     </message>
     <message>
         <source>Wallet needed to be rewritten: restart %s to complete</source>
@@ -11028,19 +11250,19 @@ Vui lòng thử chạy phiên bản phần mềm mới nhất.
     </message>
     <message>
         <source>Loading P2P addresses…</source>
-        <translation>Loading P2P addresses…</translation>
+        <translation>Loading P2P addresses...</translation>
     </message>
     <message>
         <source>Loading banlist…</source>
-        <translation>Đang tải danh sách từ chối…</translation>
+        <translation>Đang tải danh sách từ chối...</translation>
     </message>
     <message>
         <source>Loading block index…</source>
-        <translation>Đang nạp chỉ mục khối…</translation>
+        <translation>Đang nạp chỉ mục khối...</translation>
     </message>
     <message>
         <source>Loading wallet…</source>
-        <translation>Đang tải ví…</translation>
+        <translation>Đang tải ví...</translation>
     </message>
     <message>
         <source>Failed to clear fulfilled requests cache at %s</source>
@@ -11080,7 +11302,7 @@ Vui lòng thử chạy phiên bản phần mềm mới nhất.
     </message>
     <message>
         <source>Importing…</source>
-        <translation>Đang nạp…</translation>
+        <translation>Đang nạp...</translation>
     </message>
     <message>
         <source>Initialization sanity check failed. %s is shutting down.</source>
@@ -11135,8 +11357,8 @@ Vui lòng thử chạy phiên bản phần mềm mới nhất.
         <translation>Hàng đợi cuối cùng được tạo quá gần đây.</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup.</source>
-        <translation>%s bị hỏng. Hãy thử sử dụng công cụ ví dash-wallet để cứu hộ hoặc khôi phục từ bản sao lưu.</translation>
+        <source>%s corrupt. Try using the wallet tool piratecash-wallet to salvage or restoring a backup.</source>
+        <translation>%s bị hỏng. Hãy thử sử dụng công cụ ví piratecash-wallet để cứu hộ hoặc khôi phục từ bản sao lưu.</translation>
     </message>
     <message>
         <source>%s is set very high! Fees this large could be paid on a single transaction.</source>
@@ -11228,7 +11450,7 @@ Vui lòng thử chạy phiên bản phần mềm mới nhất.
     </message>
     <message>
         <source>Trying to connect…</source>
-        <translation>Đang thử kết nối…</translation>
+        <translation>Đang thử kết nối...</translation>
     </message>
     <message>
         <source>Unable to allocate memory for -maxsigcachesize: '%s' MiB</source>
@@ -11300,7 +11522,7 @@ Vui lòng thử chạy phiên bản phần mềm mới nhất.
     </message>
     <message>
         <source>Will retry…</source>
-        <translation>Sẽ thử lại…</translation>
+        <translation>Sẽ thử lại...</translation>
     </message>
     <message>
         <source>You are starting with governance validation disabled.</source>
