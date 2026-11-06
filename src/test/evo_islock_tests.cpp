@@ -191,13 +191,13 @@ BOOST_FIXTURE_TEST_CASE(cached_recovered_sig_does_not_authenticate_other_lock, N
     key.MakeNewKey();
     CBLSSecretKey other_key;
     other_key.MakeNewKey();
-    mineBlocks(1); // Matures a second coinbase to spend.
+    mineBlocks(2); // Mature the height-3 coinbase; height 2 only pays 150 corsars.
     const auto cycle_hash = AddMinedQuorum(/*height=*/24, key);
     const auto other_cycle_hash = AddMinedQuorum(/*height=*/48, other_key);
 
     for (const bool change_cycle : {false, true}) {
         // A stored lock only blocks later locks for the same txid once the transaction is known.
-        const int coinbase_index{change_cycle};
+        const int coinbase_index{change_cycle ? 2 : 0};
         const auto& coinbase = m_coinbase_txns[coinbase_index];
         const auto tx = CreateValidMempoolTransaction(coinbase, /*input_vout=*/0, /*input_height=*/coinbase_index + 1,
                                                       coinbaseKey, GetScriptForRawPubKey(coinbaseKey.GetPubKey()),

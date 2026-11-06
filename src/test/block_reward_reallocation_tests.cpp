@@ -144,8 +144,10 @@ BOOST_FIXTURE_TEST_CASE(block_reward_reallocation, TestChainBRRBeforeActivationS
         const CAmount masternode_payment = GetMasternodePayment(tip->nHeight + 1, block_subsidy, consensus_params, era);
         const auto pblocktemplate = BlockAssembler(m_node.chainman->ActiveChainstate(), m_node, m_node.mempool.get()).CreateNewBlock(coinbasePubKey);
         BOOST_CHECK_EQUAL(pblocktemplate->block.vtx[0]->GetValueOut(), block_subsidy);
+        BOOST_CHECK_EQUAL(pblocktemplate->block.vtx[0]->GetValueOut(), 45 * COIN);
         BOOST_CHECK_EQUAL(pblocktemplate->voutMasternodePayments[0].nValue, masternode_payment);
         BOOST_CHECK_EQUAL(pblocktemplate->voutMasternodePayments[0].nValue, block_subsidy * 3 / 5);
+        BOOST_CHECK_EQUAL(pblocktemplate->voutMasternodePayments[0].nValue, 27 * COIN); // 60% after the 10% treasury allocation
     }
 
     // PirateCash reallocates over 30 periods of three superblock cycles.
@@ -185,14 +187,17 @@ BOOST_FIXTURE_TEST_CASE(block_reward_reallocation, TestChainBRRBeforeActivationS
         const CAmount block_subsidy_sb = GetSuperblockSubsidyInner(tip->nBits, tip->nHeight, consensus_params, isV20Active);
         CAmount block_subsidy_potential = block_subsidy + block_subsidy_sb;
         BOOST_CHECK_EQUAL(block_subsidy_sb, block_subsidy_potential / 5);
+        BOOST_CHECK_EQUAL(block_subsidy_potential, 50 * COIN);
         CAmount expected_block_reward = block_subsidy_potential - block_subsidy_potential / 5;
 
         const CAmount masternode_payment = GetMasternodePayment(tip->nHeight + 1, block_subsidy, consensus_params, era);
         const auto pblocktemplate = BlockAssembler(m_node.chainman->ActiveChainstate(), m_node, m_node.mempool.get()).CreateNewBlock(coinbasePubKey);
         BOOST_CHECK_EQUAL(pblocktemplate->block.vtx[0]->GetValueOut(), expected_block_reward);
         BOOST_CHECK_EQUAL(pblocktemplate->block.vtx[0]->GetValueOut(), block_subsidy);
+        BOOST_CHECK_EQUAL(pblocktemplate->block.vtx[0]->GetValueOut(), 40 * COIN);
         BOOST_CHECK_EQUAL(pblocktemplate->voutMasternodePayments[0].nValue, masternode_payment);
         BOOST_CHECK_EQUAL(pblocktemplate->voutMasternodePayments[0].nValue, expected_block_reward * 3 / 5);
+        BOOST_CHECK_EQUAL(pblocktemplate->voutMasternodePayments[0].nValue, 24 * COIN); // 60% after the 20% treasury allocation
     }
     BOOST_CHECK(WITH_LOCK(::cs_main, return !DeploymentActiveAfter(m_node.chainman->ActiveChain().Tip(), consensus_params, Consensus::DEPLOYMENT_MN_RR)));
 
@@ -237,6 +242,7 @@ BOOST_FIXTURE_TEST_CASE(block_reward_reallocation, TestChainBRRBeforeActivationS
         CAmount block_subsidy_potential = block_subsidy + block_subsidy_sb;
         BOOST_CHECK_EQUAL(tip->nHeight, 2978);
         BOOST_CHECK_EQUAL(block_subsidy_sb, block_subsidy_potential / 5);
+        BOOST_CHECK_EQUAL(block_subsidy_potential, 50 * COIN);
         // Treasury is 20% since MNRewardReallocation
         CAmount expected_block_reward = block_subsidy_potential - block_subsidy_potential / 5;
         // Platform activation splits the existing 60% masternode reward

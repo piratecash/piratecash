@@ -32,8 +32,8 @@ bool IsValidDestinationString(const std::string& str, const CChainParams& params
  * DIP-18 Dash Platform addresses (bech32m).
  *
  * Platform addresses decode to a 20-byte HASH160 prefixed by a type byte:
- *   0xb0 -> Platform P2PKH (addresses of the form dash1k... / tdash1k...)
- *   0x80 -> Platform P2SH  (addresses of the form dash1s... / tdash1s...)
+ *   0xb0 -> Platform P2PKH (addresses of the form pirate1k... / tpirate1k...)
+ *   0x80 -> Platform P2SH  (addresses of the form pirate1s... / tpirate1s...)
  *
  * Unlike base58 Dash addresses, Platform destinations have no on-chain
  * scriptPubKey: they are only valid as credit output recipients of an
