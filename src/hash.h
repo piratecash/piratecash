@@ -7,6 +7,7 @@
 #ifndef BITCOIN_HASH_H
 #define BITCOIN_HASH_H
 
+#include <crypto/scrypt.h>
 #include <attributes.h>
 #include <crypto/common.h>
 #include <crypto/ripemd160.h>

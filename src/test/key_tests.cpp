@@ -18,14 +18,14 @@
 
 #include <boost/test/unit_test.hpp>
 
-static const std::string strSecret1 = "7qh6LYnLN2w2ntz2wwUhRUEgkQ2j8XB16FGw77ZRDZmC29bn7cD";
-static const std::string strSecret2 = "7rve4MxeWFQHGbSYH6J2yaaZd3MBUqoDEwN6ZAZ6ZHmhTT4r3hW";
-static const std::string strSecret1C = "XBuxZHH6TqXUuaSjbVTFR1DQSYecxCB9QA1Koyx5tTc3ddhqEnhm";
-static const std::string strSecret2C = "XHMkZqWcY6Zkoq1j42NBijD8z5N5FtNy2Wx7WyAfXX2HZgxry8cr";
-static const std::string addr1 = "Xywgfc872nn5CKtpATCoAjZCc4v96pJczy";
-static const std::string addr2 = "XpmouUj9KKJ99ZuU331ZS1KqsboeFnLGgK";
-static const std::string addr1C = "XxV9h4Xmv6Pup8tVAQmH97K6grzvDwMG9F";
-static const std::string addr2C = "Xn7ZrYdExuk79Dm7CJCw7sfUWi2qWJSbRy";
+static const std::string strSecret1 = "7okMAKLJWcFof5QL3MrhU9duqHR1UpL8JcCprxsXDukoXS4rEin";
+static const std::string strSecret2 = "7pytt8Wcepj48mrqNWg32FynhvjTq8xLTJHzK1sCZdmJxrm4nnP";
+static const std::string strSecret1C = "X3LKz7vCHgcLw4Ry3R4Mcq7vC7Sy7muREiPCFXbzPyrLMJWkQpXW";
+static const std::string strSecret2C = "X8n7zg9iMwecqJzxVwyHvZ7ejeARRU7Es5KyxWpa33GaHMmU8Vdu";
+static const std::string addr1 = "PXr1zKs4813g2DxzeeD6z6qgPUWLBfwvdx";
+static const std::string addr2 = "PNg9ECU6QXZjyTyeXE1sFNcKf1PqKUZ6zv";
+static const std::string addr1C = "PWPV1nGj1JfWe2xfebmaxUbaUGb7J2um2W";
+static const std::string addr2C = "PL1uBGNC481hy7qHgVDEwEwxJ7d2a939QL";
 
 static const std::string strAddressBad = "Xta1praZQjyELweyMByXyiREw1ZRsjXzVP";
 
@@ -35,13 +35,13 @@ BOOST_FIXTURE_TEST_SUITE(key_tests, BasicTestingSetup)
 BOOST_AUTO_TEST_CASE(key_test1)
 {
     CKey key1  = DecodeSecret(strSecret1);
-    BOOST_CHECK(key1.IsValid() && !key1.IsCompressed());
+    BOOST_REQUIRE(key1.IsValid() && !key1.IsCompressed());
     CKey key2  = DecodeSecret(strSecret2);
-    BOOST_CHECK(key2.IsValid() && !key2.IsCompressed());
+    BOOST_REQUIRE(key2.IsValid() && !key2.IsCompressed());
     CKey key1C = DecodeSecret(strSecret1C);
-    BOOST_CHECK(key1C.IsValid() && key1C.IsCompressed());
+    BOOST_REQUIRE(key1C.IsValid() && key1C.IsCompressed());
     CKey key2C = DecodeSecret(strSecret2C);
-    BOOST_CHECK(key2C.IsValid() && key2C.IsCompressed());
+    BOOST_REQUIRE(key2C.IsValid() && key2C.IsCompressed());
     CKey bad_key = DecodeSecret(strAddressBad);
     BOOST_CHECK(!bad_key.IsValid());
 
@@ -158,6 +158,7 @@ BOOST_AUTO_TEST_CASE(key_signature_tests)
 {
     // When entropy is specified, we should see at least one high R signature within 20 signatures
     CKey key = DecodeSecret(strSecret1);
+    BOOST_REQUIRE(key.IsValid());
     std::string msg = "A message to be signed";
     uint256 msg_hash = Hash(msg);
     std::vector<unsigned char> sig;
@@ -210,6 +211,7 @@ BOOST_AUTO_TEST_CASE(key_key_negation)
 
     // import the static test key
     CKey key = DecodeSecret(strSecret1C);
+    BOOST_REQUIRE(key.IsValid());
 
     // create a signature
     std::vector<unsigned char> vch_sig;
@@ -278,7 +280,7 @@ BOOST_AUTO_TEST_CASE(key_ellswift)
 {
     for (const auto& secret : {strSecret1, strSecret2, strSecret1C, strSecret2C}) {
         CKey key = DecodeSecret(secret);
-        BOOST_CHECK(key.IsValid());
+        BOOST_REQUIRE(key.IsValid());
 
         uint256 ent32 = InsecureRand256();
         auto ellswift = key.EllSwiftCreate(AsBytes(Span{ent32}));

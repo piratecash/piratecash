@@ -73,7 +73,7 @@ struct ChainTxData {
 
 /**
  * CChainParams defines various tweakable parameters of a given instance of the
- * Dash system.
+ * PirateCash system.
  */
 class CChainParams
 {
@@ -160,6 +160,11 @@ public:
     const std::string& SporkAddress() const { return strSporkAddress; }
     int CreditPoolPeriodBlocks() const { return nCreditPoolPeriodBlocks; }
     [[nodiscard]] std::optional<Consensus::LLMQParams> GetLLMQ(Consensus::LLMQType llmqType) const;
+    bool BIP9CheckMasternodesUpgraded() const { return fBIP9CheckMasternodesUpgraded; }
+    int64_t MinStakeAge() const { return nStakeMinAge; }
+    uint32_t FirstPoSv2Block() const { return nFirstPoSv2Block; }
+    bool HasLLMQ(Consensus::LLMQType llmqType) const;
+    int MinCorsaProtocolVersion() const { return nMinCorsaProtocolVersion; }
 
 protected:
     CChainParams() {}
@@ -168,7 +173,7 @@ protected:
     CMessageHeader::MessageStartChars pchMessageStart;
     uint16_t nDefaultPort;
     uint64_t nPruneAfterHeight;
-    /// Four days of blocks (2304) on every network but regtest. Validation reads older blocks from disk:
+    /// Keep 2304 blocks on every network but regtest. Validation reads older blocks from disk:
     /// a credit pool is rebuilt from its newest daily snapshot, reading the block one withdrawal window
     /// before each block since it, and rotated LLMQ modifiers read the work block of earlier cycles.
     /// Regtest keeps Bitcoin Core's 288 for the upstream pruning tests.
@@ -196,10 +201,14 @@ protected:
     int nPoolMaxParticipants;
     int nFulfilledRequestExpireTime;
     std::string strSporkAddress;
+    bool fBIP9CheckMasternodesUpgraded;
     uint16_t nDefaultPlatformP2PPort;
     uint16_t nDefaultPlatformHTTPPort;
     /// The number of blocks the credit pool tracks; 576 (one day) on mainnet, reduced on regtest
     int nCreditPoolPeriodBlocks;
+    int64_t nStakeMinAge;
+    uint32_t nFirstPoSv2Block;
+    int nMinCorsaProtocolVersion{0};
 
     void AddLLMQ(Consensus::LLMQType llmqType);
 };

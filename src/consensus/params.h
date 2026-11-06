@@ -102,8 +102,6 @@ struct Params {
     int nSubsidyHalvingInterval;
     /** Block height at which BIP16 becomes active */
     int nMasternodePaymentsStartBlock;
-    int nMasternodePaymentsIncreaseBlock;
-    int nMasternodePaymentsIncreasePeriod; // in blocks
     int nInstantSendConfirmationsRequired; // in blocks
     int nInstantSendKeepLock; // in blocks
     int nBudgetPaymentsStartBlock;
@@ -173,6 +171,7 @@ struct Params {
     BIP9Deployment vDeployments[MAX_VERSION_BITS_DEPLOYMENTS];
     /** Proof of work parameters */
     uint256 powLimit;
+    uint256 posLimit;
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     /**
@@ -182,7 +181,15 @@ struct Params {
      * DarkGravityWave() in pow.cpp.
      */
     int64_t nPowTargetSpacing;
+    int64_t nPosTargetSpacingV1;
+    int64_t nPosTargetSpacingV2;
+    int64_t nSpecTargetFix;
     int64_t nPowTargetTimespan;
+    int64_t nRewForkDecreaseV18; // The block height when reward will be 150 corsars
+    int64_t nRestoreRewardV18; // The block height when reward will be restored
+    int64_t nForkHeight; // The block height when old PirateCash switches to the new code base
+    int64_t nSkipTimeUntil;
+    int64_t nLastPowBlock; // Last proof-of-work block
     int nPowKGWHeight;
     int nPowDGWHeight;
     std::chrono::seconds PowTargetSpacing() const

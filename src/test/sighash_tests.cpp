@@ -76,7 +76,13 @@ uint256 static SignatureHashOld(CScript scriptCode, const CTransaction& txTo, un
 
     // Serialize and hash
     CHashWriter ss(SER_GETHASH, 0);
-    ss << txTmp << nHashType;
+    // nTime is part of the legacy wire format, but not the signature preimage.
+    int32_t n32bitVersion = PackVersionAndType(txTmp.nVersion, txTmp.nType);
+    ss << n32bitVersion << txTmp.vin << txTmp.vout << txTmp.nLockTime;
+    if (txTmp.nVersion >= CTransaction::SPECIAL_VERSION && txTmp.nType != TRANSACTION_NORMAL) {
+        ss << txTmp.vExtraPayload;
+    }
+    ss << nHashType;
     return ss.GetHash();
 }
 
@@ -91,6 +97,7 @@ void static RandomScript(CScript &script) {
 void static RandomTransaction(CMutableTransaction &tx, bool fSingle)
 {
     tx.nVersion = static_cast<int16_t>(InsecureRandBits(16));
+    tx.nTime = InsecureRand32();
     tx.vin.clear();
     tx.vout.clear();
     tx.nLockTime = (InsecureRandBool()) ? InsecureRand32() : 0;
