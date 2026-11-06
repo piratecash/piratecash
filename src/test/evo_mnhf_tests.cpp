@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE(verify_mnhf_specialtx_tests)
     }
 
     { // non EHF fork
-        const CTransaction tx{CTransaction(CreateMNHFTx(hash, sig, 28))};
+        const CTransaction tx{CTransaction(CreateMNHFTx(hash, sig, Params().GetConsensus().vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit))};
         CheckMNHFTx(chainman->m_blockman, qman, CTransaction(tx), pindex, state);
         BOOST_CHECK_EQUAL(state.ToString(), "bad-mnhf-non-ehf");
     }

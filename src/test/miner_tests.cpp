@@ -37,6 +37,10 @@ using node::CBlockTemplate;
 
 namespace miner_tests {
 struct MinerTestingSetup : public TestingSetup {
+    // Exercise transaction validation after the PirateCash fork, while preserving
+    // the pre-DIP1 sigop limit and pre-BIP68 template-selection scenarios below.
+    MinerTestingSetup() : TestingSetup(CBaseChainParams::REGTEST,
+                                      {"-testactivationheight=csv@1000", "-testactivationheight=dip0001@1000"}) {}
     void TestPackageSelection(const CScript& scriptPubKey, const std::vector<CTransactionRef>& txFirst) EXCLUSIVE_LOCKS_REQUIRED(::cs_main);
     void TestBasicMining(const CScript& scriptPubKey, const std::vector<CTransactionRef>& txFirst, int baseheight) EXCLUSIVE_LOCKS_REQUIRED(::cs_main);
     void TestPrioritisedMining(const CScript& scriptPubKey, const std::vector<CTransactionRef>& txFirst) EXCLUSIVE_LOCKS_REQUIRED(::cs_main);
@@ -75,30 +79,30 @@ BlockAssembler MinerTestingSetup::AssemblerForTest(CTxMemPool& tx_mempool)
     return BlockAssembler(m_node.chainman->ActiveChainstate(), m_node, &tx_mempool, options);
 }
 
-// Precomputed scrypt nonces for the PirateCash mainnet test chain with SHA256d block IDs.
+// Precomputed scrypt nonces for the PirateCash regtest chain with SHA256d block IDs.
 constexpr static struct {
     unsigned char extranonce;
     unsigned int nonce;
-} BLOCKINFO[]{{0, 1142086}, {0, 1239620}, {0, 2301744}, {0, 6212112}, {0, 1729469}, {0, 1296468},
-              {0, 1011637}, {0, 3504751}, {0, 2141957}, {0, 1240841}, {0, 3351182}, {0, 492456},
-              {0, 594416},  {0, 289024},  {0, 2651274}, {0, 2012716}, {0, 3562897}, {0, 2556828},
-              {0, 1348414}, {0, 430730},  {0, 3221224}, {0, 948806},  {0, 825082},  {0, 3693208},
-              {0, 4488898}, {0, 3712363}, {0, 3356599}, {0, 2568238}, {0, 2731529}, {0, 4932686},
-              {0, 3377482}, {0, 941369},  {0, 3524939}, {0, 1495177}, {0, 916167},  {0, 2852064},
-              {0, 1931362}, {0, 1332680}, {0, 3977141}, {0, 1153159}, {0, 2692364}, {0, 1590581},
-              {0, 877225},  {0, 452854},  {0, 6208648}, {0, 2424051}, {0, 3351618}, {0, 2721551},
-              {0, 8318490}, {0, 201979},  {0, 1315685}, {0, 3227057}, {0, 1914199}, {0, 3670858},
-              {0, 3877584}, {0, 3016513}, {0, 2087856}, {0, 6008729}, {0, 1068943}, {0, 1158648},
-              {0, 1928096}, {0, 4392432}, {0, 603141},  {0, 1070009}, {0, 2524471}, {0, 2670727},
-              {0, 1172513}, {0, 2724259}, {0, 1383366}, {0, 1853191}, {0, 2635582}, {0, 2988589},
-              {0, 5558116}, {0, 4019606}, {0, 4664579}, {0, 1843181}, {0, 1347107}, {0, 2852177},
-              {0, 2275356}, {0, 1001674}, {0, 1825003}, {0, 1800596}, {0, 5157194}, {0, 3294338},
-              {0, 324428},  {0, 1719368}, {0, 2414234}, {0, 2030487}, {0, 5090376}, {0, 456079},
-              {0, 6458371}, {0, 5021594}, {0, 1652859}, {0, 4672266}, {0, 2634577}, {0, 3396475},
-              {0, 2876701}, {0, 3363414}, {0, 2186486}, {0, 369286},  {0, 1905178}, {0, 1192021},
-              {0, 687533},  {0, 6003920}, {0, 316678},  {0, 1739881}, {0, 852572},  {0, 948900},
-              {0, 2654383}, {0, 3442684}, {0, 531274},  {0, 2239446}, {0, 4231045}, {0, 3166675},
-              {0, 3757495}, {0, 789765},  {0, 2760210}, {0, 1974724}, {0, 2392267}};
+} BLOCKINFO[]{{0, 0}, {0, 0}, {0, 1}, {0, 1}, {0, 4}, {0, 1},
+              {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 1}, {0, 0},
+              {0, 2}, {0, 0}, {0, 1}, {0, 0}, {0, 5}, {0, 0},
+              {0, 0}, {0, 5}, {0, 0}, {0, 0}, {0, 1}, {0, 0},
+              {0, 0}, {0, 2}, {0, 0}, {0, 0}, {0, 2}, {0, 1},
+              {0, 0}, {0, 1}, {0, 2}, {0, 1}, {0, 0}, {0, 0},
+              {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 2}, {0, 0},
+              {0, 1}, {0, 0}, {0, 3}, {0, 0}, {0, 0}, {0, 0},
+              {0, 5}, {0, 0}, {0, 1}, {0, 1}, {0, 0}, {0, 6},
+              {0, 1}, {0, 1}, {0, 1}, {0, 0}, {0, 1}, {0, 0},
+              {0, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 2}, {0, 0},
+              {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 3},
+              {0, 7}, {0, 1}, {0, 2}, {0, 1}, {0, 2}, {0, 0},
+              {0, 0}, {0, 0}, {0, 2}, {0, 0}, {0, 0}, {0, 0},
+              {0, 0}, {0, 0}, {0, 0}, {0, 1}, {0, 1}, {0, 0},
+              {0, 0}, {0, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
+              {0, 3}, {0, 0}, {0, 0}, {0, 1}, {0, 0}, {0, 0},
+              {0, 2}, {0, 0}, {0, 0}, {0, 0}, {0, 1}, {0, 1},
+              {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 2},
+              {0, 4}, {0, 0}, {0, 3}, {0, 1}, {0, 0}};
 
 static std::unique_ptr<CBlockIndex> CreateBlockIndex(int nHeight, CBlockIndex* active_chain_tip) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
 {
@@ -491,7 +495,7 @@ void MinerTestingSetup::TestBasicMining(const CScript& scriptPubKey, const std::
     tx.vin[0].prevout.hash = txFirst[0]->GetHash(); // only 1 transaction
     tx.vin[0].prevout.n = 0;
     tx.vin[0].scriptSig = CScript() << OP_1;
-    tx.vin[0].nSequence = m_node.chainman->ActiveChain().Tip()->nHeight + 1; // txFirst[0] is the 2nd block
+    tx.vin[0].nSequence = m_node.chainman->ActiveChain().Tip()->nHeight - baseheight + 1;
     prevheights[0] = baseheight + 1;
     tx.vout.resize(1);
     tx.vout[0].nValue = BLOCKSUBSIDY-HIGHFEE;
@@ -511,7 +515,7 @@ void MinerTestingSetup::TestBasicMining(const CScript& scriptPubKey, const std::
 
     // relative time locked
     tx.vin[0].prevout.hash = txFirst[1]->GetHash();
-    tx.vin[0].nSequence = CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG | (((m_node.chainman->ActiveChain().Tip()->GetMedianTimePast()+1-m_node.chainman->ActiveChain()[1]->GetMedianTimePast()) >> CTxIn::SEQUENCE_LOCKTIME_GRANULARITY) + 1); // txFirst[1] is the 3rd block
+    tx.vin[0].nSequence = CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG | (((m_node.chainman->ActiveChain().Tip()->GetMedianTimePast()+1-m_node.chainman->ActiveChain()[baseheight + 1]->GetMedianTimePast()) >> CTxIn::SEQUENCE_LOCKTIME_GRANULARITY) + 1);
     prevheights[0] = baseheight + 2;
     hash = tx.GetHash();
     // Age transaction for InstantSend
@@ -586,8 +590,29 @@ void MinerTestingSetup::TestBasicMining(const CScript& scriptPubKey, const std::
         CBlockIndex* ancestor{Assert(m_node.chainman->ActiveChain().Tip()->GetAncestor(m_node.chainman->ActiveChain().Tip()->nHeight - i))};
         ancestor->nTime += SEQUENCE_LOCK_TIME; // Trick the MedianTimePast
     }
-    m_node.chainman->ActiveChain().Tip()->nHeight++;
-    SetMockTime(m_node.chainman->ActiveChain().Tip()->GetMedianTimePast() + 1);
+    // Advance the template's tip without breaking the ancestry used by BIP34 checks.
+    CChain& chain = m_node.chainman->ActiveChain();
+    CCoinsViewCache& coins = m_node.chainman->ActiveChainstate().CoinsTip();
+    CBlockIndex* const original_tip = chain.Tip();
+    CBlockIndex next_tip{original_tip->GetBlockHeader()};
+    next_tip.pprev = original_tip;
+    next_tip.nHeight = original_tip->nHeight + 1;
+    next_tip.BuildSkip();
+    const uint256 next_hash = next_tip.GetBlockHeader().GetHash();
+    next_tip.phashBlock = &next_hash;
+    struct RestoreChainTip {
+        CChain& chain;
+        CCoinsViewCache& coins;
+        CBlockIndex* tip;
+        ~RestoreChainTip()
+        {
+            chain.SetTip(*tip);
+            coins.SetBestBlock(tip->GetBlockHash());
+        }
+    } restore_tip{chain, coins, original_tip};
+    chain.SetTip(next_tip);
+    coins.SetBestBlock(next_hash);
+    SetMockTime(chain.Tip()->GetMedianTimePast() + 1);
 
     BOOST_CHECK(pblocktemplate = AssemblerForTest(tx_mempool).CreateNewBlock(scriptPubKey));
     BOOST_CHECK_EQUAL(pblocktemplate->block.vtx.size(), 5U);
@@ -698,11 +723,14 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
             txCoinbase.nVersion = 1;
             txCoinbase.vin[0].scriptSig = CScript{} << (m_node.chainman->ActiveChain().Height() + 1) << bi.extranonce;
             txCoinbase.vout[0].scriptPubKey = CScript();
+            const CBlockIndex* tip = m_node.chainman->ActiveChain().Tip();
+            txCoinbase.vout[0].nValue = GetBlockSubsidyInner(tip->nBits, tip->nHeight, Params().GetConsensus(), /*fV20Active=*/false);
             pblock->vtx[0] = MakeTransactionRef(std::move(txCoinbase));
-            if (txFirst.size() == 0)
-                baseheight = m_node.chainman->ActiveChain().Height();
-            if (txFirst.size() < 4)
+            // Use consecutive full-reward coinbases after regtest's 150-corsar block.
+            if (tip->nHeight > Params().GetConsensus().nRestoreRewardV18 && txFirst.size() < 4) {
+                if (txFirst.empty()) baseheight = tip->nHeight;
                 txFirst.push_back(pblock->vtx[0]);
+            }
             pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
             pblock->nNonce = bi.nonce;
 
@@ -721,12 +749,10 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
 
     TestBasicMining(scriptPubKey, txFirst, baseheight);
 
-    m_node.chainman->ActiveChain().Tip()->nHeight--;
     SetMockTime(0);
 
     TestPackageSelection(scriptPubKey, txFirst);
 
-    m_node.chainman->ActiveChain().Tip()->nHeight--;
     SetMockTime(0);
 
     TestPrioritisedMining(scriptPubKey, txFirst);

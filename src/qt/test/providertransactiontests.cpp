@@ -270,8 +270,9 @@ void ProviderTransactionTests::providerTransactionHistory()
 
     const CTransactionRef registration{MakeSpecialTransaction(TRANSACTION_PROVIDER_REGISTER, make_owned_input(0),
                                                               input_amount(0) - registration_fee, own_script)};
-    const CTransactionRef update_service{MakeSpecialTransaction(TRANSACTION_PROVIDER_UPDATE_SERVICE, make_owned_input(1),
-                                                                input_amount(1) - service_fee, own_script)};
+    // The height-2 coinbase only pays 150 corsars, which cannot cover the service fee.
+    const CTransactionRef update_service{MakeSpecialTransaction(TRANSACTION_PROVIDER_UPDATE_SERVICE, make_owned_input(7),
+                                                                input_amount(7) - service_fee, own_script)};
     const CTransactionRef update_registrar{MakeSpecialTransaction(TRANSACTION_PROVIDER_UPDATE_REGISTRAR,
                                                                   make_owned_input(2), input_amount(2) - registrar_fee,
                                                                   external_script)};

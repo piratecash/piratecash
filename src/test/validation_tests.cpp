@@ -32,11 +32,11 @@ BOOST_AUTO_TEST_CASE(test_assumeutxo)
     }
 
     const auto out110 = *ExpectedAssumeutxo(110, *params);
-    BOOST_CHECK_EQUAL(out110.hash_serialized.ToString(), "4567bce7eebe4a65feae1d80150d9dfe2c2056ba8e1c5fd4e4085a7b7bd14042");
+    BOOST_CHECK_EQUAL(out110.hash_serialized.ToString(), "67c6de3291dd8ecd0430eec89171e86a25064e85e1709168333cae5004c3bd13");
     BOOST_CHECK_EQUAL(out110.nChainTx, 110U);
 
     const auto out210 = *ExpectedAssumeutxo(200, *params);
-    BOOST_CHECK_EQUAL(out210.hash_serialized.ToString(), "9e9004d9180f42486b554302ed89e40e5cdefc9b6ed69a637bb633938ab833c0");
+    BOOST_CHECK_EQUAL(out210.hash_serialized.ToString(), "aa38400322e7ea81df064341403199d8162ad6a0783076690eaae717375af1d8");
     BOOST_CHECK_EQUAL(out210.nChainTx, 200U);
 }
 

@@ -3,6 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <bench/bench.h>
+#include <chainparams.h>
 #include <consensus/consensus.h>
 #include <consensus/validation.h>
 #include <script/standard.h>
@@ -26,6 +27,11 @@ static void AssembleBlock(benchmark::Bench& bench)
 
     const CScript scriptSig = CScript() << std::vector<uint8_t>(100, 0xff)
                                         << ToByteVector(redeemScript);
+
+    // Pass the temporary 150-corsar reward before collecting spendable coinbases.
+    for (int64_t height{0}; height <= Params().GetConsensus().nRestoreRewardV18; ++height) {
+        MineBlock(test_setup->m_node, SCRIPT_PUB);
+    }
 
     // Collect some loose transactions that spend the coinbases of our mined blocks
     constexpr size_t NUM_BLOCKS{200};
