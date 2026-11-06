@@ -12,7 +12,7 @@ import re
 import os
 import os.path
 import sys
-import dash_hash
+import piratecash_hash
 import datetime
 import time
 import glob
@@ -21,7 +21,7 @@ from collections import namedtuple
 settings = {}
 
 def calc_hash_str(blk_hdr):
-    blk_hdr_hash = dash_hash.getPoWHash(blk_hdr)
+    blk_hdr_hash = piratecash_hash.getPoWHash(blk_hdr)
     return blk_hdr_hash[::-1].hex()
 
 def get_blk_dt(blk_hdr):
