@@ -1,12 +1,12 @@
-Contributing to Dash Core
+Contributing to PirateCash Core
 ============================
 
-The Dash Core project operates an open contributor model where anyone is
+The PirateCash Core project operates an open contributor model where anyone is
 welcome to contribute towards development in the form of peer review, testing
 and patches. This document explains the practical process and guidelines for
 contributing.
 
-First, in terms of structure, there is no particular concept of "Dash Core
+First, in terms of structure, there is no particular concept of "PirateCash Core
 developers" in the sense of privileged people. Open source often naturally
 revolves around a meritocracy where contributors earn trust from the developer
 community over time. Nevertheless, some hierarchy is necessary for practical
@@ -24,13 +24,13 @@ as a new contributor. It also will teach you much more about the code and
 process than opening pull requests. Please refer to the [peer review](#peer-review)
 section below.
 
-Before you start contributing, familiarize yourself with the Dash Core build
+Before you start contributing, familiarize yourself with the PirateCash Core build
 system and tests. Refer to the documentation in the repository on how to build
-Dash Core and how to run the unit and functional tests.
+PirateCash Core and how to run the unit and functional tests.
 
 There are many open issues of varying difficulty waiting to be fixed.
 If you're looking for somewhere to start contributing, check out the
-[good first issue](https://github.com/dashpay/dash/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
+[good first issue](https://github.com/piratecash/piratecash/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
 list.
 Some of them might no longer be applicable. So if you are interested, but
 unsure, you might want to leave a comment on the issue first.
@@ -51,7 +51,7 @@ and is also an effective way to request assistance if and when you need it.
 Communication Channels
 ----------------------
 
-Most communication about Dash Core development happens on Discord Server.
+Most communication about PirateCash Core development happens on Discord Server.
 
 Discussion about codebase improvements happens in GitHub issues and pull
 requests.
@@ -138,7 +138,7 @@ Allowed scopes:
   - *log* for changes to log messages
   - *mining* for changes to the mining code
   - *net* for changes to the peer-to-peer network code
-  - *qt* for changes to dash-qt
+  - *qt* for changes to piratecash-qt
   - *rest* for changes to the REST APIs
   - *rpc* for changes to the RPC APIs
   - *scripts* for changes to the scripts and tools
@@ -166,13 +166,13 @@ mailing list discussions).
 The description for a new pull request should not contain any `@` mentions. The
 PR description will be included in the commit message when the PR is merged and
 any users mentioned in the description will be annoyingly notified each time a
-fork of Dash Core copies the merge. Instead, make any username mentions in a
+fork of PirateCash Core copies the merge. Instead, make any username mentions in a
 subsequent comment to the PR.
 
 ### Translation changes
 
 Note that translations should not be submitted as pull requests. Please see
-[Translation Process](https://github.com/dashpay/dash/blob/master/doc/translation_process.md)
+[Translation Process](https://github.com/piratecash/piratecash/blob/master/doc/translation_process.md)
 for more information on helping with translations.
 
 ### Work in Progress Changes and Requests for Comments
@@ -228,7 +228,7 @@ pull request to pull request.
 
 When a pull request conflicts with the target branch, you may be asked to rebase it on top of the current target branch.
 
-    git fetch https://github.com/dashpay/dash <target-branch>  # Fetch the latest upstream commit
+    git fetch https://github.com/piratecash/piratecash <target-branch>  # Fetch the latest upstream commit
     git rebase FETCH_HEAD  # Rebuild commits on top of the new base
 
 Avoid rebasing a non-conflicting pull request on top of the updated target
@@ -264,7 +264,7 @@ feature that will require maintenance, please consider if you are willing to
 maintain it (including bug fixing). If features get orphaned with no maintainer
 in the future, they may be removed by the Repository Maintainer. Features
 might be rejected due to design or scope issues. If a feature is based on a lot
-of dependencies, consider first building the system outside of Dash Core, if
+of dependencies, consider first building the system outside of PirateCash Core, if
 possible.
 
 
@@ -289,11 +289,11 @@ experience. Stylistic changes not called for by the
 "Decision Making" Process
 -------------------------
 
-The following applies to code changes to the Dash Core project (and related
-projects such as libsecp256k1), and is not to be confused with overall Dash
+The following applies to code changes to the PirateCash Core project (and related
+projects such as libsecp256k1), and is not to be confused with overall PirateCash
 Network Protocol consensus changes.
 
-Whether a pull request is merged into Dash Core rests with the project merge
+Whether a pull request is merged into PirateCash Core rests with the project merge
 maintainers.
 
 Maintainers will take into consideration if a patch is in line with the general
@@ -317,7 +317,7 @@ In general, all pull requests must:
     the issue and reasoning for the way the bug was fixed;
   - Change relevant comments and documentation when behaviour of code changes.
 
-Patches that change Dash consensus rules are considerably more involved than
+Patches that change PirateCash consensus rules are considerably more involved than
 normal because they affect the entire ecosystem and so must be preceded by
 extensive discussion and have a numbered [DIP](https://github.com/dashpay/dips).
 While each case will be different, one should be prepared to expend more time
@@ -380,7 +380,7 @@ higher in terms of discussion and peer review requirements, keeping in mind that
 mistakes could be very costly to the wider community. This includes refactoring
 of consensus-critical code.
 
-Where a patch set proposes to change the Dash consensus, it must have been
+Where a patch set proposes to change the PirateCash consensus, it must have been
 discussed extensively, be accompanied by a widely discussed DIP and have a
 generally widely perceived technical consensus of being a worthwhile change
 based on the judgement of the maintainers.
@@ -395,7 +395,7 @@ present locally. See chapter [rebasing changes](#rebasing-changes)
 
 ### Finding Reviewers
 
-The review process is normally fairly responsive on the Dash Core repository, however
+The review process is normally fairly responsive on the PirateCash Core repository, however
 this might not always be the case. If you find that you've been waiting
 for a pull request to be given attention for several months, there may be a number
 of reasons for this, some of which you can do something about:
@@ -451,10 +451,10 @@ https://github.com/bitcoin/bitcoin/pull/16189).
 Also see the [backport.py script](
 https://github.com/bitcoin-core/bitcoin-maintainer-tools#backport).
 
-Bitcoin Backports are an incredibly valuable part of Dash's development. Backporting allows us to easily implement new
+Bitcoin Backports are an incredibly valuable part of PirateCash's development. Backporting allows us to easily implement new
 features, improvements and fixes as bitcoin implements them. A backport pull
 request names the upstream pull requests it brings in and explains every
-omitted commit, hunk or test. Features that Dash does not adopt (SegWit,
+omitted commit, hunk or test. Features that PirateCash does not adopt (SegWit,
 replace-by-fee, feefilter, signet) are dropped without comment and do not make
 a backport partial.
 
