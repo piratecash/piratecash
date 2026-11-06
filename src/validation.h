@@ -107,13 +107,21 @@ enum class SynchronizationState {
     POST_INIT
 };
 
+struct StakeHasher
+{
+    size_t operator()(const COutPoint& op) const { return ReadLE64(op.hash.begin()) + op.n; }
+};
+
 extern GlobalMutex g_best_block_mutex;
 extern std::condition_variable g_best_block_cv;
 /** Used to notify getblocktemplate RPC of new tips. */
 extern uint256 g_best_block;
+extern int64_t nReserveBalance;
 
 /** Documentation for argument 'checklevel'. */
 extern const std::vector<std::string> CHECKLEVEL_DOC;
+
+extern uint32_t nFirstPoSBlock;
 
 /** Run instances of script checking worker threads */
 void StartScriptCheckWorkerThreads(int threads_num);
@@ -1282,6 +1290,11 @@ bool DeploymentEnabled(const ChainstateManager& chainman, DEP dep)
 /** The special transaction rules in force for the block after pindexPrev */
 SpecialTxRules GetSpecialTxRules(const CBlockIndex* pindexPrev, const ChainstateManager& chainman);
 
+/**
+ * Determine what nVersion a new block should use.
+ */
+int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params, bool fCheckMasternodesUpgraded = false, bool isPos = false);
+
 /** Get highest permissible ProTx version based on deployment status
  *  Note: The override is needed because some RPCs need to use deployment status information for everything *except*
  *        the BLS version upgrade since they are specializations for a specific BLS version. This is a one-off.
@@ -1292,6 +1305,14 @@ SpecialTxRules GetSpecialTxRules(const CBlockIndex* pindexPrev, const Chainstate
 
 /** Determine the masternode reward era for the block following pindexPrev. */
 MnRewardEra GetMnRewardEraAfter(const CBlockIndex* pindexPrev, const ChainstateManager& chainman);
+
+/** Check if Proof-of-Stake is required for particular height **/
+bool IsPoSEnforcedHeight(int nBlockHeight);
+bool IsPoSV2EnforcedHeight(int nFirstPoSv2Block);
+bool IsPowActiveHeight(int nBlockHeight);
+
+bool CheckProof(BlockValidationState& state, const CBlockIndex& pindex, const Consensus::Params& params);
+bool CheckProof(BlockValidationState& state, const CBlockHeader& block, const Consensus::Params& params, const node::BlockManager* blockman = nullptr, const CChain* active_chain = nullptr);
 
 /**
  * Return the expected assumeutxo value for a given height, if one exists.
