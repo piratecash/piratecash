@@ -111,15 +111,15 @@ MnShareSession FrozenSession(const MnShareSession& draft, const std::vector<CKey
 }
 
 //! Answer the next message box with its button labelled `answer`, recording
-//! the box's title in `title`, which stays empty if no box opens before the
+//! the box's text in `text`, which stays empty if no box opens before the
 //! caller processes events
-void AnswerMessageBox(const QString& answer, QString& title)
+void AnswerMessageBox(const QString& answer, QString& text)
 {
-    title.clear();
-    QTimer::singleShot(0, [answer, &title] {
+    text.clear();
+    QTimer::singleShot(0, [answer, &text] {
         auto* const box{qobject_cast<QMessageBox*>(QApplication::activeModalWidget())};
         if (box == nullptr) return;
-        title = box->windowTitle();
+        text = box->text();
         for (QAbstractButton* const button : box->buttons()) {
             if (button->text() == answer) {
                 button->click();
@@ -564,7 +564,8 @@ void SharedMnWizardTests::signedSessionReservation()
             return button->text() == QStringLiteral("Release my coins") && !button->isHidden();
         });
     };
-    const QString keep_prompt{QStringLiteral("Keep this session for later?")};
+    const QString keep_prompt{QStringLiteral("Saving keeps your coins reserved so you can carry on where you left off. Discarding releases "
+                                            "them; if the others are still waiting for you, they have to start over.")};
     QString prompt;
     {
         // Nothing was changed since the session was opened, but its coins stay
@@ -614,7 +615,8 @@ void SharedMnWizardTests::signedSessionReservation()
         AnswerMessageBox(QStringLiteral("Release"), prompt);
         dialog.releaseReservedCoins();
         QCoreApplication::processEvents();
-        QCOMPARE(prompt, QStringLiteral("Release your coins?"));
+        QCOMPARE(prompt, QStringLiteral("The coins you reserved for Session %1 become spendable again.")
+                             .arg(dialog.m_session.sessionCode()));
         QVERIFY(!wallet_model.wallet().isLockedCoin(bob_coin));
         QVERIFY(dialog.m_status_label->text().startsWith(QStringLiteral("Released")));
 

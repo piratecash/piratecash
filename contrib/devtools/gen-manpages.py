@@ -8,12 +8,12 @@ import sys
 import tempfile
 
 BINARIES = [
-'src/dashd',
-'src/dash-cli',
-'src/dash-tx',
-'src/dash-wallet',
-'src/dash-util',
-'src/qt/dash-qt',
+'src/piratecashd',
+'src/piratecash-cli',
+'src/piratecash-tx',
+'src/piratecash-wallet',
+'src/piratecash-util',
+'src/qt/piratecash-qt',
 ]
 
 # Paths to external utilities.

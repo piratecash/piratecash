@@ -14,7 +14,7 @@
 
 /** Translate string to current locale using Qt. */
 extern const std::function<std::string(const char*)> G_TRANSLATION_FUN = [](const char* psz) {
-    return QCoreApplication::translate("dash-core", psz).toStdString();
+    return QCoreApplication::translate("piratecash-core", psz).toStdString();
 };
 
 MAIN_FUNCTION
