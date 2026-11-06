@@ -75,7 +75,7 @@ QString FormatCollateralAmount(const WalletModel* wallet_model, CAmount amount)
 {
     const auto unit{wallet_model && wallet_model->getOptionsModel() ?
                         wallet_model->getOptionsModel()->getDisplayUnit() :
-                        BitcoinUnits::Unit::DASH};
+                        BitcoinUnits::Unit::PIRATECASH};
     QString str{BitcoinUnits::format(unit, amount, /*plussign=*/false, BitcoinUnits::SeparatorStyle::ALWAYS)};
     const int decimals{BitcoinUnits::decimals(unit)};
     if (decimals > 0 && amount % BitcoinUnits::factor(unit) == 0) {
