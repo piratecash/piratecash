@@ -33,6 +33,7 @@
 #include <QApplication>
 #include <QDebug>
 #include <QObject>
+#include <QStyleFactory>
 #include <QTest>
 
 #include <functional>
@@ -93,6 +94,16 @@ int main(int argc, char* argv[])
     #endif
 
     BitcoinApplication app;
+#if defined(Q_OS_MACOS)
+    // The native macOS style paints through an NSView, which does not exist on
+    // the minimal platform and crashes there (QTBUG-49686). Fusion is what the
+    // Linux builds use anyway, and the Dash stylesheet still applies on top.
+    if (QApplication::platformName() == "minimal") {
+        if (QStyle* const fusion = QStyleFactory::create("Fusion"); fusion != nullptr) {
+            QApplication::setStyle(fusion);
+        }
+    }
+#endif
     app.setApplicationName("Dash-Qt-test");
     app.createNode(*init);
 
