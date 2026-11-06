@@ -6,7 +6,8 @@ Utility to generate the seeds.txt list that is compiled into the client
 The seeds compiled into the release are created from the current protx list, like this:
 
 ```bash
-dash-cli protx list valid true 2563000 > protx_list.json
+seed_height=$(piratecash-cli getblockcount)
+piratecash-cli protx list valid true "$seed_height" > protx_list.json
 
 # Make sure the onion seeds still work!
 while IFS= read -r line
