@@ -66,12 +66,12 @@
         <translation>A&amp;lege</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Acestea sunt adresele tale Dash pentru efectuarea platilor. Intotdeauna verifica atent suma de plata si adresa beneficiarului inainte de a trimite monede.</translation>
+        <source>These are your PirateCash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Acestea sunt adresele tale PirateCash pentru efectuarea platilor. Intotdeauna verifica atent suma de plata si adresa beneficiarului inainte de a trimite monede.</translation>
     </message>
     <message>
         <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>Acestea sunt adresele dumneavoastră Dash pentru primirea plăților. Folosiți butonul 'Creează o nouă adresă de primire' în tab-ul de primire pentru a crea adrese noi.</translation>
+        <translation>Acestea sunt adresele dumneavoastră PirateCash pentru primirea plăților. Folosiți butonul 'Creează o nouă adresă de primire' în tab-ul de primire pentru a crea adrese noi.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -118,6 +118,10 @@
     <message>
         <source>Exporting Failed</source>
         <translation>Export nereusit</translation>
+    </message>
+    <message>
+        <source>These are your PirateCash addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Acestea sunt adresele tale PirateCash pentru receptionarea platilor. Este recomandat sa folosesti mereu o adresa noua pentru primirea platilor.</translation>
     </message>
 </context>
 <context>
@@ -225,8 +229,8 @@
         <translation>Confirmaţi criptarea portofelului</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
-        <translation>Avertisment: dacă criptezi portofelul și pierzi fraza de acces, vei &lt;b&gt;PIERDE TOATE MONEDELE TALE DASH&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATECASH&lt;/b&gt;!</source>
+        <translation>Avertisment: dacă criptezi portofelul și pierzi fraza de acces, vei &lt;b&gt;PIERDE TOATE MONEDELE TALE PIRATE&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -308,6 +312,10 @@
         <source>Warning: The Caps Lock key is on!</source>
         <translation>Atentie! Caps Lock este pornit</translation>
     </message>
+    <message>
+        <source>Unlock wallet for mixing and staking only</source>
+        <translation>Deblochează portofelul numai pentru mixing</translation>
+    </message>
 </context>
 <context>
     <name>BanTableModel</name>
@@ -365,16 +373,16 @@
         <translation>Trimite</translation>
     </message>
     <message>
-        <source>Send coins to a Dash address</source>
-        <translation>Trimite monede către o adresă Dash</translation>
+        <source>Send coins to a PirateCash address</source>
+        <translation>Trimite monede către o adresă PirateCash</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>P&amp;rimeşte</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
-        <translation>Cereţi plăţi (generează coduri QR şi Dash-uri: URls)</translation>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
+        <translation>Cereţi plăţi (generează coduri QR şi PirateCash-uri: URls)</translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
@@ -382,19 +390,19 @@
     </message>
     <message>
         <source>&amp;Options…</source>
-        <translation>&amp;Opţiuni…</translation>
+        <translation>&amp;Opţiuni...</translation>
     </message>
     <message>
         <source>&amp;Encrypt Wallet…</source>
-        <translation>Cript&amp;ează portofelul…</translation>
+        <translation>Cript&amp;ează portofelul...</translation>
     </message>
     <message>
         <source>&amp;Backup Wallet…</source>
-        <translation>&amp;Fă o copie de siguranță a  portofelului…</translation>
+        <translation>&amp;Fă o copie de siguranță a  portofelului...</translation>
     </message>
     <message>
         <source>&amp;Change Passphrase…</source>
-        <translation>S&amp;chimbă parola…</translation>
+        <translation>S&amp;chimbă parola...</translation>
     </message>
     <message>
         <source>&amp;Unlock Wallet…</source>
@@ -402,11 +410,11 @@
     </message>
     <message>
         <source>Sign &amp;message…</source>
-        <translation>Semnează &amp;mesaj…</translation>
+        <translation>Semnează &amp;mesaj...</translation>
     </message>
     <message>
         <source>&amp;Verify message…</source>
-        <translation>&amp;Verifică mesaj…</translation>
+        <translation>&amp;Verifică mesaj...</translation>
     </message>
     <message>
         <source>&amp;Load PSBT from file…</source>
@@ -422,7 +430,7 @@
     </message>
     <message>
         <source>Open &amp;URI…</source>
-        <translation>Deschide &amp;URI…</translation>
+        <translation>Deschide &amp;URI...</translation>
     </message>
     <message>
         <source>Open Wallet</source>
@@ -489,8 +497,8 @@
         <translation>&amp;Despre %1</translation>
     </message>
     <message>
-        <source>Send %1 funds to a Dash address</source>
-        <translation>Trimite fonduri %1 către o adresă Dash</translation>
+        <source>Send %1 funds to a PirateCash address</source>
+        <translation>Trimite fonduri %1 către o adresă PirateCash</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -525,12 +533,12 @@
         <translation>Blochează portofelul</translation>
     </message>
     <message>
-        <source>Sign messages with your Dash addresses to prove you own them</source>
-        <translation>Semnaţi mesaje cu adresa dvs. Dash pentru a dovedi că vă aparţin</translation>
+        <source>Sign messages with your PirateCash addresses to prove you own them</source>
+        <translation>Semnaţi mesaje cu adresa dvs. PirateCash pentru a dovedi că vă aparţin</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dash addresses</source>
-        <translation>Verificaţi mesaje pentru a vă asigura că au fost semnate cu adresa Dash specificată</translation>
+        <source>Verify messages to ensure they were signed with specified PirateCash addresses</source>
+        <translation>Verificaţi mesaje pentru a vă asigura că au fost semnate cu adresa PirateCash specificată</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -562,7 +570,7 @@
     </message>
     <message>
         <source>Wallet &amp;Repair</source>
-        <translation>Portofel &amp;Reparare</translation>
+        <translation>Portofel &amp; Reparare</translation>
     </message>
     <message>
         <source>Show wallet repair options</source>
@@ -574,7 +582,7 @@
     </message>
     <message>
         <source>Show Automatic &amp;Backups</source>
-        <translation>Afișează Automat &amp;Backup-uri</translation>
+        <translation>Afișează Automat &amp; Backup-uri</translation>
     </message>
     <message>
         <source>Show automatically created wallet backups</source>
@@ -593,8 +601,8 @@
         <translation>Opţiuni linie de &amp;comandă</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Dash command-line options</source>
-        <translation>Arată mesajul de ajutor %1 pentru a obţine o listă cu opţiunile posibile de linii de comandă Dash</translation>
+        <source>Show the %1 help message to get a list with possible PirateCash command-line options</source>
+        <translation>Arată mesajul de ajutor %1 pentru a obţine o listă cu opţiunile posibile de linii de comandă PirateCash</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -643,8 +651,8 @@
         <translation>Deschide fișierul de configurare al &amp;portofelului</translation>
     </message>
     <message>
-        <source>Open a dash: URI</source>
-        <translation>Deschide un URI dash:</translation>
+        <source>Open a piratecash: URI</source>
+        <translation>Deschide un URI piratecash:</translation>
     </message>
     <message>
         <source>Create a new wallet</source>
@@ -733,9 +741,9 @@
         <translation>A&amp;rată</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Dash network</source>
+        <source>%n active connection(s) to PirateCash network</source>
         <extracomment>A substring of the tooltip.</extracomment>
-        <translation><numerusform>%n conexiune activă la rețeaua Dash</numerusform><numerusform>%n conexiuni active la rețeaua Dash</numerusform><numerusform>%n conexiuni active la rețeaua Dash </numerusform></translation>
+        <translation><numerusform>%n conexiune activă la rețeaua PirateCash</numerusform><numerusform>%n conexiuni active la rețeaua PirateCash</numerusform><numerusform>%n conexiuni active la rețeaua PirateCash </numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
@@ -815,27 +823,27 @@
     </message>
     <message>
         <source>Syncing Headers (%1%)…</source>
-        <translation>Se sincronizeaza Header-ele (%1%)…</translation>
+        <translation>Se sincronizeaza Header-ele (%1%)...</translation>
     </message>
     <message>
         <source>Synchronizing with network…</source>
-        <translation>Se sincronizează cu reţeaua…</translation>
+        <translation>Se sincronizează cu reţeaua...</translation>
     </message>
     <message>
         <source>Indexing blocks on disk…</source>
-        <translation>Se indexează blocurile pe disc…</translation>
+        <translation>Se indexează blocurile pe disc...</translation>
     </message>
     <message>
         <source>Processing blocks on disk…</source>
-        <translation>Se proceseaza blocurile pe disc…</translation>
+        <translation>Se proceseaza blocurile pe disc...</translation>
     </message>
     <message>
         <source>Connecting to peers…</source>
-        <translation>Se conecteaza cu alte noduri…</translation>
+        <translation>Se conecteaza cu alte noduri...</translation>
     </message>
     <message>
         <source>Catching up…</source>
-        <translation>Se actualizează…</translation>
+        <translation>Se actualizează...</translation>
     </message>
     <message>
         <source>Last received block was generated %1 ago.</source>
@@ -974,6 +982,34 @@
     <message>
         <source>Original message:</source>
         <translation>Mesaj original:</translation>
+    </message>
+    <message>
+        <source>Start Staking...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unlock wallet for mixing and staking only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load Partially Signed PirateCash Transaction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load Partially Signed PirateCash Transaction from clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Staking is &lt;b&gt;enabled&lt;/b&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Staking is &lt;b&gt;disabled&lt;/b&gt; %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;unlocked&lt;/b&gt; for mixing and staking only</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1483,7 +1519,7 @@
     </message>
     <message>
         <source>Dash shared masternode — standby dissolution</source>
-        <translation>Masternode partajat Dash — dizolvare de rezervă</translation>
+        <translation>Masternode partajat PirateCash — dizolvare de rezervă</translation>
     </message>
     <message>
         <source>Masternode: %1</source>
@@ -1512,6 +1548,10 @@
     <message>
         <source>Could not write to %1.</source>
         <translation>Nu s-a putut scrie în %1.</translation>
+    </message>
+    <message>
+        <source>This dissolution cannot be approved.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1549,8 +1589,8 @@
         <translation>Editează adresa de trimitere</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Dash address.</source>
-        <translation>Adresa introdusă "%1" nu este o adresă Dash validă</translation>
+        <source>The entered address "%1" is not a valid PirateCash address.</source>
+        <translation>Adresa introdusă "%1" nu este o adresă PirateCash validă</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -1611,8 +1651,8 @@
         <translation>Informații %1</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Dash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH and 10 DASH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;Noțiuni de bază %1&lt;/h3&gt; %1 vă oferă adevărată confidențialitate financiară prin ascunderea originii fondurilor dumneavoastră. Toate monedele Dash din portofelul dumneavoastră sunt compuse din diferite "intrări" pe care le puteți considera ca monede separate, discrete.&lt;br&gt; %1 folosește un proces inovator pentru a amesteca intrările dumneavoastră cu intrările a două sau mai multe alte persoane, fără ca monedele dumneavoastră să părăsească vreodată portofelul. Rețineți controlul banilor dumneavoastră în orice moment.&lt;hr&gt; &lt;b&gt;Procesul %1 funcționează astfel:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 începe prin defalcarea intrărilor de tranzacție în denominații standard. Aceste denominații sunt 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH și 10 DASH -- similar cu bancnotele pe care le folosiți în fiecare zi.&lt;/li&gt; &lt;li&gt;Portofelul dumneavoastră trimite apoi cereri către noduri software special configurate în rețea, numite "masternode-uri." Aceste masternode-uri sunt informate că sunteți interesat să amestecați o anumită denominație. Nicio informație identificabilă nu este trimisă către masternode-uri, astfel încât acestea nu știu niciodată "cine" sunteți.&lt;/li&gt; &lt;li&gt;Când două sau mai multe persoane trimit mesaje similare, indicând că doresc să amestece aceeași denominație, începe o sesiune de amestecare. Masternode-ul amestecă intrările și instruiește portofelele tuturor celor trei utilizatori să plătească intrarea acum transformată înapoi către ei înșiși. Portofelul dumneavoastră plătește acea denominație direct către sine, dar la o adresă diferită (numită adresă de rest).&lt;/li&gt; &lt;li&gt;Pentru a ascunde complet fondurile dumneavoastră, portofelul trebuie să repete acest proces de mai multe ori cu fiecare denominație. De fiecare dată când procesul este finalizat, se numește o "rundă." Fiecare rundă de %1 face exponențial mai dificil de determinat de unde au provenit fondurile dumneavoastră.&lt;/li&gt; &lt;li&gt;Acest proces de amestecare se întâmplă în fundal fără nicio intervenție din partea dumneavoastră. Când doriți să faceți o tranzacție, fondurile dumneavoastră vor fi deja amestecate. Nu este necesară nicio așteptare suplimentară.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Portofelul dumneavoastră conține doar 1000 dintre aceste "adrese de rest." De fiecare dată când are loc un eveniment de amestecare, până la 9 dintre adresele dumneavoastră sunt folosite. Aceasta înseamnă că cele 1000 de adrese durează pentru aproximativ 100 de evenimente de amestecare. Când 900 dintre ele sunt folosite, portofelul trebuie să creeze mai multe adrese. Cu toate acestea, poate face acest lucru doar dacă aveți activat backup-urile automate.&lt;br&gt; În consecință, utilizatorii care au backup-urile dezactivate vor avea și %1 dezactivat. &lt;hr&gt;Pentru mai multe informații, consultați &lt;a style="%2" href="%3"&gt;documentația %1&lt;/a&gt;.</translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE and 10 PIRATE -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;Noțiuni de bază %1&lt;/h3&gt; %1 vă oferă adevărată confidențialitate financiară prin ascunderea originii fondurilor dumneavoastră. Toate monedele PirateCash din portofelul dumneavoastră sunt compuse din diferite "intrări" pe care le puteți considera ca monede separate, discrete.&lt;br&gt; %1 folosește un proces inovator pentru a amesteca intrările dumneavoastră cu intrările a două sau mai multe alte persoane, fără ca monedele dumneavoastră să părăsească vreodată portofelul. Rețineți controlul banilor dumneavoastră în orice moment.&lt;hr&gt; &lt;b&gt;Procesul %1 funcționează astfel:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 începe prin defalcarea intrărilor de tranzacție în denominații standard. Aceste denominații sunt 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE și 10 PIRATE -- similar cu bancnotele pe care le folosiți în fiecare zi.&lt;/li&gt; &lt;li&gt;Portofelul dumneavoastră trimite apoi cereri către noduri software special configurate în rețea, numite "masternode-uri." Aceste masternode-uri sunt informate că sunteți interesat să amestecați o anumită denominație. Nicio informație identificabilă nu este trimisă către masternode-uri, astfel încât acestea nu știu niciodată "cine" sunteți.&lt;/li&gt; &lt;li&gt;Când două sau mai multe persoane trimit mesaje similare, indicând că doresc să amestece aceeași denominație, începe o sesiune de amestecare. Masternode-ul amestecă intrările și instruiește portofelele tuturor celor trei utilizatori să plătească intrarea acum transformată înapoi către ei înșiși. Portofelul dumneavoastră plătește acea denominație direct către sine, dar la o adresă diferită (numită adresă de rest).&lt;/li&gt; &lt;li&gt;Pentru a ascunde complet fondurile dumneavoastră, portofelul trebuie să repete acest proces de mai multe ori cu fiecare denominație. De fiecare dată când procesul este finalizat, se numește o "rundă." Fiecare rundă de %1 face exponențial mai dificil de determinat de unde au provenit fondurile dumneavoastră.&lt;/li&gt; &lt;li&gt;Acest proces de amestecare se întâmplă în fundal fără nicio intervenție din partea dumneavoastră. Când doriți să faceți o tranzacție, fondurile dumneavoastră vor fi deja amestecate. Nu este necesară nicio așteptare suplimentară.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Portofelul dumneavoastră conține doar 1000 dintre aceste "adrese de rest." De fiecare dată când are loc un eveniment de amestecare, până la 9 dintre adresele dumneavoastră sunt folosite. Aceasta înseamnă că cele 1000 de adrese durează pentru aproximativ 100 de evenimente de amestecare. Când 900 dintre ele sunt folosite, portofelul trebuie să creeze mai multe adrese. Cu toate acestea, poate face acest lucru doar dacă aveți activat backup-urile automate.&lt;br&gt; În consecință, utilizatorii care au backup-urile dezactivate vor avea și %1 dezactivat. &lt;hr&gt;Pentru mai multe informații, consultați &lt;a style="%2" href="%3"&gt;documentația %1&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -1671,7 +1711,7 @@
     </message>
     <message>
         <source>Network addresses that your Dash node is currently using to communicate with other nodes.</source>
-        <translation>Adresele de rețea pe care nodul dvs. Dash le folosește în prezent pentru a comunica cu alte noduri.</translation>
+        <translation>Adresele de rețea pe care nodul dvs. PirateCash le folosește în prezent pentru a comunica cu alte noduri.</translation>
     </message>
     <message>
         <source>Block chain</source>
@@ -1794,8 +1834,8 @@
         <translation><numerusform>(suficient pentru a restaura backup-uri vechi de %n zile)</numerusform><numerusform>(suficient pentru a restaura backup-uri vechi de %n zile)</numerusform><numerusform>(suficient pentru a restaura backup-uri vechi de %n zile)</numerusform></translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Dash block chain.</source>
-        <translation>%1 va descarca si stoca o copie a blockchainului Dash</translation>
+        <source>%1 will download and store a copy of the PirateCash block chain.</source>
+        <translation>%1 va descarca si stoca o copie a blockchainului PirateCash</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -2274,6 +2314,10 @@ Respinsă de rețea: %1</translation>
         <source>Details: %1</source>
         <translation>Detalii: %1</translation>
     </message>
+    <message>
+        <source>This dissolution pays a share less than the network requires: its full principal plus its part of any early-exit penalty. A dissolution that pays no penalty is accepted only once the early period has ended; if it has already ended, prepare a new dissolution.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MigrateWalletActivity</name>
@@ -2386,7 +2430,7 @@ Procesul de migrare va crea o copie de rezervă a portofelului înainte de migra
     </message>
     <message>
         <source>The session file uses an unsupported format version. Update Dash Core to open it.</source>
-        <translation>Fișierul de sesiune folosește o versiune de format neacceptată. Actualizați Dash Core pentru a-l deschide.</translation>
+        <translation>Fișierul de sesiune folosește o versiune de format neacceptată. Actualizați PirateCash Core pentru a-l deschide.</translation>
     </message>
     <message>
         <source>The session file is for the "%1" network but this node runs "%2". It cannot be used here.</source>
@@ -2410,7 +2454,7 @@ Procesul de migrare va crea o copie de rezervă a portofelului înainte de migra
     </message>
     <message>
         <source>The session file is at the unknown stage "%1". It was probably created by a newer Dash Core.</source>
-        <translation>Fișierul de sesiune se află într-o etapă necunoscută „%1”. Probabil a fost creat de o versiune mai nouă de Dash Core.</translation>
+        <translation>Fișierul de sesiune se află într-o etapă necunoscută „%1”. Probabil a fost creat de o versiune mai nouă de PirateCash Core.</translation>
     </message>
     <message>
         <source>The session file lists %1 shares; a shared masternode can have at most %2.</source>
@@ -2820,6 +2864,42 @@ Procesul de migrare va crea o copie de rezervă a portofelului înainte de migra
         <source>%1 inputs</source>
         <translation>%1 intrări</translation>
     </message>
+    <message>
+        <source>A shared masternode needs between %1 and %2 shares.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Every share amount must be between %1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The share amounts must sum to exactly %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Every share needs its own, non-empty owner address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Every refund address must be unique.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Every refund and reward address must be a valid P2PKH or P2SH address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A refund or reward address must not be the voting address or any share's owner address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the early penalty to 0 when there is no early period.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The share table is not valid (%1).</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MnemonicVerificationDialog</name>
@@ -2927,12 +3007,12 @@ Procesul de migrare va crea o copie de rezervă a portofelului înainte de migra
         <translation>Form</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
-        <translation>Tranzactiile recente pot sa nu fie inca vizibile, de aceea balanta portofelului poate fi incorecta. Aceasta informatie va fi corecta de indata ce portofelul va fi complet sincronizat cu reteaua Dash, asa cum este detaliat mai jos.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the PirateCash network, as detailed below.</source>
+        <translation>Tranzactiile recente pot sa nu fie inca vizibile, de aceea balanta portofelului poate fi incorecta. Aceasta informatie va fi corecta de indata ce portofelul va fi complet sincronizat cu reteaua PirateCash, asa cum este detaliat mai jos.</translation>
     </message>
     <message>
-        <source>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>Încercarea de a cheltui monede Dash care sunt afectate de tranzacțiile care nu au fost încă afișate nu va fi acceptată de rețea.</translation>
+        <source>Attempting to spend PirateCash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>Încercarea de a cheltui monede PirateCash care sunt afectate de tranzacțiile care nu au fost încă afișate nu va fi acceptată de rețea.</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -2940,11 +3020,11 @@ Procesul de migrare va crea o copie de rezervă a portofelului înainte de migra
     </message>
     <message>
         <source>Unknown…</source>
-        <translation>Necunoscut…</translation>
+        <translation>Necunoscut...</translation>
     </message>
     <message>
         <source>calculating…</source>
-        <translation>calculeaza…</translation>
+        <translation>calculeaza...</translation>
     </message>
     <message>
         <source>Last block time</source>
@@ -3316,8 +3396,8 @@ Procesul de migrare va crea o copie de rezervă a portofelului înainte de migra
         <translation>Tranzacțiile cu ieșiri egale sau sub această sumă vor fi considerate praf când sunt primite din surse externe.</translation>
     </message>
     <message>
-        <source>duffs</source>
-        <translation>duffs</translation>
+        <source>corsars</source>
+        <translation>corsars</translation>
     </message>
     <message>
         <source>External Signer (e.g. hardware wallet)</source>
@@ -3408,8 +3488,8 @@ Procesul de migrare va crea o copie de rezervă a portofelului înainte de migra
         <translation>Maxim</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Deschide automat portul client Dash Core de pe router. Asta funcționează numai atunci când routerul dvs. acceptă UPnP și este activat.</translation>
+        <source>Automatically open the PirateCash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Deschide automat portul client PirateCash Core de pe router. Asta funcționează numai atunci când routerul dvs. acceptă UPnP și este activat.</translation>
     </message>
     <message>
         <source>Map port using NA&amp;T-PMP</source>
@@ -3424,8 +3504,8 @@ Procesul de migrare va crea o copie de rezervă a portofelului înainte de migra
         <translation>Permite conexiuni de &amp;intrare</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a SOCKS5 proxy.</source>
-        <translation>Conectare la reţeaua Dash printr-un proxy SOCKS.</translation>
+        <source>Connect to the PirateCash network through a SOCKS5 proxy.</source>
+        <translation>Conectare la reţeaua PirateCash printr-un proxy SOCKS.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -3490,8 +3570,8 @@ https://explore.transifex.com/dash/dash/</translation>
         <translation>Mapare port folosind &amp;UPnP</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
-        <translation>Deschide automat portul clientului Dash Core pe router. Aceasta funcționează doar când routerul dvs. suportă NAT-PMP și este activat. Portul extern poate fi aleatoriu.</translation>
+        <source>Automatically open the PirateCash Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
+        <translation>Deschide automat portul clientului PirateCash Core pe router. Aceasta funcționează doar când routerul dvs. suportă NAT-PMP și este activat. Portul extern poate fi aleatoriu.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -3542,8 +3622,8 @@ https://explore.transifex.com/dash/dash/</translation>
         <translation>&amp;Afişare</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a separate SOCKS5 proxy for Tor onion services.</source>
-        <translation>Conectați-vă la rețeaua Dash printr-un proxy SOCKS5 separat pentru serviciile Tor onion.</translation>
+        <source>Connect to the PirateCash network through a separate SOCKS5 proxy for Tor onion services.</source>
+        <translation>Conectați-vă la rețeaua PirateCash printr-un proxy SOCKS5 separat pentru serviciile Tor onion.</translation>
     </message>
     <message>
         <source>Use separate SOCKS&amp;5 proxy to reach peers via Tor onion services:</source>
@@ -3563,7 +3643,7 @@ https://explore.transifex.com/dash/dash/</translation>
     </message>
     <message>
         <source>Choose the default subdivision unit to show in the interface and when sending coins.</source>
-        <translation>Alegeți unitatea de subdiviziune implicită de afișat în interfață și la trimiterea de monede.</translation>
+        <translation>Alege subdiviziunea folosită la afişarea interfeţei şi la trimiterea de bitcoin.</translation>
     </message>
     <message>
         <source>Decimal digits</source>
@@ -3583,11 +3663,11 @@ https://explore.transifex.com/dash/dash/</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation>&amp;OK</translation>
+        <translation>&amp; OK</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>&amp;Renunta</translation>
+        <translation>&amp; Renunta</translation>
     </message>
     <message>
         <source>Enable %1 features</source>
@@ -3628,7 +3708,7 @@ https://explore.transifex.com/dash/dash/</translation>
     </message>
     <message>
         <source>The supplied proxy address is invalid.</source>
-        <translation>Adresa proxy furnizată este invalidă.</translation>
+        <translation>Adresa bitcoin pe care a-ti specificat-o este invalida</translation>
     </message>
 </context>
 <context>
@@ -3645,8 +3725,8 @@ https://explore.transifex.com/dash/dash/</translation>
         <translation>Form</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Dash network after a connection is established, but this process has not completed yet.</source>
-        <translation>Informatia afisata poate fi depasita.  Portofel se sincronizează automat cu rețeaua Dash după ce se stabilește o conexiune, dar acest proces nu s-a finalizat încă.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
+        <translation>Informatia afisata poate fi depasita.  Portofel se sincronizează automat cu rețeaua PirateCash după ce se stabilește o conexiune, dar acest proces nu s-a finalizat încă.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -3725,8 +3805,8 @@ https://explore.transifex.com/dash/dash/</translation>
         <translation>Suma și Runde:</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
-        <translation>0 DASH / 0 Runde</translation>
+        <source>0 PIRATE / 0 Rounds</source>
+        <translation>0 PIRATE / 0 Runde</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -4012,16 +4092,16 @@ https://explore.transifex.com/dash/dash/</translation>
         <translation>Eroare la cererea de plată</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
-        <translation>Dash nu poate porni: click-to-pay handler</translation>
+        <source>Cannot start piratecash: click-to-pay handler</source>
+        <translation>PirateCash nu poate porni: click-to-pay handler</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>Gestionare URI</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash://' nu este un URI valid. Folosiți 'dash:' în schimb.</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>'piratecash://' nu este un URI valid. Folosiți 'piratecash:' în schimb.</translation>
     </message>
     <message>
         <source>Cannot process payment request as BIP70 is no longer supported.
@@ -4030,8 +4110,8 @@ Due to discontinued support, you should request the merchant to provide you with
 Din cauza încetării suportului, ar trebui să cereți comerciantului să vă furnizeze un URI compatibil BIP21 sau să folosiți un portofel care continuă să suporte BIP70.</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Dash address or malformed URI parameters.</source>
-        <translation>URI nu poate fi analizat! Acest lucru poate fi cauzat de o adresă Dash invalidă sau parametri URI deformaţi.</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
+        <translation>URI nu poate fi analizat! Acest lucru poate fi cauzat de o adresă PirateCash invalidă sau parametri URI deformaţi.</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -4817,15 +4897,15 @@ Doriți să continuați?</translation>
     </message>
     <message>
         <source>%1 didn't yet exit safely…</source>
-        <translation>%1 nu a fost inchis in siguranta…</translation>
+        <translation>%1 nu a fost inchis in siguranta...</translation>
     </message>
     <message>
         <source>Amount</source>
         <translation>Cantitate</translation>
     </message>
     <message>
-        <source>Enter a Dash address (e.g. %1)</source>
-        <translation>Introduceţi o adresă Dash (de exemplu %1)</translation>
+        <source>Enter a PirateCash address (e.g. %1)</source>
+        <translation>Introduceţi o adresă PirateCash (de exemplu %1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
@@ -5273,7 +5353,7 @@ Doriți să continuați?</translation>
     </message>
     <message>
         <source>Invalid Dash address: %1</source>
-        <translation>Adresă Dash nevalidă: %1</translation>
+        <translation>Adresă PirateCash nevalidă: %1</translation>
     </message>
     <message>
         <source>Copy</source>
@@ -5308,14 +5388,14 @@ Doriți să continuați?</translation>
     </message>
     <message>
         <source>&amp;Save Image…</source>
-        <translation>&amp;Salvează imaginea…</translation>
+        <translation>&amp;Salvează imaginea...</translation>
     </message>
 </context>
 <context>
     <name>QRImageWidget</name>
     <message>
         <source>&amp;Save Image…</source>
-        <translation>&amp;Salvează imaginea…</translation>
+        <translation>&amp;Salvează imaginea...</translation>
     </message>
     <message>
         <source>&amp;Copy Image</source>
@@ -5845,8 +5925,8 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>Un mesaj opţional de ataşat la cererea de plată, care va fi afişat cînd cererea este deschisă. Notă: Acest mesaj nu va fi trimis cu plata către reţeaua Dash.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>Un mesaj opţional de ataşat la cererea de plată, care va fi afişat cînd cererea este deschisă. Notă: Acest mesaj nu va fi trimis cu plata către reţeaua PirateCash.</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -5857,8 +5937,8 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
         <translation>O etichetă opţională de asociat cu adresa de primire.</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>Un mesaj opțional pentru a atașa solicitării de plată, care va fi afișat la deschiderea cererii.&lt;br&gt;Notă: mesajul nu va fi trimis cu plata prin rețeaua Dash.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>Un mesaj opțional pentru a atașa solicitării de plată, care va fi afișat la deschiderea cererii.&lt;br&gt;Notă: mesajul nu va fi trimis cu plata prin rețeaua PirateCash.</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address (used by you to identify an invoice).  It is also attached to the payment request.</source>
@@ -5993,7 +6073,7 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
     </message>
     <message>
         <source>&amp;Save Image…</source>
-        <translation>&amp;Salvează imaginea…</translation>
+        <translation>&amp;Salvează imaginea...</translation>
     </message>
     <message>
         <source>Request payment to %1</source>
@@ -6071,7 +6151,7 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
     </message>
     <message>
         <source>Additionally hosts Dash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
-        <translation>Găzduiește în plus Dash Platform, are o pondere de vot de patru ori mai mare și primește o parte mai mare din recompense. Necesită un ID de nod Platform și servicii suplimentare.</translation>
+        <translation>Găzduiește în plus PirateCash Platform, are o pondere de vot de patru ori mai mare și primește o parte mai mare din recompense. Necesită un ID de nod Platform și servicii suplimentare.</translation>
     </message>
     <message>
         <source>Register EvoNode</source>
@@ -6291,7 +6371,7 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
     </message>
     <message>
         <source>Add this line to dash.conf on your masternode server:</source>
-        <translation>Adăugați această linie în dash.conf pe serverul masternode-ului dvs.:</translation>
+        <translation>Adăugați această linie în piratecash.conf pe serverul masternode-ului dvs.:</translation>
     </message>
     <message>
         <source>Copy</source>
@@ -6691,7 +6771,7 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
     </message>
     <message>
         <source>Provision the Dash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
-        <translation>Configurați serviciile Dash Platform (Tenderdash și Drive) cu cheia de nod Platform corespunzătoare ID-ului de nod pe care l-ați înregistrat.</translation>
+        <translation>Configurați serviciile PirateCash Platform (Tenderdash și Drive) cu cheia de nod Platform corespunzătoare ID-ului de nod pe care l-ați înregistrat.</translation>
     </message>
     <message>
         <source>The EvoNode becomes active once the registration is confirmed and the first update is signed by the operator.</source>
@@ -6806,6 +6886,10 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
     <message>
         <source>Revoke</source>
         <translation>Revocă</translation>
+    </message>
+    <message>
+        <source>The fee is paid from this address of your wallet.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6987,7 +7071,7 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
     </message>
     <message>
         <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
-        <translation>Când există mai puțin volum de tranzacții decât spațiu în blocuri, minerii precum și nodurile de relay pot impune o taxă minimă. Plata doar a acestei taxe minime este perfect în regulă, dar fiți conștienți că acest lucru poate duce la o tranzacție care nu se va confirma niciodată odată ce există mai multă cerere de tranzacții dash decât poate procesa rețeaua.</translation>
+        <translation>Când există mai puțin volum de tranzacții decât spațiu în blocuri, minerii precum și nodurile de relay pot impune o taxă minimă. Plata doar a acestei taxe minime este perfect în regulă, dar fiți conștienți că acest lucru poate duce la o tranzacție care nu se va confirma niciodată odată ce există mai multă cerere de tranzacții piratecash decât poate procesa rețeaua.</translation>
     </message>
     <message>
         <source>A too low fee might result in a never confirming transaction (read the tooltip)</source>
@@ -6995,14 +7079,14 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
     </message>
     <message>
         <source>(Smart fee not initialized yet. This usually takes a few blocks…)</source>
-        <translation>(Taxa smart nu este inca initializata. Aceasta poate dura cateva blocuri…)</translation>
+        <translation>(Taxa smart nu este inca initializata. Aceasta poate dura cateva blocuri...)</translation>
     </message>
     <message>
         <source>Confirmation time target:</source>
         <translation>Timp confirmare tinta:</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <source>If the custom fee is set to 1000 corsars and the transaction is only 250 bytes, then "per kilobyte" only pays 250 corsars in fee,&lt;br /&gt;while "at least" pays 1000 corsars. For transactions bigger than a kilobyte both pay by kilobyte.</source>
         <translation>Dacă taxa vamală este stabilită la 1000 de duffi și tranzacția are doar 250 de octeți, atunci "per kilobyte" plătește doar 250 de duffi în taxă,&lt;br /&gt;în timp ce "cel puțin" plătește 1000 de duffi. Pentru tranzacțiile mai mari decât un kilobyte, ambele plătesc cu kilobyte.</translation>
     </message>
     <message>
@@ -7015,7 +7099,7 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
     </message>
     <message>
         <source>Choose…</source>
-        <translation>Alegeţi…</translation>
+        <translation>Alegeţi...</translation>
     </message>
     <message>
         <source>Note: Not enough data for fee estimation, using the fallback fee instead.</source>
@@ -7309,8 +7393,8 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
         <translation><numerusform>Înceaperea confirmării estimată într-un %n block.</numerusform><numerusform>Înceaperea confirmării estimată în %n block-uri.</numerusform><numerusform>Înceaperea confirmării estimată în %n block-uri.</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Dash address</source>
-        <translation>Atenţie: Adresa Dash nevalidă!</translation>
+        <source>Warning: Invalid PirateCash address</source>
+        <translation>Atenţie: Adresa PirateCash nevalidă!</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -7328,6 +7412,24 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
         <source>(no label)</source>
         <translation>(fără etichetă)</translation>
     </message>
+    <message>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for piratecash transactions than the network can process.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creates a Partially Signed PirateCash Transaction (PSBT) for use with e.g. an offline %1 wallet, or a PSBT-compatible hardware wallet.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please, review your transaction proposal. This will produce a Partially Signed PirateCash Transaction (PSBT) which you can save or copy and then sign with e.g. an offline %1 wallet, or a PSBT-compatible hardware wallet.</source>
+        <extracomment>Text to inform a user attempting to create a transaction of their current options. At this stage, a user can only create a PSBT. This string is displayed when private keys are disabled and an external signer is not available.</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please, review your transaction. You can create and send this transaction or create a Partially Signed PirateCash Transaction (PSBT), which you can save or copy and then sign with, e.g., an offline %1 wallet, or a PSBT-compatible hardware wallet.</source>
+        <extracomment>Text to inform a user attempting to create a transaction of their current options. At this stage, a user can send their transaction or create a PSBT. This string is displayed when both private keys and PSBT controls are enabled.</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SendCoinsEntry</name>
@@ -7336,8 +7438,8 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
         <translation>Plăteşte că&amp;tre:</translation>
     </message>
     <message>
-        <source>The Dash address to send the payment to</source>
-        <translation>Adresa Dash către care se face plata</translation>
+        <source>The PirateCash address to send the payment to</source>
+        <translation>Adresa PirateCash către care se face plata</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -7377,7 +7479,7 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
     </message>
     <message>
         <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>Taxa va fi dedusă din suma trimisă. Destinatarul va primi o sumă mai mică de Dash decât introduci în câmpul pentru suma. Dacă sunt selectați mai mulți destinatari, taxa este împărțită în mod egal.</translation>
+        <translation>Taxa va fi dedusă din suma trimisă. Destinatarul va primi o sumă mai mică de PirateCash decât introduci în câmpul pentru suma. Dacă sunt selectați mai mulți destinatari, taxa este împărțită în mod egal.</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -7392,8 +7494,8 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
         <translation>Mesaj:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Dash network.</source>
-        <translation>un mesaj a fost ataşat la Dash: URI care va fi stocat cu tranzacţia pentru referinţa dvs. Notă: Acest mesaj nu va fi trimis către reţeaua Dash.</translation>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <translation>un mesaj a fost ataşat la PirateCash: URI care va fi stocat cu tranzacţia pentru referinţa dvs. Notă: Acest mesaj nu va fi trimis către reţeaua PirateCash.</translation>
     </message>
 </context>
 <context>
@@ -7731,7 +7833,7 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
     </message>
     <message>
         <source>Add this line to dash.conf on the masternode server:</source>
-        <translation>Adăugați această linie în dash.conf pe serverul masternode-ului:</translation>
+        <translation>Adăugați această linie în piratecash.conf pe serverul masternode-ului:</translation>
     </message>
     <message>
         <source>The invitation you are about to send contains only the public key.</source>
@@ -8417,6 +8519,98 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
         <source>Discard and Release Coins</source>
         <translation>Renunță și eliberează monedele</translation>
     </message>
+    <message>
+        <source>%1 is already the service address of a registered masternode. Every service address must be unique on the network.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your coins are reserved for this row. Release them on the contribution page before removing it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy My Reply</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 already pays a refund or reward to this owner address. The owner address must differ from every refund and reward address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The refund address must differ from the voting address and every owner address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 already uses this refund address. Every refund address must be unique.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reserve and Sign</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose your share…</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 (taken)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>These coins pay %1 beyond your share, not the %2 Network fee shown below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To change your addresses or the network fee, release the coins first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To change your addresses, release the coins first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>✓ Your approval covers every amount, address, key and exit term below, and none of them has changed since. Participant names, "Node run by" and the Identity section are notes it does not cover.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All participants approved. Your coins were released, so nothing was signed. Press "Reserve and Sign" to reserve them again and continue.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transaction ID: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This newer invitation changes your share (%1), so it was not loaded. If you agreed to that change, close this window and open the new invitation to review it. Otherwise ask %2 to send an invitation with your share unchanged.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This newer invitation gives %1's share an owner address from this wallet, so it was not loaded. Ask %2 to send an invitation in which only your own share uses this wallet's addresses.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loaded the newer invitation; your share is unchanged. Review it, then send your details again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This invitation is older than the one you already have, so it was not loaded. Ask %1 for the latest invitation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This newer copy changes your share (%1), so it was not loaded. If you agreed to that change, close this window and open the copy again to review it. Otherwise ask %2 to send a copy with your share unchanged.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>whoever sent it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has already been taken by another participant.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The owner address must belong to this wallet.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SharedMnDialog</name>
@@ -8678,6 +8872,30 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
         <source>Identity</source>
         <translation>Identitate</translation>
     </message>
+    <message>
+        <source>✓ in this wallet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>cannot be valued on this node yet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>no coins reserved yet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 (%2 in, %3 change back)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>⚠ That is at least %1 more than your %2 share. Do not approve unless you meant to pay it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your contribution:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SharedSigCollector</name>
@@ -8864,11 +9082,11 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
         <translation>&amp;Semnează mesaj</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Dash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>Poți semna mesaje / acorduri cu adreseletale pentru a dovedi că poți primi Dash trimis la ele. Ai grijă să nu semnezi nimic vag sau întâmplător, deoarece atacurile de tip phishing pot încerca să te păcălească să le dai identitatea ta. Semnează declarații complet-detaliate cu care ești de acord.</translation>
+        <source>You can sign messages/agreements with your addresses to prove you can receive PirateCash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <translation>Poți semna mesaje / acorduri cu adreseletale pentru a dovedi că poți primi PirateCash trimis la ele. Ai grijă să nu semnezi nimic vag sau întâmplător, deoarece atacurile de tip phishing pot încerca să te păcălească să le dai identitatea ta. Semnează declarații complet-detaliate cu care ești de acord.</translation>
     </message>
     <message>
-        <source>The Dash address to sign the message with</source>
+        <source>The PirateCash address to sign the message with</source>
         <translation>Adresa cu care semnaţi mesajul</translation>
     </message>
     <message>
@@ -8900,8 +9118,8 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
         <translation>Copiaza semnatura curenta in clipboard-ul sistemului</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Dash address</source>
-        <translation>Semnează mesajul pentru a dovedi ca deţineţi acestă adresă Dash</translation>
+        <source>Sign the message to prove you own this PirateCash address</source>
+        <translation>Semnează mesajul pentru a dovedi ca deţineţi acestă adresă PirateCash</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -8924,8 +9142,8 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
         <translation>Introduceţi adresa de semnatură, mesajul (asiguraţi-vă că aţi copiat spaţiile, taburile etc. exact) şi semnatura dedesubt pentru a verifica mesajul. Aveţi grijă să nu citiţi mai mult în semnatură decît mesajul în sine, pentru a evita să fiţi păcăliţi de un atac de tip man-in-the-middle. De notat ca aceasta dovedeste doar ca semnatarul primeste odata cu adresa, nu dovedesta insa trimiterea vreunei tranzactii.</translation>
     </message>
     <message>
-        <source>The Dash address the message was signed with</source>
-        <translation>Introduceţi o adresă Dash</translation>
+        <source>The PirateCash address the message was signed with</source>
+        <translation>Introduceţi o adresă PirateCash</translation>
     </message>
     <message>
         <source>The signed message to verify</source>
@@ -8936,8 +9154,8 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
         <translation>Semnătura furnizată când mesajul a fost semnat</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Dash address</source>
-        <translation>Verificaţi mesajul pentru a vă asigura că a fost semnat cu adresa Dash specificată</translation>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
+        <translation>Verificaţi mesajul pentru a vă asigura că a fost semnat cu adresa PirateCash specificată</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -9361,7 +9579,7 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
     </message>
     <message>
         <source>Locks funds for use on Dash Platform. The amount is this wallet's net balance change, including the network fee.</source>
-        <translation>Blochează fonduri pentru utilizare pe Dash Platform. Suma este modificarea netă a soldului acestui portofel, inclusiv taxa de rețea.</translation>
+        <translation>Blochează fonduri pentru utilizare pe PirateCash Platform. Suma este modificarea netă a soldului acestui portofel, inclusiv taxa de rețea.</translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -9420,7 +9638,7 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
     </message>
     <message>
         <source>Range…</source>
-        <translation>Interval…</translation>
+        <translation>Interval...</translation>
     </message>
     <message>
         <source>Most Common</source>
@@ -9757,6 +9975,10 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
         <source>Enter a valid Platform node ID (40 hexadecimal characters).</source>
         <translation>Introduceți un ID de nod Platform valid (40 de caractere hexazecimale).</translation>
     </message>
+    <message>
+        <source>The fee is paid from this address of your wallet.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UpdateShareDialog</name>
@@ -9802,7 +10024,7 @@ Pentru mai multe informații despre utilizarea acestei console, tastați %6.
     </message>
     <message>
         <source>Enter a valid Dash address.</source>
-        <translation>Introduceți o adresă Dash validă.</translation>
+        <translation>Introduceți o adresă PirateCash validă.</translation>
     </message>
     <message>
         <source>The reward address must differ from the voting address and every owner address.</source>
@@ -9963,7 +10185,7 @@ Mergeți la Fișier &gt; Deschide portofel pentru a încărca un portofel.
     </message>
 </context>
 <context>
-    <name>dash-core</name>
+    <name>piratecash-core</name>
     <message>
         <source>This error could occur if this wallet was not shutdown cleanly and was last loaded using a build with a newer version of Berkeley DB. If so, please use the software that last loaded this wallet</source>
         <translation>Această eroare ar putea apărea dacă acest portofel nu a fost închis corect și a fost încărcat ultima dată folosind o versiune cu o versiune mai nouă de Berkeley DB. Dacă este așa, vă rugăm să folosiți software-ul care a încărcat ultima dată acest portofel</translation>
@@ -10130,19 +10352,19 @@ Nu s-a putut restaura copia de rezervă a portofelului.</translation>
     </message>
     <message>
         <source>Pruning blockstore…</source>
-        <translation>Reductie blockstore…</translation>
+        <translation>Reductie blockstore...</translation>
     </message>
     <message>
         <source>Replaying blocks…</source>
-        <translation>Redirecționarea block-urilor …</translation>
+        <translation>Redirecționarea block-urilor ...</translation>
     </message>
     <message>
         <source>Rescanning…</source>
-        <translation>Rescanare…</translation>
+        <translation>Rescanare...</translation>
     </message>
     <message>
         <source>Starting network threads…</source>
-        <translation>Se pornesc threadurile retelei…</translation>
+        <translation>Se pornesc threadurile retelei...</translation>
     </message>
     <message>
         <source>Submitted to masternode, waiting in queue %s</source>
@@ -10154,11 +10376,11 @@ Nu s-a putut restaura copia de rezervă a portofelului.</translation>
     </message>
     <message>
         <source>Synchronizing blockchain…</source>
-        <translation>Sincronizarea blockchain-ului…</translation>
+        <translation>Sincronizarea blockchain-ului...</translation>
     </message>
     <message>
         <source>Synchronizing governance objects…</source>
-        <translation>Sincronizarea obiectelor de guvernare…</translation>
+        <translation>Sincronizarea obiectelor de guvernare...</translation>
     </message>
     <message>
         <source>Transaction change output index out of range</source>
@@ -10221,8 +10443,8 @@ Nu s-a putut restaura copia de rezervă a portofelului.</translation>
         <translation>Eroare la încărcarea %s: Portofelul semnatarului extern este încărcat fără suport compilat pentru semnatar extern</translation>
     </message>
     <message>
-        <source>Error: Dumpfile version is not supported. This version of dash-wallet only supports version 1 dumpfiles. Got dumpfile with version %s</source>
-        <translation>Eroare: Versiunea fișierului de descărcare nu este suportată. Această versiune de dash-wallet suportă doar fișiere de descărcare versiunea 1. S-a primit fișier de descărcare cu versiunea %s</translation>
+        <source>Error: Dumpfile version is not supported. This version of piratecash-wallet only supports version 1 dumpfiles. Got dumpfile with version %s</source>
+        <translation>Eroare: Versiunea fișierului de descărcare nu este suportată. Această versiune de piratecash-wallet suportă doar fișiere de descărcare versiunea 1. S-a primit fișier de descărcare cu versiunea %s</translation>
     </message>
     <message>
         <source>Failed to create backup, file already exists! This could happen if you restarted wallet in less than 60 seconds. You can continue if you are ok with this.</source>
@@ -10470,7 +10692,7 @@ Nu s-a putut restaura copia de rezervă a portofelului.</translation>
     </message>
     <message>
         <source>Mixing in progress…</source>
-        <translation>Amestecare în curs …</translation>
+        <translation>Amestecare în curs ...</translation>
     </message>
     <message>
         <source>More than one spork address is provided. Using %s.</source>
@@ -10554,7 +10776,7 @@ Nu s-a putut restaura copia de rezervă a portofelului.</translation>
     </message>
     <message>
         <source>Sets a window title which is appended to "Dash Core - "</source>
-        <translation>Setează un titlu de fereastră care este adăugat după „Dash Core - ”</translation>
+        <translation>Setează un titlu de fereastră care este adăugat după „PirateCash Core - ”</translation>
     </message>
     <message>
         <source>Signer did not echo address</source>
@@ -10658,11 +10880,11 @@ Nu s-a putut restaura copia de rezervă a portofelului.</translation>
     </message>
     <message>
         <source>Verifying blocks…</source>
-        <translation>Se verifică blocurile…</translation>
+        <translation>Se verifică blocurile...</translation>
     </message>
     <message>
         <source>Verifying wallet(s)…</source>
-        <translation>Verificare portofelului (rilor) …</translation>
+        <translation>Verificare portofelului (rilor) ...</translation>
     </message>
     <message>
         <source>Wallet needed to be rewritten: restart %s to complete</source>
@@ -11028,19 +11250,19 @@ Portofelul ar fi putut fi creat cu o versiune mai nouă.
     </message>
     <message>
         <source>Loading P2P addresses…</source>
-        <translation>Încărcare adrese P2P…</translation>
+        <translation>Încărcare adrese P2P...</translation>
     </message>
     <message>
         <source>Loading banlist…</source>
-        <translation>Încărcare banlist…</translation>
+        <translation>Încărcare banlist...</translation>
     </message>
     <message>
         <source>Loading block index…</source>
-        <translation>Încarc indice bloc…</translation>
+        <translation>Încarc indice bloc...</translation>
     </message>
     <message>
         <source>Loading wallet…</source>
-        <translation>Încarc portofel…</translation>
+        <translation>Încarc portofel...</translation>
     </message>
     <message>
         <source>Failed to clear fulfilled requests cache at %s</source>
@@ -11080,7 +11302,7 @@ Portofelul ar fi putut fi creat cu o versiune mai nouă.
     </message>
     <message>
         <source>Importing…</source>
-        <translation>Import…</translation>
+        <translation>Import...</translation>
     </message>
     <message>
         <source>Initialization sanity check failed. %s is shutting down.</source>
@@ -11135,8 +11357,8 @@ Portofelul ar fi putut fi creat cu o versiune mai nouă.
         <translation>Ultima coadă a fost creată prea recent.</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup.</source>
-        <translation>%s corupt. Încercați să folosiți instrumentul portofel dash-wallet pentru a salva sau a restaura o copie de siguranță.</translation>
+        <source>%s corrupt. Try using the wallet tool piratecash-wallet to salvage or restoring a backup.</source>
+        <translation>%s corupt. Încercați să folosiți instrumentul portofel piratecash-wallet pentru a salva sau a restaura o copie de siguranță.</translation>
     </message>
     <message>
         <source>%s is set very high! Fees this large could be paid on a single transaction.</source>
@@ -11228,7 +11450,7 @@ Portofelul ar fi putut fi creat cu o versiune mai nouă.
     </message>
     <message>
         <source>Trying to connect…</source>
-        <translation>Se încearcă conectarea…</translation>
+        <translation>Se încearcă conectarea...</translation>
     </message>
     <message>
         <source>Unable to allocate memory for -maxsigcachesize: '%s' MiB</source>
@@ -11300,7 +11522,7 @@ Portofelul ar fi putut fi creat cu o versiune mai nouă.
     </message>
     <message>
         <source>Will retry…</source>
-        <translation>Se va reîncerca…</translation>
+        <translation>Se va reîncerca...</translation>
     </message>
     <message>
         <source>You are starting with governance validation disabled.</source>

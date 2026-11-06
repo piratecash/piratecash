@@ -66,12 +66,12 @@
         <translation>S&amp;eçiniz</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Bunlar ödemeleri göndermek için kullanacağınız Dash adreslerinizdir. Dash yollamadan önce tutarı ve alıcının alım adresini her zaman kontrol ediniz.</translation>
+        <source>These are your PirateCash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Bunlar ödemeleri göndermek için kullanacağınız PirateCash adreslerinizdir. PirateCash yollamadan önce tutarı ve alıcının alım adresini her zaman kontrol ediniz.</translation>
     </message>
     <message>
         <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
-        <translation>Bunlar, ödeme almak için Dash adreslerinizdir. Yeni adresler oluşturmak için alma sekmesindeki 'Yeni alıcı adresi oluştur' düğmesini kullanın.</translation>
+        <translation>Bunlar, ödeme almak için PirateCash adreslerinizdir. Yeni adresler oluşturmak için alma sekmesindeki 'Yeni alıcı adresi oluştur' düğmesini kullanın.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -118,6 +118,10 @@
     <message>
         <source>Exporting Failed</source>
         <translation>Dışarı aktarmada hata</translation>
+    </message>
+    <message>
+        <source>These are your PirateCash addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -225,8 +229,8 @@
         <translation>Cüzdan şifrelemesini onayla</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
-        <translation>Uyarı: Eğer cüzdanınızı şifreler ve parolanızı unutursanız &lt;b&gt;TÜM DASHİNİZİ KAYBEDERSİNİZ&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATECASH&lt;/b&gt;!</source>
+        <translation>Uyarı: Eğer cüzdanınızı şifreler ve parolanızı unutursanız &lt;b&gt;TÜM PIRATEİNİZİ KAYBEDERSİNİZ&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -308,6 +312,10 @@
         <source>Warning: The Caps Lock key is on!</source>
         <translation>Uyarı: Caps Lock tuşu etkin durumda!</translation>
     </message>
+    <message>
+        <source>Unlock wallet for mixing and staking only</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>BanTableModel</name>
@@ -365,16 +373,16 @@
         <translation>&amp;Gönder</translation>
     </message>
     <message>
-        <source>Send coins to a Dash address</source>
-        <translation>Bir Dash adresine coin gönder</translation>
+        <source>Send coins to a PirateCash address</source>
+        <translation>Bir PirateCash adresine coin gönder</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
         <translation>&amp;Al</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dash: URIs)</source>
-        <translation>Ödeme talep et (QR kodu ve Dash URI'si oluşturur)</translation>
+        <source>Request payments (generates QR codes and piratecash: URIs)</source>
+        <translation>Ödeme talep et (QR kodu ve PirateCash URI'si oluşturur)</translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
@@ -382,31 +390,31 @@
     </message>
     <message>
         <source>&amp;Options…</source>
-        <translation>&amp;Seçenekler…</translation>
+        <translation>&amp;Seçenekler...</translation>
     </message>
     <message>
         <source>&amp;Encrypt Wallet…</source>
-        <translation>&amp;Cüzdanı Şifrele…</translation>
+        <translation>&amp;Cüzdanı Şifrele...</translation>
     </message>
     <message>
         <source>&amp;Backup Wallet…</source>
-        <translation>&amp;Cüzdanı Yedekle…</translation>
+        <translation>&amp;Cüzdanı Yedekle...</translation>
     </message>
     <message>
         <source>&amp;Change Passphrase…</source>
-        <translation>&amp;Parolayı Değiştir…</translation>
+        <translation>&amp;Parolayı Değiştir...</translation>
     </message>
     <message>
         <source>&amp;Unlock Wallet…</source>
-        <translation>Cüzdanı &amp;Kilitle…</translation>
+        <translation>Cüzdanı &amp;Kilitle...</translation>
     </message>
     <message>
         <source>Sign &amp;message…</source>
-        <translation>&amp;İleti imzala…</translation>
+        <translation>&amp;İleti imzala...</translation>
     </message>
     <message>
         <source>&amp;Verify message…</source>
-        <translation>İletiyi &amp;kontrol et…</translation>
+        <translation>İletiyi &amp;kontrol et...</translation>
     </message>
     <message>
         <source>&amp;Load PSBT from file…</source>
@@ -422,7 +430,7 @@
     </message>
     <message>
         <source>Open &amp;URI…</source>
-        <translation>&amp;URI Aç…</translation>
+        <translation>&amp;URI Aç...</translation>
     </message>
     <message>
         <source>Open Wallet</source>
@@ -489,8 +497,8 @@
         <translation>%1 &amp;Hakkında</translation>
     </message>
     <message>
-        <source>Send %1 funds to a Dash address</source>
-        <translation>%1 Koinleri Dash adresine</translation>
+        <source>Send %1 funds to a PirateCash address</source>
+        <translation>%1 Koinleri PirateCash adresine</translation>
     </message>
     <message>
         <source>Modify configuration options for %1</source>
@@ -525,12 +533,12 @@
         <translation>Cüzdanı &amp;Kilitle</translation>
     </message>
     <message>
-        <source>Sign messages with your Dash addresses to prove you own them</source>
-        <translation>İletileri adreslerin size ait olduğunu ispatlamak için Dash adresleri ile imzala</translation>
+        <source>Sign messages with your PirateCash addresses to prove you own them</source>
+        <translation>İletileri adreslerin size ait olduğunu ispatlamak için PirateCash adresleri ile imzala</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dash addresses</source>
-        <translation>Belirtilen Dash adresleri ile imzalandıklarından emin olmak için iletileri kontrol et</translation>
+        <source>Verify messages to ensure they were signed with specified PirateCash addresses</source>
+        <translation>Belirtilen PirateCash adresleri ile imzalandıklarından emin olmak için iletileri kontrol et</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -593,8 +601,8 @@
         <translation>&amp;Komut satırı seçenekleri</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Dash command-line options</source>
-        <translation>Olası Dash komut satırı seçeneklerinin listesini görmek için %1 yardım mesajını göster</translation>
+        <source>Show the %1 help message to get a list with possible PirateCash command-line options</source>
+        <translation>Olası PirateCash komut satırı seçeneklerinin listesini görmek için %1 yardım mesajını göster</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -643,8 +651,8 @@
         <translation>&amp;Cüzdan yapılandırma dosyasını aç</translation>
     </message>
     <message>
-        <source>Open a dash: URI</source>
-        <translation>Bir dash: URI aç</translation>
+        <source>Open a piratecash: URI</source>
+        <translation>Bir piratecash: URI aç</translation>
     </message>
     <message>
         <source>Create a new wallet</source>
@@ -733,9 +741,9 @@
         <translation>&amp;Göster</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Dash network</source>
+        <source>%n active connection(s) to PirateCash network</source>
         <extracomment>A substring of the tooltip.</extracomment>
-        <translation><numerusform>Dash ağına %n aktif bağlantı</numerusform><numerusform>Dash ağına %n aktif bağlantı</numerusform></translation>
+        <translation><numerusform>PirateCash ağına %n aktif bağlantı</numerusform><numerusform>PirateCash ağına %n aktif bağlantı</numerusform></translation>
     </message>
     <message>
         <source>Network activity disabled</source>
@@ -751,7 +759,7 @@
     </message>
     <message>
         <source>Close Wallet…</source>
-        <translation>Kapalı Cüzdan…</translation>
+        <translation>Kapalı Cüzdan...</translation>
     </message>
     <message>
         <source>Load Partially Signed Blockchain Transaction</source>
@@ -771,7 +779,7 @@
     </message>
     <message>
         <source>Create Wallet…</source>
-        <translation>Cüzdan Oluştur…</translation>
+        <translation>Cüzdan Oluştur...</translation>
     </message>
     <message>
         <source>Close All Wallets…</source>
@@ -815,27 +823,27 @@
     </message>
     <message>
         <source>Syncing Headers (%1%)…</source>
-        <translation>Üstbilgiler Senkronize Ediliyor (%1%)…</translation>
+        <translation>Üstbilgiler Senkronize Ediliyor (%1%)...</translation>
     </message>
     <message>
         <source>Synchronizing with network…</source>
-        <translation>Ağ ile senkronize ediliyor…</translation>
+        <translation>Ağ ile senkronize ediliyor...</translation>
     </message>
     <message>
         <source>Indexing blocks on disk…</source>
-        <translation>Bloklar diske indeksleniyor…</translation>
+        <translation>Bloklar diske indeksleniyor...</translation>
     </message>
     <message>
         <source>Processing blocks on disk…</source>
-        <translation>Bloklar diske işleniyor…</translation>
+        <translation>Bloklar diske işleniyor...</translation>
     </message>
     <message>
         <source>Connecting to peers…</source>
-        <translation>Eşlere bağlanılıyor…</translation>
+        <translation>Eşlere bağlanılıyor...</translation>
     </message>
     <message>
         <source>Catching up…</source>
-        <translation>Aralık kapatılıyor…</translation>
+        <translation>Aralık kapatılıyor...</translation>
     </message>
     <message>
         <source>Last received block was generated %1 ago.</source>
@@ -974,6 +982,34 @@
     <message>
         <source>Original message:</source>
         <translation>Orijinal mesaj:</translation>
+    </message>
+    <message>
+        <source>Start Staking...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unlock wallet for mixing and staking only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load Partially Signed PirateCash Transaction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load Partially Signed PirateCash Transaction from clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Staking is &lt;b&gt;enabled&lt;/b&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Staking is &lt;b&gt;disabled&lt;/b&gt; %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;unlocked&lt;/b&gt; for mixing and staking only</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1169,7 +1205,7 @@
     <message>
         <source>Creating Wallet &lt;b&gt;%1&lt;/b&gt;…</source>
         <extracomment>Descriptive text of the create wallet progress window which indicates to the user which wallet is currently being created.</extracomment>
-        <translation>&lt;b&gt;%1&lt;/b&gt; Cüzdan Oluşturuluyor…</translation>
+        <translation>&lt;b&gt;%1&lt;/b&gt; Cüzdan Oluşturuluyor...</translation>
     </message>
     <message>
         <source>Create wallet failed</source>
@@ -1483,7 +1519,7 @@
     </message>
     <message>
         <source>Dash shared masternode — standby dissolution</source>
-        <translation>Dash paylaşımlı masternode — yedek fesih</translation>
+        <translation>PirateCash paylaşımlı masternode — yedek fesih</translation>
     </message>
     <message>
         <source>Masternode: %1</source>
@@ -1512,6 +1548,10 @@
     <message>
         <source>Could not write to %1.</source>
         <translation>%1 konumuna yazılamadı.</translation>
+    </message>
+    <message>
+        <source>This dissolution cannot be approved.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1549,8 +1589,8 @@
         <translation>Gönderi adresini düzenle</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Dash address.</source>
-        <translation>Girilen %1 adresi, geçerli bir Dash adresi değildir.</translation>
+        <source>The entered address "%1" is not a valid PirateCash address.</source>
+        <translation>Girilen %1 adresi, geçerli bir PirateCash adresi değildir.</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -1611,8 +1651,8 @@
         <translation>%1 Bilgi</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Dash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH and 10 DASH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
-        <translation>&lt;h3&gt;%1 Temel Bilgiler&lt;/h3&gt; %1 size paranızın gerçek kaynağını gizleyerek tam bir gizlilik imkanı sağlar. Cüzdanınızdaki Dash farklı "girdiler"den oluşur, bunu ayrı gizli paralar olarak düşünebilirsiniz.&lt;br&gt; %1 sizin girdilerinizi başka iki kişinin girdileri ile karıştırmak için yenilikçi bir işlem kullanır ve bu sırada paranın cüzdanınızdan çıkmasına gerek kalmaz. Her an paranızın kontrolü sizdedir.&lt;hr&gt; &lt;b&gt;%1 işlemi şöyle işler:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 işlem girdilerinizi standart birimlere bölerek başlar. Bu birimler 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH ve 10 DASH'dir -- her gün kullandığınız kağıt para gibi düşünebilirsiniz.&lt;/li&gt; &lt;li&gt;Sonra cüzdanınız ağdaki özel ayarlanmış yazılım düğümlerine talepler gönderir, bunşara "ana düğümler" denir. Bu ana düğümlere sizin belli bir miktar birimi karıştırmak istediğiniz bilgisi gider. Ana düğümlere kimliğinizi açık edecek bir bilgi gönderilmez, bu yüzden "kim" olduğunuzu bilmezler.&lt;/li&gt; &lt;li&gt;Aynı birimleri karıştırmak istediğini belirten iki başka kişi daha benzer mesajlar gönderince, karıştırma işlemi başlar. Ana düğüm giridleri karıştırır ve üç kullanıcının da cüzdanına şimdi dönüştürülmüş olan girdiyi kendilerne ödemelerini emreder. Cüzdanınız bu birimleri doğrudan kendisine öder ama farklı bir adres kullanır (buna değişim adresi denir).&lt;/li&gt; &lt;li&gt;Paranızı tamamen gizlemek için cüzdanınız bu işlemi her birim için birkaç defa tekrar etmelidir. Her işlem tamamlandığına buna bir "tur" denir. Her bir %1 turu paranızın kaynağının bulunmasını üstel olarak zorlaştırır.&lt;/li&gt; &lt;li&gt;Bu karışım işlemi arkaplanda sizin tarafınızdan bir müdahale olmadan gerçekleşir. Bir işlem yapmak istediğinizde bakiyeniz zaten karışmış olacaktır. Ek bir beklemeye gerek kalmaz.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;ÖNEMLİ:&lt;/b&gt; Cüzdanınızda bu "değişim adreslerinden" sadece 1000 tane vardır. Her bir karışım işleminde bu adreslerden 9 taneye kadar kullanılır. Bu da 1000 adresin yaklaşık 100 karışım işlemine yeteceği anlamına gelir. 900 tanesi kullanıldığı zaman, cüzdanınızın daha fazla adres oluşturması gerekir. Yalnız bunu ancak otomatik yedekleme etkinse yapabilir.&lt;br&gt; Sonuç olarak yedeklemeyi kapatan kullanıcılar aynı zamanda %1 de kapatmış olurlar. &lt;hr&gt;Daha fazla bilgi için lütfen &lt;a style="%2" href="%3"&gt;%1 dökümantasyonuna&lt;/a&gt; göz atın.         </translation>
+        <source>&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE and 10 PIRATE -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
+        <translation>&lt;h3&gt;%1 Temel Bilgiler&lt;/h3&gt; %1 size paranızın gerçek kaynağını gizleyerek tam bir gizlilik imkanı sağlar. Cüzdanınızdaki PirateCash farklı "girdiler"den oluşur, bunu ayrı gizli paralar olarak düşünebilirsiniz.&lt;br&gt; %1 sizin girdilerinizi başka iki kişinin girdileri ile karıştırmak için yenilikçi bir işlem kullanır ve bu sırada paranın cüzdanınızdan çıkmasına gerek kalmaz. Her an paranızın kontrolü sizdedir.&lt;hr&gt; &lt;b&gt;%1 işlemi şöyle işler:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 işlem girdilerinizi standart birimlere bölerek başlar. Bu birimler 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE ve 10 PIRATE'dir -- her gün kullandığınız kağıt para gibi düşünebilirsiniz.&lt;/li&gt; &lt;li&gt;Sonra cüzdanınız ağdaki özel ayarlanmış yazılım düğümlerine talepler gönderir, bunşara "ana düğümler" denir. Bu ana düğümlere sizin belli bir miktar birimi karıştırmak istediğiniz bilgisi gider. Ana düğümlere kimliğinizi açık edecek bir bilgi gönderilmez, bu yüzden "kim" olduğunuzu bilmezler.&lt;/li&gt; &lt;li&gt;Aynı birimleri karıştırmak istediğini belirten iki başka kişi daha benzer mesajlar gönderince, karıştırma işlemi başlar. Ana düğüm giridleri karıştırır ve üç kullanıcının da cüzdanına şimdi dönüştürülmüş olan girdiyi kendilerne ödemelerini emreder. Cüzdanınız bu birimleri doğrudan kendisine öder ama farklı bir adres kullanır (buna değişim adresi denir).&lt;/li&gt; &lt;li&gt;Paranızı tamamen gizlemek için cüzdanınız bu işlemi her birim için birkaç defa tekrar etmelidir. Her işlem tamamlandığına buna bir "tur" denir. Her bir %1 turu paranızın kaynağının bulunmasını üstel olarak zorlaştırır.&lt;/li&gt; &lt;li&gt;Bu karışım işlemi arkaplanda sizin tarafınızdan bir müdahale olmadan gerçekleşir. Bir işlem yapmak istediğinizde bakiyeniz zaten karışmış olacaktır. Ek bir beklemeye gerek kalmaz.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;ÖNEMLİ:&lt;/b&gt; Cüzdanınızda bu "değişim adreslerinden" sadece 1000 tane vardır. Her bir karışım işleminde bu adreslerden 9 taneye kadar kullanılır. Bu da 1000 adresin yaklaşık 100 karışım işlemine yeteceği anlamına gelir. 900 tanesi kullanıldığı zaman, cüzdanınızın daha fazla adres oluşturması gerekir. Yalnız bunu ancak otomatik yedekleme etkinse yapabilir.&lt;br&gt; Sonuç olarak yedeklemeyi kapatan kullanıcılar aynı zamanda %1 de kapatmış olurlar. &lt;hr&gt;Daha fazla bilgi için lütfen &lt;a style="%2" href="%3"&gt;%1 dökümantasyonuna&lt;/a&gt; göz atın.         </translation>
     </message>
 </context>
 <context>
@@ -1671,7 +1711,7 @@
     </message>
     <message>
         <source>Network addresses that your Dash node is currently using to communicate with other nodes.</source>
-        <translation>Dash düğümünüzün diğer düğümlerle iletişim kurmak için şu anda kullandığı ağ adresleri.</translation>
+        <translation>PirateCash düğümünüzün diğer düğümlerle iletişim kurmak için şu anda kullandığı ağ adresleri.</translation>
     </message>
     <message>
         <source>Block chain</source>
@@ -1794,8 +1834,8 @@
         <translation><numerusform>(%n gün önceki yedekleri geri yüklemek için yeterli)</numerusform><numerusform>(%n gün önceki yedekleri geri yüklemek için yeterli)</numerusform></translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the Dash block chain.</source>
-        <translation>%1 lik Dash blok zinciri nin bir kopyasını indirecek ve depolayacak.</translation>
+        <source>%1 will download and store a copy of the PirateCash block chain.</source>
+        <translation>%1 lik PirateCash blok zinciri nin bir kopyasını indirecek ve depolayacak.</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -2274,6 +2314,10 @@ Ağ reddi: %1</translation>
         <source>Details: %1</source>
         <translation>Ayrıntılar: %1</translation>
     </message>
+    <message>
+        <source>This dissolution pays a share less than the network requires: its full principal plus its part of any early-exit penalty. A dissolution that pays no penalty is accepted only once the early period has ended; if it has already ended, prepare a new dissolution.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MigrateWalletActivity</name>
@@ -2386,7 +2430,7 @@ Taşıma işlemi, taşımadan önce cüzdanın bir yedeğini oluşturur. Bu yede
     </message>
     <message>
         <source>The session file uses an unsupported format version. Update Dash Core to open it.</source>
-        <translation>Oturum dosyası desteklenmeyen bir biçim sürümü kullanıyor. Açmak için Dash Core'u güncelleyin.</translation>
+        <translation>Oturum dosyası desteklenmeyen bir biçim sürümü kullanıyor. Açmak için PirateCash Core'u güncelleyin.</translation>
     </message>
     <message>
         <source>The session file is for the "%1" network but this node runs "%2". It cannot be used here.</source>
@@ -2410,7 +2454,7 @@ Taşıma işlemi, taşımadan önce cüzdanın bir yedeğini oluşturur. Bu yede
     </message>
     <message>
         <source>The session file is at the unknown stage "%1". It was probably created by a newer Dash Core.</source>
-        <translation>Oturum dosyası bilinmeyen "%1" aşamasında. Muhtemelen daha yeni bir Dash Core tarafından oluşturulmuş.</translation>
+        <translation>Oturum dosyası bilinmeyen "%1" aşamasında. Muhtemelen daha yeni bir PirateCash Core tarafından oluşturulmuş.</translation>
     </message>
     <message>
         <source>The session file lists %1 shares; a shared masternode can have at most %2.</source>
@@ -2820,6 +2864,42 @@ Taşıma işlemi, taşımadan önce cüzdanın bir yedeğini oluşturur. Bu yede
         <source>%1 inputs</source>
         <translation>%1 girdi</translation>
     </message>
+    <message>
+        <source>A shared masternode needs between %1 and %2 shares.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Every share amount must be between %1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The share amounts must sum to exactly %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Every share needs its own, non-empty owner address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Every refund address must be unique.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Every refund and reward address must be a valid P2PKH or P2SH address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A refund or reward address must not be the voting address or any share's owner address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set the early penalty to 0 when there is no early period.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The share table is not valid (%1).</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MnemonicVerificationDialog</name>
@@ -2927,12 +3007,12 @@ Taşıma işlemi, taşımadan önce cüzdanın bir yedeğini oluşturur. Bu yede
         <translation>Form</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
-        <translation>Son işlemler henüz görünmeyebilir ve bu nedenle cüzdanınızın bakiyesi yanlış olabilir. Bu bilgiler, aşağıda detaylandırıldığı gibi, cüzdanınız Dash ağı ile senkronizasyonunu tamamladığında doğru olacaktır. </translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the PirateCash network, as detailed below.</source>
+        <translation>Son işlemler henüz görünmeyebilir ve bu nedenle cüzdanınızın bakiyesi yanlış olabilir. Bu bilgiler, aşağıda detaylandırıldığı gibi, cüzdanınız PirateCash ağı ile senkronizasyonunu tamamladığında doğru olacaktır. </translation>
     </message>
     <message>
-        <source>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>Daha görüntülenmemiş işlemler tarafından etkilenen Dash'i harcama teşebbüsü ağ tarafından kabul edilmez.</translation>
+        <source>Attempting to spend PirateCash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>Daha görüntülenmemiş işlemler tarafından etkilenen PirateCash'i harcama teşebbüsü ağ tarafından kabul edilmez.</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -2940,11 +3020,11 @@ Taşıma işlemi, taşımadan önce cüzdanın bir yedeğini oluşturur. Bu yede
     </message>
     <message>
         <source>Unknown…</source>
-        <translation>Bilinmiyor…</translation>
+        <translation>Bilinmiyor...</translation>
     </message>
     <message>
         <source>calculating…</source>
-        <translation>hesaplanıyor…</translation>
+        <translation>hesaplanıyor...</translation>
     </message>
     <message>
         <source>Last block time</source>
@@ -2972,7 +3052,7 @@ Taşıma işlemi, taşımadan önce cüzdanın bir yedeğini oluşturur. Bu yede
     </message>
     <message>
         <source>Unknown. Syncing Headers (%1, %2%)…</source>
-        <translation>Bilinmeyen. Başlıklar Senkronize Ediliyor (%1, %2%)…</translation>
+        <translation>Bilinmeyen. Başlıklar Senkronize Ediliyor (%1, %2%)...</translation>
     </message>
 </context>
 <context>
@@ -3128,7 +3208,7 @@ Taşıma işlemi, taşımadan önce cüzdanın bir yedeğini oluşturur. Bu yede
     <message>
         <source>Opening Wallet &lt;b&gt;%1&lt;/b&gt;…</source>
         <extracomment>Descriptive text of the open wallet progress window which indicates to the user which wallet is currently being opened.</extracomment>
-        <translation>&lt;b&gt;%1&lt;/b&gt; Cüzdan Açılıyor…</translation>
+        <translation>&lt;b&gt;%1&lt;/b&gt; Cüzdan Açılıyor...</translation>
     </message>
 </context>
 <context>
@@ -3316,7 +3396,7 @@ Taşıma işlemi, taşımadan önce cüzdanın bir yedeğini oluşturur. Bu yede
         <translation>Harici kaynaklardan alındığında bu tutara eşit veya altındaki çıktılara sahip işlemler toz olarak kabul edilecektir.</translation>
     </message>
     <message>
-        <source>duffs</source>
+        <source>corsars</source>
         <translation>duff</translation>
     </message>
     <message>
@@ -3408,8 +3488,8 @@ Taşıma işlemi, taşımadan önce cüzdanın bir yedeğini oluşturur. Bu yede
         <translation>Maksimum</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Router'da otomatik olarak Dash Core istemcisi portu aç. Bu sadece router'ınız UPnP destekliyorsa ve etkinse çalışır.</translation>
+        <source>Automatically open the PirateCash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Router'da otomatik olarak PirateCash Core istemcisi portu aç. Bu sadece router'ınız UPnP destekliyorsa ve etkinse çalışır.</translation>
     </message>
     <message>
         <source>Map port using NA&amp;T-PMP</source>
@@ -3424,8 +3504,8 @@ Taşıma işlemi, taşımadan önce cüzdanın bir yedeğini oluşturur. Bu yede
         <translation>Gelen bağlantılara izin ver</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a SOCKS5 proxy.</source>
-        <translation>Dash ağına bir SOCKS5 vekil sunucusu aracılığıyla bağlan.</translation>
+        <source>Connect to the PirateCash network through a SOCKS5 proxy.</source>
+        <translation>PirateCash ağına bir SOCKS5 vekil sunucusu aracılığıyla bağlan.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -3490,8 +3570,8 @@ https://explore.transifex.com/dash/dash/</translation>
         <translation>Portları &amp;UPnP kullanarak haritala</translation>
     </message>
     <message>
-        <source>Automatically open the Dash Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
-        <translation>Yönlendiricide Dash Core istemci portunu otomatik olarak açın. Bu yalnızca yönlendiriciniz NAT-PMP'yi desteklediğinde ve etkinleştirildiğinde çalışır. Harici port rastgele olabilir.</translation>
+        <source>Automatically open the PirateCash Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
+        <translation>Yönlendiricide PirateCash Core istemci portunu otomatik olarak açın. Bu yalnızca yönlendiriciniz NAT-PMP'yi desteklediğinde ve etkinleştirildiğinde çalışır. Harici port rastgele olabilir.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -3542,8 +3622,8 @@ https://explore.transifex.com/dash/dash/</translation>
         <translation>&amp;Görünüm</translation>
     </message>
     <message>
-        <source>Connect to the Dash network through a separate SOCKS5 proxy for Tor onion services.</source>
-        <translation>Tor onion servisleri için ayrı bir SOCKS5 proxy üzerinden Dash ağına bağlanın.</translation>
+        <source>Connect to the PirateCash network through a separate SOCKS5 proxy for Tor onion services.</source>
+        <translation>Tor onion servisleri için ayrı bir SOCKS5 proxy üzerinden PirateCash ağına bağlanın.</translation>
     </message>
     <message>
         <source>Use separate SOCKS&amp;5 proxy to reach peers via Tor onion services:</source>
@@ -3645,8 +3725,8 @@ https://explore.transifex.com/dash/dash/</translation>
         <translation>Form</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Dash network after a connection is established, but this process has not completed yet.</source>
-        <translation>Görüntülenen bilgiler güncel olmayabilir. Bağlantı kurulduğunda cüzdanınız otomatik olarak Dash ağı ile senkronize olur ancak bu işlem henüz tamamlanmamıştır.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
+        <translation>Görüntülenen bilgiler güncel olmayabilir. Bağlantı kurulduğunda cüzdanınız otomatik olarak PirateCash ağı ile senkronize olur ancak bu işlem henüz tamamlanmamıştır.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -3725,8 +3805,8 @@ https://explore.transifex.com/dash/dash/</translation>
         <translation>Tutar ve Turlar:</translation>
     </message>
     <message>
-        <source>0 DASH / 0 Rounds</source>
-        <translation>0 DASH / 0 Tur</translation>
+        <source>0 PIRATE / 0 Rounds</source>
+        <translation>0 PIRATE / 0 Tur</translation>
     </message>
     <message>
         <source>Submitted Denom:</source>
@@ -4012,16 +4092,16 @@ https://explore.transifex.com/dash/dash/</translation>
         <translation>Ödeme talebi hatası</translation>
     </message>
     <message>
-        <source>Cannot start dash: click-to-pay handler</source>
-        <translation>Dash başlatılamadı: tıkla-ve-öde yöneticisi</translation>
+        <source>Cannot start piratecash: click-to-pay handler</source>
+        <translation>PirateCash başlatılamadı: tıkla-ve-öde yöneticisi</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>URI yönetimi</translation>
     </message>
     <message>
-        <source>'dash://' is not a valid URI. Use 'dash:' instead.</source>
-        <translation>'dash://' geçerli bir URI değil. Bunun yerine 'dash:' kullanın.</translation>
+        <source>'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
+        <translation>'piratecash://' geçerli bir URI değil. Bunun yerine 'piratecash:' kullanın.</translation>
     </message>
     <message>
         <source>Cannot process payment request as BIP70 is no longer supported.
@@ -4030,8 +4110,8 @@ Due to discontinued support, you should request the merchant to provide you with
 Desteğin sonlandırılması nedeniyle, satıcıdan size BIP21 uyumlu bir URI sağlamasını istemelisiniz veya BIP70'i desteklemeye devam eden bir cüzdan kullanmalısınız.</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid Dash address or malformed URI parameters.</source>
-        <translation>URI ayrıştırılamıyor! Bunun nedeni geçersiz bir Dash adresi veya hatalı biçimlendirilmiş URI değişkenleri olabilir.</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
+        <translation>URI ayrıştırılamıyor! Bunun nedeni geçersiz bir PirateCash adresi veya hatalı biçimlendirilmiş URI değişkenleri olabilir.</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -4817,15 +4897,15 @@ Devam etmek istiyor musunuz?</translation>
     </message>
     <message>
         <source>%1 didn't yet exit safely…</source>
-        <translation>%1  henüz güvenli bir şekilde çıkış yapmamıştır…</translation>
+        <translation>%1  henüz güvenli bir şekilde çıkış yapmamıştır...</translation>
     </message>
     <message>
         <source>Amount</source>
         <translation>Tutar</translation>
     </message>
     <message>
-        <source>Enter a Dash address (e.g. %1)</source>
-        <translation>Bir Dash adresi giriniz (mesela %1)</translation>
+        <source>Enter a PirateCash address (e.g. %1)</source>
+        <translation>Bir PirateCash adresi giriniz (mesela %1)</translation>
     </message>
     <message>
         <source>Appearance Setup</source>
@@ -5273,7 +5353,7 @@ Devam etmek istiyor musunuz?</translation>
     </message>
     <message>
         <source>Invalid Dash address: %1</source>
-        <translation>Geçersiz Dash adresi: %1</translation>
+        <translation>Geçersiz PirateCash adresi: %1</translation>
     </message>
     <message>
         <source>Copy</source>
@@ -5308,14 +5388,14 @@ Devam etmek istiyor musunuz?</translation>
     </message>
     <message>
         <source>&amp;Save Image…</source>
-        <translation>Resmi ka&amp;ydet…</translation>
+        <translation>Resmi ka&amp;ydet...</translation>
     </message>
 </context>
 <context>
     <name>QRImageWidget</name>
     <message>
         <source>&amp;Save Image…</source>
-        <translation>Resmi ka&amp;ydet…</translation>
+        <translation>Resmi ka&amp;ydet...</translation>
     </message>
     <message>
         <source>&amp;Copy Image</source>
@@ -5845,8 +5925,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>Talep açıldığında gösterilecek, isteğinize dayalı, ödeme talebi ile ilişkilendirilecek bir ileti. Not: Bu ileti ödeme ile birlikte Dash ağı üzerinden gönderilmeyecektir.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>Talep açıldığında gösterilecek, isteğinize dayalı, ödeme talebi ile ilişkilendirilecek bir ileti. Not: Bu ileti ödeme ile birlikte PirateCash ağı üzerinden gönderilmeyecektir.</translation>
     </message>
     <message>
         <source>&amp;Message:</source>
@@ -5857,8 +5937,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation>Yeni alım adresi ile ilişkili, seçiminize dayalı etiket.</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Dash network.</source>
-        <translation>Ödeme talebine eklenecek isteğe bağlı bir mesaj, talep açıldığında gösterilecektir.&lt;br&gt;Not: Mesaj ödeme ile birlikte Dash ağı üzerinden gönderilmez.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the PirateCash network.</source>
+        <translation>Ödeme talebine eklenecek isteğe bağlı bir mesaj, talep açıldığında gösterilecektir.&lt;br&gt;Not: Mesaj ödeme ile birlikte PirateCash ağı üzerinden gönderilmez.</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address (used by you to identify an invoice).  It is also attached to the payment request.</source>
@@ -5993,7 +6073,7 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
     </message>
     <message>
         <source>&amp;Save Image…</source>
-        <translation>Resmi ka&amp;ydet…</translation>
+        <translation>Resmi ka&amp;ydet...</translation>
     </message>
     <message>
         <source>Request payment to %1</source>
@@ -6071,7 +6151,7 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
     </message>
     <message>
         <source>Additionally hosts Dash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
-        <translation>Ek olarak Dash Platform'u barındırır, dört kat oylama ağırlığına sahiptir ve ödüllerden daha büyük bir pay alır. Bir Platform düğüm kimliği ve ek hizmetler gerektirir.</translation>
+        <translation>Ek olarak PirateCash Platform'u barındırır, dört kat oylama ağırlığına sahiptir ve ödüllerden daha büyük bir pay alır. Bir Platform düğüm kimliği ve ek hizmetler gerektirir.</translation>
     </message>
     <message>
         <source>Register EvoNode</source>
@@ -6291,7 +6371,7 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
     </message>
     <message>
         <source>Add this line to dash.conf on your masternode server:</source>
-        <translation>Bu satırı masternode sunucunuzdaki dash.conf dosyasına ekleyin:</translation>
+        <translation>Bu satırı masternode sunucunuzdaki piratecash.conf dosyasına ekleyin:</translation>
     </message>
     <message>
         <source>Copy</source>
@@ -6691,7 +6771,7 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
     </message>
     <message>
         <source>Provision the Dash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
-        <translation>Dash Platform hizmetlerini (Tenderdash ve Drive), kaydettiğiniz düğüm kimliğine karşılık gelen Platform düğüm anahtarıyla hazırlayın.</translation>
+        <translation>PirateCash Platform hizmetlerini (Tenderdash ve Drive), kaydettiğiniz düğüm kimliğine karşılık gelen Platform düğüm anahtarıyla hazırlayın.</translation>
     </message>
     <message>
         <source>The EvoNode becomes active once the registration is confirmed and the first update is signed by the operator.</source>
@@ -6806,6 +6886,10 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
     <message>
         <source>Revoke</source>
         <translation>Geçersiz Kıl</translation>
+    </message>
+    <message>
+        <source>The fee is paid from this address of your wallet.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6963,7 +7047,7 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
     </message>
     <message>
         <source>Inputs…</source>
-        <translation>Girdiler…</translation>
+        <translation>Girdiler...</translation>
     </message>
     <message>
         <source>After Fee:</source>
@@ -6987,7 +7071,7 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
     </message>
     <message>
         <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
-        <translation>Blokların boşluğundan daha az işlem hacmi olduğunda, madenciler ve aktarıcı düğümler minimum bir ücret uygulayabilir. Sadece bu minimum ücreti ödemek sorun değildir, ancak ağın işleyebileceğinden daha fazla dash işlemi talebi olduğunda bunun asla onaylanmayan bir işlemle sonuçlanabileceğini unutmayın.</translation>
+        <translation>Blokların boşluğundan daha az işlem hacmi olduğunda, madenciler ve aktarıcı düğümler minimum bir ücret uygulayabilir. Sadece bu minimum ücreti ödemek sorun değildir, ancak ağın işleyebileceğinden daha fazla piratecash işlemi talebi olduğunda bunun asla onaylanmayan bir işlemle sonuçlanabileceğini unutmayın.</translation>
     </message>
     <message>
         <source>A too low fee might result in a never confirming transaction (read the tooltip)</source>
@@ -6995,14 +7079,14 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
     </message>
     <message>
         <source>(Smart fee not initialized yet. This usually takes a few blocks…)</source>
-        <translation>(Zeki ücret henüz başlatılmadı. Bu genelde birkaç blok alır…)</translation>
+        <translation>(Zeki ücret henüz başlatılmadı. Bu genelde birkaç blok alır...)</translation>
     </message>
     <message>
         <source>Confirmation time target:</source>
         <translation>Doğrulama süresi hedefi:</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 duffs in fee,&lt;br /&gt;while "at least" pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <source>If the custom fee is set to 1000 corsars and the transaction is only 250 bytes, then "per kilobyte" only pays 250 corsars in fee,&lt;br /&gt;while "at least" pays 1000 corsars. For transactions bigger than a kilobyte both pay by kilobyte.</source>
         <translation>Eğer özel ücret 1000 duff olarak belirlendiyse ve işlem sadece 250 bayt ise "kilobayt başına" ücret olarak sadece 250 duff ödersiniz,&lt;br /&gt;bu da "en az" 1000 duff öder. Bir kilobayttan büyük işlemler için ikisi de kilobayt başına ödeme yapar.</translation>
     </message>
     <message>
@@ -7015,7 +7099,7 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
     </message>
     <message>
         <source>Choose…</source>
-        <translation>Seç…</translation>
+        <translation>Seç...</translation>
     </message>
     <message>
         <source>Note: Not enough data for fee estimation, using the fallback fee instead.</source>
@@ -7309,8 +7393,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation><numerusform>%n blok içinde onaylamanın başlayacağı tahmin ediliyor.</numerusform><numerusform>%n blok içinde onaylamanın başlayacağı tahmin ediliyor.</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Dash address</source>
-        <translation>UYARI: Geçersiz Dash adresi</translation>
+        <source>Warning: Invalid PirateCash address</source>
+        <translation>UYARI: Geçersiz PirateCash adresi</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -7328,6 +7412,24 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <source>(no label)</source>
         <translation>(etiket yok)</translation>
     </message>
+    <message>
+        <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for piratecash transactions than the network can process.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creates a Partially Signed PirateCash Transaction (PSBT) for use with e.g. an offline %1 wallet, or a PSBT-compatible hardware wallet.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please, review your transaction proposal. This will produce a Partially Signed PirateCash Transaction (PSBT) which you can save or copy and then sign with e.g. an offline %1 wallet, or a PSBT-compatible hardware wallet.</source>
+        <extracomment>Text to inform a user attempting to create a transaction of their current options. At this stage, a user can only create a PSBT. This string is displayed when private keys are disabled and an external signer is not available.</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please, review your transaction. You can create and send this transaction or create a Partially Signed PirateCash Transaction (PSBT), which you can save or copy and then sign with, e.g., an offline %1 wallet, or a PSBT-compatible hardware wallet.</source>
+        <extracomment>Text to inform a user attempting to create a transaction of their current options. At this stage, a user can send their transaction or create a PSBT. This string is displayed when both private keys and PSBT controls are enabled.</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SendCoinsEntry</name>
@@ -7336,8 +7438,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation>&amp;Şu adrese öde:</translation>
     </message>
     <message>
-        <source>The Dash address to send the payment to</source>
-        <translation>Ödemenin yollanacağı Dash adresi</translation>
+        <source>The PirateCash address to send the payment to</source>
+        <translation>Ödemenin yollanacağı PirateCash adresi</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -7377,7 +7479,7 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
     </message>
     <message>
         <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>Ücret gönderilen tutardan düşülecek. Alıcı sizin tutar alanına girdiğinizden daha düşük miktarda Dash alacak. Eğer birden fazla alıcı seçilirse, ücret eşit bölünür.</translation>
+        <translation>Ücret gönderilen tutardan düşülecek. Alıcı sizin tutar alanına girdiğinizden daha düşük miktarda PirateCash alacak. Eğer birden fazla alıcı seçilirse, ücret eşit bölünür.</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -7392,8 +7494,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation>Mesaj:</translation>
     </message>
     <message>
-        <source>A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Dash network.</source>
-        <translation>Referans için Dash: URI'siyle iliştirilmiş işlemle birlikte depolanacak bir ileti. Not: Bu mesaj Dash ağı üzerinden gönderilmeyecektir.</translation>
+        <source>A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
+        <translation>Referans için PirateCash: URI'siyle iliştirilmiş işlemle birlikte depolanacak bir ileti. Not: Bu mesaj PirateCash ağı üzerinden gönderilmeyecektir.</translation>
     </message>
 </context>
 <context>
@@ -7731,7 +7833,7 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
     </message>
     <message>
         <source>Add this line to dash.conf on the masternode server:</source>
-        <translation>Bu satırı masternode sunucusundaki dash.conf dosyasına ekleyin:</translation>
+        <translation>Bu satırı masternode sunucusundaki piratecash.conf dosyasına ekleyin:</translation>
     </message>
     <message>
         <source>The invitation you are about to send contains only the public key.</source>
@@ -8417,6 +8519,98 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <source>Discard and Release Coins</source>
         <translation>At ve Koinleri Serbest Bırak</translation>
     </message>
+    <message>
+        <source>%1 is already the service address of a registered masternode. Every service address must be unique on the network.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your coins are reserved for this row. Release them on the contribution page before removing it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy My Reply</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 already pays a refund or reward to this owner address. The owner address must differ from every refund and reward address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The refund address must differ from the voting address and every owner address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 already uses this refund address. Every refund address must be unique.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reserve and Sign</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose your share…</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 (taken)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>These coins pay %1 beyond your share, not the %2 Network fee shown below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To change your addresses or the network fee, release the coins first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To change your addresses, release the coins first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>✓ Your approval covers every amount, address, key and exit term below, and none of them has changed since. Participant names, "Node run by" and the Identity section are notes it does not cover.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All participants approved. Your coins were released, so nothing was signed. Press "Reserve and Sign" to reserve them again and continue.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transaction ID: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This newer invitation changes your share (%1), so it was not loaded. If you agreed to that change, close this window and open the new invitation to review it. Otherwise ask %2 to send an invitation with your share unchanged.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This newer invitation gives %1's share an owner address from this wallet, so it was not loaded. Ask %2 to send an invitation in which only your own share uses this wallet's addresses.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loaded the newer invitation; your share is unchanged. Review it, then send your details again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This invitation is older than the one you already have, so it was not loaded. Ask %1 for the latest invitation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This newer copy changes your share (%1), so it was not loaded. If you agreed to that change, close this window and open the copy again to review it. Otherwise ask %2 to send a copy with your share unchanged.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>whoever sent it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has already been taken by another participant.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The owner address must belong to this wallet.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SharedMnDialog</name>
@@ -8678,6 +8872,30 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <source>Identity</source>
         <translation>Kimlik</translation>
     </message>
+    <message>
+        <source>✓ in this wallet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>cannot be valued on this node yet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>no coins reserved yet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 (%2 in, %3 change back)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>⚠ That is at least %1 more than your %2 share. Do not approve unless you meant to pay it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your contribution:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SharedSigCollector</name>
@@ -8846,7 +9064,7 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
     <name>ShutdownWindow</name>
     <message>
         <source>%1 is shutting down…</source>
-        <translation>%1 kapanıyor…</translation>
+        <translation>%1 kapanıyor...</translation>
     </message>
     <message>
         <source>Do not shut down the computer until this window disappears.</source>
@@ -8864,12 +9082,12 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation>Mesaj &amp;imzala</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive Dash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>Onlara gönderilen Dash'i alabildiğinizi ispatlamak için mesajları/anlaşmaları adresleriniz ile imzalayabilirsiniz. Muallak ya da rastgele bir şeyi imzalamamaya dikkat edin çünkü kimlik avı saldırıları ile sizi kimliğinizi açık etmek için dolandırabilirler. Sadece anlaştığınız tam ayrıntılı beyanları imzalayın.</translation>
+        <source>You can sign messages/agreements with your addresses to prove you can receive PirateCash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <translation>Onlara gönderilen PirateCash'i alabildiğinizi ispatlamak için mesajları/anlaşmaları adresleriniz ile imzalayabilirsiniz. Muallak ya da rastgele bir şeyi imzalamamaya dikkat edin çünkü kimlik avı saldırıları ile sizi kimliğinizi açık etmek için dolandırabilirler. Sadece anlaştığınız tam ayrıntılı beyanları imzalayın.</translation>
     </message>
     <message>
-        <source>The Dash address to sign the message with</source>
-        <translation>İletinin imzalanmasında kullanılacak Dash adresi</translation>
+        <source>The PirateCash address to sign the message with</source>
+        <translation>İletinin imzalanmasında kullanılacak PirateCash adresi</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -8900,8 +9118,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation>Güncel imzayı sistem panosuna kopyala</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Dash address</source>
-        <translation>Bu Dash adresine sahip olduğunuzu ispatlamak için mesajı imzala</translation>
+        <source>Sign the message to prove you own this PirateCash address</source>
+        <translation>Bu PirateCash adresine sahip olduğunuzu ispatlamak için mesajı imzala</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -8924,8 +9142,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation>Alıcının adresini, iletiyi (satır sonları, boşluklar, sekmeler vs. karakterleri tam olarak kopyaladığınızdan emin olunuz) ve imzayı aşağıya giriniz. Bir ortadaki adam saldırısı tarafından kandırılmaya engel olmak için imzadan, imzalı iletinin içeriğini aşan bir anlam çıkarmamaya dikkat ediniz. Bunun sadece imzalayan tarafın adres ile alım yapabildiğini ispatladığını ve herhangi bir işlemin gönderi tarafını kanıtlayamayacağını unutmayınız!</translation>
     </message>
     <message>
-        <source>The Dash address the message was signed with</source>
-        <translation>İletinin imzalanmasında kullanılan Dash adresi</translation>
+        <source>The PirateCash address the message was signed with</source>
+        <translation>İletinin imzalanmasında kullanılan PirateCash adresi</translation>
     </message>
     <message>
         <source>The signed message to verify</source>
@@ -8936,8 +9154,8 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <translation>Mesaj imzalandığında verilen imza</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Dash address</source>
-        <translation>Belirtilen Dash adresi ile imzalandığını doğrulamak için iletiyi kontrol et</translation>
+        <source>Verify the message to ensure it was signed with the specified PirateCash address</source>
+        <translation>Belirtilen PirateCash adresi ile imzalandığını doğrulamak için iletiyi kontrol et</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -9361,7 +9579,7 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
     </message>
     <message>
         <source>Locks funds for use on Dash Platform. The amount is this wallet's net balance change, including the network fee.</source>
-        <translation>Dash Platform'da kullanılmak üzere fonları kilitler. Tutar, bu cüzdanın net bakiye değişimidir ve ağ ücretini içerir.</translation>
+        <translation>PirateCash Platform'da kullanılmak üzere fonları kilitler. Tutar, bu cüzdanın net bakiye değişimidir ve ağ ücretini içerir.</translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -9757,6 +9975,10 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
         <source>Enter a valid Platform node ID (40 hexadecimal characters).</source>
         <translation>Geçerli bir Platform düğüm kimliği girin (40 onaltılık karakter).</translation>
     </message>
+    <message>
+        <source>The fee is paid from this address of your wallet.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UpdateShareDialog</name>
@@ -9802,7 +10024,7 @@ Bu konsolu kullanma hakkında daha fazla bilgi için %6 yazın.
     </message>
     <message>
         <source>Enter a valid Dash address.</source>
-        <translation>Geçerli bir Dash adresi girin.</translation>
+        <translation>Geçerli bir PirateCash adresi girin.</translation>
     </message>
     <message>
         <source>The reward address must differ from the voting address and every owner address.</source>
@@ -9963,7 +10185,7 @@ Bir cüzdan yüklemek için Dosya &gt; Cüzdan Aç'a gidin.
     </message>
 </context>
 <context>
-    <name>dash-core</name>
+    <name>piratecash-core</name>
     <message>
         <source>This error could occur if this wallet was not shutdown cleanly and was last loaded using a build with a newer version of Berkeley DB. If so, please use the software that last loaded this wallet</source>
         <translation>Bu hata, bu cüzdan düzgün bir şekilde kapatılmamışsa ve en son Berkeley DB'nin daha yeni bir sürümüne sahip bir yapı kullanılarak yüklenmişse oluşabilir. Eğer öyleyse, lütfen bu cüzdanın en son yüklendiği yazılımı kullanın.</translation>
@@ -10130,19 +10352,19 @@ Cüzdan yedeği geri yüklenemiyor.</translation>
     </message>
     <message>
         <source>Pruning blockstore…</source>
-        <translation>Blockstore budanıyor…</translation>
+        <translation>Blockstore budanıyor...</translation>
     </message>
     <message>
         <source>Replaying blocks…</source>
-        <translation>Tekrarlanan bloklar…</translation>
+        <translation>Tekrarlanan bloklar...</translation>
     </message>
     <message>
         <source>Rescanning…</source>
-        <translation>Yeniden tarama…</translation>
+        <translation>Yeniden tarama...</translation>
     </message>
     <message>
         <source>Starting network threads…</source>
-        <translation>Ağ iş parçacıkları başlatılıyor…</translation>
+        <translation>Ağ iş parçacıkları başlatılıyor...</translation>
     </message>
     <message>
         <source>Submitted to masternode, waiting in queue %s</source>
@@ -10154,11 +10376,11 @@ Cüzdan yedeği geri yüklenemiyor.</translation>
     </message>
     <message>
         <source>Synchronizing blockchain…</source>
-        <translation>Blok zinciri eşleniyor…</translation>
+        <translation>Blok zinciri eşleniyor...</translation>
     </message>
     <message>
         <source>Synchronizing governance objects…</source>
-        <translation>Yönetim nesneleri eşleniyor…</translation>
+        <translation>Yönetim nesneleri eşleniyor...</translation>
     </message>
     <message>
         <source>Transaction change output index out of range</source>
@@ -10221,8 +10443,8 @@ Cüzdan yedeği geri yüklenemiyor.</translation>
         <translation>%s yüklenirken hata: Harici imzalayıcı cüzdanı, derlenmiş harici imzalayıcı desteği olmadan yükleniyor</translation>
     </message>
     <message>
-        <source>Error: Dumpfile version is not supported. This version of dash-wallet only supports version 1 dumpfiles. Got dumpfile with version %s</source>
-        <translation>Hata: Döküm dosyası sürümü desteklenmiyor. Bu dash-wallet sürümü yalnızca sürüm 1 döküm dosyalarını destekler. Sürüm %s döküm dosyası alındı</translation>
+        <source>Error: Dumpfile version is not supported. This version of piratecash-wallet only supports version 1 dumpfiles. Got dumpfile with version %s</source>
+        <translation>Hata: Döküm dosyası sürümü desteklenmiyor. Bu piratecash-wallet sürümü yalnızca sürüm 1 döküm dosyalarını destekler. Sürüm %s döküm dosyası alındı</translation>
     </message>
     <message>
         <source>Failed to create backup, file already exists! This could happen if you restarted wallet in less than 60 seconds. You can continue if you are ok with this.</source>
@@ -10470,7 +10692,7 @@ Cüzdan yedeği geri yüklenemiyor.</translation>
     </message>
     <message>
         <source>Mixing in progress…</source>
-        <translation>Karışım devam ediyor…</translation>
+        <translation>Karışım devam ediyor...</translation>
     </message>
     <message>
         <source>More than one spork address is provided. Using %s.</source>
@@ -10554,7 +10776,7 @@ Cüzdan yedeği geri yüklenemiyor.</translation>
     </message>
     <message>
         <source>Sets a window title which is appended to "Dash Core - "</source>
-        <translation>Pencere başlığını ayarlar; "Dash Core - " ifadesinin sonuna eklenir</translation>
+        <translation>Pencere başlığını ayarlar; "PirateCash Core - " ifadesinin sonuna eklenir</translation>
     </message>
     <message>
         <source>Signer did not echo address</source>
@@ -10658,11 +10880,11 @@ Cüzdan yedeği geri yüklenemiyor.</translation>
     </message>
     <message>
         <source>Verifying blocks…</source>
-        <translation>Bloklar kontrol ediliyor…</translation>
+        <translation>Bloklar kontrol ediliyor...</translation>
     </message>
     <message>
         <source>Verifying wallet(s)…</source>
-        <translation>Cüzdan(lar) doğrulanıyor…</translation>
+        <translation>Cüzdan(lar) doğrulanıyor...</translation>
     </message>
     <message>
         <source>Wallet needed to be rewritten: restart %s to complete</source>
@@ -11028,19 +11250,19 @@ Lütfen yazılımın en son sürümünü çalıştırmayı deneyin.
     </message>
     <message>
         <source>Loading P2P addresses…</source>
-        <translation>P2P adresleri yükleniyor…</translation>
+        <translation>P2P adresleri yükleniyor...</translation>
     </message>
     <message>
         <source>Loading banlist…</source>
-        <translation>Yasaklama listesi yükleniyor…</translation>
+        <translation>Yasaklama listesi yükleniyor...</translation>
     </message>
     <message>
         <source>Loading block index…</source>
-        <translation>Blok indeksi yükleniyor…</translation>
+        <translation>Blok indeksi yükleniyor...</translation>
     </message>
     <message>
         <source>Loading wallet…</source>
-        <translation>Cüzdan yükleniyor…</translation>
+        <translation>Cüzdan yükleniyor...</translation>
     </message>
     <message>
         <source>Failed to clear fulfilled requests cache at %s</source>
@@ -11080,7 +11302,7 @@ Lütfen yazılımın en son sürümünü çalıştırmayı deneyin.
     </message>
     <message>
         <source>Importing…</source>
-        <translation>İçe aktarılıyor…</translation>
+        <translation>İçe aktarılıyor...</translation>
     </message>
     <message>
         <source>Initialization sanity check failed. %s is shutting down.</source>
@@ -11135,8 +11357,8 @@ Lütfen yazılımın en son sürümünü çalıştırmayı deneyin.
         <translation>Son sıra çok yakın zamanda oluşturuldu.</translation>
     </message>
     <message>
-        <source>%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup.</source>
-        <translation>%s bozuk. Bir yedeği kurtarmak veya geri yüklemek için cüzdan aracı dash-wallet'ı kullanmayı deneyin.</translation>
+        <source>%s corrupt. Try using the wallet tool piratecash-wallet to salvage or restoring a backup.</source>
+        <translation>%s bozuk. Bir yedeği kurtarmak veya geri yüklemek için cüzdan aracı piratecash-wallet'ı kullanmayı deneyin.</translation>
     </message>
     <message>
         <source>%s is set very high! Fees this large could be paid on a single transaction.</source>
@@ -11228,7 +11450,7 @@ Lütfen yazılımın en son sürümünü çalıştırmayı deneyin.
     </message>
     <message>
         <source>Trying to connect…</source>
-        <translation>Bağlanmaya çalışılıyor…</translation>
+        <translation>Bağlanmaya çalışılıyor...</translation>
     </message>
     <message>
         <source>Unable to allocate memory for -maxsigcachesize: '%s' MiB</source>
@@ -11300,7 +11522,7 @@ Lütfen yazılımın en son sürümünü çalıştırmayı deneyin.
     </message>
     <message>
         <source>Will retry…</source>
-        <translation>Tekrar denenecek…</translation>
+        <translation>Tekrar denenecek...</translation>
     </message>
     <message>
         <source>You are starting with governance validation disabled.</source>

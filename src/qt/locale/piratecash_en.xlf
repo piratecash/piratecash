@@ -72,7 +72,7 @@
         <context-group purpose="location"><context context-type="linenumber">84</context></context-group>
       </trans-unit>
       <trans-unit id="_msg17">
-        <source xml:space="preserve">These are your Dash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <source xml:space="preserve">These are your PirateCash addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
         <context-group purpose="location"><context context-type="linenumber">90</context></context-group>
       </trans-unit>
       <trans-unit id="_msg18">
@@ -241,7 +241,7 @@
         <context-group purpose="location"><context context-type="linenumber">118</context></context-group>
       </trans-unit>
       <trans-unit id="_msg54">
-        <source xml:space="preserve">Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR DASH&lt;/b&gt;!</source>
+        <source xml:space="preserve">Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIRATECASH&lt;/b&gt;!</source>
         <context-group purpose="location"><context context-type="linenumber">119</context></context-group>
       </trans-unit>
       <trans-unit id="_msg55">
@@ -480,7 +480,7 @@
         <context-group purpose="location"><context context-type="linenumber">387</context></context-group>
       </trans-unit>
       <trans-unit id="_msg106">
-        <source xml:space="preserve">Send coins to a Dash address</source>
+        <source xml:space="preserve">Send coins to a PirateCash address</source>
         <context-group purpose="location"><context context-type="linenumber">388</context></context-group>
       </trans-unit>
       <trans-unit id="_msg107">
@@ -488,7 +488,7 @@
         <context-group purpose="location"><context context-type="linenumber">394</context></context-group>
       </trans-unit>
       <trans-unit id="_msg108">
-        <source xml:space="preserve">Request payments (generates QR codes and dash: URIs)</source>
+        <source xml:space="preserve">Request payments (generates QR codes and piratecash: URIs)</source>
         <context-group purpose="location"><context context-type="linenumber">395</context></context-group>
       </trans-unit>
       <trans-unit id="_msg109">
@@ -604,7 +604,7 @@
         <context-group purpose="location"><context context-type="linenumber">413</context></context-group>
       </trans-unit>
       <trans-unit id="_msg137">
-        <source xml:space="preserve">Send %1 funds to a Dash address</source>
+        <source xml:space="preserve">Send %1 funds to a PirateCash address</source>
         <context-group purpose="location"><context context-type="linenumber">391</context></context-group>
       </trans-unit>
       <trans-unit id="_msg138">
@@ -640,11 +640,11 @@
         <context-group purpose="location"><context context-type="linenumber">435</context></context-group>
       </trans-unit>
       <trans-unit id="_msg146">
-        <source xml:space="preserve">Sign messages with your Dash addresses to prove you own them</source>
+        <source xml:space="preserve">Sign messages with your PirateCash addresses to prove you own them</source>
         <context-group purpose="location"><context context-type="linenumber">437</context></context-group>
       </trans-unit>
       <trans-unit id="_msg147">
-        <source xml:space="preserve">Verify messages to ensure they were signed with specified Dash addresses</source>
+        <source xml:space="preserve">Verify messages to ensure they were signed with specified PirateCash addresses</source>
         <context-group purpose="location"><context context-type="linenumber">439</context></context-group>
       </trans-unit>
       <trans-unit id="_msg148">
@@ -708,7 +708,7 @@
         <context-group purpose="location"><context context-type="linenumber">504</context></context-group>
       </trans-unit>
       <trans-unit id="_msg163">
-        <source xml:space="preserve">Show the %1 help message to get a list with possible Dash command-line options</source>
+        <source xml:space="preserve">Show the %1 help message to get a list with possible PirateCash command-line options</source>
         <context-group purpose="location"><context context-type="linenumber">506</context></context-group>
       </trans-unit>
       <trans-unit id="_msg164">
@@ -757,7 +757,7 @@
         <context-group purpose="location"><context context-type="linenumber">457</context></context-group>
       </trans-unit>
       <trans-unit id="_msg175">
-        <source xml:space="preserve">Open a dash: URI</source>
+        <source xml:space="preserve">Open a piratecash: URI</source>
         <context-group purpose="location"><context context-type="linenumber">477</context></context-group>
       </trans-unit>
       <trans-unit id="_msg176">
@@ -850,10 +850,10 @@
         <context-group purpose="location"><context context-type="linenumber">1426</context></context-group>
         <note annotates="source" from="developer">A substring of the tooltip.</note>
         <trans-unit id="_msg196[0]">
-          <source xml:space="preserve">%n active connection(s) to Dash network</source>
+          <source xml:space="preserve">%n active connection(s) to PirateCash network</source>
         </trans-unit>
         <trans-unit id="_msg196[1]">
-          <source xml:space="preserve">%n active connection(s) to Dash network</source>
+          <source xml:space="preserve">%n active connection(s) to PirateCash network</source>
         </trans-unit>
       </group>
       <trans-unit id="_msg197">
@@ -2281,7 +2281,7 @@ The migration process will create a backup of the wallet before migrating. This 
         <context-group purpose="location"><context context-type="linenumber">39</context></context-group>
       </trans-unit>
       <trans-unit id="_msg525">
-        <source xml:space="preserve">The entered address &quot;%1&quot; is not a valid Dash address.</source>
+        <source xml:space="preserve">The entered address "%1" is not a valid PirateCash address.</source>
         <context-group purpose="location"><context context-type="linenumber">115</context></context-group>
       </trans-unit>
       <trans-unit id="_msg526">
@@ -2372,7 +2372,7 @@ The migration process will create a backup of the wallet before migrating. This 
         </trans-unit>
       </group>
       <trans-unit id="_msg541">
-        <source xml:space="preserve">%1 will download and store a copy of the Dash block chain.</source>
+        <source xml:space="preserve">%1 will download and store a copy of the PirateCash block chain.</source>
         <context-group purpose="location"><context context-type="linenumber">399</context></context-group>
       </trans-unit>
       <trans-unit id="_msg542">
@@ -2408,7 +2408,7 @@ The migration process will create a backup of the wallet before migrating. This 
         <context-group purpose="location"><context context-type="linenumber">112</context></context-group>
       </trans-unit>
       <trans-unit id="_msg549">
-        <source xml:space="preserve">&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the Dash in your wallet is comprised of different &quot;inputs&quot; which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type=&quot;1&quot;&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 DASH, 0.01 DASH, 0.1 DASH, 1 DASH and 10 DASH -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called &quot;masternodes.&quot; These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know &quot;who&quot; you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users&apos; wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it&apos;s called a &quot;round.&quot; Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these &quot;change addresses.&quot; Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style=&quot;%2&quot; href=&quot;%3&quot;&gt;%1 documentation&lt;/a&gt;.</source>
+        <source xml:space="preserve">&lt;h3&gt;%1 Basics&lt;/h3&gt; %1 gives you true financial privacy by obscuring the origins of your funds. All the PirateCash in your wallet is comprised of different "inputs" which you can think of as separate, discrete coins.&lt;br&gt; %1 uses an innovative process to mix your inputs with the inputs of two or more other people, without having your coins ever leave your wallet. You retain control of your money at all times.&lt;hr&gt; &lt;b&gt;The %1 process works like this:&lt;/b&gt;&lt;ol type="1"&gt; &lt;li&gt;%1 begins by breaking your transaction inputs down into standard denominations. These denominations are 0.001 PIRATE, 0.01 PIRATE, 0.1 PIRATE, 1 PIRATE and 10 PIRATE -- sort of like the paper money you use every day.&lt;/li&gt; &lt;li&gt;Your wallet then sends requests to specially configured software nodes on the network, called "masternodes." These masternodes are informed then that you are interested in mixing a certain denomination. No identifiable information is sent to the masternodes, so they never know "who" you are.&lt;/li&gt; &lt;li&gt;When two or more other people send similar messages, indicating that they wish to mix the same denomination, a mixing session begins. The masternode mixes up the inputs and instructs all three users' wallets to pay the now-transformed input back to themselves. Your wallet pays that denomination directly to itself, but in a different address (called a change address).&lt;/li&gt; &lt;li&gt;In order to fully obscure your funds, your wallet must repeat this process a number of times with each denomination. Each time the process is completed, it's called a "round." Each round of %1 makes it exponentially more difficult to determine where your funds originated.&lt;/li&gt; &lt;li&gt;This mixing process happens in the background without any intervention on your part. When you wish to make a transaction, your funds will already be mixed. No additional waiting is required.&lt;/li&gt; &lt;/ol&gt; &lt;hr&gt;&lt;b&gt;IMPORTANT:&lt;/b&gt; Your wallet only contains 1000 of these "change addresses." Every time a mixing event happens, up to 9 of your addresses are used up. This means those 1000 addresses last for about 100 mixing events. When 900 of them are used, your wallet must create more addresses. It can only do this, however, if you have automatic backups enabled.&lt;br&gt; Consequently, users who have backups disabled will also have %1 disabled. &lt;hr&gt;For more information, see the &lt;a style="%2" href="%3"&gt;%1 documentation&lt;/a&gt;.</source>
         <context-group purpose="location"><context context-type="linenumber">116</context></context-group>
       </trans-unit>
     </group>
@@ -5324,11 +5324,11 @@ Network rejection: %1</source>
         <context-group purpose="location"><context context-type="linenumber">14</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1230">
-        <source xml:space="preserve">Recent transactions may not yet be visible, and therefore your wallet&apos;s balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
+        <source xml:space="preserve">Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the PirateCash network, as detailed below.</source>
         <context-group purpose="location"><context context-type="linenumber">114</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1231">
-        <source xml:space="preserve">Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <source xml:space="preserve">Attempting to spend PirateCash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
         <context-group purpose="location"><context context-type="linenumber">127</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1232">
@@ -5734,7 +5734,7 @@ Network rejection: %1</source>
         <context-group purpose="location"><context context-type="linenumber">412</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1319">
-        <source xml:space="preserve">duffs</source>
+        <source xml:space="preserve">corsars</source>
         <context-group purpose="location"><context context-type="linenumber">428</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1320">
@@ -5826,7 +5826,7 @@ Network rejection: %1</source>
         <context-group purpose="location"><context context-type="linenumber">675</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1342">
-        <source xml:space="preserve">Automatically open the Dash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <source xml:space="preserve">Automatically open the PirateCash Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
         <context-group purpose="location"><context context-type="linenumber">721</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1343">
@@ -5842,7 +5842,7 @@ Network rejection: %1</source>
         <context-group purpose="location"><context context-type="linenumber">744</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1346">
-        <source xml:space="preserve">Connect to the Dash network through a SOCKS5 proxy.</source>
+        <source xml:space="preserve">Connect to the PirateCash network through a SOCKS5 proxy.</source>
         <context-group purpose="location"><context context-type="linenumber">751</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1347">
@@ -5910,7 +5910,7 @@ https://explore.transifex.com/dash/dash/</source>
         <context-group purpose="location"><context context-type="linenumber">724</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1362">
-        <source xml:space="preserve">Automatically open the Dash Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
+        <source xml:space="preserve">Automatically open the PirateCash Core client port on the router. This only works when your router supports NAT-PMP and it is enabled. The external port could be random.</source>
         <context-group purpose="location"><context context-type="linenumber">731</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1363">
@@ -5966,7 +5966,7 @@ https://explore.transifex.com/dash/dash/</source>
         <context-group purpose="location"><context context-type="linenumber">77</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1375">
-        <source xml:space="preserve">Connect to the Dash network through a separate SOCKS5 proxy for Tor onion services.</source>
+        <source xml:space="preserve">Connect to the PirateCash network through a separate SOCKS5 proxy for Tor onion services.</source>
         <context-group purpose="location"><context context-type="linenumber">908</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1376">
@@ -6076,7 +6076,7 @@ https://explore.transifex.com/dash/dash/</source>
         <context-group purpose="location"><context context-type="linenumber">20</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1398">
-        <source xml:space="preserve">The displayed information may be out of date. Your wallet automatically synchronizes with the Dash network after a connection is established, but this process has not completed yet.</source>
+        <source xml:space="preserve">The displayed information may be out of date. Your wallet automatically synchronizes with the PirateCash network after a connection is established, but this process has not completed yet.</source>
         <context-group purpose="location"><context context-type="linenumber">80</context></context-group>
         <context-group purpose="location"><context context-type="linenumber">378</context></context-group>
         <context-group purpose="location"><context context-type="linenumber">615</context></context-group>
@@ -6158,7 +6158,7 @@ https://explore.transifex.com/dash/dash/</source>
         <context-group purpose="location"><context context-type="linenumber">465</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1418">
-        <source xml:space="preserve">0 DASH / 0 Rounds</source>
+        <source xml:space="preserve">0 PIRATE / 0 Rounds</source>
         <context-group purpose="location"><context context-type="linenumber">472</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1419">
@@ -6473,7 +6473,7 @@ https://explore.transifex.com/dash/dash/</source>
         <context-group purpose="location"><context context-type="linenumber">144</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1487">
-        <source xml:space="preserve">Cannot start dash: click-to-pay handler</source>
+        <source xml:space="preserve">Cannot start piratecash: click-to-pay handler</source>
         <context-group purpose="location"><context context-type="linenumber">145</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1488">
@@ -6484,7 +6484,7 @@ https://explore.transifex.com/dash/dash/</source>
         <context-group purpose="location"><context context-type="linenumber">222</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1489">
-        <source xml:space="preserve">&apos;dash://&apos; is not a valid URI. Use &apos;dash:&apos; instead.</source>
+        <source xml:space="preserve">'piratecash://' is not a valid URI. Use 'piratecash:' instead.</source>
         <context-group purpose="location"><context context-type="linenumber">193</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1490">
@@ -6494,7 +6494,7 @@ Due to discontinued support, you should request the merchant to provide you with
         <context-group purpose="location"><context context-type="linenumber">233</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1491">
-        <source xml:space="preserve">URI cannot be parsed! This can be caused by an invalid Dash address or malformed URI parameters.</source>
+        <source xml:space="preserve">URI cannot be parsed! This can be caused by an invalid PirateCash address or malformed URI parameters.</source>
         <context-group purpose="location"><context context-type="linenumber">223</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1492">
@@ -7363,7 +7363,7 @@ Do you wish to continue?</source>
   <file original="../guiutil.cpp" datatype="cpp" source-language="en"><body>
     <group restype="x-trolltech-linguist-context" resname="QObject">
       <trans-unit id="_msg1675">
-        <source xml:space="preserve">Enter a Dash address (e.g. %1)</source>
+        <source xml:space="preserve">Enter a PirateCash address (e.g. %1)</source>
         <context-group purpose="location"><context context-type="linenumber">270</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1676">
@@ -8182,7 +8182,7 @@ For more information on using this console, type %6.
   <file original="../forms/receivecoinsdialog.ui" datatype="x-trolltech-designer-ui" source-language="en"><body>
     <group restype="x-trolltech-linguist-context" resname="ReceiveCoinsDialog">
       <trans-unit id="_msg1841">
-        <source xml:space="preserve">An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Dash network.</source>
+        <source xml:space="preserve">An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the PirateCash network.</source>
         <context-group purpose="location"><context context-type="linenumber">34</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1842">
@@ -8194,7 +8194,7 @@ For more information on using this console, type %6.
         <context-group purpose="location"><context context-type="linenumber">77</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1844">
-        <source xml:space="preserve">An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Dash network.</source>
+        <source xml:space="preserve">An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the PirateCash network.</source>
         <context-group purpose="location"><context context-type="linenumber">60</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1845">
@@ -9182,7 +9182,7 @@ For more information on using this console, type %6.
         <context-group purpose="location"><context context-type="linenumber">951</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2073">
-        <source xml:space="preserve">If the custom fee is set to 1000 duffs and the transaction is only 250 bytes, then &quot;per kilobyte&quot; only pays 250 duffs in fee,&lt;br /&gt;while &quot;at least&quot; pays 1000 duffs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <source xml:space="preserve">If the custom fee is set to 1000 corsars and the transaction is only 250 bytes, then "per kilobyte" only pays 250 corsars in fee,&lt;br /&gt;while "at least" pays 1000 corsars. For transactions bigger than a kilobyte both pay by kilobyte.</source>
         <context-group purpose="location"><context context-type="linenumber">772</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2074">
@@ -9488,7 +9488,7 @@ For more information on using this console, type %6.
         </trans-unit>
       </group>
       <trans-unit id="_msg2143">
-        <source xml:space="preserve">Warning: Invalid Dash address</source>
+        <source xml:space="preserve">Warning: Invalid PirateCash address</source>
         <context-group purpose="location"><context context-type="linenumber">1079</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2144">
@@ -9516,7 +9516,7 @@ For more information on using this console, type %6.
         <context-group purpose="location"><context context-type="linenumber">35</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2149">
-        <source xml:space="preserve">The Dash address to send the payment to</source>
+        <source xml:space="preserve">The PirateCash address to send the payment to</source>
         <context-group purpose="location"><context context-type="linenumber">53</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2150">
@@ -9573,7 +9573,7 @@ For more information on using this console, type %6.
         <context-group purpose="location"><context context-type="linenumber">180</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2163">
-        <source xml:space="preserve">A message that was attached to the dash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Dash network.</source>
+        <source xml:space="preserve">A message that was attached to the piratecash: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the PirateCash network.</source>
         <context-group purpose="location"><context context-type="linenumber">190</context></context-group>
       </trans-unit>
     </group>
@@ -9601,11 +9601,11 @@ For more information on using this console, type %6.
         <context-group purpose="location"><context context-type="linenumber">31</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2168">
-        <source xml:space="preserve">You can sign messages/agreements with your addresses to prove you can receive Dash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <source xml:space="preserve">You can sign messages/agreements with your addresses to prove you can receive PirateCash sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
         <context-group purpose="location"><context context-type="linenumber">66</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2169">
-        <source xml:space="preserve">The Dash address to sign the message with</source>
+        <source xml:space="preserve">The PirateCash address to sign the message with</source>
         <context-group purpose="location"><context context-type="linenumber">84</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2170">
@@ -9639,7 +9639,7 @@ For more information on using this console, type %6.
         <context-group purpose="location"><context context-type="linenumber">154</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2177">
-        <source xml:space="preserve">Sign the message to prove you own this Dash address</source>
+        <source xml:space="preserve">Sign the message to prove you own this PirateCash address</source>
         <context-group purpose="location"><context context-type="linenumber">168</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2178">
@@ -9664,7 +9664,7 @@ For more information on using this console, type %6.
         <context-group purpose="location"><context context-type="linenumber">236</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2183">
-        <source xml:space="preserve">The Dash address the message was signed with</source>
+        <source xml:space="preserve">The PirateCash address the message was signed with</source>
         <context-group purpose="location"><context context-type="linenumber">257</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2184">
@@ -9676,7 +9676,7 @@ For more information on using this console, type %6.
         <context-group purpose="location"><context context-type="linenumber">289</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2186">
-        <source xml:space="preserve">Verify the message to ensure it was signed with the specified Dash address</source>
+        <source xml:space="preserve">Verify the message to ensure it was signed with the specified PirateCash address</source>
         <context-group purpose="location"><context context-type="linenumber">301</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2187">
@@ -10518,8 +10518,8 @@ Go to File &gt; Open Wallet to load a wallet.
       </trans-unit>
     </group>
   </body></file>
-  <file original="../dashstrings.cpp" datatype="cpp" source-language="en"><body>
-    <group restype="x-trolltech-linguist-context" resname="dash-core">
+  <file original="../piratecashstrings.cpp" datatype="cpp" source-language="en"><body>
+    <group restype="x-trolltech-linguist-context" resname="piratecash-core">
       <trans-unit id="_msg2377">
         <source xml:space="preserve">This error could occur if this wallet was not shutdown cleanly and was last loaded using a build with a newer version of Berkeley DB. If so, please use the software that last loaded this wallet</source>
         <context-group purpose="location"><context context-type="linenumber">210</context></context-group>
@@ -10771,7 +10771,7 @@ Unable to restore backup of wallet.</source>
         <context-group purpose="location"><context context-type="linenumber">64</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2439">
-        <source xml:space="preserve">Error: Dumpfile version is not supported. This version of dash-wallet only supports version 1 dumpfiles. Got dumpfile with version %s</source>
+        <source xml:space="preserve">Error: Dumpfile version is not supported. This version of piratecash-wallet only supports version 1 dumpfiles. Got dumpfile with version %s</source>
         <context-group purpose="location"><context context-type="linenumber">87</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2440">
@@ -11662,7 +11662,7 @@ Please try running the latest software version.
         <context-group purpose="location"><context context-type="linenumber">409</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2660">
-        <source xml:space="preserve">%s corrupt. Try using the wallet tool dash-wallet to salvage or restoring a backup.</source>
+        <source xml:space="preserve">%s corrupt. Try using the wallet tool piratecash-wallet to salvage or restoring a backup.</source>
         <context-group purpose="location"><context context-type="linenumber">13</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2661">
@@ -11851,4 +11851,197 @@ Please try running the latest software version.
       </trans-unit>
     </group>
   </body></file>
+  <file original="" datatype="plaintext" source-language="en">
+    <body>
+      <group restype="x-trolltech-linguist-context" resname="AddressBookPage">
+        <trans-unit id="_msg2707">
+          <source xml:space="preserve">These are your PirateCash addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        </trans-unit>
+      </group>
+      <group restype="x-trolltech-linguist-context" resname="AskPassphraseDialog">
+        <trans-unit id="_msg2708">
+          <source xml:space="preserve">Unlock wallet for mixing and staking only</source>
+        </trans-unit>
+      </group>
+      <group restype="x-trolltech-linguist-context" resname="BitcoinGUI">
+        <trans-unit id="_msg2709">
+          <source xml:space="preserve">Start Staking...</source>
+        </trans-unit>
+        <trans-unit id="_msg2710">
+          <source xml:space="preserve">Unlock wallet for mixing and staking only</source>
+        </trans-unit>
+        <trans-unit id="_msg2711">
+          <source xml:space="preserve">Load Partially Signed PirateCash Transaction</source>
+        </trans-unit>
+        <trans-unit id="_msg2712">
+          <source xml:space="preserve">Load Partially Signed PirateCash Transaction from clipboard</source>
+        </trans-unit>
+        <trans-unit id="_msg2713">
+          <source xml:space="preserve">Staking is &lt;b&gt;enabled&lt;/b&gt;</source>
+        </trans-unit>
+        <trans-unit id="_msg2714">
+          <source xml:space="preserve">Staking is &lt;b&gt;disabled&lt;/b&gt; %1</source>
+        </trans-unit>
+        <trans-unit id="_msg2715">
+          <source xml:space="preserve">Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;unlocked&lt;/b&gt; for mixing and staking only</source>
+        </trans-unit>
+      </group>
+      <group restype="x-trolltech-linguist-context" resname="DissolveDialog">
+        <trans-unit id="_msg2716">
+          <source xml:space="preserve">This dissolution cannot be approved.</source>
+        </trans-unit>
+      </group>
+      <group restype="x-trolltech-linguist-context" resname="MasternodeOperationRunner">
+        <trans-unit id="_msg2717">
+          <source xml:space="preserve">This dissolution pays a share less than the network requires: its full principal plus its part of any early-exit penalty. A dissolution that pays no penalty is accepted only once the early period has ended; if it has already ended, prepare a new dissolution.</source>
+        </trans-unit>
+      </group>
+      <group restype="x-trolltech-linguist-context" resname="MnShareSession">
+        <trans-unit id="_msg2718">
+          <source xml:space="preserve">A shared masternode needs between %1 and %2 shares.</source>
+        </trans-unit>
+        <trans-unit id="_msg2719">
+          <source xml:space="preserve">Every share amount must be between %1 and %2.</source>
+        </trans-unit>
+        <trans-unit id="_msg2720">
+          <source xml:space="preserve">The share amounts must sum to exactly %1.</source>
+        </trans-unit>
+        <trans-unit id="_msg2721">
+          <source xml:space="preserve">Every share needs its own, non-empty owner address.</source>
+        </trans-unit>
+        <trans-unit id="_msg2722">
+          <source xml:space="preserve">Every refund address must be unique.</source>
+        </trans-unit>
+        <trans-unit id="_msg2723">
+          <source xml:space="preserve">Every refund and reward address must be a valid P2PKH or P2SH address.</source>
+        </trans-unit>
+        <trans-unit id="_msg2724">
+          <source xml:space="preserve">A refund or reward address must not be the voting address or any share's owner address.</source>
+        </trans-unit>
+        <trans-unit id="_msg2725">
+          <source xml:space="preserve">Set the early penalty to 0 when there is no early period.</source>
+        </trans-unit>
+        <trans-unit id="_msg2726">
+          <source xml:space="preserve">The share table is not valid (%1).</source>
+        </trans-unit>
+      </group>
+      <group restype="x-trolltech-linguist-context" resname="RevokeDialog">
+        <trans-unit id="_msg2727">
+          <source xml:space="preserve">The fee is paid from this address of your wallet.</source>
+        </trans-unit>
+      </group>
+      <group restype="x-trolltech-linguist-context" resname="SendCoinsDialog">
+        <trans-unit id="_msg2728">
+          <source xml:space="preserve">Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for piratecash transactions than the network can process.</source>
+        </trans-unit>
+        <trans-unit id="_msg2729">
+          <source xml:space="preserve">Creates a Partially Signed PirateCash Transaction (PSBT) for use with e.g. an offline %1 wallet, or a PSBT-compatible hardware wallet.</source>
+        </trans-unit>
+        <trans-unit id="_msg2730">
+          <source xml:space="preserve">Please, review your transaction proposal. This will produce a Partially Signed PirateCash Transaction (PSBT) which you can save or copy and then sign with e.g. an offline %1 wallet, or a PSBT-compatible hardware wallet.</source>
+          <note annotates="source" from="developer">Text to inform a user attempting to create a transaction of their current options. At this stage, a user can only create a PSBT. This string is displayed when private keys are disabled and an external signer is not available.</note>
+        </trans-unit>
+        <trans-unit id="_msg2731">
+          <source xml:space="preserve">Please, review your transaction. You can create and send this transaction or create a Partially Signed PirateCash Transaction (PSBT), which you can save or copy and then sign with, e.g., an offline %1 wallet, or a PSBT-compatible hardware wallet.</source>
+          <note annotates="source" from="developer">Text to inform a user attempting to create a transaction of their current options. At this stage, a user can send their transaction or create a PSBT. This string is displayed when both private keys and PSBT controls are enabled.</note>
+        </trans-unit>
+      </group>
+      <group restype="x-trolltech-linguist-context" resname="SharedMnCreateDialog">
+        <trans-unit id="_msg2732">
+          <source xml:space="preserve">%1 is already the service address of a registered masternode. Every service address must be unique on the network.</source>
+        </trans-unit>
+        <trans-unit id="_msg2733">
+          <source xml:space="preserve">Your coins are reserved for this row. Release them on the contribution page before removing it.</source>
+        </trans-unit>
+        <trans-unit id="_msg2734">
+          <source xml:space="preserve">Copy My Reply</source>
+        </trans-unit>
+        <trans-unit id="_msg2735">
+          <source xml:space="preserve">%1 already pays a refund or reward to this owner address. The owner address must differ from every refund and reward address.</source>
+        </trans-unit>
+        <trans-unit id="_msg2736">
+          <source xml:space="preserve">The refund address must differ from the voting address and every owner address.</source>
+        </trans-unit>
+        <trans-unit id="_msg2737">
+          <source xml:space="preserve">%1 already uses this refund address. Every refund address must be unique.</source>
+        </trans-unit>
+        <trans-unit id="_msg2738">
+          <source xml:space="preserve">Reserve and Sign</source>
+        </trans-unit>
+        <trans-unit id="_msg2739">
+          <source xml:space="preserve">Choose your share…</source>
+        </trans-unit>
+        <trans-unit id="_msg2740">
+          <source xml:space="preserve">%1 (taken)</source>
+        </trans-unit>
+        <trans-unit id="_msg2741">
+          <source xml:space="preserve">These coins pay %1 beyond your share, not the %2 Network fee shown below.</source>
+        </trans-unit>
+        <trans-unit id="_msg2742">
+          <source xml:space="preserve">To change your addresses or the network fee, release the coins first.</source>
+        </trans-unit>
+        <trans-unit id="_msg2743">
+          <source xml:space="preserve">To change your addresses, release the coins first.</source>
+        </trans-unit>
+        <trans-unit id="_msg2744">
+          <source xml:space="preserve">✓ Your approval covers every amount, address, key and exit term below, and none of them has changed since. Participant names, "Node run by" and the Identity section are notes it does not cover.</source>
+        </trans-unit>
+        <trans-unit id="_msg2745">
+          <source xml:space="preserve">All participants approved. Your coins were released, so nothing was signed. Press "Reserve and Sign" to reserve them again and continue.</source>
+        </trans-unit>
+        <trans-unit id="_msg2746">
+          <source xml:space="preserve">Transaction ID: %1</source>
+        </trans-unit>
+        <trans-unit id="_msg2747">
+          <source xml:space="preserve">This newer invitation changes your share (%1), so it was not loaded. If you agreed to that change, close this window and open the new invitation to review it. Otherwise ask %2 to send an invitation with your share unchanged.</source>
+        </trans-unit>
+        <trans-unit id="_msg2748">
+          <source xml:space="preserve">This newer invitation gives %1's share an owner address from this wallet, so it was not loaded. Ask %2 to send an invitation in which only your own share uses this wallet's addresses.</source>
+        </trans-unit>
+        <trans-unit id="_msg2749">
+          <source xml:space="preserve">Loaded the newer invitation; your share is unchanged. Review it, then send your details again.</source>
+        </trans-unit>
+        <trans-unit id="_msg2750">
+          <source xml:space="preserve">This invitation is older than the one you already have, so it was not loaded. Ask %1 for the latest invitation.</source>
+        </trans-unit>
+        <trans-unit id="_msg2751">
+          <source xml:space="preserve">This newer copy changes your share (%1), so it was not loaded. If you agreed to that change, close this window and open the copy again to review it. Otherwise ask %2 to send a copy with your share unchanged.</source>
+        </trans-unit>
+        <trans-unit id="_msg2752">
+          <source xml:space="preserve">whoever sent it</source>
+        </trans-unit>
+        <trans-unit id="_msg2753">
+          <source xml:space="preserve">%1 has already been taken by another participant.</source>
+        </trans-unit>
+        <trans-unit id="_msg2754">
+          <source xml:space="preserve">The owner address must belong to this wallet.</source>
+        </trans-unit>
+      </group>
+      <group restype="x-trolltech-linguist-context" resname="SharedMnWidgets">
+        <trans-unit id="_msg2755">
+          <source xml:space="preserve">✓ in this wallet</source>
+        </trans-unit>
+        <trans-unit id="_msg2756">
+          <source xml:space="preserve">cannot be valued on this node yet</source>
+        </trans-unit>
+        <trans-unit id="_msg2757">
+          <source xml:space="preserve">no coins reserved yet</source>
+        </trans-unit>
+        <trans-unit id="_msg2758">
+          <source xml:space="preserve">%1 (%2 in, %3 change back)</source>
+        </trans-unit>
+        <trans-unit id="_msg2759">
+          <source xml:space="preserve">⚠ That is at least %1 more than your %2 share. Do not approve unless you meant to pay it.</source>
+        </trans-unit>
+        <trans-unit id="_msg2760">
+          <source xml:space="preserve">Your contribution:</source>
+        </trans-unit>
+      </group>
+      <group restype="x-trolltech-linguist-context" resname="UpdateServiceDialog">
+        <trans-unit id="_msg2761">
+          <source xml:space="preserve">The fee is paid from this address of your wallet.</source>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
 </xliff>
