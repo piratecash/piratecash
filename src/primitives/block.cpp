@@ -6,16 +6,14 @@
 #include <primitives/block.h>
 
 #include <hash.h>
-#include <hash_x11.h>
 #include <streams.h>
 #include <tinyformat.h>
 
 uint256 CBlockHeader::GetHash() const
 {
-    std::vector<unsigned char> vch(80);
-    CVectorWriter ss(SER_GETHASH, PROTOCOL_VERSION, vch, 0);
-    ss << *this;
-    return HashX11((const char *)vch.data(), (const char *)vch.data() + vch.size());
+    uint256 thash;
+    scrypt_1024_1_1_256(reinterpret_cast<const char*>(&nVersion), reinterpret_cast<char*>(thash.begin()));
+    return thash;
 }
 
 std::string CBlock::ToString() const
