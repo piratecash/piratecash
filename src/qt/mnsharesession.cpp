@@ -39,8 +39,8 @@ constexpr const char* FINGERPRINT_KEY{"fingerprint"};
 //! thousands of inputs could never be relayed anyway, and every one of them is
 //! rendered and re-checked on the GUI thread
 constexpr size_t MAX_CONTRIBUTION_INPUTS{64};
-//! The engine has no options model, so its own messages quote plain DASH
-constexpr BitcoinUnits::Unit kEngineUnit{BitcoinUnits::Unit::DASH};
+//! The engine has no options model, so its own messages quote plain PIRATE
+constexpr BitcoinUnits::Unit kEngineUnit{BitcoinUnits::Unit::PIRATECASH};
 
 //! Copy of `json` with any "fingerprint" key removed, preserving key order
 UniValue WithoutFingerprint(const UniValue& json)

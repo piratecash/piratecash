@@ -157,7 +157,7 @@ void MnShareSessionTests::validateSharesMirror()
     QVERIFY(!penalty_without_period.validateShares().isEmpty());
     penalty_without_period.terms().earlyPenalty = 0;
     QVERIFY(penalty_without_period.validateShares().isEmpty());
-    const auto unit{BitcoinUnits::Unit::DASH};
+    const auto unit{BitcoinUnits::Unit::PIRATECASH};
     QVERIFY(!MnShareSession::CheckEarlyPenalty({250 * COIN, 750 * COIN}, unit, 0, 5 * COIN).isEmpty());
     QVERIFY(MnShareSession::CheckEarlyPenalty({250 * COIN, 750 * COIN}, unit, 5000, 5 * COIN).isEmpty());
 

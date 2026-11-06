@@ -162,7 +162,7 @@ void SharedMnWidgetTests::termSheetWarnsWhenWePayMoreThanOurShare()
     const MnShareSession session{TwoShareSession()};
     const CAmount share{session.shares()[1].amount};
     const auto sheet = [&](int you, std::optional<SharedMnOwnFunding> funding) {
-        return SharedMnTermSheetHtml(session, you, BitcoinUnits::Unit::DASH, {}, funding);
+        return SharedMnTermSheetHtml(session, you, BitcoinUnits::Unit::PIRATECASH, {}, funding);
     };
     const auto paying = [&](CAmount paid) {
         return SharedMnOwnFunding{.spent = paid + 5 * COIN, .change = 5 * COIN, .unvalued = 0};
@@ -177,7 +177,7 @@ void SharedMnWidgetTests::termSheetWarnsWhenWePayMoreThanOurShare()
     // participant who would lose more than its share
     const QString fair{sheet(1, paying(share + COIN))};
     QVERIFY(fair.contains("Your contribution"));
-    QVERIFY(fair.contains(SharedMnFormatAmount(BitcoinUnits::Unit::DASH, share + COIN)));
+    QVERIFY(fair.contains(SharedMnFormatAmount(BitcoinUnits::Unit::PIRATECASH, share + COIN)));
     QVERIFY(!fair.contains("⚠"));
 
     // Anything more is called out before the reader approves
@@ -194,7 +194,7 @@ void SharedMnWidgetTests::termSheetEscapesUntrustedText()
 {
     BasicTestingSetup setup{CBaseChainParams::REGTEST};
     const MnShareSession session{TwoShareSession()};
-    const QString html{SharedMnTermSheetHtml(session, /*you_share_index=*/1, BitcoinUnits::Unit::DASH)};
+    const QString html{SharedMnTermSheetHtml(session, /*you_share_index=*/1, BitcoinUnits::Unit::PIRATECASH)};
 
     // A participant name is data, not markup: it must not be able to inject a
     // tag into the sheet everybody reads before approving
@@ -213,14 +213,14 @@ void SharedMnWidgetTests::termSheetEscapesUntrustedText()
 
     // With no share of our own, nothing is marked as ours; a share with no
     // reward address falls back to the refund address
-    const QString anonymous{SharedMnTermSheetHtml(session, /*you_share_index=*/-1, BitcoinUnits::Unit::DASH)};
+    const QString anonymous{SharedMnTermSheetHtml(session, /*you_share_index=*/-1, BitcoinUnits::Unit::PIRATECASH)};
     QVERIFY(!anonymous.contains("(you)"));
     QVERIFY(anonymous.contains("same as refund"));
 
     // Only the addresses this wallet holds are marked as in it
     QVERIFY(!html.contains("in this wallet"));
     const QString ours{session.shares()[1].refundAddress};
-    const QString marked{SharedMnTermSheetHtml(session, /*you_share_index=*/1, BitcoinUnits::Unit::DASH,
+    const QString marked{SharedMnTermSheetHtml(session, /*you_share_index=*/1, BitcoinUnits::Unit::PIRATECASH,
                                                [&](const QString& address) { return address == ours; })};
     QCOMPARE(marked.count("in this wallet"), 1);
     QVERIFY(marked.contains(ours + QStringLiteral(" <i>")));
