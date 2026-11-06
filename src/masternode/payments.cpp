@@ -61,22 +61,17 @@ CAmount PlatformShare(const CAmount reward)
 
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue, const Consensus::Params& consensus_params, MnRewardEra era)
 {
-    CAmount ret = blockValue/5; // start at 20%
-
-    const int nMNPIBlock = consensus_params.nMasternodePaymentsIncreaseBlock;
-    const int nMNPIPeriod = consensus_params.nMasternodePaymentsIncreasePeriod;
+    (void)era;
     const int nReallocActivationHeight = consensus_params.BRRHeight;
 
-                                                                      // mainnet:
-    if(nHeight > nMNPIBlock)                  ret += blockValue / 20; // 158000 - 25.0% - 2014-10-24
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 1)) ret += blockValue / 20; // 175280 - 30.0% - 2014-11-25
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 2)) ret += blockValue / 20; // 192560 - 35.0% - 2014-12-26
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 3)) ret += blockValue / 40; // 209840 - 37.5% - 2015-01-26
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 4)) ret += blockValue / 40; // 227120 - 40.0% - 2015-02-27
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 5)) ret += blockValue / 40; // 244400 - 42.5% - 2015-03-30
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 6)) ret += blockValue / 40; // 261680 - 45.0% - 2015-05-01
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 7)) ret += blockValue / 40; // 278960 - 47.5% - 2015-06-01
-    if(nHeight > nMNPIBlock+(nMNPIPeriod* 9)) ret += blockValue / 40; // 313520 - 50.0% - 2015-08-03
+    CAmount ret;
+    if (nHeight < 917000) {
+        // Old PirateCash scheme with 60% for masternodes.
+        ret = blockValue * 3 / 5;
+    } else {
+        // Increase percent for masternode owners as more services become available.
+        ret = blockValue / 1000;
+    }
 
     if (nHeight < nReallocActivationHeight) {
         // Block Reward Realocation is not activated yet, nothing to do
@@ -92,34 +87,38 @@ CAmount GetMasternodePayment(int nHeight, CAmount blockValue, const Consensus::P
         return ret;
     }
 
-    if (era != MnRewardEra::Classic) {
-        // Once MNRewardReallocated activates, block reward is 80% of block subsidy (+ tx fees) since treasury is 20%
-        // Since the MN reward needs to be equal to 60% of the block subsidy (according to the proposal), MN reward is set to 75% of the block reward.
-        // Previous reallocation periods are dropped.
-        return blockValue * 3 / 4;
-    }
-
-    // Periods used to reallocate the masternode reward from 50% to 60%
-    static std::vector<int> vecPeriods{
-        513, // Period 1:  51.3%
-        526, // Period 2:  52.6%
-        533, // Period 3:  53.3%
-        540, // Period 4:  54%
-        546, // Period 5:  54.6%
-        552, // Period 6:  55.2%
-        557, // Period 7:  55.7%
-        562, // Period 8:  56.2%
-        567, // Period 9:  56.7%
-        572, // Period 10: 57.2%
-        577, // Period 11: 57.7%
-        582, // Period 12: 58.2%
-        585, // Period 13: 58.5%
-        588, // Period 14: 58.8%
-        591, // Period 15: 59.1%
-        594, // Period 16: 59.4%
-        597, // Period 17: 59.7%
-        599, // Period 18: 59.9%
-        600  // Period 19: 60%
+    // Periods used to reallocate the masternode reward from 0.1% to 60%
+    static const std::vector<int> vecPeriods{
+        10,  // Period 1:   1.0%
+        50,  // Period 2:   5.0%
+        100, // Period 3:  10.0%
+        150, // Period 4:  15.0%
+        200, // Period 5:  20.0%
+        250, // Period 6:  25.0%
+        300, // Period 7:  30.0%
+        350, // Period 8:  35.0%
+        400, // Period 9:  40.0%
+        450, // Period 10: 45.0%
+        500, // Period 11: 50.0%
+        513, // Period 12: 51.3%
+        526, // Period 13: 52.6%
+        533, // Period 14: 53.3%
+        540, // Period 15: 54.0%
+        546, // Period 16: 54.6%
+        552, // Period 17: 55.2%
+        557, // Period 18: 55.7%
+        562, // Period 19: 56.2%
+        567, // Period 20: 56.7%
+        572, // Period 21: 57.2%
+        577, // Period 22: 57.7%
+        582, // Period 23: 58.2%
+        585, // Period 24: 58.5%
+        588, // Period 25: 58.8%
+        591, // Period 26: 59.1%
+        594, // Period 27: 59.4%
+        597, // Period 28: 59.7%
+        599, // Period 29: 59.9%
+        600  // Period 30: 60.0%
     };
 
     int nReallocCycle = nSuperblockCycle * 3;

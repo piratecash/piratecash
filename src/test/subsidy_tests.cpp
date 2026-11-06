@@ -14,6 +14,8 @@ BOOST_FIXTURE_TEST_SUITE(subsidy_tests, TestingSetup)
 BOOST_AUTO_TEST_CASE(block_subsidy_test)
 {
     const auto chainParams = CreateChainParams(*m_node.args, CBaseChainParams::MAIN);
+    // Keep the Dash difficulty vectors, using this network's reduction heights.
+    const int nSubsidyHalvingInterval = chainParams->GetConsensus().nSubsidyHalvingInterval;
 
     uint32_t nPrevBits;
     int32_t nPrevHeight;
@@ -62,37 +64,37 @@ BOOST_AUTO_TEST_CASE(block_subsidy_test)
     nSubsidy = GetBlockSubsidyInner(nPrevBits, nPrevHeight, chainParams->GetConsensus(), /*fV20Active=*/ false);
     BOOST_CHECK_EQUAL(nSubsidy, 500000000ULL);
 
-    // details for block 210239 (subsidy returned will be for block 210240)
+    // Immediately before the first configured subsidy reduction.
     nPrevBits = 0x1b11548e;
-    nPrevHeight = 210239;
+    nPrevHeight = nSubsidyHalvingInterval - 1;
     nSubsidy = GetBlockSubsidyInner(nPrevBits, nPrevHeight, chainParams->GetConsensus(), /*fV20Active=*/ false);
     BOOST_CHECK_EQUAL(nSubsidy, 500000000ULL);
 
     // 1st subsidy reduction happens here
 
-    // details for block 210240 (subsidy returned will be for block 210241)
+    // At the first configured subsidy reduction.
     nPrevBits = 0x1b10d50b;
-    nPrevHeight = 210240;
+    nPrevHeight = nSubsidyHalvingInterval;
     nSubsidy = GetBlockSubsidyInner(nPrevBits, nPrevHeight, chainParams->GetConsensus(), /*fV20Active=*/ false);
     BOOST_CHECK_EQUAL(nSubsidy, 464285715ULL);
 
-    // details for block 210240 (subsidy returned will be for block 210241)
+    // At the first configured subsidy reduction.
     // v20 makes no difference for blocks with high enough diff while budgets aren't active yet
     nPrevBits = 0x1b10d50b;
-    nPrevHeight = 210240;
+    nPrevHeight = nSubsidyHalvingInterval;
     nSubsidy = GetBlockSubsidyInner(nPrevBits, nPrevHeight, chainParams->GetConsensus(), /*fV20Active=*/ true);
     BOOST_CHECK_EQUAL(nSubsidy, 464285715ULL);
 
-    // details for block 420480 (subsidy returned will be for block 210241)
+    // At the second configured subsidy reduction.
     nPrevBits = 0x1b10d50b;
-    nPrevHeight = 420480;
+    nPrevHeight = 2 * nSubsidyHalvingInterval;
     nSubsidy = GetBlockSubsidyInner(nPrevBits, nPrevHeight, chainParams->GetConsensus(), /*fV20Active=*/ false);
     BOOST_CHECK_EQUAL(nSubsidy, 388010205ULL); // 431122450 * 0.9
 
-    // details for block 420480 (subsidy returned will be for block 210241)
+    // At the second configured subsidy reduction.
     // budgets are active, reallocation matters now
     nPrevBits = 0x1b10d50b;
-    nPrevHeight = 420480;
+    nPrevHeight = 2 * nSubsidyHalvingInterval;
     nSubsidy = GetBlockSubsidyInner(nPrevBits, nPrevHeight, chainParams->GetConsensus(), /*fV20Active=*/ true);
     BOOST_CHECK_EQUAL(nSubsidy, 344897960ULL); // 431122450 * 0.8
 }

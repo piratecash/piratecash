@@ -318,6 +318,8 @@ void MasternodeWidgetTests::providerNetInfoValidation_data()
     // providerNetInfoValidation() runs on mainnet
     const QString core1{QString("1.1.1.1:%1").arg(MainParams().GetDefaultPort())};
     const QString core2{QString("1.1.1.2:%1").arg(MainParams().GetDefaultPort())};
+    const QString platform_p2p1{QString("1.1.1.1:%1").arg(MainParams().GetDefaultPlatformP2PPort())};
+    const QString platform_p2p2{QString("1.1.1.2:%1").arg(MainParams().GetDefaultPlatformP2PPort())};
     const int wrong_network_port{MainParams().GetDefaultPort() + 1};
 
     const auto add_row = [](const char* name, int type, int version, bool optional, QStringList core, QStringList p2p,
@@ -344,21 +346,24 @@ void MasternodeWidgetTests::providerNetInfoValidation_data()
     add_row("regular-extended-core-domain", regular, extended, true, {"example.com:9999"}, {}, {}, -1, -1, false,
             "invalid input");
 
-    add_row("evo-basic-ports", evo, basic, true, {core1}, {}, {}, 26656, 443, true);
-    add_row("evo-basic-zero-port", evo, basic, true, {core1}, {}, {}, 0, 443, false, "valid port");
+    add_row("evo-basic-ports", evo, basic, true, {core1}, {}, {}, Params().GetDefaultPlatformP2PPort(),
+            Params().GetDefaultPlatformHTTPPort(), true);
+    add_row("evo-basic-zero-port", evo, basic, true, {core1}, {}, {}, 0, Params().GetDefaultPlatformHTTPPort(), false,
+            "valid port");
     add_row("evo-extended-all-empty", evo, extended, true, {}, {}, {}, -1, -1, true);
-    add_row("evo-extended-complete", evo, extended, true, {core1}, {"1.1.1.1:26656"}, {"1.1.1.1:443"}, -1, -1, true);
-    add_row("evo-extended-platform-only", evo, extended, true, {}, {"1.1.1.2:26656"}, {"example.com:443"}, -1, -1,
+    add_row("evo-extended-complete", evo, extended, true, {core1}, {platform_p2p1}, {"1.1.1.1:443"}, -1, -1, true);
+    add_row("evo-extended-platform-only", evo, extended, true, {}, {platform_p2p2}, {"example.com:443"}, -1, -1,
             false, "bad-protx-netinfo-empty");
-    add_row("evo-extended-https-domain", evo, extended, true, {core1}, {"1.1.1.1:26656"},
+    add_row("evo-extended-https-domain", evo, extended, true, {core1}, {platform_p2p1},
             {"1.1.1.1:443", "rpc.example.org:443"}, -1, -1, true);
-    add_row("evo-extended-p2p-domain", evo, extended, true, {core1}, {"p2p.example.org:26656"}, {"rpc.example.org:443"},
+    add_row("evo-extended-p2p-domain", evo, extended, true, {core1},
+            {QString("p2p.example.org:%1").arg(MainParams().GetDefaultPlatformP2PPort())}, {"rpc.example.org:443"},
             -1, -1, false, "invalid input");
     add_row("evo-extended-core-only", evo, extended, true, {core1}, {}, {}, -1, -1, false,
             "cannot be empty if other fields populated");
-    add_row("evo-extended-one-platform-family", evo, extended, true, {core1}, {"1.1.1.1:26656"}, {}, -1, -1, false,
+    add_row("evo-extended-one-platform-family", evo, extended, true, {core1}, {platform_p2p1}, {}, -1, -1, false,
             "cannot be empty if other fields populated");
-    add_row("evo-extended-cross-purpose-duplicate", evo, extended, true, {core1}, {"1.1.1.1:26656"}, {"1.1.1.1:26656"},
+    add_row("evo-extended-cross-purpose-duplicate", evo, extended, true, {core1}, {platform_p2p1}, {platform_p2p1},
             -1, -1, false, "duplicate");
     add_row("invalid-version", regular, 0, true, {}, {}, {}, -1, -1, false, "invalid provider transaction version");
     add_row("invalid-type", static_cast<int>(MnType::Invalid), basic, true, {}, {}, {}, -1, -1, false,

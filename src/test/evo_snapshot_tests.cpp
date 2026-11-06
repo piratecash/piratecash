@@ -84,7 +84,8 @@ CDeterministicMNCPtr MN(uint64_t internal_id, uint8_t hash_suffix, MnType type, 
         // standard ports, which mainnet pins. Such states load on every network: the IPv4 rule applies to ProTxs,
         // at the height they are mined at.
         BOOST_REQUIRE_EQUAL(state->netInfo->AddEntry(NetInfoPurpose::PLATFORM_P2P,
-                                                    strprintf("2.2.2.%d:26656", address_tag)),
+                                                    strprintf("2.2.2.%d:%d", address_tag,
+                                                              MainParams().GetDefaultPlatformP2PPort())),
                             NetInfoStatus::Success);
         BOOST_REQUIRE_EQUAL(state->netInfo->AddEntry(NetInfoPurpose::PLATFORM_HTTPS,
                                                     strprintf("evo%d.example.org:443", address_tag)),
@@ -319,8 +320,9 @@ BOOST_AUTO_TEST_CASE(rotation_bitset_larger_than_quorum_roundtrips)
 
 BOOST_FIXTURE_TEST_CASE(populated_v3_golden_value, BasicTestingSetup)
 {
+    // The MN records include the PirateCash mainnet P2P port (63636).
     BOOST_CHECK_EQUAL(GetEvoSnapshotHash(SyntheticSnapshot()).ToString(),
-                      "8a2883207069e92589ffcce1f9867736881ecdf04ccfc89b492570740e7d3f31");
+                      "727e39d5635478507e14255e3e64b7dc988a67593cd5d53cbee7cc197874d5b3");
 }
 
 BOOST_FIXTURE_TEST_CASE(canonical_mn_reader_rejects_order_and_counter, BasicTestingSetup)

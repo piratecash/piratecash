@@ -261,8 +261,8 @@ EXTRA_DIST += \
     test/util/data/bitcoin-util-test.json \
     test/util/data/blanktxv1.hex \
     test/util/data/blanktxv1.json \
-    test/util/data/blanktxv2.hex \
-    test/util/data/blanktxv2.json \
+    test/util/data/blanktxv4.hex \
+    test/util/data/blanktxv4.json \
     test/util/data/tt-delin1-out.hex \
     test/util/data/tt-delin1-out.json \
     test/util/data/tt-delout1-out.hex \
@@ -296,7 +296,7 @@ EXTRA_DIST += \
     test/util/data/txcreatescript6.hex \
     test/util/data/txcreatesignv1.hex \
     test/util/data/txcreatesignv1.json \
-    test/util/data/txcreatesignv2.hex \
+    test/util/data/txcreatesignv4.hex \
     test/util/rpcauth-test.py
 
 CLEANFILES = $(OSX_ZIP) $(BITCOIN_WIN_INSTALLER)

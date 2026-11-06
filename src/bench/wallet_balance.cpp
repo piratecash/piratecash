@@ -19,7 +19,7 @@ using wallet::CWallet;
 using wallet::DBErrors;
 using wallet::WALLET_FLAG_DESCRIPTORS;
 
-const std::string ADDRESS_B58T_UNSPENDABLE = "yXXXXXXXXXXXXXXXXXXXXXXXXXXXVd2rXU";
+const std::string ADDRESS_B58T_UNSPENDABLE = "sVTUku4CspaPG2SEAEXkFeSj5xfNvaRD13";
 
 static void WalletBalance(benchmark::Bench& bench, const bool set_dirty, const bool add_mine, const uint32_t epoch_iters)
 {
