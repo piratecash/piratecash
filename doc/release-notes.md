@@ -1319,11 +1319,13 @@ developers for the upstream work this release builds on.
 These releases are considered obsolete. Old PirateCash release notes can be
 found here:
 
-- [v23.1.8](release-notes/cosanta/release-notes-23.1.8.md)
-- [v23.1.7](release-notes/cosanta/release-notes-23.1.7.md) released Jul/11/2026
-- [v22.1.4](release-notes/cosanta/release-notes-22.1.4.md)
-- [v21.1.1](release-notes/cosanta/release-notes-21.1.1.md)
-- [v20.1.1](release-notes/cosanta/release-notes-20.1.1.md)
+- [v23.1.12](release-notes/piratecash/release-notes-23.1.12.md)
+- [v23.1.9](release-notes/piratecash/release-notes-23.1.9.md)
+- [v23.1.8](release-notes/piratecash/release-notes-23.1.8.md)
+- [v23.1.7](release-notes/piratecash/release-notes-23.1.7.md) released Jul/11/2026
+- [v22.1.4](release-notes/piratecash/release-notes-22.1.4.md)
+- [v21.1.1](release-notes/piratecash/release-notes-21.1.1.md)
+- [v20.1.1](release-notes/piratecash/release-notes-20.1.1.md)
 
 The original [Dash v24.0.0 release notes](release-notes/dash/release-notes-24.0.0.md)
 and [Dash release history](release-notes/dash/) are preserved separately.

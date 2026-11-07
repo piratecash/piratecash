@@ -48,7 +48,7 @@ The PirateCash Core repo's [root README](/README.md) contains relevant informati
 - [Developer Notes](developer-notes.md)
 - [Productivity Notes](productivity.md)
 - [Release Notes](release-notes.md)
-- [PirateCash Release History](release-notes/cosanta/)
+- [PirateCash Release History](release-notes/piratecash/)
 - [Original Dash Release History](release-notes/dash/)
 - [Release Process](release-process.md)
 - Source Code Documentation ***TODO***
