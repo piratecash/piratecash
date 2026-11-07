@@ -1,4 +1,12 @@
-# Dash Core version v24.0.0
+# PirateCash Core version v24.0.0
+
+Release is available from:
+
+  <https://p.cash/en/download/>
+
+This release is based on Dash Core v24.0.0. Thanks to the Dash Core and Bitcoin
+Core teams for the upstream work. PirateCash retains its own Proof-of-Stake
+consensus, network parameters, rewards and Corsa integration.
 
 This is a new major version release, bringing new features, various bugfixes and other improvements.
 
@@ -8,16 +16,26 @@ hard fork activates. See [Network upgrade](#network-upgrade) below.
 
 Please report bugs using the issue tracker at GitHub:
 
-  <https://github.com/dashpay/dash/issues>
+  <https://github.com/piratecash/piratecash/issues>
 
 # Upgrading and downgrading
 
 ## How to Upgrade
 
 If you are running an older version, shut it down. Wait until it has completely
-shut down (which might take a few minutes for older versions), then run the
-installer (on Windows) or just copy over /Applications/Dash-Qt (on Mac) or
-dashd/dash-qt (on Linux).
+shut down, which might take a few minutes for older versions, then run the
+installer on Windows or copy over `/Applications/PirateCash-Qt` on macOS or
+`piratecashd`/`piratecash-qt` on Linux.
+
+When upgrading from a version older than v19.0.0, PirateCash Core will run a
+migration process on first startup. This is expected to complete quickly, but
+can take up to thirty minutes on some systems. After this migration, a downgrade
+to an older version is only possible with a reindex or a full resync.
+
+Masternode operators must also configure the local Corsa messenger RPC required
+by [PIP-0001](pips/pip-0001.md). PirateCash Core refuses to start as a masternode
+unless the local authenticated Corsa service check passes. This release requires
+Corsa protocol version **31** or later.
 
 On the first start after upgrading, a node that has `-addressindex`,
 `-spentindex` or `-timestampindex` enabled migrates that index to its own
@@ -103,8 +121,8 @@ caveats:
 - v24.0.0 does not upgrade the wallet file format. Wallet records added by
   v24.0.0 that older versions do not know about (such as the new CoinJoin
   pending-observation record) are ignored by them.
-- Dash-Qt moves the dust attack protection setting into the settings it shares
-  with `dashd` (see `-dustprotectionthreshold` under
+- PirateCash-Qt moves the dust attack protection setting into the settings it shares
+  with `piratecashd` (see `-dustprotectionthreshold` under
   [New options](#new-options)). Older versions don't read it there, so after a
   downgrade dust protection is disabled and has to be enabled again in the
   options dialog.
@@ -116,7 +134,7 @@ require a reindex.
 
 ## Compatibility
 
-- Dash Core binaries now require macOS 14 (Sonoma) or later. Dash Core v23.1.x
+- PirateCash Core binaries now require macOS 14 (Sonoma) or later. PirateCash Core v23.1.x
   binaries supported macOS 11 (Big Sur) or later. Because v24.0.0 is mandatory,
   users on macOS 13 or older must upgrade macOS, or move their node or wallet
   to a supported system, before the `v24` hard fork activates. Windows 10 or
@@ -125,7 +143,7 @@ require a reindex.
   (2.31) is unchanged.
 - `PROTOCOL_VERSION` has been bumped from `70240` to `70242` (see
   [P2P and network changes](#p2p-and-network-changes)).
-  `MIN_PEER_PROTO_VERSION` is unchanged at `70221`.
+  `MIN_PEER_PROTO_VERSION` is unchanged at `70231`.
 - `MIN_MASTERNODE_PROTO_VERSION` has been bumped from `70240` to `70242`. During
   DKG, quorum members connected over an older protocol version are considered
   to have a bad connection and are voted bad, which leads to PoSe penalties.
@@ -146,7 +164,7 @@ On mainnet both deployments use identical parameters:
 
 - start time: `1794182400` (Monday, November 9, 2026 00:00:00 UTC);
 - timeout: `1857340800` (Thursday, November 9, 2028 00:00:00 UTC);
-- signaling window: 4032 blocks (about 7 days);
+- signaling window: 4032 blocks;
 - threshold: 80% (3226 of 4032 blocks) in the first signaling window, decreasing
   with each window to a floor of 60% (2420 of 4032 blocks) after 10 windows.
 
@@ -160,25 +178,18 @@ Activation proceeds as follows:
 3. If the threshold is reached within a window, the hard fork locks in, and it
    activates one window later.
 
-Mainnet is expected to be near block 2,569,500 on November 9, 2026, so the
-first window boundary after the signal is block 2,572,416 (around November 14).
-If that window reaches the threshold, `v24` locks in at block 2,576,448 and
-activates at block 2,580,480, around November 28, 2026. That is the earliest
-possible activation; every window that misses the threshold delays it by about
-one week. The dates are estimates based on 2.5-minute blocks.
-
 All masternodes must upgrade before the start date. All other nodes must
 upgrade before activation, or they will follow an invalid chain.
 
 v24.0.0 does **not** sign the `evo_shares` signal. Until `evo_shares` activates,
 EvoNodes cannot use shared collateral or more than one owner payout (see
-[EvoNode restrictions](#evonode-restrictions)). A later release (v24.1) is
-expected to sign it once Dash Platform supports EvoNode shares and payouts.
+[EvoNode restrictions](#evonode-restrictions)). Signaling for `evo_shares`
+requires a later release.
 Both deployments carry identical parameters so that the later release can
 activate `evo_shares` without another mainnet parameter change.
 
-On testnet, both deployments start at `1790208000` (Thursday, September 24, 2026
-00:00:00 UTC).
+On PirateCash testnet, both deployments are disabled (`NEVER_ACTIVE`, with
+`NO_TIMEOUT`).
 
 # Notable changes
 
@@ -238,7 +249,7 @@ Before activation there is no behavior change. (#7437, #7340)
     signature (unilateral, penalized during the configured early period) or one
     per share (unanimous, penalty-free). Validity is monotone: a ProDisTx that
     is valid at some height is valid at every later height, which makes offline
-    "standby dissolutions" safe. The transaction fee is capped at 1000000 duffs
+    "standby dissolutions" safe. The transaction fee is capped at 1000000 corsars
     and a unilateral dissolution may not pay bonuses beyond the configured
     early penalty, bounding what a stolen share owner key can drain from its
     own share.
@@ -354,7 +365,7 @@ ProUpRevTx may use version 3. Version 3 carries both
 [multi-party payouts and shared masternodes](#decentralized-masternode-shares-and-multi-party-payouts).
 (#7302)
 
-- Dash Core v23 defined version 3 for ProRegTx and ProUpServTx only, behind the
+- PirateCash Core v23 defined version 3 for ProRegTx and ProUpServTx only, behind the
   same `v24` deployment, and its wire format has changed since. In version 3
   ProRegTx and ProUpRegTx payloads, `scriptPayout` is replaced by a
   length-prefixed payout list. A version 3 ProRegTx also carries a share table
@@ -363,14 +374,14 @@ ProUpRevTx may use version 3. Version 3 carries both
   ordinary registration.
 - ProUpRegTx and ProUpRevTx may now use version 3 as well.
 - Development builds briefly used a separate version 4 for multi-party payouts.
-  It has been folded into version 3, and no released version of Dash Core uses
-  version 4.
+  It has been folded into version 3, and no released version of upstream Dash
+  Core uses version 4.
 - Software that parses or builds provider transactions (explorers, SPV
   libraries, external wallets) must be updated.
 
 ## Extended addresses
 
-Dash Core v23 introduced extended masternode addresses (`netInfo`, which lists
+PirateCash Core v23 introduced extended masternode addresses (`netInfo`, which lists
 the core P2P, Platform P2P and Platform HTTPS endpoints explicitly) behind the
 `v24` deployment. They become usable once `v24` activates, for regular
 masternodes and EvoNodes alike, and do not depend on `evo_shares`. A masternode
@@ -398,7 +409,7 @@ moves to extended addresses with a version 3 provider transaction (see
   Regtest follows mainnet unless `-testactivationheight=ipv4_optional@<height>`
   is set. (#8018)
 - On mainnet, the first entry of each address list must also use that list's
-  standard port: 9999 for `coreP2PAddrs`, 26656 for `platformP2PAddrs` and 443
+  standard port: 63636 for `coreP2PAddrs`, 26666 for `platformP2PAddrs` and 443
   for `platformHTTPSAddrs`, as legacy ProTx versions already require there.
   Additional entries may use any otherwise valid port. Violations are rejected
   with `bad-protx-netinfo-port`. (#8018)
@@ -407,8 +418,8 @@ moves to extended addresses with a version 3 provider transaction (see
 
 Once the `v24` hard fork activates, version 2 Asset Unlock transactions become
 valid. Version 1 Asset Unlock transactions remain valid after activation, and
-Platform withdrawals keep using version 1 until a future Dash Platform release
-starts issuing version 2. Until then, the version 2 features described below
+in upstream Dash, Platform withdrawals keep using version 1 until a future
+Dash Platform release starts issuing version 2. Until then, the version 2 features described below
 (the stable txid, InstantSend locking and relay by instance hash) do not apply
 to Platform withdrawals.
 
@@ -453,10 +464,10 @@ longer penalized. (#7639, #7744)
 ## Relative asset unlock limit
 
 - The asset unlock limit that applies once the `v24` hard fork activates is now
-  a relative net rule on the credit pool balance instead of a flat 4000 DASH cap
-  on gross unlocks per window (576 blocks on mainnet and testnet). Asset unlocks
+  a relative net rule on the credit pool balance instead of the previous fixed
+  2000 PIRATE limit. The window is 576 blocks on mainnet and testnet. Asset unlocks
   may not leave the credit pool below its balance one window earlier minus an
-  allowed drop of 20% of that balance, never less than 2000 DASH and with no
+  allowed drop of 20% of that balance, never less than 2000 PIRATE and with no
   upper bound.
 - Deposits and the per-block Platform reward inside the window raise the
   balance and are withdrawable again, so a deposit followed by its withdrawal
@@ -474,8 +485,8 @@ longer penalized. (#7639, #7744)
   assigns each credit output to the matching Identity automatically, and it
   extends the allowed `creditOutputs[].scriptPubKey` forms from P2PKH only to
   P2PKH and P2SH. All other Asset Lock rules are unchanged. See DIP-27.
-- `validateaddress` and `getaddressinfo` now accept DIP-18 Dash Platform
-  addresses (`dash1k…`/`dash1s…` on mainnet, `tdash1k…`/`tdash1s…` on the test
+- `validateaddress` and `getaddressinfo` now accept DIP-18 Platform
+  addresses (`pirate1k…`/`pirate1s…` on mainnet, `tpirate1k…`/`tpirate1s…` on the test
   chains) and report them with a new `isplatform` field. `getaddressinfo`
   describes such an address against the credit output script an Asset Lock would
   carry for it, so `ismine` and `solvable` answer whether this wallet holds the
@@ -496,15 +507,15 @@ This release carries the consensus side of version 2 Asset Locks: after the
 `v24` hard fork they are valid in a block. They remain non-standard for now, so
 under default policy they are not accepted into the mempool or relayed, and
 sending to a Platform address fails with
-`Transaction is non-standard (assetlocktx-version-2) …`. A future release will
-make them standard once Dash Platform can process them; that is a policy change
-only and needs no further consensus change. On testnet, devnets and regtest the
+`Transaction is non-standard (assetlocktx-version-2) …`. Making them standard
+requires a later policy change and a compatible Platform implementation; it
+needs no further consensus change. On testnet, devnets and regtest the
 node can be started with `-acceptnonstdtxn=1` to relay them already; mainnet
 does not accept that option. (#7294, #7285, #7577)
 
 ## Masternode operator keys and BLS schemes
 
-- Dash Core will no longer permit the registration of new legacy BLS scheme
+- PirateCash Core will no longer permit the registration of new legacy BLS scheme
   masternodes after the `v24` hard fork activates. Existing basic scheme
   masternodes will also be prohibited from downgrading to the legacy scheme
   after activation. (#6729)
@@ -581,8 +592,8 @@ proofs. (#7107, #7727)
     in `masternode list` (and its alias, `masternodelist`).
   - The same gate applies to `getcoinjoininfo`, `protx info`,
     `protx list detailed` and `quorum info`.
-  - `dash-tx -json` output omits these keys as well and offers no way to restore
-    them, since `dash-tx` does not accept `-deprecatedrpc`.
+  - `piratecash-tx -json` output omits these keys as well and offers no way to restore
+    them, since `piratecash-tx` does not accept `-deprecatedrpc`.
 - Information on soft fork status has been moved from `getblockchaininfo` to the
   new `getdeploymentinfo` RPC, which allows querying soft fork status at any
   block, rather than just at the chain tip. Inclusion of soft fork status in
@@ -592,20 +603,17 @@ proofs. (#7107, #7727)
   block rather than the next block. A new `/rest/deploymentinfo` REST endpoint
   provides the same information. (#6888)
 
-### Note for masternode operators running Dash Platform
+### Dash Platform compatibility
 
-Dash Platform reads the `service` field from Dash Core, and Platform versions
-before v5.0.0 also read the `getblockchaininfo` `softforks` field. EvoNode
-operators should upgrade Dash Platform to v5.0.0 or later together with Dash
-Core:
+The upstream Dash Platform integration reads the `service` field from Dash
+Core, and Platform versions before v5.0.0 also read the `getblockchaininfo`
+`softforks` field. The upstream requirements are:
 
 - dashmate v5.0.0 and later start Dash Core with `-deprecatedrpc=service`, and
-  Platform v5.0.0 and later read deployment status from `getdeploymentinfo`, so
-  no extra configuration is needed.
-- Setups not managed by dashmate v5.0.0 or later must start Dash Core with
-  `-deprecatedrpc=service`, and Platform versions before v5.0.0 also need
-  `-deprecatedrpc=softforks`. Without these options Platform cannot operate
-  correctly.
+  Platform v5.0.0 and later read deployment status from `getdeploymentinfo`.
+- Integrations that use the same deprecated fields with PirateCash Core need
+  `-deprecatedrpc=service`; clients still reading `softforks` also need
+  `-deprecatedrpc=softforks`.
 
 ## Descriptor wallets by default
 
@@ -623,20 +631,20 @@ since v21 this applied only to `descriptors=true`. To create a legacy wallet,
 pass both, for example:
 
 ```
-dash-cli -named createwallet wallet_name=mywallet descriptors=false load_on_startup=true
+piratecash-cli -named createwallet wallet_name=mywallet descriptors=false load_on_startup=true
 ```
 
-`dash-wallet create` also creates a descriptor wallet by default. Pass the new
+`piratecash-wallet create` also creates a descriptor wallet by default. Pass the new
 `-legacy` option to create a legacy wallet instead. (#7204)
 
 An experimental RPC `migratewallet` has been added to migrate legacy
 (non-descriptor) wallets to descriptor wallets. More information about the
 migration process is available in the
-[documentation](https://github.com/dashpay/dash/blob/master/doc/managing-wallets.md#migrating-legacy-wallets-to-descriptor-wallets).
+[documentation](managing-wallets.md#migrating-legacy-wallets-to-descriptor-wallets).
 (#7275)
 
 Failure handling in `migratewallet`, `restorewallet` and
-`dash-wallet createfromdump` was fixed with backports from Bitcoin Core 28.x. A
+`piratecash-wallet createfromdump` was fixed with backports from Bitcoin Core 28.x. A
 failed migration restores the original wallet and leaves the rest of the
 wallet directory as it was. After a migration, the migrated wallet and the
 watch-only and solvables wallets it created are reloaded from disk, and if one
@@ -748,8 +756,8 @@ failing. Both receive the usual PoSe penalty for failed DKG participation.
 ## Bitcoin Core backports
 
 This release continues the backporting of Bitcoin Core, adding well over 200
-pull requests from the v25 and v26 release cycles alone. Dash Core now
-includes essentially all of Bitcoin Core v0.17 through v24, about 90% of v25,
+pull requests from the v25 and v26 release cycles alone. The upstream Dash
+Core base includes essentially all of Bitcoin Core v0.17 through v24, about 90% of v25,
 about 70% of v26, over half of v27 and about a third of v28, along with
 selected fixes from later releases. User-visible changes from these backports
 are listed in the sections below. Notable additions
@@ -765,7 +773,7 @@ and RPC parameters.
   after v20 activation while ChainLocks are enabled. (#6236)
 - `SPORK_3_INSTANTSEND_BLOCK_FILTERING` and `SPORK_9_SUPERBLOCKS_ENABLED` have
   been removed. On mainnet both have been hardcoded on, and could not be changed
-  by spork messages, since Dash Core v21.0.0 hardened all mainnet spork values
+  by spork messages, since upstream Dash Core v21.0.0 hardened all mainnet spork values
   (#6140). Only the test networks (testnet, devnets and regtest) still honored
   them. This release removes the two spork definitions and the remaining
   test-network gating, so the associated functionality (InstantSend
@@ -786,7 +794,7 @@ and RPC parameters.
   wait for a ChainLock or for confirmations instead. (#7858)
 - Network-adjusted time is no longer used to validate block timestamps or to
   build block templates; both use the system clock. Keep the system clock
-  accurate. `-maxtimeadjustment` now only affects Dash subsystems that still use
+  accurate. `-maxtimeadjustment` now only affects PirateCash subsystems that still use
   network-adjusted time, such as governance, sporks and CoinJoin. (#7430)
 - Hardware-accelerated SHA-256 (SHA-NI, AVX2/SSE4.1 on x86 and the ARMv8 SHA2
   extensions), which had been unintentionally disabled since v23.0.0, is
@@ -816,14 +824,14 @@ and RPC parameters.
 - Version 2 Asset Unlock transactions are relayed by instance hash using the new
   inventory type `MSG_ASSET_UNLOCK` (protocol version 70242). (#7639)
 - Startup now fails if any configured `-bind` (including `-bind=...=onion`) or
-  `-whitebind` cannot be set up. Dash Core v23 and earlier started as long as
+  `-whitebind` cannot be set up. PirateCash Core v23 and earlier started as long as
   at least one bind succeeded. The implicit Tor onion-service bind
-  (`127.0.0.1:9996` by default) is still best effort, as in v23, unless
+  (`127.0.0.1:19604` by default) is still best effort, as in v23, unless
   `-listenonion=1` is set explicitly. (#7300, #8003)
 - The automatic Tor onion service (`-listenonion`) only forwards to a
   dedicated, non-wildcard onion listener that the node actually bound, so peers
   arriving through Tor are always recognized as onion peers. Without a
-  `-bind=<addr:port>=onion`, Dash Core adds the default onion bind as v23 did,
+  `-bind=<addr:port>=onion`, PirateCash Core adds the default onion bind as v23 did,
   also when `-bind` is given; with `-bind` and `-listenonion=0` it no longer
   does. If the default onion bind fails, for example because another instance
   on the same host holds it, the node logs a warning and creates no onion
@@ -836,7 +844,7 @@ and RPC parameters.
 - A wildcard onion bind such as `-bind=0.0.0.0:<port>=onion` is a startup error
   unless `-listenonion=0` is set, also with the default `-listenonion`. The node
   can't tell which connections to a wildcard listener came through Tor, so Tor
-  peers would be treated as clearnet peers. Dash Core v23 accepted it. Use a
+  peers would be treated as clearnet peers. PirateCash Core v23 accepted it. Use a
   specific address such as `-bind=127.0.0.1:<port>=onion` instead. (#7786,
   #8003)
 - `getqrinfo` requests now carry at most 4096 `baseBlockHashes`. A request with
@@ -901,7 +909,7 @@ and RPC parameters.
 
 ## Updated RPCs
 
-- Dash RPCs will no longer permit submitting strings to boolean input fields in
+- PirateCash RPCs will no longer permit submitting strings to boolean input fields in
   line with validation enforced on upstream RPCs, where this is already the
   case. Requests must now use unquoted `true` or `false`.
   - The following RPCs are affected: `bls generate`, `bls fromsecret`,
@@ -913,9 +921,9 @@ and RPC parameters.
     `protx update_service_evo`, `quorum info`, `quorum platformsign`,
     `quorum rotationinfo`, `quorum sign`.
   - This restriction can be relaxed by setting `-deprecatedrpc=permissive_bool`
-    at runtime but is liable to be removed in future versions of Dash Core.
+    at runtime but is liable to be removed in future versions of PirateCash Core.
     (#7099)
-- Numeric arguments of the Dash-specific RPCs (`quorum`, `protx`, `gobject`,
+- Numeric arguments of the PirateCash-specific RPCs (`quorum`, `protx`, `gobject`,
   `masternode` and their sub-commands) must now be passed as JSON numbers.
   Strings containing a number, which earlier versions accepted, are rejected
   with a type error (code -3). The only exception is the `baseBlock` and `block`
@@ -977,9 +985,8 @@ and RPC parameters.
 - `getcoinjoininfo` gained a `pending_inputs` field, reporting how many
   successfully mixed inputs are currently kept locked while waiting for the
   finalized mixing transaction spending them to be observed. (#7480)
-- `gettxoutsetinfo` no longer returns `block_info.unspendables.bip30`. Dash
-  never had transactions overridden by duplicates, so the value was always
-  zero. (#7335)
+- `gettxoutsetinfo` no longer returns `block_info.unspendables.bip30`.
+  That field was always zero in upstream Dash. (#7335)
 - The `-deprecatedrpc=fees` configuration option has been removed. The top-level
   fee fields `fee`, `modifiedfee`, `ancestorfees` and `descendantfees` are no
   longer returned by RPCs `getmempoolentry`, `getrawmempool(verbose=true)`,
@@ -1046,13 +1053,13 @@ and RPC parameters.
 
 - If the `-checkblocks` or `-checklevel` options are explicitly provided by the
   user, but the verification checks cannot be completed due to an insufficient
-  dbcache, Dash Core will now return an error at startup. (#7710)
-- `dashd` and `dash-qt` will now raise an error on startup if a datadir that is
-  being used contains a dash.conf file that will be ignored, which can happen
-  when a datadir= line is used in a dash.conf file. The error message is just a
+  dbcache, PirateCash Core will now return an error at startup. (#7710)
+- `piratecashd` and `piratecash-qt` will now raise an error on startup if a datadir that is
+  being used contains a piratecash.conf file that will be ignored, which can happen
+  when a datadir= line is used in a piratecash.conf file. The error message is just a
   diagnostic intended to prevent accidental misconfiguration, and it can be
   disabled (`-allowignoredconf`) to restore the previous behavior of using the
-  datadir while ignoring the dash.conf contained in it. (#7710)
+  datadir while ignoring the piratecash.conf contained in it. (#7710)
 - Passing an invalid `-debug`, `-debugexclude`, or `-loglevel` logging
   configuration option now raises an error, rather than logging an easily missed
   warning. (#7710)
@@ -1074,15 +1081,15 @@ and RPC parameters.
 - Fee estimates are now saved hourly, and `fee_estimates.dat` is ignored at
   startup if it is more than 60 hours old, so a node that was offline for longer
   than that rebuilds its estimates. (#7711)
-- `dashd` no longer creates an empty `dash.conf` when none exists, matching
-  Bitcoin Core. `dash-qt`'s "Open Configuration File" still creates it on
+- `piratecashd` no longer creates an empty `piratecash.conf` when none exists, matching
+  Bitcoin Core. `piratecash-qt`'s "Open Configuration File" still creates it on
   demand. (#8029)
 
 ## Pruning
 
-- Pruned nodes on mainnet, testnet and devnets now keep at least four days of
-  blocks (2304) below the tip instead of 288. Validation reads older blocks
-  from disk: the credit pool is rebuilt from its newest daily snapshot after a
+- Pruned nodes on mainnet, testnet and devnets now keep at least 2304 blocks
+  below the tip instead of 288. Validation reads older blocks from disk:
+  the credit pool is rebuilt from its newest snapshot after a
   restart, and rotated quorum membership reads the work blocks of earlier DKG
   cycles. `pruneblockchain` clamps its height accordingly, and on testnet and
   devnets pruning starts once the chain is longer than 3000 blocks
@@ -1095,8 +1102,8 @@ and RPC parameters.
 ### New options
 
 - The dust attack protection introduced in v23.1.0 as a GUI option is now
-  available to `dashd` as well through `-dustprotectionthreshold=<n>`: UTXOs
-  received from external transactions whose value is at or below `<n>` duffs
+  available to `piratecashd` as well through `-dustprotectionthreshold=<n>`: UTXOs
+  received from external transactions whose value is at or below `<n>` corsars
   are locked automatically by the wallet, so they are not spent together with
   other coins. It is disabled by default (`0`). The GUI option and the
   command-line option control the same setting. Locks persist across restarts
@@ -1132,7 +1139,7 @@ and RPC parameters.
   wallets are not affected. (#7842)
 
   Seed derivation uses the BIP39 salt `"mnemonic"` followed by the passphrase.
-  Dash Core 19.2.0 started cutting that salt at 256 bytes to stop a crash, so
+  Upstream Dash Core 19.2.0 started cutting that salt at 256 bytes to stop a crash, so
   every passphrase byte after the 248th has been ignored since then. Two
   passphrases that differ only after that point derive the same seed. Before
   23.0.0 the salt was also cut at the first NUL byte.
@@ -1209,8 +1216,8 @@ and RPC parameters.
 - RPC `getreceivedbylabel` now returns an error, "Label not found in wallet"
   (-4), if the label is not in the address book. (#7550)
 - RPC `listunspent` now has a new argument `include_immature_coinbase` to
-  include coinbase UTXOs that don't meet the minimum spendability depth
-  requirement (which before were silently skipped). (#7646)
+  include coinbase and coinstake UTXOs that don't meet the minimum spendability
+  depth requirement (which before were silently skipped). (#7646)
 - RPC `walletprocesspsbt` return object now includes field `hex` (if the
   transaction is complete) containing the serialized transaction suitable for
   RPC `sendrawtransaction`. (#7354)
@@ -1230,7 +1237,7 @@ and RPC parameters.
   returns a JSON array of strings to better handle multiple warning messages and
   for consistency with other wallet RPCs. The "warning" field will be fully
   removed from these RPCs in v25. It can be temporarily re-enabled during the
-  deprecation period by launching dashd with the configuration option
+  deprecation period by launching piratecashd with the configuration option
   `-deprecatedrpc=walletwarningfield`. (#7711)
 - Some wallet RPC error messages changed with upstream backports, which
   matters for software that matches on them:
@@ -1245,7 +1252,7 @@ and RPC parameters.
 
 ## GUI changes
 
-- Dash-Qt can now register and maintain regular masternodes and EvoNodes from
+- PirateCash-Qt can now register and maintain regular masternodes and EvoNodes from
   the Masternodes tab. The registration wizard supports wallet-funded,
   wallet-owned, and externally held collateral, while row actions provide
   Update Service, Update Registrar, and Revoke workflows. Generated operator
@@ -1253,7 +1260,7 @@ and RPC parameters.
   operator keys are not required. (#7618)
 - Shared masternodes can be registered and maintained from the Masternodes tab
   (see [Decentralized masternode shares and multi-party payouts](#decentralized-masternode-shares-and-multi-party-payouts)). (#7701)
-- Dash-Qt now labels masternode registration and update transactions in the
+- PirateCash-Qt now labels masternode registration and update transactions in the
   transaction history as **Masternode Registration** and **Masternode Update**
   instead of generic "Payment to yourself" rows. A new **Masternode** filter
   shows only these operations. The amount shown is the transaction's net effect
@@ -1281,9 +1288,9 @@ and RPC parameters.
 
 ## Library
 
-- `libdashconsensus` is deprecated and will be removed in a future release. It
-  has existed for nearly 10 years with very little known uptake or impact, and
-  has become a maintenance burden. The underlying functionality does not change
+- `libpiratecashconsensus` is deprecated and will be removed in a future release,
+  following upstream Dash. The upstream library has existed for nearly 10 years
+  with very little known uptake or impact, and has become a maintenance burden. The underlying functionality does not change
   between versions, so any users of the library can continue to use the final
   release indefinitely, with the understanding that it will not receive future
   consensus updates. (#7378)
@@ -1294,6 +1301,7 @@ See detailed [set of changes][set-of-changes].
 
 Thanks to everyone who directly contributed to this release:
 
+- Dmitriy Korniychuk
 - Antonio Moratti
 - Kittywhiskers Van Gogh
 - Konstantin Akimov
@@ -1302,79 +1310,22 @@ Thanks to everyone who directly contributed to this release:
 - UdjinM6
 - Vijay
 
-As well as everyone that submitted issues, reviewed pull requests and helped
-debug the release candidates.
+As well as everyone who submitted issues, reviewed pull requests and helped
+debug the release candidates. Thanks also go to Dash Core and Bitcoin Core
+developers for the upstream work this release builds on.
 
 # Older releases
 
-These releases are considered obsolete. Old release notes can be found here:
+These releases are considered obsolete. Old PirateCash release notes can be
+found here:
 
-- [v23.1.10](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.1.10.md) released Nov/2/2026
-- [v23.1.9](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.1.9.md) released Oct/29/2026
-- [v23.1.8](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.1.8.md) released Jul/29/2026
-- [v23.1.7](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.1.7.md) released Jun/30/2026
-- [v23.1.5](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.1.5.md) released Jun/19/2026
-- [v23.1.4](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.1.4.md) released Jun/18/2026
-- [v23.1.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.1.3.md) released May/28/2026
-- [v23.1.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.1.2.md) released Mar/12/2026
-- [v23.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.1.0.md) released Feb/15/2026
-- [v23.0.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.0.2.md) released Dec/4/2025
-- [v23.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-23.0.0.md) released Nov/10/2025
-- [v22.1.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-22.1.3.md) released Jul/15/2025
-- [v22.1.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-22.1.2.md) released Apr/15/2025
-- [v22.1.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-22.1.1.md) released Feb/17/2025
-- [v22.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-22.1.0.md) released Feb/10/2025
-- [v22.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-22.0.0.md) released Dec/12/2024
-- [v21.1.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-21.1.1.md) released Oct/22/2024
-- [v21.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-21.1.0.md) released Aug/8/2024
-- [v21.0.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-21.0.2.md) released Aug/1/2024
-- [v21.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-21.0.0.md) released Jul/25/2024
-- [v20.1.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-20.1.1.md) released April/3/2024
-- [v20.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-20.1.0.md) released March/5/2024
-- [v20.0.4](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-20.0.4.md) released Jan/13/2024
-- [v20.0.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-20.0.3.md) released December/26/2023
-- [v20.0.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-20.0.2.md) released December/06/2023
-- [v20.0.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-20.0.1.md) released November/18/2023
-- [v20.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-20.0.0.md) released November/15/2023
-- [v19.3.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-19.3.0.md) released July/31/2023
-- [v19.2.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-19.2.0.md) released June/19/2023
-- [v19.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-19.1.0.md) released May/22/2023
-- [v19.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-19.0.0.md) released Apr/14/2023
-- [v18.2.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-18.2.2.md) released Mar/21/2023
-- [v18.2.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-18.2.1.md) released Jan/17/2023
-- [v18.2.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-18.2.0.md) released Jan/01/2023
-- [v18.1.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-18.1.1.md) released January/08/2023
-- [v18.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-18.1.0.md) released October/09/2022
-- [v18.0.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-18.0.2.md) released October/09/2022
-- [v18.0.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-18.0.1.md) released August/17/2022
-- [v0.17.0.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.17.0.3.md) released June/07/2021
-- [v0.17.0.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.17.0.2.md) released May/19/2021
-- [v0.16.1.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.16.1.1.md) released November/17/2020
-- [v0.16.1.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.16.1.0.md) released November/14/2020
-- [v0.16.0.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.16.0.1.md) released September/30/2020
-- [v0.15.0.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.15.0.md) released February/18/2020
-- [v0.14.0.5](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.14.0.5.md) released December/08/2019
-- [v0.14.0.4](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.14.0.4.md) released November/22/2019
-- [v0.14.0.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.14.0.3.md) released August/15/2019
-- [v0.14.0.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.14.0.2.md) released July/4/2019
-- [v0.14.0.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.14.0.1.md) released May/31/2019
-- [v0.14.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.14.0.md) released May/22/2019
-- [v0.13.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.13.3.md) released Apr/04/2019
-- [v0.13.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.13.2.md) released Mar/15/2019
-- [v0.13.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.13.1.md) released Feb/9/2019
-- [v0.13.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.13.0.md) released Jan/14/2019
-- [v0.12.3.4](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.3.4.md) released Dec/14/2018
-- [v0.12.3.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.3.3.md) released Sep/19/2018
-- [v0.12.3.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.3.2.md) released Jul/09/2018
-- [v0.12.3.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.3.1.md) released Jul/03/2018
-- [v0.12.2.3](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.2.3.md) released Jan/12/2018
-- [v0.12.2.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.2.2.md) released Dec/17/2017
-- [v0.12.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.2.md) released Nov/08/2017
-- [v0.12.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.12.0.md) released Aug/15/2015
-- [v0.11.2](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.11.2.md) released Mar/04/2015
-- [v0.11.1](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.11.1.md) released Feb/10/2015
-- [v0.11.0](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.11.0.md) released Jan/15/2015
-- [v0.10.x](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.10.0.md) released Sep/25/2014
-- [v0.9.x](https://github.com/dashpay/dash/blob/master/doc/release-notes/dash/release-notes-0.9.0.md) released Mar/13/2014
+- [v23.1.8](release-notes/cosanta/release-notes-23.1.8.md)
+- [v23.1.7](release-notes/cosanta/release-notes-23.1.7.md) released Jul/11/2026
+- [v22.1.4](release-notes/cosanta/release-notes-22.1.4.md)
+- [v21.1.1](release-notes/cosanta/release-notes-21.1.1.md)
+- [v20.1.1](release-notes/cosanta/release-notes-20.1.1.md)
 
-[set-of-changes]: https://github.com/dashpay/dash/compare/v23.1.10...dashpay:v24.0.0
+The original [Dash v24.0.0 release notes](release-notes/dash/release-notes-24.0.0.md)
+and [Dash release history](release-notes/dash/) are preserved separately.
+
+[set-of-changes]: https://github.com/piratecash/piratecash/compare/v23.1.12-pirate...v24.0.0-pirate
