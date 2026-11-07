@@ -221,7 +221,7 @@ QWidget* RegisterMasternodeWizard::createTypePage()
         tr("EvoNode — %1 collateral").arg(FormatCollateralAmount(m_walletModel, GetMnType(MnType::Evo).collat_amount)),
         page);
     auto evo_card{makeOptionCard(page, m_type_evo,
-                                 tr("Additionally hosts Dash Platform, has four times the voting weight and earns a "
+                                 tr("Additionally hosts PirateCash Platform, has four times the voting weight and earns a "
                                     "larger share of rewards. Requires a Platform node ID and extra services."))};
     evo_card.body->setVisible(false);
     layout->addWidget(evo_card.card);
@@ -609,7 +609,7 @@ QWidget* RegisterMasternodeWizard::createSecretPage()
     m_secret_edit->setReadOnly(true);
     m_secret_edit->setFont(GUIUtil::fixedPitchFont());
     box->addWidget(m_secret_edit);
-    box->addWidget(makeHint(tr("Add this line to dash.conf on your masternode server:"), secret_box));
+    box->addWidget(makeHint(tr("Add this line to piratecash.conf on your masternode server:"), secret_box));
     auto* conf_row{new QHBoxLayout()};
     m_conf_line_edit = new QLineEdit(secret_box);
     m_conf_line_edit->setReadOnly(true);
@@ -1651,7 +1651,7 @@ void RegisterMasternodeWizard::populateResult(const QString& pro_tx_hash)
     QStringList steps;
     if (m_operator_widget->hasGeneratedSecret()) {
         steps << tr(
-            "Configure your masternode server with the operator secret key you saved, then restart dashd there.");
+            "Configure your masternode server with the operator secret key you saved, then restart piratecashd there.");
     } else {
         steps << tr(
             "Configure your masternode server with the BLS secret key matching the operator public key you provided.");
@@ -1664,7 +1664,7 @@ void RegisterMasternodeWizard::populateResult(const QString& pro_tx_hash)
                     "inactive until then.");
     }
     if (isEvo()) {
-        steps << tr("Provision the Dash Platform services (Tenderdash and Drive) with the Platform node key matching "
+        steps << tr("Provision the PirateCash Platform services (Tenderdash and Drive) with the Platform node key matching "
                     "the node ID you registered.");
         steps << tr("The EvoNode becomes active once the registration is confirmed and the first update is signed by "
                     "the operator.");

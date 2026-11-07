@@ -303,7 +303,7 @@ void ProviderTransactionTests::providerTransactionHistory()
         {update_revoke->GetHash(), TransactionRecord::MasternodeUpdate, -revoke_fee, QString{"Masternode Update"},
          QString{"Updates an existing masternode"}},
         {asset_lock->GetHash(), TransactionRecord::AssetLock, -input_amount(4), QString{"Asset Lock"},
-         QString{"Locks funds for use on Dash Platform"}},
+         QString{"Locks funds for use on PirateCash Platform"}},
         {shared_update_share->GetHash(), TransactionRecord::MasternodeUpdate, -share_fee, QString{"Masternode Update"},
          QString{"Updates an existing masternode"}},
         {shared_update_registrar->GetHash(), TransactionRecord::MasternodeUpdate, -shared_registrar_fee,

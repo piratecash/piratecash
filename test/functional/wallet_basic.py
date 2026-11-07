@@ -496,7 +496,7 @@ class WalletTest(BitcoinTestFramework):
             assert_raises_rpc_error(-5, "Invalid PirateCash address", self.nodes[0].dumpprivkey, "invalid")
 
             # This will raise an exception for attempting to set a label for an invalid PirateCash address
-            assert_raises_rpc_error(-5, "Invalid Dash address", self.nodes[0].setlabel, "invalid address", "label")
+            assert_raises_rpc_error(-5, "Invalid PirateCash address", self.nodes[0].setlabel, "invalid address", "label")
 
             # This will raise an exception for importing an invalid address
             assert_raises_rpc_error(-5, "Invalid PirateCash address or script", self.nodes[0].importaddress, "invalid")

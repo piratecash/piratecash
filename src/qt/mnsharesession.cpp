@@ -383,7 +383,7 @@ bool MnShareSession::fromJson(const UniValue& json, QString& error)
         const UniValue& version{json.find_value("version")};
         if (!version.isNum() || version.getInt<int>() != ENVELOPE_VERSION) {
             error = QCoreApplication::translate("MnShareSession", "The session file uses an unsupported format "
-                                                                  "version. Update Dash Core to open it.");
+                                                                  "version. Update PirateCash Core to open it.");
             return false;
         }
         const UniValue& network{json.find_value("network")};
@@ -414,7 +414,7 @@ bool MnShareSession::fromJson(const UniValue& json, QString& error)
         const auto stage{StageFromKey(stage_value.get_str())};
         if (!stage) {
             error = QCoreApplication::translate("MnShareSession", "The session file is at the unknown stage \"%1\". It "
-                                                                  "was probably created by a newer Dash Core.")
+                                                                  "was probably created by a newer PirateCash Core.")
                         .arg(QString::fromStdString(stage_value.get_str()));
             return false;
         }

@@ -1,6 +1,6 @@
-# User-space, Statically Defined Tracing (USDT) for Dash Core
+# User-space, Statically Defined Tracing (USDT) for PirateCash Core
 
-Dash Core includes statically defined tracepoints to allow for more
+PirateCash Core includes statically defined tracepoints to allow for more
 observability during development, debugging, code review, and production usage.
 These tracepoints make it possible to keep track of custom statistics and
 enable detailed monitoring of otherwise hidden internals. They have
@@ -11,7 +11,7 @@ eBPF and USDT Overview
 ======================
 
                 ┌──────────────────┐            ┌──────────────┐
-                │ tracing script   │            │ dashd        │
+                │ tracing script   │            │ piratecashd        │
                 │==================│      2.    │==============│
                 │  eBPF  │ tracing │      hooks │              │
                 │  code  │ logic   │      into┌─┤►tracepoint 1─┼───┐ 3.
@@ -112,7 +112,7 @@ Arguments passed:
 
 The following tracepoints cover the in-memory UTXO cache. UTXOs are, for example,
 added to and removed (spent) from the cache when we connect a new block.
-**Note**: Dash Core uses temporary clones of the _main_ UTXO cache
+**Note**: PirateCash Core uses temporary clones of the _main_ UTXO cache
 (`chainstate.CoinsTip()`). For example, the RPCs `generateblock` and
 `getblocktemplate` call `TestBlockValidity()`, which applies the UTXO set
 changes to a temporary cache. Similarly, mempool consistency checks, which are
@@ -211,7 +211,7 @@ Arguments passed:
 4. The expected transaction fee as an `int64`
 5. The position of the change output as an `int32`
 
-## Adding tracepoints to Dash Core
+## Adding tracepoints to PirateCash Core
 
 To add a new tracepoint, `#include <util/trace.h>` in the compilation unit where
 the tracepoint is inserted. Use one of the `TRACEx` macros listed below
@@ -306,31 +306,31 @@ maximum expected string size if known.
 
 ## Listing available tracepoints
 
-Multiple tools can list the available tracepoints in a `dashd` binary with
+Multiple tools can list the available tracepoints in a `piratecashd` binary with
 USDT support.
 
 ### GDB - GNU Project Debugger
 
-To list probes in Dash Core, use `info probes` in `gdb`:
+To list probes in PirateCash Core, use `info probes` in `gdb`:
 
 ```
-$ gdb ./src/dashd
+$ gdb ./src/piratecashd
 …
 (gdb) info probes
 Type Provider   Name             Where              Semaphore Object
-stap net        inbound_message  0x000000000014419e /src/dashd
-stap net        outbound_message 0x0000000000107c05 /src/dashd
-stap validation block_connected  0x00000000002fb10c /src/dashd
+stap net        inbound_message  0x000000000014419e /src/piratecashd
+stap net        outbound_message 0x0000000000107c05 /src/piratecashd
+stap validation block_connected  0x00000000002fb10c /src/piratecashd
 …
 ```
 
 ### With `readelf`
 
-The `readelf` tool can be used to display the USDT tracepoints in Dash Core.
+The `readelf` tool can be used to display the USDT tracepoints in PirateCash Core.
 Look for the notes with the description `NT_STAPSDT`.
 
 ```
-$ readelf -n ./src/dashd | grep NT_STAPSDT -A 4 -B 2
+$ readelf -n ./src/piratecashd | grep NT_STAPSDT -A 4 -B 2
 Displaying notes found in: .note.stapsdt
   Owner                 Data size	Description
   stapsdt              0x0000005d	NT_STAPSDT (SystemTap probe descriptors)
@@ -354,7 +354,7 @@ between distributions. For example, on
 [ubuntu binary]: https://github.com/iovisor/bcc/blob/master/INSTALL.md#ubuntu---binary
 
 ```
-$ tplist -l ./src/dashd -v
+$ tplist -l ./src/piratecashd -v
 b'net':b'outbound_message' [sema 0x0]
   1 location(s)
   6 argument(s)

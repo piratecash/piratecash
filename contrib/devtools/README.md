@@ -96,8 +96,8 @@ BUILDDIR=$PWD/build contrib/devtools/gen-manpages.py
 gen-dash-conf.sh
 ===================
 
-Generates a dash.conf file in `contrib/debian/examples/` by parsing the output from `dashd --help`. This script is run during the
-release process to include a dash.conf with the release binaries and can also be run by users to generate a file locally.
+Generates a piratecash.conf file in `contrib/debian/examples/` by parsing the output from `piratecashd --help`. This script is run during the
+release process to include a piratecash.conf with the release binaries and can also be run by users to generate a file locally.
 When generating a file as part of the release process, make sure to commit the changes after running the script.
 
 With in-tree builds this tool can be run from any directory within the

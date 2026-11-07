@@ -70,7 +70,7 @@
         <translation>Dies sind ihre PirateCash-Adressen zum Tätigen von Überweisungen. Bitte prüfen Sie den Betrag und die Empfangsadresse, bevor Sie PirateCash überweisen.</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <source>These are your PirateCash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
         <translation>Hierbei handelt es sich um deine PirateCash-Adressen für den Empfang von Zahlungen. Nutze die Schaltfläche "Neue Empfangsadresse erstellen" auf der Registerkarte "Empfangen", um neue Adressen zu erstellen.</translation>
     </message>
     <message>
@@ -1518,7 +1518,7 @@
         <translation>Gespeichert unter %1.</translation>
     </message>
     <message>
-        <source>Dash shared masternode — standby dissolution</source>
+        <source>PirateCash shared masternode — standby dissolution</source>
         <translation>PirateCash Gemeinsame Masternode – Standby-Auflösung</translation>
     </message>
     <message>
@@ -1710,7 +1710,7 @@
         <translation>Lokale Adressen</translation>
     </message>
     <message>
-        <source>Network addresses that your Dash node is currently using to communicate with other nodes.</source>
+        <source>Network addresses that your PirateCash node is currently using to communicate with other nodes.</source>
         <translation>Netzwerkadressen, die Ihr PirateCash-Knoten aktuell zur Kommunikation mit anderen Knoten verwendet.</translation>
     </message>
     <message>
@@ -2429,7 +2429,7 @@ Beim Migrationsvorgang wird vor der Migration eine Sicherung der Wallet erstellt
         <translation>Die Datei ist keine Session-Datei einer gemeinsamen Masternode.</translation>
     </message>
     <message>
-        <source>The session file uses an unsupported format version. Update Dash Core to open it.</source>
+        <source>The session file uses an unsupported format version. Update PirateCash Core to open it.</source>
         <translation>Die Session-Datei verwendet eine nicht unterstützte Formatversion. Aktualisieren Sie PirateCash Core, um sie zu öffnen.</translation>
     </message>
     <message>
@@ -2453,7 +2453,7 @@ Beim Migrationsvorgang wird vor der Migration eine Sicherung der Wallet erstellt
         <translation>Die Session-Datei enthält kein Stadium.</translation>
     </message>
     <message>
-        <source>The session file is at the unknown stage "%1". It was probably created by a newer Dash Core.</source>
+        <source>The session file is at the unknown stage "%1". It was probably created by a newer PirateCash Core.</source>
         <translation>Die Session-Datei befindet sich im unbekannten Stadium „%1“. Sie wurde wahrscheinlich von einer neueren PirateCash-Core-Version erstellt.</translation>
     </message>
     <message>
@@ -3517,9 +3517,9 @@ Beim Migrationsvorgang wird vor der Migration eine Sicherung der Wallet erstellt
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://explore.transifex.com/dash/dash/</source>
+https://www.transifex.com/projects/p/piratecash/</source>
         <translation>Fehlt eine Sprache oder ist eine Übersetzung unvollständig? Helfen Sie hier, die Übersetzung zu verbessern:
-https://explore.transifex.com/dash/dash/</translation>
+https://www.transifex.com/projects/p/piratecash/</translation>
     </message>
     <message>
         <source>Third-party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items.&lt;br/&gt;%s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</source>
@@ -5352,7 +5352,7 @@ Möchten Sie fortfahren?</translation>
         <translation>%1 J, %2 N, %3 E / %4 ohne Stimme</translation>
     </message>
     <message>
-        <source>Invalid Dash address: %1</source>
+        <source>Invalid PirateCash address: %1</source>
         <translation>Ungültige PirateCash-Adresse: %1</translation>
     </message>
     <message>
@@ -6150,7 +6150,7 @@ Für mehr Information, wie diese Konsole zu nutzen ist, %6 tippen.
         <translation>EvoNode – %1 Collateral</translation>
     </message>
     <message>
-        <source>Additionally hosts Dash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
+        <source>Additionally hosts PirateCash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
         <translation>Betreibt zusätzlich PirateCash Platform, hat das vierfache Stimmgewicht und erhält einen größeren Anteil der Belohnungen. Erfordert eine Platform-Knoten-ID und zusätzliche Dienste.</translation>
     </message>
     <message>
@@ -6370,7 +6370,7 @@ Für mehr Information, wie diese Konsole zu nutzen ist, %6 tippen.
         <translation>Speichern Sie ihn jetzt – die Registrierung kann erst beginnen, wenn Sie das bestätigt haben.</translation>
     </message>
     <message>
-        <source>Add this line to dash.conf on your masternode server:</source>
+        <source>Add this line to piratecash.conf on your masternode server:</source>
         <translation>Fügen Sie diese Zeile in die piratecash.conf auf Ihrem Masternode-Server ein:</translation>
     </message>
     <message>
@@ -6754,8 +6754,8 @@ Für mehr Information, wie diese Konsole zu nutzen ist, %6 tippen.
         <translation>Sie ist in dieser Wallet erfasst und erscheint unter „Transaktionen“. Das Collateral bleibt in der Wallet, ist aber gesperrt, solange die Masternode registriert ist.</translation>
     </message>
     <message>
-        <source>Configure your masternode server with the operator secret key you saved, then restart dashd there.</source>
-        <translation>Konfigurieren Sie Ihren Masternode-Server mit dem gespeicherten geheimen Betreiber-Schlüssel und starten Sie dashd dort neu.</translation>
+        <source>Configure your masternode server with the operator secret key you saved, then restart piratecashd there.</source>
+        <translation>Konfigurieren Sie Ihren Masternode-Server mit dem gespeicherten geheimen Betreiber-Schlüssel und starten Sie piratecashd dort neu.</translation>
     </message>
     <message>
         <source>Configure your masternode server with the BLS secret key matching the operator public key you provided.</source>
@@ -6770,7 +6770,7 @@ Für mehr Information, wie diese Konsole zu nutzen ist, %6 tippen.
         <translation>Senden Sie eine Update-Service-Transaktion, sobald die Service-Endpunkte des Knotens bereit sind; bis dahin bleibt er inaktiv.</translation>
     </message>
     <message>
-        <source>Provision the Dash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
+        <source>Provision the PirateCash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
         <translation>Richten Sie die PirateCash-Platform-Dienste (Tenderdash und Drive) mit dem Platform-Knotenschlüssel ein, der zur registrierten Knoten-ID passt.</translation>
     </message>
     <message>
@@ -7070,7 +7070,7 @@ Für mehr Information, wie diese Konsole zu nutzen ist, %6 tippen.
         <translation>Transaktionsgebühr:</translation>
     </message>
     <message>
-        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>Wenn das Transaktionsvolumen geringer ist als der Platz in den Blöcken, können sowohl die Miner als auch die Relais-Nodes eine Mindestgebühr erheben. Es ist in Ordnung, nur diese Mindestgebühr zu zahlen, aber seien Sie sich bewusst, dass dies dazu führen kann, dass eine Transaktion nie bestätigt wird, sobald es mehr Nachfrage nach PirateCash-Transaktionen gibt, als das Netzwerk verarbeiten kann.</translation>
     </message>
     <message>
@@ -7478,7 +7478,7 @@ Für mehr Information, wie diese Konsole zu nutzen ist, %6 tippen.
         <translation>Der Betrag, der in der gewählten Einheit gesendet werden soll</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PIRATE than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>Die Gebühr wird von der versendeten  Summe abgezogen, daher wird der Empfänger einen  niedrigeren Betrag erhalten, als Sie im Feld "Betrag" angegeben haben. Bei mehreren Empfängern wird die Gebühre gleichmäßig auf alle Empfänger aufgeteilt.</translation>
     </message>
     <message>
@@ -7832,7 +7832,7 @@ Für mehr Information, wie diese Konsole zu nutzen ist, %6 tippen.
         <translation>Kopieren</translation>
     </message>
     <message>
-        <source>Add this line to dash.conf on the masternode server:</source>
+        <source>Add this line to piratecash.conf on the masternode server:</source>
         <translation>Fügen Sie diese Zeile in die piratecash.conf auf dem Masternode-Server ein:</translation>
     </message>
     <message>
@@ -8244,8 +8244,8 @@ Für mehr Information, wie diese Konsole zu nutzen ist, %6 tippen.
         <translation>demjenigen, der den Knoten betreibt</translation>
     </message>
     <message>
-        <source>Configure the masternode server with the operator secret key and restart dashd there.</source>
-        <translation>Konfigurieren Sie den Masternode-Server mit dem geheimen Betreiber-Schlüssel und starten Sie dashd dort neu.</translation>
+        <source>Configure the masternode server with the operator secret key and restart piratecashd there.</source>
+        <translation>Konfigurieren Sie den Masternode-Server mit dem geheimen Betreiber-Schlüssel und starten Sie piratecashd dort neu.</translation>
     </message>
     <message>
         <source>Send a service update once the node's addresses are ready; it stays inactive until then.</source>
@@ -9578,7 +9578,7 @@ Für mehr Information, wie diese Konsole zu nutzen ist, %6 tippen.
         <translation>Aktualisiert die Registrierung einer bestehenden Masternode. Der Betrag ist die Netto-Guthabenänderung dieser Wallet, normalerweise nur die Netzwerkgebühr.</translation>
     </message>
     <message>
-        <source>Locks funds for use on Dash Platform. The amount is this wallet's net balance change, including the network fee.</source>
+        <source>Locks funds for use on PirateCash Platform. The amount is this wallet's net balance change, including the network fee.</source>
         <translation>Sperrt Guthaben zur Verwendung auf PirateCash Platform. Der Betrag ist die Netto-Guthabenänderung dieser Wallet, einschließlich der Netzwerkgebühr.</translation>
     </message>
     <message>
@@ -10023,7 +10023,7 @@ Für mehr Information, wie diese Konsole zu nutzen ist, %6 tippen.
         <translation>Geben Sie die Adresse ein, die die Belohnungen erhalten soll.</translation>
     </message>
     <message>
-        <source>Enter a valid Dash address.</source>
+        <source>Enter a valid PirateCash address.</source>
         <translation>Geben Sie eine gültige PirateCash-Adresse ein.</translation>
     </message>
     <message>
@@ -10775,7 +10775,7 @@ Sicherung der Wallet konnte nicht wiederhergestellt werden.</translation>
         <translation>Abschnitt [%s] wird nicht erkannt.</translation>
     </message>
     <message>
-        <source>Sets a window title which is appended to "Dash Core - "</source>
+        <source>Sets a window title which is appended to "PirateCash Core - "</source>
         <translation>Legt einen Fenstertitel fest, der an „PirateCash Core - “ angehängt wird</translation>
     </message>
     <message>

@@ -462,7 +462,7 @@ RPCHelpMan listtransactions()
                         {RPCResult::Type::OBJ, "", "", Cat(Cat<std::vector<RPCResult>>(
                         {
                             {RPCResult::Type::BOOL, "involvesWatchonly", /*optional=*/true, "Only returns true if imported addresses were involved in transaction"},
-                            {RPCResult::Type::STR, "address", /*optional=*/true, "The Dash address of the transaction. Not present for\n"
+                            {RPCResult::Type::STR, "address", /*optional=*/true, "The PirateCash address of the transaction. Not present for\n"
                                   "move transactions (category = move)."},
                             {RPCResult::Type::STR, "category", "The transaction category.\n"
                                 "\"send\"                  Transactions sent.\n"
@@ -579,7 +579,7 @@ RPCHelpMan listsinceblock()
                             {RPCResult::Type::OBJ, "", "", Cat(Cat<std::vector<RPCResult>>(
                             {
                                 {RPCResult::Type::BOOL, "involvesWatchonly", /*optional=*/true, "Only returns true if imported addresses were involved in transaction"},
-                                {RPCResult::Type::STR, "address", /*optional=*/true, "The Dash address of the transaction."},
+                                {RPCResult::Type::STR, "address", /*optional=*/true, "The PirateCash address of the transaction."},
                                 {RPCResult::Type::STR, "category", "The transaction category.\n"
                                     "\"send\"                  Transactions sent.\n"
                                     "\"coinjoin\"              Transactions sent using CoinJoin funds.\n"
@@ -725,7 +725,7 @@ RPCHelpMan gettransaction()
                             {RPCResult::Type::OBJ, "", "",
                             {
                                 {RPCResult::Type::BOOL, "involvesWatchonly", /*optional=*/true, "Only returns true if imported addresses were involved in transaction"},
-                                {RPCResult::Type::STR, "address", /*optional=*/true, "The Dash address involved in the transaction."},
+                                {RPCResult::Type::STR, "address", /*optional=*/true, "The PirateCash address involved in the transaction."},
                                 {RPCResult::Type::STR, "category", "The transaction category.\n"
                                     "\"send\"                  Transactions sent.\n"
                                     "\"coinjoin\"              Transactions sent using CoinJoin funds.\n"
