@@ -4190,6 +4190,9 @@ void PeerManagerImpl::ProcessMessage(
         return;
     }
 
+    // PirateCash peers serialize the legacy PoS marker in block headers.
+    OverrideStream<CDataStream> pos_recv{&vRecv, vRecv.GetType() | SER_POSMARKER, vRecv.GetVersion()};
+
     // At this point, the outgoing message serialization version can't change.
     const CNetMsgMaker msgMaker(pfrom.GetCommonVersion());
 
@@ -5076,7 +5079,7 @@ void PeerManagerImpl::ProcessMessage(
         }
 
         CBlockHeaderAndShortTxIDs cmpctblock;
-        vRecv >> cmpctblock;
+        pos_recv >> cmpctblock;
 
         bool received_new_header = false;
         const auto blockhash = cmpctblock.header.GetHash();
@@ -5347,14 +5350,17 @@ void PeerManagerImpl::ProcessMessage(
         if (msg_type == NetMsgType::HEADERS) {
             headers.resize(nCount);
             for (unsigned int n = 0; n < nCount; n++) {
-                vRecv >> headers[n];
+                pos_recv >> headers[n];
                 ReadCompactSize(vRecv); // ignore tx count; assume it is 0.
+                if (!headers[n].IsProofOfStakeV2()) {
+                    ReadCompactSize(vRecv); // needed for legacy PirateCash oldVchBlockSig.
+                }
             }
         } else if (msg_type == NetMsgType::HEADERS2) {
             std::list<int32_t> last_unique_versions;
             for (unsigned int n = 0; n < nCount; n++) {
                 CompressibleBlockHeader block_header_compressed;
-                vRecv >> block_header_compressed;
+                pos_recv >> block_header_compressed;
                 block_header_compressed.Uncompress(headers, last_unique_versions);
                 headers.push_back(block_header_compressed);
             }
@@ -5372,7 +5378,10 @@ void PeerManagerImpl::ProcessMessage(
         }
 
         std::shared_ptr<CBlock> pblock = std::make_shared<CBlock>();
-        vRecv >> *pblock;
+        pos_recv >> *pblock;
+        if (pblock->IsProofOfStakeTX()) {
+            pblock->nFlags |= CBlockIndex::BLOCK_PROOF_OF_STAKE;
+        }
 
         LogPrint(BCLog::NET, "received block %s peer=%d\n", pblock->GetHash().ToString(), pfrom.GetId());
 
