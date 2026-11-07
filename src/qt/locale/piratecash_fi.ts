@@ -70,7 +70,7 @@
         <translation>Nämä ovat PirateCash osoitteesi maksujen lähetykseen. Tarkista aina lähetettävä määrä ja vastaanottajan osoite ennen kuin lähetät kolikoita.</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <source>These are your PirateCash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
         <translation>Nämä ovat PirateCash osoitteesi maksujen vastaanottoon. Käytä 'Luo uusi osoite' painiketta vastaanota välilehdellä luodaksesi uusia osoitteita.</translation>
     </message>
     <message>
@@ -1518,7 +1518,7 @@
         <translation>Tallennettu kohteeseen %1.</translation>
     </message>
     <message>
-        <source>Dash shared masternode — standby dissolution</source>
+        <source>PirateCash shared masternode — standby dissolution</source>
         <translation>Dashin jaettu masternode: varapurku</translation>
     </message>
     <message>
@@ -1710,7 +1710,7 @@
         <translation>Paikalliset osoitteet</translation>
     </message>
     <message>
-        <source>Network addresses that your Dash node is currently using to communicate with other nodes.</source>
+        <source>Network addresses that your PirateCash node is currently using to communicate with other nodes.</source>
         <translation>Verkko-osoitteet, joita PirateCash-solmusi käyttää tällä hetkellä kommunikointiin muiden solmujen kanssa.</translation>
     </message>
     <message>
@@ -2429,7 +2429,7 @@ Siirtoprosessi luo lompakosta varmuuskopion ennen siirtämistä. Varmuuskopiotie
         <translation>Tiedosto ei ole jaetun masternoden istuntotiedosto.</translation>
     </message>
     <message>
-        <source>The session file uses an unsupported format version. Update Dash Core to open it.</source>
+        <source>The session file uses an unsupported format version. Update PirateCash Core to open it.</source>
         <translation>Istuntotiedosto käyttää tukematonta formaattiversiota. Päivitä PirateCash Core avataksesi sen.</translation>
     </message>
     <message>
@@ -2453,7 +2453,7 @@ Siirtoprosessi luo lompakosta varmuuskopion ennen siirtämistä. Varmuuskopiotie
         <translation>Istuntotiedostossa ei ole vaihetta.</translation>
     </message>
     <message>
-        <source>The session file is at the unknown stage "%1". It was probably created by a newer Dash Core.</source>
+        <source>The session file is at the unknown stage "%1". It was probably created by a newer PirateCash Core.</source>
         <translation>Istuntotiedosto on tuntemattomassa vaiheessa "%1". Sen on luultavasti luonut uudempi PirateCash Core.</translation>
     </message>
     <message>
@@ -3517,9 +3517,9 @@ Siirtoprosessi luo lompakosta varmuuskopion ennen siirtämistä. Varmuuskopiotie
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://explore.transifex.com/dash/dash/</source>
+https://www.transifex.com/projects/p/piratecash/</source>
         <translation>Kieli puuttuu tai käännös on keskeneräinen? Auta käännösten tekemisessä täällä:
-https://explore.transifex.com/dash/dash/</translation>
+https://www.transifex.com/projects/p/piratecash/</translation>
     </message>
     <message>
         <source>Third-party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items.&lt;br/&gt;%s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</source>
@@ -5352,7 +5352,7 @@ Haluatko jatkaa?</translation>
         <translation>%1K, %2E, %3T / %4 äänestämättä</translation>
     </message>
     <message>
-        <source>Invalid Dash address: %1</source>
+        <source>Invalid PirateCash address: %1</source>
         <translation>Virheellinen PirateCash-osoite: %1</translation>
     </message>
     <message>
@@ -6150,7 +6150,7 @@ Lisätietoja tämän konsolin käytöstä saat kirjoittamalla %6.
         <translation>EvoNode: vakuus %1</translation>
     </message>
     <message>
-        <source>Additionally hosts Dash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
+        <source>Additionally hosts PirateCash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
         <translation>Isännöi lisäksi PirateCash Platformia, sillä on nelinkertainen äänipaino ja se ansaitsee suuremman osuuden palkkioista. Vaatii Alustan solmutunnuksen ja lisäpalveluita.</translation>
     </message>
     <message>
@@ -6370,7 +6370,7 @@ Lisätietoja tämän konsolin käytöstä saat kirjoittamalla %6.
         <translation>Tallenna se nyt: rekisteröintiä ei voi aloittaa, ennen kuin vahvistat sen.</translation>
     </message>
     <message>
-        <source>Add this line to dash.conf on your masternode server:</source>
+        <source>Add this line to piratecash.conf on your masternode server:</source>
         <translation>Lisää tämä rivi masternode-palvelimesi piratecash.conf-tiedostoon:</translation>
     </message>
     <message>
@@ -6754,8 +6754,8 @@ Lisätietoja tämän konsolin käytöstä saat kirjoittamalla %6.
         <translation>Se on tallennettu tähän lompakkoon ja näkyy Siirtotapahtumat-välilehdellä. Vakuus pysyy lompakossa, mutta on lukittu niin kauan kuin masternode on rekisteröity.</translation>
     </message>
     <message>
-        <source>Configure your masternode server with the operator secret key you saved, then restart dashd there.</source>
-        <translation>Määritä masternode-palvelimesi tallentamallasi operaattorin salaisella avaimella ja käynnistä dashd siellä uudelleen.</translation>
+        <source>Configure your masternode server with the operator secret key you saved, then restart piratecashd there.</source>
+        <translation>Määritä masternode-palvelimesi tallentamallasi operaattorin salaisella avaimella ja käynnistä piratecashd siellä uudelleen.</translation>
     </message>
     <message>
         <source>Configure your masternode server with the BLS secret key matching the operator public key you provided.</source>
@@ -6770,7 +6770,7 @@ Lisätietoja tämän konsolin käytöstä saat kirjoittamalla %6.
         <translation>Lähetä Päivitä palvelu -siirtotapahtuma, kun solmun palvelun päätepisteet ovat valmiina; solmu pysyy passiivisena siihen asti.</translation>
     </message>
     <message>
-        <source>Provision the Dash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
+        <source>Provision the PirateCash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
         <translation>Ota käyttöön PirateCash Platformin palvelut (Tenderdash ja Drive) rekisteröimääsi solmutunnusta vastaavalla Alustan solmuavaimella.</translation>
     </message>
     <message>
@@ -7070,7 +7070,7 @@ Lisätietoja tämän konsolin käytöstä saat kirjoittamalla %6.
         <translation>Siirtomaksu:</translation>
     </message>
     <message>
-        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>Kun siirtotapahtumien määrä on pienempi kuin lohkoissa oleva tila, louhijat ja välittävät solmut voivat pakottaa vähimmäismaksun. Vain tämän vähimmäismaksun maksaminen on ihan hyvä, mutta huomaa että tämä voi johtaa tapahtumaan jota ei koskaan vahvisteta, kun piratecash-tapahtumien kysyntä ylittää verkon kapasiteetin.</translation>
     </message>
     <message>
@@ -7478,7 +7478,7 @@ Lisätietoja tämän konsolin käytöstä saat kirjoittamalla %6.
         <translation>Valitun yksikön lähetettävä määrä</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PIRATE than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>Siirtomaksu vähennetään lähetettävästä määrästä. Vastaanottaja saa pienemmän määrän kuin mitä laitoit määrä kenttään. Jos useampia vastaanottajia on valittu, siirtomaksu jaetaan tasan.</translation>
     </message>
     <message>
@@ -7832,7 +7832,7 @@ Lisätietoja tämän konsolin käytöstä saat kirjoittamalla %6.
         <translation>Kopioi</translation>
     </message>
     <message>
-        <source>Add this line to dash.conf on the masternode server:</source>
+        <source>Add this line to piratecash.conf on the masternode server:</source>
         <translation>Lisää tämä rivi masternode-palvelimen piratecash.conf-tiedostoon:</translation>
     </message>
     <message>
@@ -8244,8 +8244,8 @@ Lisätietoja tämän konsolin käytöstä saat kirjoittamalla %6.
         <translation>solmun ylläpitäjä</translation>
     </message>
     <message>
-        <source>Configure the masternode server with the operator secret key and restart dashd there.</source>
-        <translation>Määritä masternode-palvelimelle operaattorin salainen avain ja käynnistä dashd siellä uudelleen.</translation>
+        <source>Configure the masternode server with the operator secret key and restart piratecashd there.</source>
+        <translation>Määritä masternode-palvelimelle operaattorin salainen avain ja käynnistä piratecashd siellä uudelleen.</translation>
     </message>
     <message>
         <source>Send a service update once the node's addresses are ready; it stays inactive until then.</source>
@@ -9578,7 +9578,7 @@ Lisätietoja tämän konsolin käytöstä saat kirjoittamalla %6.
         <translation>Päivittää olemassa olevan masternoden rekisteröinnin. Summa on tämän lompakon nettosaldomuutos, yleensä vain verkon siirtomaksu.</translation>
     </message>
     <message>
-        <source>Locks funds for use on Dash Platform. The amount is this wallet's net balance change, including the network fee.</source>
+        <source>Locks funds for use on PirateCash Platform. The amount is this wallet's net balance change, including the network fee.</source>
         <translation>Lukitsee varoja käytettäväksi PirateCash Platformilla. Summa on tämän lompakon nettosaldomuutos, siirtomaksu mukaan lukien.</translation>
     </message>
     <message>
@@ -10023,7 +10023,7 @@ Lisätietoja tämän konsolin käytöstä saat kirjoittamalla %6.
         <translation>Anna osoite, joka vastaanottaa palkkiot.</translation>
     </message>
     <message>
-        <source>Enter a valid Dash address.</source>
+        <source>Enter a valid PirateCash address.</source>
         <translation>Anna kelvollinen PirateCash-osoite.</translation>
     </message>
     <message>
@@ -10776,7 +10776,7 @@ Vähennä uakommenttien määrää tai kokoa.</translation>
         <translation>Osio [%s] ei ole tunnistettavissa.</translation>
     </message>
     <message>
-        <source>Sets a window title which is appended to "Dash Core - "</source>
+        <source>Sets a window title which is appended to "PirateCash Core - "</source>
         <translation>Asettaa ikkunan otsikon, joka lisätään merkkijonon "PirateCash Core - " perään</translation>
     </message>
     <message>

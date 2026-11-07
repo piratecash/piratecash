@@ -70,7 +70,7 @@
         <translation>這些是你要付款過去的達世幣位址。在付錢之前，務必要檢查金額和收款位址是否正確。</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <source>These are your PirateCash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
         <translation>這些是給您用於接收付款的達世幣位址。 使用接收選項卡中的“創建新接收位址”按鈕來創建新位址。</translation>
     </message>
     <message>
@@ -1518,7 +1518,7 @@
         <translation>已儲存至 %1。</translation>
     </message>
     <message>
-        <source>Dash shared masternode — standby dissolution</source>
+        <source>PirateCash shared masternode — standby dissolution</source>
         <translation>達世幣共享主節點：備用解散交易</translation>
     </message>
     <message>
@@ -1710,7 +1710,7 @@
         <translation>本機位址</translation>
     </message>
     <message>
-        <source>Network addresses that your Dash node is currently using to communicate with other nodes.</source>
+        <source>Network addresses that your PirateCash node is currently using to communicate with other nodes.</source>
         <translation>您的達世幣節點目前用來與其他節點通訊的網路位址。</translation>
     </message>
     <message>
@@ -2429,7 +2429,7 @@ The migration process will create a backup of the wallet before migrating. This 
         <translation>此檔案不是共享主節點會話檔。</translation>
     </message>
     <message>
-        <source>The session file uses an unsupported format version. Update Dash Core to open it.</source>
+        <source>The session file uses an unsupported format version. Update PirateCash Core to open it.</source>
         <translation>此會話檔使用了不支援的格式版本。請更新達世幣核心後再開啟。</translation>
     </message>
     <message>
@@ -2453,7 +2453,7 @@ The migration process will create a backup of the wallet before migrating. This 
         <translation>會話檔沒有階段資訊。</translation>
     </message>
     <message>
-        <source>The session file is at the unknown stage "%1". It was probably created by a newer Dash Core.</source>
+        <source>The session file is at the unknown stage "%1". It was probably created by a newer PirateCash Core.</source>
         <translation>會話檔處於未知階段「%1」。它可能是由較新版本的達世幣核心建立的。</translation>
     </message>
     <message>
@@ -3517,9 +3517,9 @@ The migration process will create a backup of the wallet before migrating. This 
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://explore.transifex.com/dash/dash/</source>
+https://www.transifex.com/projects/p/piratecash/</source>
         <translation>語言缺失或翻譯不完整? 在這裡幫助貢獻翻譯:
-https://explore.transifex.com/dash/dash/</translation>
+https://www.transifex.com/projects/p/piratecash/</translation>
     </message>
     <message>
         <source>Third-party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items.&lt;br/&gt;%s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</source>
@@ -5352,7 +5352,7 @@ Do you wish to continue?</source>
         <translation>%1 贊成、%2 反對、%3 棄權 / %4 未投票</translation>
     </message>
     <message>
-        <source>Invalid Dash address: %1</source>
+        <source>Invalid PirateCash address: %1</source>
         <translation>無效的達世幣位址：%1</translation>
     </message>
     <message>
@@ -6150,7 +6150,7 @@ For more information on using this console, type %6.
         <translation>EvoNode — 抵押品 %1</translation>
     </message>
     <message>
-        <source>Additionally hosts Dash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
+        <source>Additionally hosts PirateCash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
         <translation>另外託管達世幣平台，擁有四倍投票權重，並獲得更大份額的獎勵。需要平台節點 ID 和額外的服務。</translation>
     </message>
     <message>
@@ -6370,7 +6370,7 @@ For more information on using this console, type %6.
         <translation>請立即儲存，確認之前無法開始註冊。</translation>
     </message>
     <message>
-        <source>Add this line to dash.conf on your masternode server:</source>
+        <source>Add this line to piratecash.conf on your masternode server:</source>
         <translation>將下面這一行加入您主節點伺服器上的 piratecash.conf：</translation>
     </message>
     <message>
@@ -6754,8 +6754,8 @@ For more information on using this console, type %6.
         <translation>它已記錄在此錢包中，並顯示於「交易」下。抵押品會留在錢包中，但在主節點註冊期間會被鎖定。</translation>
     </message>
     <message>
-        <source>Configure your masternode server with the operator secret key you saved, then restart dashd there.</source>
-        <translation>請使用您儲存的運營者私密金鑰設定主節點伺服器，然後在該處重新啟動 dashd。</translation>
+        <source>Configure your masternode server with the operator secret key you saved, then restart piratecashd there.</source>
+        <translation>請使用您儲存的運營者私密金鑰設定主節點伺服器，然後在該處重新啟動 piratecashd。</translation>
     </message>
     <message>
         <source>Configure your masternode server with the BLS secret key matching the operator public key you provided.</source>
@@ -6770,7 +6770,7 @@ For more information on using this console, type %6.
         <translation>待節點的服務端點準備就緒後，請發送更新服務交易；在此之前節點會保持不活躍。</translation>
     </message>
     <message>
-        <source>Provision the Dash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
+        <source>Provision the PirateCash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
         <translation>請使用與您所註冊節點 ID 相符的平台節點金鑰，部署達世幣平台服務（Tenderdash 和 Drive）。</translation>
     </message>
     <message>
@@ -7070,7 +7070,7 @@ For more information on using this console, type %6.
         <translation>交易手續費:</translation>
     </message>
     <message>
-        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>當交易量小於區塊中的空間時，礦工和中繼節點可能會強制執行最低費用。只支付最低費用就可以了，但請注意，一旦對達世幣交易的需求超過網路處理能力，這可能會導致交易永遠無法確認。</translation>
     </message>
     <message>
@@ -7478,7 +7478,7 @@ For more information on using this console, type %6.
         <translation>在所選單位中發送的金額</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PIRATE than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>手續費將從發送金額中扣除。接收者將收到的達世幣金額將會比您在金額字段中輸入的金額為少。 如果選擇了多個收款人，該費用將會被平均攤分。</translation>
     </message>
     <message>
@@ -7832,7 +7832,7 @@ For more information on using this console, type %6.
         <translation>複製</translation>
     </message>
     <message>
-        <source>Add this line to dash.conf on the masternode server:</source>
+        <source>Add this line to piratecash.conf on the masternode server:</source>
         <translation>將下面這一行加入主節點伺服器上的 piratecash.conf：</translation>
     </message>
     <message>
@@ -8244,8 +8244,8 @@ For more information on using this console, type %6.
         <translation>運行節點的人</translation>
     </message>
     <message>
-        <source>Configure the masternode server with the operator secret key and restart dashd there.</source>
-        <translation>請使用運營者私密金鑰設定主節點伺服器，然後在該處重新啟動 dashd。</translation>
+        <source>Configure the masternode server with the operator secret key and restart piratecashd there.</source>
+        <translation>請使用運營者私密金鑰設定主節點伺服器，然後在該處重新啟動 piratecashd。</translation>
     </message>
     <message>
         <source>Send a service update once the node's addresses are ready; it stays inactive until then.</source>
@@ -9578,7 +9578,7 @@ For more information on using this console, type %6.
         <translation>更新現有的主節點註冊。金額為此錢包的淨餘額變動，通常只有網路手續費。</translation>
     </message>
     <message>
-        <source>Locks funds for use on Dash Platform. The amount is this wallet's net balance change, including the network fee.</source>
+        <source>Locks funds for use on PirateCash Platform. The amount is this wallet's net balance change, including the network fee.</source>
         <translation>鎖定資金以用於達世幣平台。金額為此錢包的淨餘額變動，包含網路手續費。</translation>
     </message>
     <message>
@@ -10023,7 +10023,7 @@ For more information on using this console, type %6.
         <translation>請輸入應接收獎勵的位址。</translation>
     </message>
     <message>
-        <source>Enter a valid Dash address.</source>
+        <source>Enter a valid PirateCash address.</source>
         <translation>請輸入有效的達世幣位址。</translation>
     </message>
     <message>
@@ -10775,7 +10775,7 @@ Unable to restore backup of wallet.</source>
         <translation>無法識別節 [%s] 。</translation>
     </message>
     <message>
-        <source>Sets a window title which is appended to "Dash Core - "</source>
+        <source>Sets a window title which is appended to "PirateCash Core - "</source>
         <translation>設定附加在 "PirateCash Core - " 之後的視窗標題</translation>
     </message>
     <message>

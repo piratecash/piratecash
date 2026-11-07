@@ -1,6 +1,6 @@
 # assumeutxo
 
-Assumeutxo is a feature that allows fast bootstrapping of a validating dashd
+Assumeutxo is a feature that allows fast bootstrapping of a validating piratecashd
 instance with a very similar security model to assumevalid.
 
 ## Loading a snapshot
@@ -86,7 +86,7 @@ data.
 
 `ChainstateManager` manages a single Chainstate object, for which
 `m_snapshot_blockhash` is null. This chainstate is (maybe obviously)
-considered active. This is the "traditional" mode of operation for dashd.
+considered active. This is the "traditional" mode of operation for piratecashd.
 
 |    |    |
 | ---------- | ----------- |
@@ -147,7 +147,7 @@ Once the tip of the background chainstate hits the base block of the snapshot
 chainstate, we stop use of the background chainstate by setting `m_disabled`, in
 `MaybeCompleteSnapshotValidation()`, which is checked in `ActivateBestChain()`. We hash the
 background chainstate's UTXO set contents and ensure it matches the compiled value in
-`CMainParams::m_assumeutxo_data`. In Dash, completion additionally compares the
+`CMainParams::m_assumeutxo_data`. In PirateCash, completion additionally compares the
 deterministic masternode-list hash the background chainstate derived at the base block
 against the hash recorded at snapshot activation, and the EvoDB best-block markers
 against both chainstates' coins tips; any divergence fails completion with
@@ -160,7 +160,7 @@ against both chainstates' coins tips; any divergence fails completion with
 
 The background chainstate data lingers on disk until the program is restarted.
 
-### Dashd restarts sometime after snapshot validation has completed
+### piratecashd restarts sometime after snapshot validation has completed
 
 After a shutdown and subsequent restart, `LoadChainstate()` cleans up the background
 chainstate with `ValidatedSnapshotCleanup()`, which renames the `chainstate_snapshot`

@@ -643,7 +643,7 @@ QString TransactionTableModel::formatTooltip(const TransactionRecord *rec) const
                                       "balance change, normally only the network fee.");
         break;
     case TransactionRecord::AssetLock:
-        tooltip += QString("\n") + tr("Locks funds for use on Dash Platform. The amount is this wallet's net balance "
+        tooltip += QString("\n") + tr("Locks funds for use on PirateCash Platform. The amount is this wallet's net balance "
                                       "change, including the network fee.");
         break;
     default:

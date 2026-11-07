@@ -378,7 +378,7 @@ QString UpdateShareDialog::RewardAddressProblem(const QString& address, const QS
         return QCoreApplication::translate("UpdateShareDialog", "Enter the address that should receive the rewards.");
     }
     if (!IsValidDestination(DecodeDestination(trimmed.toStdString()))) {
-        return QCoreApplication::translate("UpdateShareDialog", "Enter a valid Dash address.");
+        return QCoreApplication::translate("UpdateShareDialog", "Enter a valid PirateCash address.");
     }
     if (trimmed == voting_address) {
         return QCoreApplication::translate("UpdateShareDialog",
@@ -1730,7 +1730,7 @@ QString DissolveDialog::standbyFileText() const
     const int blocks_left{std::max(penalty_free_height - m_current_height - 1, 0)};
 
     QStringList lines;
-    lines << tr("Dash shared masternode — standby dissolution");
+    lines << tr("PirateCash shared masternode — standby dissolution");
     lines << tr("Masternode: %1").arg(m_protx_hash);
     lines << shareLabel(m_sb_share_index);
     lines << tr("Created: %1").arg(QDate::currentDate().toString(Qt::ISODate));
