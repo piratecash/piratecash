@@ -504,7 +504,7 @@ void SharedMnWalkthroughTests::walkthrough()
     coord.m_early_period_spin->setValue(30);
     coord.m_early_penalty_field->setValue(5 * COIN);
     Shots().capture(&coord, "coord", "06-exit-terms",
-                    "Exit terms: a 30 block early period and a 5 DASH early-exit penalty, with the plain "
+                    "Exit terms: a 30 block early period and a 5 PIRATE early-exit penalty, with the plain "
                     "language preview");
 
     coord.m_next_button->click();
@@ -534,7 +534,7 @@ void SharedMnWalkthroughTests::walkthrough()
     coord.m_next_button->click();
     QCOMPARE(int(coord.currentPage()), int(SharedMnCreateDialog::PageSecret));
     Shots().capture(&coord, "coord", "09-save-operator-key",
-                    "Save operator key gate: the generated secret, the dash.conf line and the 4 character "
+                    "Save operator key gate: the generated secret, the piratecash.conf line and the 4 character "
                     "confirmation");
     const QString operator_secret{coord.m_operator_widget->secretHex()};
     QVERIFY(!operator_secret.isEmpty());

@@ -70,7 +70,7 @@
         <translation>Đây là các địa chỉ PirateCash của bạn để gửi thanh toán. Luôn luôn kiểm tra số tiền và địa chỉ nhận trước khi bạn gửi tiền.</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <source>These are your PirateCash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
         <translation>Đây là các địa chỉ PirateCash của bạn để nhận thanh toán. Sử dụng nút 'Tạo địa chỉ nhận mới' trong tab nhận để tạo địa chỉ mới.</translation>
     </message>
     <message>
@@ -1518,7 +1518,7 @@
         <translation>Đã lưu vào %1.</translation>
     </message>
     <message>
-        <source>Dash shared masternode — standby dissolution</source>
+        <source>PirateCash shared masternode — standby dissolution</source>
         <translation>Masternode chung PirateCash — giải thể dự phòng</translation>
     </message>
     <message>
@@ -1710,7 +1710,7 @@
         <translation>Địa chỉ cục bộ</translation>
     </message>
     <message>
-        <source>Network addresses that your Dash node is currently using to communicate with other nodes.</source>
+        <source>Network addresses that your PirateCash node is currently using to communicate with other nodes.</source>
         <translation>Các địa chỉ mạng mà nút PirateCash của bạn hiện đang dùng để giao tiếp với các nút khác.</translation>
     </message>
     <message>
@@ -2429,7 +2429,7 @@ Quá trình di chuyển sẽ tạo một bản sao lưu của ví trước khi d
         <translation>Tệp không phải là tệp phiên masternode chung.</translation>
     </message>
     <message>
-        <source>The session file uses an unsupported format version. Update Dash Core to open it.</source>
+        <source>The session file uses an unsupported format version. Update PirateCash Core to open it.</source>
         <translation>Tệp phiên dùng phiên bản định dạng không được hỗ trợ. Hãy cập nhật PirateCash Core để mở nó.</translation>
     </message>
     <message>
@@ -2453,7 +2453,7 @@ Quá trình di chuyển sẽ tạo một bản sao lưu của ví trước khi d
         <translation>Tệp phiên không có giai đoạn.</translation>
     </message>
     <message>
-        <source>The session file is at the unknown stage "%1". It was probably created by a newer Dash Core.</source>
+        <source>The session file is at the unknown stage "%1". It was probably created by a newer PirateCash Core.</source>
         <translation>Tệp phiên đang ở giai đoạn không xác định "%1". Có thể nó được tạo bởi một bản PirateCash Core mới hơn.</translation>
     </message>
     <message>
@@ -3517,9 +3517,9 @@ Quá trình di chuyển sẽ tạo một bản sao lưu của ví trước khi d
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://explore.transifex.com/dash/dash/</source>
+https://www.transifex.com/projects/p/piratecash/</source>
         <translation>Thiếu ngôn ngữ hoặc bản dịch chưa hoàn chỉnh? Giúp đóng góp bản dịch tại đây:
-https://explore.transifex.com/dash/dash/</translation>
+https://www.transifex.com/projects/p/piratecash/</translation>
     </message>
     <message>
         <source>Third-party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items.&lt;br/&gt;%s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</source>
@@ -5352,7 +5352,7 @@ Bạn có muốn tiếp tục không?</translation>
         <translation>%1 Có, %2 Không, %3 Trắng / %4 chưa bỏ phiếu</translation>
     </message>
     <message>
-        <source>Invalid Dash address: %1</source>
+        <source>Invalid PirateCash address: %1</source>
         <translation>Địa chỉ PirateCash không hợp lệ: %1</translation>
     </message>
     <message>
@@ -6150,7 +6150,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>EvoNode — tài sản thế chấp %1</translation>
     </message>
     <message>
-        <source>Additionally hosts Dash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
+        <source>Additionally hosts PirateCash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
         <translation>Ngoài ra còn lưu trữ PirateCash Platform, có trọng số bỏ phiếu gấp bốn lần và nhận phần thưởng lớn hơn. Yêu cầu ID nút Platform và các dịch vụ bổ sung.</translation>
     </message>
     <message>
@@ -6370,7 +6370,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Hãy lưu ngay bây giờ — không thể bắt đầu đăng ký cho đến khi bạn xác nhận.</translation>
     </message>
     <message>
-        <source>Add this line to dash.conf on your masternode server:</source>
+        <source>Add this line to piratecash.conf on your masternode server:</source>
         <translation>Thêm dòng này vào piratecash.conf trên máy chủ masternode của bạn:</translation>
     </message>
     <message>
@@ -6754,8 +6754,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Nó được ghi trong ví này và hiển thị ở mục Giao dịch. Tài sản thế chấp vẫn nằm trong ví nhưng bị khóa trong thời gian masternode còn được đăng ký.</translation>
     </message>
     <message>
-        <source>Configure your masternode server with the operator secret key you saved, then restart dashd there.</source>
-        <translation>Hãy cấu hình máy chủ masternode của bạn với khóa bí mật của nhà vận hành mà bạn đã lưu, rồi khởi động lại dashd ở đó.</translation>
+        <source>Configure your masternode server with the operator secret key you saved, then restart piratecashd there.</source>
+        <translation>Hãy cấu hình máy chủ masternode của bạn với khóa bí mật của nhà vận hành mà bạn đã lưu, rồi khởi động lại piratecashd ở đó.</translation>
     </message>
     <message>
         <source>Configure your masternode server with the BLS secret key matching the operator public key you provided.</source>
@@ -6770,7 +6770,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Hãy gửi giao dịch Cập nhật dịch vụ sau khi các điểm cuối dịch vụ của nút đã sẵn sàng; cho đến lúc đó nút sẽ không hoạt động.</translation>
     </message>
     <message>
-        <source>Provision the Dash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
+        <source>Provision the PirateCash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
         <translation>Hãy thiết lập các dịch vụ PirateCash Platform (Tenderdash và Drive) với khóa nút Platform khớp với ID nút mà bạn đã đăng ký.</translation>
     </message>
     <message>
@@ -7070,7 +7070,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Phí giao dịch</translation>
     </message>
     <message>
-        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>Khi có ít giao dịch hơn không gian trong các khối, thợ đào cũng như các nút chuyển tiếp có thể áp dụng mức phí tối thiểu. Chỉ trả mức phí tối thiểu này là được, nhưng hãy lưu ý rằng điều này có thể dẫn đến giao dịch không bao giờ được xác nhận khi có nhiều nhu cầu giao dịch piratecash hơn mức mạng có thể xử lý.</translation>
     </message>
     <message>
@@ -7478,7 +7478,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Số tiền gửi trong đơn vị đã chọn</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PIRATE than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>Phí sẽ được trừ trong khoản tiền mà bạn gửi. Bên nhận sẽ nhận được một khoản nhỏ hơn số PirateCash mà bạn nhập vào ở trong trường số lượng. Nếu có nhiều người nhận được chọn, phí được chia đều cho mọi người.</translation>
     </message>
     <message>
@@ -7832,7 +7832,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Sao chép</translation>
     </message>
     <message>
-        <source>Add this line to dash.conf on the masternode server:</source>
+        <source>Add this line to piratecash.conf on the masternode server:</source>
         <translation>Thêm dòng này vào piratecash.conf trên máy chủ masternode:</translation>
     </message>
     <message>
@@ -8244,8 +8244,8 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>người vận hành nút</translation>
     </message>
     <message>
-        <source>Configure the masternode server with the operator secret key and restart dashd there.</source>
-        <translation>Hãy cấu hình máy chủ masternode với khóa bí mật của nhà vận hành và khởi động lại dashd ở đó.</translation>
+        <source>Configure the masternode server with the operator secret key and restart piratecashd there.</source>
+        <translation>Hãy cấu hình máy chủ masternode với khóa bí mật của nhà vận hành và khởi động lại piratecashd ở đó.</translation>
     </message>
     <message>
         <source>Send a service update once the node's addresses are ready; it stays inactive until then.</source>
@@ -9578,7 +9578,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Cập nhật một đăng ký masternode hiện có. Số tiền là thay đổi số dư ròng của ví này, thường chỉ là phí mạng.</translation>
     </message>
     <message>
-        <source>Locks funds for use on Dash Platform. The amount is this wallet's net balance change, including the network fee.</source>
+        <source>Locks funds for use on PirateCash Platform. The amount is this wallet's net balance change, including the network fee.</source>
         <translation>Khóa tiền để dùng trên PirateCash Platform. Số tiền là thay đổi số dư ròng của ví này, bao gồm phí mạng.</translation>
     </message>
     <message>
@@ -10023,7 +10023,7 @@ Nhập %5 để xem tổng quan về các lệnh có sẵn.
         <translation>Hãy nhập địa chỉ sẽ nhận phần thưởng.</translation>
     </message>
     <message>
-        <source>Enter a valid Dash address.</source>
+        <source>Enter a valid PirateCash address.</source>
         <translation>Hãy nhập địa chỉ PirateCash hợp lệ.</translation>
     </message>
     <message>
@@ -10775,7 +10775,7 @@ Không thể khôi phục bản sao lưu của ví.</translation>
         <translation>Phần [%s] không được nhận diện.</translation>
     </message>
     <message>
-        <source>Sets a window title which is appended to "Dash Core - "</source>
+        <source>Sets a window title which is appended to "PirateCash Core - "</source>
         <translation>Đặt tiêu đề cửa sổ được nối vào sau "PirateCash Core - "</translation>
     </message>
     <message>

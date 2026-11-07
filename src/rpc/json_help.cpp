@@ -39,7 +39,7 @@ const std::map<std::string, RPCResult> RPCRESULT_MAP{{
         {RPCResult::Type::ARR, "platform_https", /*optional=*/true, "Addresses used for Platform HTTPS API",
             {{RPCResult::Type::STR, "address", ""}}},
     }}},
-    RESULT_MAP_ENTRY("collateralAddress", RPCResult::Type::STR, "Dash address used for collateral"),
+    RESULT_MAP_ENTRY("collateralAddress", RPCResult::Type::STR, "PirateCash address used for collateral"),
     RESULT_MAP_ENTRY("collateralHash", RPCResult::Type::STR_HEX, "Collateral transaction hash"),
     RESULT_MAP_ENTRY("collateralIndex", RPCResult::Type::NUM, "Collateral transaction output index"),
     RESULT_MAP_ENTRY("consecutivePayments", RPCResult::Type::NUM, "Consecutive payments masternode has received in payment cycle"),
@@ -52,17 +52,17 @@ const std::map<std::string, RPCResult> RPCRESULT_MAP{{
     RESULT_MAP_ENTRY("memberIndex", RPCResult::Type::NUM, "Quorum member index"),
     RESULT_MAP_ENTRY("merkleRootMNList", RPCResult::Type::STR_HEX, "Merkle root of the masternode list"),
     RESULT_MAP_ENTRY("merkleRootQuorums", RPCResult::Type::STR_HEX, "Merkle root of the quorum list"),
-    RESULT_MAP_ENTRY("operatorPayoutAddress", RPCResult::Type::STR, "Dash address used for operator reward payments"),
+    RESULT_MAP_ENTRY("operatorPayoutAddress", RPCResult::Type::STR, "PirateCash address used for operator reward payments"),
     RESULT_MAP_ENTRY("operatorReward", RPCResult::Type::NUM, "Fraction in %% of reward shared with the operator between 0 and 10000"),
     RESULT_MAP_ENTRY("outpoint", RPCResult::Type::STR_HEX,"The outpoint of the masternode"),
-    RESULT_MAP_ENTRY("ownerAddress", RPCResult::Type::STR, "Dash address used for payee updates and proposal voting"),
-    RESULT_MAP_ENTRY("payoutAddress", RPCResult::Type::STR, "Dash address used for masternode reward payments"),
+    RESULT_MAP_ENTRY("ownerAddress", RPCResult::Type::STR, "PirateCash address used for payee updates and proposal voting"),
+    RESULT_MAP_ENTRY("payoutAddress", RPCResult::Type::STR, "PirateCash address used for masternode reward payments"),
     {"payouts",
         {RPCResult::Type::ARR, "payouts", "Owner masternode reward payout shares",
     {
         {RPCResult::Type::OBJ, "", "",
         {
-            {RPCResult::Type::STR, "address", "Dash address used for this owner payout"},
+            {RPCResult::Type::STR, "address", "PirateCash address used for this owner payout"},
             {RPCResult::Type::STR_HEX, "script", "Owner payout scriptPubKey"},
             {RPCResult::Type::NUM, "reward", "Owner payout share in basis points"},
         }},
@@ -87,17 +87,17 @@ const std::map<std::string, RPCResult> RPCRESULT_MAP{{
         {RPCResult::Type::OBJ, "", "",
         {
             {RPCResult::Type::NUM, "amount", "Collateral contribution in duffs"},
-            {RPCResult::Type::STR, "refundAddress", "Dash address the principal is refunded to at dissolution"},
+            {RPCResult::Type::STR, "refundAddress", "PirateCash address the principal is refunded to at dissolution"},
             {RPCResult::Type::STR_HEX, "refundScript", "Refund scriptPubKey"},
-            {RPCResult::Type::STR, "rewardAddress", "Dash address this share's owner rewards are paid to"},
+            {RPCResult::Type::STR, "rewardAddress", "PirateCash address this share's owner rewards are paid to"},
             {RPCResult::Type::STR_HEX, "rewardScript", "Reward scriptPubKey"},
-            {RPCResult::Type::STR, "ownerAddress", "Dash address of the share owner key"},
+            {RPCResult::Type::STR, "ownerAddress", "PirateCash address of the share owner key"},
         }},
     }}},
     RESULT_MAP_ENTRY("type", RPCResult::Type::NUM, "Masternode type"),
     RESULT_MAP_ENTRY("type_str", RPCResult::Type::STR, "Masternode type (human-readable string)"),
     RESULT_MAP_ENTRY("version", RPCResult::Type::NUM, "Special transaction version"),
-    RESULT_MAP_ENTRY("votingAddress", RPCResult::Type::STR, "Dash address used for voting"),
+    RESULT_MAP_ENTRY("votingAddress", RPCResult::Type::STR, "PirateCash address used for voting"),
 }};
 #undef RESULT_MAP_ENTRY
 } // anonymous namespace
@@ -119,7 +119,7 @@ RPCResult CAssetLockPayload::GetJsonHelp(const std::string& key, bool optional)
         GetRpcResult("version"),
         {RPCResult::Type::ARR, "creditOutputs", "", {
             {RPCResult::Type::OBJ, "", "", {
-                {RPCResult::Type::NUM, "value", "The value in Dash"},
+                {RPCResult::Type::NUM, "value", "The value in PIRATE"},
                 {RPCResult::Type::NUM, "valueSat", "The value in duffs"},
                 {RPCResult::Type::OBJ, "scriptPubKey", "", {
                     {RPCResult::Type::STR, "asm", "The asm"},
@@ -303,7 +303,7 @@ RPCResult CProUpShareTx::GetJsonHelp(const std::string& key, bool optional)
         GetRpcResult("version"),
         GetRpcResult("proTxHash"),
         {RPCResult::Type::NUM, "shareIndex", "Index into the share table of the share being updated"},
-        {RPCResult::Type::STR, "rewardAddress", /*optional=*/true, "New Dash address for this share's owner rewards (omitted only when decoding a payload whose reward script is not P2PKH/P2SH)"},
+        {RPCResult::Type::STR, "rewardAddress", /*optional=*/true, "New PirateCash address for this share's owner rewards (omitted only when decoding a payload whose reward script is not P2PKH/P2SH)"},
         GetRpcResult("inputsHash"),
     }};
 }

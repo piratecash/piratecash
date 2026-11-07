@@ -27,7 +27,7 @@ static CAmount GetReceived(const CWallet& wallet, const UniValue& params, bool b
         // Get the address
         CTxDestination dest = DecodeDestination(params[0].get_str());
         if (!IsValidDestination(dest)) {
-            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Dash address");
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid PirateCash address");
         }
         addresses.emplace_back(dest);
     }
@@ -81,7 +81,7 @@ RPCHelpMan getreceivedbyaddress()
     return RPCHelpMan{"getreceivedbyaddress",
                 "\nReturns the total amount received by the given address in transactions with at least minconf confirmations.\n",
                 {
-                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Dash address for transactions."},
+                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The PirateCash address for transactions."},
                     {"minconf", RPCArg::Type::NUM, RPCArg::Default{1}, "Only include transactions confirmed at least this many times."},
                     {"addlocked", RPCArg::Type::BOOL, RPCArg::Default{false}, "Whether to include transactions locked via InstantSend."},
                     {"include_immature_coinbase", RPCArg::Type::BOOL, RPCArg::Default{false}, "Include immature coinbase transactions."},
@@ -293,7 +293,7 @@ RPCHelpMan lockunspent()
                 "\nUpdates list of temporarily unspendable outputs.\n"
                 "Temporarily lock (unlock=false) or unlock (unlock=true) specified transaction outputs.\n"
                 "If no transaction outputs are specified when unlocking then all current locked transaction outputs are unlocked.\n"
-                "A locked transaction output will not be chosen by automatic coin selection, when spending Dash.\n"
+                "A locked transaction output will not be chosen by automatic coin selection, when spending PIRATE.\n"
                 "Manually selected coins are automatically unlocked.\n"
                 "Locks are stored in memory only, unless persistent=true, in which case they will be written to the\n"
                 "wallet database and loaded on node start. Unwritten (persistent=false) locks are always cleared\n"
@@ -553,9 +553,9 @@ RPCHelpMan listunspent()
                 {
                     {"minconf", RPCArg::Type::NUM, RPCArg::Default{1}, "The minimum confirmations to filter"},
                     {"maxconf", RPCArg::Type::NUM, RPCArg::Default{9999999}, "The maximum confirmations to filter"},
-                    {"addresses", RPCArg::Type::ARR, RPCArg::Default{UniValue::VARR}, "The Dash addresses to filter",
+                    {"addresses", RPCArg::Type::ARR, RPCArg::Default{UniValue::VARR}, "The PirateCash addresses to filter",
                         {
-                            {"address", RPCArg::Type::STR, RPCArg::Optional::OMITTED, "Dash address"},
+                            {"address", RPCArg::Type::STR, RPCArg::Optional::OMITTED, "PirateCash address"},
                         },
                     },
                     {"include_unsafe", RPCArg::Type::BOOL, RPCArg::Default{true}, "Include outputs that are not safe to spend\n"
@@ -580,7 +580,7 @@ RPCHelpMan listunspent()
                         {
                             {RPCResult::Type::STR_HEX, "txid", "the transaction id"},
                             {RPCResult::Type::NUM, "vout", "the vout value"},
-                            {RPCResult::Type::STR, "address", /*optional=*/true, "the Dash address"},
+                            {RPCResult::Type::STR, "address", /*optional=*/true, "the PirateCash address"},
                             {RPCResult::Type::STR, "label", /*optional=*/true, "The associated label, or \"\" for the default label"},
                             {RPCResult::Type::STR, "scriptPubKey", "the script key"},
                             {RPCResult::Type::STR_AMOUNT, "amount", "the transaction output amount in " + CURRENCY_UNIT},
@@ -631,7 +631,7 @@ RPCHelpMan listunspent()
             const UniValue& input = inputs[idx];
             CTxDestination dest = DecodeDestination(input.get_str());
             if (!IsValidDestination(dest)) {
-                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Dash address: ") + input.get_str());
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid PirateCash address: ") + input.get_str());
             }
             if (!destinations.insert(dest).second) {
                 throw JSONRPCError(RPC_INVALID_PARAMETER, std::string("Invalid parameter, duplicated address: ") + input.get_str());

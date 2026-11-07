@@ -1,17 +1,17 @@
-# Support for signing transactions outside of Dash Core
+# Support for signing transactions outside of PirateCash Core
 
-Dash Core can be launched with `-signer=<cmd>` where `<cmd>` is an external tool which can sign transactions and perform other functions. For example, it can be used to communicate with a hardware wallet.
+PirateCash Core can be launched with `-signer=<cmd>` where `<cmd>` is an external tool which can sign transactions and perform other functions. For example, it can be used to communicate with a hardware wallet.
 
 ## Example usage
 
 The following example is based on the [HWI](https://github.com/dashpay/HWI) tool. Version 2.0 or newer is required. Although this tool is hosted under the Dash Core GitHub organization and maintained by Dash Core developers, it should be used with caution. It is considered experimental and has far less review than Dash Core itself. Be particularly careful when running tools such as these on a computer with private keys on it.
 
-When using a hardware wallet, consult the manufacturer website for (alternative) software they recommend. As long as their software conforms to the standard below, it should be able to work with Dash Core.
+When using a hardware wallet, consult the manufacturer website for (alternative) software they recommend. As long as their software conforms to the standard below, it should be able to work with PirateCash Core.
 
-Start Dash Core:
+Start PirateCash Core:
 
 ```sh
-$ dashd -signer=../HWI/hwi.py
+$ piratecashd -signer=../HWI/hwi.py
 ```
 
 ### Device setup
@@ -23,7 +23,7 @@ Follow the hardware manufacturers instructions for the initial device setup, as 
 Get a list of signing devices / services:
 
 ```
-$ dash-cli enumeratesigners
+$ piratecash-cli enumeratesigners
 {
   "signers": [
     {
@@ -37,7 +37,7 @@ The master key fingerprint is used to identify a device.
 Create a wallet, this automatically imports the public keys:
 
 ```sh
-$ dash-cli createwallet "hww" true true "" true true true
+$ piratecash-cli createwallet "hww" true true "" true true true
 ```
 
 ### Verify an address
@@ -45,8 +45,8 @@ $ dash-cli createwallet "hww" true true "" true true true
 Display an address on the device:
 
 ```sh
-$ dash-cli -rpcwallet=<wallet> getnewaddress
-$ dash-cli -rpcwallet=<wallet> walletdisplayaddress <address>
+$ piratecash-cli -rpcwallet=<wallet> getnewaddress
+$ piratecash-cli -rpcwallet=<wallet> walletdisplayaddress <address>
 ```
 
 Replace `<address>` with the result of `getnewaddress`.
@@ -56,7 +56,7 @@ Replace `<address>` with the result of `getnewaddress`.
 Under the hood this uses a [Partially Signed Blockchain Transaction](psbt.md).
 
 ```sh
-$ dash-cli -rpcwallet=<wallet> sendtoaddress <address> <amount>
+$ piratecash-cli -rpcwallet=<wallet> sendtoaddress <address> <amount>
 ```
 
 This prompts your hardware wallet to sign, and fail if it's not connected. If successful
@@ -68,7 +68,7 @@ it automatically broadcasts the transaction.
 
 ## Signer API
 
-In order to be compatible with Dash Core any signer command should conform to the specification below. This specification is subject to change. Ideally a BIP should propose a standard so that other wallets can also make use of it.
+In order to be compatible with PirateCash Core any signer command should conform to the specification below. This specification is subject to change. Ideally a BIP should propose a standard so that other wallets can also make use of it.
 
 Prerequisite knowledge:
 * [Output Descriptors](descriptors.md)
@@ -156,7 +156,7 @@ If <descriptor> contains an xpub, the command MUST fail if it does not match the
 
 The command MAY complain if `--testnet` is set, but the BIP32 coin type is not `1h` (and vice versa).
 
-## How Dash Core uses the Signer API
+## How PirateCash Core uses the Signer API
 
 The `enumeratesigners` RPC simply calls `<cmd> enumerate`.
 

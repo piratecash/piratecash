@@ -70,7 +70,7 @@
         <translation>Toto sú vaše PirateCash adresy pre posielanie platieb. Pred poslaním mincí vždy overte sumu a doručovaciu adresu.</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <source>These are your PirateCash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
         <translation>Toto sú vaše PirateCash adresy na prijímanie platieb. Na vytvorenie nových adries použite tlačidlo „Vytvoriť novú prijímaciu adresu“ na karte prijímania.</translation>
     </message>
     <message>
@@ -1518,7 +1518,7 @@
         <translation>Uložené do %1.</translation>
     </message>
     <message>
-        <source>Dash shared masternode — standby dissolution</source>
+        <source>PirateCash shared masternode — standby dissolution</source>
         <translation>Zdieľaný masternód PirateCash — záložné rozpustenie</translation>
     </message>
     <message>
@@ -1710,7 +1710,7 @@
         <translation>Lokálne adresy</translation>
     </message>
     <message>
-        <source>Network addresses that your Dash node is currently using to communicate with other nodes.</source>
+        <source>Network addresses that your PirateCash node is currently using to communicate with other nodes.</source>
         <translation>Sieťové adresy, ktoré váš uzol PirateCash momentálne používa na komunikáciu s ostatnými uzlami.</translation>
     </message>
     <message>
@@ -2429,7 +2429,7 @@ Počas migrácie sa pred jej začiatkom vytvorí záloha peňaženky. Tento zál
         <translation>Súbor nie je súborom relácie zdieľaného masternódu.</translation>
     </message>
     <message>
-        <source>The session file uses an unsupported format version. Update Dash Core to open it.</source>
+        <source>The session file uses an unsupported format version. Update PirateCash Core to open it.</source>
         <translation>Súbor relácie používa nepodporovanú verziu formátu. Na jeho otvorenie aktualizujte PirateCash Core.</translation>
     </message>
     <message>
@@ -2453,7 +2453,7 @@ Počas migrácie sa pred jej začiatkom vytvorí záloha peňaženky. Tento zál
         <translation>Súbor relácie neobsahuje fázu.</translation>
     </message>
     <message>
-        <source>The session file is at the unknown stage "%1". It was probably created by a newer Dash Core.</source>
+        <source>The session file is at the unknown stage "%1". It was probably created by a newer PirateCash Core.</source>
         <translation>Súbor relácie je v neznámej fáze „%1“. Pravdepodobne ho vytvoril novší PirateCash Core.</translation>
     </message>
     <message>
@@ -3517,9 +3517,9 @@ Počas migrácie sa pred jej začiatkom vytvorí záloha peňaženky. Tento zál
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://explore.transifex.com/dash/dash/</source>
+https://www.transifex.com/projects/p/piratecash/</source>
         <translation>Chýba jazyk alebo je preklad neúplný? Pomôžte s prekladom tu:
-https://explore.transifex.com/dash/dash/</translation>
+https://www.transifex.com/projects/p/piratecash/</translation>
     </message>
     <message>
         <source>Third-party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items.&lt;br/&gt;%s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</source>
@@ -5352,7 +5352,7 @@ Chcete pokračovať?</translation>
         <translation>%1Á, %2N, %3Z / %4 bez hlasu</translation>
     </message>
     <message>
-        <source>Invalid Dash address: %1</source>
+        <source>Invalid PirateCash address: %1</source>
         <translation>Neplatná adresa PirateCash: %1</translation>
     </message>
     <message>
@@ -6150,7 +6150,7 @@ Pre viac informácií o používaní tejto konzoly zadajte %6.
         <translation>EvoNode — zábezpeka %1</translation>
     </message>
     <message>
-        <source>Additionally hosts Dash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
+        <source>Additionally hosts PirateCash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
         <translation>Navyše hostí PirateCash Platform, má štvornásobnú váhu hlasu a získava väčší podiel z odmien. Vyžaduje ID uzla platformy a ďalšie služby.</translation>
     </message>
     <message>
@@ -6370,7 +6370,7 @@ Pre viac informácií o používaní tejto konzoly zadajte %6.
         <translation>Uložte si ho teraz — registrácia sa nemôže začať, kým ho nepotvrdíte.</translation>
     </message>
     <message>
-        <source>Add this line to dash.conf on your masternode server:</source>
+        <source>Add this line to piratecash.conf on your masternode server:</source>
         <translation>Pridajte tento riadok do piratecash.conf na serveri vášho masternódu:</translation>
     </message>
     <message>
@@ -6754,8 +6754,8 @@ Pre viac informácií o používaní tejto konzoly zadajte %6.
         <translation>Je zaznamenaná v tejto peňaženke a zobrazuje sa v časti Transakcie. Zábezpeka zostáva v peňaženke, ale je uzamknutá, kým je masternód zaregistrovaný.</translation>
     </message>
     <message>
-        <source>Configure your masternode server with the operator secret key you saved, then restart dashd there.</source>
-        <translation>Nastavte server svojho masternódu pomocou uloženého tajného kľúča operátora a potom na ňom reštartujte dashd.</translation>
+        <source>Configure your masternode server with the operator secret key you saved, then restart piratecashd there.</source>
+        <translation>Nastavte server svojho masternódu pomocou uloženého tajného kľúča operátora a potom na ňom reštartujte piratecashd.</translation>
     </message>
     <message>
         <source>Configure your masternode server with the BLS secret key matching the operator public key you provided.</source>
@@ -6770,7 +6770,7 @@ Pre viac informácií o používaní tejto konzoly zadajte %6.
         <translation>Keď budú koncové body služby uzla pripravené, odošlite transakciu Aktualizovať službu; dovtedy zostane neaktívny.</translation>
     </message>
     <message>
-        <source>Provision the Dash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
+        <source>Provision the PirateCash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
         <translation>Pripravte služby PirateCash Platform (Tenderdash a Drive) s kľúčom uzla platformy zodpovedajúcim ID uzla, ktoré ste zaregistrovali.</translation>
     </message>
     <message>
@@ -7070,7 +7070,7 @@ Pre viac informácií o používaní tejto konzoly zadajte %6.
         <translation>Transakčný poplatok</translation>
     </message>
     <message>
-        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>Keď je objem transakcií menší ako priestor v blokoch, ťažiari a preposielajúce uzly môžu vynucovať minimálny poplatok. Platenie iba tohto minimálneho poplatku je v poriadku, ale uvedomte si, že to môže viesť k nikdy nepotvrdenej transakcii, ak bude väčší dopyt po piratecash transakciách, než sieť dokáže spracovať.</translation>
     </message>
     <message>
@@ -7478,7 +7478,7 @@ Pre viac informácií o používaní tejto konzoly zadajte %6.
         <translation>Suma na odoslanie vo vybranej jednotke</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PIRATE than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>Poplatok sa odpočíta od čiastky, ktorú odosielate. Príjemca dostane menej PirateCash ako zadáte. Ak je vybraných viacero príjemcov, poplatok je rozdelený rovnakým dielom.</translation>
     </message>
     <message>
@@ -7832,7 +7832,7 @@ Pre viac informácií o používaní tejto konzoly zadajte %6.
         <translation>Kopírovať</translation>
     </message>
     <message>
-        <source>Add this line to dash.conf on the masternode server:</source>
+        <source>Add this line to piratecash.conf on the masternode server:</source>
         <translation>Pridajte tento riadok do piratecash.conf na serveri masternódu:</translation>
     </message>
     <message>
@@ -8244,8 +8244,8 @@ Pre viac informácií o používaní tejto konzoly zadajte %6.
         <translation>ten, kto uzol prevádzkuje</translation>
     </message>
     <message>
-        <source>Configure the masternode server with the operator secret key and restart dashd there.</source>
-        <translation>Nastavte server masternódu pomocou tajného kľúča operátora a potom na ňom reštartujte dashd.</translation>
+        <source>Configure the masternode server with the operator secret key and restart piratecashd there.</source>
+        <translation>Nastavte server masternódu pomocou tajného kľúča operátora a potom na ňom reštartujte piratecashd.</translation>
     </message>
     <message>
         <source>Send a service update once the node's addresses are ready; it stays inactive until then.</source>
@@ -9578,7 +9578,7 @@ Pre viac informácií o používaní tejto konzoly zadajte %6.
         <translation>Aktualizuje existujúcu registráciu masternódu. Suma je čistá zmena zostatku tejto peňaženky, bežne iba sieťový poplatok.</translation>
     </message>
     <message>
-        <source>Locks funds for use on Dash Platform. The amount is this wallet's net balance change, including the network fee.</source>
+        <source>Locks funds for use on PirateCash Platform. The amount is this wallet's net balance change, including the network fee.</source>
         <translation>Uzamkne prostriedky na použitie v PirateCash Platform. Suma je čistá zmena zostatku tejto peňaženky vrátane sieťového poplatku.</translation>
     </message>
     <message>
@@ -10023,7 +10023,7 @@ Pre viac informácií o používaní tejto konzoly zadajte %6.
         <translation>Zadajte adresu, ktorá má prijímať odmeny.</translation>
     </message>
     <message>
-        <source>Enter a valid Dash address.</source>
+        <source>Enter a valid PirateCash address.</source>
         <translation>Zadajte platnú adresu PirateCash.</translation>
     </message>
     <message>
@@ -10775,7 +10775,7 @@ Nepodarilo sa obnoviť zálohu peňaženky.</translation>
         <translation>Sekcia [%s] nie je rozpoznaná.</translation>
     </message>
     <message>
-        <source>Sets a window title which is appended to "Dash Core - "</source>
+        <source>Sets a window title which is appended to "PirateCash Core - "</source>
         <translation>Nastaví titulok okna, ktorý sa pripojí za „PirateCash Core - “</translation>
     </message>
     <message>

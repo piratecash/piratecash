@@ -91,7 +91,7 @@
     </message>
     <message>
         <location line="+5"/>
-        <source>These are your Dash addresses for receiving payments. Use the &apos;Create new receiving address&apos; button in the receive tab to create new addresses.</source>
+        <source>These are your PirateCash addresses for receiving payments. Use the &apos;Create new receiving address&apos; button in the receive tab to create new addresses.</source>
         <translation>These are your PirateCash addresses for receiving payments. Use the &apos;Create new receiving address&apos; button in the receive tab to create new addresses.</translation>
     </message>
     <message>
@@ -1907,7 +1907,7 @@
     </message>
     <message>
         <location line="+16"/>
-        <source>Dash shared masternode — standby dissolution</source>
+        <source>PirateCash shared masternode — standby dissolution</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2154,7 +2154,7 @@
     </message>
     <message>
         <location line="+28"/>
-        <source>Network addresses that your Dash node is currently using to communicate with other nodes.</source>
+        <source>Network addresses that your PirateCash node is currently using to communicate with other nodes.</source>
         <translation type="unfinished">Network addresses that your PirateCash node is currently using to communicate with other nodes.</translation>
     </message>
     <message>
@@ -3047,7 +3047,7 @@ The migration process will create a backup of the wallet before migrating. This 
     </message>
     <message>
         <location line="+5"/>
-        <source>The session file uses an unsupported format version. Update Dash Core to open it.</source>
+        <source>The session file uses an unsupported format version. Update PirateCash Core to open it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3077,7 +3077,7 @@ The migration process will create a backup of the wallet before migrating. This 
     </message>
     <message>
         <location line="+5"/>
-        <source>The session file is at the unknown stage &quot;%1&quot;. It was probably created by a newer Dash Core.</source>
+        <source>The session file is at the unknown stage &quot;%1&quot;. It was probably created by a newer PirateCash Core.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4423,9 +4423,9 @@ The migration process will create a backup of the wallet before migrating. This 
     <message>
         <location line="+169"/>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://explore.transifex.com/dash/dash/</source>
+https://www.transifex.com/projects/p/piratecash/</source>
         <translation>Language missing or translation incomplete? Help contributing translations here:
-https://explore.transifex.com/dash/dash/</translation>
+https://www.transifex.com/projects/p/piratecash/</translation>
     </message>
     <message>
         <location line="+117"/>
@@ -6777,7 +6777,7 @@ Do you wish to continue?</translation>
     </message>
     <message>
         <location filename="../masternodedialogs.cpp" line="-41"/>
-        <source>Invalid Dash address: %1</source>
+        <source>Invalid PirateCash address: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7795,7 +7795,7 @@ For more information on using this console, type %6.
     </message>
     <message>
         <location line="+3"/>
-        <source>Additionally hosts Dash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
+        <source>Additionally hosts PirateCash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -8092,7 +8092,7 @@ For more information on using this console, type %6.
     </message>
     <message>
         <location line="+7"/>
-        <source>Add this line to dash.conf on your masternode server:</source>
+        <source>Add this line to piratecash.conf on your masternode server:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -8593,7 +8593,7 @@ For more information on using this console, type %6.
     </message>
     <message>
         <location line="+7"/>
-        <source>Configure your masternode server with the operator secret key you saved, then restart dashd there.</source>
+        <source>Configure your masternode server with the operator secret key you saved, then restart piratecashd there.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -8613,7 +8613,7 @@ For more information on using this console, type %6.
     </message>
     <message>
         <location line="+4"/>
-        <source>Provision the Dash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
+        <source>Provision the PirateCash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -8985,7 +8985,7 @@ For more information on using this console, type %6.
     </message>
     <message>
         <location line="+164"/>
-        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for piratecash transactions than the network can process.</translation>
     </message>
     <message>
@@ -9475,8 +9475,8 @@ For more information on using this console, type %6.
     </message>
     <message>
         <location line="+7"/>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</translation>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PIRATE than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <translation>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PIRATE than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -9942,7 +9942,7 @@ For more information on using this console, type %6.
     </message>
     <message>
         <location line="-200"/>
-        <source>Add this line to dash.conf on the masternode server:</source>
+        <source>Add this line to piratecash.conf on the masternode server:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -10484,7 +10484,7 @@ For more information on using this console, type %6.
     </message>
     <message>
         <location line="+4"/>
-        <source>Configure the masternode server with the operator secret key and restart dashd there.</source>
+        <source>Configure the masternode server with the operator secret key and restart piratecashd there.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -12170,7 +12170,7 @@ For more information on using this console, type %6.
     </message>
     <message>
         <location line="+4"/>
-        <source>Locks funds for use on Dash Platform. The amount is this wallet&apos;s net balance change, including the network fee.</source>
+        <source>Locks funds for use on PirateCash Platform. The amount is this wallet&apos;s net balance change, including the network fee.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -12723,7 +12723,7 @@ For more information on using this console, type %6.
     </message>
     <message>
         <location line="+3"/>
-        <source>Enter a valid Dash address.</source>
+        <source>Enter a valid PirateCash address.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

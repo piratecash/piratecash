@@ -72,7 +72,7 @@ std::optional<CTxDestination> ParseDestination(const QString& text, QString& err
 {
     const CTxDestination destination{DecodeDestination(text.trimmed().toStdString())};
     if (!IsValidDestination(destination)) {
-        error = QObject::tr("Invalid Dash address: %1").arg(text);
+        error = QObject::tr("Invalid PirateCash address: %1").arg(text);
         return std::nullopt;
     }
     return destination;

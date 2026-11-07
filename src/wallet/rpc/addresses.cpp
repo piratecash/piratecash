@@ -21,14 +21,14 @@ namespace wallet {
 RPCHelpMan getnewaddress()
 {
     return RPCHelpMan{"getnewaddress",
-                "\nReturns a new Dash address for receiving payments.\n"
+                "\nReturns a new PirateCash address for receiving payments.\n"
                 "If 'label' is specified, it is added to the address book \n"
                 "so payments received with the address will be associated with 'label'.\n",
                 {
                     {"label", RPCArg::Type::STR, RPCArg::Default{""}, "The label name for the address to be linked to. It can also be set to the empty string \"\" to represent the default label. The label does not need to exist, it will be created if there is no label by the given name."},
                 },
                 RPCResult{
-                    RPCResult::Type::STR, "address", "The new Dash address"
+                    RPCResult::Type::STR, "address", "The new PirateCash address"
                 },
                 RPCExamples{
                     HelpExampleCli("getnewaddress", "")
@@ -60,7 +60,7 @@ RPCHelpMan getnewaddress()
 RPCHelpMan getrawchangeaddress()
 {
     return RPCHelpMan{"getrawchangeaddress",
-                "\nReturns a new Dash address, for receiving change.\n"
+                "\nReturns a new PirateCash address, for receiving change.\n"
                 "This is for use with raw transactions, NOT normal use.\n",
                 {},
                 RPCResult{
@@ -95,7 +95,7 @@ RPCHelpMan setlabel()
     return RPCHelpMan{"setlabel",
                 "\nSets the label associated with the given address.\n",
                 {
-                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Dash address to be associated with a label."},
+                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The PirateCash address to be associated with a label."},
                     {"label", RPCArg::Type::STR, RPCArg::Optional::NO, "The label to assign to the address."},
                 },
                 RPCResult{RPCResult::Type::NONE, "", ""},
@@ -112,7 +112,7 @@ RPCHelpMan setlabel()
 
     CTxDestination dest = DecodeDestination(request.params[0].get_str());
     if (!IsValidDestination(dest)) {
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Dash address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid PirateCash address");
     }
 
     const std::string label{LabelFromValue(request.params[1])};
@@ -142,7 +142,7 @@ RPCHelpMan listaddressgroupings()
                         {
                             {RPCResult::Type::ARR_FIXED, "", "",
                             {
-                                {RPCResult::Type::STR, "address", "The Dash address"},
+                                {RPCResult::Type::STR, "address", "The PirateCash address"},
                                 {RPCResult::Type::STR_AMOUNT, "amount", "The amount in " + CURRENCY_UNIT},
                                 {RPCResult::Type::STR, "label", /*optional=*/true, "The label"},
                             }},
@@ -192,16 +192,16 @@ RPCHelpMan addmultisigaddress()
 {
     return RPCHelpMan{"addmultisigaddress",
                 "\nAdd an nrequired-to-sign multisignature address to the wallet. Requires a new wallet backup.\n"
-                "Each key is a Dash address or hex-encoded public key.\n"
+                "Each key is a PirateCash address or hex-encoded public key.\n"
                 "This functionality is only intended for use with non-watchonly addresses.\n"
                 "See `importaddress` for watchonly p2sh address support.\n"
                 "If 'label' is specified, assign address to that label.\n"
                 "Note: This command is only compatible with legacy wallets.\n",
                 {
                     {"nrequired", RPCArg::Type::NUM, RPCArg::Optional::NO, "The number of required signatures out of the n keys or addresses."},
-                    {"keys", RPCArg::Type::ARR, RPCArg::Optional::NO, "The Dash addresses or hex-encoded public keys",
+                    {"keys", RPCArg::Type::ARR, RPCArg::Optional::NO, "The PirateCash addresses or hex-encoded public keys",
                         {
-                            {"key", RPCArg::Type::STR, RPCArg::Optional::OMITTED, "Dash address or hex-encoded public key"},
+                            {"key", RPCArg::Type::STR, RPCArg::Optional::OMITTED, "PirateCash address or hex-encoded public key"},
                         },
                         },
                     {"label", RPCArg::Type::STR, RPCArg::Optional::OMITTED, "A label to assign the addresses to."},
@@ -419,19 +419,19 @@ static UniValue DescribeWalletAddress(const CWallet& wallet, const CTxDestinatio
 RPCHelpMan getaddressinfo()
 {
     return RPCHelpMan{"getaddressinfo",
-                "\nReturn information about the given Dash address.\n"
+                "\nReturn information about the given PirateCash address.\n"
                 "Some of the information will only be present if the address is in the active wallet.\n"
-                "A DIP-18 Dash Platform address is described against the credit output script an asset\n"
+                "A DIP-18 PIRATE Platform address is described against the credit output script an asset\n"
                 "lock would carry for it; fields like \"ismine\" and \"solvable\" then refer to that\n"
                 "script, not to ownership of a Platform identity.\n",
                 {
-                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The Dash address for which to get information."},
+                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The PirateCash address for which to get information."},
                 },
                 RPCResult{
                     RPCResult::Type::OBJ, "", "",
                     {
-                        {RPCResult::Type::STR, "address", "The Dash address validated."},
-                        {RPCResult::Type::BOOL, "isplatform", /*optional=*/true, "If the address is a DIP-18 Dash Platform address."},
+                        {RPCResult::Type::STR, "address", "The PirateCash address validated."},
+                        {RPCResult::Type::BOOL, "isplatform", /*optional=*/true, "If the address is a DIP-18 PIRATE Platform address."},
                         {RPCResult::Type::STR_HEX, "scriptPubKey", "The hex-encoded scriptPubKey generated by the address."},
                         {RPCResult::Type::BOOL, "ismine", "If the address is yours."},
                         {RPCResult::Type::BOOL, "iswatchonly", "If the address is watchonly."},
@@ -696,7 +696,7 @@ RPCHelpMan walletdisplayaddress()
     return RPCHelpMan{"walletdisplayaddress",
         "Display address on an external signer for verification.",
         {
-            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "dash address to display"},
+            {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "PirateCash address to display"},
         },
         RPCResult{
             RPCResult::Type::OBJ,"","",

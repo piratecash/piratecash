@@ -70,7 +70,7 @@
         <translation>هذه هي عناوين داش التابعة لك من أجل إرسال الدفعات. تحقق دائما من المبلغ و عنوان المرسل المستقبل قبل إرسال العملات </translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <source>These are your PirateCash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
         <translation>هذه هي عناوين داش الخاصة بك لتلقي المدفوعات. استخدم الزر "إنشاء عنوان استلام جديد" في علامة تبويب الاستلام لإنشاء عناوين جديدة.</translation>
     </message>
     <message>
@@ -1518,7 +1518,7 @@
         <translation>تم الحفظ في %1.</translation>
     </message>
     <message>
-        <source>Dash shared masternode — standby dissolution</source>
+        <source>PirateCash shared masternode — standby dissolution</source>
         <translation>ماسترنود مشترك في داش، الحل الاحتياطي</translation>
     </message>
     <message>
@@ -1710,7 +1710,7 @@
         <translation>العناوين المحلية</translation>
     </message>
     <message>
-        <source>Network addresses that your Dash node is currently using to communicate with other nodes.</source>
+        <source>Network addresses that your PirateCash node is currently using to communicate with other nodes.</source>
         <translation>عناوين الشبكة التي تستخدمها عقدة داش الخاصة بك حالياً للتواصل مع العقد الأخرى.</translation>
     </message>
     <message>
@@ -2429,7 +2429,7 @@ The migration process will create a backup of the wallet before migrating. This 
         <translation>الملف ليس ملف جلسة ماسترنود مشترك.</translation>
     </message>
     <message>
-        <source>The session file uses an unsupported format version. Update Dash Core to open it.</source>
+        <source>The session file uses an unsupported format version. Update PirateCash Core to open it.</source>
         <translation>ملف الجلسة يستخدم إصدار صيغة غير مدعوم. حدّث داش كور لفتحه.</translation>
     </message>
     <message>
@@ -2453,7 +2453,7 @@ The migration process will create a backup of the wallet before migrating. This 
         <translation>ملف الجلسة لا يحتوي على مرحلة.</translation>
     </message>
     <message>
-        <source>The session file is at the unknown stage "%1". It was probably created by a newer Dash Core.</source>
+        <source>The session file is at the unknown stage "%1". It was probably created by a newer PirateCash Core.</source>
         <translation>ملف الجلسة في مرحلة غير معروفة "%1". من المرجح أنه أُنشئ بإصدار أحدث من داش كور.</translation>
     </message>
     <message>
@@ -3517,9 +3517,9 @@ The migration process will create a backup of the wallet before migrating. This 
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://explore.transifex.com/dash/dash/</source>
+https://www.transifex.com/projects/p/piratecash/</source>
         <translation>اللغة مفقودة أو الترجمة غير مكتملة؟ ساعد في المساهمة في الترجمات هنا:
-https://explore.transifex.com/dash/dash/</translation>
+https://www.transifex.com/projects/p/piratecash/</translation>
     </message>
     <message>
         <source>Third-party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items.&lt;br/&gt;%s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</source>
@@ -5352,7 +5352,7 @@ Do you wish to continue?</source>
         <translation>%1 نعم، %2 لا، %3 امتناع / %4 لم يصوّتوا</translation>
     </message>
     <message>
-        <source>Invalid Dash address: %1</source>
+        <source>Invalid PirateCash address: %1</source>
         <translation>عنوان داش غير صالح: %1</translation>
     </message>
     <message>
@@ -6150,7 +6150,7 @@ For more information on using this console, type %6.
         <translation>EvoNode — ضمان %1</translation>
     </message>
     <message>
-        <source>Additionally hosts Dash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
+        <source>Additionally hosts PirateCash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
         <translation>يستضيف بالإضافة إلى ذلك منصة داش، وله وزن تصويت أكبر بأربع مرات ويكسب حصة أكبر من المكافآت. يتطلب معرّف عقدة المنصة وخدمات إضافية.</translation>
     </message>
     <message>
@@ -6370,7 +6370,7 @@ For more information on using this console, type %6.
         <translation>احفظه الآن، فلا يمكن بدء التسجيل حتى تؤكد ذلك.</translation>
     </message>
     <message>
-        <source>Add this line to dash.conf on your masternode server:</source>
+        <source>Add this line to piratecash.conf on your masternode server:</source>
         <translation>أضف هذا السطر إلى piratecash.conf على خادم الماسترنود لديك:</translation>
     </message>
     <message>
@@ -6754,8 +6754,8 @@ For more information on using this console, type %6.
         <translation>هي مسجّلة في هذه المحفظة وتظهر ضمن المعاملات. يبقى الضمان في المحفظة لكنه مقفل ما دام الماسترنود مسجّلاً.</translation>
     </message>
     <message>
-        <source>Configure your masternode server with the operator secret key you saved, then restart dashd there.</source>
-        <translation>اضبط خادم الماسترنود لديك بالمفتاح السري للمشغل الذي حفظته، ثم أعد تشغيل dashd هناك.</translation>
+        <source>Configure your masternode server with the operator secret key you saved, then restart piratecashd there.</source>
+        <translation>اضبط خادم الماسترنود لديك بالمفتاح السري للمشغل الذي حفظته، ثم أعد تشغيل piratecashd هناك.</translation>
     </message>
     <message>
         <source>Configure your masternode server with the BLS secret key matching the operator public key you provided.</source>
@@ -6770,7 +6770,7 @@ For more information on using this console, type %6.
         <translation>أرسل معاملة تحديث الخدمة بعد أن تصبح نقاط خدمة العقدة جاهزة؛ تبقى غير نشطة حتى ذلك الحين.</translation>
     </message>
     <message>
-        <source>Provision the Dash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
+        <source>Provision the PirateCash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
         <translation>جهّز خدمات منصة داش (Tenderdash وDrive) بمفتاح عقدة المنصة المطابق لمعرّف العقدة الذي سجّلته.</translation>
     </message>
     <message>
@@ -7070,7 +7070,7 @@ For more information on using this console, type %6.
         <translation>رسوم المعاملة:</translation>
     </message>
     <message>
-        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>عندما يكون حجم المعاملات أقل من المساحة في الكتل، قد يفرض المعدنون وكذلك العقد المرحلة حداً أدنى من الرسوم. دفع هذا الحد الأدنى من الرسوم فقط أمر جيد، ولكن كن على دراية بأن هذا قد يؤدي إلى معاملة لن يتم تأكيدها أبداً بمجرد أن يكون هناك طلب أكبر على معاملات PirateCash مما يمكن للشبكة معالجته.</translation>
     </message>
     <message>
@@ -7478,7 +7478,7 @@ For more information on using this console, type %6.
         <translation>المبلغ المراد إرساله في الوحدة المختارة</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PIRATE than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>سيتم خصم الرسوم من المبلغ الذي يتم إرساله. سوف يتلقى المستلم كمية أقل من الشرطة من إدخالها في حقل المبلغ. في حالة تحديد عدة مستلمين ، يتم تقسيم الرسوم بالتساوي.</translation>
     </message>
     <message>
@@ -7832,7 +7832,7 @@ For more information on using this console, type %6.
         <translation>نسخ</translation>
     </message>
     <message>
-        <source>Add this line to dash.conf on the masternode server:</source>
+        <source>Add this line to piratecash.conf on the masternode server:</source>
         <translation>أضف هذا السطر إلى piratecash.conf على خادم الماسترنود:</translation>
     </message>
     <message>
@@ -8244,8 +8244,8 @@ For more information on using this console, type %6.
         <translation>من يشغّل العقدة</translation>
     </message>
     <message>
-        <source>Configure the masternode server with the operator secret key and restart dashd there.</source>
-        <translation>اضبط خادم الماسترنود بالمفتاح السري للمشغل وأعد تشغيل dashd هناك.</translation>
+        <source>Configure the masternode server with the operator secret key and restart piratecashd there.</source>
+        <translation>اضبط خادم الماسترنود بالمفتاح السري للمشغل وأعد تشغيل piratecashd هناك.</translation>
     </message>
     <message>
         <source>Send a service update once the node's addresses are ready; it stays inactive until then.</source>
@@ -9578,7 +9578,7 @@ For more information on using this console, type %6.
         <translation>يحدّث تسجيل ماسترنود موجود. المبلغ هو صافي التغيير في رصيد هذه المحفظة، وعادةً ما يكون رسوم الشبكة فقط.</translation>
     </message>
     <message>
-        <source>Locks funds for use on Dash Platform. The amount is this wallet's net balance change, including the network fee.</source>
+        <source>Locks funds for use on PirateCash Platform. The amount is this wallet's net balance change, including the network fee.</source>
         <translation>يقفل أموالاً لاستخدامها على منصة داش. المبلغ هو صافي التغيير في رصيد هذه المحفظة، شاملاً رسوم الشبكة.</translation>
     </message>
     <message>
@@ -10023,7 +10023,7 @@ For more information on using this console, type %6.
         <translation>أدخل العنوان الذي يجب أن يستلم المكافآت.</translation>
     </message>
     <message>
-        <source>Enter a valid Dash address.</source>
+        <source>Enter a valid PirateCash address.</source>
         <translation>أدخل عنوان داش صالحاً.</translation>
     </message>
     <message>
@@ -10775,7 +10775,7 @@ Unable to restore backup of wallet.</source>
         <translation>المقطع [%s] غير معروف.</translation>
     </message>
     <message>
-        <source>Sets a window title which is appended to "Dash Core - "</source>
+        <source>Sets a window title which is appended to "PirateCash Core - "</source>
         <translation>يضبط عنوان نافذة يُلحق بعد "PirateCash Core - "</translation>
     </message>
     <message>
