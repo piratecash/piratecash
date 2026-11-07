@@ -1935,13 +1935,14 @@ BOOST_FIXTURE_TEST_CASE(MempoolRemovalInvalidatesAnonymizableTally, ListCoinsTes
 
 BOOST_FIXTURE_TEST_CASE(AbandonedSpendReleasesItsInputs, ListCoinsTestingSetup)
 {
+    const CAmount spend_amount{m_coinbase_txns[0]->vout[0].nValue / 2};
     LOCK(wallet->cs_wallet);
 
     CoinsResult before{AvailableCoins(*wallet)};
     BOOST_CHECK(before.Size() > 0);
 
     CCoinControl coin_control;
-    auto created{CreateTransaction(*wallet, {CRecipient{{GetScriptForRawPubKey(coinbaseKey.GetPubKey())}, 1 * COIN,
+    auto created{CreateTransaction(*wallet, {CRecipient{{GetScriptForRawPubKey(coinbaseKey.GetPubKey())}, spend_amount,
                                                         /*fSubtractFeeFromAmount=*/false}},
                                    RANDOM_CHANGE_POSITION, coin_control)};
     BOOST_CHECK(created);
@@ -1975,15 +1976,16 @@ BOOST_FIXTURE_TEST_CASE(AbandonedSpendReleasesItsInputs, ListCoinsTestingSetup)
 
 BOOST_FIXTURE_TEST_CASE(ConflictedDescendantReactivationReconcilesInputs, ListCoinsTestingSetup)
 {
+    const CAmount spend_amount{m_coinbase_txns[0]->vout[0].nValue / 2};
     const CScript wallet_script{GetScriptForRawPubKey(coinbaseKey.GetPubKey())};
-    auto created{CreateTransaction(*wallet, {CRecipient{wallet_script, 1 * COIN, /*fSubtractFeeFromAmount=*/false}},
+    auto created{CreateTransaction(*wallet, {CRecipient{wallet_script, spend_amount, /*fSubtractFeeFromAmount=*/false}},
                                    RANDOM_CHANGE_POSITION, CCoinControl{})};
     BOOST_REQUIRE(created);
     const CTransactionRef parent{created->tx};
 
     CKey external_key;
     external_key.MakeNewKey(true);
-    auto conflict_created{CreateTransaction(*wallet, {CRecipient{GetScriptForRawPubKey(external_key.GetPubKey()), COIN / 4,
+    auto conflict_created{CreateTransaction(*wallet, {CRecipient{GetScriptForRawPubKey(external_key.GetPubKey()), spend_amount / 4,
                                                                  /*fSubtractFeeFromAmount=*/false}},
                                             RANDOM_CHANGE_POSITION, CCoinControl{})};
     BOOST_REQUIRE(conflict_created);
@@ -1993,21 +1995,21 @@ BOOST_FIXTURE_TEST_CASE(ConflictedDescendantReactivationReconcilesInputs, ListCo
     BOOST_REQUIRE(wallet->AddToWallet(parent, TxStateInactive{}));
 
     const auto parent_output_it{std::ranges::find_if(parent->vout, [&](const CTxOut& output) {
-        return output.nValue == 1 * COIN && output.scriptPubKey == wallet_script;
+        return output.nValue == spend_amount && output.scriptPubKey == wallet_script;
     })};
     BOOST_REQUIRE(parent_output_it != parent->vout.end());
     const COutPoint parent_outpoint{parent->GetHash(), static_cast<uint32_t>(parent_output_it - parent->vout.begin())};
 
     CMutableTransaction child_mtx;
     child_mtx.vin.emplace_back(parent_outpoint);
-    child_mtx.vout.emplace_back(COIN / 2, wallet_script);
+    child_mtx.vout.emplace_back(spend_amount / 2, wallet_script);
     const CTransactionRef child{MakeTransactionRef(child_mtx)};
     BOOST_REQUIRE(wallet->AddToWallet(child, TxStateInactive{}));
     {
         LOCK(wallet->cs_wallet);
         BOOST_CHECK(wallet->IsSpent(parent_outpoint));
     }
-    BOOST_CHECK_EQUAL(wallet->CountInputsWithAmount(1 * COIN), 0);
+    BOOST_CHECK_EQUAL(wallet->CountInputsWithAmount(spend_amount), 0);
 
     // A block transaction conflicts the parent and recursively conflicts the
     // child. The child's input is temporarily unspent and returns to the UTXO
@@ -2038,7 +2040,7 @@ BOOST_FIXTURE_TEST_CASE(ConflictedDescendantReactivationReconcilesInputs, ListCo
         BOOST_CHECK(!wallet->mapWallet.at(child->GetHash()).isConflicted());
         BOOST_CHECK(wallet->IsSpent(parent_outpoint));
     }
-    BOOST_CHECK_EQUAL(wallet->CountInputsWithAmount(1 * COIN), 0);
+    BOOST_CHECK_EQUAL(wallet->CountInputsWithAmount(spend_amount), 0);
 }
 
 BOOST_FIXTURE_TEST_CASE(AbandonedSpendRestoresDustLock, ListCoinsTestingSetup)
@@ -2053,31 +2055,31 @@ BOOST_FIXTURE_TEST_CASE(AbandonedSpendRestoresDustLock, ListCoinsTestingSetup)
     // target; AddToWallet() locks the output on insertion.
     CMutableTransaction dust_mtx;
     dust_mtx.vin.emplace_back(COutPoint{uint256::ONE, 0});
-    dust_mtx.vout.emplace_back(COIN / 100, GetScriptForDestination(*dest));
+    dust_mtx.vout.emplace_back(COIN / 200, GetScriptForDestination(*dest));
     const CTransactionRef dust_tx{MakeTransactionRef(dust_mtx)};
     const COutPoint dust_outpoint{dust_tx->GetHash(), 0};
     BOOST_CHECK(wallet->AddToWallet(dust_tx, TxStateInMempool{}));
     BOOST_CHECK(wallet->IsLockedCoin(dust_outpoint));
-    BOOST_CHECK_EQUAL(wallet->CountInputsWithAmount(COIN / 100), 1);
+    BOOST_CHECK_EQUAL(wallet->CountInputsWithAmount(COIN / 200), 1);
 
     // A wallet transaction spending it unlocks it and removes it from the
     // wallet UTXO set.
     CMutableTransaction spend_mtx;
     spend_mtx.vin.emplace_back(dust_outpoint);
-    spend_mtx.vout.emplace_back(COIN / 200, GetScriptForDestination(*dest));
+    spend_mtx.vout.emplace_back(COIN / 400, GetScriptForDestination(*dest));
     const CTransactionRef spend_tx{MakeTransactionRef(spend_mtx)};
     BOOST_CHECK(wallet->AddToWallet(spend_tx, TxStateInactive{}));
     BOOST_CHECK(!wallet->IsLockedCoin(dust_outpoint));
-    BOOST_CHECK_EQUAL(wallet->CountInputsWithAmount(COIN / 100), 0);
+    BOOST_CHECK_EQUAL(wallet->CountInputsWithAmount(COIN / 200), 0);
 
     // Abandoning the spend restores the outpoint together with the automatic
     // dust lock a wallet reload would apply.
     BOOST_CHECK(wallet->AbandonTransaction(spend_tx->GetHash()));
-    BOOST_CHECK_EQUAL(wallet->CountInputsWithAmount(COIN / 100), 1);
+    BOOST_CHECK_EQUAL(wallet->CountInputsWithAmount(COIN / 200), 1);
     BOOST_CHECK(wallet->IsLockedCoin(dust_outpoint));
 
     BOOST_CHECK(wallet->AddToWallet(spend_tx, TxStateInMempool{}));
-    BOOST_CHECK_EQUAL(wallet->CountInputsWithAmount(COIN / 100), 0);
+    BOOST_CHECK_EQUAL(wallet->CountInputsWithAmount(COIN / 200), 0);
     BOOST_CHECK(!wallet->IsLockedCoin(dust_outpoint));
 }
 
