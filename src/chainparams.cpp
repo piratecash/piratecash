@@ -486,7 +486,7 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].min_activation_height = 0; // No activation delay
 
         consensus.vDeployments[Consensus::DEPLOYMENT_V24].bit = 13;
-        consensus.vDeployments[Consensus::DEPLOYMENT_V24].nStartTime = Consensus::BIP9Deployment::NEVER_ACTIVE; // TODO
+        consensus.vDeployments[Consensus::DEPLOYMENT_V24].nStartTime = 1790208000;     // Thursday, September 24, 2026 0:00:00
         consensus.vDeployments[Consensus::DEPLOYMENT_V24].nTimeout = Consensus::BIP9Deployment::NO_TIMEOUT;
         consensus.vDeployments[Consensus::DEPLOYMENT_V24].nWindowSize = 100;
         consensus.vDeployments[Consensus::DEPLOYMENT_V24].nThresholdStart = 80;       // 80% of 100
@@ -495,7 +495,7 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_V24].useEHF = true;
 
         consensus.vDeployments[Consensus::DEPLOYMENT_EVO_SHARES].bit = 14;
-        consensus.vDeployments[Consensus::DEPLOYMENT_EVO_SHARES].nStartTime = Consensus::BIP9Deployment::NEVER_ACTIVE; // TODO: same as DEPLOYMENT_V24
+        consensus.vDeployments[Consensus::DEPLOYMENT_EVO_SHARES].nStartTime = 1790208000;     // Thursday, September 24, 2026 0:00:00
         consensus.vDeployments[Consensus::DEPLOYMENT_EVO_SHARES].nTimeout = Consensus::BIP9Deployment::NO_TIMEOUT;
         consensus.vDeployments[Consensus::DEPLOYMENT_EVO_SHARES].nWindowSize = 100;
         consensus.vDeployments[Consensus::DEPLOYMENT_EVO_SHARES].nThresholdStart = 80;       // 80% of 100
