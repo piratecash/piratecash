@@ -33,6 +33,7 @@
 #include <script/standard.h>
 #include <test/util/random.h>
 #include <test/util/setup_common.h>
+#include <util/translation.h>
 #include <validation.h>
 #include <wallet/wallet.h>
 #include <wallet/test/wallet_test_fixture.h>
@@ -232,12 +233,15 @@ BOOST_AUTO_TEST_CASE(coinstake_cannot_be_resent)
     CScript spk = GetScriptForDestination(PKHash(key.GetPubKey()));
 
     auto txStake = MakeCoinstakeTx(COutPoint(InsecureRand256(), 0), spk, 10 * COIN);
-    CWalletTx wtx(txStake, TxStateInactive{});
+    CWalletTx wtx{txStake, TxStateInactive{}};
+    CWalletTx regular{MakeRegularTx(COutPoint(InsecureRand256(), 0), spk, 5 * COIN), TxStateInactive{}};
 
     // CanBeResent() checks !IsCoinStake() internally
     {
         LOCK(m_wallet.cs_wallet);
+        m_wallet.SetBroadcastTransactions(true);
         BOOST_CHECK(!m_wallet.CanTxBeResent(wtx));
+        BOOST_CHECK(m_wallet.CanTxBeResent(regular));
     }
 }
 
@@ -249,10 +253,11 @@ BOOST_AUTO_TEST_CASE(coinbase_cannot_be_resent)
     CScript spk = GetScriptForDestination(PKHash(key.GetPubKey()));
 
     auto txCB = MakeCoinbaseTx(spk, 50 * COIN);
-    CWalletTx wtx(txCB, TxStateInactive{});
+    CWalletTx wtx{txCB, TxStateInactive{}};
 
     {
         LOCK(m_wallet.cs_wallet);
+        m_wallet.SetBroadcastTransactions(true);
         BOOST_CHECK(!m_wallet.CanTxBeResent(wtx));
     }
 }
@@ -285,6 +290,23 @@ BOOST_AUTO_TEST_CASE(coinstake_abandoned_on_reaccept_logic)
         LOCK(m_wallet.cs_wallet);
         BOOST_CHECK(stake->isAbandoned());
         BOOST_CHECK(!regular->isAbandoned());
+    }
+}
+
+BOOST_AUTO_TEST_CASE(coinstake_cannot_be_submitted)
+{
+    CKey key;
+    key.MakeNewKey(true);
+    CScript spk = GetScriptForDestination(PKHash(key.GetPubKey()));
+
+    auto txStake = MakeCoinstakeTx(COutPoint(InsecureRand256(), 0), spk, 10 * COIN);
+    CWalletTx wtx{txStake, TxStateInactive{}};
+    LOCK(m_wallet.cs_wallet);
+    m_wallet.SetBroadcastTransactions(true);
+    for (const bool relay : {false, true}) {
+        bilingual_str error;
+        BOOST_CHECK(!m_wallet.SubmitTxMemoryPoolAndRelay(wtx, error, relay));
+        BOOST_CHECK(error.empty());
     }
 }
 
