@@ -4,8 +4,10 @@
 
 #include <bls/bls.h>
 #include <consensus/amount.h>
+#include <consensus/consensus.h>
 #include <evo/chainhelper.h>
 #include <evo/deterministicmns.h>
+#include <evo/dmn_types.h>
 #include <evo/providertx.h>
 #include <evo/specialtx.h>
 #include <governance/governance.h>
@@ -36,6 +38,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <algorithm>
 #include <chrono>
 #include <memory>
 #include <string>
@@ -44,8 +47,8 @@
 using namespace std::chrono_literals;
 
 namespace {
-// Keep the checkpointed 107-block chain. SetUp advances past DIP3 until twenty
-// 50-PIRATE coinbases are mature enough to fund the collateral.
+// Keep the checkpointed 107-block chain. SetUp advances past DIP3 until enough
+// coinbases are mature to fund the collateral and proposal.
 constexpr int DIP3_ACTIVATION_HEIGHT{109};
 
 void SignWithVotingKey(CGovernanceVote& vote, const CKey& key)
@@ -117,8 +120,7 @@ struct GovernanceVoteSetup : public TestChainSetup {
 
         utxos = BuildSimpleUtxoMap(m_coinbase_txns);
 
-        // Activate DIP3 and mature twenty 50-PIRATE coinbases for the collateral.
-        MineBlocks(15);
+        MineUntilMatureFunds(dmn_types::Regular.collat_amount + GOVERNANCE_PROPOSAL_FEE_TX);
         auto protx = CreateProRegTx(*m_node.chainman, utxos, /*port=*/1, payout_script(), coinbaseKey, mn_voting_key,
                                     mn_operator_key);
         mn_collateral = COutPoint(protx.GetHash(), 0);
@@ -170,9 +172,29 @@ struct GovernanceVoteSetup : public TestChainSetup {
         const CBlock block = CreateAndProcessBlock(txns, coinbase_script());
         const CBlockIndex* tip{WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Tip())};
         BOOST_REQUIRE_EQUAL(tip->GetBlockHash(), block.GetHash());
+        utxos.try_emplace(COutPoint(block.vtx[0]->GetHash(), 0),
+                          Coin(block.vtx[0]->vout[0], tip->nHeight, /*fCoinBaseIn=*/true));
         m_node.dmnman->UpdatedBlockTip(tip);
         SetMockTime(GetTime() + 1);
         IndexWaitSynced(*g_txindex);
+    }
+
+    void MineUntilMatureFunds(CAmount amount)
+    {
+        // FundTransaction does not return change to utxos. Reserve up to one
+        // input's value for change from the next funding transaction.
+        while (true) {
+            const int height{WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Height())};
+            CAmount mature_value{0};
+            CAmount largest_input{0};
+            for (const auto& [outpoint, coin] : utxos) {
+                if (height - coin.nHeight < COINBASE_MATURITY + 1) continue;
+                mature_value += coin.out.nValue;
+                largest_input = std::max(largest_input, coin.out.nValue);
+            }
+            if (mature_value >= amount + largest_input) return;
+            MineBlock({});
+        }
     }
 
     void MineBlocks(int num_blocks)
@@ -248,7 +270,9 @@ BOOST_FIXTURE_TEST_CASE(votes_follow_masternode_identity_across_reorg, Governanc
     CKey owner_key, other_owner_key, voting_key;
     CBLSSecretKey operator_key, other_operator_key;
     voting_key.MakeNewKey(true);
+    MineUntilMatureFunds(dmn_types::Regular.collat_amount);
     const auto registration = CreateProRegTx(chainman, utxos, 2, payout_script(), coinbaseKey, owner_key, operator_key);
+    MineUntilMatureFunds(dmn_types::Regular.collat_amount + COIN);
     const auto other_registration = CreateProRegTx(chainman, utxos, 3, payout_script(), coinbaseKey, other_owner_key,
                                                    other_operator_key);
     MineBlock({registration});

@@ -288,7 +288,7 @@ void MasternodeMaintenanceTests::automaticFeeSource()
     // Core's automatic choice for a shared masternode is the first share's
     // reward address, which this wallet does not own: pay from this wallet
     auto shared{std::make_shared<TestMnEntry>(MnType::Regular)};
-    shared->makeShared({400 * COIN, 300 * COIN, 300 * COIN}, 5 * COIN, /*early_period_blocks=*/1000);
+    shared->makeShared({4000 * COIN, 3000 * COIN, 3000 * COIN}, 5 * COIN, /*early_period_blocks=*/1000);
     MasternodeEntry shared_entry{shared, "collateral", 50};
     UpdateServiceDialog shared_service(m_node, &wallet_model, shared_entry, capabilities, /*parent=*/nullptr);
     QCOMPARE(shared_service.m_fee_source->findText("Automatic (recommended)"), -1);
@@ -769,7 +769,7 @@ void MasternodeMaintenanceTests::updateShareRewardValidation()
 {
     TestChain100Setup test;
     m_node.setContext(&test.m_node);
-    auto source{MakeSharedSource({400 * COIN, 300 * COIN, 300 * COIN}, 5 * COIN, /*early_period_blocks=*/1000)};
+    auto source{MakeSharedSource({4000 * COIN, 3000 * COIN, 3000 * COIN}, 5 * COIN, /*early_period_blocks=*/1000)};
     MasternodeEntry entry{source, "collateral", 50};
     const auto& shares{entry.shares()};
 
@@ -814,7 +814,7 @@ void MasternodeMaintenanceTests::updateShareUnlocksTheWallet()
     WalletModel wallet_model(interfaces::MakeWallet(context, wallet), models.client);
     QCOMPARE(int(wallet_model.getEncryptionStatus()), int(WalletModel::Locked));
 
-    auto source{MakeSharedSource({400 * COIN, 300 * COIN, 300 * COIN}, 5 * COIN, /*early_period_blocks=*/1000)};
+    auto source{MakeSharedSource({4000 * COIN, 3000 * COIN, 3000 * COIN}, 5 * COIN, /*early_period_blocks=*/1000)};
     source->setShareOwner(0, ToKeyID(PKHash(test.coinbaseKey.GetPubKey())));
     MasternodeEntry entry{source, "collateral", 50};
 
@@ -839,7 +839,7 @@ void MasternodeMaintenanceTests::dissolveDialogTabsAndPayouts()
 {
     TestChain100Setup test;
     m_node.setContext(&test.m_node);
-    const std::vector<CAmount> amounts{400 * COIN, 300 * COIN, 300 * COIN};
+    const std::vector<CAmount> amounts{4000 * COIN, 3000 * COIN, 3000 * COIN};
     auto source{MakeSharedSource(amounts, 5 * COIN, /*early_period_blocks=*/1000)};
     MasternodeEntry entry{source, "collateral", 50};
 
@@ -890,7 +890,7 @@ void MasternodeMaintenanceTests::standbyDissolutionFile()
 {
     TestChain100Setup test;
     m_node.setContext(&test.m_node);
-    auto source{MakeSharedSource({400 * COIN, 300 * COIN, 300 * COIN}, 5 * COIN, /*early_period_blocks=*/1000)};
+    auto source{MakeSharedSource({4000 * COIN, 3000 * COIN, 3000 * COIN}, 5 * COIN, /*early_period_blocks=*/1000)};
     MasternodeEntry entry{source, "collateral", 50};
 
     DissolveDialog dialog(m_node, /*wallet_model=*/nullptr, entry, /*current_height=*/100, /*parent=*/nullptr);
@@ -960,7 +960,7 @@ void MasternodeMaintenanceTests::rotationSenderComesFromTheInputs()
     QVERIFY2(models.ok, qPrintable(QString::fromStdString(models.error.translated)));
     WalletModel wallet_model(interfaces::MakeWallet(context, wallet), models.client);
 
-    auto source{MakeSharedSource({400 * COIN, 300 * COIN, 300 * COIN}, 5 * COIN, /*early_period_blocks=*/1000)};
+    auto source{MakeSharedSource({4000 * COIN, 3000 * COIN, 3000 * COIN}, 5 * COIN, /*early_period_blocks=*/1000)};
     source->setShareOwner(0, ToKeyID(PKHash(test.coinbaseKey.GetPubKey())));
     MasternodeEntry entry{source, "collateral", 50};
 
@@ -1001,7 +1001,7 @@ void MasternodeMaintenanceTests::maintenanceEnvelopePreload()
 {
     TestChain100Setup test;
     m_node.setContext(&test.m_node);
-    auto source{MakeSharedSource({400 * COIN, 300 * COIN, 300 * COIN}, 5 * COIN, /*early_period_blocks=*/1000)};
+    auto source{MakeSharedSource({4000 * COIN, 3000 * COIN, 3000 * COIN}, 5 * COIN, /*early_period_blocks=*/1000)};
     MasternodeEntry entry{source, "collateral", 50};
 
     DissolveDialog dialog(m_node, /*wallet_model=*/nullptr, entry, /*current_height=*/100, /*parent=*/nullptr);
@@ -1037,7 +1037,7 @@ void MasternodeMaintenanceTests::dissolveRequestMustReturnPrincipal()
     QVERIFY2(models.ok, qPrintable(QString::fromStdString(models.error.translated)));
     WalletModel wallet_model(interfaces::MakeWallet(context, wallet), models.client);
 
-    const std::vector<CAmount> amounts{400 * COIN, 300 * COIN, 300 * COIN};
+    const std::vector<CAmount> amounts{4000 * COIN, 3000 * COIN, 3000 * COIN};
     auto source{MakeSharedSource(amounts, 5 * COIN, /*early_period_blocks=*/1000)};
     source->setShareOwner(1, ToKeyID(PKHash(test.coinbaseKey.GetPubKey())));
     MasternodeEntry entry{source, "collateral", 50};

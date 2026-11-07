@@ -229,14 +229,15 @@ BOOST_FIXTURE_TEST_CASE(chainstatemanager_rebalance_caches, TestChain100Setup)
     BOOST_CHECK_CLOSE(c2.m_coinsdb_cache_size_bytes, max_cache * 0.95, 1);
 }
 
-struct SnapshotTestSetup : TestChain100Setup {
+struct SnapshotTestSetup : TestChainSetup {
     // Run with coinsdb on the filesystem to support, e.g., moving invalidated
     // chainstate dirs to "*_invalid".
     //
     // Note that this means the tests run considerably slower than in-memory DB
     // tests, but we can't otherwise test this functionality since it relies on
     // destructive filesystem operations.
-    SnapshotTestSetup() : TestChain100Setup{
+    SnapshotTestSetup() : TestChainSetup{
+                              100,
                               CBaseChainParams::REGTEST,
                               {},
                               /*coins_db_in_memory=*/false,
@@ -399,7 +400,7 @@ struct SnapshotTestSetup : TestChain100Setup {
 
         // Mine some new blocks on top of the activated snapshot chainstate.
         constexpr size_t new_coins{100};
-        mineBlocks(new_coins);  // Defined in TestChain100Setup.
+        mineBlocks(new_coins);  // Defined in TestChainSetup.
 
         const uint256 snapshot_tip = WITH_LOCK(chainman.GetMutex(), return chainman.ActiveTip()->GetBlockHash());
         BOOST_CHECK(m_node.evodb->VerifyBestBlock(EvoDbIdentity::SNAPSHOT, snapshot_tip));

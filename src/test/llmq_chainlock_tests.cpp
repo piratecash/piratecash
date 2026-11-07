@@ -492,7 +492,7 @@ BOOST_FIXTURE_TEST_CASE(unrequested_clsig_is_dropped_and_scored, TestChain100Set
 {
     LOCK(NetEventsInterface::g_msgproc_mutex);
 
-    // INV announcements for non-spork objects are only tracked outside IBD; the 100 mined blocks
+    // INV announcements for non-spork objects are only tracked outside IBD; the mined blocks
     // of this fixture already take us out of it.
     BOOST_REQUIRE(!m_node.chainman->ActiveChainstate().IsInitialBlockDownload());
 
@@ -563,8 +563,8 @@ BOOST_FIXTURE_TEST_CASE(unrequested_clsig_is_dropped_and_scored, TestChain100Set
     SendMessage(*m_node.peerman, *announcing_peer, NetMsgType::CLSIG, std::move(announced_payload));
 
     BOOST_CHECK(m_node.clhandler->AlreadyHave(announced_inv));
-    // Exactly the pre-existing invalid-CLSIG penalty and nothing else. This fixture's chain is 100
-    // blocks, so a CLSIG at height 201 resolves to no signing quorum and ProcessNewChainLock scores
+    // Exactly the pre-existing invalid-CLSIG penalty and nothing else. This fixture's chain is below
+    // height 201, so a CLSIG at height 201 resolves to no signing quorum and ProcessNewChainLock scores
     // 10 -- which is what proves the message got past the gate. Asserting the total exactly is what
     // would catch the gate also charging an authorised peer.
     BOOST_CHECK_EQUAL(MisbehaviorScore(*m_node.peerman, *announcing_peer), score_before + 10);
