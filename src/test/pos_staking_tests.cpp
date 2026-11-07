@@ -1444,24 +1444,28 @@ bool IsAbandoned(const wallet::CWallet& w, const uint256& txid)
 
 BOOST_AUTO_TEST_CASE(pos_wallet_abandoned_spend_returns_input)
 {
-    auto w = wallet::CreateSyncedWallet(*m_node.chain, *m_node.coinjoin_loader, *Assert(m_node.chainman), m_args, coinbaseKey);
-    const CScript spk = WalletScript(coinbaseKey);
-    const CBlockIndex* tip = WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Tip());
+    for (const bool coinstake : {false, true}) {
+        BOOST_TEST_CONTEXT("coinstake=" << coinstake) {
+            auto w = wallet::CreateSyncedWallet(*m_node.chain, *m_node.coinjoin_loader, *Assert(m_node.chainman), m_args, coinbaseKey);
+            const CScript spk = WalletScript(coinbaseKey);
+            const CBlockIndex* tip = WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Tip());
 
-    const int inputs_before{w->CountInputsWithAmount(50 * COIN)};
-    const COutPoint coin = AddConfirmedWalletCoin(*w, tip, spk);
-    BOOST_REQUIRE(IsAvailable(*w, coin));
-    BOOST_CHECK_EQUAL(w->CountInputsWithAmount(50 * COIN), inputs_before + 1);
+            const int inputs_before{w->CountInputsWithAmount(50 * COIN)};
+            const COutPoint coin = AddConfirmedWalletCoin(*w, tip, spk);
+            BOOST_REQUIRE(IsAvailable(*w, coin));
+            BOOST_CHECK_EQUAL(w->CountInputsWithAmount(50 * COIN), inputs_before + 1);
 
-    const auto spend = MakeWalletTx(coin, spk, 49 * COIN, /*coinstake=*/false);
-    WITH_LOCK(w->cs_wallet, w->AddToWallet(spend, wallet::TxStateInactive{}));
-    BOOST_REQUIRE(!IsAvailable(*w, coin));
-    BOOST_CHECK_EQUAL(w->CountInputsWithAmount(50 * COIN), inputs_before);
+            const auto spend = MakeWalletTx(coin, spk, (coinstake ? 51 : 49) * COIN, coinstake);
+            WITH_LOCK(w->cs_wallet, w->AddToWallet(spend, wallet::TxStateInactive{}));
+            BOOST_REQUIRE(!IsAvailable(*w, coin));
+            BOOST_CHECK_EQUAL(w->CountInputsWithAmount(50 * COIN), inputs_before);
 
-    BOOST_REQUIRE(w->AbandonTransaction(spend->GetHash()));
-    BOOST_CHECK_MESSAGE(IsAvailable(*w, coin),
-        "abandoned spend left its input hidden: wallet UTXO reconciliation must restore it");
-    BOOST_CHECK_EQUAL(w->CountInputsWithAmount(50 * COIN), inputs_before + 1);
+            BOOST_REQUIRE(w->AbandonTransaction(spend->GetHash()));
+            BOOST_CHECK_MESSAGE(IsAvailable(*w, coin),
+                "abandoned spend left its input hidden: wallet UTXO reconciliation must restore it");
+            BOOST_CHECK_EQUAL(w->CountInputsWithAmount(50 * COIN), inputs_before + 1);
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE(pos_wallet_orphaned_coinstake_released_on_disconnect)
