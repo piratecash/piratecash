@@ -22,6 +22,10 @@
 #include <vector>
 
 namespace {
+struct BaseIndexChainSetup : TestChainSetup {
+    BaseIndexChainSetup() : TestChainSetup{100} {}
+};
+
 //! A minimal index that, like Dash's address and spent indexes, keeps one entry per block and erases the entries of
 //! rewound blocks in CustomRewind() block by block. The rewind is exposed, and can stop after a given block, so a test
 //! can leave the on-disk state that an unclean shutdown in the middle of a reorg would leave, without having to time
@@ -118,7 +122,7 @@ BOOST_AUTO_TEST_SUITE(baseindex_tests)
 // flushed block. If it did, a subsequent unclean shutdown would corrupt
 // the index, because during reverting it would require blocks that were
 // never flushed to disk.
-BOOST_FIXTURE_TEST_CASE(baseindex_no_commit_ahead_of_flush, TestChain100Setup)
+BOOST_FIXTURE_TEST_CASE(baseindex_no_commit_ahead_of_flush, BaseIndexChainSetup)
 {
     Chainstate& chainstate = Assert(m_node.chainman)->ActiveChainstate();
     auto sync_index = [&](bool do_flush, int expected_sync_height, int expected_commit_height) {
@@ -167,7 +171,7 @@ BOOST_FIXTURE_TEST_CASE(baseindex_no_commit_ahead_of_flush, TestChain100Setup)
 
 // A rewind persists its erasures right away. If the node then stops before the rewound tip is flushed and the
 // rewound blocks are back on the active chain, the next start must index them again instead of resuming above them.
-BOOST_FIXTURE_TEST_CASE(restart_after_rewind_reindexes_erased_blocks, TestChain100Setup)
+BOOST_FIXTURE_TEST_CASE(restart_after_rewind_reindexes_erased_blocks, BaseIndexChainSetup)
 {
     ChainstateManager& chainman{*Assert(m_node.chainman)};
     {
@@ -207,7 +211,7 @@ BOOST_FIXTURE_TEST_CASE(restart_after_rewind_reindexes_erased_blocks, TestChain1
 
 // Each block's erasures are written in one batch with a locator at its parent. A node that stops in the middle of a
 // rewind then resumes from the last block whose entries are still there, and indexes the erased ones again.
-BOOST_FIXTURE_TEST_CASE(interrupted_rewind_keeps_locator_below_erased_entries, TestChain100Setup)
+BOOST_FIXTURE_TEST_CASE(interrupted_rewind_keeps_locator_below_erased_entries, BaseIndexChainSetup)
 {
     ChainstateManager& chainman{*Assert(m_node.chainman)};
     {
@@ -243,7 +247,7 @@ BOOST_FIXTURE_TEST_CASE(interrupted_rewind_keeps_locator_below_erased_entries, T
 
 // A sync that ends above the last flush can't commit its locator, but its entries are on disk. If those blocks leave
 // the active chain while the index is off, the next start must rewind them from the tip the sync reached.
-BOOST_FIXTURE_TEST_CASE(restart_rewinds_blocks_synced_above_flush, TestChain100Setup)
+BOOST_FIXTURE_TEST_CASE(restart_rewinds_blocks_synced_above_flush, BaseIndexChainSetup)
 {
     ChainstateManager& chainman{*Assert(m_node.chainman)};
     LowerLastFlushedBlock(chainman, 97);

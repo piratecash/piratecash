@@ -50,7 +50,7 @@ BOOST_FIXTURE_TEST_CASE(unrequested_qfcommit_is_dropped_and_scored, TestChain100
 {
     LOCK(NetEventsInterface::g_msgproc_mutex);
 
-    // INV announcements for non-spork objects are only tracked outside IBD; the 100 mined blocks
+    // INV announcements for non-spork objects are only tracked outside IBD; the mined blocks
     // of this fixture already take us out of it.
     BOOST_REQUIRE(!m_node.chainman->ActiveChainstate().IsInitialBlockDownload());
 

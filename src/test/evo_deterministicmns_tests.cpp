@@ -313,7 +313,7 @@ void FuncV19Activation(TestChainSetup& setup)
     CMutableTransaction tx_spend;
     COutPoint collateralOutpoint(tx_reg_hash, 0);
     tx_spend.vin.emplace_back(collateralOutpoint);
-    tx_spend.vout.emplace_back(999.99 * COIN, collateralScript);
+    tx_spend.vout.emplace_back(dmn_types::Regular.collat_amount - CENT, collateralScript);
 
     const auto spend_coins = BuildSimpleUtxoMap({MakeTransactionRef(tx_reg)});
     SignTransaction(tx_spend, spend_coins, collateral_key);
@@ -2484,9 +2484,8 @@ static void SmlCache(TestChainSetup& setup)
 
 BOOST_AUTO_TEST_SUITE(evo_dip3_activation_tests)
 
-// FuncDIP3Protx funds fifteen 1000-PIRATE collaterals from pre-mined 50-PIRATE coinbases.
-// Height 374 is the lowest boundary with enough mature outputs for all registrations and updates.
-constexpr int DIP3_ACTIVATION_HEIGHT{374};
+// Fund fifteen 10000-PIRATE collaterals without changing the real subsidy or coinbase maturity.
+constexpr int DIP3_ACTIVATION_HEIGHT{4000};
 
 BOOST_AUTO_TEST_CASE(deterministic_mn_list_diff_serialization_is_canonical)
 {
@@ -2510,9 +2509,10 @@ BOOST_AUTO_TEST_CASE(deterministic_mn_list_diff_serialization_is_canonical)
 struct TestChainDIP3BeforeActivationSetup : public TestChainSetup {
     TestChainDIP3BeforeActivationSetup() :
         TestChainSetup(DIP3_ACTIVATION_HEIGHT - 2, CBaseChainParams::REGTEST,
-                       {"-dip3params=374:500", "-testactivationheight=v19@697", "-testactivationheight=v20@697",
-                        "-testactivationheight=mn_rr@697"},
-                       /*coins_db_in_memory=*/true, /*block_tree_db_in_memory=*/true)
+                       {"-dip3params=4000:4126", "-testactivationheight=v19@4323", "-testactivationheight=v20@4323",
+                        "-testactivationheight=mn_rr@4323"},
+                       /*coins_db_in_memory=*/true, /*block_tree_db_in_memory=*/true,
+                       /*dash_dbs_in_memory=*/true, /*last_pow_block=*/5000)
     {
     }
 };
@@ -2580,10 +2580,10 @@ struct TestMNChainSetup : public TestChainSetup {
 
 struct TestChainV24SignalBeforeV19Setup : public TestMNChainSetup {
     TestChainV24SignalBeforeV19Setup() :
-        TestMNChainSetup(494,
-                         // Keep the Dash reward schedule used by the v24 boundary scenarios.
-                         {"-testactivationheight=brr@1", "-testactivationheight=v19@500", "-testactivationheight=v20@500",
-                          "-testactivationheight=mn_rr@511", "-vbparams=v24:0:9999999999:510:1:1:1:5:0"})
+        TestMNChainSetup(2494,
+                         // Complete BRR before the v24 boundary so both equal MN payments stay divisible by two.
+                         {"-testactivationheight=brr@1", "-testactivationheight=v19@2500", "-testactivationheight=v20@2500",
+                          "-testactivationheight=mn_rr@2511", "-vbparams=v24:0:9999999999:2510:1:1:1:5:0"})
     {
         assert(!IsV19Active());
         assert(!IsV24Active());
@@ -2597,7 +2597,7 @@ struct TestChainV24SignalBeforeV19Setup : public TestMNChainSetup {
 struct TestChainV24PendingSetup : public TestChainV24SignalBeforeV19Setup {
     TestChainV24PendingSetup()
     {
-        // Mine just enough to activate v19/v20 (height 500) while keeping v24 and mn_rr pending.
+        // Mine just enough to activate v19/v20 (height 2500) while keeping v24 and mn_rr pending.
         for (int i = 0; i < 20 && !IsV19Active(); ++i) {
             ProcessBlock();
         }
@@ -4658,9 +4658,12 @@ BOOST_AUTO_TEST_CASE(evodb_repair_missing_snapshot_is_repair_error)
     auto& evodb = *Assert(setup.m_node.evodb);
     const CScript coinbase_pk = GetScriptForRawPubKey(setup.coinbaseKey.GetPubKey());
 
+    const int dip3_height{Params().GetConsensus().DIP0003Height};
     // CDeterministicMNManager::DISK_SNAPSHOT_PERIOD
     constexpr int snapshot_period{576};
-    while (WITH_LOCK(::cs_main, return chainman.ActiveChain().Height()) < 2 * snapshot_period) {
+    const int first_snapshot_height{((dip3_height / snapshot_period) + 1) * snapshot_period};
+    const int second_snapshot_height{first_snapshot_height + snapshot_period};
+    while (WITH_LOCK(::cs_main, return chainman.ActiveChain().Height()) < second_snapshot_height) {
         setup.CreateAndProcessBlock({}, coinbase_pk);
     }
     const CBlockIndex* dip3_index;
@@ -4668,10 +4671,13 @@ BOOST_AUTO_TEST_CASE(evodb_repair_missing_snapshot_is_repair_error)
     const CBlockIndex* second_index;
     {
         LOCK(::cs_main);
-        dip3_index = chainman.ActiveChain()[Params().GetConsensus().DIP0003Height];
-        first_index = chainman.ActiveChain()[snapshot_period];
-        second_index = chainman.ActiveChain()[2 * snapshot_period];
+        dip3_index = chainman.ActiveChain()[dip3_height];
+        first_index = chainman.ActiveChain()[first_snapshot_height];
+        second_index = chainman.ActiveChain()[second_snapshot_height];
     }
+    BOOST_REQUIRE(dip3_index != nullptr);
+    BOOST_REQUIRE(first_index != nullptr);
+    BOOST_REQUIRE(second_index != nullptr);
 
     // Diffs between intact snapshots verify, so the rebuild callback is never needed here
     const auto build_list_func = [](const CBlock&, gsl::not_null<const CBlockIndex*>, const CDeterministicMNList&,
@@ -4691,7 +4697,7 @@ BOOST_AUTO_TEST_CASE(evodb_repair_missing_snapshot_is_repair_error)
         db_tx->Commit();
     }
 
-    const std::string missing_msg{strprintf("Snapshot missing at height %d", snapshot_period)};
+    const std::string missing_msg{strprintf("Snapshot missing at height %d", first_snapshot_height)};
 
     // Snapshot missing as the end of a pair
     result = dmnman.RecalculateAndRepairDiffs(dip3_index, second_index, build_list_func, /*repair=*/true);

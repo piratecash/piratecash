@@ -5,6 +5,7 @@
 #include <qt/test/providertransactiontests.h>
 
 #include <evo/assetlocktx.h>
+#include <evo/dmn_types.h>
 #include <evo/specialtx.h>
 #include <interfaces/chain.h>
 #include <interfaces/node.h>
@@ -341,7 +342,7 @@ void ProviderTransactionTests::providerTransactionHistory()
         // Add an externally funded registration after model construction to exercise live wallet
         // notification. Its owned output is the wallet's positive net change and still yields one
         // logical registration record rather than one record per output.
-        const CAmount received_collateral{1000 * COIN};
+        const CAmount received_collateral{GetMnType(MnType::Regular).collat_amount};
         const CTransactionRef received_registration{MakeSpecialTransaction(TRANSACTION_PROVIDER_REGISTER,
                                                                            COutPoint{uint256::ONE, 7},
                                                                            received_collateral, own_script)};

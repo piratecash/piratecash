@@ -21,6 +21,8 @@
 #include <util/vector.h>
 
 #include <functional>
+#include <memory>
+#include <optional>
 #include <stdexcept>
 #include <type_traits>
 #include <vector>
@@ -124,7 +126,8 @@ struct TestChainSetup : public TestingSetup
                    const std::vector<const char*>& extra_args = {},
                    const bool coins_db_in_memory = true,
                    const bool block_tree_db_in_memory = true,
-                   const bool dash_dbs_in_memory = true);
+                   const bool dash_dbs_in_memory = true,
+                   const std::optional<int64_t> last_pow_block = std::nullopt);
     ~TestChainSetup();
 
     /**
@@ -192,20 +195,24 @@ struct TestChainSetup : public TestingSetup
 
     std::vector<CTransactionRef> m_coinbase_txns; // For convenience, coinbase transactions
     CKey coinbaseKey; // private/public key needed to spend coinbase transactions
+
+private:
+    class ScopedLastPoWBlock;
+    std::unique_ptr<ScopedLastPoWBlock> m_last_pow_block;
 };
 
-/** Test chain stopped five blocks before v19 activation at height 374. */
+/** Test chain stopped five blocks before v19 activation at height 4000. */
 struct TestChainV19BeforeActivationSetup : public TestChainSetup {
     TestChainV19BeforeActivationSetup();
 };
 
-/** Test chain whose next block activates v19 at height 374. */
+/** Test chain whose next block activates v19 at height 4000. */
 struct TestChainV19Setup : public TestChainV19BeforeActivationSetup {
     TestChainV19Setup();
 };
 
 /**
- * Testing fixture that pre-creates a 100-block REGTEST-mode block chain
+ * Testing fixture that pre-creates COINBASE_MATURITY blocks, allowing the first coinbase to be spent.
  */
 struct TestChain100Setup : public TestChainSetup {
     TestChain100Setup(
