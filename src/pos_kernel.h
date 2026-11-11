@@ -17,6 +17,7 @@ extern RecursiveMutex cs_main; // NOLINT(readability-redundant-declaration)
 class CBlockHeader;
 class CBlockIndex;
 class CChain;
+class CCoinsViewCache;
 class CTxMemPool;
 namespace node {
 class BlockManager;
@@ -48,9 +49,21 @@ bool CheckStakeKernelHash(
     uint256& hashProofOfStake,
     bool fPrintProofOfStake = false);
 
+// Same check for callers that hold only the stake output (e.g. a UTXO entry).
+bool CheckStakeKernelHash(
+    CBlockHeader &current,
+    const CBlockIndex &blockPrev,
+    const CBlockIndex &blockFrom,
+    const CTxOut& stake_out,
+    const COutPoint prevout,
+    unsigned int nHashDrift,
+    bool fCheck,
+    uint256& hashProofOfStake,
+    bool fPrintProofOfStake = false);
+
 // Check kernel hash target and coinstake signature
 // Sets hashProofOfStake on success return
-bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& block, uint256& hashProofOfStake, const Consensus::Params& consensus, const CTxMemPool* mempool = nullptr, const node::BlockManager* blockman = nullptr, const CChain* active_chain = nullptr);
+bool CheckProofOfStake(BlockValidationState& state, const CBlockHeader& block, uint256& hashProofOfStake, const Consensus::Params& consensus, const CTxMemPool* mempool = nullptr, const node::BlockManager* blockman = nullptr, const CChain* active_chain = nullptr, CCoinsViewCache* coins_tip = nullptr);
 
 // Header-only stake double-spend guard, extracted from CheckProofOfStake so
 // the walk can be unit-tested directly. Walks the still-unvalidated PoS

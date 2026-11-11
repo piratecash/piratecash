@@ -1312,7 +1312,7 @@ bool IsPoSV2EnforcedHeight(int nFirstPoSv2Block);
 bool IsPowActiveHeight(int nBlockHeight);
 
 bool CheckProof(BlockValidationState& state, const CBlockIndex& pindex, const Consensus::Params& params);
-bool CheckProof(BlockValidationState& state, const CBlockHeader& block, const Consensus::Params& params, const node::BlockManager* blockman = nullptr, const CChain* active_chain = nullptr);
+bool CheckProof(BlockValidationState& state, const CBlockHeader& block, const Consensus::Params& params, const node::BlockManager* blockman = nullptr, const CChain* active_chain = nullptr, CCoinsViewCache* coins_tip = nullptr);
 
 /**
  * Return the expected assumeutxo value for a given height, if one exists.
