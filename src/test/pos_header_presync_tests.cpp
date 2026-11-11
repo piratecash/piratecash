@@ -5,6 +5,7 @@
 #include <pos_header_presync.h>
 
 #include <chainparams.h>
+#include <consensus/validation.h>
 #include <primitives/block.h>
 #include <uint256.h>
 
@@ -16,9 +17,12 @@
 
 using pos_presync::AddResult;
 using pos_presync::Anchor;
+using pos_presync::HeaderTail;
 using pos_presync::SegmentCollector;
 
 BOOST_FIXTURE_TEST_SUITE(pos_header_presync_tests, BasicTestingSetup)
+
+using namespace std::chrono_literals;
 
 namespace {
 constexpr NodeId PEER{7};
@@ -218,6 +222,82 @@ BOOST_AUTO_TEST_CASE(regtest_has_no_anchors_above_genesis)
     const auto params{CreateChainParams(*m_node.args, CBaseChainParams::REGTEST)};
     BOOST_CHECK(!pos_presync::NextAnchor(params->Checkpoints().mapCheckpoints, 0));
     BOOST_CHECK(params->GetConsensus().nMinimumChainWork.IsNull());
+}
+
+BOOST_AUTO_TEST_CASE(only_tmp_errors_count_as_deferred)
+{
+    BlockValidationState deferred;
+    deferred.Error("tmp-bad-unkown-stake");
+    BOOST_CHECK(pos_presync::IsHeaderDeferred(deferred));
+
+    BlockValidationState failed;
+    failed.Error("out of disk space");
+    BOOST_CHECK(!pos_presync::IsHeaderDeferred(failed));
+
+    BlockValidationState invalid;
+    invalid.Invalid(BlockValidationResult::BLOCK_INVALID_HEADER, "tmp-forged-reason");
+    BOOST_CHECK(!pos_presync::IsHeaderDeferred(invalid));
+
+    BOOST_CHECK(!pos_presync::IsHeaderDeferred(BlockValidationState{}));
+}
+
+BOOST_AUTO_TEST_CASE(tail_is_retried_when_the_tip_moves)
+{
+    const auto chain{MakeChain(BASE_HASH, 10)};
+    const uint256 tip_a{uint256S("a1")}, tip_b{uint256S("a2")};
+    HeaderTail tail{/*max_headers=*/100};
+    BOOST_CHECK_EQUAL(tail.Owner(), -1);
+    BOOST_CHECK(tail.FrontParent().IsNull());
+
+    BOOST_REQUIRE(tail.Store(PEER, chain, /*first=*/4, /*peer_has_more=*/true, 100s));
+    BOOST_CHECK_EQUAL(tail.Owner(), PEER);
+    BOOST_CHECK(tail.FrontParent() == chain[3].GetHash());
+    BOOST_CHECK(tail.NextChunk(PEER + 1, tip_a, 100s, 3).empty());
+
+    const auto first{tail.NextChunk(PEER, tip_a, 100s, 3)};
+    BOOST_REQUIRE_EQUAL(first.size(), 3U);
+    BOOST_CHECK(first[0].GetHash() == chain[4].GetHash());
+
+    // Nothing was accepted and the tip did not move: wait a second.
+    BOOST_CHECK(tail.NextChunk(PEER, tip_a, 100s, 3).empty());
+    BOOST_CHECK_EQUAL(tail.NextChunk(PEER, tip_a, 101s, 3).size(), 3U);
+    BOOST_CHECK_EQUAL(tail.NextChunk(PEER, tip_b, 101s, 3).size(), 3U);
+
+    // Accepted headers leave the front and the next chunk is due at once.
+    tail.Consumed(2);
+    BOOST_CHECK(tail.FrontParent() == chain[5].GetHash());
+    const auto second{tail.NextChunk(PEER, tip_b, 101s, 10)};
+    BOOST_REQUIRE_EQUAL(second.size(), 4U);
+    BOOST_CHECK(second[0].GetHash() == chain[6].GetHash());
+
+    tail.Consumed(4);
+    BOOST_CHECK(tail.Empty());
+    BOOST_CHECK_EQUAL(tail.Owner(), -1);
+    BOOST_CHECK(tail.PeerHasMore());
+}
+
+BOOST_AUTO_TEST_CASE(held_tail_is_not_replaced)
+{
+    const auto chain{MakeChain(BASE_HASH, 10)};
+    HeaderTail tail{/*max_headers=*/6};
+
+    BOOST_CHECK(!tail.Store(PEER, chain, 10, false, 100s));
+    BOOST_CHECK(!tail.Store(PEER, chain, 3, false, 100s)); // over the limit
+    BOOST_REQUIRE(tail.Store(PEER, chain, 4, /*peer_has_more=*/true, 100s));
+
+    BOOST_CHECK(!tail.Store(PEER + 1, chain, 8, false, 100s));
+    BOOST_CHECK(!tail.Store(PEER, chain, 8, false, 100s));
+    BOOST_CHECK_EQUAL(tail.Owner(), PEER);
+    BOOST_CHECK(tail.PeerHasMore());
+    BOOST_CHECK_EQUAL(tail.NextChunk(PEER, uint256S("a1"), 100s, 10).size(), 6U);
+
+    tail.ForgetPeer(PEER + 1);
+    BOOST_CHECK(!tail.Empty());
+    tail.ForgetPeer(PEER);
+    BOOST_CHECK(tail.Empty());
+    BOOST_CHECK(tail.Store(PEER + 1, chain, 8, false, 100s));
+    tail.Clear();
+    BOOST_CHECK(tail.Store(PEER, chain, 8, false, 100s));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

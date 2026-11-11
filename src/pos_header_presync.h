@@ -10,10 +10,16 @@
 #include <primitives/block.h>
 #include <uint256.h>
 
+#include <sync.h>
+
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <deque>
 #include <optional>
 #include <vector>
+
+class BlockValidationState;
 
 /**
  * Header presync below the last checkpoint.
@@ -98,6 +104,53 @@ private:
 void MarkAnchored(const std::vector<uint256>& hashes);
 bool IsAnchoredHeader(const uint256& hash);
 void ClearAnchored();
+
+/** The header was not judged: its stake cannot be looked up until the tip gets closer. */
+bool IsHeaderDeferred(const BlockValidationState& state);
+
+/**
+ * Headers of one message that were deferred, kept until the tip is close enough
+ * to check them. One peer owns the tail at a time; nothing in it is trusted.
+ */
+class HeaderTail
+{
+public:
+    explicit HeaderTail(size_t max_headers) : m_max_headers{max_headers} {}
+
+    /** Owning peer, or -1 while the tail is empty. */
+    NodeId Owner() const EXCLUSIVE_LOCKS_REQUIRED(!m_mutex);
+    bool Empty() const EXCLUSIVE_LOCKS_REQUIRED(!m_mutex);
+    /** Whether the message the tail came from was full, so the peer has more to send. */
+    bool PeerHasMore() const EXCLUSIVE_LOCKS_REQUIRED(!m_mutex);
+
+    /** Keep `headers[first..]`. Refused, with nothing changed, while a tail is held or when the limit is exceeded. */
+    bool Store(NodeId from, const std::vector<CBlockHeader>& headers, size_t first, bool peer_has_more,
+               std::chrono::seconds now) EXCLUSIVE_LOCKS_REQUIRED(!m_mutex);
+
+    /**
+     * Front of the tail when it is `peer`'s and a retry is due: the tip moved, the
+     * previous chunk was accepted, or a second passed. Empty otherwise.
+     */
+    std::vector<CBlockHeader> NextChunk(NodeId peer, const uint256& tip, std::chrono::seconds now, size_t max_count)
+        EXCLUSIVE_LOCKS_REQUIRED(!m_mutex);
+    /** Drop `count` accepted headers from the front. */
+    void Consumed(size_t count) EXCLUSIVE_LOCKS_REQUIRED(!m_mutex);
+    /** Block the tail waits on: the parent of its first header. Null while the tail is empty. */
+    uint256 FrontParent() const EXCLUSIVE_LOCKS_REQUIRED(!m_mutex);
+    void Clear() EXCLUSIVE_LOCKS_REQUIRED(!m_mutex);
+    void ForgetPeer(NodeId peer) EXCLUSIVE_LOCKS_REQUIRED(!m_mutex);
+
+private:
+    const size_t m_max_headers;
+
+    mutable Mutex m_mutex;
+    std::deque<CBlockHeader> m_headers GUARDED_BY(m_mutex);
+    NodeId m_owner GUARDED_BY(m_mutex){-1};
+    bool m_peer_has_more GUARDED_BY(m_mutex){false};
+    bool m_retry_now GUARDED_BY(m_mutex){false};
+    uint256 m_last_tip GUARDED_BY(m_mutex);
+    std::chrono::seconds m_last_attempt GUARDED_BY(m_mutex){0};
+};
 
 } // namespace pos_presync
 

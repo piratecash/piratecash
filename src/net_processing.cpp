@@ -23,6 +23,7 @@
 #include <node/blockstorage.h>
 #include <node/txreconciliation.h>
 #include <policy/policy.h>
+#include <pos_header_presync.h>
 #include <policy/settings.h>
 #include <primitives/block.h>
 #include <primitives/transaction.h>
@@ -794,6 +795,16 @@ private:
     void HeadersDirectFetchBlocks(CNode& pfrom, const Peer& peer, const CBlockIndex& last_header);
     /** Update peer state based on received headers message */
     void UpdatePeerStateForReceivedHeaders(CNode& pfrom, const CBlockIndex& last_header, bool received_new_header, bool may_have_more_headers);
+
+    /** PoS headers whose stake cannot be looked up yet, see pos_header_presync.h */
+    pos_presync::HeaderTail m_pos_header_tail{MAX_HEADERS_COMPRESSED_RESULT};
+    /** Keep the unchecked rest of a headers message and credit the peer with what was accepted. */
+    void DeferPosHeaders(CNode& pfrom, Peer& peer, const std::vector<CBlockHeader>& headers,
+                         const BlockValidationState& state, const CBlockIndex* last_accepted, bool keep_rest)
+        EXCLUSIVE_LOCKS_REQUIRED(!m_peer_mutex, g_msgproc_mutex);
+    /** Retry deferred headers of this peer once the tip has moved. */
+    void DrainPosHeaderTail(CNode& pfrom, Peer& peer)
+        EXCLUSIVE_LOCKS_REQUIRED(!m_peer_mutex, g_msgproc_mutex);
 
     void SendBlockTransactions(CNode& pfrom, Peer& peer, const CBlock& block, const BlockTransactionsRequest& req);
 
@@ -1805,6 +1816,7 @@ void PeerManagerImpl::FinalizeNode(const CNode& node) {
 
     if (state->fSyncStarted)
         nSyncStarted--;
+    m_pos_header_tail.ForgetPeer(nodeid);
 
     for (const QueuedBlock& entry : state->vBlocksInFlight) {
         auto range = mapBlocksInFlight.equal_range(entry.pindex->GetBlockHash());
@@ -3146,6 +3158,12 @@ void PeerManagerImpl::HandleFewUnconnectingHeaders(CNode& pfrom, Peer& peer,
     LOCK(cs_main);
     CNodeState *nodestate = State(pfrom.GetId());
 
+    if (m_pos_header_tail.Owner() == pfrom.GetId()) {
+        // It cannot be asked for headers while its previous ones wait, so this is not counted against it.
+        UpdateBlockAvailability(pfrom.GetId(), headers.back().GetHash());
+        return;
+    }
+
     nodestate->nUnconnectingHeaders++;
     // Try to fill in the missing headers.
     std::string msg_type = UsesCompressedHeaders(peer) ? NetMsgType::GETHEADERS2 : NetMsgType::GETHEADERS;
@@ -3188,6 +3206,9 @@ bool PeerManagerImpl::MaybeSendGetHeaders(CNode& pfrom, const std::string& msg_t
     const CNetMsgMaker msgMaker(pfrom.GetCommonVersion());
 
     const auto current_time = NodeClock::now();
+
+    // The peer's previous headers are still waiting to be checked.
+    if (m_pos_header_tail.Owner() == pfrom.GetId()) return false;
 
     // Only allow a new getheaders message to go out if we don't have a recent
     // one already in-flight
@@ -3367,6 +3388,8 @@ void PeerManagerImpl::ProcessHeadersMessage(CNode& pfrom, Peer& peer,
     if (!m_chainman.ProcessNewBlockHeaders(headers, state, &pindexLast)) {
         if (state.IsInvalid()) {
             MaybePunishNodeForBlock(pfrom.GetId(), state, via_compact_block, "invalid header received");
+        } else {
+            DeferPosHeaders(pfrom, peer, headers, state, pindexLast, /*keep_rest=*/!via_compact_block);
         }
         return;
     }
@@ -3388,6 +3411,108 @@ void PeerManagerImpl::ProcessHeadersMessage(CNode& pfrom, Peer& peer,
     HeadersDirectFetchBlocks(pfrom, peer, *pindexLast);
 
     return;
+}
+
+void PeerManagerImpl::DeferPosHeaders(CNode& pfrom, Peer& peer, const std::vector<CBlockHeader>& headers,
+                                      const BlockValidationState& state, const CBlockIndex* last_accepted, bool keep_rest)
+{
+    if (!pos_presync::IsHeaderDeferred(state)) return;
+
+    size_t accepted{0};
+    if (last_accepted) {
+        const uint256& last_hash{last_accepted->GetBlockHash()};
+        accepted = 1;
+        while (accepted < headers.size() && headers[accepted].hashPrevBlock != last_hash) ++accepted;
+    }
+
+    bool stored{false};
+    {
+        LOCK(cs_main);
+        if (!last_accepted) last_accepted = m_chainman.m_blockman.LookupBlockIndex(headers[0].hashPrevBlock);
+        if (!last_accepted) return;
+        // Only headers that extend the active chain become checkable as the tip advances,
+        // and only a peer we asked for headers may hold the single slot.
+        const CChain& chain{m_chainman.ActiveChain()};
+        const CNodeState* nodestate{State(pfrom.GetId())};
+        if (keep_rest && nodestate && nodestate->fSyncStarted && chain.FindFork(last_accepted) == chain.Tip()) {
+            const bool peer_has_more{headers.size() == GetHeadersLimit(pfrom, UsesCompressedHeaders(peer))};
+            stored = m_pos_header_tail.Store(pfrom.GetId(), headers, accepted, peer_has_more, GetTime<std::chrono::seconds>());
+        }
+    }
+    LogPrint(BCLog::NET, "deferred %d of %d headers after height %d, peer=%d, kept=%d\n",
+             headers.size() - accepted, headers.size(), last_accepted->nHeight, pfrom.GetId(), stored);
+
+    // The peer has everything up to the first deferred header: blocks can be requested from it.
+    UpdatePeerStateForReceivedHeaders(pfrom, *last_accepted, /*received_new_header=*/false, /*may_have_more_headers=*/true);
+    HeadersDirectFetchBlocks(pfrom, peer, *last_accepted);
+}
+
+void PeerManagerImpl::DrainPosHeaderTail(CNode& pfrom, Peer& peer)
+{
+    static constexpr size_t MAX_HEADERS_PER_RETRY{64};
+
+    if (m_pos_header_tail.Owner() != pfrom.GetId()) return;
+
+    uint256 tip;
+    const CBlockIndex* best_header_before{nullptr};
+    {
+        LOCK(cs_main);
+        const CChain& chain{m_chainman.ActiveChain()};
+        const CBlockIndex* parent{m_chainman.m_blockman.LookupBlockIndex(m_pos_header_tail.FrontParent())};
+        if (!parent || chain.FindFork(parent) != chain.Tip()) {
+            // The tail no longer extends the active chain: the tip will not reach it.
+            m_pos_header_tail.Clear();
+            return;
+        }
+        tip = chain.Tip()->GetBlockHash();
+        best_header_before = m_chainman.m_best_header;
+    }
+    const std::vector<CBlockHeader> chunk{m_pos_header_tail.NextChunk(pfrom.GetId(), tip, GetTime<std::chrono::seconds>(), MAX_HEADERS_PER_RETRY)};
+    if (chunk.empty()) return;
+
+    const CBlockIndex* last_accepted{nullptr};
+    BlockValidationState state;
+    size_t accepted{chunk.size()};
+    if (!m_chainman.ProcessNewBlockHeaders(chunk, state, &last_accepted)) {
+        accepted = 0;
+        if (last_accepted) {
+            const uint256& last_hash{last_accepted->GetBlockHash()};
+            accepted = 1;
+            while (accepted < chunk.size() && chunk[accepted].hashPrevBlock != last_hash) ++accepted;
+        }
+        if (!pos_presync::IsHeaderDeferred(state)) {
+            m_pos_header_tail.Clear();
+            if (state.IsInvalid()) {
+                MaybePunishNodeForBlock(pfrom.GetId(), state, /*via_compact_block=*/false, "invalid header received");
+            }
+            return;
+        }
+    }
+    m_pos_header_tail.Consumed(accepted);
+    if (!last_accepted) return;
+
+    bool received_new_header{false};
+    {
+        LOCK(cs_main);
+        received_new_header = m_chainman.m_best_header != best_header_before;
+        CNodeState* nodestate{State(pfrom.GetId())};
+        // The headers sync deadline counts from the last header this peer added to the best chain.
+        if (received_new_header && nodestate && nodestate->fSyncStarted && nodestate->m_headers_sync_timeout != std::chrono::microseconds::max()) {
+            nodestate->m_headers_sync_timeout = std::max(nodestate->m_headers_sync_timeout,
+                                                         GetTime<std::chrono::microseconds>() + HEADERS_DOWNLOAD_TIMEOUT_BASE);
+        }
+    }
+    const bool drained{m_pos_header_tail.Empty()};
+    const bool peer_has_more{m_pos_header_tail.PeerHasMore()};
+    if (drained && peer_has_more) {
+        const std::string msg_type{UsesCompressedHeaders(peer) ? NetMsgType::GETHEADERS2 : NetMsgType::GETHEADERS};
+        if (MaybeSendGetHeaders(pfrom, msg_type, GetLocator(last_accepted), peer)) {
+            LogPrint(BCLog::NET, "more %s (%d) to end to peer=%d after deferred headers\n",
+                     msg_type, last_accepted->nHeight, pfrom.GetId());
+        }
+    }
+    UpdatePeerStateForReceivedHeaders(pfrom, *last_accepted, received_new_header, !drained || peer_has_more);
+    HeadersDirectFetchBlocks(pfrom, peer, *last_accepted);
 }
 
 bool PeerManagerImpl::ProcessOrphanTx(NodeId node_id)
@@ -5106,6 +5231,8 @@ void PeerManagerImpl::ProcessMessage(
         if (!m_chainman.ProcessNewBlockHeaders({cmpctblock.header}, state, &pindex)) {
             if (state.IsInvalid()) {
                 MaybePunishNodeForBlock(pfrom.GetId(), state, /*via_compact_block=*/true, "invalid header via cmpctblock");
+            } else {
+                DeferPosHeaders(pfrom, *peer, {cmpctblock.header}, state, pindex, /*keep_rest=*/false);
             }
             return;
         }
@@ -5926,6 +6053,8 @@ bool PeerManagerImpl::ProcessMessages(CNode* pfrom, std::atomic<bool>& interrupt
 
     // Don't bother if send buffer is too full to respond anyway
     if (pfrom->fPauseSend) return false;
+
+    DrainPosHeaderTail(*pfrom, *peer);
 
     auto poll_result{pfrom->PollMessage()};
     if (!poll_result) {
