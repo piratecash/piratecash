@@ -187,4 +187,43 @@ BOOST_AUTO_TEST_CASE(anchored_hashes)
     BOOST_CHECK(!pos_presync::IsAnchoredHeader(uint256S("01")));
 }
 
+BOOST_AUTO_TEST_CASE(anchor_spacing)
+{
+    // A segment between two anchors is buffered in memory as a whole, and anchors
+    // sit on multiples of the step so that every release extends the same grid.
+    constexpr int ANCHOR_STEP{50000};
+
+    for (const auto& chain : {CBaseChainParams::MAIN, CBaseChainParams::TESTNET}) {
+        const auto params{CreateChainParams(*m_node.args, chain)};
+        const auto& anchors{params->Checkpoints().mapCheckpoints};
+        const int last_height{anchors.rbegin()->first};
+        int prev_height{0};
+        for (const auto& [height, hash] : anchors) {
+            BOOST_CHECK_MESSAGE(height - prev_height <= ANCHOR_STEP, chain << ": gap below anchor " << height);
+            BOOST_CHECK_MESSAGE(height % ANCHOR_STEP == 0 || height == last_height, chain << ": anchor " << height << " is off the grid");
+            prev_height = height;
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(last_anchor_is_the_minimum_chain_work_block)
+{
+    // nMinimumChainWork and defaultAssumeValid are taken from the same block. Presync
+    // ends at the last anchor, so that block has to be the last anchor.
+    for (const auto& chain : {CBaseChainParams::MAIN, CBaseChainParams::TESTNET}) {
+        const auto params{CreateChainParams(*m_node.args, chain)};
+        const auto last{pos_presync::LastAnchor(params->Checkpoints().mapCheckpoints)};
+        BOOST_REQUIRE_MESSAGE(last, chain);
+        BOOST_CHECK_MESSAGE(!params->GetConsensus().nMinimumChainWork.IsNull(), chain);
+        BOOST_CHECK_MESSAGE(last->hash == params->GetConsensus().defaultAssumeValid, chain);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(regtest_has_no_anchors_above_genesis)
+{
+    const auto params{CreateChainParams(*m_node.args, CBaseChainParams::REGTEST)};
+    BOOST_CHECK(!pos_presync::NextAnchor(params->Checkpoints().mapCheckpoints, 0));
+    BOOST_CHECK(params->GetConsensus().nMinimumChainWork.IsNull());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
