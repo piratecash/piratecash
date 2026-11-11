@@ -4724,10 +4724,7 @@ bool ChainstateManager::AcceptBlockHeader(const CBlockHeader& block, BlockValida
         }
 
         if (!ContextualCheckBlockHeader(block, state, m_blockman, *this, pindexPrev, true, &ActiveChain())) {
-            // Retry missing stake data when the local chain catches up.
-            if (!state.IsTransientError()) {
-                LogPrint(BCLog::VALIDATION, "%s: Consensus::ContextualCheckBlockHeader: %s, %s\n", __func__, hash.ToString(), state.ToString());
-            }
+            LogPrint(BCLog::VALIDATION, "%s: Consensus::ContextualCheckBlockHeader: %s, %s\n", __func__, hash.ToString(), state.ToString());
             return false;
         }
 
@@ -4806,31 +4803,21 @@ bool ChainstateManager::AcceptBlockHeader(const CBlockHeader& block, BlockValida
 }
 
 // Exposed wrapper for AcceptBlockHeader
-bool ChainstateManager::ProcessNewBlockHeaders(const std::vector<CBlockHeader>& headers, BlockValidationState& state, const CBlockIndex** ppindex, CBlockHeader* first_invalid)
+bool ChainstateManager::ProcessNewBlockHeaders(const std::vector<CBlockHeader>& headers, BlockValidationState& state, const CBlockIndex** ppindex)
 {
     AssertLockNotHeld(cs_main);
-    if (first_invalid != nullptr) first_invalid->SetNull();
-
     {
         LOCK(cs_main);
-        CBlockIndex* pindex_last = nullptr;
         for (const CBlockHeader& header : headers) {
             CBlockIndex *pindex = nullptr; // Use a temp pindex instead of ppindex to avoid a const_cast
             bool accepted{AcceptBlockHeader(header, state, &pindex, header.GetHash())};
             CheckBlockIndex();
 
             if (!accepted) {
-                if (first_invalid != nullptr) {
-                    *first_invalid = header;
-                }
-                if (ppindex != nullptr) {
-                    *ppindex = pindex_last;
-                }
                 return false;
             }
-            pindex_last = pindex;
-            if (ppindex != nullptr) {
-                *ppindex = pindex_last;
+            if (ppindex) {
+                *ppindex = pindex;
             }
         }
     }

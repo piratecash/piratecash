@@ -82,9 +82,6 @@ static const int DEFAULT_SCRIPTCHECK_THREADS = 0;
 static const unsigned int MAX_HEADERS_UNCOMPRESSED_RESULT = 2000;
 static const unsigned int MAX_HEADERS_COMPRESSED_RESULT = 8000;
 
-/** Due to high computation requirements for PirateCash PoW & PoS we need to limit message loop blocking */
-static constexpr unsigned int MAX_NEW_HEADER_BURST = 50;
-
 /** Default for -stopatheight */
 static const int DEFAULT_STOPATHEIGHT = 0;
 /** Blocks within this distance of ActiveChain().Tip() are accepted unrequested and announced by pruned nodes.
@@ -1196,7 +1193,7 @@ public:
      * @param[out] state This may be set to an Error state if any error occurred processing them
      * @param[out] ppindex If set, the pointer will be set to point to the last new block index object for the given headers
      */
-    bool ProcessNewBlockHeaders(const std::vector<CBlockHeader>& block, BlockValidationState& state, const CBlockIndex** ppindex = nullptr, CBlockHeader* first_invalid = nullptr) LOCKS_EXCLUDED(cs_main);
+    bool ProcessNewBlockHeaders(const std::vector<CBlockHeader>& block, BlockValidationState& state, const CBlockIndex** ppindex = nullptr) LOCKS_EXCLUDED(cs_main);
 
     /**
      * Sufficiently validate a block for disk storage (and store on disk).
