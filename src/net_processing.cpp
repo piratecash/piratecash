@@ -3185,7 +3185,8 @@ void PeerManagerImpl::HandleFewUnconnectingHeaders(CNode& pfrom, Peer& peer,
     // While deferred headers wait for the tip, nothing past the best header can be checked:
     // ask only for the best header itself, which is enough to learn that the peer has it.
     const CBlockIndex* best_header{m_chainman.m_best_header};
-    const bool only_best{!m_pos_header_tail.Empty() && best_header->pprev};
+    // Not below the minimum chain work: a reply cut short by us must not look like the peer's whole chain.
+    const bool only_best{!m_pos_header_tail.Empty() && best_header->pprev && best_header->nChainWork >= m_chainman.MinimumChainWork()};
     if (MaybeSendGetHeaders(pfrom, msg_type, GetLocator(only_best ? best_header->pprev : best_header), peer, only_best ? best_header->GetBlockHash() : uint256{})) {
         LogPrint(BCLog::NET, "received header %s: missing prev block %s, sending %s (%d) to end (peer=%d, nUnconnectingHeaders=%d)\n",
             headers[0].GetHash().ToString(),
