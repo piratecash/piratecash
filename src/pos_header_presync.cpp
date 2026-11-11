@@ -4,7 +4,9 @@
 
 #include <pos_header_presync.h>
 
+#include <chain.h>
 #include <consensus/validation.h>
+#include <pubkey.h>
 #include <serialize.h>
 #include <span.h>
 #include <streams.h>
@@ -89,6 +91,8 @@ AddResult SegmentCollector::Add(NodeId from, const std::vector<CBlockHeader>& he
     uint256 prev{m_tail.hash};
     for (size_t i = 0; i < wanted; ++i) {
         if (headers[i].hashPrevBlock != prev) return AddResult::NON_CONTINUOUS;
+        // The signature is not covered by the hash and is only checked with the block body.
+        if (headers[i].IsProofOfStakeV2() && headers[i].posBlockSig.size() != CPubKey::COMPACT_SIGNATURE_SIZE) return AddResult::BAD_SIGNATURE;
         prev = headers[i].GetHash();
         hashes.push_back(prev);
     }
@@ -124,6 +128,7 @@ Segment SegmentCollector::TakeSegment()
     SpanReader reader{HEADER_SER_TYPE, PROTOCOL_VERSION, m_data};
     for (CBlockHeader& header : segment.headers) {
         reader >> header;
+        if (header.IsProofOfStakeV2()) header.nFlags |= CBlockIndex::BLOCK_PROOF_OF_STAKE;
     }
     segment.hashes = std::move(m_hashes);
 
@@ -145,6 +150,11 @@ bool IsAnchoredHeader(const uint256& hash)
     if (g_anchored_empty) return false;
     LOCK(g_anchored_mutex);
     return g_anchored.count(hash) > 0;
+}
+
+bool IsAnchoredHeader(const CBlockHeader& header)
+{
+    return !g_anchored_empty && IsAnchoredHeader(header.GetHash());
 }
 
 void ClearAnchored()

@@ -8,6 +8,7 @@
 #include <config/bitcoin-config.h>
 #endif
 
+#include <pos_header_presync.h>
 #include <pos_kernel.h>
 #include <validation.h>
 
@@ -4903,6 +4904,13 @@ bool ChainstateManager::AcceptBlock(const std::shared_ptr<const CBlock>& pblock,
         return false;
     }
 
+    // The header may have come without its stake proof being checked (see pos_header_presync.h);
+    // the block's signature has just been checked against its coinbase.
+    if (block.IsProofOfStakeV2() && pindex->posBlockSig != block.posBlockSig) {
+        pindex->posBlockSig = block.posBlockSig;
+        m_blockman.m_dirty_blockindex.insert(pindex);
+    }
+
     // Header is valid/has work, merkle tree is good...RELAY NOW
     // (but if it does not build on our best tip, let the SendMessages loop relay it)
     if (!ActiveChainstate().IsInitialBlockDownload() && ActiveTip() == pindex->pprev)
@@ -6027,6 +6035,8 @@ bool CheckProof(BlockValidationState& state, const CBlockHeader& block, const Co
     }
 
     if (block.IsProofOfStakeV2()) {
+        // The header came out of a segment that hashes to a checkpoint.
+        if (pos_presync::IsAnchoredHeader(block)) return true;
         uint256 hashProofOfStake = uint256();
         return CheckProofOfStake(state, block, hashProofOfStake, params, nullptr, blockman, active_chain, coins_tip);
     }

@@ -43,7 +43,7 @@ std::vector<CBlockHeader> MakeChain(uint256 prev, size_t count, uint32_t salt = 
         if (header.IsProofOfStakeV2()) {
             header.posStakeHash = uint256S("bb");
             header.posStakeN = i;
-            header.posBlockSig = {0x30, 0x01, static_cast<unsigned char>(i)};
+            header.posBlockSig.assign(65, static_cast<unsigned char>(i));
             header.nFlags = 1;
         }
         prev = header.GetHash();
@@ -222,6 +222,42 @@ BOOST_AUTO_TEST_CASE(regtest_has_no_anchors_above_genesis)
     const auto params{CreateChainParams(*m_node.args, CBaseChainParams::REGTEST)};
     BOOST_CHECK(!pos_presync::NextAnchor(params->Checkpoints().mapCheckpoints, 0));
     BOOST_CHECK(params->GetConsensus().nMinimumChainWork.IsNull());
+}
+
+BOOST_AUTO_TEST_CASE(posv2_signature_size_is_enforced)
+{
+    auto chain{MakeChain(BASE_HASH, 6)};
+    const MapCheckpoints anchors{{6, chain[5].GetHash()}};
+    SegmentCollector collector{anchors, NO_LIMIT};
+    BOOST_REQUIRE(collector.Start(PEER, Anchor{0, BASE_HASH}));
+
+    // The signature is outside the hash: the chain still links and still ends in the anchor.
+    BOOST_REQUIRE(chain[2].IsProofOfStakeV2());
+    auto oversized{chain};
+    oversized[2].posBlockSig.resize(1000);
+    BOOST_CHECK(collector.Add(PEER, oversized) == AddResult::BAD_SIGNATURE);
+    auto missing{chain};
+    missing[2].posBlockSig.clear();
+    BOOST_CHECK(collector.Add(PEER, missing) == AddResult::BAD_SIGNATURE);
+    BOOST_CHECK_EQUAL(collector.BufferedCount(), 0U);
+
+    // Older headers carry no such signature.
+    BOOST_REQUIRE(!chain[0].IsProofOfStakeV2() && chain[0].posBlockSig.empty());
+    BOOST_CHECK(collector.Add(PEER, chain) == AddResult::SEGMENT_READY);
+}
+
+BOOST_AUTO_TEST_CASE(matched_segment_marks_posv2_headers_as_proof_of_stake)
+{
+    auto chain{MakeChain(BASE_HASH, 3)};
+    const MapCheckpoints anchors{{3, chain[2].GetHash()}};
+    SegmentCollector collector{anchors, NO_LIMIT};
+    BOOST_REQUIRE(collector.Start(PEER, Anchor{0, BASE_HASH}));
+
+    chain[2].nFlags = 0;
+    BOOST_REQUIRE(collector.Add(PEER, chain) == AddResult::SEGMENT_READY);
+    const auto segment{collector.TakeSegment()};
+    BOOST_CHECK_EQUAL(segment.headers[2].nFlags & 1, 1U);
+    BOOST_CHECK_EQUAL(segment.headers[0].nFlags, 0U);
 }
 
 BOOST_AUTO_TEST_CASE(only_tmp_errors_count_as_deferred)

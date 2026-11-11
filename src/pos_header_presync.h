@@ -53,6 +53,7 @@ enum class AddResult {
     NOT_CONTINUING,  //!< does not extend the buffered tail; nothing changed
     NON_CONTINUOUS,  //!< headers of one message do not link to each other; nothing changed
     ANCHOR_MISMATCH, //!< the header at the anchor height has a different hash; collector reset
+    BAD_SIGNATURE,   //!< a PoSv2 signature has the wrong size; nothing changed. It is outside the hash, so the peer may be a relayer
     TOO_LARGE,       //!< byte limit exceeded; collector reset
 };
 
@@ -80,7 +81,11 @@ public:
 
     AddResult Add(NodeId from, const std::vector<CBlockHeader>& headers);
 
-    /** Hand over the matched segment and move on to the next one. The collector goes inactive after the last anchor. */
+    /**
+     * Hand over the matched segment and move on to the next one. The collector goes
+     * inactive after the last anchor. PoSv2 headers get the proof-of-stake flag set:
+     * it is not part of the hash, so the peer's value is not relied on.
+     */
     Segment TakeSegment();
 
 private:
@@ -103,6 +108,8 @@ private:
  */
 void MarkAnchored(const std::vector<uint256>& hashes);
 bool IsAnchoredHeader(const uint256& hash);
+/** Same, without hashing the header while no segment is being moved. */
+bool IsAnchoredHeader(const CBlockHeader& header);
 void ClearAnchored();
 
 /** The header was not judged: its stake cannot be looked up until the tip gets closer. */

@@ -5,6 +5,8 @@
 #include <node/chainstatemanager_args.h>
 
 #include <arith_uint256.h>
+#include <chainparams.h>
+#include <chainparamsbase.h>
 #include <tinyformat.h>
 #include <uint256.h>
 #include <util/strencodings.h>
@@ -22,6 +24,11 @@ std::optional<bilingual_str> ApplyArgsManOptions(const ArgsManager& args, Chains
     if (auto value{args.GetBoolArg("-checkblockindex")}) opts.check_block_index = *value;
 
     if (auto value{args.GetBoolArg("-checkpoints")}) opts.checkpoints_enabled = *value;
+    // Header sync below the last checkpoint relies on the checkpoints, see pos_header_presync.h
+    const std::string network{opts.chainparams.NetworkIDString()};
+    if (!opts.checkpoints_enabled && (network == CBaseChainParams::MAIN || network == CBaseChainParams::TESTNET)) {
+        return Untranslated("-checkpoints=0 is not supported on this network: headers are synchronized through the checkpoints");
+    }
 
     if (auto value{args.GetArg("-minimumchainwork")}) {
         if (!IsHexNumber(*value)) {
