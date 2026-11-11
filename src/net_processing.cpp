@@ -125,6 +125,10 @@ static constexpr auto HEADERS_DOWNLOAD_TIMEOUT_BASE = 15min;
 static constexpr auto HEADERS_DOWNLOAD_TIMEOUT_PER_HEADER = 1ms;
 /** How long to wait for a peer to respond to a getheaders request */
 static constexpr auto HEADERS_RESPONSE_TIME{2min};
+/** How long a peer that failed to deliver headers below a checkpoint is not asked for them again */
+static constexpr auto POS_PRESYNC_RETRY_INTERVAL{10min};
+/** How many times a peer may fail to deliver headers below a checkpoint before it is disconnected */
+static constexpr int MAX_POS_PRESYNC_FAILURES{3};
 /** Protect at least this many outbound peers from disconnection due to slow/
  * behind headers chain.
  */
@@ -484,6 +488,10 @@ struct CNodeState {
     bool fSyncStarted{false};
     //! When to potentially disconnect peer for stalling headers download
     std::chrono::microseconds m_headers_sync_timeout{0us};
+    //! Headers sync is not started with this peer before this time: it failed to deliver headers below a checkpoint.
+    std::chrono::microseconds m_pos_presync_retry_after{0us};
+    //! How many times this peer failed to deliver headers below a checkpoint.
+    int m_pos_presync_failures{0};
     //! Since when we're stalling block download progress (in microseconds), or 0.
     std::chrono::microseconds m_stalling_since{0us};
     std::list<QueuedBlock> vBlocksInFlight;
@@ -789,7 +797,7 @@ private:
      * We don't issue a getheaders message if we have a recent one outstanding.
      * This returns true if a getheaders is actually sent, and false otherwise.
      */
-    bool MaybeSendGetHeaders(CNode& pfrom, const std::string& msg_type, const CBlockLocator& locator, Peer& peer)
+    bool MaybeSendGetHeaders(CNode& pfrom, const std::string& msg_type, const CBlockLocator& locator, Peer& peer, const uint256& hash_stop = {})
         EXCLUSIVE_LOCKS_REQUIRED(g_msgproc_mutex);
     /** Potentially fetch blocks from this peer upon receipt of a new headers tip */
     void HeadersDirectFetchBlocks(CNode& pfrom, const Peer& peer, const CBlockIndex& last_header);
@@ -801,6 +809,20 @@ private:
     /** Keep the unchecked rest of a headers message and credit the peer with what was accepted. */
     void DeferPosHeaders(CNode& pfrom, Peer& peer, const std::vector<CBlockHeader>& headers,
                          const BlockValidationState& state, const CBlockIndex* last_accepted, bool keep_rest)
+        EXCLUSIVE_LOCKS_REQUIRED(!m_peer_mutex, g_msgproc_mutex);
+    /** Whether the last checkpoint is still missing from the block index. */
+    bool PosPresyncNeeded() EXCLUSIVE_LOCKS_REQUIRED(g_msgproc_mutex);
+    /** Feed a headers message to the collector. Returns false when it has to take the usual path. */
+    bool ProcessPresyncHeaders(CNode& pfrom, Peer& peer, const std::vector<CBlockHeader>& headers)
+        EXCLUSIVE_LOCKS_REQUIRED(!m_peer_mutex, g_msgproc_mutex);
+    /** Drop what the collector holds and take the headers sync role from its peer, so another one is tried. */
+    void AbandonPresyncPeer(NodeId node_id, bool disconnect) EXCLUSIVE_LOCKS_REQUIRED(g_msgproc_mutex);
+    /** The source of a checkpoint segment answered with no headers: it has nothing past what it sent. */
+    void AbandonPresyncPeerIfExhausted(const CNode& pfrom) EXCLUSIVE_LOCKS_REQUIRED(g_msgproc_mutex);
+    /** Take the headers sync role from a peer that stopped delivering headers below a checkpoint. */
+    void CheckPresyncProgress() EXCLUSIVE_LOCKS_REQUIRED(g_msgproc_mutex);
+    /** Move a segment that matched its checkpoint into the block index. */
+    bool CommitPresyncSegment(CNode& pfrom, Peer& peer)
         EXCLUSIVE_LOCKS_REQUIRED(!m_peer_mutex, g_msgproc_mutex);
     /** Retry deferred headers of this peer once the tip has moved. */
     void DrainPosHeaderTail(CNode& pfrom, Peer& peer)
@@ -832,6 +854,11 @@ private:
         EXCLUSIVE_LOCKS_REQUIRED(!m_peer_mutex, g_msgproc_mutex);
 
     const CChainParams& m_chainparams;
+    /** Headers below the last checkpoint, collected outside the block index, see pos_header_presync.h */
+    pos_presync::SegmentCollector m_pos_segments GUARDED_BY(NetEventsInterface::g_msgproc_mutex){m_chainparams.Checkpoints().mapCheckpoints, 32 << 20};
+    bool m_pos_presync_done GUARDED_BY(NetEventsInterface::g_msgproc_mutex){false};
+    NodeClock::time_point m_pos_segments_progress GUARDED_BY(NetEventsInterface::g_msgproc_mutex){};
+    uint256 m_pos_tail_keepalive_tip GUARDED_BY(NetEventsInterface::g_msgproc_mutex);
     CConnman& m_connman;
     AddrMan& m_addrman;
     /** Pointer to this node's banman. May be nullptr - check existence before dereferencing. */
@@ -1224,6 +1251,12 @@ static uint16_t GetHeadersLimit(const CNode& pfrom, bool compressed)
         return MAX_HEADERS_COMPRESSED_RESULT;
     }
     return MAX_HEADERS_UNCOMPRESSED_RESULT;
+}
+
+/** A peer asked for compressed headers may still answer with plain ones, which have a lower limit. */
+static bool IsFullHeadersBatch(const CNode& pfrom, size_t count, bool asked_compressed)
+{
+    return count == GetHeadersLimit(pfrom, /*compressed=*/false) || (asked_compressed && count == GetHeadersLimit(pfrom, /*compressed=*/true));
 }
 
 // Returns true when peer is a verified masternode that has opted in to receive recsigs.
@@ -3167,7 +3200,11 @@ void PeerManagerImpl::HandleFewUnconnectingHeaders(CNode& pfrom, Peer& peer,
     nodestate->nUnconnectingHeaders++;
     // Try to fill in the missing headers.
     std::string msg_type = UsesCompressedHeaders(peer) ? NetMsgType::GETHEADERS2 : NetMsgType::GETHEADERS;
-    if (MaybeSendGetHeaders(pfrom, msg_type, GetLocator(m_chainman.m_best_header), peer)) {
+    // While deferred headers wait for the tip, nothing past the best header can be checked:
+    // ask only for the best header itself, which is enough to learn that the peer has it.
+    const CBlockIndex* best_header{m_chainman.m_best_header};
+    const bool only_best{!m_pos_header_tail.Empty() && best_header->pprev};
+    if (MaybeSendGetHeaders(pfrom, msg_type, GetLocator(only_best ? best_header->pprev : best_header), peer, only_best ? best_header->GetBlockHash() : uint256{})) {
         LogPrint(BCLog::NET, "received header %s: missing prev block %s, sending %s (%d) to end (peer=%d, nUnconnectingHeaders=%d)\n",
             headers[0].GetHash().ToString(),
             headers[0].hashPrevBlock.ToString(),
@@ -3199,7 +3236,7 @@ bool PeerManagerImpl::CheckHeadersAreContinuous(const std::vector<CBlockHeader>&
     return true;
 }
 
-bool PeerManagerImpl::MaybeSendGetHeaders(CNode& pfrom, const std::string& msg_type, const CBlockLocator& locator, Peer& peer)
+bool PeerManagerImpl::MaybeSendGetHeaders(CNode& pfrom, const std::string& msg_type, const CBlockLocator& locator, Peer& peer, const uint256& hash_stop)
 {
     assert(msg_type == NetMsgType::GETHEADERS || msg_type == NetMsgType::GETHEADERS2);
 
@@ -3213,7 +3250,7 @@ bool PeerManagerImpl::MaybeSendGetHeaders(CNode& pfrom, const std::string& msg_t
     // Only allow a new getheaders message to go out if we don't have a recent
     // one already in-flight
     if (current_time - peer.m_last_getheaders_timestamp > HEADERS_RESPONSE_TIME) {
-        m_connman.PushMessage(&pfrom, msgMaker.Make(msg_type, locator, uint256()));
+        m_connman.PushMessage(&pfrom, msgMaker.Make(msg_type, locator, hash_stop));
         peer.m_last_getheaders_timestamp = current_time;
         return true;
     }
@@ -3354,10 +3391,13 @@ void PeerManagerImpl::ProcessHeadersMessage(CNode& pfrom, Peer& peer,
 
     if (nCount == 0) {
         // Nothing interesting. Stop asking this peers for more headers.
+        if (!via_compact_block) AbandonPresyncPeerIfExhausted(pfrom);
         return;
     }
 
     const CBlockIndex *pindexLast = nullptr;
+
+    if (!via_compact_block && ProcessPresyncHeaders(pfrom, peer, headers)) return;
 
     // Do these headers connect to something in our block index?
     bool headers_connect_blockindex{WITH_LOCK(::cs_main, return m_chainman.m_blockman.LookupBlockIndex(headers[0].hashPrevBlock) != nullptr)};
@@ -3397,7 +3437,8 @@ void PeerManagerImpl::ProcessHeadersMessage(CNode& pfrom, Peer& peer,
     // Consider fetching more headers.
     const bool uses_compressed = UsesCompressedHeaders(peer);
     const std::string msg_type = uses_compressed ? NetMsgType::GETHEADERS2 : NetMsgType::GETHEADERS;
-    if (nCount == GetHeadersLimit(pfrom, uses_compressed)) {
+    const bool full_batch{IsFullHeadersBatch(pfrom, nCount, uses_compressed)};
+    if (full_batch) {
         // Headers message had its maximum size; the peer may have more headers.
         if (MaybeSendGetHeaders(pfrom, msg_type, GetLocator(pindexLast), peer)) {
             LogPrint(BCLog::NET, "more %s (%d) to end to peer=%d (startheight:%d)\n",
@@ -3405,7 +3446,7 @@ void PeerManagerImpl::ProcessHeadersMessage(CNode& pfrom, Peer& peer,
         }
     }
 
-    UpdatePeerStateForReceivedHeaders(pfrom, *pindexLast, received_new_header, nCount == GetHeadersLimit(pfrom, uses_compressed));
+    UpdatePeerStateForReceivedHeaders(pfrom, *pindexLast, received_new_header, full_batch);
 
     // Consider immediately downloading blocks.
     HeadersDirectFetchBlocks(pfrom, peer, *pindexLast);
@@ -3435,7 +3476,7 @@ void PeerManagerImpl::DeferPosHeaders(CNode& pfrom, Peer& peer, const std::vecto
         const CChain& chain{m_chainman.ActiveChain()};
         const CNodeState* nodestate{State(pfrom.GetId())};
         if (keep_rest && nodestate && nodestate->fSyncStarted && chain.FindFork(last_accepted) == chain.Tip()) {
-            const bool peer_has_more{headers.size() == GetHeadersLimit(pfrom, UsesCompressedHeaders(peer))};
+            const bool peer_has_more{IsFullHeadersBatch(pfrom, headers.size(), UsesCompressedHeaders(peer))};
             stored = m_pos_header_tail.Store(pfrom.GetId(), headers, accepted, peer_has_more, GetTime<std::chrono::seconds>());
         }
     }
@@ -3445,6 +3486,163 @@ void PeerManagerImpl::DeferPosHeaders(CNode& pfrom, Peer& peer, const std::vecto
     // The peer has everything up to the first deferred header: blocks can be requested from it.
     UpdatePeerStateForReceivedHeaders(pfrom, *last_accepted, /*received_new_header=*/false, /*may_have_more_headers=*/true);
     HeadersDirectFetchBlocks(pfrom, peer, *last_accepted);
+}
+
+bool PeerManagerImpl::PosPresyncNeeded()
+{
+    if (m_pos_presync_done) return false;
+    const auto last_anchor{pos_presync::LastAnchor(m_chainparams.Checkpoints().mapCheckpoints)};
+    m_pos_presync_done = !last_anchor || WITH_LOCK(::cs_main, return m_chainman.m_blockman.LookupBlockIndex(last_anchor->hash) != nullptr);
+    return !m_pos_presync_done;
+}
+
+bool PeerManagerImpl::CommitPresyncSegment(CNode& pfrom, Peer& peer)
+{
+    pos_presync::Segment segment{m_pos_segments.TakeSegment()};
+
+    // The proof-of-stake flag is outside the hash; past the last proof-of-work block it is known anyway.
+    const int64_t last_pow_block{m_chainparams.GetConsensus().nLastPowBlock};
+    for (size_t i = 0; i < segment.headers.size(); ++i) {
+        if (segment.first_height + static_cast<int64_t>(i) > last_pow_block) segment.headers[i].nFlags |= CBlockIndex::BLOCK_PROOF_OF_STAKE;
+    }
+
+    const CBlockIndex* last{nullptr};
+    BlockValidationState state;
+    bool accepted{true};
+    {
+        // The stake proof is skipped for these hashes only while the segment is being moved.
+        struct AnchoredScope {
+            explicit AnchoredScope(const std::vector<uint256>& hashes) { pos_presync::MarkAnchored(hashes); }
+            ~AnchoredScope() { pos_presync::ClearAnchored(); }
+        } anchored{segment.hashes};
+        for (size_t pos = 0; accepted && pos < segment.headers.size(); pos += MAX_HEADERS_UNCOMPRESSED_RESULT) {
+            const auto first{segment.headers.begin() + pos};
+            const auto end{segment.headers.begin() + std::min<size_t>(pos + MAX_HEADERS_UNCOMPRESSED_RESULT, segment.headers.size())};
+            accepted = m_chainman.ProcessNewBlockHeaders({first, end}, state, &last);
+        }
+    }
+    // Moving a segment takes a while and must not count against the peer.
+    m_pos_segments_progress = NodeClock::now();
+
+    if (!accepted || !last) {
+        // The hashes are right, so only a field outside the hash can be wrong: try another peer, no penalty.
+        LogPrintf("Headers up to a checkpoint from peer=%d were not accepted: %s\n", pfrom.GetId(), state.ToString());
+        AbandonPresyncPeer(pfrom.GetId(), /*disconnect=*/true);
+        return false;
+    }
+    LogPrintf("Synchronized %d headers up to checkpoint at height %d\n", segment.headers.size(), last->nHeight);
+    WITH_LOCK(::cs_main, if (CNodeState* nodestate{State(pfrom.GetId())}) nodestate->m_pos_presync_failures = 0);
+    if (!PosPresyncNeeded() && last->nChainWork < m_chainman.MinimumChainWork()) {
+        LogPrintf("ERROR: the last checkpoint (height %d) has less work than the minimum chain work, blocks will not be downloaded\n", last->nHeight);
+    }
+    UpdatePeerStateForReceivedHeaders(pfrom, *last, /*received_new_header=*/true, /*may_have_more_headers=*/true);
+    return true;
+}
+
+void PeerManagerImpl::AbandonPresyncPeerIfExhausted(const CNode& pfrom)
+{
+    if (!m_pos_segments.IsActive() || m_pos_segments.Owner() != pfrom.GetId()) return;
+    LogPrintf("Headers chain of peer=%d ends below a checkpoint, trying another peer\n", pfrom.GetId());
+    AbandonPresyncPeer(pfrom.GetId(), /*disconnect=*/true);
+}
+
+void PeerManagerImpl::AbandonPresyncPeer(NodeId node_id, bool disconnect)
+{
+    m_pos_segments.Reset();
+    bool failed_too_often{false};
+    {
+        LOCK(cs_main);
+        CNodeState* nodestate{State(node_id)};
+        if (nodestate) {
+            // The peer may stay connected, so it must not get the role back at once and be asked in a loop.
+            nodestate->m_pos_presync_retry_after = GetTime<std::chrono::microseconds>() + POS_PRESYNC_RETRY_INTERVAL;
+            failed_too_often = ++nodestate->m_pos_presync_failures >= MAX_POS_PRESYNC_FAILURES;
+        }
+        if (nodestate && nodestate->fSyncStarted) {
+            nodestate->fSyncStarted = false;
+            nodestate->m_headers_sync_timeout = 0us;
+            nSyncStarted--;
+        }
+    }
+    if (disconnect || failed_too_often) {
+        m_connman.ForNode(node_id, [&](CNode* node) {
+            // An inbound peer may be an honest relayer and is kept, unless it keeps failing.
+            const bool spare{node->HasPermission(NetPermissionFlags::NoBan) || node->IsManualConn()};
+            if ((disconnect && node->IsOutboundOrBlockRelayConn()) || (failed_too_often && !spare)) node->fDisconnect = true;
+            return true;
+        });
+    }
+}
+
+void PeerManagerImpl::CheckPresyncProgress()
+{
+    if (!m_pos_segments.IsActive() || NodeClock::now() - m_pos_segments_progress <= 2 * HEADERS_RESPONSE_TIME) return;
+    LogPrintf("Timeout downloading headers below a checkpoint from peer=%d\n", m_pos_segments.Owner());
+    AbandonPresyncPeer(m_pos_segments.Owner(), /*disconnect=*/true);
+}
+
+bool PeerManagerImpl::ProcessPresyncHeaders(CNode& pfrom, Peer& peer, const std::vector<CBlockHeader>& headers)
+{
+    if (!PosPresyncNeeded()) return false;
+
+    // Until the last checkpoint is reached nothing enters the block index through the usual path.
+    const NodeId id{pfrom.GetId()};
+    const auto now{NodeClock::now()};
+    if (m_pos_segments.IsActive() && m_pos_segments.Owner() != id) {
+        const NodeId owner{m_pos_segments.Owner()};
+        const bool owner_syncing{WITH_LOCK(::cs_main, const CNodeState* state{State(owner)}; return state && state->fSyncStarted)};
+        if (!owner_syncing) m_pos_segments.Reset();
+    }
+    if (!m_pos_segments.IsActive()) {
+        LOCK(cs_main);
+        const CNodeState* nodestate{State(id)};
+        const CBlockIndex* base{m_chainman.m_blockman.LookupBlockIndex(headers[0].hashPrevBlock)};
+        if (!nodestate || !nodestate->fSyncStarted || !base) return true;
+        if (!m_pos_segments.Start(id, {base->nHeight, base->GetBlockHash()})) return true;
+        m_pos_segments_progress = now;
+    }
+
+    const bool uses_compressed{UsesCompressedHeaders(peer)};
+    switch (m_pos_segments.Add(id, headers)) {
+    case pos_presync::AddResult::WRONG_PEER:
+    case pos_presync::AddResult::NOT_CONTINUING:
+        return true;
+    case pos_presync::AddResult::NON_CONTINUOUS:
+        Misbehaving(peer, 20, "non-continuous headers sequence");
+        AbandonPresyncPeer(id, /*disconnect=*/false);
+        return true;
+    case pos_presync::AddResult::ANCHOR_MISMATCH:
+        Misbehaving(peer, 100, "headers do not match a checkpoint");
+        AbandonPresyncPeer(id, /*disconnect=*/false);
+        return true;
+    case pos_presync::AddResult::BAD_SIGNATURE:
+    case pos_presync::AddResult::TOO_LARGE:
+        LogPrintf("Headers below a checkpoint from peer=%d are unusable, trying another peer\n", id);
+        AbandonPresyncPeer(id, /*disconnect=*/true);
+        return true;
+    case pos_presync::AddResult::NEED_MORE:
+        if (!IsFullHeadersBatch(pfrom, headers.size(), uses_compressed)) {
+            // The peer's chain ends below the checkpoint: it cannot help us sync.
+            LogPrintf("Headers chain of peer=%d ends below a checkpoint, trying another peer\n", id);
+            AbandonPresyncPeer(id, /*disconnect=*/true);
+            return true;
+        }
+        break;
+    case pos_presync::AddResult::SEGMENT_READY:
+        if (!CommitPresyncSegment(pfrom, peer)) return true;
+        break;
+    }
+    m_pos_segments_progress = NodeClock::now();
+
+    const std::string msg_type{uses_compressed ? NetMsgType::GETHEADERS2 : NetMsgType::GETHEADERS};
+    const CBlockLocator locator{m_pos_segments.IsActive()
+        ? CBlockLocator{{m_pos_segments.Tail().hash}}
+        : WITH_LOCK(::cs_main, return GetLocator(m_chainman.m_best_header))};
+    if (MaybeSendGetHeaders(pfrom, msg_type, locator, peer)) {
+        LogPrint(BCLog::NET, "more %s to peer=%d, %d headers buffered below checkpoint\n",
+                 msg_type, id, m_pos_segments.BufferedCount());
+    }
+    return true;
 }
 
 void PeerManagerImpl::DrainPosHeaderTail(CNode& pfrom, Peer& peer)
@@ -3466,6 +3664,14 @@ void PeerManagerImpl::DrainPosHeaderTail(CNode& pfrom, Peer& peer)
         }
         tip = chain.Tip()->GetBlockHash();
         best_header_before = m_chainman.m_best_header;
+        // While our tip moves the peer is waiting for it, not stalling: its headers sync deadline is pushed.
+        CNodeState* nodestate{State(pfrom.GetId())};
+        const bool tip_moved{tip != m_pos_tail_keepalive_tip};
+        m_pos_tail_keepalive_tip = tip;
+        if (tip_moved && nodestate && nodestate->fSyncStarted && nodestate->m_headers_sync_timeout != std::chrono::microseconds::max()) {
+            nodestate->m_headers_sync_timeout = std::max(nodestate->m_headers_sync_timeout,
+                                                         GetTime<std::chrono::microseconds>() + HEADERS_DOWNLOAD_TIMEOUT_BASE);
+        }
     }
     const std::vector<CBlockHeader> chunk{m_pos_header_tail.NextChunk(pfrom.GetId(), tip, GetTime<std::chrono::seconds>(), MAX_HEADERS_PER_RETRY)};
     if (chunk.empty()) return;
@@ -3491,17 +3697,7 @@ void PeerManagerImpl::DrainPosHeaderTail(CNode& pfrom, Peer& peer)
     m_pos_header_tail.Consumed(accepted);
     if (!last_accepted) return;
 
-    bool received_new_header{false};
-    {
-        LOCK(cs_main);
-        received_new_header = m_chainman.m_best_header != best_header_before;
-        CNodeState* nodestate{State(pfrom.GetId())};
-        // The headers sync deadline counts from the last header this peer added to the best chain.
-        if (received_new_header && nodestate && nodestate->fSyncStarted && nodestate->m_headers_sync_timeout != std::chrono::microseconds::max()) {
-            nodestate->m_headers_sync_timeout = std::max(nodestate->m_headers_sync_timeout,
-                                                         GetTime<std::chrono::microseconds>() + HEADERS_DOWNLOAD_TIMEOUT_BASE);
-        }
-    }
+    const bool received_new_header{WITH_LOCK(::cs_main, return m_chainman.m_best_header != best_header_before)};
     const bool drained{m_pos_header_tail.Empty()};
     const bool peer_has_more{m_pos_header_tail.PeerHasMore()};
     if (drained && peer_has_more) {
@@ -5205,6 +5401,7 @@ void PeerManagerImpl::ProcessMessage(
 
         CBlockHeaderAndShortTxIDs cmpctblock;
         pos_recv >> cmpctblock;
+        if (PosPresyncNeeded()) return;
 
         bool received_new_header = false;
         const auto blockhash = cmpctblock.header.GetHash();
@@ -5525,6 +5722,10 @@ void PeerManagerImpl::ProcessMessage(
 
         bool forceProcessing = false;
         const uint256 hash(pblock->GetHash());
+        if (PosPresyncNeeded() && WITH_LOCK(::cs_main, return m_chainman.m_blockman.LookupBlockIndex(hash) == nullptr)) {
+            // Below the last checkpoint a header enters the block index only through a matched segment.
+            return;
+        }
         {
             LOCK(cs_main);
             // Always process the block if we requested it, since we may
@@ -6487,6 +6688,9 @@ bool PeerManagerImpl::SendMessages(CNode* pto)
     // MaybeSendPing may have marked peer for disconnection
     if (pto->fDisconnect) return true;
 
+    CheckPresyncProgress();
+    if (pto->fDisconnect) return true;
+
     MaybeSendAddr(*pto, *peer, current_time);
 
     std::vector<CInv> vGetData;
@@ -6521,7 +6725,7 @@ bool PeerManagerImpl::SendMessages(CNode* pto)
             }
         }
 
-        if (!state.fSyncStarted && CanServeBlocks(*peer) && !m_chainman.m_blockman.LoadingBlocks() && pto->CanRelay()) {
+        if (!state.fSyncStarted && (state.m_pos_presync_retry_after <= current_time || !PosPresyncNeeded()) && CanServeBlocks(*peer) && !m_chainman.m_blockman.LoadingBlocks() && pto->CanRelay()) {
             // Only actively request headers from a single peer, unless we're close to end of initial download.
             if ((nSyncStarted == 0 && sync_blocks_and_headers_from_peer) || m_chainman.m_best_header->Time() > NodeClock::now() - m_chainman.m_options.max_tip_age) {
                 const CBlockIndex* pindexStart = m_chainman.m_best_header;
