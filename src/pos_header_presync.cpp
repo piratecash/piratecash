@@ -4,6 +4,7 @@
 
 #include <pos_header_presync.h>
 
+#include <consensus/validation.h>
 #include <serialize.h>
 #include <span.h>
 #include <streams.h>
@@ -20,7 +21,7 @@ namespace pos_presync {
 namespace {
 constexpr int HEADER_SER_TYPE{SER_NETWORK | SER_POSMARKER};
 
-Mutex g_anchored_mutex;
+GlobalMutex g_anchored_mutex;
 std::unordered_set<uint256, SaltedTxidHasher> g_anchored GUARDED_BY(g_anchored_mutex);
 std::atomic<bool> g_anchored_empty{true};
 } // namespace
@@ -151,6 +152,85 @@ void ClearAnchored()
     LOCK(g_anchored_mutex);
     g_anchored.clear();
     g_anchored_empty = true;
+}
+
+bool IsHeaderDeferred(const BlockValidationState& state)
+{
+    return state.IsError() && state.GetRejectReason().starts_with("tmp-");
+}
+
+NodeId HeaderTail::Owner() const
+{
+    LOCK(m_mutex);
+    return m_headers.empty() ? -1 : m_owner;
+}
+
+bool HeaderTail::Empty() const
+{
+    LOCK(m_mutex);
+    return m_headers.empty();
+}
+
+bool HeaderTail::PeerHasMore() const
+{
+    LOCK(m_mutex);
+    return m_peer_has_more;
+}
+
+bool HeaderTail::Store(NodeId from, const std::vector<CBlockHeader>& headers, size_t first, bool peer_has_more,
+                       std::chrono::seconds now)
+{
+    LOCK(m_mutex);
+    if (first >= headers.size() || headers.size() - first > m_max_headers) return false;
+    if (!m_headers.empty()) return false;
+
+    m_headers.assign(headers.begin() + first, headers.end());
+    m_owner = from;
+    m_peer_has_more = peer_has_more;
+    m_retry_now = false;
+    m_last_tip.SetNull();
+    m_last_attempt = now;
+    return true;
+}
+
+std::vector<CBlockHeader> HeaderTail::NextChunk(NodeId peer, const uint256& tip, std::chrono::seconds now, size_t max_count)
+{
+    LOCK(m_mutex);
+    if (m_headers.empty() || peer != m_owner) return {};
+    if (!m_retry_now && tip == m_last_tip && now - m_last_attempt < std::chrono::seconds{1}) return {};
+
+    m_retry_now = false;
+    m_last_tip = tip;
+    m_last_attempt = now;
+    const size_t count{std::min(max_count, m_headers.size())};
+    return {m_headers.begin(), m_headers.begin() + count};
+}
+
+void HeaderTail::Consumed(size_t count)
+{
+    LOCK(m_mutex);
+    count = std::min(count, m_headers.size());
+    if (count == 0) return;
+    m_headers.erase(m_headers.begin(), m_headers.begin() + count);
+    m_retry_now = !m_headers.empty();
+}
+
+uint256 HeaderTail::FrontParent() const
+{
+    LOCK(m_mutex);
+    return m_headers.empty() ? uint256{} : m_headers.front().hashPrevBlock;
+}
+
+void HeaderTail::Clear()
+{
+    LOCK(m_mutex);
+    m_headers.clear();
+}
+
+void HeaderTail::ForgetPeer(NodeId peer)
+{
+    LOCK(m_mutex);
+    if (peer == m_owner) m_headers.clear();
 }
 
 } // namespace pos_presync
