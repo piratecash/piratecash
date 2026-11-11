@@ -4592,7 +4592,7 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, BlockValidatio
                              "legacy block version rejected after fork height");
     }
 
-    if (fCheckProof && !CheckProof(state, block, consensusParams, &blockman, active_chain)) {
+    if (fCheckProof && !CheckProof(state, block, consensusParams, &blockman, active_chain, active_chain ? &chainman.ActiveChainstate().CoinsTip() : nullptr)) {
         return false;
     }
 
@@ -6017,7 +6017,7 @@ bool CheckProof(BlockValidationState& state, const CBlockIndex& index, const Con
 }
 
 /** Check PoW or PoS based on actual block **/
-bool CheckProof(BlockValidationState& state, const CBlockHeader& block, const Consensus::Params& params, const BlockManager* blockman, const CChain* active_chain) {
+bool CheckProof(BlockValidationState& state, const CBlockHeader& block, const Consensus::Params& params, const BlockManager* blockman, const CChain* active_chain, CCoinsViewCache* coins_tip) {
     if (!((block.nFlags & CBlockIndex::BLOCK_PROOF_OF_STAKE) || block.IsProofOfStakeV2())) {
         if (!CheckProofOfWork(block.GetPoWHash(), block.nBits, params) && block.GetBlockTime() != 1541202300) {
             return state.Invalid(BlockValidationResult::BLOCK_CONSENSUS, "bad-pow-proof", "block proof mismatch");
@@ -6028,7 +6028,7 @@ bool CheckProof(BlockValidationState& state, const CBlockHeader& block, const Co
 
     if (block.IsProofOfStakeV2()) {
         uint256 hashProofOfStake = uint256();
-        return CheckProofOfStake(state, block, hashProofOfStake, params, nullptr, blockman, active_chain);
+        return CheckProofOfStake(state, block, hashProofOfStake, params, nullptr, blockman, active_chain, coins_tip);
     }
 
     // TODO Add CheckProof for pre-v18 PirateCash PoS blocks. Right now checkpoints cover them.

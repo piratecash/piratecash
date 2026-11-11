@@ -1152,7 +1152,7 @@ void PoSMiner(std::shared_ptr<wallet::CWallet> pwallet, NodeContext& node, CThre
 
         BlockValidationState state;
 
-        const bool proof_ok = WITH_LOCK(cs_main, return CheckProof(state, *pblock, Params().GetConsensus(), &Assert(node.chainman)->m_blockman, &Assert(node.chainman)->ActiveChain()));
+        const bool proof_ok = WITH_LOCK(cs_main, return CheckProof(state, *pblock, Params().GetConsensus(), &Assert(node.chainman)->m_blockman, &Assert(node.chainman)->ActiveChain(), &Assert(node.chainman)->ActiveChainstate().CoinsTip()));
         if (!proof_ok) {
             // Mimics limit in pos_kernel.cpp
             start_block_time = std::min<int64_t>(

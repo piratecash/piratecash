@@ -1389,6 +1389,121 @@ BOOST_AUTO_TEST_CASE(pos_check_proof_of_stake_rejects_oob_index)
     }
 }
 
+// ============================================================================
+// 17b. STAKE LOOKUP THROUGH THE UTXO SET
+//
+// A header that extends the active tip takes its stake from the coins view,
+// so the result does not depend on -txindex (pruned nodes have none).
+// ============================================================================
+
+BOOST_AUTO_TEST_CASE(pos_stake_lookup_uses_tip_coins_without_txindex)
+{
+    MineBlocks(5); // the first coinbase must be mature for staking
+    LOCK(cs_main);
+    BOOST_REQUIRE(!g_txindex);
+
+    auto& chainman = *m_node.chainman;
+    const CBlockIndex* tip = chainman.ActiveChain().Tip();
+    const COutPoint stake(m_coinbase_txns[0]->GetHash(), 0);
+    CCoinsViewCache& coins = chainman.ActiveChainstate().CoinsTip();
+    const bool was_cached = coins.HaveCoinInCache(stake);
+
+    CBlockHeader header = MakePoSHeader(tip->GetBlockHash(), tip->nTime + 60, stake.hash, stake.n);
+    header.posBlockSig = {0x01, 0x02, 0x03};
+
+    // Without a coins view and without a tx index the stake cannot be found.
+    {
+        BlockValidationState state;
+        uint256 hashProofOfStake;
+        BOOST_CHECK(!CheckProofOfStake(state, header, hashProofOfStake, Params().GetConsensus(),
+                                       /*mempool=*/nullptr, &chainman.m_blockman, &chainman.ActiveChain()));
+        BOOST_CHECK_EQUAL(state.GetRejectReason(), "bad-unkown-stake");
+    }
+
+    // With the coins view the stake is found and the check reaches the signature.
+    {
+        BlockValidationState state;
+        uint256 hashProofOfStake;
+        BOOST_CHECK(!CheckProofOfStake(state, header, hashProofOfStake, Params().GetConsensus(),
+                                       /*mempool=*/nullptr, &chainman.m_blockman, &chainman.ActiveChain(), &coins));
+        BOOST_CHECK_EQUAL(state.GetRejectReason(), "bad-blk-sig");
+    }
+
+    BOOST_CHECK_EQUAL(coins.HaveCoinInCache(stake), was_cached);
+}
+
+BOOST_AUTO_TEST_CASE(pos_stake_lookup_rejects_missing_coin_on_tip)
+{
+    LOCK(cs_main);
+
+    auto& chainman = *m_node.chainman;
+    const CBlockIndex* tip = chainman.ActiveChain().Tip();
+
+    CBlockHeader header = MakePoSHeader(tip->GetBlockHash(), tip->nTime + 60, InsecureRand256(), 0);
+    header.posBlockSig = {0x01, 0x02, 0x03};
+
+    BlockValidationState state;
+    uint256 hashProofOfStake;
+    BOOST_CHECK(!CheckProofOfStake(state, header, hashProofOfStake, Params().GetConsensus(),
+                                   /*mempool=*/nullptr, &chainman.m_blockman, &chainman.ActiveChain(),
+                                   &chainman.ActiveChainstate().CoinsTip()));
+    BOOST_CHECK(state.IsInvalid());
+    BOOST_CHECK_EQUAL(state.GetRejectReason(), "bad-unkown-stake");
+}
+
+BOOST_AUTO_TEST_CASE(pos_stake_lookup_rejects_spent_coin_on_tip)
+{
+    auto& chainman = *m_node.chainman;
+    const COutPoint stake(m_coinbase_txns[0]->GetHash(), 0);
+
+    CMutableTransaction spend = CreateValidMempoolTransaction(
+        m_coinbase_txns[0], /*input_vout=*/0, /*input_height=*/1, coinbaseKey,
+        ScriptForKey(coinbaseKey), m_coinbase_txns[0]->vout[0].nValue - 10000, /*submit=*/false);
+    CreateAndProcessBlock({spend}, ScriptForKey(coinbaseKey));
+
+    LOCK(cs_main);
+    BOOST_REQUIRE(!chainman.ActiveChainstate().CoinsTip().HaveCoin(stake));
+    const CBlockIndex* tip = chainman.ActiveChain().Tip();
+
+    CBlockHeader header = MakePoSHeader(tip->GetBlockHash(), tip->nTime + 60, stake.hash, stake.n);
+    header.posBlockSig = {0x01, 0x02, 0x03};
+
+    BlockValidationState state;
+    uint256 hashProofOfStake;
+    BOOST_CHECK(!CheckProofOfStake(state, header, hashProofOfStake, Params().GetConsensus(),
+                                   /*mempool=*/nullptr, &chainman.m_blockman, &chainman.ActiveChain(),
+                                   &chainman.ActiveChainstate().CoinsTip()));
+    BOOST_CHECK(state.IsInvalid());
+    BOOST_CHECK_EQUAL(state.GetRejectReason(), "bad-unkown-stake");
+}
+
+BOOST_AUTO_TEST_CASE(pos_stake_lookup_defers_missing_coin_ahead_of_tip)
+{
+    auto& chainman = *m_node.chainman;
+
+    // A header-only block on top of the tip: its child cannot be judged yet,
+    // because the stake may be created by the block we do not have.
+    const CBlock ahead = CreateBlock({}, ScriptForKey(coinbaseKey), chainman.ActiveChainstate());
+    {
+        BlockValidationState state;
+        BOOST_REQUIRE(chainman.ProcessNewBlockHeaders({ahead.GetBlockHeader()}, state));
+    }
+
+    LOCK(cs_main);
+    BOOST_REQUIRE(chainman.ActiveChain().Tip()->GetBlockHash() == ahead.hashPrevBlock);
+
+    CBlockHeader header = MakePoSHeader(ahead.GetHash(), ahead.nTime + 60, InsecureRand256(), 0);
+    header.posBlockSig = {0x01, 0x02, 0x03};
+
+    BlockValidationState state;
+    uint256 hashProofOfStake;
+    BOOST_CHECK(!CheckProofOfStake(state, header, hashProofOfStake, Params().GetConsensus(),
+                                   /*mempool=*/nullptr, &chainman.m_blockman, &chainman.ActiveChain(),
+                                   &chainman.ActiveChainstate().CoinsTip()));
+    BOOST_CHECK(state.IsError());
+    BOOST_CHECK_EQUAL(state.GetRejectReason(), "tmp-bad-unkown-stake");
+}
+
 #ifdef ENABLE_WALLET
 // ============================================================================
 // 18. WALLET: ORPHANED COINSTAKE RELEASES ITS INPUTS
