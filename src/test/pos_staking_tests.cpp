@@ -1504,6 +1504,75 @@ BOOST_AUTO_TEST_CASE(pos_stake_lookup_defers_missing_coin_ahead_of_tip)
     BOOST_CHECK_EQUAL(state.GetRejectReason(), "tmp-bad-unkown-stake");
 }
 
+// A header that leaves the active chain below the tip (a competing block) is
+// checked without a transaction index too: the stake is either still unspent at
+// the tip or was spent by one of our own blocks above the fork point.
+
+namespace {
+std::string StakeLookupResult(node::NodeContext& node, CBlockHeader header) EXCLUSIVE_LOCKS_REQUIRED(::cs_main)
+{
+    auto& chainman = *node.chainman;
+    header.posBlockSig = {0x01, 0x02, 0x03};
+
+    BlockValidationState state;
+    uint256 hashProofOfStake;
+    BOOST_CHECK(!CheckProofOfStake(state, header, hashProofOfStake, Params().GetConsensus(),
+                                   /*mempool=*/nullptr, &chainman.m_blockman, &chainman.ActiveChain(),
+                                   &chainman.ActiveChainstate().CoinsTip()));
+    return (state.IsError() ? "error:" : "invalid:") + state.GetRejectReason();
+}
+} // namespace
+
+BOOST_AUTO_TEST_CASE(pos_stake_lookup_side_branch_uses_unspent_coin)
+{
+    MineBlocks(5);
+    LOCK(cs_main);
+    BOOST_REQUIRE(!g_txindex);
+    const CBlockIndex* tip = m_node.chainman->ActiveChain().Tip();
+
+    // The lookup succeeds and the check gets as far as the signature.
+    const COutPoint stake(m_coinbase_txns[0]->GetHash(), 0);
+    BOOST_CHECK_EQUAL(StakeLookupResult(m_node, MakePoSHeader(tip->pprev->GetBlockHash(), tip->nTime + 60, stake.hash, stake.n)), "invalid:bad-blk-sig");
+    BOOST_CHECK_EQUAL(StakeLookupResult(m_node, MakePoSHeader(tip->pprev->pprev->GetBlockHash(), tip->nTime + 60, stake.hash, stake.n)), "invalid:bad-blk-sig");
+}
+
+BOOST_AUTO_TEST_CASE(pos_stake_lookup_side_branch_uses_coin_spent_above_the_fork)
+{
+    MineBlocks(5);
+    const COutPoint stake(m_coinbase_txns[0]->GetHash(), 0);
+    CMutableTransaction spend = CreateValidMempoolTransaction(
+        m_coinbase_txns[0], /*input_vout=*/0, /*input_height=*/1, coinbaseKey,
+        ScriptForKey(coinbaseKey), m_coinbase_txns[0]->vout[0].nValue - 10000, /*submit=*/false);
+    CreateAndProcessBlock({spend}, ScriptForKey(coinbaseKey));
+    MineBlocks(1);
+
+    LOCK(cs_main);
+    BOOST_REQUIRE(!g_txindex);
+    BOOST_REQUIRE(!m_node.chainman->ActiveChainstate().CoinsTip().HaveCoin(stake));
+    const CBlockIndex* tip = m_node.chainman->ActiveChain().Tip();
+
+    // Forking below the spending block: the coin existed there.
+    BOOST_CHECK_EQUAL(StakeLookupResult(m_node, MakePoSHeader(tip->pprev->pprev->GetBlockHash(), tip->nTime + 60, stake.hash, stake.n)), "invalid:bad-blk-sig");
+    // Forking above the spending block: the coin was already gone.
+    BOOST_CHECK_EQUAL(StakeLookupResult(m_node, MakePoSHeader(tip->pprev->GetBlockHash(), tip->nTime + 60, stake.hash, stake.n)), "invalid:bad-unkown-stake");
+}
+
+BOOST_AUTO_TEST_CASE(pos_stake_lookup_side_branch_rejects_unknown_and_too_new_coins)
+{
+    MineBlocks(5);
+    const CBlock last = CreateAndProcessBlock({}, ScriptForKey(coinbaseKey));
+
+    LOCK(cs_main);
+    BOOST_REQUIRE(!g_txindex);
+    const CBlockIndex* tip = m_node.chainman->ActiveChain().Tip();
+    BOOST_REQUIRE(tip->GetBlockHash() == last.GetHash());
+
+    BOOST_CHECK_EQUAL(StakeLookupResult(m_node, MakePoSHeader(tip->pprev->GetBlockHash(), tip->nTime + 60, InsecureRand256(), 0)), "invalid:bad-unkown-stake");
+
+    // A coin created by our branch above the fork point does not exist on the other branch.
+    BOOST_CHECK_EQUAL(StakeLookupResult(m_node, MakePoSHeader(tip->pprev->GetBlockHash(), tip->nTime + 60, last.vtx[0]->GetHash(), 0)), "invalid:bad-stake-after-fork");
+}
+
 #ifdef ENABLE_WALLET
 // ============================================================================
 // 18. WALLET: ORPHANED COINSTAKE RELEASES ITS INPUTS
