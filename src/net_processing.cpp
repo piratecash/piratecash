@@ -3509,6 +3509,7 @@ bool PeerManagerImpl::CommitPresyncSegment(CNode& pfrom, Peer& peer)
         return false;
     }
     LogPrintf("Synchronized %d headers up to checkpoint at height %d\n", segment.headers.size(), last->nHeight);
+    WITH_LOCK(::cs_main, if (CNodeState* nodestate{State(pfrom.GetId())}) nodestate->m_pos_presync_failures = 0);
     if (!PosPresyncNeeded() && last->nChainWork < m_chainman.MinimumChainWork()) {
         LogPrintf("ERROR: the last checkpoint (height %d) has less work than the minimum chain work, blocks will not be downloaded\n", last->nHeight);
     }
