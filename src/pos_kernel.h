@@ -6,6 +6,7 @@
 #define BITCOIN_KERNEL_H
 
 #include <consensus/amount.h>
+#include <consensus/consensus.h>
 #include <consensus/validation.h>
 #include <primitives/transaction.h>
 #include <streams.h>
@@ -28,6 +29,9 @@ struct Params;
 
 
 static constexpr CAmount MIN_STAKE_AMOUNT = COIN;
+/** Confirmations a coinbase output needs before it can stake: CheckProofOfStake wants
+ *  more than COINBASE_MATURITY blocks between its block and the block being built on. */
+static constexpr int STAKE_COINBASE_MIN_DEPTH{COINBASE_MATURITY + 2};
 static constexpr int64_t MAX_POS_BLOCK_AHEAD_TIME = 180;
 static constexpr int64_t MAX_POS_BLOCK_AHEAD_SAFETY_MARGIN = 5;
 

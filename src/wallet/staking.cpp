@@ -52,7 +52,7 @@ bool CWallet::SelectStakeCoins(StakeCandidates& setCoins, CAmount nTargetAmount)
         if (!wtx) continue;
         if (output.outpoint.n >= wtx->tx->vout.size()) continue;
 
-        const int min_depth = wtx->IsCoinBase() ? COINBASE_MATURITY : 10;
+        const int min_depth = wtx->IsCoinBase() ? STAKE_COINBASE_MIN_DEPTH : 10;
         if (output.depth < min_depth) continue;
 
         setCoins.emplace_back(output.txout.nValue, wtx, output.outpoint.n);
