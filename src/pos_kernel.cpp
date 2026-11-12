@@ -632,6 +632,12 @@ size_t g_spent_coins_total GUARDED_BY(::cs_main){0};
 constexpr size_t MAX_SPENT_COINS_PER_BLOCK{20000};
 //! Same, for all remembered blocks together.
 constexpr size_t MAX_SPENT_COINS_TOTAL{200000};
+//! While the tip is this block, blocks at or below the height do not fit: they are not read again.
+struct SpentCoinsFull {
+    uint256 tip_hash;
+    int height{-1};
+};
+SpentCoinsFull g_spent_coins_full GUARDED_BY(::cs_main);
 
 bool LoadSpentCoins(const CBlockIndex& block_index, const Consensus::Params& consensus, SpentCoins& spent)
     EXCLUSIVE_LOCKS_REQUIRED(::cs_main)
@@ -656,9 +662,12 @@ bool LoadSpentCoins(const CBlockIndex& block_index, const Consensus::Params& con
     return true;
 }
 
-const SpentCoins* ReadSpentCoins(const CBlockIndex& block_index, const Consensus::Params& consensus, int keep_from_height)
+const SpentCoins* ReadSpentCoins(const CBlockIndex& block_index, const Consensus::Params& consensus, int keep_from_height,
+                                 const uint256& tip_hash)
     EXCLUSIVE_LOCKS_REQUIRED(::cs_main)
 {
+    if (g_spent_coins_full.tip_hash == tip_hash && block_index.nHeight <= g_spent_coins_full.height) return nullptr;
+
     const auto forget{[](auto it) EXCLUSIVE_LOCKS_REQUIRED(::cs_main) {
         g_spent_coins_total -= it->second.coins.size();
         return g_spent_coins.erase(it);
@@ -675,12 +684,15 @@ const SpentCoins* ReadSpentCoins(const CBlockIndex& block_index, const Consensus
         spent.usable = LoadSpentCoins(block_index, consensus, spent);
         if (!spent.usable) spent.coins.clear();
         // Blocks near the tip are needed by every lookup, so room is made at the deep end.
-        // Running out of room is not remembered: it passes as the tip moves on.
+        // Running out of room is remembered only until the tip moves on.
         for (auto deep = g_spent_coins.begin(); deep != g_spent_coins.end() && deep->first < block_index.nHeight &&
                                                 g_spent_coins_total + spent.coins.size() > MAX_SPENT_COINS_TOTAL;) {
             deep = forget(deep);
         }
-        if (g_spent_coins_total + spent.coins.size() > MAX_SPENT_COINS_TOTAL) return nullptr;
+        if (g_spent_coins_total + spent.coins.size() > MAX_SPENT_COINS_TOTAL) {
+            g_spent_coins_full = {tip_hash, block_index.nHeight};
+            return nullptr;
+        }
         g_spent_coins_total += spent.coins.size();
         it = g_spent_coins.emplace(block_index.nHeight, std::move(spent)).first;
     }
@@ -715,7 +727,7 @@ StakeLookup LookupStakeBelowFork(const COutPoint& prevout, const CBlockIndex& fo
     if (have_unspent) return found(unspent);
 
     for (const CBlockIndex* walk = tip; walk != &fork; walk = walk->pprev) {
-        const SpentCoins* spent{ReadSpentCoins(*walk, consensus, tip->nHeight - max_depth)};
+        const SpentCoins* spent{ReadSpentCoins(*walk, consensus, tip->nHeight - max_depth, tip->GetBlockHash())};
         if (spent == nullptr) return StakeLookup::UNKNOWN;
         if (const auto it{spent->coins.find(prevout)}; it != spent->coins.end()) return found(it->second);
     }
