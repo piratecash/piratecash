@@ -1199,7 +1199,8 @@ static RPCHelpMan generatestake()
 
     UniValue block_hashes(UniValue::VARR);
     for (int i = 0; i < num_blocks && !ShutdownRequested(); ++i) {
-        const CBlockIndex* tip{WITH_LOCK(::cs_main, return chainman.ActiveChain().Tip())};
+        const CBlockIndex* tip{CHECK_NONFATAL(WITH_LOCK(::cs_main, return chainman.ActiveChain().Tip()))};
+        const int64_t hash_drift{std::max<int64_t>(1, WITH_LOCK(pwallet->cs_wallet, return pwallet->nHashDrift))};
         const int64_t now{TicksSinceEpoch<std::chrono::seconds>(GetAdjustedTime())};
         const int64_t latest_time{now + MAX_POS_BLOCK_AHEAD_TIME - MAX_POS_BLOCK_AHEAD_SAFETY_MARGIN};
 
@@ -1217,7 +1218,7 @@ static RPCHelpMan generatestake()
                 break;
             }
             last_failure = state.ToString();
-            block_time = candidate->nTime + pwallet->nHashDrift;
+            block_time = std::max<int64_t>(block_time + 1, candidate->nTime + hash_drift);
         }
         if (!block) {
             throw JSONRPCError(RPC_MISC_ERROR, strprintf("No stake found on top of height %d (%s): no mature coins, or the clock has to move forward", tip->nHeight, last_failure));
