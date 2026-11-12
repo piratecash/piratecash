@@ -98,6 +98,7 @@ BOOST_AUTO_TEST_CASE(segment_is_handed_over_only_on_anchor_match)
 
     const auto first{collector.TakeSegment()};
     BOOST_REQUIRE_EQUAL(first.headers.size(), 5U);
+    BOOST_CHECK_EQUAL(first.first_height, 1);
     for (size_t i = 0; i < first.headers.size(); ++i) {
         BOOST_CHECK(first.hashes[i] == chain[i].GetHash());
         BOOST_CHECK(first.headers[i].GetHash() == chain[i].GetHash());

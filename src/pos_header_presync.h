@@ -60,6 +60,7 @@ enum class AddResult {
 struct Segment {
     std::vector<CBlockHeader> headers;
     std::vector<uint256> hashes; //!< hashes[i] == headers[i].GetHash()
+    int first_height{0};         //!< height of headers[0]
 };
 
 /** Collects one segment from a single peer. Not thread safe: the caller serializes access. */

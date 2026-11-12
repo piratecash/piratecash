@@ -3489,18 +3489,31 @@ bool PeerManagerImpl::PosPresyncNeeded()
 
 bool PeerManagerImpl::CommitPresyncSegment(CNode& pfrom, Peer& peer)
 {
-    const pos_presync::Segment segment{m_pos_segments.TakeSegment()};
+    pos_presync::Segment segment{m_pos_segments.TakeSegment()};
 
-    pos_presync::MarkAnchored(segment.hashes);
+    // The proof-of-stake flag is outside the hash; past the last proof-of-work block it is known anyway.
+    const int64_t last_pow_block{m_chainparams.GetConsensus().nLastPowBlock};
+    for (size_t i = 0; i < segment.headers.size(); ++i) {
+        if (segment.first_height + static_cast<int64_t>(i) > last_pow_block) segment.headers[i].nFlags |= CBlockIndex::BLOCK_PROOF_OF_STAKE;
+    }
+
     const CBlockIndex* last{nullptr};
     BlockValidationState state;
     bool accepted{true};
-    for (size_t pos = 0; accepted && pos < segment.headers.size(); pos += MAX_HEADERS_UNCOMPRESSED_RESULT) {
-        const auto first{segment.headers.begin() + pos};
-        const auto end{segment.headers.begin() + std::min<size_t>(pos + MAX_HEADERS_UNCOMPRESSED_RESULT, segment.headers.size())};
-        accepted = m_chainman.ProcessNewBlockHeaders({first, end}, state, &last);
+    {
+        // The stake proof is skipped for these hashes only while the segment is being moved.
+        struct AnchoredScope {
+            explicit AnchoredScope(const std::vector<uint256>& hashes) { pos_presync::MarkAnchored(hashes); }
+            ~AnchoredScope() { pos_presync::ClearAnchored(); }
+        } anchored{segment.hashes};
+        for (size_t pos = 0; accepted && pos < segment.headers.size(); pos += MAX_HEADERS_UNCOMPRESSED_RESULT) {
+            const auto first{segment.headers.begin() + pos};
+            const auto end{segment.headers.begin() + std::min<size_t>(pos + MAX_HEADERS_UNCOMPRESSED_RESULT, segment.headers.size())};
+            accepted = m_chainman.ProcessNewBlockHeaders({first, end}, state, &last);
+        }
     }
-    pos_presync::ClearAnchored();
+    // Moving a segment takes a while and must not count against the peer.
+    m_pos_segments_progress = NodeClock::now();
 
     if (!accepted || !last) {
         // The hashes are right, so only a field outside the hash can be wrong: try another peer, no penalty.
@@ -3603,7 +3616,7 @@ bool PeerManagerImpl::ProcessPresyncHeaders(CNode& pfrom, Peer& peer, const std:
         if (!CommitPresyncSegment(pfrom, peer)) return true;
         break;
     }
-    m_pos_segments_progress = now;
+    m_pos_segments_progress = NodeClock::now();
 
     const std::string msg_type{uses_compressed ? NetMsgType::GETHEADERS2 : NetMsgType::GETHEADERS};
     const CBlockLocator locator{m_pos_segments.IsActive()

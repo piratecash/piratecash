@@ -131,6 +131,7 @@ Segment SegmentCollector::TakeSegment()
         if (header.IsProofOfStakeV2()) header.nFlags |= CBlockIndex::BLOCK_PROOF_OF_STAKE;
     }
     segment.hashes = std::move(m_hashes);
+    segment.first_height = m_target.height - static_cast<int>(segment.headers.size()) + 1;
 
     const NodeId owner{m_owner};
     const Anchor base{m_target};
