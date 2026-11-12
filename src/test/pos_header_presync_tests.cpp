@@ -103,6 +103,21 @@ BOOST_AUTO_TEST_CASE(chain_height_is_estimated_from_the_last_anchor)
     BOOST_CHECK(!pos_presync::EstimatedChainHeight(anchors, anchor_time, 0, anchor_time + 1200, 0));
 }
 
+BOOST_AUTO_TEST_CASE(header_too_new_is_waited_for_only_briefly)
+{
+    const int64_t now{10000};
+    const auto header_at{[](int64_t time) { CBlockHeader header; header.nTime = time; return header; }};
+
+    // Exactly at the limit is not too new.
+    BOOST_CHECK(!pos_presync::FutureHeaderWait({header_at(now + 180)}, now, 180, 120));
+    BOOST_CHECK_EQUAL(*pos_presync::FutureHeaderWait({header_at(now + 181)}, now, 180, 120), 1);
+    BOOST_CHECK_EQUAL(*pos_presync::FutureHeaderWait({header_at(now + 300)}, now, 180, 120), 120);
+    BOOST_CHECK(!pos_presync::FutureHeaderWait({header_at(now + 301)}, now, 180, 120));
+    // The first header that is too new decides: the ones after it build on it.
+    BOOST_CHECK_EQUAL(*pos_presync::FutureHeaderWait({header_at(now), header_at(now + 190), header_at(now + 250)}, now, 180, 120), 10);
+    BOOST_CHECK(!pos_presync::FutureHeaderWait({}, now, 180, 120));
+}
+
 BOOST_AUTO_TEST_CASE(segment_is_handed_over_only_on_anchor_match)
 {
     const auto chain{MakeChain(BASE_HASH, 10)};

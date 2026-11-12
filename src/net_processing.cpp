@@ -24,6 +24,7 @@
 #include <node/txreconciliation.h>
 #include <policy/policy.h>
 #include <pos_header_presync.h>
+#include <pos_kernel.h>
 #include <policy/settings.h>
 #include <primitives/block.h>
 #include <primitives/transaction.h>
@@ -127,6 +128,12 @@ static constexpr auto HEADERS_DOWNLOAD_TIMEOUT_PER_HEADER = 1ms;
 static constexpr auto HEADERS_RESPONSE_TIME{2min};
 /** How long a peer that failed to deliver headers below a checkpoint is not asked for them again */
 static constexpr auto POS_PRESYNC_RETRY_INTERVAL{10min};
+/** How long a header refused only for a timestamp too far ahead is waited for before it is asked for again */
+static constexpr auto POS_FUTURE_HEADER_MAX_WAIT{2min};
+/** How many times in a row a peer is asked again for such a header without giving us a new one */
+static constexpr int MAX_POS_FUTURE_HEADER_RETRIES{3};
+// A proof-of-work header is refused for its time only further ahead than a proof-of-stake one is waited for.
+static_assert(MAX_FUTURE_BLOCK_TIME >= MAX_POS_BLOCK_AHEAD_TIME + count_seconds(POS_FUTURE_HEADER_MAX_WAIT));
 /** How many times a peer may fail to deliver headers below a checkpoint before it is disconnected */
 static constexpr int MAX_POS_PRESYNC_FAILURES{3};
 /** Protect at least this many outbound peers from disconnection due to slow/
@@ -434,6 +441,11 @@ struct Peer {
 
     /** Time of the last getheaders message to this peer */
     NodeClock::time_point m_last_getheaders_timestamp GUARDED_BY(NetEventsInterface::g_msgproc_mutex){};
+
+    /** When to ask this peer again for a header it announced too early for our clock; unset if there is none */
+    NodeClock::time_point m_pos_future_header_retry GUARDED_BY(NetEventsInterface::g_msgproc_mutex){};
+    /** Such requests sent since the peer last gave us a new header */
+    int m_pos_future_header_retries GUARDED_BY(NetEventsInterface::g_msgproc_mutex){0};
 
     explicit Peer(NodeId id, ServiceFlags our_services)
         : m_id(id)
@@ -821,6 +833,9 @@ private:
     void AbandonPresyncPeerIfExhausted(const CNode& pfrom) EXCLUSIVE_LOCKS_REQUIRED(g_msgproc_mutex);
     /** Take the headers sync role from a peer that stopped delivering headers below a checkpoint. */
     void CheckPresyncProgress() EXCLUSIVE_LOCKS_REQUIRED(g_msgproc_mutex);
+    /** A header refused only for a timestamp too far ahead turns valid by itself and is not announced twice. */
+    void RememberFutureHeader(Peer& peer, const std::vector<CBlockHeader>& headers) EXCLUSIVE_LOCKS_REQUIRED(g_msgproc_mutex);
+    void MaybeRetryFutureHeader(CNode& pto, Peer& peer) EXCLUSIVE_LOCKS_REQUIRED(g_msgproc_mutex);
     /** Move a segment that matched its checkpoint into the block index. */
     bool CommitPresyncSegment(CNode& pfrom, Peer& peer)
         EXCLUSIVE_LOCKS_REQUIRED(!m_peer_mutex, g_msgproc_mutex);
@@ -3428,12 +3443,14 @@ void PeerManagerImpl::ProcessHeadersMessage(CNode& pfrom, Peer& peer,
     BlockValidationState state;
     if (!m_chainman.ProcessNewBlockHeaders(headers, state, &pindexLast)) {
         if (state.IsInvalid()) {
+            if (state.GetResult() == BlockValidationResult::BLOCK_TIME_FUTURE) RememberFutureHeader(peer, headers);
             MaybePunishNodeForBlock(pfrom.GetId(), state, via_compact_block, "invalid header received");
         } else {
             DeferPosHeaders(pfrom, peer, headers, state, pindexLast, /*keep_rest=*/!via_compact_block);
         }
         return;
     }
+    if (received_new_header) peer.m_pos_future_header_retries = 0;
 
     // Consider fetching more headers.
     const bool uses_compressed = UsesCompressedHeaders(peer);
@@ -3575,6 +3592,32 @@ void PeerManagerImpl::AbandonPresyncPeer(NodeId node_id, bool disconnect)
     }
 }
 
+void PeerManagerImpl::RememberFutureHeader(Peer& peer, const std::vector<CBlockHeader>& headers)
+{
+    if (peer.m_pos_future_header_retry != NodeClock::time_point{} || peer.m_pos_future_header_retries >= MAX_POS_FUTURE_HEADER_RETRIES) return;
+    const auto now{NodeClock::now()};
+    const auto wait{pos_presync::FutureHeaderWait(headers, TicksSinceEpoch<std::chrono::seconds>(now), MAX_POS_BLOCK_AHEAD_TIME,
+                                                  count_seconds(POS_FUTURE_HEADER_MAX_WAIT))};
+    if (!wait) return;
+    peer.m_pos_future_header_retry = now + std::chrono::seconds{*wait};
+}
+
+void PeerManagerImpl::MaybeRetryFutureHeader(CNode& pto, Peer& peer)
+{
+    if (peer.m_pos_future_header_retry == NodeClock::time_point{} || NodeClock::now() < peer.m_pos_future_header_retry) return;
+    // The peer's earlier headers are still being checked and no request can go out: try again later.
+    if (m_pos_header_tail.Owner() == pto.GetId()) return;
+    peer.m_pos_future_header_retry = {};
+    ++peer.m_pos_future_header_retries;
+    // The answer to the last request, if there was one, was the header that came too early.
+    peer.m_last_getheaders_timestamp = {};
+    const std::string msg_type{UsesCompressedHeaders(peer) ? NetMsgType::GETHEADERS2 : NetMsgType::GETHEADERS};
+    const CBlockLocator locator{WITH_LOCK(::cs_main, return GetLocator(m_chainman.m_best_header))};
+    if (MaybeSendGetHeaders(pto, msg_type, locator, peer)) {
+        LogPrint(BCLog::NET, "Asking peer=%d again for a header that was too new\n", pto.GetId());
+    }
+}
+
 void PeerManagerImpl::CheckPresyncProgress()
 {
     if (!m_pos_segments.IsActive() || NodeClock::now() - m_pos_segments_progress <= 2 * HEADERS_RESPONSE_TIME) return;
@@ -3690,6 +3733,7 @@ void PeerManagerImpl::DrainPosHeaderTail(CNode& pfrom, Peer& peer)
         if (!pos_presync::IsHeaderDeferred(state)) {
             m_pos_header_tail.Clear();
             if (state.IsInvalid()) {
+                if (state.GetResult() == BlockValidationResult::BLOCK_TIME_FUTURE) RememberFutureHeader(peer, chunk);
                 MaybePunishNodeForBlock(pfrom.GetId(), state, /*via_compact_block=*/false, "invalid header received");
             }
             return;
@@ -5428,6 +5472,7 @@ void PeerManagerImpl::ProcessMessage(
         BlockValidationState state;
         if (!m_chainman.ProcessNewBlockHeaders({cmpctblock.header}, state, &pindex)) {
             if (state.IsInvalid()) {
+                if (state.GetResult() == BlockValidationResult::BLOCK_TIME_FUTURE) RememberFutureHeader(*peer, {cmpctblock.header});
                 MaybePunishNodeForBlock(pfrom.GetId(), state, /*via_compact_block=*/true, "invalid header via cmpctblock");
             } else {
                 DeferPosHeaders(pfrom, *peer, {cmpctblock.header}, state, pindex, /*keep_rest=*/false);
@@ -6691,6 +6736,7 @@ bool PeerManagerImpl::SendMessages(CNode* pto)
 
     CheckPresyncProgress();
     if (pto->fDisconnect) return true;
+    MaybeRetryFutureHeader(*pto, *peer);
 
     MaybeSendAddr(*pto, *peer, current_time);
 

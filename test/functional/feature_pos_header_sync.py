@@ -20,6 +20,7 @@ STAKE_MIN_AGE = 600
 POS_BLOCKS = 60
 CHECKPOINT_HEIGHTS = [250, 320, 350]
 PRESYNC_RETRY_INTERVAL = 10 * 60
+MAX_POS_BLOCK_AHEAD_TIME = 180
 
 STAKER, NO_CHECKPOINTS, CHECKPOINTS, PRUNED, WRONG_CHECKPOINT, P2P_TARGET = range(6)
 
@@ -159,6 +160,28 @@ class PosHeaderSyncTest(BitcoinTestFramework):
         self.wait_for_tip(CHECKPOINTS, self.nodes[STAKER].getbestblockhash())
         assert_equal(self.log_count(CHECKPOINTS, "Misbehaving"), 0)
 
+    def test_block_announced_too_early(self):
+        self.log.info("A block whose timestamp is still too new for our clock is fetched once the clock catches up")
+        node = self.nodes[CHECKPOINTS]
+        old_tip = node.getbestblockhash()
+        node.setnetworkactive(False)
+        self.stake(1)
+        new_tip = self.nodes[STAKER].getbestblockhash()
+        block_time = self.nodes[STAKER].getblockheader(new_tip)["time"]
+
+        # The block is announced only once, 20 seconds before this node's clock allows it.
+        node.setmocktime(block_time - MAX_POS_BLOCK_AHEAD_TIME - 20)
+        node.setnetworkactive(True)
+        with node.assert_debug_log(["time-too-new"], timeout=30):
+            self.connect_to_staker(CHECKPOINTS)
+        assert_equal(node.getbestblockhash(), old_tip)
+
+        with node.assert_debug_log(["again for a header that was too new"], timeout=30):
+            node.setmocktime(block_time - MAX_POS_BLOCK_AHEAD_TIME + 5)
+        self.wait_for_tip(CHECKPOINTS, new_tip)
+        assert_equal(self.log_count(CHECKPOINTS, "Misbehaving"), 0)
+        node.setmocktime(self.mocktime)
+
     def chain_headers(self):
         node = self.nodes[STAKER]
         return [from_hex(CBlockHeader(), node.getblockheader(node.getblockhash(height), False))
@@ -222,6 +245,7 @@ class PosHeaderSyncTest(BitcoinTestFramework):
         self.test_p2p_headers()
         self.test_reorg()
         self.test_catch_up()
+        self.test_block_announced_too_early()
         self.stop_node(PRUNED, expected_stderr=EXPECTED_STDERR_NO_GOV_PRUNE)
 
 
