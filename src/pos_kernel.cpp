@@ -663,9 +663,10 @@ bool LoadSpentCoins(const CBlockIndex& block_index, const Consensus::Params& con
 }
 
 const SpentCoins* ReadSpentCoins(const CBlockIndex& block_index, const Consensus::Params& consensus, int keep_from_height,
-                                 const uint256& tip_hash)
+                                 const CBlockIndex& tip)
     EXCLUSIVE_LOCKS_REQUIRED(::cs_main)
 {
+    const uint256 tip_hash{tip.GetBlockHash()};
     if (g_spent_coins_full.tip_hash == tip_hash && block_index.nHeight <= g_spent_coins_full.height) return nullptr;
 
     const auto forget{[](auto it) EXCLUSIVE_LOCKS_REQUIRED(::cs_main) {
@@ -673,6 +674,8 @@ const SpentCoins* ReadSpentCoins(const CBlockIndex& block_index, const Consensus
         return g_spent_coins.erase(it);
     }};
     for (auto it = g_spent_coins.begin(); it != g_spent_coins.end() && it->first < keep_from_height;) it = forget(it);
+    // Blocks above the tip were left behind by a reorganization and would only take up room.
+    for (auto it = g_spent_coins.upper_bound(tip.nHeight); it != g_spent_coins.end();) it = forget(it);
 
     auto it{g_spent_coins.find(block_index.nHeight)};
     if (it != g_spent_coins.end() && it->second.block_hash != block_index.GetBlockHash()) {
@@ -727,7 +730,7 @@ StakeLookup LookupStakeBelowFork(const COutPoint& prevout, const CBlockIndex& fo
     if (have_unspent) return found(unspent);
 
     for (const CBlockIndex* walk = tip; walk != &fork; walk = walk->pprev) {
-        const SpentCoins* spent{ReadSpentCoins(*walk, consensus, tip->nHeight - max_depth, tip->GetBlockHash())};
+        const SpentCoins* spent{ReadSpentCoins(*walk, consensus, tip->nHeight - max_depth, *tip)};
         if (spent == nullptr) return StakeLookup::UNKNOWN;
         if (const auto it{spent->coins.find(prevout)}; it != spent->coins.end()) return found(it->second);
     }
