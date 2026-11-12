@@ -28,11 +28,6 @@ See [/doc/fuzzing.md](/doc/fuzzing.md)
 
 #### Dependencies and prerequisites
 
-Many PirateCash specific tests require dash_hash. To install it:
-
-- Clone the repo `git clone https://github.com/dashpay/dash_hash`
-- Install dash_hash `cd dash_hash && pip3 install -r requirements.txt .`
-
 The ZMQ functional test requires a python ZMQ library. To install it:
 
 - on Unix, run `sudo apt-get install python3-zmq`
