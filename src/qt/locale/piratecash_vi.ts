@@ -3054,6 +3054,10 @@ Quá trình di chuyển sẽ tạo một bản sao lưu của ví trước khi d
         <source>Unknown. Syncing Headers (%1, %2%)…</source>
         <translation>Không xác định. Đang đồng bộ Header (%1, %2%)…</translation>
     </message>
+    <message>
+        <source>Syncing Headers (%1, %2%)…</source>
+        <translation>Đang đồng bộ Header (%1, %2%)…</translation>
+    </message>
 </context>
 <context>
     <name>NetworkWidget</name>

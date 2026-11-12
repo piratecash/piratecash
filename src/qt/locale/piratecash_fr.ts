@@ -3054,6 +3054,10 @@ Le processus de migration créera une sauvegarde du portefeuille avant la migrat
         <source>Unknown. Syncing Headers (%1, %2%)…</source>
         <translation>Inconnu. Synchronisation d'en-têtes (%1, %2%)...</translation>
     </message>
+    <message>
+        <source>Syncing Headers (%1, %2%)…</source>
+        <translation>Synchronisation d'en-têtes (%1, %2%)...</translation>
+    </message>
 </context>
 <context>
     <name>NetworkWidget</name>

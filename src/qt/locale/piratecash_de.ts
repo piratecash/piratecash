@@ -3054,6 +3054,10 @@ Beim Migrationsvorgang wird vor der Migration eine Sicherung der Wallet erstellt
         <source>Unknown. Syncing Headers (%1, %2%)…</source>
         <translation>Unbekannt. Synchronisiere Headers (%1, %2%)...</translation>
     </message>
+    <message>
+        <source>Syncing Headers (%1, %2%)…</source>
+        <translation>Synchronisiere Headers (%1, %2%)...</translation>
+    </message>
 </context>
 <context>
     <name>NetworkWidget</name>

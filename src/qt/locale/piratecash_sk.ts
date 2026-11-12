@@ -3054,6 +3054,10 @@ Počas migrácie sa pred jej začiatkom vytvorí záloha peňaženky. Tento zál
         <source>Unknown. Syncing Headers (%1, %2%)…</source>
         <translation>Neznáme. Synchronizujú sa hlavičky (%1, %2%)...</translation>
     </message>
+    <message>
+        <source>Syncing Headers (%1, %2%)…</source>
+        <translation>Synchronizujú sa hlavičky (%1, %2%)...</translation>
+    </message>
 </context>
 <context>
     <name>NetworkWidget</name>
