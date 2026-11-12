@@ -817,6 +817,8 @@ private:
         EXCLUSIVE_LOCKS_REQUIRED(!m_peer_mutex, g_msgproc_mutex);
     /** Drop what the collector holds and take the headers sync role from its peer, so another one is tried. */
     void AbandonPresyncPeer(NodeId node_id, bool disconnect) EXCLUSIVE_LOCKS_REQUIRED(g_msgproc_mutex);
+    /** The source of a checkpoint segment answered with no headers: it has nothing past what it sent. */
+    void AbandonPresyncPeerIfExhausted(const CNode& pfrom) EXCLUSIVE_LOCKS_REQUIRED(g_msgproc_mutex);
     /** Take the headers sync role from a peer that stopped delivering headers below a checkpoint. */
     void CheckPresyncProgress() EXCLUSIVE_LOCKS_REQUIRED(g_msgproc_mutex);
     /** Move a segment that matched its checkpoint into the block index. */
@@ -3390,6 +3392,7 @@ void PeerManagerImpl::ProcessHeadersMessage(CNode& pfrom, Peer& peer,
 
     if (nCount == 0) {
         // Nothing interesting. Stop asking this peers for more headers.
+        if (!via_compact_block) AbandonPresyncPeerIfExhausted(pfrom);
         return;
     }
 
@@ -3435,7 +3438,8 @@ void PeerManagerImpl::ProcessHeadersMessage(CNode& pfrom, Peer& peer,
     // Consider fetching more headers.
     const bool uses_compressed = UsesCompressedHeaders(peer);
     const std::string msg_type = uses_compressed ? NetMsgType::GETHEADERS2 : NetMsgType::GETHEADERS;
-    if (nCount == GetHeadersLimit(pfrom, uses_compressed)) {
+    const bool full_batch{IsFullHeadersBatch(pfrom, nCount, uses_compressed)};
+    if (full_batch) {
         // Headers message had its maximum size; the peer may have more headers.
         if (MaybeSendGetHeaders(pfrom, msg_type, GetLocator(pindexLast), peer)) {
             LogPrint(BCLog::NET, "more %s (%d) to end to peer=%d (startheight:%d)\n",
@@ -3443,7 +3447,7 @@ void PeerManagerImpl::ProcessHeadersMessage(CNode& pfrom, Peer& peer,
         }
     }
 
-    UpdatePeerStateForReceivedHeaders(pfrom, *pindexLast, received_new_header, nCount == GetHeadersLimit(pfrom, uses_compressed));
+    UpdatePeerStateForReceivedHeaders(pfrom, *pindexLast, received_new_header, full_batch);
 
     // Consider immediately downloading blocks.
     HeadersDirectFetchBlocks(pfrom, peer, *pindexLast);
@@ -3534,6 +3538,13 @@ bool PeerManagerImpl::CommitPresyncSegment(CNode& pfrom, Peer& peer)
     }
     UpdatePeerStateForReceivedHeaders(pfrom, *last, /*received_new_header=*/true, /*may_have_more_headers=*/true);
     return true;
+}
+
+void PeerManagerImpl::AbandonPresyncPeerIfExhausted(const CNode& pfrom)
+{
+    if (!m_pos_segments.IsActive() || m_pos_segments.Owner() != pfrom.GetId()) return;
+    LogPrintf("Headers chain of peer=%d ends below a checkpoint, trying another peer\n", pfrom.GetId());
+    AbandonPresyncPeer(pfrom.GetId(), /*disconnect=*/true);
 }
 
 void PeerManagerImpl::AbandonPresyncPeer(NodeId node_id, bool disconnect)
