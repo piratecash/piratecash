@@ -3054,6 +3054,10 @@ Procesul de migrare va crea o copie de rezervă a portofelului înainte de migra
         <source>Unknown. Syncing Headers (%1, %2%)…</source>
         <translation>Necunoscut. Sincronizare anteturi (%1, %2%)…</translation>
     </message>
+    <message>
+        <source>Syncing Headers (%1, %2%)…</source>
+        <translation>Sincronizare anteturi (%1, %2%)…</translation>
+    </message>
 </context>
 <context>
     <name>NetworkWidget</name>

@@ -3054,6 +3054,10 @@ Taşıma işlemi, taşımadan önce cüzdanın bir yedeğini oluşturur. Bu yede
         <source>Unknown. Syncing Headers (%1, %2%)…</source>
         <translation>Bilinmeyen. Başlıklar Senkronize Ediliyor (%1, %2%)...</translation>
     </message>
+    <message>
+        <source>Syncing Headers (%1, %2%)…</source>
+        <translation>Başlıklar Senkronize Ediliyor (%1, %2%)...</translation>
+    </message>
 </context>
 <context>
     <name>NetworkWidget</name>

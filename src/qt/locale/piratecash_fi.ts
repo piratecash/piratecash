@@ -3054,6 +3054,10 @@ Siirtoprosessi luo lompakosta varmuuskopion ennen siirtämistä. Varmuuskopiotie
         <source>Unknown. Syncing Headers (%1, %2%)…</source>
         <translation>Tuntematon. Synkronoidaan otsikoita (%1, %2%)...</translation>
     </message>
+    <message>
+        <source>Syncing Headers (%1, %2%)…</source>
+        <translation>Synkronoidaan otsikoita (%1, %2%)...</translation>
+    </message>
 </context>
 <context>
     <name>NetworkWidget</name>

@@ -3054,6 +3054,10 @@ Het migratieproces maakt vóór het migreren een back-up van de portemonnee. Dit
         <source>Unknown. Syncing Headers (%1, %2%)…</source>
         <translation>Onbekend. Kopteksten synchroniseren (%1, %2%)...</translation>
     </message>
+    <message>
+        <source>Syncing Headers (%1, %2%)…</source>
+        <translation>Kopteksten synchroniseren (%1, %2%)...</translation>
+    </message>
 </context>
 <context>
     <name>NetworkWidget</name>

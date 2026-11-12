@@ -46,6 +46,11 @@ struct Anchor {
 std::optional<Anchor> NextAnchor(const MapCheckpoints& anchors, int height);
 std::optional<Anchor> LastAnchor(const MapCheckpoints& anchors);
 
+/** Height the chain should have reached by now, counted from the last anchor and the time of its block.
+ *  Unknown once headers are at the last anchor: from there the best header itself is the better base. */
+std::optional<int> EstimatedChainHeight(const MapCheckpoints& anchors, int64_t last_anchor_time, int best_header_height,
+                                        int64_t now, int64_t block_spacing);
+
 enum class AddResult {
     NEED_MORE,       //!< headers buffered, the anchor is not reached yet
     SEGMENT_READY,   //!< the anchor matched; call TakeSegment()

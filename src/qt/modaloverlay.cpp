@@ -10,6 +10,7 @@
 #include <qt/forms/ui_modaloverlay.h>
 
 #include <chainparams.h>
+#include <pos_header_presync.h>
 #include <qt/guiutil.h>
 
 #include <QEasingCurve>
@@ -109,6 +110,7 @@ void ModalOverlay::setKnownBestHeight(int count, const QDateTime& blockDate)
 void ModalOverlay::tipUpdate(int count, const QDateTime& blockDate, double nVerificationProgress)
 {
     QDateTime currentDate = QDateTime::currentDateTime();
+    m_tip_height = count;
 
     // keep a vector of samples of verification progress at height
     blockProcessTime.push_front(qMakePair(currentDate.toMSecsSinceEpoch(), nVerificationProgress));
@@ -166,13 +168,36 @@ void ModalOverlay::tipUpdate(int count, const QDateTime& blockDate, double nVeri
     // show remaining number of blocks
     if (estimateNumHeadersLeft < HEADER_HEIGHT_DELTA_SYNC && hasBestHeader) {
         ui->numberOfBlocksLeft->setText(QString::number(bestHeaderHeight - count));
+    } else if (hasBestHeader) {
+        // PoS headers are only accepted a bounded distance ahead of the tip, so the best
+        // header stays old during the whole block download: estimate the rest from its age.
+        if (EstimatedChainHeight()) {
+            UpdateHeaderSyncLabel();
+        } else {
+            ui->numberOfBlocksLeft->setText(QString("~%1").arg(bestHeaderHeight - count + estimateNumHeadersLeft));
+        }
     } else {
         UpdateHeaderSyncLabel();
         ui->expectedTimeLeft->setText(tr("Unknown…"));
     }
 }
 
+std::optional<int> ModalOverlay::EstimatedChainHeight() const
+{
+    const CChainParams& params{Params()};
+    return pos_presync::EstimatedChainHeight(params.Checkpoints().mapCheckpoints, params.TxData().nTime, bestHeaderHeight,
+                                             QDateTime::currentSecsSinceEpoch(), params.GetConsensus().nPowTargetSpacing);
+}
+
 void ModalOverlay::UpdateHeaderSyncLabel() {
+    // Below the last checkpoint an old header says little about the length of the chain; the checkpoint says more.
+    if (const auto estimated_height{EstimatedChainHeight()}; estimated_height && bestHeaderHeight >= m_tip_height) {
+        const QString headers_progress{tr("Syncing Headers (%1, %2%)…").arg(bestHeaderHeight).arg(QString::number(100.0 * bestHeaderHeight / *estimated_height, 'f', 1))};
+        ui->numberOfBlocksLeft->setText(QString("~%1. %2").arg(*estimated_height - m_tip_height).arg(headers_progress));
+        return;
+    }
+    // Blocks are connecting: tipUpdate() keeps the number, a header must not replace it.
+    if (m_tip_height > 0 && bestHeaderHeight >= m_tip_height) return;
     int est_headers_left = bestHeaderDate.secsTo(QDateTime::currentDateTime()) / Params().GetConsensus().nPowTargetSpacing;
     ui->numberOfBlocksLeft->setText(tr("Unknown. Syncing Headers (%1, %2%)…").arg(bestHeaderHeight).arg(QString::number(100.0 / (bestHeaderHeight + est_headers_left) * bestHeaderHeight, 'f', 1)));
 }

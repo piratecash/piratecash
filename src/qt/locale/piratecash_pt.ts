@@ -3054,6 +3054,10 @@ O processo de migração criará um backup da carteira antes de migrar. Esse arq
         <source>Unknown. Syncing Headers (%1, %2%)…</source>
         <translation>Desconhecido. Sincronizando cabeçalhos (%1, %2%)...</translation>
     </message>
+    <message>
+        <source>Syncing Headers (%1, %2%)…</source>
+        <translation>Sincronizando cabeçalhos (%1, %2%)...</translation>
+    </message>
 </context>
 <context>
     <name>NetworkWidget</name>

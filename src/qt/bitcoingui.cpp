@@ -16,6 +16,7 @@
 #include <interfaces/node.h>
 #include <node/miner.h>
 #include <node/interface_ui.h>
+#include <pos_header_presync.h>
 #include <util/std23.h>
 #include <util/system.h>
 #include <util/translation.h>
@@ -1489,11 +1490,13 @@ void BitcoinGUI::setNetworkActive(bool network_active)
 
 void BitcoinGUI::updateHeadersSyncProgressLabel()
 {
-    int64_t headersTipTime = clientModel->getHeaderTipTime();
     int headersTipHeight = clientModel->getHeaderTipHeight();
-    int estHeadersLeft = (GetTime() - headersTipTime) / Params().GetConsensus().nPowTargetSpacing;
-    if (estHeadersLeft > HEADER_HEIGHT_DELTA_SYNC)
-        progressBarLabel->setText(tr("Syncing Headers (%1%)…").arg(QString::number(100.0 / (headersTipHeight+estHeadersLeft)*headersTipHeight, 'f', 1)));
+    // Above the last checkpoint PoS headers follow the block tip, they are not synced ahead of it.
+    const CChainParams& params{Params()};
+    const auto estimated_height{pos_presync::EstimatedChainHeight(params.Checkpoints().mapCheckpoints, params.TxData().nTime, headersTipHeight,
+                                                                  GetTime(), params.GetConsensus().nPowTargetSpacing)};
+    if (!estimated_height) return;
+    progressBarLabel->setText(tr("Syncing Headers (%1%)…").arg(QString::number(100.0 * headersTipHeight / *estimated_height, 'f', 1)));
 }
 
 void BitcoinGUI::openOptionsDialogWithTab(OptionsDialog::Tab tab)

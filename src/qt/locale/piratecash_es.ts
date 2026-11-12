@@ -3054,6 +3054,10 @@ El proceso de migración creará una copia de seguridad de la billetera antes de
         <source>Unknown. Syncing Headers (%1, %2%)…</source>
         <translation>Desconocido. Sincronización de encabezados (%1, %2%)...</translation>
     </message>
+    <message>
+        <source>Syncing Headers (%1, %2%)…</source>
+        <translation>Sincronización de encabezados (%1, %2%)...</translation>
+    </message>
 </context>
 <context>
     <name>NetworkWidget</name>
