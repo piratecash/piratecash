@@ -93,14 +93,9 @@ class PosHeaderSyncTest(BitcoinTestFramework):
     def build_chain(self):
         node = self.nodes[STAKER]
         self.staker = node.get_wallet_rpc(self.default_wallet_name)
-        node.createwallet(wallet_name="other", descriptors=False)
-        other_address = node.get_wallet_rpc("other").getnewaddress()
-        node.unloadwallet("other")
-
-        # The staking wallet offers a coinbase one block before the header rule accepts it,
-        # so its coinbases end 130 blocks below the last proof-of-work block.
-        self.generatetoaddress(node, LAST_POW_BLOCK - 130, self.staker.getnewaddress(), sync_fun=self.no_op)
-        self.generatetoaddress(node, 130, other_address, sync_fun=self.no_op)
+        # Every stake block makes one more coinbase old enough to stake, so the wallet
+        # has to agree with the header rule on the exact block a coinbase matures.
+        self.generatetoaddress(node, LAST_POW_BLOCK, self.staker.getnewaddress(), sync_fun=self.no_op)
         self.bump_mocktime(STAKE_MIN_AGE * 2, nodes=self.running_nodes())
         self.stake(POS_BLOCKS)
         assert_equal(node.getblockcount(), LAST_POW_BLOCK + POS_BLOCKS)
