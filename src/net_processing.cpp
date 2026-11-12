@@ -125,6 +125,8 @@ static constexpr auto HEADERS_DOWNLOAD_TIMEOUT_BASE = 15min;
 static constexpr auto HEADERS_DOWNLOAD_TIMEOUT_PER_HEADER = 1ms;
 /** How long to wait for a peer to respond to a getheaders request */
 static constexpr auto HEADERS_RESPONSE_TIME{2min};
+/** How long a peer that failed to deliver headers below a checkpoint is not asked for them again */
+static constexpr auto POS_PRESYNC_RETRY_INTERVAL{10min};
 /** Protect at least this many outbound peers from disconnection due to slow/
  * behind headers chain.
  */
@@ -484,6 +486,8 @@ struct CNodeState {
     bool fSyncStarted{false};
     //! When to potentially disconnect peer for stalling headers download
     std::chrono::microseconds m_headers_sync_timeout{0us};
+    //! Headers sync is not started with this peer before this time: it failed to deliver headers below a checkpoint.
+    std::chrono::microseconds m_pos_presync_retry_after{0us};
     //! Since when we're stalling block download progress (in microseconds), or 0.
     std::chrono::microseconds m_stalling_since{0us};
     std::list<QueuedBlock> vBlocksInFlight;
@@ -3512,6 +3516,8 @@ void PeerManagerImpl::AbandonPresyncPeer(NodeId node_id, bool disconnect)
     {
         LOCK(cs_main);
         CNodeState* nodestate{State(node_id)};
+        // The peer may stay connected, so it must not get the role back at once and be asked in a loop.
+        if (nodestate) nodestate->m_pos_presync_retry_after = GetTime<std::chrono::microseconds>() + POS_PRESYNC_RETRY_INTERVAL;
         if (nodestate && nodestate->fSyncStarted) {
             nodestate->fSyncStarted = false;
             nodestate->m_headers_sync_timeout = 0us;
@@ -3557,15 +3563,13 @@ bool PeerManagerImpl::ProcessPresyncHeaders(CNode& pfrom, Peer& peer, const std:
     case pos_presync::AddResult::WRONG_PEER:
     case pos_presync::AddResult::NOT_CONTINUING:
         return true;
-    // A punished peer keeps the headers sync role until it is disconnected or times out:
-    // handing the role back at once would have a peer that cannot be banned asked again in a loop.
     case pos_presync::AddResult::NON_CONTINUOUS:
         Misbehaving(peer, 20, "non-continuous headers sequence");
-        m_pos_segments.Reset();
+        AbandonPresyncPeer(id, /*disconnect=*/false);
         return true;
     case pos_presync::AddResult::ANCHOR_MISMATCH:
         Misbehaving(peer, 100, "headers do not match a checkpoint");
-        m_pos_segments.Reset();
+        AbandonPresyncPeer(id, /*disconnect=*/false);
         return true;
     case pos_presync::AddResult::BAD_SIGNATURE:
     case pos_presync::AddResult::TOO_LARGE:
@@ -6674,7 +6678,7 @@ bool PeerManagerImpl::SendMessages(CNode* pto)
             }
         }
 
-        if (!state.fSyncStarted && CanServeBlocks(*peer) && !m_chainman.m_blockman.LoadingBlocks() && pto->CanRelay()) {
+        if (!state.fSyncStarted && state.m_pos_presync_retry_after <= current_time && CanServeBlocks(*peer) && !m_chainman.m_blockman.LoadingBlocks() && pto->CanRelay()) {
             // Only actively request headers from a single peer, unless we're close to end of initial download.
             if ((nSyncStarted == 0 && sync_blocks_and_headers_from_peer) || m_chainman.m_best_header->Time() > NodeClock::now() - m_chainman.m_options.max_tip_age) {
                 const CBlockIndex* pindexStart = m_chainman.m_best_header;
