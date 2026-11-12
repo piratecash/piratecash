@@ -19,6 +19,7 @@ LAST_POW_BLOCK = 300
 STAKE_MIN_AGE = 600
 POS_BLOCKS = 60
 CHECKPOINT_HEIGHTS = [250, 320, 350]
+PRESYNC_RETRY_INTERVAL = 10 * 60
 
 STAKER, NO_CHECKPOINTS, CHECKPOINTS, PRUNED, WRONG_CHECKPOINT, P2P_TARGET = range(6)
 
@@ -171,6 +172,18 @@ class PosHeaderSyncTest(BitcoinTestFramework):
     def test_p2p_headers(self):
         node = self.nodes[P2P_TARGET]
         self.restart_fresh(P2P_TARGET, self.checkpoint_args(CHECKPOINT_HEIGHTS, self.checkpoint_hashes))
+
+        self.log.info("A peer whose chain ends below a checkpoint is asked again only after a pause, and dropped after three failures")
+        short_chain = "ends below a checkpoint, trying another peer"
+        with node.assert_debug_log([short_chain], timeout=30):
+            peer = node.add_p2p_connection(HeadersPeer(self.chain_headers()[:100]), wait_for_verack=False)
+        for failures in (2, 3):
+            assert_equal(self.log_count(P2P_TARGET, short_chain), failures - 1)
+            assert peer.is_connected
+            self.bump_mocktime(PRESYNC_RETRY_INTERVAL + 1, nodes=[node])
+            self.wait_until(lambda: self.log_count(P2P_TARGET, short_chain) == failures)
+        peer.wait_for_disconnect()
+        assert_equal(node.getblockchaininfo()["headers"], 0)
 
         self.log.info("A header changed below a checkpoint breaks the match: the peer is dropped, nothing is kept")
         headers = self.chain_headers()

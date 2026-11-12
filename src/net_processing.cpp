@@ -127,6 +127,8 @@ static constexpr auto HEADERS_DOWNLOAD_TIMEOUT_PER_HEADER = 1ms;
 static constexpr auto HEADERS_RESPONSE_TIME{2min};
 /** How long a peer that failed to deliver headers below a checkpoint is not asked for them again */
 static constexpr auto POS_PRESYNC_RETRY_INTERVAL{10min};
+/** How many times a peer may fail to deliver headers below a checkpoint before it is disconnected */
+static constexpr int MAX_POS_PRESYNC_FAILURES{3};
 /** Protect at least this many outbound peers from disconnection due to slow/
  * behind headers chain.
  */
@@ -488,6 +490,8 @@ struct CNodeState {
     std::chrono::microseconds m_headers_sync_timeout{0us};
     //! Headers sync is not started with this peer before this time: it failed to deliver headers below a checkpoint.
     std::chrono::microseconds m_pos_presync_retry_after{0us};
+    //! How many times this peer failed to deliver headers below a checkpoint.
+    int m_pos_presync_failures{0};
     //! Since when we're stalling block download progress (in microseconds), or 0.
     std::chrono::microseconds m_stalling_since{0us};
     std::list<QueuedBlock> vBlocksInFlight;
@@ -3515,20 +3519,26 @@ bool PeerManagerImpl::CommitPresyncSegment(CNode& pfrom, Peer& peer)
 void PeerManagerImpl::AbandonPresyncPeer(NodeId node_id, bool disconnect)
 {
     m_pos_segments.Reset();
+    bool failed_too_often{false};
     {
         LOCK(cs_main);
         CNodeState* nodestate{State(node_id)};
-        // The peer may stay connected, so it must not get the role back at once and be asked in a loop.
-        if (nodestate) nodestate->m_pos_presync_retry_after = GetTime<std::chrono::microseconds>() + POS_PRESYNC_RETRY_INTERVAL;
+        if (nodestate) {
+            // The peer may stay connected, so it must not get the role back at once and be asked in a loop.
+            nodestate->m_pos_presync_retry_after = GetTime<std::chrono::microseconds>() + POS_PRESYNC_RETRY_INTERVAL;
+            failed_too_often = ++nodestate->m_pos_presync_failures >= MAX_POS_PRESYNC_FAILURES;
+        }
         if (nodestate && nodestate->fSyncStarted) {
             nodestate->fSyncStarted = false;
             nodestate->m_headers_sync_timeout = 0us;
             nSyncStarted--;
         }
     }
-    if (disconnect) {
-        m_connman.ForNode(node_id, [](CNode* node) {
-            if (node->IsOutboundOrBlockRelayConn()) node->fDisconnect = true;
+    if (disconnect || failed_too_often) {
+        m_connman.ForNode(node_id, [&](CNode* node) {
+            // An inbound peer may be an honest relayer and is kept, unless it keeps failing.
+            const bool spare{node->HasPermission(NetPermissionFlags::NoBan) || node->IsManualConn()};
+            if ((disconnect && node->IsOutboundOrBlockRelayConn()) || (failed_too_often && !spare)) node->fDisconnect = true;
             return true;
         });
     }
