@@ -85,14 +85,6 @@ RUN uv pip install --system --break-system-packages \
     pyzmq==24.0.1 \
     vulture==2.6
 
-# Install packages relied on by tests
-ARG DASH_HASH_VERSION=1.4.0
-RUN set -ex; \
-    cd /tmp; \
-    git clone --depth 1 --no-tags --branch=${DASH_HASH_VERSION} https://github.com/dashpay/dash_hash; \
-    cd dash_hash && uv pip install --system --break-system-packages -r requirements.txt .; \
-    cd .. && rm -rf dash_hash
-
 # Symlink all Python package executables to /usr/local/bin
 RUN set -ex; \
     PYTHON_PATH=$(uv python find ${PYTHON_VERSION}); \
