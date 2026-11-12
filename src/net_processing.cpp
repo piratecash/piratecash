@@ -1251,6 +1251,12 @@ static uint16_t GetHeadersLimit(const CNode& pfrom, bool compressed)
     return MAX_HEADERS_UNCOMPRESSED_RESULT;
 }
 
+/** A peer asked for compressed headers may still answer with plain ones, which have a lower limit. */
+static bool IsFullHeadersBatch(const CNode& pfrom, size_t count, bool asked_compressed)
+{
+    return count == GetHeadersLimit(pfrom, /*compressed=*/false) || (asked_compressed && count == GetHeadersLimit(pfrom, /*compressed=*/true));
+}
+
 // Returns true when peer is a verified masternode that has opted in to receive recsigs.
 // Such peers participate in the signing flow that populates creatingInstantSendLocks, so
 // they can reconstruct an ISDLOCK locally from the recsig and don't need the ISDLOCK inv.
@@ -3467,7 +3473,7 @@ void PeerManagerImpl::DeferPosHeaders(CNode& pfrom, Peer& peer, const std::vecto
         const CChain& chain{m_chainman.ActiveChain()};
         const CNodeState* nodestate{State(pfrom.GetId())};
         if (keep_rest && nodestate && nodestate->fSyncStarted && chain.FindFork(last_accepted) == chain.Tip()) {
-            const bool peer_has_more{headers.size() == GetHeadersLimit(pfrom, UsesCompressedHeaders(peer))};
+            const bool peer_has_more{IsFullHeadersBatch(pfrom, headers.size(), UsesCompressedHeaders(peer))};
             stored = m_pos_header_tail.Store(pfrom.GetId(), headers, accepted, peer_has_more, GetTime<std::chrono::seconds>());
         }
     }
@@ -3605,7 +3611,7 @@ bool PeerManagerImpl::ProcessPresyncHeaders(CNode& pfrom, Peer& peer, const std:
         AbandonPresyncPeer(id, /*disconnect=*/true);
         return true;
     case pos_presync::AddResult::NEED_MORE:
-        if (headers.size() < GetHeadersLimit(pfrom, uses_compressed)) {
+        if (!IsFullHeadersBatch(pfrom, headers.size(), uses_compressed)) {
             // The peer's chain ends below the checkpoint: it cannot help us sync.
             LogPrintf("Headers chain of peer=%d ends below a checkpoint, trying another peer\n", id);
             AbandonPresyncPeer(id, /*disconnect=*/true);
