@@ -24,12 +24,14 @@
 #include <script/interpreter.h>
 #include <timedata.h>
 #include <undo.h>
+#include <util/hasher.h>
 #include <util/system.h>
 #include <util/time.h>
 #include <validation.h>
 
 #include <map>
 #include <tuple>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -620,38 +622,62 @@ enum class StakeLookup {
 //! Coins spent by one block of the active chain, taken from its undo data.
 struct SpentCoins {
     uint256 block_hash;
-    std::vector<std::pair<COutPoint, Coin>> coins;
+    //! False when the block could not be looked into; kept so that it is not read from disk again.
+    bool usable{false};
+    std::unordered_map<COutPoint, Coin, SaltedOutpointHasher> coins;
 };
 std::map<int, SpentCoins> g_spent_coins GUARDED_BY(::cs_main);
+size_t g_spent_coins_total GUARDED_BY(::cs_main){0};
 //! Blocks spending more than this are not looked into; their branch is then left unjudged.
 constexpr size_t MAX_SPENT_COINS_PER_BLOCK{20000};
+//! Same, for all remembered blocks together.
+constexpr size_t MAX_SPENT_COINS_TOTAL{200000};
+
+bool LoadSpentCoins(const CBlockIndex& block_index, const Consensus::Params& consensus, SpentCoins& spent)
+    EXCLUSIVE_LOCKS_REQUIRED(::cs_main)
+{
+    if (!(block_index.nStatus & BLOCK_HAVE_DATA) || !(block_index.nStatus & BLOCK_HAVE_UNDO)) return false;
+    CBlock block;
+    CBlockUndo undo;
+    if (!node::ReadBlockFromDisk(block, &block_index, consensus) || !node::UndoReadFromDisk(undo, &block_index)) return false;
+    if (undo.vtxundo.size() + 1 != block.vtx.size()) return false;
+    size_t input_count{0};
+    for (const CTxUndo& tx_undo : undo.vtxundo) input_count += tx_undo.vprevout.size();
+    if (input_count > MAX_SPENT_COINS_PER_BLOCK || g_spent_coins_total + input_count > MAX_SPENT_COINS_TOTAL) return false;
+
+    for (size_t i = 1; i < block.vtx.size(); ++i) {
+        const auto& inputs{block.vtx[i]->vin};
+        const auto& coins{undo.vtxundo[i - 1].vprevout};
+        if (inputs.size() != coins.size()) return false;
+        for (size_t j = 0; j < inputs.size(); ++j) {
+            spent.coins.emplace(inputs[j].prevout, coins[j]);
+        }
+    }
+    return true;
+}
 
 const SpentCoins* ReadSpentCoins(const CBlockIndex& block_index, const Consensus::Params& consensus, int keep_from_height)
     EXCLUSIVE_LOCKS_REQUIRED(::cs_main)
 {
-    g_spent_coins.erase(g_spent_coins.begin(), g_spent_coins.lower_bound(keep_from_height));
-    const auto it{g_spent_coins.find(block_index.nHeight)};
-    if (it != g_spent_coins.end() && it->second.block_hash == block_index.GetBlockHash()) return &it->second;
+    const auto forget{[](auto it) EXCLUSIVE_LOCKS_REQUIRED(::cs_main) {
+        g_spent_coins_total -= it->second.coins.size();
+        return g_spent_coins.erase(it);
+    }};
+    for (auto it = g_spent_coins.begin(); it != g_spent_coins.end() && it->first < keep_from_height;) it = forget(it);
 
-    if (!(block_index.nStatus & BLOCK_HAVE_DATA) || !(block_index.nStatus & BLOCK_HAVE_UNDO)) return nullptr;
-    CBlock block;
-    CBlockUndo undo;
-    if (!node::ReadBlockFromDisk(block, &block_index, consensus) || !node::UndoReadFromDisk(undo, &block_index)) return nullptr;
-    if (undo.vtxundo.size() + 1 != block.vtx.size()) return nullptr;
-    size_t input_count{0};
-    for (const CTxUndo& tx_undo : undo.vtxundo) input_count += tx_undo.vprevout.size();
-    if (input_count > MAX_SPENT_COINS_PER_BLOCK) return nullptr;
-
-    SpentCoins spent{block_index.GetBlockHash(), {}};
-    for (size_t i = 1; i < block.vtx.size(); ++i) {
-        const auto& inputs{block.vtx[i]->vin};
-        const auto& coins{undo.vtxundo[i - 1].vprevout};
-        if (inputs.size() != coins.size()) return nullptr;
-        for (size_t j = 0; j < inputs.size(); ++j) {
-            spent.coins.emplace_back(inputs[j].prevout, coins[j]);
-        }
+    auto it{g_spent_coins.find(block_index.nHeight)};
+    if (it != g_spent_coins.end() && it->second.block_hash != block_index.GetBlockHash()) {
+        forget(it);
+        it = g_spent_coins.end();
     }
-    return &(g_spent_coins[block_index.nHeight] = std::move(spent));
+    if (it == g_spent_coins.end()) {
+        SpentCoins spent{block_index.GetBlockHash(), false, {}};
+        spent.usable = LoadSpentCoins(block_index, consensus, spent);
+        if (!spent.usable) spent.coins.clear();
+        g_spent_coins_total += spent.coins.size();
+        it = g_spent_coins.emplace(block_index.nHeight, std::move(spent)).first;
+    }
+    return it->second.usable ? &it->second : nullptr;
 }
 
 // Stake output of a header on a branch that leaves the active chain below the tip,
@@ -684,9 +710,7 @@ StakeLookup LookupStakeBelowFork(const COutPoint& prevout, const CBlockIndex& fo
     for (const CBlockIndex* walk = tip; walk != &fork; walk = walk->pprev) {
         const SpentCoins* spent{ReadSpentCoins(*walk, consensus, tip->nHeight - max_depth)};
         if (spent == nullptr) return StakeLookup::UNKNOWN;
-        for (const auto& [outpoint, coin] : spent->coins) {
-            if (outpoint == prevout) return found(coin);
-        }
+        if (const auto it{spent->coins.find(prevout)}; it != spent->coins.end()) return found(it->second);
     }
     return StakeLookup::MISSING;
 }
