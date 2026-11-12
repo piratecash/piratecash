@@ -13,6 +13,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <limits>
 #include <vector>
 
 using pos_presync::AddResult;
@@ -90,6 +91,9 @@ BOOST_AUTO_TEST_CASE(chain_height_is_estimated_from_the_last_anchor)
     BOOST_CHECK_EQUAL(*pos_presync::EstimatedChainHeight(anchors, anchor_time, 199, anchor_time + 119, 120), 200);
     // A clock behind the anchor never puts the chain below it.
     BOOST_CHECK_EQUAL(*pos_presync::EstimatedChainHeight(anchors, anchor_time, 100, anchor_time - 5000, 120), 200);
+
+    // A clock far in the future does not overflow.
+    BOOST_CHECK_EQUAL(*pos_presync::EstimatedChainHeight(anchors, anchor_time, 0, std::numeric_limits<int64_t>::max(), 1), std::numeric_limits<int>::max());
 
     // Headers at or above the last anchor, no anchors, no anchor time, no spacing.
     BOOST_CHECK(!pos_presync::EstimatedChainHeight(anchors, anchor_time, 200, anchor_time + 1200, 120));
