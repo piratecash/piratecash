@@ -269,7 +269,7 @@ static bool rest_headers(const CoreContext& context,
     case RESTResponseFormat::BINARY: {
         DataStream ssHeader{};
         for (const CBlockIndex *pindex : headers) {
-            ssHeader << pindex->GetBlockHeader();
+            ssHeader << WITH_LOCK(::cs_main, return pindex->GetBlockHeader());
         }
 
         std::string binaryHeader = ssHeader.str();
@@ -281,7 +281,7 @@ static bool rest_headers(const CoreContext& context,
     case RESTResponseFormat::HEX: {
         DataStream ssHeader{};
         for (const CBlockIndex *pindex : headers) {
-            ssHeader << pindex->GetBlockHeader();
+            ssHeader << WITH_LOCK(::cs_main, return pindex->GetBlockHeader());
         }
 
         std::string strHex = HexStr(ssHeader) + "\n";
