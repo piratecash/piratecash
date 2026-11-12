@@ -28,6 +28,7 @@
 #include <net.h>
 #include <node/context.h>
 #include <node/miner.h>
+#include <pos_kernel.h>
 #include <pow.h>
 #include <rpc/blockchain.h>
 #include <rpc/mining.h>
@@ -1168,10 +1169,74 @@ static RPCHelpMan reservebalance()
     };
 }
 
+static RPCHelpMan generatestake()
+{
+    return RPCHelpMan{"generatestake",
+        "\nStake blocks immediately with the selected wallet, without waiting for the staking thread (regtest only).\n",
+        {
+            {"nblocks", RPCArg::Type::NUM, RPCArg::Optional::NO, "How many blocks to stake."},
+        },
+        RPCResult{
+            RPCResult::Type::ARR, "", "hashes of blocks staked",
+            {
+                {RPCResult::Type::STR_HEX, "", "blockhash"},
+            }},
+        RPCExamples{
+            HelpExampleCli("generatestake", "10")
+        },
+        [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue
+{
+    if (Params().NetworkIDString() != CBaseChainParams::REGTEST) {
+        throw JSONRPCError(RPC_METHOD_NOT_FOUND, "generatestake is for regression testing (-regtest) only");
+    }
+    const auto pwallet = wallet::GetWalletForJSONRPCRequest(request);
+    if (!pwallet) return UniValue::VNULL;
+    const int num_blocks{request.params[0].getInt<int>()};
+
+    node::NodeContext& node = EnsureAnyNodeContext(request.context);
+    ChainstateManager& chainman = EnsureChainman(node);
+    node::BlockAssembler assembler{chainman.ActiveChainstate(), node, &EnsureMemPool(node)};
+
+    UniValue block_hashes(UniValue::VARR);
+    for (int i = 0; i < num_blocks && !ShutdownRequested(); ++i) {
+        const CBlockIndex* tip{WITH_LOCK(::cs_main, return chainman.ActiveChain().Tip())};
+        const int64_t now{TicksSinceEpoch<std::chrono::seconds>(GetAdjustedTime())};
+        const int64_t latest_time{now + MAX_POS_BLOCK_AHEAD_TIME - MAX_POS_BLOCK_AHEAD_SAFETY_MARGIN};
+
+        std::shared_ptr<CBlock> block;
+        std::string last_failure{"no block time left to try"};
+        for (int64_t block_time = std::max<int64_t>(tip->GetMedianTimePast() + 1, now); block_time <= latest_time;) {
+            auto block_template{assembler.CreateNewBlock(CScript{}, pwallet, block_time, /*isPos=*/true)};
+            if (!block_template) throw JSONRPCError(RPC_WALLET_ERROR, "Could not create a proof-of-stake block");
+            auto candidate{std::make_shared<CBlock>(std::move(block_template->block))};
+
+            BlockValidationState state;
+            if (WITH_LOCK(::cs_main, return CheckProof(state, *candidate, Params().GetConsensus(), &chainman.m_blockman,
+                                                       &chainman.ActiveChain(), &chainman.ActiveChainstate().CoinsTip()))) {
+                block = std::move(candidate);
+                break;
+            }
+            last_failure = state.ToString();
+            block_time = candidate->nTime + pwallet->nHashDrift;
+        }
+        if (!block) {
+            throw JSONRPCError(RPC_MISC_ERROR, strprintf("No stake found on top of height %d (%s): no mature coins, or the clock has to move forward", tip->nHeight, last_failure));
+        }
+        if (!chainman.ProcessNewBlock(block, /*force_processing=*/true, /*new_block=*/nullptr)) {
+            throw JSONRPCError(RPC_INTERNAL_ERROR, "ProcessNewBlock, block not accepted");
+        }
+        block_hashes.push_back(block->GetHash().GetHex());
+    }
+    return block_hashes;
+},
+    };
+}
+
 Span<const CRPCCommand> GetWalletMiningRPCCommands()
 {
     static const CRPCCommand commands[]{
         {"mining", &reservebalance},
+        {"hidden", &generatestake},
     };
     return commands;
 }

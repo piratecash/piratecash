@@ -35,6 +35,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "utxoupdatepsbt", 1, "descriptors" },
 #if ENABLE_MINER
     { "generatetoaddress", 0, "nblocks" },
+    { "generatestake", 0, "nblocks" },
     { "generatetoaddress", 2, "maxtries" },
     { "generatetodescriptor", 0, "num_blocks" },
     { "generatetodescriptor", 2, "maxtries" },

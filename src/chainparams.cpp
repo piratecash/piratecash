@@ -1073,6 +1073,7 @@ public:
                 {0, uint256S("0x45047b2cef27492713216b21914dd260ab3f6081ec1bee5f6111000d5b6ded60")},
             }
         };
+        UpdatePosParametersFromArgs(args);
 
         m_assumeutxo_data = MapAssumeutxo{
             {
@@ -1164,6 +1165,11 @@ public:
         consensus.DIP0003EnforcementHeight = nEnforcementHeight;
     }
     void UpdateDIP3ParametersFromArgs(const ArgsManager& args);
+
+    /**
+     * Allows shortening the PoW and legacy PoS eras, the minimum stake age and adding checkpoints for testing.
+     */
+    void UpdatePosParametersFromArgs(const ArgsManager& args);
 
     /**
      * Allows modifying the budget regtest parameters.
@@ -1305,6 +1311,31 @@ void CRegTestParams::UpdateActivationParametersFromArgs(const ArgsManager& args)
         if (!found) {
             throw std::runtime_error(strprintf("Invalid deployment (%s)", vDeploymentParams[0]));
         }
+    }
+}
+
+void CRegTestParams::UpdatePosParametersFromArgs(const ArgsManager& args)
+{
+    if (args.IsArgSet("-posparams")) {
+        const std::vector<std::string> params{SplitString(args.GetArg("-posparams", ""), ':')};
+        int32_t last_pow_block, first_posv2_block, min_stake_age;
+        if (params.size() != 3 || !ParseInt32(params[0], &last_pow_block) || !ParseInt32(params[1], &first_posv2_block) ||
+            !ParseInt32(params[2], &min_stake_age) || last_pow_block < 1 || first_posv2_block <= last_pow_block || min_stake_age < 1) {
+            throw std::runtime_error("PoS parameters malformed, expecting <lastpowblock>:<posv2height>:<stakeminage>");
+        }
+        LogPrintf("Setting PoS parameters to lastpowblock=%d, posv2height=%d, stakeminage=%d\n", last_pow_block, first_posv2_block, min_stake_age);
+        consensus.nLastPowBlock = last_pow_block;
+        nFirstPoSv2Block = first_posv2_block;
+        nStakeMinAge = min_stake_age;
+    }
+
+    for (const std::string& checkpoint : args.GetArgs("-checkpoint")) {
+        const std::vector<std::string> parts{SplitString(checkpoint, ':')};
+        int32_t height;
+        if (parts.size() != 2 || !ParseInt32(parts[0], &height) || height < 1 || !IsHex(parts[1]) || parts[1].size() != 64) {
+            throw std::runtime_error(strprintf("Invalid checkpoint (%s), expecting <height>:<hash>", checkpoint));
+        }
+        checkpointData.mapCheckpoints[height] = uint256S(parts[1]);
     }
 }
 
@@ -1590,6 +1621,8 @@ void SetupChainParamsOptions(ArgsManager& argsman)
 
     argsman.AddArg("-budgetparams=<masternode>:<budget>:<superblock>", "Override masternode, budget and superblock start heights (regtest-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
     argsman.AddArg("-dip3params=<activation>:<enforcement>", "Override DIP3 activation and enforcement heights (regtest-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
+    argsman.AddArg("-posparams=<lastpowblock>:<posv2height>:<stakeminage>", "Override the last proof-of-work height, the first PoSv2 height and the minimum stake age in seconds (regtest-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
+    argsman.AddArg("-checkpoint=<height>:<hash>", "Add a checkpoint. Can be specified multiple times (regtest-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
     argsman.AddArg("-highsubsidyblocks=<n>", "The number of blocks with a higher than normal subsidy to mine at the start of a chain. Block after that height will have fixed subsidy base. (default: 0, devnet-only)", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
     argsman.AddArg("-highsubsidyfactor=<n>", "The factor to multiply the normal block subsidy by while in the highsubsidyblocks window of a chain (default: 1, devnet-only)", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
     argsman.AddArg("-llmqchainlocks=<quorum name>", "Override the default LLMQ type used for ChainLocks. Allows using ChainLocks with smaller LLMQs. (default: llmq_devnet, devnet-only)", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
