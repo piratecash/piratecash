@@ -10,7 +10,7 @@ checkpoint; above it they wait until the tip gets close enough.
 """
 
 from test_framework.governance import EXPECTED_STDERR_NO_GOV_PRUNE
-from test_framework.messages import CBlockHeader, from_hex, msg_headers
+from test_framework.messages import CBlock, CBlockHeader, HeaderAndShortIDs, from_hex, msg_block, msg_cmpctblock, msg_headers
 from test_framework.p2p import P2PInterface
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import assert_equal, assert_greater_than, p2p_port
@@ -21,16 +21,27 @@ POS_BLOCKS = 60
 CHECKPOINT_HEIGHTS = [250, 320, 350]
 PRESYNC_RETRY_INTERVAL = 10 * 60
 MAX_POS_BLOCK_AHEAD_TIME = 180
+HEADERS_RESPONSE_TIME = 2 * 60
+# A plain headers message holds fewer headers than a compressed one.
+MAX_PLAIN_HEADERS = 2000
+LONG_CHAIN_HEIGHT = 2500
+LONG_CHAIN_LAST_POW_BLOCK = 5000
 
-STAKER, NO_CHECKPOINTS, CHECKPOINTS, PRUNED, WRONG_CHECKPOINT, P2P_TARGET = range(6)
+STAKER, NO_CHECKPOINTS, CHECKPOINTS, PRUNED, WRONG_CHECKPOINT, P2P_TARGET, LONG_CHAIN_MINER, LONG_CHAIN_TARGET = range(8)
 
 
 class HeadersPeer(P2PInterface):
-    """Answers getheaders from a fixed list of headers."""
+    """Answers getheaders from a fixed list of headers, in plain headers messages.
 
-    def __init__(self, headers):
+    after_first_batch tells what follows the first message with headers:
+    None - further batches, "silent" - no answer, "empty" - a message without headers.
+    """
+
+    def __init__(self, headers, after_first_batch=None):
         super().__init__()
         self.headers = headers
+        self.after_first_batch = after_first_batch
+        self.batches_sent = 0
         for header in headers:
             header.rehash()
 
@@ -41,16 +52,40 @@ class HeadersPeer(P2PInterface):
             if block_hash in known:
                 start = known[block_hash] + 1
                 break
-        self.send_message(msg_headers(self.headers[start:]))
+        if self.batches_sent > 0 and self.after_first_batch == "silent":
+            return
+        if self.batches_sent > 0 and self.after_first_batch == "empty":
+            self.send_message(msg_headers([]))
+            return
+        self.batches_sent += 1
+        self.send_message(msg_headers(self.headers[start:start + MAX_PLAIN_HEADERS]))
 
     # The node asks for compressed headers; plain ones are an equally valid answer.
     on_getheaders2 = on_getheaders
 
 
+class BlockPeer(P2PInterface):
+    """Holds one block; serves its header only once told to."""
+
+    def __init__(self, block):
+        super().__init__()
+        self.block = block
+        self.serve_headers = False
+
+    def on_getheaders(self, message):
+        if self.serve_headers:
+            self.send_message(msg_headers([CBlockHeader(self.block)]))
+
+    on_getheaders2 = on_getheaders
+
+    def on_getdata(self, message):
+        self.send_message(msg_block(self.block))
+
+
 class PosHeaderSyncTest(BitcoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
-        self.num_nodes = 6
+        self.num_nodes = 8
         self.common_args = [f"-posparams={LAST_POW_BLOCK}:{LAST_POW_BLOCK + 1}:{STAKE_MIN_AGE}", "-stakeautocombine=0", "-staking=0"]
         self.extra_args = [self.common_args] * self.num_nodes
 
@@ -182,6 +217,77 @@ class PosHeaderSyncTest(BitcoinTestFramework):
         assert_equal(self.log_count(CHECKPOINTS, "Misbehaving"), 0)
         node.setmocktime(self.mocktime)
 
+    def test_compact_block_announced_too_early(self):
+        self.log.info("So is a block announced too early as a compact block")
+        node = self.nodes[CHECKPOINTS]
+        old_tip = node.getbestblockhash()
+        node.setnetworkactive(False)
+        self.stake(1)
+        new_tip = self.nodes[STAKER].getbestblockhash()
+        block = from_hex(CBlock(), self.nodes[STAKER].getblock(new_tip, 0))
+        block.rehash()
+
+        node.setmocktime(block.nTime - MAX_POS_BLOCK_AHEAD_TIME - 20)
+        node.setnetworkactive(True)
+        peer = node.add_p2p_connection(BlockPeer(block))
+        compact_block = HeaderAndShortIDs()
+        compact_block.initialize_from_block(block, prefill_list=list(range(len(block.vtx))))
+        with node.assert_debug_log(["time-too-new"], timeout=30):
+            peer.send_message(msg_cmpctblock(compact_block.to_p2p()))
+        assert_equal(node.getbestblockhash(), old_tip)
+
+        peer.serve_headers = True
+        with node.assert_debug_log(["again for a header that was too new"], timeout=30):
+            node.setmocktime(block.nTime - MAX_POS_BLOCK_AHEAD_TIME + 5)
+        self.wait_for_tip(CHECKPOINTS, new_tip)
+        assert_equal(self.log_count(CHECKPOINTS, "Misbehaving"), 0)
+        node.setmocktime(self.mocktime)
+
+    def test_long_segment(self):
+        self.log.info("Mine a chain that does not fit one headers message")
+        long_chain_args = [f"-posparams={LONG_CHAIN_LAST_POW_BLOCK}:{LONG_CHAIN_LAST_POW_BLOCK + 1}:{STAKE_MIN_AGE}", "-staking=0"]
+        miner = self.nodes[LONG_CHAIN_MINER]
+        miner.mocktime = self.mocktime
+        self.restart_node(LONG_CHAIN_MINER, extra_args=long_chain_args)
+        address = self.staker.getnewaddress()
+        for _ in range(LONG_CHAIN_HEIGHT // 100):
+            # Blocks mined in one second run ahead of the clock.
+            self.bump_mocktime(120, nodes=self.running_nodes())
+            self.generatetoaddress(miner, 100, address, sync_fun=self.no_op)
+        headers = [from_hex(CBlockHeader(), miner.getblockheader(miner.getblockhash(height), False))
+                   for height in range(1, LONG_CHAIN_HEIGHT + 1)]
+        checkpoint = [f"-checkpoint={LONG_CHAIN_HEIGHT}:{miner.getblockhash(LONG_CHAIN_HEIGHT)}"]
+        self.stop_node(LONG_CHAIN_MINER)
+
+        node = self.nodes[LONG_CHAIN_TARGET]
+        node.mocktime = self.mocktime
+        self.restart_node(LONG_CHAIN_TARGET, extra_args=long_chain_args + checkpoint)
+
+        self.log.info("A peer that goes silent in the middle of a segment loses the role after a timeout")
+        peer = node.add_p2p_connection(HeadersPeer(headers, after_first_batch="silent"))
+        peer.wait_until(lambda: peer.batches_sent == 1)
+        peer.sync_with_ping()
+        with node.assert_debug_log(["Timeout downloading headers below a checkpoint"], timeout=30):
+            self.bump_mocktime(2 * HEADERS_RESPONSE_TIME + 1, nodes=[node])
+        assert_equal(node.getblockchaininfo()["headers"], 0)
+        peer.peer_disconnect()
+        peer.wait_for_disconnect()
+
+        self.log.info("A peer that has no more headers in the middle of a segment loses it at once")
+        with node.assert_debug_log(["ends below a checkpoint, trying another peer"], timeout=30):
+            peer = node.add_p2p_connection(HeadersPeer(headers, after_first_batch="empty"))
+        assert_equal(node.getblockchaininfo()["headers"], 0)
+        peer.peer_disconnect()
+        peer.wait_for_disconnect()
+
+        self.log.info("A full message of plain headers from a peer asked for compressed ones is not the end of its chain")
+        unusable = self.log_count(LONG_CHAIN_TARGET, "ends below a checkpoint")
+        node.add_p2p_connection(HeadersPeer(headers))
+        self.wait_until(lambda: node.getblockchaininfo()["headers"] == LONG_CHAIN_HEIGHT)
+        assert_equal(self.log_count(LONG_CHAIN_TARGET, "ends below a checkpoint"), unusable)
+        assert_equal(self.log_count(LONG_CHAIN_TARGET, "Misbehaving"), 0)
+        self.stop_node(LONG_CHAIN_TARGET)
+
     def chain_headers(self):
         node = self.nodes[STAKER]
         return [from_hex(CBlockHeader(), node.getblockheader(node.getblockhash(height), False))
@@ -246,6 +352,8 @@ class PosHeaderSyncTest(BitcoinTestFramework):
         self.test_reorg()
         self.test_catch_up()
         self.test_block_announced_too_early()
+        self.test_compact_block_announced_too_early()
+        self.test_long_segment()
         self.stop_node(PRUNED, expected_stderr=EXPECTED_STDERR_NO_GOV_PRUNE)
 
 
