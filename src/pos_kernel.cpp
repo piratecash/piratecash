@@ -643,7 +643,7 @@ bool LoadSpentCoins(const CBlockIndex& block_index, const Consensus::Params& con
     if (undo.vtxundo.size() + 1 != block.vtx.size()) return false;
     size_t input_count{0};
     for (const CTxUndo& tx_undo : undo.vtxundo) input_count += tx_undo.vprevout.size();
-    if (input_count > MAX_SPENT_COINS_PER_BLOCK || g_spent_coins_total + input_count > MAX_SPENT_COINS_TOTAL) return false;
+    if (input_count > MAX_SPENT_COINS_PER_BLOCK) return false;
 
     for (size_t i = 1; i < block.vtx.size(); ++i) {
         const auto& inputs{block.vtx[i]->vin};
@@ -674,6 +674,13 @@ const SpentCoins* ReadSpentCoins(const CBlockIndex& block_index, const Consensus
         SpentCoins spent{block_index.GetBlockHash(), false, {}};
         spent.usable = LoadSpentCoins(block_index, consensus, spent);
         if (!spent.usable) spent.coins.clear();
+        // Blocks near the tip are needed by every lookup, so room is made at the deep end.
+        // Running out of room is not remembered: it passes as the tip moves on.
+        for (auto deep = g_spent_coins.begin(); deep != g_spent_coins.end() && deep->first < block_index.nHeight &&
+                                                g_spent_coins_total + spent.coins.size() > MAX_SPENT_COINS_TOTAL;) {
+            deep = forget(deep);
+        }
+        if (g_spent_coins_total + spent.coins.size() > MAX_SPENT_COINS_TOTAL) return nullptr;
         g_spent_coins_total += spent.coins.size();
         it = g_spent_coins.emplace(block_index.nHeight, std::move(spent)).first;
     }
