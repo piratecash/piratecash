@@ -3054,6 +3054,10 @@ Proces migracji utworzy kopię zapasową portfela przed migracją. Plik kopii za
         <source>Unknown. Syncing Headers (%1, %2%)…</source>
         <translation>Nieznany. Synchronizowanie Nagłówków (%1, %2%)...</translation>
     </message>
+    <message>
+        <source>Syncing Headers (%1, %2%)…</source>
+        <translation>Synchronizowanie Nagłówków (%1, %2%)...</translation>
+    </message>
 </context>
 <context>
     <name>NetworkWidget</name>

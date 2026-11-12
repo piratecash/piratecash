@@ -3054,6 +3054,10 @@ The migration process will create a backup of the wallet before migrating. This 
         <source>Unknown. Syncing Headers (%1, %2%)…</source>
         <translation>不明。ヘッダー(%1、%2%)を同期中...</translation>
     </message>
+    <message>
+        <source>Syncing Headers (%1, %2%)…</source>
+        <translation>ヘッダー(%1、%2%)を同期中...</translation>
+    </message>
 </context>
 <context>
     <name>NetworkWidget</name>

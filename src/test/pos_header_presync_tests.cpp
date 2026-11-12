@@ -13,6 +13,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <limits>
 #include <vector>
 
 using pos_presync::AddResult;
@@ -79,6 +80,27 @@ BOOST_AUTO_TEST_CASE(anchor_lookup)
     BOOST_CHECK(!pos_presync::NextAnchor(anchors, 20));
     BOOST_CHECK(pos_presync::LastAnchor(anchors)->hash == uint256S("02"));
     BOOST_CHECK(!pos_presync::LastAnchor(MapCheckpoints{}));
+}
+
+BOOST_AUTO_TEST_CASE(chain_height_is_estimated_from_the_last_anchor)
+{
+    const MapCheckpoints anchors{{100, uint256S("01")}, {200, uint256S("02")}};
+    const int64_t anchor_time{1000};
+
+    BOOST_CHECK_EQUAL(*pos_presync::EstimatedChainHeight(anchors, anchor_time, 0, anchor_time + 1200, 120), 210);
+    BOOST_CHECK_EQUAL(*pos_presync::EstimatedChainHeight(anchors, anchor_time, 199, anchor_time + 119, 120), 200);
+    // A clock behind the anchor never puts the chain below it.
+    BOOST_CHECK_EQUAL(*pos_presync::EstimatedChainHeight(anchors, anchor_time, 100, anchor_time - 5000, 120), 200);
+
+    // A clock far in the future does not overflow.
+    BOOST_CHECK_EQUAL(*pos_presync::EstimatedChainHeight(anchors, anchor_time, 0, std::numeric_limits<int64_t>::max(), 1), std::numeric_limits<int>::max());
+
+    // Headers at or above the last anchor, no anchors, no anchor time, no spacing.
+    BOOST_CHECK(!pos_presync::EstimatedChainHeight(anchors, anchor_time, 200, anchor_time + 1200, 120));
+    BOOST_CHECK(!pos_presync::EstimatedChainHeight(anchors, anchor_time, 300, anchor_time + 1200, 120));
+    BOOST_CHECK(!pos_presync::EstimatedChainHeight(MapCheckpoints{}, anchor_time, 0, anchor_time + 1200, 120));
+    BOOST_CHECK(!pos_presync::EstimatedChainHeight(anchors, 0, 0, anchor_time + 1200, 120));
+    BOOST_CHECK(!pos_presync::EstimatedChainHeight(anchors, anchor_time, 0, anchor_time + 1200, 0));
 }
 
 BOOST_AUTO_TEST_CASE(segment_is_handed_over_only_on_anchor_match)

@@ -3054,6 +3054,10 @@ Il processo di migrazione creerà un backup del portafoglio prima di migrare. Qu
         <source>Unknown. Syncing Headers (%1, %2%)…</source>
         <translation>Sconosciuto. Sincronizzazione intestazioni (%1, %2%)...</translation>
     </message>
+    <message>
+        <source>Syncing Headers (%1, %2%)…</source>
+        <translation>Sincronizzazione intestazioni (%1, %2%)...</translation>
+    </message>
 </context>
 <context>
     <name>NetworkWidget</name>

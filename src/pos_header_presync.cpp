@@ -16,6 +16,7 @@
 
 #include <algorithm>
 #include <atomic>
+#include <limits>
 #include <unordered_set>
 
 namespace pos_presync {
@@ -50,6 +51,15 @@ std::optional<Anchor> LastAnchor(const MapCheckpoints& anchors)
 {
     if (anchors.empty()) return std::nullopt;
     return Anchor{anchors.rbegin()->first, anchors.rbegin()->second};
+}
+
+std::optional<int> EstimatedChainHeight(const MapCheckpoints& anchors, int64_t last_anchor_time, int best_header_height,
+                                        int64_t now, int64_t block_spacing)
+{
+    const auto last{LastAnchor(anchors)};
+    if (!last || best_header_height >= last->height || last_anchor_time <= 0 || block_spacing <= 0) return std::nullopt;
+    const int64_t blocks_since{std::max<int64_t>(0, now - last_anchor_time) / block_spacing};
+    return static_cast<int>(std::min<int64_t>(last->height + blocks_since, std::numeric_limits<int>::max()));
 }
 
 SegmentCollector::SegmentCollector(const MapCheckpoints& anchors, size_t max_bytes)
