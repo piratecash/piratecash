@@ -9,6 +9,8 @@
 #include <QPropertyAnimation>
 #include <QWidget>
 
+#include <optional>
+
 //! The required delta of headers to the estimated number of available headers until we show the IBD progress
 static constexpr int HEADER_HEIGHT_DELTA_SYNC = 24;
 
@@ -45,12 +47,14 @@ private:
     Ui::ModalOverlay *ui;
     int bestHeaderHeight{0}; // best known height (based on the headers)
     QDateTime bestHeaderDate;
+    int m_tip_height{0};
     QVector<QPair<qint64, double> > blockProcessTime;
     bool layerIsVisible{false};
     bool userClosed{false};
     bool foreverHidden{false};
     QPropertyAnimation m_animation;
     void UpdateHeaderSyncLabel();
+    std::optional<int> EstimatedChainHeight() const;
 };
 
 #endif // BITCOIN_QT_MODALOVERLAY_H
