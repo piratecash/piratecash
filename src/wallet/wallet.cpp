@@ -2529,7 +2529,7 @@ bool CWallet::MintableCoins()
 
         const CWalletTx* wtx = GetWalletTx(output.outpoint.hash);
         if (!wtx) continue;
-        const int min_depth = wtx->IsCoinBase() ? COINBASE_MATURITY : 10;
+        const int min_depth = wtx->IsCoinBase() ? STAKE_COINBASE_MIN_DEPTH : 10;
         if (output.depth >= min_depth) return true;
     }
     return false;
