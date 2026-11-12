@@ -37,7 +37,7 @@ from test_framework.blocktools import (
 from test_framework.governance import EXPECTED_STDERR_NO_GOV_PRUNE
 from test_framework.messages import (
     CBlockHeader,
-    dashhash,
+    block_header_hash,
     from_hex,
     msg_block,
 )
@@ -591,7 +591,8 @@ class BlockchainTest(BitcoinTestFramework):
 
         def assert_hexblock_hashes(verbosity):
             block = node.getblock(blockhash, verbosity)
-            assert_equal(blockhash, dashhash(bytes.fromhex(block[:160]))[::-1].hex())
+            header = bytes.fromhex(block[:160])
+            assert_equal(blockhash, block_header_hash(header, int.from_bytes(header[:4], 'little', signed=True))[::-1].hex())
 
         def assert_fee_not_in_block(verbosity):
             block = node.getblock(blockhash, verbosity)

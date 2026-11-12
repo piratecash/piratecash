@@ -102,42 +102,42 @@ BASE_SCRIPTS = [
     'feature_llmq_data_recovery.py',
     # vv Tests less than 5m vv
     'feature_fee_estimation.py',
-    'feature_block.py', # NOTE: needs dash_hash to pass
+    'feature_block.py',
     # vv Tests less than 2m vv
     'mining_getblocktemplate_longpoll.py', # FIXME: "socket.error: [Errno 54] Connection reset by peer" on my Mac, same as https://github.com/bitcoin/bitcoin/issues/6651
     'feature_maxuploadtarget.py',
     'mempool_updatefromblock.py',
     'mempool_persist.py --descriptors',
     'p2p_quorum_data.py',
-    'feature_llmq_simplepose.py', # NOTE: needs dash_hash to pass
+    'feature_llmq_simplepose.py',
     'p2p_instantsend.py',
     'feature_protx_version.py',
-    'feature_asset_locks.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_signing.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_is_retroactive.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_chainlocks.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_chainlocks_automatic.py', # NOTE: needs dash_hash to pass
+    'feature_asset_locks.py',
+    'feature_llmq_signing.py',
+    'feature_llmq_is_retroactive.py',
+    'feature_llmq_chainlocks.py',
+    'feature_llmq_chainlocks_automatic.py',
     'feature_quorum_proof_chain.py',
     'feature_masternode_payout_shares.py',
     'feature_masternode_shares.py',
-    'feature_llmq_signing.py --spork21', # NOTE: needs dash_hash to pass
-    'feature_llmq_simplepose.py --disable-spork23', # NOTE: needs dash_hash to pass
-    'feature_llmq_rotation.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_evo.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_dkgerrors.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_dkg_intake.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_singlenode.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_connections.py', # NOTE: needs dash_hash to pass
-    'feature_llmq_is_cl_conflicts.py', # NOTE: needs dash_hash to pass
-    'feature_dip4_coinbasemerkleroots.py', # NOTE: needs dash_hash to pass
-    'feature_mnehf.py', # NOTE: needs dash_hash to pass
-    'feature_evo_shares_activation.py', # NOTE: needs dash_hash to pass
-    'feature_masternode_params.py', # NOTE: needs dash_hash to pass
-    'feature_masternode_params_devnet.py', # NOTE: needs dash_hash to pass
+    'feature_llmq_signing.py --spork21',
+    'feature_llmq_simplepose.py --disable-spork23',
+    'feature_llmq_rotation.py',
+    'feature_llmq_evo.py',
+    'feature_llmq_dkgerrors.py',
+    'feature_llmq_dkg_intake.py',
+    'feature_llmq_singlenode.py',
+    'feature_llmq_connections.py',
+    'feature_llmq_is_cl_conflicts.py',
+    'feature_dip4_coinbasemerkleroots.py',
+    'feature_mnehf.py',
+    'feature_evo_shares_activation.py',
+    'feature_masternode_params.py',
+    'feature_masternode_params_devnet.py',
     'feature_governance.py --descriptors',
     'feature_governance_cl.py --descriptors',
     'rpc_verifyislock.py',
-    'feature_dip3_deterministicmns.py --descriptors', # NOTE: needs dash_hash to pass
+    'feature_dip3_deterministicmns.py --descriptors',
     'feature_notifications.py',
     # vv Tests less than 60s vv
     'rpc_psbt.py --legacy-wallet',
@@ -171,9 +171,9 @@ BASE_SCRIPTS = [
     'rpc_bind.py --ipv6',
     'rpc_bind.py --nonloopback',
     'feature_csv_activation.py',
-    'p2p_platform_ban.py', # NOTE: needs dash_hash to pass
-    'p2p_sendheaders.py', # NOTE: needs dash_hash to pass
-    'p2p_sendheaders_compressed.py', # NOTE: needs dash_hash to pass
+    'p2p_platform_ban.py',
+    'p2p_sendheaders.py',
+    'p2p_sendheaders_compressed.py',
     'wallet_listtransactions.py --legacy-wallet',
     'wallet_listtransactions.py --descriptors',
     # vv Tests less than 30s vv
@@ -339,7 +339,7 @@ BASE_SCRIPTS = [
     'wallet_listdescriptors.py --descriptors',
     'p2p_leak.py',
     'p2p_compactblocks_blocksonly.py',
-    'p2p_mutated_blocks.py', # NOTE: needs dash_hash to pass
+    'p2p_mutated_blocks.py',
     'p2p_connect_to_devnet.py',
     'feature_governance_txindex_devnet.py',
     'feature_sporks.py',
@@ -363,7 +363,7 @@ BASE_SCRIPTS = [
     'rpc_dumptxoutset.py',
     'feature_minchainwork.py',
     'rpc_estimatefee.py',
-    'p2p_unrequested_blocks.py', # NOTE: needs dash_hash to pass
+    'p2p_unrequested_blocks.py',
     'feature_shutdown.py',
     'p2p_ibd_txrelay.py',
     'rpc_coinjoin.py',

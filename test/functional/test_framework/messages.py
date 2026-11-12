@@ -30,8 +30,6 @@ import unittest
 from test_framework.crypto.siphash import siphash256
 from test_framework.util import assert_equal
 
-import dash_hash # type: ignore[import]
-
 MAX_LOCATOR_SZ = 101
 MAX_BASE_BLOCK_HASHES = 4096
 MAX_BLOCK_SIZE = 2000000
@@ -76,10 +74,10 @@ MAX_OP_RETURN_RELAY = 83
 DEFAULT_MEMPOOL_EXPIRY_HOURS = 336  # hours
 
 MAGIC_BYTES = {
-    "mainnet": b"\xbf\x0c\x6b\xbd",   # mainnet
-    "testnet3": b"\xce\xe2\xca\xff",  # testnet3
-    "regtest": b"\xfc\xc1\xb7\xdc",   # regtest
-    "devnet": b"\xe2\xca\xff\xce",    # devnet
+    "mainnet": b"pump",   # mainnet
+    "testnet3": b"pira",  # testnet3
+    "regtest": b"PREG",   # regtest
+    "devnet": b"PDEV",    # devnet
 }
 
 def sha256(s):
@@ -93,8 +91,11 @@ def sha3(s):
 def hash256(s):
     return sha256(sha256(s))
 
-def dashhash(s):
-    return dash_hash.getPoWHash(s)
+def block_header_hash(s, version):
+    """Block hash of a serialized header: scrypt of the 80 bytes below version 4, double SHA256 from there on."""
+    if version < 4:
+        return hashlib.scrypt(s[:80], salt=s[:80], n=1024, r=1, p=1, dklen=32)
+    return hash256(s)
 
 def ser_compact_size(l):
     r = b""
@@ -531,12 +532,13 @@ class CTxOut:
 
 class CTransaction:
     __slots__ = ("hash", "nLockTime", "nVersion", "sha256", "vin", "vout",
-                 "nType", "vExtraPayload")
+                 "nType", "vExtraPayload", "nTime")
 
     def __init__(self, tx=None):
         if tx is None:
             self.nVersion = 2
             self.nType = 0
+            self.nTime = 0
             self.vin = []
             self.vout = []
             self.nLockTime = 0
@@ -546,6 +548,7 @@ class CTransaction:
         else:
             self.nVersion = tx.nVersion
             self.nType = tx.nType
+            self.nTime = tx.nTime
             self.vin = copy.deepcopy(tx.vin)
             self.vout = copy.deepcopy(tx.vout)
             self.nLockTime = tx.nLockTime
@@ -557,6 +560,8 @@ class CTransaction:
         ver32bit = struct.unpack("<i", f.read(4))[0]
         self.nVersion = ver32bit & 0xffff
         self.nType = (ver32bit >> 16) & 0xffff
+        # Only transactions of version 1 and 2 carry a timestamp.
+        self.nTime = struct.unpack("<I", f.read(4))[0] if self.nVersion in (1, 2) else 0
         self.vin = deser_vector(f, CTxIn)
         self.vout = deser_vector(f, CTxOut)
         self.nLockTime = struct.unpack("<I", f.read(4))[0]
@@ -569,6 +574,8 @@ class CTransaction:
         r = b""
         ver32bit = int(self.nVersion | (self.nType << 16))
         r += struct.pack("<i", ver32bit)
+        if self.nVersion in (1, 2):
+            r += struct.pack("<I", self.nTime)
         r += ser_vector(self.vin)
         r += ser_vector(self.vout)
         r += struct.pack("<I", self.nLockTime)
@@ -609,7 +616,11 @@ class CTransaction:
 
 class CBlockHeader:
     __slots__ = ("hash", "hashMerkleRoot", "hashPrevBlock", "nBits", "nNonce",
-                 "nTime", "nVersion", "sha256")
+                 "nTime", "nVersion", "sha256",
+                 "posStakeHash", "posStakeN", "posBlockSig", "nFlags")
+
+    POS_BIT = 0x10000000
+    POSV2_BITS = POS_BIT | 0x08000000
 
     def __init__(self, header=None):
         if header is None:
@@ -621,6 +632,10 @@ class CBlockHeader:
             self.nTime = header.nTime
             self.nBits = header.nBits
             self.nNonce = header.nNonce
+            self.posStakeHash = header.posStakeHash
+            self.posStakeN = header.posStakeN
+            self.posBlockSig = header.posBlockSig
+            self.nFlags = header.nFlags
             self.sha256 = header.sha256
             self.hash = header.hash
             self.calc_sha256()
@@ -632,20 +647,37 @@ class CBlockHeader:
         self.nTime = 0
         self.nBits = 0
         self.nNonce = 0
+        self.posStakeHash = 0
+        self.posStakeN = 0
+        self.posBlockSig = b""
+        self.nFlags = 0
         self.sha256 = None
         self.hash = None
 
-    def deserialize(self, f):
+    def is_pos_v2(self):
+        return (self.nVersion & self.POSV2_BITS) == self.POSV2_BITS
+
+    # P2P messages carry the header with a trailing nFlags word (with_flags=True);
+    # RPC and the short id key use the plain form.
+    def deserialize(self, f, with_flags=False):
         self.nVersion = struct.unpack("<i", f.read(4))[0]
         self.hashPrevBlock = deser_uint256(f)
         self.hashMerkleRoot = deser_uint256(f)
         self.nTime = struct.unpack("<I", f.read(4))[0]
         self.nBits = struct.unpack("<I", f.read(4))[0]
         self.nNonce = struct.unpack("<I", f.read(4))[0]
+        self.posStakeHash = 0
+        self.posStakeN = 0
+        self.posBlockSig = b""
+        if self.is_pos_v2():
+            self.posStakeHash = deser_uint256(f)
+            self.posStakeN = struct.unpack("<I", f.read(4))[0]
+            self.posBlockSig = deser_string(f)
+        self.nFlags = struct.unpack("<I", f.read(4))[0] if with_flags else 0
         self.sha256 = None
         self.hash = None
 
-    def serialize(self):
+    def serialize_for_hash(self):
         r = b""
         r += struct.pack("<i", self.nVersion)
         r += ser_uint256(self.hashPrevBlock)
@@ -653,19 +685,24 @@ class CBlockHeader:
         r += struct.pack("<I", self.nTime)
         r += struct.pack("<I", self.nBits)
         r += struct.pack("<I", self.nNonce)
+        if self.is_pos_v2():
+            r += ser_uint256(self.posStakeHash)
+            r += struct.pack("<I", self.posStakeN)
+        return r
+
+    def serialize(self, with_flags=False):
+        r = self.serialize_for_hash()
+        if self.is_pos_v2():
+            r += ser_string(self.posBlockSig)
+        if with_flags:
+            r += struct.pack("<I", self.nFlags)
         return r
 
     def calc_sha256(self):
         if self.sha256 is None:
-            r = b""
-            r += struct.pack("<i", self.nVersion)
-            r += ser_uint256(self.hashPrevBlock)
-            r += ser_uint256(self.hashMerkleRoot)
-            r += struct.pack("<I", self.nTime)
-            r += struct.pack("<I", self.nBits)
-            r += struct.pack("<I", self.nNonce)
-            self.sha256 = uint256_from_str(dashhash(r))
-            self.hash = dashhash(r)[::-1].hex()
+            h = block_header_hash(self.serialize_for_hash(), self.nVersion)
+            self.sha256 = uint256_from_str(h)
+            self.hash = h[::-1].hex()
 
     def rehash(self):
         self.sha256 = None
@@ -681,20 +718,25 @@ BLOCK_HEADER_SIZE = len(CBlockHeader().serialize())
 assert_equal(BLOCK_HEADER_SIZE, 80)
 
 class CBlock(CBlockHeader):
-    __slots__ = ("vtx",)
+    __slots__ = ("vtx", "oldVchBlockSig")
 
     def __init__(self, header=None):
         super().__init__(header)
         self.vtx = []
+        self.oldVchBlockSig = b""
 
-    def deserialize(self, f):
-        super().deserialize(f)
+    def deserialize(self, f, with_flags=False):
+        super().deserialize(f, with_flags)
         self.vtx = deser_vector(f, CTransaction)
+        # Blocks older than PoSv2 keep the signature after the transactions.
+        self.oldVchBlockSig = b"" if self.is_pos_v2() else deser_string(f)
 
-    def serialize(self):
+    def serialize(self, with_flags=False):
         r = b""
-        r += super().serialize()
+        r += super().serialize(with_flags)
         r += ser_vector(self.vtx)
+        if not self.is_pos_v2():
+            r += ser_string(self.oldVchBlockSig)
         return r
 
     # Calculate the merkle root given a vector of transaction hashes
@@ -748,7 +790,7 @@ class CBlock(CBlockHeader):
 
 class CompressibleBlockHeader:
     __slots__ = ("bitfield", "timeOffset", "nVersion", "hashPrevBlock", "hashMerkleRoot", "nTime", "nBits", "nNonce",
-                 "hash", "sha256")
+                 "hash", "sha256", "posStakeHash", "posStakeN", "posBlockSig")
 
     FLAG_VERSION_BIT_0 = 1 << 0
     FLAG_VERSION_BIT_1 = 1 << 1
@@ -756,6 +798,7 @@ class CompressibleBlockHeader:
     FLAG_PREV_BLOCK_HASH = 1 << 3
     FLAG_TIMESTAMP = 1 << 4
     FLAG_NBITS = 1 << 5
+    FLAG_PROOF_OF_STAKE = 1 << 6
 
     BITMASK_VERSION = FLAG_VERSION_BIT_0 | FLAG_VERSION_BIT_1 | FLAG_VERSION_BIT_2
 
@@ -771,6 +814,11 @@ class CompressibleBlockHeader:
             self.nTime = header.nTime
             self.nBits = header.nBits
             self.nNonce = header.nNonce
+            self.posStakeHash = header.posStakeHash
+            self.posStakeN = header.posStakeN
+            self.posBlockSig = header.posBlockSig
+            if (header.nFlags & 1) or (header.nVersion & CBlockHeader.POS_BIT):
+                self.bitfield |= self.FLAG_PROOF_OF_STAKE
             self.hash = None
             self.sha256 = None
             self.calc_sha256()
@@ -784,6 +832,9 @@ class CompressibleBlockHeader:
         self.nTime = 0
         self.nBits = 0
         self.nNonce = 0
+        self.posStakeHash = 0
+        self.posStakeN = 0
+        self.posBlockSig = b""
         self.hash = None
         self.sha256 = None
 
@@ -801,6 +852,10 @@ class CompressibleBlockHeader:
         if self.bitfield & self.FLAG_NBITS:
             self.nBits = struct.unpack("<I", f.read(4))[0]
         self.nNonce = struct.unpack("<I", f.read(4))[0]
+        if self.bitfield & self.FLAG_PROOF_OF_STAKE:
+            self.posStakeHash = deser_uint256(f)
+            self.posStakeN = struct.unpack("<I", f.read(4))[0]
+            self.posBlockSig = deser_string(f)
         self.rehash()
 
     def serialize(self):
@@ -815,6 +870,10 @@ class CompressibleBlockHeader:
         if self.bitfield & self.FLAG_NBITS:
             r += struct.pack("<I", self.nBits)
         r += struct.pack("<I", self.nNonce)
+        if self.bitfield & self.FLAG_PROOF_OF_STAKE:
+            r += ser_uint256(self.posStakeHash)
+            r += struct.pack("<I", self.posStakeN)
+            r += ser_string(self.posBlockSig)
         return r
 
     def calc_sha256(self):
@@ -826,8 +885,12 @@ class CompressibleBlockHeader:
             r += struct.pack("<I", self.nTime)
             r += struct.pack("<I", self.nBits)
             r += struct.pack("<I", self.nNonce)
-            self.sha256 = uint256_from_str(dashhash(r))
-            self.hash = int(dashhash(r)[::-1].hex(), 16)
+            if (self.nVersion & CBlockHeader.POSV2_BITS) == CBlockHeader.POSV2_BITS:
+                r += ser_uint256(self.posStakeHash)
+                r += struct.pack("<I", self.posStakeN)
+            h = block_header_hash(r, self.nVersion)
+            self.sha256 = uint256_from_str(h)
+            self.hash = int(h[::-1].hex(), 16)
 
     def rehash(self):
         self.sha256 = None
@@ -952,7 +1015,7 @@ class P2PHeaderAndShortIDs:
         self.prefilled_txn = []
 
     def deserialize(self, f):
-        self.header.deserialize(f)
+        self.header.deserialize(f, with_flags=True)
         self.nonce = struct.unpack("<Q", f.read(8))[0]
         self.shortids_length = deser_compact_size(f)
         for _ in range(self.shortids_length):
@@ -964,7 +1027,7 @@ class P2PHeaderAndShortIDs:
 
     def serialize(self):
         r = b""
-        r += self.header.serialize()
+        r += self.header.serialize(with_flags=True)
         r += struct.pack("<Q", self.nonce)
         r += ser_compact_size(self.shortids_length)
         for x in self.shortids:
@@ -1141,13 +1204,13 @@ class CMerkleBlock:
         else:
             self.txn = txn
 
-    def deserialize(self, f):
-        self.header.deserialize(f)
+    def deserialize(self, f, with_flags=False):
+        self.header.deserialize(f, with_flags)
         self.txn.deserialize(f)
 
-    def serialize(self):
+    def serialize(self, with_flags=False):
         r = b""
-        r += self.header.serialize()
+        r += self.header.serialize(with_flags)
         r += self.txn.serialize()
         return r
 
@@ -1908,10 +1971,10 @@ class msg_block:
             self.block = block
 
     def deserialize(self, f):
-        self.block.deserialize(f)
+        self.block.deserialize(f, with_flags=True)
 
     def serialize(self):
-        return self.block.serialize()
+        return self.block.serialize(with_flags=True)
 
     def __repr__(self):
         return "msg_block(block=%s)" % (repr(self.block))
@@ -2118,13 +2181,16 @@ class msg_headers:
 
     def deserialize(self, f):
         # comment in piratecashd indicates these should be deserialized as blocks
-        blocks = deser_vector(f, CBlock)
-        for x in blocks:
-            self.headers.append(CBlockHeader(x))
+        for _ in range(deser_compact_size(f)):
+            block = CBlock()
+            block.deserialize(f, with_flags=True)
+            self.headers.append(CBlockHeader(block))
 
     def serialize(self):
-        blocks = [CBlock(x) for x in self.headers]
-        return ser_vector(blocks)
+        r = ser_compact_size(len(self.headers))
+        for x in self.headers:
+            r += CBlock(x).serialize(with_flags=True)
+        return r
 
     def __repr__(self):
         return "msg_headers(headers=%s)" % repr(self.headers)
@@ -2165,10 +2231,10 @@ class msg_merkleblock:
             self.merkleblock = merkleblock
 
     def deserialize(self, f):
-        self.merkleblock.deserialize(f)
+        self.merkleblock.deserialize(f, with_flags=True)
 
     def serialize(self):
-        return self.merkleblock.serialize()
+        return self.merkleblock.serialize(with_flags=True)
 
     def __repr__(self):
         return "msg_merkleblock(merkleblock=%s)" % (repr(self.merkleblock))

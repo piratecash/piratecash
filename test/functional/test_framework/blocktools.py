@@ -36,7 +36,7 @@ from .util import assert_equal
 MAX_BLOCK_SIGOPS = 40000
 
 # Genesis block time (regtest)
-TIME_GENESIS_BLOCK = 1417713337
+TIME_GENESIS_BLOCK = 1663759763
 
 MAX_FUTURE_BLOCK_TIME = 2 * 60 * 60
 
