@@ -3557,13 +3557,15 @@ bool PeerManagerImpl::ProcessPresyncHeaders(CNode& pfrom, Peer& peer, const std:
     case pos_presync::AddResult::WRONG_PEER:
     case pos_presync::AddResult::NOT_CONTINUING:
         return true;
+    // A punished peer keeps the headers sync role until it is disconnected or times out:
+    // handing the role back at once would have a peer that cannot be banned asked again in a loop.
     case pos_presync::AddResult::NON_CONTINUOUS:
         Misbehaving(peer, 20, "non-continuous headers sequence");
-        AbandonPresyncPeer(id, /*disconnect=*/false);
+        m_pos_segments.Reset();
         return true;
     case pos_presync::AddResult::ANCHOR_MISMATCH:
         Misbehaving(peer, 100, "headers do not match a checkpoint");
-        AbandonPresyncPeer(id, /*disconnect=*/false);
+        m_pos_segments.Reset();
         return true;
     case pos_presync::AddResult::BAD_SIGNATURE:
     case pos_presync::AddResult::TOO_LARGE:
