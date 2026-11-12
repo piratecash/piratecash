@@ -690,7 +690,8 @@ const SpentCoins* ReadSpentCoins(const CBlockIndex& block_index, const Consensus
         // Running out of room is remembered only until the tip moves on.
         for (auto deep = g_spent_coins.begin(); deep != g_spent_coins.end() && deep->first < block_index.nHeight &&
                                                 g_spent_coins_total + spent.coins.size() > MAX_SPENT_COINS_TOTAL;) {
-            deep = forget(deep);
+            // An unusable block holds no coins: dropping it frees nothing and costs a reread.
+            deep = deep->second.usable ? forget(deep) : std::next(deep);
         }
         if (g_spent_coins_total + spent.coins.size() > MAX_SPENT_COINS_TOTAL) {
             g_spent_coins_full = {tip_hash, block_index.nHeight};
