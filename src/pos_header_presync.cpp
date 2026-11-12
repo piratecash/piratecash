@@ -62,6 +62,17 @@ std::optional<int> EstimatedChainHeight(const MapCheckpoints& anchors, int64_t l
     return static_cast<int>(std::min<int64_t>(last->height + blocks_since, std::numeric_limits<int>::max()));
 }
 
+std::optional<int64_t> FutureHeaderWait(const std::vector<CBlockHeader>& headers, int64_t now, int64_t max_ahead, int64_t max_wait)
+{
+    for (const CBlockHeader& header : headers) {
+        const int64_t wait{header.GetBlockTime() - max_ahead - now};
+        if (wait <= 0) continue;
+        if (wait > max_wait) return std::nullopt;
+        return wait;
+    }
+    return std::nullopt;
+}
+
 SegmentCollector::SegmentCollector(const MapCheckpoints& anchors, size_t max_bytes)
     : m_anchors{anchors}, m_max_bytes{max_bytes} {}
 
