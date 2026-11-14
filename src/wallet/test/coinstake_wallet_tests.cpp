@@ -38,6 +38,9 @@
 #include <wallet/wallet.h>
 #include <wallet/test/wallet_test_fixture.h>
 
+#include <atomic>
+#include <thread>
+
 namespace wallet {
 namespace {
 
@@ -711,6 +714,52 @@ BOOST_FIXTURE_TEST_CASE(autocombine_skips_bad_candidates, TestChain100Setup)
     BOOST_CHECK(!VinContains(res.stakeTx, COutPoint(collateral_tx->GetHash(), 0)));
     // An immature fixture coinbase must not be selected either
     BOOST_CHECK(!VinContains(res.stakeTx, COutPoint(m_coinbase_txns.back()->GetHash(), 0)));
+
+    SetMockTime(0);
+}
+
+//! Two callers (the staking thread and generatestake) stake with one wallet at the same time while
+//! the stake coin set is rebuilt on every call. Without serialisation one caller cleared the set
+//! the other was iterating; a sanitizer build reports that, any build should get the same answers.
+BOOST_FIXTURE_TEST_CASE(create_coin_stake_concurrent_callers, TestChain100Setup)
+{
+    auto wallet = CreateSyncedWallet(*m_node.chain, *m_node.coinjoin_loader, *Assert(m_node.chainman), m_args, coinbaseKey);
+    const CScript wallet_spk = GetScriptForDestination(PKHash(coinbaseKey.GetPubKey()));
+    const CBlockIndex* tip = WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Tip());
+    // Deep enough to be selected for staking.
+    const CBlockIndex* confirmed_at = tip->GetAncestor(tip->nHeight - 20);
+    for (int i = 0; i < 20; ++i) {
+        auto tx = MakeRegularTx(COutPoint(InsecureRand256(), 0), wallet_spk, 1000 * COIN);
+        {
+            LOCK(wallet->cs_wallet);
+            wallet->AddToWallet(tx, TxStateConfirmed{confirmed_at->GetBlockHash(), confirmed_at->nHeight, 1});
+        }
+        TestMemPoolEntryHelper entry;
+        LOCK2(::cs_main, m_node.mempool->cs);
+        m_node.mempool->addUnchecked(entry.FromTx(tx));
+    }
+    SetMockTime(tip->GetBlockTime() + Params().MinStakeAge() + 3600);
+    wallet->nStakeSetUpdateTime = -1;
+
+    const auto stake{[&] {
+        CBlock block;
+        block.nTime = static_cast<uint32_t>(GetTime());
+        block.nBits = tip->nBits;
+        CMutableTransaction coinbase;
+        coinbase.vout.resize(1);
+        return wallet->CreateCoinStake(tip, block, coinbase, MAX_STANDARD_TX_SIZE, 1000);
+    }};
+    const bool expected{stake()};
+    std::atomic<int> mismatches{0};
+    const auto caller{[&] {
+        for (int i = 0; i < 50; ++i) {
+            if (stake() != expected) ++mismatches;
+        }
+    }};
+    std::thread other{caller};
+    caller();
+    other.join();
+    BOOST_CHECK_EQUAL(mismatches.load(), 0);
 
     SetMockTime(0);
 }

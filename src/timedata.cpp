@@ -16,6 +16,8 @@
 #include <util/translation.h>
 #include <warnings.h>
 
+#include <cstdlib>
+
 static GlobalMutex g_timeoffset_mutex;
 static int64_t nTimeOffset GUARDED_BY(g_timeoffset_mutex) = 0;
 
@@ -42,6 +44,38 @@ NodeClock::time_point GetAdjustedTime()
 static std::set<CNetAddr> g_sources;
 static CMedianFilter<int64_t> g_time_offsets{BITCOIN_TIMEDATA_MAX_SAMPLES, 0};
 static bool g_warning_emitted;
+static std::optional<int64_t> g_staking_clock_limit GUARDED_BY(g_timeoffset_mutex);
+static std::optional<int64_t> g_median_offset GUARDED_BY(g_timeoffset_mutex);
+//! The staking clock warning while it is shown.
+static bilingual_str g_staking_clock_warning GUARDED_BY(g_timeoffset_mutex);
+
+static void UpdateStakingClockWarning() EXCLUSIVE_LOCKS_REQUIRED(g_timeoffset_mutex)
+{
+    const bool clock_off{!g_warning_emitted && g_staking_clock_limit && g_median_offset &&
+                         std::abs(*g_median_offset) > *g_staking_clock_limit};
+    if (clock_off) {
+        const bilingual_str message{strprintf(_("Your computer's clock differs from the network's by %+d seconds. Staking may not work until the clock is synchronized."), *g_median_offset)};
+        if (message.original == g_staking_clock_warning.original) return;
+        // A new offset replaces the text; another warning is more important than this one, and is not replaced.
+        ClearMiscWarning(g_staking_clock_warning);
+        g_staking_clock_warning = bilingual_str{};
+        if (!SetMiscWarningIfUnset(message)) return;
+        LogPrintf("Warning: %s\n", message.original);
+        g_staking_clock_warning = message;
+    } else if (!g_staking_clock_warning.empty()) {
+        ClearMiscWarning(g_staking_clock_warning);
+        g_staking_clock_warning = bilingual_str{};
+        LogPrintf("The computer's clock is close enough to the network's for staking again\n");
+    }
+}
+
+void SetStakingClockLimit(std::optional<int64_t> max_offset)
+{
+    LOCK(g_timeoffset_mutex);
+    if (g_staking_clock_limit == max_offset) return;
+    g_staking_clock_limit = max_offset;
+    UpdateStakingClockWarning();
+}
 
 void AddTimeData(const CNetAddr& ip, int64_t nOffsetSample)
 {
@@ -99,6 +133,9 @@ void AddTimeData(const CNetAddr& ip, int64_t nOffsetSample)
             }
         }
 
+        g_median_offset = nMedian;
+        UpdateStakingClockWarning();
+
         if (LogAcceptCategory(BCLog::NET, BCLog::Level::Debug)) {
             std::string log_message{"time data samples: "};
             for (const int64_t n : vSorted) {
@@ -117,4 +154,7 @@ void TestOnlyResetTimeData()
     g_sources.clear();
     g_time_offsets = CMedianFilter<int64_t>{BITCOIN_TIMEDATA_MAX_SAMPLES, 0};
     g_warning_emitted = false;
+    g_median_offset.reset();
+    UpdateStakingClockWarning();
+    g_staking_clock_limit.reset();
 }

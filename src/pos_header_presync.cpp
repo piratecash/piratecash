@@ -64,8 +64,14 @@ std::optional<int> EstimatedChainHeight(const MapCheckpoints& anchors, int64_t l
 
 std::optional<int64_t> FutureHeaderWait(const std::vector<CBlockHeader>& headers, int64_t now, int64_t max_ahead, int64_t max_wait)
 {
-    for (const CBlockHeader& header : headers) {
-        const int64_t wait{header.GetBlockTime() - max_ahead - now};
+    return FutureHeaderWait(headers, now, std::vector<int64_t>(headers.size(), max_ahead), max_wait);
+}
+
+std::optional<int64_t> FutureHeaderWait(const std::vector<CBlockHeader>& headers, int64_t now,
+                                        const std::vector<int64_t>& max_ahead, int64_t max_wait)
+{
+    for (size_t i = 0; i < headers.size() && i < max_ahead.size(); ++i) {
+        const int64_t wait{headers[i].GetBlockTime() - max_ahead[i] - now};
         if (wait <= 0) continue;
         if (wait > max_wait) return std::nullopt;
         return wait;

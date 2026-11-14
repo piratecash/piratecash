@@ -27,6 +27,20 @@ void SetMiscWarning(const bilingual_str& warning)
     g_misc_warnings = warning;
 }
 
+bool SetMiscWarningIfUnset(const bilingual_str& warning)
+{
+    LOCK(g_warnings_mutex);
+    if (!g_misc_warnings.empty()) return false;
+    g_misc_warnings = warning;
+    return true;
+}
+
+void ClearMiscWarning(const bilingual_str& warning)
+{
+    LOCK(g_warnings_mutex);
+    if (g_misc_warnings.original == warning.original) g_misc_warnings = bilingual_str{};
+}
+
 void SetfLargeWorkInvalidChainFound(bool flag)
 {
     LOCK(g_warnings_mutex);

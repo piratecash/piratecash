@@ -11,6 +11,10 @@
 struct bilingual_str;
 
 void SetMiscWarning(const bilingual_str& warning);
+/** Set `warning` unless another misc warning is set; returns whether it was set. */
+bool SetMiscWarningIfUnset(const bilingual_str& warning);
+/** Clear the misc warning if it is still `warning`. */
+void ClearMiscWarning(const bilingual_str& warning);
 void SetfLargeWorkInvalidChainFound(bool flag);
 /** Format a string that describes several potential problems detected by the core.
  * @param[in] verbose bool

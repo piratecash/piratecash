@@ -195,6 +195,15 @@ struct Params {
     int64_t nLastPowBlock; // Last proof-of-work block
     int nPowKGWHeight;
     int nPowDGWHeight;
+    /** PoS v3: a block at this height or above has slot-aligned time and the chained 256-bit stake modifier */
+    int PosV3Height{std::numeric_limits<int>::max()};
+    /** PoS v3: block times are multiples of this */
+    int64_t nPosV3SlotSeconds{10};
+    /** PoS v3: DGW targets of pre-v3 blocks are shifted left by this many bits */
+    int nPosV3TargetShift{4};
+    bool IsPosV3Height(int height) const { return height >= PosV3Height; }
+    /** PoS v3: how far ahead of the node's own clock a block time may be */
+    int64_t PosV3FutureTolerance() const { return nPosV3SlotSeconds - 1; }
     std::chrono::seconds PowTargetSpacing() const
     {
         return std::chrono::seconds{nPowTargetSpacing};

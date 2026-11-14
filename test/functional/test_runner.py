@@ -251,6 +251,8 @@ BASE_SCRIPTS = [
     'p2p_disconnect_ban.py --v1transport',
     'p2p_disconnect_ban.py --v2transport',
     'feature_pos_header_sync.py --legacy-wallet',
+    'feature_pos_v3.py --legacy-wallet',
+    'feature_pos_v3_staking.py --legacy-wallet',
     'feature_posix_fs_permissions.py',
     'feature_addressindex.py',
     'feature_timestampindex.py',

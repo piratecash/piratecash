@@ -18,6 +18,7 @@
 #include <node/blockstorage.h>
 #include <node/transaction.h>
 #include <policy/policy.h>
+#include <pow.h>
 #include <pos_header_presync.h>
 #include <pos_kernel.h>
 #include <primitives/block.h>
@@ -29,6 +30,7 @@
 #include <util/time.h>
 #include <validation.h>
 
+#include <algorithm>
 #include <map>
 #include <tuple>
 #include <unordered_map>
@@ -384,11 +386,351 @@ bool CachedNextStakeModifierV2(const uint32_t blockTime, const CBlockIndex* pind
     return true;
 }
 
+int64_t MaxPosBlockAheadTime(int height, const Consensus::Params& params)
+{
+    return params.IsPosV3Height(height) ? params.PosV3FutureTolerance() : MAX_POS_BLOCK_AHEAD_TIME;
+}
+
+int64_t LatestPosV3BlockTime(NodeClock::time_point now, const Consensus::Params& params)
+{
+    return TicksSinceEpoch<std::chrono::seconds>(now) + params.PosV3FutureTolerance();
+}
+
+int64_t NextPosV3SlotTime(int64_t time, const Consensus::Params& params)
+{
+    const int64_t slot{params.nPosV3SlotSeconds};
+    return ((time + slot - 1) / slot) * slot;
+}
+
+bool CheckPosV3Header(const CBlockHeader& block, const CBlockIndex& prev, const Consensus::Params& params,
+                      NodeClock::time_point now, BlockValidationState& state)
+{
+    if (block.nNonce != 0) {
+        return state.Invalid(BlockValidationResult::BLOCK_INVALID_HEADER, "bad-nonce-v3", "nNonce of a PoS v3 block must be zero");
+    }
+    if (block.GetBlockTime() % params.nPosV3SlotSeconds != 0) {
+        return state.Invalid(BlockValidationResult::BLOCK_INVALID_HEADER, "time-not-slot",
+                             strprintf("block timestamp %d is not a multiple of %d", block.GetBlockTime(), params.nPosV3SlotSeconds));
+    }
+    if (block.GetBlockTime() <= prev.GetBlockTime()) {
+        return state.Invalid(BlockValidationResult::BLOCK_INVALID_HEADER, "time-not-after-parent",
+                             strprintf("block timestamp %d is not after its parent's %d", block.GetBlockTime(), prev.GetBlockTime()));
+    }
+    const int64_t latest{LatestPosV3BlockTime(now, params)};
+    if (block.GetBlockTime() > latest) {
+        return state.Invalid(BlockValidationResult::BLOCK_TIME_FUTURE, "time-too-new",
+                             strprintf("block timestamp too far in the future %d %d", block.GetBlockTime(), latest));
+    }
+    return true;
+}
+
+namespace {
+//! Default size of the v3 modifier memo (about 100 bytes an entry).
+constexpr size_t DEFAULT_STAKE_MODIFIER_V3_CACHE{1 << 16};
+//! Modifiers at heights that are multiples of this are kept for good, which bounds every walk.
+constexpr int STAKE_MODIFIER_V3_ANCHOR_INTERVAL{1024};
+struct StakeModifierV3Entry {
+    uint256 modifier;
+    int height;
+    //! The GetStakeModifierV3() call that added the entry.
+    uint64_t call;
+};
+GlobalMutex g_modifier_v3_mutex;
+//! Keyed by block hash: the hash fixes the parent and the stake input, so the modifier as well.
+std::unordered_map<uint256, StakeModifierV3Entry, BlockHasher> g_modifier_v3 GUARDED_BY(g_modifier_v3_mutex);
+//! Never evicted, not counted against the limit: one entry per STAKE_MODIFIER_V3_ANCHOR_INTERVAL blocks of each branch seen.
+//! So it is bounded by the size of the block index / STAKE_MODIFIER_V3_ANCHOR_INTERVAL.
+std::unordered_map<uint256, uint256, BlockHasher> g_modifier_v3_anchors GUARDED_BY(g_modifier_v3_mutex);
+size_t g_modifier_v3_limit GUARDED_BY(g_modifier_v3_mutex){DEFAULT_STAKE_MODIFIER_V3_CACHE};
+//! Highest height in the memo.
+int g_modifier_v3_top GUARDED_BY(g_modifier_v3_mutex){-1};
+//! The activation height the memo was filled for (unit tests run several chain configurations).
+int g_modifier_v3_height GUARDED_BY(g_modifier_v3_mutex){-1};
+uint64_t g_modifier_v3_calls GUARDED_BY(g_modifier_v3_mutex){0};
+uint64_t g_modifier_v3_hashes GUARDED_BY(g_modifier_v3_mutex){0};
+uint64_t g_modifier_v3_eviction_passes GUARDED_BY(g_modifier_v3_mutex){0};
+
+uint256 NextStakeModifierV3(const CBlockIndex& block, const uint256& parent_modifier)
+{
+    // A PoS v1 block's stake input is neither serialized nor hashed, so peers may not know it.
+    const COutPoint stake_input{block.IsProofOfStakeV2() ? COutPoint{block.posStakeHash, block.posStakeN} : COutPoint{uint256{}, 0}};
+    CDataStream ss(SER_GETHASH, 0);
+    ss << stake_input.hash << stake_input.n << parent_modifier;
+    return Hash(ss);
+}
+
+void ClearStakeModifiersV3() EXCLUSIVE_LOCKS_REQUIRED(g_modifier_v3_mutex)
+{
+    g_modifier_v3.clear();
+    g_modifier_v3_anchors.clear();
+    g_modifier_v3_top = -1;
+}
+
+//! Over the limit, drop the entries deepest below the highest one, except those the current call
+//! added. Work at the top of the chain only needs the parent's entry, so it never walks further
+//! than one block; each eviction frees about half of the memo, which keeps its cost constant per entry added.
+void EvictStakeModifiersV3() EXCLUSIVE_LOCKS_REQUIRED(g_modifier_v3_mutex)
+{
+    const int top{g_modifier_v3_top};
+    for (int window = static_cast<int>(g_modifier_v3_limit / 2); g_modifier_v3.size() > g_modifier_v3_limit;) {
+        const int floor{top - window};
+        // The lowest entry this pass keeps that a smaller window could drop.
+        int lowest{top};
+        std::erase_if(g_modifier_v3, [floor, &lowest](const auto& entry) EXCLUSIVE_LOCKS_REQUIRED(g_modifier_v3_mutex) {
+            if (entry.second.call == g_modifier_v3_calls) return false;
+            if (entry.second.height < floor) return true;
+            lowest = std::min(lowest, entry.second.height);
+            return false;
+        });
+        ++g_modifier_v3_eviction_passes;
+        if (lowest >= top) break;
+        // Skip the windows that would drop nothing; window 0 drops everything below the top.
+        do {
+            window /= 2;
+        } while (window > 0 && top - window <= lowest);
+    }
+}
+} // namespace
+
+std::optional<uint256> GetStakeModifierV3(const CBlockIndex& block, const Consensus::Params& params)
+{
+    const int seed_height{std::max(0, params.PosV3Height - 1 - POS_V3_MODIFIER_SEED_DEPTH)};
+    if (block.nHeight < seed_height) return std::nullopt;
+
+    LOCK(g_modifier_v3_mutex);
+    if (g_modifier_v3_height != params.PosV3Height) {
+        ClearStakeModifiersV3();
+        g_modifier_v3_height = params.PosV3Height;
+    }
+    ++g_modifier_v3_calls;
+
+    // Walk down to the seed or to a known modifier, then hash back up.
+    std::vector<const CBlockIndex*> pending;
+    uint256 modifier;
+    for (const CBlockIndex* walk = &block;; walk = walk->pprev) {
+        if (walk == nullptr || walk->phashBlock == nullptr) return std::nullopt;
+        if (walk->nHeight == seed_height) {
+            modifier.SetNull();
+            break;
+        }
+        if (const auto it{g_modifier_v3.find(walk->GetBlockHash())}; it != g_modifier_v3.end()) {
+            modifier = it->second.modifier;
+            break;
+        }
+        if (const auto it{g_modifier_v3_anchors.find(walk->GetBlockHash())}; it != g_modifier_v3_anchors.end()) {
+            modifier = it->second;
+            break;
+        }
+        pending.push_back(walk);
+    }
+
+    // pending[0] is `block`. The current call's entries are not evicted, so keep only the top `limit`
+    // of a long walk (after a restart, the first one goes down to the seed).
+    for (size_t i = pending.size(); i-- > 0;) {
+        const CBlockIndex& walk{*pending[i]};
+        modifier = NextStakeModifierV3(walk, modifier);
+        ++g_modifier_v3_hashes;
+        const int height{walk.nHeight};
+        if (height % STAKE_MODIFIER_V3_ANCHOR_INTERVAL == 0) {
+            g_modifier_v3_anchors.emplace(walk.GetBlockHash(), modifier);
+        } else if (i < g_modifier_v3_limit) {
+            g_modifier_v3.emplace(walk.GetBlockHash(), StakeModifierV3Entry{modifier, height, g_modifier_v3_calls});
+        }
+        g_modifier_v3_top = std::max(g_modifier_v3_top, height);
+    }
+    EvictStakeModifiersV3();
+    return modifier;
+}
+
+void ClearStakeModifierV3Cache()
+{
+    LOCK(g_modifier_v3_mutex);
+    ClearStakeModifiersV3();
+}
+
+void SetStakeModifierV3CacheLimitForTest(std::optional<size_t> limit)
+{
+    LOCK(g_modifier_v3_mutex);
+    g_modifier_v3_limit = limit.value_or(DEFAULT_STAKE_MODIFIER_V3_CACHE);
+    EvictStakeModifiersV3();
+}
+
+size_t StakeModifierV3CacheSize()
+{
+    LOCK(g_modifier_v3_mutex);
+    return g_modifier_v3.size();
+}
+
+uint64_t StakeModifierV3HashCountForTest()
+{
+    LOCK(g_modifier_v3_mutex);
+    return g_modifier_v3_hashes;
+}
+
+uint64_t StakeModifierV3EvictionPassesForTest()
+{
+    LOCK(g_modifier_v3_mutex);
+    return g_modifier_v3_eviction_passes;
+}
+
+arith_uint256 GetKernelTarget(CAmount value, uint32_t nBits, bool saturate)
+{
+    arith_uint256 bnTargetPerCoinDay;
+    bnTargetPerCoinDay.SetCompact(nBits);
+    const arith_uint256 coins{arith_uint256(value) / 100};
+
+    if (saturate) {
+        if (bnTargetPerCoinDay != 0 && coins > ~arith_uint256(0) / bnTargetPerCoinDay) return ~arith_uint256(0);
+        return coins * bnTargetPerCoinDay;
+    }
+
+    arith_uint256 bnTarget = coins * bnTargetPerCoinDay;
+    if (bnTarget < bnTargetPerCoinDay) {
+        LogPrint(BCLog::STAKING, "PoS target overflow %s amount %d < common %s, using ~0\n",
+                  bnTarget.GetHex().c_str(),
+                  value,
+                  bnTargetPerCoinDay.GetHex().c_str());
+        bnTarget = ~arith_uint256(0);
+    }
+    return bnTarget;
+}
+
+uint256 StakeHashV3(const uint256& modifier, uint32_t nTimeBlockFrom, const COutPoint& prevout, uint32_t nTime)
+{
+    CDataStream ss(SER_GETHASH, 0);
+    ss << modifier << nTimeBlockFrom << prevout.n << prevout.hash << nTime;
+    return Hash(ss);
+}
+
 uint256 stakeHash(unsigned int nTimeTx, CDataStream ss, unsigned int prevoutIndex, uint256 prevoutHash, unsigned int nTimeBlockFrom)
 {
     //Pivx will hash in the transaction hash and the index number in order to make sure each hash is unique
     ss << nTimeBlockFrom << prevoutIndex << prevoutHash << nTimeTx;
     return Hash(ss);
+}
+
+int64_t WalletLatestPosV3Slot(NodeClock::time_point now, const Consensus::Params& params)
+{
+    const int64_t slot{params.nPosV3SlotSeconds};
+    const int64_t current_slot{TicksSinceEpoch<std::chrono::seconds>(now) / slot * slot};
+    return std::min(current_slot + POSV3_WALLET_SLOT_LOOKAHEAD * slot, LatestPosV3BlockTime(now, params));
+}
+
+int64_t FirstPosV3Slot(const CBlockIndex& prev, const Consensus::Params& params)
+{
+    return NextPosV3SlotTime(std::max(prev.GetBlockTime(), prev.GetMedianTimePast()) + 1, params);
+}
+
+int64_t LastPosV3SlotOfPass(int64_t first, int64_t last, const Consensus::Params& params)
+{
+    return std::min(last, first + (POSV3_WALLET_MAX_SLOTS_PER_PASS - 1) * params.nPosV3SlotSeconds);
+}
+
+void PosV3SlotTracker::SetTip(const CBlockIndex& tip)
+{
+    if (tip.GetBlockHash() == m_tip) return;
+    m_tip = tip.GetBlockHash();
+    m_next_slot = 0;
+    m_excluded.clear();
+}
+
+std::optional<PosV3Search> PosV3SlotTracker::NextRange(const CBlockIndex& tip, NodeClock::time_point now, const Consensus::Params& params)
+{
+    SetTip(tip);
+    const int64_t first{std::max(m_next_slot, FirstPosV3Slot(tip, params))};
+    const int64_t last{LastPosV3SlotOfPass(first, WalletLatestPosV3Slot(now, params), params)};
+    if (first > last) return std::nullopt;
+    return PosV3Search{.prev = m_tip, .first = first, .last = last, .excluded = m_excluded};
+}
+
+void PosV3SlotTracker::Searched(const CBlockIndex& tip, const PosV3Search& search, const Consensus::Params& params)
+{
+    if (tip.GetBlockHash() != m_tip || search.prev != m_tip) return;
+    if (search.no_kernel) {
+        m_next_slot = std::max(m_next_slot, search.last + params.nPosV3SlotSeconds);
+    } else if (search.used) {
+        m_excluded.insert(*search.used);
+    }
+}
+
+void PosV3SlotTracker::Exclude(const CBlockIndex& tip, const PosV3Stake& stake)
+{
+    if (tip.GetBlockHash() == m_tip) m_excluded.insert(stake);
+}
+
+std::vector<PosV3Slot> PosV3Slots(const CBlockIndex& prev, int64_t first, int64_t last, const Consensus::Params& params)
+{
+    std::vector<PosV3Slot> slots;
+    const int64_t slot{params.nPosV3SlotSeconds};
+    first = std::max(NextPosV3SlotTime(first, params), FirstPosV3Slot(prev, params));
+    last = LastPosV3SlotOfPass(first, last, params);
+    CBlockHeader candidate;
+    for (int64_t time = first; time <= last; time += slot) {
+        candidate.nTime = static_cast<uint32_t>(time);
+        slots.push_back({candidate.nTime, GetNextWorkRequired(&prev, &candidate, params)});
+    }
+    return slots;
+}
+
+std::optional<size_t> FindStakeKernelV3(CBlockHeader& current, const CBlockIndex& prev, const CBlockIndex& blockFrom, const CTxOut& stake_out,
+                                        const COutPoint& prevout, const std::vector<PosV3Slot>& slots, const uint256& modifier,
+                                        int64_t min_stake_age, const Consensus::Params& params, uint256& hashProofOfStake, bool fPrint)
+{
+    if (!params.IsPosV3Height(prev.nHeight + 1) || stake_out.nValue < MIN_STAKE_AMOUNT) return std::nullopt;
+
+    const uint32_t time_from{static_cast<uint32_t>(blockFrom.GetBlockTime())};
+    const int64_t mature_at{blockFrom.GetBlockTime() + min_stake_age};
+    std::optional<uint32_t> target_bits;
+    arith_uint256 target;
+    for (size_t i = 0; i < slots.size(); ++i) {
+        const PosV3Slot& slot{slots[i]};
+        if (slot.time < mature_at) continue;
+        if (target_bits != slot.bits) {
+            target_bits = slot.bits;
+            target = GetKernelTarget(stake_out.nValue, slot.bits, /*saturate=*/true);
+        }
+        const uint256 proof{StakeHashV3(modifier, time_from, prevout, slot.time)};
+        if (UintToArith256(proof) >= target) continue;
+
+        hashProofOfStake = proof;
+        current.nTime = slot.time;
+        current.nBits = slot.bits;
+        current.nNonce = 0;
+        if (fPrint) {
+            LogPrint(BCLog::STAKING, "%s: pass protocol=v3 modifier=%s nTimeBlockFrom=%u prevoutHash=%s nPrevout=%u nTime=%u nBits=%08x hashProof=%s\n",
+                      __func__, modifier.ToString(), time_from, prevout.hash.ToString(), prevout.n, slot.time, slot.bits,
+                      proof.ToString());
+        }
+        return i;
+    }
+    return std::nullopt;
+}
+
+std::vector<std::pair<size_t, size_t>> RankStakeKernelsV3(const std::vector<PosV3StakeCandidate>& candidates, const CBlockIndex& prev,
+                                                          const std::vector<PosV3Slot>& slots, const uint256& modifier,
+                                                          int64_t min_stake_age, const Consensus::Params& params,
+                                                          const std::set<PosV3Stake>& excluded)
+{
+    std::vector<std::pair<size_t, size_t>> ranked;
+    for (size_t i = 0; i < candidates.size(); ++i) {
+        const PosV3StakeCandidate& candidate{candidates[i]};
+        // Search on past an excluded slot.
+        for (size_t start = 0; start < slots.size();) {
+            const std::vector<PosV3Slot> rest(slots.begin() + start, slots.end());
+            CBlockHeader scratch;
+            uint256 proof;
+            const auto slot{FindStakeKernelV3(scratch, prev, *candidate.block_from, candidate.stake_out, candidate.prevout,
+                                              rest, modifier, min_stake_age, params, proof)};
+            if (!slot) break;
+            if (!excluded.count({candidate.prevout, rest[*slot].time})) {
+                ranked.emplace_back(i, start + *slot);
+                break;
+            }
+            start += *slot + 1;
+        }
+    }
+    std::stable_sort(ranked.begin(), ranked.end(), [](const auto& lhs, const auto& rhs) { return lhs.second < rhs.second; });
+    return ranked;
 }
 
 //instead of looping outside and reinitializing variables many times, we will give a nTimeTx and also search interval so that we can do all the hashing here
@@ -456,17 +798,22 @@ bool CheckStakeKernelHash(
         return false;
     }
 
-    //grab difficulty
-    arith_uint256 bnTargetPerCoinDay;
-    bnTargetPerCoinDay.SetCompact(nBits);
-    arith_uint256 bnTarget = (arith_uint256(nValueIn) / 100) * bnTargetPerCoinDay;
+    const Consensus::Params& consensus = Params().GetConsensus();
+    const bool pos_v3 = current.IsProofOfStakeV2() && consensus.IsPosV3Height(blockPrev.nHeight + 1);
 
-    if (bnTarget < bnTargetPerCoinDay) {
-        LogPrint(BCLog::STAKING, "PoS target overflow %s amount %d < common %s, using ~0\n",
-                  bnTarget.GetHex().c_str(),
-                  nValueIn,
-                  bnTargetPerCoinDay.GetHex().c_str());
-        bnTarget = ~arith_uint256(0);
+    //grab difficulty
+    const arith_uint256 bnTarget = GetKernelTarget(nValueIn, nBits, /*saturate=*/pos_v3);
+
+    if (pos_v3) {
+        // Searches at v3 heights go through FindStakeKernelV3().
+        if (!Assume(fCheck)) return false;
+        const auto modifier{GetStakeModifierV3(blockPrev, consensus)};
+        if (!modifier) {
+            LogPrintf("CheckStakeKernelHash(): failed to get kernel stake modifier V3\n");
+            return false;
+        }
+        hashProofOfStake = StakeHashV3(*modifier, nTimeBlockFrom, prevout, nTimeTx);
+        return UintToArith256(hashProofOfStake) < bnTarget;
     }
 
     //grab stake modifier

@@ -3,6 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 //
 
+#include <chainparams.h>
 #include <netaddress.h>
 #include <noui.h>
 #include <test/util/logging.h>
@@ -100,6 +101,58 @@ BOOST_AUTO_TEST_CASE(addtimedata)
     BOOST_CHECK_EQUAL(GetTimeOffset(), 0);
 
     TestOnlyResetTimeData();
+}
+
+
+BOOST_AUTO_TEST_CASE(clock_too_far_off_for_posv3_staking)
+{
+    const std::string warning{"Staking may not work"};
+    const auto shown{[&] { return GetWarnings(true).original.find(warning) != std::string::npos; }};
+    // What validation sets near the fork with 10 s slots: the tolerance minus 3 s of sampling error.
+    const int64_t limit{Params().GetConsensus().PosV3FutureTolerance() - 3};
+    BOOST_REQUIRE_EQUAL(limit, 6);
+
+    // Far from the fork nothing is said, however far off the clock is.
+    TestOnlyResetTimeData();
+    SetMiscWarning(bilingual_str{});
+    SetStakingClockLimit(std::nullopt);
+    MultiAddTimeData(5, 100);
+    BOOST_CHECK(!shown());
+    TestOnlyResetTimeData();
+
+    // Near the fork: within the limit nothing is said.
+    SetStakingClockLimit(limit);
+    MultiAddTimeData(5, limit);
+    BOOST_CHECK(!shown());
+    TestOnlyResetTimeData();
+
+    // Beyond it the warning is shown, and cleared once the median offset is back within the limit.
+    SetStakingClockLimit(limit);
+    {
+        ASSERT_DEBUG_LOG(warning);
+        MultiAddTimeData(5, -(limit + 1));
+    }
+    BOOST_CHECK(shown());
+    BOOST_CHECK(GetWarnings(true).original.find("by -7 seconds") != std::string::npos);
+    // A new median offset updates the text.
+    MultiAddTimeData(7, -20);
+    BOOST_CHECK(GetWarnings(true).original.find("by -20 seconds") != std::string::npos);
+    MultiAddTimeData(14, 0);
+    BOOST_CHECK(!shown());
+    TestOnlyResetTimeData();
+
+    // Another warning is not replaced, nor cleared with it.
+    const bilingual_str other{Untranslated("another warning")};
+    SetMiscWarning(other);
+    SetStakingClockLimit(limit);
+    MultiAddTimeData(5, limit + 1);
+    BOOST_CHECK(!shown());
+    BOOST_CHECK(GetWarnings(true).original.find(other.original) != std::string::npos);
+    MultiAddTimeData(6, 0);
+    BOOST_CHECK(GetWarnings(true).original.find(other.original) != std::string::npos);
+
+    TestOnlyResetTimeData();
+    SetMiscWarning(bilingual_str{});
 }
 
 BOOST_AUTO_TEST_SUITE_END()
