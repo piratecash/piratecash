@@ -51,6 +51,9 @@ std::optional<Anchor> LastAnchor(const MapCheckpoints& anchors);
 /** Seconds until the first header whose timestamp is more than max_ahead past now stops being too new.
  *  Nothing when no header is ahead, or when the wait would exceed max_wait: such a clock is not worth waiting for. */
 std::optional<int64_t> FutureHeaderWait(const std::vector<CBlockHeader>& headers, int64_t now, int64_t max_ahead, int64_t max_wait);
+/** Same, with the allowed lead given per header (it depends on the header's height); one entry per header. */
+std::optional<int64_t> FutureHeaderWait(const std::vector<CBlockHeader>& headers, int64_t now,
+                                        const std::vector<int64_t>& max_ahead, int64_t max_wait);
 
 std::optional<int> EstimatedChainHeight(const MapCheckpoints& anchors, int64_t last_anchor_time, int best_header_height,
                                         int64_t now, int64_t block_spacing);

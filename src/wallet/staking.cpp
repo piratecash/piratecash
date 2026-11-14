@@ -26,6 +26,8 @@
 
 #include <algorithm>
 #include <map>
+#include <optional>
+#include <set>
 
 namespace wallet {
 
@@ -55,7 +57,7 @@ bool CWallet::SelectStakeCoins(StakeCandidates& setCoins, CAmount nTargetAmount)
         const int min_depth = wtx->IsCoinBase() ? STAKE_COINBASE_MIN_DEPTH : 10;
         if (output.depth < min_depth) continue;
 
-        setCoins.emplace_back(output.txout.nValue, wtx, output.outpoint.n);
+        setCoins.emplace_back(output.txout.nValue, output.outpoint);
         nAmountSelected += output.txout.nValue;
         if (nAmountSelected >= nTargetAmount) break;
     }
@@ -217,8 +219,10 @@ void CWallet::AutocombineCoinStake(const COutPoint& kernel_prevout, const CPubKe
     }
 }
 
-bool CWallet::CreateCoinStake(const CBlockIndex* pindex_prev, CBlock& curr_block, CMutableTransaction& coinbaseTx, size_t max_tx_size, size_t max_sigops)
+bool CWallet::CreateCoinStake(const CBlockIndex* pindex_prev, CBlock& curr_block, CMutableTransaction& coinbaseTx, size_t max_tx_size, size_t max_sigops,
+                              const std::vector<PosV3Slot>* v3_slots, PosV3Search* v3_search)
 {
+    LOCK(m_stake_mutex);
     CAmount nTargetAmount;
     {
         LOCK(cs_wallet);
@@ -236,18 +240,70 @@ bool CWallet::CreateCoinStake(const CBlockIndex* pindex_prev, CBlock& curr_block
             return false;
         }
         std::sort(setStakeCoins.begin(), setStakeCoins.end(), [](const auto& lhs, const auto& rhs) {
-            return std::get<0>(lhs) > std::get<0>(rhs);
+            return lhs.first > rhs.first;
         });
         nLastStakeSetUpdate = GetTime();
     }
 
     LogPrint(BCLog::STAKING, "%s: found %u possible stake inputs\n", __func__, setStakeCoins.size());
 
-    for (auto iter = setStakeCoins.begin(); iter != setStakeCoins.end(); ++iter) {
+    // Copies of what the search needs from the wallet transactions: the kernel is hashed without cs_wallet.
+    struct StakeInput {
+        COutPoint prevout;
+        CTransactionRef tx;
+        std::optional<TxStateConfirmed> conf;
+    };
+    std::vector<StakeInput> stake_inputs;
+    {
+        LOCK(cs_wallet);
+        for (const auto& [value, prevout] : setStakeCoins) {
+            const CWalletTx* wtx = GetWalletTx(prevout.hash);
+            if (!wtx) continue;
+            const auto* conf = wtx->state<TxStateConfirmed>();
+            stake_inputs.push_back({prevout, wtx->tx, conf ? std::make_optional(*conf) : std::nullopt});
+        }
+    }
+
+    // The coins in the order they are tried: below v3 all of them; at v3 heights only those with a
+    // kernel, earliest slot first (ties keep the order above), each with its slot.
+    std::vector<std::pair<size_t, size_t>> stake_order;
+    std::optional<uint256> v3_modifier;
+    if (v3_slots) {
+        const Consensus::Params& consensus{Params().GetConsensus()};
+        v3_modifier = GetStakeModifierV3(*pindex_prev, consensus);
+        if (!v3_modifier) {
+            LogPrint(BCLog::STAKING, "%s: no PoS v3 stake modifier for block %s\n", __func__, pindex_prev->GetBlockHash().ToString());
+            return false;
+        }
+        std::map<COutPoint, Coin> coins;
+        for (const auto& input : stake_inputs) coins.emplace(input.prevout, Coin{});
+        chain().findCoins(coins);
+        std::vector<size_t> candidate_inputs;
+        std::vector<PosV3StakeCandidate> candidates;
+        for (size_t i = 0; i < stake_inputs.size(); ++i) {
+            const auto& [prevout, tx, conf] = stake_inputs[i];
+            if (coins[prevout].IsSpent()) continue;
+            if (!conf || conf->confirmed_block_height > pindex_prev->nHeight || prevout.n >= tx->vout.size()) continue;
+            const CBlockIndex* coin_index = pindex_prev->GetAncestor(conf->confirmed_block_height);
+            if (!coin_index || coin_index->GetBlockHash() != conf->confirmed_block_hash) continue;
+            candidate_inputs.push_back(i);
+            candidates.push_back({coin_index, tx->vout[prevout.n], prevout});
+        }
+        static const std::set<PosV3Stake> no_exclusions;
+        for (const auto& [candidate, slot] : RankStakeKernelsV3(candidates, *pindex_prev, *v3_slots, *v3_modifier, Params().MinStakeAge(),
+                                                                consensus, v3_search ? v3_search->excluded : no_exclusions)) {
+            stake_order.emplace_back(candidate_inputs[candidate], slot);
+        }
+    } else {
+        for (size_t i = 0; i < stake_inputs.size(); ++i) stake_order.emplace_back(i, 0);
+    }
+
+    for (const auto& [input_index, v3_slot] : stake_order) {
         if (ShutdownRequested()) break;
 
-        const CWalletTx* pWalletTxIn = std::get<1>(*iter);
-        const COutPoint prevoutStake{pWalletTxIn->GetHash(), std::get<2>(*iter)};
+        const StakeInput& stake_input = stake_inputs[input_index];
+        const CTransaction& tx_stake = *stake_input.tx;
+        const COutPoint& prevoutStake = stake_input.prevout;
         LogPrint(BCLog::STAKING, "%s: trying tx=%s n=%u\n", __func__, prevoutStake.hash.ToString(), prevoutStake.n);
 
         std::map<COutPoint, Coin> coins{{prevoutStake, Coin{}}};
@@ -258,29 +314,34 @@ bool CWallet::CreateCoinStake(const CBlockIndex* pindex_prev, CBlock& curr_block
             continue;
         }
 
-        const auto* conf = pWalletTxIn->state<TxStateConfirmed>();
+        const auto& conf = stake_input.conf;
         const CBlockIndex* pcoin_index = nullptr;
         if (conf && conf->confirmed_block_height <= pindex_prev->nHeight) {
             pcoin_index = pindex_prev->GetAncestor(conf->confirmed_block_height);
         }
         if (!conf || !pcoin_index || pcoin_index->GetBlockHash() != conf->confirmed_block_hash) {
-            LogPrintf("%s: failed to find block index for %s\n", __func__, conf ? conf->confirmed_block_hash.ToString() : pWalletTxIn->GetHash().ToString());
+            LogPrintf("%s: failed to find block index for %s\n", __func__, conf ? conf->confirmed_block_hash.ToString() : tx_stake.GetHash().ToString());
             continue;
         }
 
         uint256 hashProofOfStake;
-        const bool fKernelFound = CheckStakeKernelHash(
-            curr_block,
-            *pindex_prev,
-            *pcoin_index,
-            *pWalletTxIn->tx,
-            prevoutStake,
-            nHashDrift,
-            false,
-            hashProofOfStake,
-            true);
+        const bool fKernelFound = v3_slots ?
+            FindStakeKernelV3(curr_block, *pindex_prev, *pcoin_index, tx_stake.vout[prevoutStake.n], prevoutStake,
+                              {(*v3_slots)[v3_slot]}, *v3_modifier, Params().MinStakeAge(), Params().GetConsensus(),
+                              hashProofOfStake, /*fPrint=*/true).has_value() :
+            CheckStakeKernelHash(
+                curr_block,
+                *pindex_prev,
+                *pcoin_index,
+                tx_stake,
+                prevoutStake,
+                nHashDrift,
+                false,
+                hashProofOfStake,
+                true);
 
         if (!fKernelFound) continue;
+        if (v3_search) v3_search->used = PosV3Stake{prevoutStake, curr_block.nTime};
 
         if (curr_block.nTime <= pindex_prev->GetMedianTimePast()) {
             LogPrint(BCLog::STAKING, "%s: kernel found, but it is too far in the past\n", __func__);
@@ -290,7 +351,7 @@ bool CWallet::CreateCoinStake(const CBlockIndex* pindex_prev, CBlock& curr_block
         LogPrint(BCLog::STAKING, "%s: kernel found\n", __func__);
 
         std::vector<std::vector<unsigned char>> vSolutions;
-        const CTxOut& tx_in = pWalletTxIn->tx->vout[prevoutStake.n];
+        const CTxOut& tx_in = tx_stake.vout[prevoutStake.n];
         const CScript& scriptPubKeyKernel = tx_in.scriptPubKey;
         const TxoutType whichType = Solver(scriptPubKeyKernel, vSolutions);
 
@@ -392,6 +453,8 @@ bool CWallet::CreateCoinStake(const CBlockIndex* pindex_prev, CBlock& curr_block
         return true;
     }
 
+    // Every coin with a kernel was tried; at v3 heights the slots are done.
+    if (v3_search && !ShutdownRequested()) v3_search->no_kernel = true;
     LogPrint(BCLog::STAKING, "%s: no stakes found\n", __func__);
     return false;
 }

@@ -42,6 +42,7 @@
 #include <llmq/context.h>
 #include <llmq/signing_shares.h>
 #include <masternode/sync.h>
+#include <netaddress.h>
 #include <instantsend/instantsend.h>
 #include <instantsend/signing.h>
 #include <evo/evodb.h>
@@ -63,10 +64,13 @@
 #include <tinyformat.h>
 #include <txmempool.h>
 #include <uint256.h>
+#include <util/string.h>
 #include <util/system.h>
 #include <util/time.h>
+#include <util/translation.h>
 #include <validation.h>
 #include <validationinterface.h>
+#include <warnings.h>
 #include <index/txindex.h>
 
 #ifdef ENABLE_WALLET
@@ -76,8 +80,11 @@
 #include <wallet/wallet.h>
 #endif // ENABLE_WALLET
 
+#include <algorithm>
+#include <map>
 #include <memory>
 #include <optional>
+#include <set>
 #include <thread>
 
 // ============================================================================
@@ -1732,5 +1739,718 @@ BOOST_AUTO_TEST_CASE(pos_wallet_orphaned_coinstake_released_on_startup)
     BOOST_CHECK(!IsAvailable(*w, confirmed_input));
 }
 #endif // ENABLE_WALLET
+
+// ============================================================================
+// 19. PoS v3: SLOT TIMES, STAKE MODIFIER V3, KERNEL TARGET SATURATION
+// ============================================================================
+
+namespace {
+constexpr int POSV3_TEST_HEIGHT{200};
+
+//! PoS v3 from two blocks above the fixture's chain: the next block mined is the last pre-fork one.
+const std::string POSV3_HEADER_ARG{"-testactivationheight=posv3@" + ToString(COINBASE_MATURITY + 2)};
+const std::string POSV3_HEADER_POS_ARG{strprintf("-posparams=%d:%d:60", COINBASE_MATURITY + 1, COINBASE_MATURITY + 2)};
+struct PosV3HeaderSetup : public TestChain100Setup {
+    PosV3HeaderSetup() : TestChain100Setup{CBaseChainParams::REGTEST, {POSV3_HEADER_ARG.c_str(), POSV3_HEADER_POS_ARG.c_str()}} {}
+};
+
+//! PoS v3 from three blocks above the fixture's chain, so that the coinbase of block 1 can stake the first v3 block.
+const std::string POSV3_PROOF_ARG{"-testactivationheight=posv3@" + ToString(COINBASE_MATURITY + 3)};
+//! A minimum stake age of an hour lets a side branch an hour of blocks deep be judged (VerifiabilityWindow).
+const std::string POSV3_PROOF_POS_ARG{strprintf("-posparams=%d:%d:3600", COINBASE_MATURITY + 2, COINBASE_MATURITY + 3)};
+struct PosV3ProofSetup : public TestChain100Setup {
+    PosV3ProofSetup() : TestChain100Setup{CBaseChainParams::REGTEST, {POSV3_PROOF_ARG.c_str(), POSV3_PROOF_POS_ARG.c_str()}} {}
+};
+
+//! PoS v3 a day of regtest blocks (60 s apart) and two blocks above the fixture's chain.
+constexpr int POSV3_BLOCKS_PER_DAY{24 * 60 * 60 / 60};
+const std::string POSV3_DAY_ARG{"-testactivationheight=posv3@" + ToString(COINBASE_MATURITY + 2 + POSV3_BLOCKS_PER_DAY)};
+const std::string POSV3_DAY_POS_ARG{strprintf("-posparams=%d:%d:60", COINBASE_MATURITY + 1 + POSV3_BLOCKS_PER_DAY, COINBASE_MATURITY + 2 + POSV3_BLOCKS_PER_DAY)};
+struct PosV3DaySetup : public TestChain100Setup {
+    PosV3DaySetup() : TestChain100Setup{CBaseChainParams::REGTEST, {POSV3_DAY_ARG.c_str(), POSV3_DAY_POS_ARG.c_str()}} {}
+};
+
+struct PosV3KernelSetup : public BasicTestingSetup {
+    PosV3KernelSetup() : BasicTestingSetup{CBaseChainParams::REGTEST, {"-testactivationheight=posv3@200", "-posparams=150:151:600"}} {}
+};
+
+//! A chain of block index entries without a block tree behind it.
+struct IndexChain {
+    std::vector<uint256> hashes;
+    std::vector<CBlockIndex> blocks;
+
+    //! `hash_salt` changes every block hash and nothing else.
+    IndexChain(int tip_height, uint32_t first_time, uint32_t hash_salt = 0)
+        : hashes(tip_height + 1), blocks(tip_height + 1)
+    {
+        for (int h = 0; h <= tip_height; ++h) {
+            hashes[h] = ArithToUint256((arith_uint256(h + 1) << 128) + hash_salt);
+            Fill(blocks[h], h, h > 0 ? &blocks[h - 1] : nullptr, &hashes[h]);
+            blocks[h].nTime = first_time + 120 * h;
+        }
+    }
+
+    static void Fill(CBlockIndex& block, int height, CBlockIndex* prev, const uint256* hash)
+    {
+        block.nVersion = CBlockHeader::POSV2_BITS | 4;
+        block.nHeight = height;
+        block.phashBlock = hash;
+        block.pprev = prev;
+        block.posStakeHash = ArithToUint256(arith_uint256(1000 + height));
+        block.posStakeN = static_cast<uint32_t>(height % 3);
+    }
+};
+
+uint256 ExpectedModifierV3(const CBlockIndex& block, const uint256& parent_modifier)
+{
+    CDataStream ss(SER_GETHASH, 0);
+    if (block.IsProofOfStakeV2()) {
+        ss << block.posStakeHash << block.posStakeN << parent_modifier;
+    } else {
+        ss << uint256{} << uint32_t{0} << parent_modifier;
+    }
+    return Hash(ss);
+}
+
+constexpr int POSV3_SEED_HEIGHT{POSV3_TEST_HEIGHT - 1 - POS_V3_MODIFIER_SEED_DEPTH};
+
+//! The modifiers of `chain` by height, from the zero seed up to `up_to`.
+std::map<int, uint256> ExpectedModifiers(const IndexChain& chain, int up_to)
+{
+    std::map<int, uint256> modifiers{{POSV3_SEED_HEIGHT, uint256{}}};
+    for (int height = POSV3_SEED_HEIGHT + 1; height <= up_to; ++height) {
+        modifiers[height] = ExpectedModifierV3(chain.blocks[height], modifiers[height - 1]);
+    }
+    return modifiers;
+}
+
+BlockValidationState SubmitPoSHeader(ChainstateManager& chainman, uint32_t time, uint32_t nonce = 0)
+{
+    const CBlockIndex* tip{WITH_LOCK(::cs_main, return chainman.ActiveChain().Tip())};
+    CBlockHeader header;
+    header.nVersion = CBlockHeader::POSV2_BITS | 4;
+    header.hashPrevBlock = tip->GetBlockHash();
+    header.hashMerkleRoot = InsecureRand256();
+    header.nTime = time;
+    header.nBits = GetNextWorkRequired(tip, &header, chainman.GetConsensus());
+    header.nNonce = nonce;
+    header.posStakeHash = InsecureRand256();
+    header.posStakeN = 0;
+    BlockValidationState state;
+    chainman.ProcessNewBlockHeaders({header}, state);
+    return state;
+}
+
+//! Mine a PoW block stamped exactly `time` and return it.
+const CBlockIndex* MineAt(TestChain100Setup& setup, int64_t time)
+{
+    SetMockTime(time);
+    setup.CreateAndProcessBlock({}, CScript() << OP_TRUE);
+    return WITH_LOCK(::cs_main, return setup.m_node.chainman->ActiveChain().Tip());
+}
+} // namespace
+
+BOOST_AUTO_TEST_CASE(posv3_time_rules_do_not_apply_before_the_fork)
+{
+    const CBlockIndex* parent{MineAt(*this, 1700000000)};
+    BOOST_REQUIRE_EQUAL(parent->GetBlockTime(), 1700000000);
+    SetMockTime(parent->GetBlockTime() + 1);
+
+    // Off-slot and equal-to-parent times pass the time checks and fail later, on the missing stake signature.
+    BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, parent->nTime + 1).GetRejectReason(), "bad-pos-sig");
+    BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, parent->nTime).GetRejectReason(), "bad-pos-sig");
+    // So does a non-zero nNonce.
+    BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, parent->nTime + 1, /*nonce=*/1).GetRejectReason(), "bad-pos-sig");
+    // The pre-fork lead of MAX_POS_BLOCK_AHEAD_TIME still applies.
+    BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, parent->nTime + 1 + MAX_POS_BLOCK_AHEAD_TIME).GetRejectReason(), "bad-pos-sig");
+    BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, parent->nTime + 2 + MAX_POS_BLOCK_AHEAD_TIME).GetRejectReason(), "time-too-new");
+}
+
+BOOST_FIXTURE_TEST_CASE(posv3_header_time_rules, PosV3HeaderSetup)
+{
+    const CBlockIndex* parent{MineAt(*this, 1700000000)};
+    BOOST_REQUIRE_EQUAL(parent->nHeight + 1, Params().GetConsensus().PosV3Height);
+    BOOST_REQUIRE_EQUAL(parent->GetBlockTime(), 1700000000);
+    const uint32_t p{parent->nTime};
+
+    SetMockTime(p + 1);
+    // A slot-aligned time after the parent passes the time checks.
+    BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, p + 10).GetRejectReason(), "bad-pos-sig");
+    // nNonce must be zero.
+    BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, p + 10, /*nonce=*/1).GetRejectReason(), "bad-nonce-v3");
+    BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, p + 1).GetRejectReason(), "time-not-slot");
+    BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, p).GetRejectReason(), "time-not-after-parent");
+    BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, p - 10).GetRejectReason(), "time-not-after-parent");
+
+    // p + 10 is now + tolerance; one second earlier on our clock it is too new, and only temporarily so.
+    SetMockTime(p);
+    const BlockValidationState too_new{SubmitPoSHeader(*m_node.chainman, p + 10)};
+    BOOST_CHECK_EQUAL(too_new.GetRejectReason(), "time-too-new");
+    BOOST_CHECK(too_new.GetResult() == BlockValidationResult::BLOCK_TIME_FUTURE);
+}
+
+BOOST_FIXTURE_TEST_CASE(posv3_rules_start_at_the_activation_height, PosV3HeaderSetup)
+{
+    const int fork{Params().GetConsensus().PosV3Height};
+    const auto off_slot_after_tip{[&] {
+        const CBlockIndex* tip{WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Tip())};
+        uint32_t time{tip->nTime + 1};
+        if (time % 10 == 0) ++time;
+        SetMockTime(time);
+        return time;
+    }};
+
+    // The last pre-fork block: an off-slot time and a non-zero nNonce pass, it fails later on the missing signature.
+    BOOST_REQUIRE_EQUAL(WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Height()) + 1, fork - 1);
+    BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, off_slot_after_tip(), /*nonce=*/7).GetRejectReason(), "bad-pos-sig");
+
+    // The same header at the activation height is refused.
+    const CBlockIndex* parent{MineAt(*this, 1700000000)};
+    BOOST_REQUIRE_EQUAL(parent->nHeight + 1, fork);
+    const uint32_t time{off_slot_after_tip()};
+    BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, time, /*nonce=*/7).GetRejectReason(), "bad-nonce-v3");
+    BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, time).GetRejectReason(), "time-not-slot");
+}
+
+BOOST_FIXTURE_TEST_CASE(posv3_clock_warning_starts_a_day_before_the_fork, PosV3DaySetup)
+{
+    BOOST_REQUIRE_EQUAL(Params().GetConsensus().nPowTargetSpacing, 60);
+    const auto clock_warning_after_new_tip{[&](int64_t time) {
+        TestOnlyResetTimeData();
+        SetMiscWarning(bilingual_str{});
+        MineAt(*this, time);
+        for (int i = 0; i < 5; ++i) {
+            CNetAddr addr;
+            addr.SetInternal("posv3-clock-" + ToString(i));
+            AddTimeData(addr, 50);
+        }
+        const bool shown{GetWarnings(true).original.find("Staking may not work") != std::string::npos};
+        TestOnlyResetTimeData();
+        SetMiscWarning(bilingual_str{});
+        return shown;
+    }};
+    // The next tip is a day and one block below the fork: no warning. The one after it is a day below: warning.
+    BOOST_CHECK(!clock_warning_after_new_tip(1700000000));
+    BOOST_CHECK(clock_warning_after_new_tip(1700000060));
+}
+
+BOOST_FIXTURE_TEST_CASE(posv3_block_time_boundaries, PosV3KernelSetup)
+{
+    const Consensus::Params& params{Params().GetConsensus()};
+    BOOST_REQUIRE_EQUAL(params.PosV3Height, POSV3_TEST_HEIGHT);
+    BOOST_CHECK_EQUAL(params.PosV3FutureTolerance(), params.nPosV3SlotSeconds - 1);
+    BOOST_CHECK_EQUAL(MaxPosBlockAheadTime(POSV3_TEST_HEIGHT - 1, params), MAX_POS_BLOCK_AHEAD_TIME);
+    BOOST_CHECK_EQUAL(MaxPosBlockAheadTime(POSV3_TEST_HEIGHT, params), params.PosV3FutureTolerance());
+
+    CBlockIndex parent;
+    parent.nHeight = POSV3_TEST_HEIGHT - 1;
+    parent.nTime = 1700000003;
+    CBlockHeader block;
+    block.nTime = 1700000010;
+    const auto at{[](int64_t t) { return NodeClock::time_point{std::chrono::seconds{t}}; }};
+
+    BlockValidationState state;
+    BOOST_CHECK(CheckPosV3Header(block, parent, params, at(block.nTime - params.PosV3FutureTolerance()), state));
+    BOOST_CHECK(!CheckPosV3Header(block, parent, params, at(block.nTime - params.PosV3FutureTolerance() - 1), state));
+    BOOST_CHECK_EQUAL(state.GetRejectReason(), "time-too-new");
+    block.nNonce = 1;
+    BlockValidationState nonce_state;
+    BOOST_CHECK(!CheckPosV3Header(block, parent, params, at(block.nTime), nonce_state));
+    BOOST_CHECK_EQUAL(nonce_state.GetRejectReason(), "bad-nonce-v3");
+
+    BOOST_CHECK_EQUAL(NextPosV3SlotTime(1700000001, params), 1700000010);
+    BOOST_CHECK_EQUAL(NextPosV3SlotTime(1700000010, params), 1700000010);
+}
+
+BOOST_FIXTURE_TEST_CASE(posv3_stake_modifier_chain, PosV3KernelSetup)
+{
+    const Consensus::Params& params{Params().GetConsensus()};
+    const int h{POSV3_TEST_HEIGHT};
+    IndexChain chain{h + 5, 1700000000};
+    const auto expected{ExpectedModifiers(chain, h + 5)};
+    ClearStakeModifierV3Cache();
+
+    // Zero at the seed, POS_V3_MODIFIER_SEED_DEPTH blocks below the last pre-fork block; nothing below it.
+    BOOST_CHECK(!GetStakeModifierV3(chain.blocks[POSV3_SEED_HEIGHT - 1], params));
+    BOOST_CHECK_EQUAL(*GetStakeModifierV3(chain.blocks[POSV3_SEED_HEIGHT], params), uint256{});
+
+    // Chained through the stake inputs, from the seed through the fork.
+    BOOST_CHECK_EQUAL(*GetStakeModifierV3(chain.blocks[h + 5], params), expected.at(h + 5));
+    for (int height = POSV3_SEED_HEIGHT; height <= h + 5; ++height) {
+        BOOST_CHECK_EQUAL(*GetStakeModifierV3(chain.blocks[height], params), expected.at(height));
+    }
+
+    // Recomputed from the index alone, shallow block first this time.
+    ClearStakeModifierV3Cache();
+    BOOST_CHECK_EQUAL(*GetStakeModifierV3(chain.blocks[h + 1], params), expected.at(h + 1));
+    BOOST_CHECK_EQUAL(*GetStakeModifierV3(chain.blocks[h + 5], params), expected.at(h + 5));
+
+    // The modifier the first v3 kernel uses does not depend on block hashes, only on stake inputs.
+    IndexChain other_hashes{h + 5, 1700000000, /*hash_salt=*/7};
+    BOOST_CHECK(other_hashes.hashes[h - 1] != chain.hashes[h - 1]);
+    BOOST_CHECK_EQUAL(*GetStakeModifierV3(other_hashes.blocks[h - 1], params), expected.at(h - 1));
+    IndexChain other_stake{h + 5, 1700000000, /*hash_salt=*/9};
+    other_stake.blocks[h - 5].posStakeN = 99;
+    BOOST_CHECK(*GetStakeModifierV3(other_stake.blocks[h - 1], params) != expected.at(h - 1));
+
+    // A PoS v1 block's stake input is not in its header, so it counts as null even when the index has one.
+    IndexChain v1_with_input{h + 1, 1700000000, /*hash_salt=*/11};
+    IndexChain v1_null_input{h + 1, 1700000000, /*hash_salt=*/12};
+    for (IndexChain* v1 : {&v1_with_input, &v1_null_input}) v1->blocks[h - 3].nVersion = CBlockHeader::POS_BIT | 4;
+    v1_null_input.blocks[h - 3].posStakeHash.SetNull();
+    v1_null_input.blocks[h - 3].posStakeN = 0;
+    BOOST_REQUIRE(!v1_with_input.blocks[h - 3].posStakeHash.IsNull());
+    const uint256 v1_modifier{*GetStakeModifierV3(v1_with_input.blocks[h - 1], params)};
+    BOOST_CHECK_EQUAL(v1_modifier, *GetStakeModifierV3(v1_null_input.blocks[h - 1], params));
+    BOOST_CHECK(v1_modifier != expected.at(h - 1));
+
+    // A side branch from h + 1 with another stake input gets its own modifier; the main branch keeps its own.
+    uint256 side_hash{ArithToUint256(arith_uint256(0xbeef) << 64)};
+    CBlockIndex side;
+    IndexChain::Fill(side, h + 2, &chain.blocks[h + 1], &side_hash);
+    side.posStakeN = 7;
+    BOOST_CHECK_EQUAL(*GetStakeModifierV3(side, params), ExpectedModifierV3(side, expected.at(h + 1)));
+    BOOST_CHECK(*GetStakeModifierV3(side, params) != expected.at(h + 2));
+    BOOST_CHECK_EQUAL(*GetStakeModifierV3(chain.blocks[h + 2], params), expected.at(h + 2));
+
+    // A broken ancestry has no modifier.
+    CBlockIndex orphan;
+    IndexChain::Fill(orphan, h + 3, nullptr, &chain.hashes[h + 3]);
+    ClearStakeModifierV3Cache();
+    BOOST_CHECK(!GetStakeModifierV3(orphan, params));
+}
+
+BOOST_FIXTURE_TEST_CASE(posv3_kernel_uses_the_parent_modifier, PosV3KernelSetup)
+{
+    LOCK(cs_main);
+    const Consensus::Params& params{Params().GetConsensus()};
+    const int h{POSV3_TEST_HEIGHT};
+    IndexChain chain{h + 1, 1700000000};
+    ClearStakeModifierV3Cache();
+
+    CBlockIndex block_from;
+    block_from.nHeight = 10;
+    block_from.nTime = 1600000000;
+    CTxOut stake_out{1000 * COIN, CScript() << OP_TRUE};
+    const COutPoint prevout{InsecureRand256(), 0};
+
+    const auto check{[&](const CBlockIndex& prev, uint32_t time, uint32_t nonce, uint256& proof, uint32_t bits = 0x207fffff) {
+        CBlockHeader header;
+        header.nVersion = CBlockHeader::POSV2_BITS | 4;
+        header.hashPrevBlock = prev.GetBlockHash();
+        header.nTime = time;
+        header.nBits = bits; // by default the target saturates: every kernel hash meets it
+        header.nNonce = nonce;
+        header.posStakeHash = prevout.hash;
+        header.posStakeN = prevout.n;
+        return CheckStakeKernelHash(header, prev, block_from, stake_out, prevout, 0, true, proof, false);
+    }};
+
+    // The first v3 block and the next one each hash with their parent's modifier.
+    const auto expected{ExpectedModifiers(chain, h + 1)};
+    for (const int prev_height : {h - 1, h}) {
+        const CBlockIndex& prev{chain.blocks[prev_height]};
+        const uint256 modifier{*GetStakeModifierV3(prev, params)};
+        BOOST_CHECK_EQUAL(modifier, expected.at(prev_height));
+        // The same modifier for any candidate time; nNonce is a header rule, not part of the kernel.
+        for (const uint32_t time : {prev.nTime + 10, prev.nTime + 1000}) {
+            for (const uint32_t nonce : {0U, 5U}) {
+                uint256 proof;
+                BOOST_CHECK(check(prev, time, nonce, proof));
+                BOOST_CHECK_EQUAL(proof, StakeHashV3(modifier, block_from.nTime, prevout, time));
+            }
+        }
+    }
+
+    // A kernel hash at or above the target fails: here the target is 10^9, far below any hash.
+    uint256 proof;
+    BOOST_CHECK(!check(chain.blocks[h], chain.blocks[h].nTime + 10, 0, proof, /*bits=*/0x03000001));
+    BOOST_CHECK_EQUAL(proof, StakeHashV3(expected.at(h), block_from.nTime, prevout, chain.blocks[h].nTime + 10));
+    // Without a modifier (here an ancestry cut short) there is no kernel.
+    uint256 orphan_hash{ArithToUint256(arith_uint256(0xdead) << 64)};
+    CBlockIndex orphan;
+    IndexChain::Fill(orphan, h, nullptr, &orphan_hash);
+    BOOST_REQUIRE(!GetStakeModifierV3(orphan, params));
+    BOOST_CHECK(!check(orphan, 1700000000 + 120 * h + 10, 0, proof));
+}
+
+BOOST_FIXTURE_TEST_CASE(posv3_modifier_memo_evicts_only_deep_entries, PosV3KernelSetup)
+{
+    const Consensus::Params& params{Params().GetConsensus()};
+    const int h{POSV3_TEST_HEIGHT};
+    const int top{3200};
+    IndexChain chain{top, 1700000000};
+    ClearStakeModifierV3Cache();
+    const auto modifiers{ExpectedModifiers(chain, top)};
+    // The modifier of `block` and how many modifiers were hashed for it.
+    const auto lookup{[&](const CBlockIndex& block) {
+        const uint64_t before{StakeModifierV3HashCountForTest()};
+        const uint256 modifier{*GetStakeModifierV3(block, params)};
+        return std::make_pair(modifier, StakeModifierV3HashCountForTest() - before);
+    }};
+
+    SetStakeModifierV3CacheLimitForTest(8);
+    // Filling the memo from scratch hashes every block down to the seed once.
+    BOOST_CHECK(lookup(chain.blocks[top - 10]) == std::make_pair(modifiers.at(top - 10), uint64_t(top - 10 - POSV3_SEED_HEIGHT)));
+    // Work at the top hashes one block each time and keeps the memo bounded.
+    for (int height = top - 9; height <= top; ++height) {
+        BOOST_CHECK(lookup(chain.blocks[height]) == std::make_pair(modifiers.at(height), uint64_t{1}));
+        BOOST_CHECK(StakeModifierV3CacheSize() <= 8);
+    }
+    // The parent of the tip is still known.
+    BOOST_CHECK(lookup(chain.blocks[top - 1]) == std::make_pair(modifiers.at(top - 1), uint64_t{0}));
+
+    // An evicted deep entry is recomputed from the nearest kept multiple of 1024 below it, not from the seed.
+    BOOST_CHECK(lookup(chain.blocks[2500]) == std::make_pair(modifiers.at(2500), uint64_t{2500 - 2048}));
+    // Deep lookups one after the other reuse the previous one's entries, though the memo is over its limit.
+    for (int height = 2501; height <= 2510; ++height) {
+        BOOST_CHECK(lookup(chain.blocks[height]) == std::make_pair(modifiers.at(height), uint64_t{1}));
+    }
+    BOOST_CHECK(lookup(chain.blocks[h + 3]) == std::make_pair(modifiers.at(h + 3), uint64_t(h + 3 - POSV3_SEED_HEIGHT)));
+
+    // A block forking far below the memo costs at most 1024 hashes, every time.
+    uint256 side_hash{ArithToUint256(arith_uint256(0xf00d) << 64)};
+    CBlockIndex side;
+    IndexChain::Fill(side, 2047, &chain.blocks[2046], &side_hash);
+    side.posStakeN = 9;
+    for (int i = 0; i < 3; ++i) {
+        const auto [modifier, hashes]{lookup(side)};
+        BOOST_CHECK_EQUAL(modifier, ExpectedModifierV3(side, modifiers.at(2046)));
+        BOOST_CHECK(hashes <= 1024);
+        // Push it out of the memo again.
+        for (int height = top - 9; height <= top; ++height) lookup(chain.blocks[height]);
+    }
+
+    // After a restart the memo is empty: the first lookup hashes down to the seed but keeps only the
+    // top `limit` modifiers (and the multiples of 1024, which are not counted).
+    ClearStakeModifierV3Cache();
+    BOOST_CHECK(lookup(chain.blocks[top]) == std::make_pair(modifiers.at(top), uint64_t(top - POSV3_SEED_HEIGHT)));
+    BOOST_CHECK_EQUAL(StakeModifierV3CacheSize(), 8U);
+    BOOST_CHECK(lookup(chain.blocks[top - 7]) == std::make_pair(modifiers.at(top - 7), uint64_t{0}));
+    BOOST_CHECK(lookup(chain.blocks[top - 8]) == std::make_pair(modifiers.at(top - 8), uint64_t(top - 8 - 3072)));
+
+    SetStakeModifierV3CacheLimitForTest(std::nullopt);
+    ClearStakeModifierV3Cache();
+}
+
+BOOST_FIXTURE_TEST_CASE(posv3_modifier_memo_full_at_one_height, PosV3KernelSetup)
+{
+    const Consensus::Params& params{Params().GetConsensus()};
+    IndexChain chain{POSV3_SEED_HEIGHT, 1700000000};
+    ClearStakeModifierV3Cache();
+    SetStakeModifierV3CacheLimitForTest(64);
+
+    // More siblings than the memo holds, all right above the seed: none of them is deeper than another.
+    constexpr int SIBLINGS{100};
+    std::vector<uint256> hashes(SIBLINGS);
+    std::vector<CBlockIndex> siblings(SIBLINGS);
+    for (int i = 0; i < SIBLINGS; ++i) {
+        hashes[i] = ArithToUint256((arith_uint256(0xbeef) << 96) + i);
+        IndexChain::Fill(siblings[i], POSV3_SEED_HEIGHT + 1, &chain.blocks[POSV3_SEED_HEIGHT], &hashes[i]);
+        siblings[i].posStakeN = static_cast<uint32_t>(i);
+        const uint64_t passes{StakeModifierV3EvictionPassesForTest()};
+        BOOST_CHECK_EQUAL(*GetStakeModifierV3(siblings[i], params), ExpectedModifierV3(siblings[i], uint256{}));
+        // Over the limit, one pass finds nothing to drop and the eviction stops.
+        BOOST_CHECK_EQUAL(StakeModifierV3EvictionPassesForTest() - passes, i < 64 ? 0U : 1U);
+    }
+    BOOST_CHECK_EQUAL(StakeModifierV3CacheSize(), size_t{SIBLINGS});
+
+    SetStakeModifierV3CacheLimitForTest(std::nullopt);
+    ClearStakeModifierV3Cache();
+}
+
+BOOST_FIXTURE_TEST_CASE(posv3_wallet_tests_each_started_slot_once, PosV3KernelSetup)
+{
+    const Consensus::Params& params{Params().GetConsensus()};
+    const int h{POSV3_TEST_HEIGHT};
+    IndexChain chain{h, 1700000003};
+    const CBlockIndex& tip{chain.blocks[h - 1]};
+    const auto at{[](int64_t t) { return NodeClock::time_point{std::chrono::seconds{t}}; }};
+
+    // Only slots that have started: the wallet does not use the consensus tolerance.
+    BOOST_CHECK_EQUAL(WalletLatestPosV3Slot(at(1700000019), params), 1700000010);
+    BOOST_CHECK_EQUAL(WalletLatestPosV3Slot(at(1700000020), params), 1700000020);
+
+    // Every search completes without a kernel.
+    const auto search{[&](PosV3SlotTracker& tracker, std::vector<int64_t>& slots, int64_t now) {
+        if (auto range{tracker.NextRange(tip, at(now), params)}) {
+            for (int64_t slot = range->first; slot <= range->last; slot += params.nPosV3SlotSeconds) slots.push_back(slot);
+            range->no_kernel = true;
+            tracker.Searched(tip, *range, params);
+        }
+    }};
+    const auto tested_slots{[&](int64_t poll_interval) {
+        PosV3SlotTracker tracker;
+        std::vector<int64_t> slots;
+        const int64_t start{tip.GetBlockTime()};
+        for (int64_t now = start; now <= start + 600; now += poll_interval) search(tracker, slots, now);
+        // A last poll at the same moment for both.
+        search(tracker, slots, start + 600);
+        return slots;
+    }};
+    const auto every_second{tested_slots(1)};
+    BOOST_CHECK(every_second == tested_slots(16));
+    BOOST_REQUIRE(!every_second.empty());
+    BOOST_CHECK_EQUAL(every_second.front(), FirstPosV3Slot(tip, params));
+    BOOST_CHECK_EQUAL(every_second.back(), (tip.GetBlockTime() + 600) / 10 * 10);
+    BOOST_CHECK(std::adjacent_find(every_second.begin(), every_second.end(),
+                                   [](int64_t a, int64_t b) { return b != a + 10; }) == every_second.end());
+
+    // A new tip starts over.
+    PosV3SlotTracker tracker;
+    std::vector<int64_t> slots;
+    search(tracker, slots, tip.GetBlockTime() + 30);
+    BOOST_CHECK(!slots.empty());
+    BOOST_CHECK(!tracker.NextRange(tip, at(tip.GetBlockTime() + 30), params));
+    BOOST_CHECK(tracker.NextRange(chain.blocks[h], at(chain.blocks[h].GetBlockTime() + 30), params));
+}
+
+BOOST_FIXTURE_TEST_CASE(posv3_wallet_retries_slots_after_other_failures, PosV3KernelSetup)
+{
+    const Consensus::Params& params{Params().GetConsensus()};
+    const int h{POSV3_TEST_HEIGHT};
+    IndexChain chain{h, 1700000003};
+    const CBlockIndex& tip{chain.blocks[h - 1]};
+    const auto now{NodeClock::time_point{std::chrono::seconds{tip.GetBlockTime() + 60}}};
+    PosV3SlotTracker tracker;
+
+    // A search that failed for another reason (block validity, signing, a locked wallet...) is offered again.
+    const auto failed{tracker.NextRange(tip, now, params)};
+    BOOST_REQUIRE(failed);
+    tracker.Searched(tip, *failed, params);
+    auto retried{tracker.NextRange(tip, now, params)};
+    BOOST_REQUIRE(retried);
+    BOOST_CHECK_EQUAL(retried->first, failed->first);
+    BOOST_CHECK_EQUAL(retried->last, failed->last);
+
+    // A report about another tip changes nothing.
+    retried->no_kernel = true;
+    tracker.Searched(chain.blocks[h], *retried, params);
+    BOOST_CHECK(tracker.NextRange(tip, now, params));
+
+    // One that completed without a kernel is not.
+    tracker.Searched(tip, *retried, params);
+    BOOST_CHECK(!tracker.NextRange(tip, now, params));
+
+    // A search whose block failed after a kernel was found is offered again without that stake.
+    PosV3SlotTracker with_failures;
+    auto search{with_failures.NextRange(tip, now, params)};
+    BOOST_REQUIRE(search);
+    BOOST_CHECK_EQUAL(search->prev, tip.GetBlockHash());
+    BOOST_CHECK(search->excluded.empty());
+    const PosV3Stake first_stake{COutPoint{uint256::ONE, 0}, search->first};
+    search->used = first_stake;
+    with_failures.Searched(tip, *search, params);
+    search = with_failures.NextRange(tip, now, params);
+    BOOST_REQUIRE(search);
+    BOOST_CHECK(search->excluded == std::set<PosV3Stake>{first_stake});
+    // So is one whose block was built and then refused.
+    const PosV3Stake second_stake{COutPoint{uint256::ONE, 1}, search->last};
+    with_failures.Exclude(tip, second_stake);
+    search = with_failures.NextRange(tip, now, params);
+    BOOST_REQUIRE(search);
+    BOOST_CHECK((search->excluded == std::set<PosV3Stake>{first_stake, second_stake}));
+    // When no stake is left the search is done with the slots, and the next tip starts without exclusions.
+    search->no_kernel = true;
+    with_failures.Searched(tip, *search, params);
+    BOOST_CHECK(!with_failures.NextRange(tip, now, params));
+    const auto next_tip{with_failures.NextRange(chain.blocks[h], now + std::chrono::seconds{120}, params)};
+    BOOST_REQUIRE(next_tip);
+    BOOST_CHECK(next_tip->excluded.empty());
+}
+
+BOOST_FIXTURE_TEST_CASE(posv3_wallet_takes_the_earliest_slot_any_coin_has, PosV3KernelSetup)
+{
+    const Consensus::Params& params{Params().GetConsensus()};
+    const int h{POSV3_TEST_HEIGHT};
+    IndexChain chain{h, 1700000000};
+    const CBlockIndex& prev{chain.blocks[h - 1]};
+    const uint256 modifier{*GetStakeModifierV3(prev, params)};
+    CBlockIndex block_from;
+    block_from.nHeight = 10;
+    block_from.nTime = 1600000000;
+
+    // Targets of a quarter of the hash space for the larger coin, an eighth for the smaller one.
+    const CAmount large{20 * COIN};
+    const CAmount small{10 * COIN};
+    const uint32_t bits{arith_uint256{(arith_uint256(1) << 254) / arith_uint256(large / 100)}.GetCompact()};
+    const arith_uint256 large_target{GetKernelTarget(large, bits, true)};
+    const arith_uint256 small_target{GetKernelTarget(small, bits, true)};
+    const std::vector<PosV3Slot> slots{{prev.nTime + 10, bits}, {prev.nTime + 20, bits}};
+    const auto hash{[&](const COutPoint& prevout, size_t slot) {
+        return UintToArith256(StakeHashV3(modifier, block_from.nTime, prevout, slots[slot].time));
+    }};
+
+    // The larger coin, tried first, has a kernel in the second slot only; the smaller one in the first.
+    std::optional<std::pair<COutPoint, COutPoint>> coins;
+    for (int i = 0; i < 100000 && !coins; ++i) {
+        const COutPoint large_prevout{InsecureRand256(), 0};
+        const COutPoint small_prevout{InsecureRand256(), 1};
+        if (hash(large_prevout, 0) >= large_target && hash(large_prevout, 1) < large_target && hash(small_prevout, 0) < small_target) {
+            coins.emplace(large_prevout, small_prevout);
+        }
+    }
+    BOOST_REQUIRE(coins);
+    const std::vector<PosV3StakeCandidate> candidates{
+        {&block_from, CTxOut{large, CScript() << OP_TRUE}, coins->first},
+        {&block_from, CTxOut{small, CScript() << OP_TRUE}, coins->second},
+    };
+    const auto ranked{RankStakeKernelsV3(candidates, prev, slots, modifier, Params().MinStakeAge(), params)};
+    const std::vector<std::pair<size_t, size_t>> expected{{1, 0}, {0, 1}};
+    BOOST_CHECK(ranked == expected);
+
+    // The block is stamped with the slot the smaller coin has.
+    CBlockHeader header;
+    uint256 proof;
+    BOOST_REQUIRE(FindStakeKernelV3(header, prev, block_from, candidates[1].stake_out, candidates[1].prevout, {slots[ranked[0].second]},
+                                    modifier, Params().MinStakeAge(), params, proof));
+    BOOST_CHECK_EQUAL(header.nTime, slots[0].time);
+
+    // Coins with a kernel in the same slot keep their order.
+    const std::vector<PosV3Slot> easy{{prev.nTime + 10, 0x207fffff}};
+    const std::vector<std::pair<size_t, size_t>> in_order{{0, 0}, {1, 0}};
+    BOOST_CHECK(RankStakeKernelsV3(candidates, prev, easy, modifier, Params().MinStakeAge(), params) == in_order);
+
+    // Once the block from the smaller coin's stake failed, the larger coin's later slot comes first.
+    const auto without_small{RankStakeKernelsV3(candidates, prev, slots, modifier, Params().MinStakeAge(), params,
+                                                {{coins->second, slots[0].time}})};
+    BOOST_REQUIRE(!without_small.empty());
+    BOOST_CHECK(without_small.front() == std::make_pair(size_t{0}, size_t{1}));
+    // A coin whose earliest slot is excluded still has its later ones.
+    const std::vector<PosV3Slot> two_easy{{prev.nTime + 10, 0x207fffff}, {prev.nTime + 20, 0x207fffff}};
+    const std::vector<std::pair<size_t, size_t>> large_later{{1, 0}, {0, 1}};
+    BOOST_CHECK(RankStakeKernelsV3(candidates, prev, two_easy, modifier, Params().MinStakeAge(), params,
+                                   {{coins->first, two_easy[0].time}}) == large_later);
+    // With every stake excluded nothing is left.
+    BOOST_CHECK(RankStakeKernelsV3(candidates, prev, easy, modifier, Params().MinStakeAge(), params,
+                                   {{coins->first, easy[0].time}, {coins->second, easy[0].time}})
+                    .empty());
+}
+
+BOOST_FIXTURE_TEST_CASE(posv3_kernel_search_takes_the_slot_nbits, PosV3KernelSetup)
+{
+    const Consensus::Params& params{Params().GetConsensus()};
+    const int h{POSV3_TEST_HEIGHT};
+    IndexChain chain{h, 1700000000};
+    const CBlockIndex& prev{chain.blocks[h - 1]};
+    CBlockIndex block_from;
+    block_from.nHeight = 10;
+    block_from.nTime = 1600000000;
+    const CTxOut stake_out{1000 * COIN, CScript() << OP_TRUE};
+    const COutPoint prevout{InsecureRand256(), 0};
+
+    // The first slot's target is out of reach (target 1), the second's is met by any hash.
+    const std::vector<PosV3Slot> slots{{prev.nTime + 10, 0x03000001}, {prev.nTime + 20, 0x207fffff}};
+    CBlockHeader header;
+    header.nVersion = CBlockHeader::POSV2_BITS | 4;
+    header.nTime = 1;
+    header.nBits = 2;
+    header.nNonce = 5;
+    uint256 proof;
+    const uint256 modifier{*GetStakeModifierV3(prev, params)};
+    BOOST_REQUIRE(FindStakeKernelV3(header, prev, block_from, stake_out, prevout, slots, modifier, Params().MinStakeAge(), params, proof) == size_t{1});
+    BOOST_CHECK_EQUAL(header.nTime, prev.nTime + 20);
+    BOOST_CHECK_EQUAL(header.nBits, 0x207fffffU);
+    BOOST_CHECK_EQUAL(header.nNonce, 0U);
+    BOOST_CHECK_EQUAL(proof, StakeHashV3(modifier, block_from.nTime, prevout, header.nTime));
+
+    // An immature stake finds nothing and leaves the header alone.
+    block_from.nTime = prev.nTime;
+    CBlockHeader untouched;
+    untouched.nTime = 1;
+    BOOST_CHECK(!FindStakeKernelV3(untouched, prev, block_from, stake_out, prevout, slots, modifier, Params().MinStakeAge(), params, proof));
+    BOOST_CHECK_EQUAL(untouched.nTime, 1U);
+
+    // The slots a wallet tries start after the parent and its median time past.
+    const auto listed{PosV3Slots(prev, prev.nTime - 100, prev.nTime + 30, params)};
+    BOOST_REQUIRE_EQUAL(listed.size(), 3U);
+    BOOST_CHECK_EQUAL(listed.front().time, prev.nTime + 10);
+}
+
+BOOST_FIXTURE_TEST_CASE(posv3_proof_of_stake_uses_the_real_modifier, PosV3ProofSetup)
+{
+    const Consensus::Params& params{m_node.chainman->GetConsensus()};
+    MineAt(*this, 1700000000);
+    const CBlockIndex* parent{MineAt(*this, 1700000120)};
+    BOOST_REQUIRE_EQUAL(parent->nHeight + 1, params.PosV3Height);
+
+    LOCK(::cs_main);
+    // A side branch from five blocks below the parent, as long as the main one, with a stake input
+    // in each block: the seed block is shared, the modifier is not.
+    CBlockIndex* side_tip{const_cast<CBlockIndex*>(parent->GetAncestor(parent->nHeight - 5))};
+    CBlockIndex* best_header{nullptr};
+    while (side_tip->nHeight < parent->nHeight) {
+        CBlockHeader side;
+        side.nVersion = CBlockHeader::POSV2_BITS | 4;
+        side.hashPrevBlock = side_tip->GetBlockHash();
+        side.nTime = side_tip->nTime + 1;
+        side.nBits = side_tip->nBits;
+        side.posStakeHash = InsecureRand256();
+        side.posStakeN = 0;
+        side_tip = m_node.chainman->m_blockman.AddToBlockIndex(side, side.GetHash(), best_header);
+    }
+    ClearStakeModifierV3Cache();
+    const uint256 main_modifier{*GetStakeModifierV3(*parent, params)};
+    const uint256 side_modifier{*GetStakeModifierV3(*side_tip, params)};
+    BOOST_REQUIRE(main_modifier != side_modifier);
+
+    // The coinbase of block 1 stakes with a target of about half the hash space: no saturation.
+    const CTransactionRef& stake_tx{m_coinbase_txns[0]};
+    const COutPoint prevout{stake_tx->GetHash(), 0};
+    const CAmount value{stake_tx->vout[0].nValue};
+    const uint32_t bits{arith_uint256{(arith_uint256(1) << 255) / arith_uint256(value / 100)}.GetCompact()};
+    const arith_uint256 target{GetKernelTarget(value, bits, true)};
+    BOOST_REQUIRE(target < ~arith_uint256(0));
+    const uint32_t time_from{static_cast<uint32_t>(m_node.chainman->ActiveChain()[1]->GetBlockTime())};
+
+    // A slot where the kernel meets the target with the main branch's modifier and misses it with the side branch's.
+    uint32_t time{static_cast<uint32_t>(FirstPosV3Slot(*parent, params))};
+    while (!(UintToArith256(StakeHashV3(main_modifier, time_from, prevout, time)) < target &&
+             UintToArith256(StakeHashV3(side_modifier, time_from, prevout, time)) >= target)) {
+        time += params.nPosV3SlotSeconds;
+    }
+    SetMockTime(time);
+
+    const auto check{[&](const CBlockIndex& prev, uint256& proof) EXCLUSIVE_LOCKS_REQUIRED(::cs_main) {
+        CBlockHeader header;
+        header.nVersion = CBlockHeader::POSV2_BITS | 4;
+        header.hashPrevBlock = prev.GetBlockHash();
+        header.hashMerkleRoot = InsecureRand256();
+        header.nTime = time;
+        header.nBits = bits;
+        header.posStakeHash = prevout.hash;
+        header.posStakeN = prevout.n;
+        BOOST_REQUIRE(coinbaseKey.SignCompact(header.GetHash(), header.posBlockSig));
+        BlockValidationState state;
+        CheckProofOfStake(state, header, proof, params, nullptr, &m_node.chainman->m_blockman,
+                          &m_node.chainman->ActiveChain(), &m_node.chainman->ActiveChainstate().CoinsTip());
+        return state;
+    }};
+    for (const bool clear_memo : {false, true}) {
+        BOOST_TEST_CONTEXT("memo cleared=" << clear_memo) {
+            if (clear_memo) ClearStakeModifierV3Cache();
+            uint256 proof;
+            const BlockValidationState on_main{check(*parent, proof)};
+            BOOST_CHECK_MESSAGE(on_main.IsValid(), on_main.ToString());
+            BOOST_CHECK_EQUAL(proof, StakeHashV3(main_modifier, time_from, prevout, time));
+            BOOST_CHECK_EQUAL(check(*side_tip, proof).GetRejectReason(), "bad-pos-proof");
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(posv3_kernel_target_saturates)
+{
+    // 3 * 2^255 does not fit: before v3 it wraps to 2^255 (the old guard does not catch it), from v3 on it saturates.
+    const uint32_t bits_2_255{0x21008000};
+    BOOST_REQUIRE(arith_uint256().SetCompact(bits_2_255) == arith_uint256(1) << 255);
+    BOOST_CHECK(GetKernelTarget(300, bits_2_255, /*saturate=*/false) == arith_uint256(1) << 255);
+    BOOST_CHECK(GetKernelTarget(300, bits_2_255, /*saturate=*/true) == ~arith_uint256(0));
+
+    // A product that fits is the same either way.
+    const uint32_t bits{0x1d00ffff};
+    const arith_uint256 expected{arith_uint256(1000) * arith_uint256().SetCompact(bits)};
+    BOOST_CHECK(GetKernelTarget(1000 * 100, bits, false) == expected);
+    BOOST_CHECK(GetKernelTarget(1000 * 100, bits, true) == expected);
+}
 
 BOOST_AUTO_TEST_SUITE_END()

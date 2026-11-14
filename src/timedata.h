@@ -11,6 +11,7 @@
 #include <cassert>
 #include <chrono>
 #include <cstdint>
+#include <optional>
 #include <vector>
 
 static const int64_t DEFAULT_MAX_TIME_ADJUSTMENT = 70 * 60;
@@ -77,6 +78,9 @@ public:
 int64_t GetTimeOffset();
 NodeClock::time_point GetAdjustedTime();
 void AddTimeData(const CNetAddr& ip, int64_t nTime);
+/** Warn when the median peer clock offset exceeds `max_offset` seconds (PoS v3 staking checks block
+ *  times against each node's own clock); nullopt turns the warning off. Set by validation as the tip moves. */
+void SetStakingClockLimit(std::optional<int64_t> max_offset);
 
 /**
  * Reset the internal state of GetTimeOffset(), GetAdjustedTime() and AddTimeData().

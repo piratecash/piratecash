@@ -133,6 +133,7 @@ static constexpr auto POS_FUTURE_HEADER_MAX_WAIT{2min};
 /** How many times in a row a peer is asked again for such a header without giving us a new one */
 static constexpr int MAX_POS_FUTURE_HEADER_RETRIES{3};
 // A proof-of-work header is refused for its time only further ahead than a proof-of-stake one is waited for.
+// PoS v3 headers are allowed a lead of one slot minus a second, well below MAX_POS_BLOCK_AHEAD_TIME (PosV3FutureTolerance() in consensus/params.h).
 static_assert(MAX_FUTURE_BLOCK_TIME >= MAX_POS_BLOCK_AHEAD_TIME + count_seconds(POS_FUTURE_HEADER_MAX_WAIT));
 /** How many times a peer may fail to deliver headers below a checkpoint before it is disconnected */
 static constexpr int MAX_POS_PRESYNC_FAILURES{3};
@@ -3596,7 +3597,19 @@ void PeerManagerImpl::RememberFutureHeader(Peer& peer, const std::vector<CBlockH
 {
     if (peer.m_pos_future_header_retry != NodeClock::time_point{} || peer.m_pos_future_header_retries >= MAX_POS_FUTURE_HEADER_RETRIES) return;
     const auto now{NodeClock::now()};
-    const auto wait{pos_presync::FutureHeaderWait(headers, TicksSinceEpoch<std::chrono::seconds>(now), MAX_POS_BLOCK_AHEAD_TIME,
+    // The lead allowed depends on the height. Headers before the one that came too early were
+    // accepted, so its parent is known; the ones after it build on it.
+    std::vector<int64_t> max_ahead(headers.size(), MAX_POS_BLOCK_AHEAD_TIME);
+    {
+        LOCK(::cs_main);
+        std::optional<int> height;
+        for (size_t i = 0; i < headers.size(); ++i) {
+            const CBlockIndex* prev{m_chainman.m_blockman.LookupBlockIndex(headers[i].hashPrevBlock)};
+            height = prev ? std::optional<int>{prev->nHeight + 1} : (height ? std::optional<int>{*height + 1} : std::nullopt);
+            if (height) max_ahead[i] = MaxPosBlockAheadTime(*height, m_chainparams.GetConsensus());
+        }
+    }
+    const auto wait{pos_presync::FutureHeaderWait(headers, TicksSinceEpoch<std::chrono::seconds>(now), max_ahead,
                                                   count_seconds(POS_FUTURE_HEADER_MAX_WAIT))};
     if (!wait) return;
     peer.m_pos_future_header_retry = now + std::chrono::seconds{*wait};

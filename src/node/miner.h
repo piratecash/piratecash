@@ -33,6 +33,7 @@ class CEvoDB;
 class CMNListBuilder;
 class CScript;
 struct LLMQContext;
+struct PosV3Search;
 
 namespace wallet {
 class CWallet;
@@ -199,8 +200,11 @@ public:
 
     size_t GetBlockMaxSize() const { return m_options.nBlockMaxSize; }
 
-    /** Construct a new block template with coinbase to scriptPubKeyIn */
-    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, std::shared_ptr<wallet::CWallet> pwallet = nullptr, int64_t block_time = 0, bool isPos = false);
+    /** Construct a new block template with coinbase to scriptPubKeyIn.
+     *  A PoS block at a PoS v3 height needs `v3_search` and takes the earliest of its slots that has a kernel
+     *  (block_time is not used); v3_search->no_kernel tells whether it failed only for want of a kernel. */
+    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, std::shared_ptr<wallet::CWallet> pwallet = nullptr, int64_t block_time = 0, bool isPos = false,
+                                                   PosV3Search* v3_search = nullptr);
 
     inline static std::optional<int64_t> m_last_block_num_txs{};
     inline static std::optional<int64_t> m_last_block_size{};

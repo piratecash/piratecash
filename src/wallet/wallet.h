@@ -60,6 +60,8 @@ class CKey;
 class CBlock;
 class CBlockIndex;
 class CScript;
+struct PosV3Search;
+struct PosV3Slot;
 class CTxDSIn;
 enum class FeeEstimateMode;
 struct bilingual_str;
@@ -153,7 +155,7 @@ static const int DEFAULT_STAKE_AUTOCOMBINE = AUTOCOMBINE_SAME;
 class CCoinControl;
 class CWalletTx;
 class ReserveDestination;
-using StakeCandidates = std::vector<std::tuple<CAmount, const CWalletTx*, unsigned int>>;
+using StakeCandidates = std::vector<std::pair<CAmount, COutPoint>>;
 
 /** (client) version numbers for particular wallet features */
 struct CompactTallyItem
@@ -581,8 +583,10 @@ public:
     int64_t nStakeCombineMax = DEFAULT_STAKE_COMBINE_MAX;
     int fAutocombine = DEFAULT_STAKE_AUTOCOMBINE;
     bool inputStakeProtect = DEFAULT_INPUT_STAKE_PROTECT;
-    mutable StakeCandidates setStakeCoins;
-    mutable int64_t nLastStakeSetUpdate = 0;
+    //! Serialises CreateCoinStake() (staking thread, generatestake). Taken before cs_wallet and cs_main.
+    Mutex m_stake_mutex;
+    StakeCandidates setStakeCoins GUARDED_BY(m_stake_mutex);
+    int64_t nLastStakeSetUpdate GUARDED_BY(m_stake_mutex) = 0;
     int64_t nStakeSetUpdateTime = 60;
 
     /** Construct wallet with specified name and database implementation. */
@@ -621,7 +625,12 @@ public:
     bool IsCrypted() const;
     bool IsLocked(bool fForMixing = false) const override;
     bool Lock(bool fForMixing = false);
-    bool CreateCoinStake(const CBlockIndex* pindex_prev, CBlock& curr_block, CMutableTransaction& coinbaseTx, size_t max_tx_size, size_t max_sigops);
+    /** With `v3_slots` (PoS v3 heights) the kernel is searched in those slots, the earliest slot any coin has a
+     *  kernel in (leaving out v3_search->excluded) is taken and sets the block's time and nBits; the stake used
+     *  and whether the slots are done are reported in `v3_search`. */
+    bool CreateCoinStake(const CBlockIndex* pindex_prev, CBlock& curr_block, CMutableTransaction& coinbaseTx, size_t max_tx_size, size_t max_sigops,
+                         const std::vector<PosV3Slot>* v3_slots = nullptr, PosV3Search* v3_search = nullptr)
+        EXCLUSIVE_LOCKS_REQUIRED(!m_stake_mutex);
     void AutocombineCoinStake(const COutPoint& kernel_prevout, const CPubKey& kernel_pubkey,
                               CAmount target_amount, size_t max_tx_size, size_t max_sigops,
                               CMutableTransaction& stakeTx, std::vector<CScript>& vin_scripts,

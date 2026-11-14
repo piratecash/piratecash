@@ -1206,29 +1206,71 @@ static RPCHelpMan generatestake()
 
         std::shared_ptr<CBlock> block;
         std::string last_failure{"no block time left to try"};
-        for (int64_t block_time = std::max<int64_t>(tip->GetMedianTimePast() + 1, now); block_time <= latest_time && !ShutdownRequested();) {
-            auto block_template{assembler.CreateNewBlock(CScript{}, pwallet, block_time, /*isPos=*/true)};
+        bool processed{false};
+        const auto try_candidate{[&](std::unique_ptr<node::CBlockTemplate> block_template) {
             if (!block_template) {
-                // No stake in this time window.
                 last_failure = "no stake found";
-                block_time += hash_drift;
-                continue;
+                return false;
             }
             auto candidate{std::make_shared<CBlock>(std::move(block_template->block))};
-
             BlockValidationState state;
             if (WITH_LOCK(::cs_main, return CheckProof(state, *candidate, Params().GetConsensus(), &chainman.m_blockman,
                                                        &chainman.ActiveChain(), &chainman.ActiveChainstate().CoinsTip()))) {
                 block = std::move(candidate);
-                break;
+                return true;
             }
             last_failure = state.ToString();
-            block_time = std::max<int64_t>(block_time + 1, candidate->nTime + hash_drift);
+            return false;
+        }};
+        const Consensus::Params& consensus{Params().GetConsensus()};
+        if (consensus.IsPosV3Height(tip->nHeight + 1)) {
+            // The same slots a staking wallet tries: those that have started on our own clock. As in
+            // PoSMiner, the stake of a block that fails is left out and the search goes on.
+            PosV3SlotTracker tracker;
+            const auto slots_now{NodeClock::now()};
+            while (auto search{tracker.NextRange(*tip, slots_now, consensus)}) {
+                if (ShutdownRequested()) break;
+                auto block_template{assembler.CreateNewBlock(CScript{}, pwallet, search->first, /*isPos=*/true, &*search)};
+                if (!block_template) {
+                    // Failed before a kernel was found (wallet locked, the tip moved...): trying again would fail the same way.
+                    if (!search->no_kernel && !search->used) break;
+                    tracker.Searched(*tip, *search, consensus);
+                    continue;
+                }
+                if (try_candidate(std::move(block_template))) {
+                    if (chainman.ProcessNewBlock(block, /*force_processing=*/true, /*new_block=*/nullptr)) {
+                        // Stored but not connected (it failed to connect): go on with another coin or slot.
+                        if (WITH_LOCK(::cs_main, return chainman.ActiveChain().Tip()) != tip) {
+                            processed = true;
+                            break;
+                        }
+                        last_failure = "block not connected";
+                    } else {
+                        last_failure = "block not accepted";
+                    }
+                    block.reset();
+                }
+                CHECK_NONFATAL(search->used);
+                tracker.Exclude(*tip, *search->used);
+            }
+        } else {
+            for (int64_t block_time = std::max<int64_t>(tip->GetMedianTimePast() + 1, now); block_time <= latest_time && !ShutdownRequested();) {
+                auto block_template{assembler.CreateNewBlock(CScript{}, pwallet, block_time, /*isPos=*/true)};
+                if (!block_template) {
+                    // No stake in this time window.
+                    last_failure = "no stake found";
+                    block_time += hash_drift;
+                    continue;
+                }
+                const int64_t candidate_time{block_template->block.nTime};
+                if (try_candidate(std::move(block_template))) break;
+                block_time = std::max<int64_t>(block_time + 1, candidate_time + hash_drift);
+            }
         }
         if (!block) {
             throw JSONRPCError(RPC_MISC_ERROR, strprintf("No stake found on top of height %d (%s): no mature coins, or the clock has to move forward", tip->nHeight, last_failure));
         }
-        if (!chainman.ProcessNewBlock(block, /*force_processing=*/true, /*new_block=*/nullptr)) {
+        if (!processed && !chainman.ProcessNewBlock(block, /*force_processing=*/true, /*new_block=*/nullptr)) {
             throw JSONRPCError(RPC_INTERNAL_ERROR, "ProcessNewBlock, block not accepted");
         }
         block_hashes.push_back(block->GetHash().GetHex());

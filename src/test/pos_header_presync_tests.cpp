@@ -118,6 +118,17 @@ BOOST_AUTO_TEST_CASE(header_too_new_is_waited_for_only_briefly)
     BOOST_CHECK(!pos_presync::FutureHeaderWait({}, now, 180, 120));
 }
 
+BOOST_AUTO_TEST_CASE(header_too_new_uses_the_lead_of_its_height)
+{
+    const int64_t now{10000};
+    const auto header_at{[](int64_t time) { CBlockHeader header; header.nTime = time; return header; }};
+
+    // A PoS v3 header is allowed a lead of 9 s, a pre-v3 one 180 s.
+    BOOST_CHECK(!pos_presync::FutureHeaderWait({header_at(now + 9)}, now, std::vector<int64_t>{9}, 120));
+    BOOST_CHECK_EQUAL(*pos_presync::FutureHeaderWait({header_at(now + 20)}, now, std::vector<int64_t>{9}, 120), 11);
+    BOOST_CHECK_EQUAL(*pos_presync::FutureHeaderWait({header_at(now + 100), header_at(now + 110)}, now, std::vector<int64_t>{180, 9}, 120), 101);
+}
+
 BOOST_AUTO_TEST_CASE(segment_is_handed_over_only_on_anchor_match)
 {
     const auto chain{MakeChain(BASE_HASH, 10)};
