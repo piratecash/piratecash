@@ -37,6 +37,7 @@
 #include <pow.h>
 #include <primitives/transaction.h>
 #include <script/signingprovider.h>
+#include <script/standard.h>
 #include <sync.h>
 #include <timedata.h>
 #include <util/moneystr.h>
@@ -60,6 +61,7 @@
 #include <llmq/context.h>
 #include <llmq/options.h>
 #include <llmq/snapshot.h>
+#include <key_io.h>
 #include <masternode/payments.h>
 #include <masternode/sync.h>
 
@@ -332,7 +334,17 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
     m_last_block_num_txs = nBlockTx;
     m_last_block_size = nBlockSize;
-    LogPrintf("CreateNewBlock(): total size %u txs: %u fees: %ld sigops %d\n", nBlockSize, nBlockTx, nFees, nBlockSigOps);
+    // The staking thread builds a block every second and almost never finds a stake:
+    // what is said about the block is kept and logged only once a stake is found.
+    std::vector<std::string> pos_block_log;
+    const auto log_block = [&](std::string message) {
+        if (isPos) {
+            pos_block_log.push_back(std::move(message));
+        } else {
+            LogPrintf("%s\n", message);
+        }
+    };
+    log_block(strprintf("CreateNewBlock(): total size %u txs: %u fees: %ld sigops %d", nBlockSize, nBlockTx, nFees, nBlockSigOps));
 
     // Create coinbase transaction.
     CMutableTransaction coinbaseTx;
@@ -397,10 +409,10 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
             }
             if (fV20Active_context) {
                 if (CalcCbTxBestChainlock(m_chainlocks, pindexPrev, cbTx.bestCLHeightDiff, cbTx.bestCLSignature)) {
-                    LogPrintf("CreateNewBlock() h[%d] CbTx bestCLHeightDiff[%d] CLSig[%s]\n", nHeight, cbTx.bestCLHeightDiff, cbTx.bestCLSignature.ToString());
+                    log_block(strprintf("CreateNewBlock() h[%d] CbTx bestCLHeightDiff[%d] CLSig[%s]", nHeight, cbTx.bestCLHeightDiff, cbTx.bestCLSignature.ToString()));
                 } else {
                     // not an error
-                    LogPrintf("CreateNewBlock() h[%d] CbTx failed to find best CL. Inserting null CL\n", nHeight);
+                    log_block(strprintf("CreateNewBlock() h[%d] CbTx failed to find best CL. Inserting null CL", nHeight));
                 }
                 if (!isPos) {
                     set_credit_pool_balance(cbTx);
@@ -415,6 +427,11 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     // get some info back to pass to getblocktemplate
     const MnRewardEra mn_reward_era{GetMnRewardEraAfter(pindexPrev, m_chainstate.m_chainman)};
     m_chain_helper.mn_payments->FillBlockPayments(coinbaseTx, pindexPrev, blockSubsidy, nFees, mn_reward_era, pblocktemplate->voutMasternodePayments, pblocktemplate->voutSuperblockPayments);
+    for (const CTxOut& txout : pblocktemplate->voutMasternodePayments) {
+        CTxDestination dest;
+        ExtractDestination(txout.scriptPubKey, dest);
+        log_block(strprintf("CreateNewBlock() h[%d] masternode payment %lld to %s", nHeight, txout.nValue, EncodeDestination(dest)));
+    }
 
     pblock->vtx[0] = MakeTransactionRef(std::move(coinbaseTx));
     pblocktemplate->vTxFees[0] = -nFees;
@@ -465,6 +482,9 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
                 SetTxPayload(coinbaseTx, cbTx);
             }
 
+            for (const std::string& message : pos_block_log) {
+                LogPrintf("%s\n", message);
+            }
             sign_block = true;
             pblock->CoinBase() = MakeTransactionRef(std::move(coinbaseTx));
             pblocktemplate->vTxFees[1] = 0;
