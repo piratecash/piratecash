@@ -1208,7 +1208,12 @@ static RPCHelpMan generatestake()
         std::string last_failure{"no block time left to try"};
         for (int64_t block_time = std::max<int64_t>(tip->GetMedianTimePast() + 1, now); block_time <= latest_time && !ShutdownRequested();) {
             auto block_template{assembler.CreateNewBlock(CScript{}, pwallet, block_time, /*isPos=*/true)};
-            if (!block_template) throw JSONRPCError(RPC_WALLET_ERROR, "Could not create a proof-of-stake block");
+            if (!block_template) {
+                // No stake in this time window.
+                last_failure = "no stake found";
+                block_time += hash_drift;
+                continue;
+            }
             auto candidate{std::make_shared<CBlock>(std::move(block_template->block))};
 
             BlockValidationState state;

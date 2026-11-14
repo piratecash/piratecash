@@ -470,9 +470,8 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
             pblocktemplate->vTxFees[1] = 0;
             pblocktemplate->vTxSigOps[1] = GetLegacySigOpCount(*pblock->Stake());
         } else {
-            pblock->vtx.erase(pblock->vtx.begin() + 1);
-            pblocktemplate->vTxFees.erase(pblocktemplate->vTxFees.begin() + 1);
-            pblocktemplate->vTxSigOps.erase(pblocktemplate->vTxSigOps.begin() + 1);
+            // Nothing to stake in this time window. A block without a stake is not worth validating.
+            return nullptr;
         }
 
         pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
@@ -501,7 +500,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     BlockValidationState state;
     if (m_options.test_block_validity && !TestBlockValidity(state, m_chainlocks, m_evoDb, chainparams, m_chainstate, *pblock, pindexPrev, /*fCheckPOW=*/false, /*fCheckMerkleRoot=*/false)) {
         if (isPos) {
-            LogError("%s: TestBlockValidity failed: %s", __func__, state.ToString());
+            LogError("%s: TestBlockValidity failed: %s\n", __func__, state.ToString());
             return nullptr;
         }
         throw std::runtime_error(strprintf("%s: TestBlockValidity failed: %s", __func__, state.ToString()));
@@ -1145,8 +1144,14 @@ void PoSMiner(std::shared_ptr<wallet::CWallet> pwallet, NodeContext& node, CThre
         auto pblocktemplate = ba.CreateNewBlock(coinbaseScript, pwallet, start_block_time, true);
         nLastCoinStakeSearchTime = TicksSinceEpoch<std::chrono::seconds>(GetAdjustedTime());
 
-        if (!pblocktemplate.get())
+        if (!pblocktemplate.get()) {
+            // No stake in this time window: move on to the next one, as after a failed proof check.
+            start_block_time = std::min<int64_t>(
+                start_block_time + pwallet->nHashDrift,
+                nLastCoinStakeSearchTime.load() + MAX_POS_BLOCK_AHEAD_TIME - MAX_POS_BLOCK_AHEAD_SAFETY_MARGIN
+            );
             continue;
+        }
 
         auto pblock = std::make_shared<CBlock>(std::move(pblocktemplate->block));
 
