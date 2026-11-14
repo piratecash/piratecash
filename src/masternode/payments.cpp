@@ -217,7 +217,7 @@ CAmount GetMasternodePayment(int nHeight, CAmount blockValue, const Consensus::P
         CTxDestination dest;
         ExtractDestination(txout.scriptPubKey, dest);
 
-        LogPrintf("CMNPaymentsProcessor::%s -- Masternode payment %lld to %s\n", __func__, txout.nValue, EncodeDestination(dest));
+        LogPrint(BCLog::MNPAYMENTS, "CMNPaymentsProcessor::%s -- Masternode payment %lld to %s\n", __func__, txout.nValue, EncodeDestination(dest));
     }
 
     return true;
