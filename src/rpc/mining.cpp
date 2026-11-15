@@ -1200,6 +1200,9 @@ static RPCHelpMan generatestake()
     UniValue block_hashes(UniValue::VARR);
     for (int i = 0; i < num_blocks && !ShutdownRequested(); ++i) {
         const CBlockIndex* tip{CHECK_NONFATAL(WITH_LOCK(::cs_main, return chainman.ActiveChain().Tip()))};
+        if (static_cast<uint32_t>(tip->nHeight + 1) < Params().FirstPoSv2Block()) {
+            throw JSONRPCError(RPC_MISC_ERROR, strprintf("Cannot stake block %d: proof-of-stake starts at height %d", tip->nHeight + 1, Params().FirstPoSv2Block()));
+        }
         const int64_t hash_drift{std::max<int64_t>(1, WITH_LOCK(pwallet->cs_wallet, return pwallet->nHashDrift))};
         const int64_t now{TicksSinceEpoch<std::chrono::seconds>(GetAdjustedTime())};
         const int64_t latest_time{now + MAX_POS_BLOCK_AHEAD_TIME - MAX_POS_BLOCK_AHEAD_SAFETY_MARGIN};

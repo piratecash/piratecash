@@ -2388,20 +2388,9 @@ int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Para
     VersionBitsCache versionbitscache;
     int32_t nVersion = versionbitscache.ComputeBlockVersion(pindexPrev, params);
 
-    if (pindexPrev == nullptr) {
-        // pass
-    } else if (pindexPrev->IsProofOfStakeV2() && isPos) {
-        // Once we switch to PoSv2, we continue that way
+    // Staked blocks are made only in the PoSv2 format.
+    if (pindexPrev != nullptr && isPos) {
         nVersion |= VERSIONBITS_POSV2_BITS;
-    } else if (IsPoSV2EnforcedHeight(pindexPrev->nHeight + 1) && isPos) {
-        // Check if enforced by configured activation height
-        nVersion |= VERSIONBITS_POSV2_BITS;
-    } else if (pindexPrev->IsProofOfStake()  && isPos) {
-        // Once we switch to PoS, we continue that way
-        nVersion |= VERSIONBITS_POS_BIT;
-    } else if (IsPoSEnforcedHeight(pindexPrev->nHeight + 1)  && isPos) {
-        // Check if enforced by configured activation height
-        nVersion |= VERSIONBITS_POS_BIT;
     }
 
     return nVersion;

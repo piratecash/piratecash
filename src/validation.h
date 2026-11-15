@@ -1308,7 +1308,7 @@ MnRewardEra GetMnRewardEraAfter(const CBlockIndex* pindexPrev, const ChainstateM
 
 /** Check if Proof-of-Stake is required for particular height **/
 bool IsPoSEnforcedHeight(int nBlockHeight);
-bool IsPoSV2EnforcedHeight(int nFirstPoSv2Block);
+bool IsPoSV2EnforcedHeight(int nBlockHeight);
 bool IsPowActiveHeight(int nBlockHeight);
 
 bool CheckProof(BlockValidationState& state, const CBlockIndex& pindex, const Consensus::Params& params);

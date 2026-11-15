@@ -1041,6 +1041,8 @@ void StakingPasses(const std::shared_ptr<wallet::CWallet>& pwallet, NodeContext&
     int64_t start_block_time = 0;
     PosV3SlotTracker slot_tracker;
     const CChainParams& chainparams = Params();
+    //! The tip a "before the first PoSv2 block" wait was logged for.
+    const CBlockIndex* logged_before_posv2{nullptr};
 
     while (!interrupt) {
         auto hash_interval = std::max(pwallet->nHashInterval, (unsigned int)1);
@@ -1110,10 +1112,14 @@ void StakingPasses(const std::shared_ptr<wallet::CWallet>& pwallet, NodeContext&
                 continue;
             }
 
-            if (pindexPrev->nHeight + 1  < chainparams.GetConsensus().nForkHeight) {
+            // Staked blocks are PoSv2 blocks (FirstPoSv2Block() is the fork height on mainnet and testnet).
+            if (static_cast<uint32_t>(pindexPrev->nHeight + 1) < chainparams.FirstPoSv2Block()) {
                 interrupt.sleep_for(std::chrono::seconds(hash_interval));
                 SetMiningStatus(":<br>- PoSv2 is not enabled at height <b>" + std::to_string(pindexPrev->nHeight + 1) + "</b>");
-                LogPrint(BCLog::STAKING, "%s : %s \n", __func__, getMiningStatus());
+                if (logged_before_posv2 != pindexPrev) {
+                    LogPrint(BCLog::STAKING, "%s : %s \n", __func__, getMiningStatus());
+                    logged_before_posv2 = pindexPrev;
+                }
                 continue;
             }
         }

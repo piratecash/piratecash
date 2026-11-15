@@ -39,257 +39,6 @@
 
 using namespace std;
 
-// NOTE: This should be > 10 minutes
-// MODIFIER_INTERVAL: time to elapse before new modifier is computed
-static constexpr unsigned int MODIFIER_INTERVAL = 60;
-
-// MODIFIER_INTERVAL_RATIO:
-// ratio of group interval length between the last group and the first group
-static constexpr int MODIFIER_INTERVAL_RATIO = 3;
-
-static constexpr int MODIFIER_INTERVAL_SECTIONS_MAX = 64;
-
-// Get the last stake modifier and its generation time from a given block
-static bool GetLastStakeModifier(const CBlockIndex* pindex, uint32_t& nStakeModifier, int64_t& nModifierTime)
-{
-    if (!pindex) {
-        LogError("GetLastStakeModifier: null pindex\n");
-        return false;
-    }
-    while (pindex && pindex->pprev && !pindex->IsGeneratedStakeModifier())
-        pindex = pindex->pprev;
-    nStakeModifier = pindex->nStakeModifier();
-    nModifierTime = pindex->GetBlockTime();
-    return true;
-}
-
-template <int Section>
-struct StakeModifierSelectionIntervalSection {
-    static_assert(Section >= 0 && Section < MODIFIER_INTERVAL_SECTIONS_MAX, "Invalid nSection");
-    static constexpr auto MI_1 = MODIFIER_INTERVAL_SECTIONS_MAX - 1;
-    static constexpr int value = (MODIFIER_INTERVAL * MI_1) / (MI_1 + ((MI_1 - Section) * (MODIFIER_INTERVAL_RATIO - 1)));
-};
-
-using IntervalSectionArray = int64_t[64];
-
-template<int Section>
-struct StakeModifierSelectionIntervalHelper {
-    static constexpr int64_t value = (
-        StakeModifierSelectionIntervalHelper<Section-1>::value
-        + StakeModifierSelectionIntervalSection<Section>::value
-    );
-    static void fill(IntervalSectionArray &arr) {
-        arr[Section] = StakeModifierSelectionIntervalSection<Section>::value;
-        StakeModifierSelectionIntervalHelper<Section-1>::fill(arr);
-    }
-};
-template<>
-struct StakeModifierSelectionIntervalHelper<0> {
-    static constexpr int64_t value = StakeModifierSelectionIntervalSection<0>::value;
-    static void fill(IntervalSectionArray &arr) {
-        arr[0] = StakeModifierSelectionIntervalSection<0>::value;
-    }
-};
-
-class StakeModifierIntervalSelector {
-private:
-    IntervalSectionArray array;
-
-public:
-    StakeModifierIntervalSelector() {
-        StakeModifierSelectionIntervalHelper<MODIFIER_INTERVAL_SECTIONS_MAX - 1>::fill(array);
-    }
-
-    int64_t Get(int section) {
-        assert(section >= 0 && section < 64);
-        return array[section];
-    }
-};
-StakeModifierIntervalSelector g_StakeModifierIntervalSelector;
-
-// Get stake modifier selection interval (in seconds)
-static constexpr int64_t GetStakeModifierSelectionInterval()
-{
-    return StakeModifierSelectionIntervalHelper<MODIFIER_INTERVAL_SECTIONS_MAX - 1>::value;
-}
-
-using StakeModifierCandidate = tuple<int64_t, uint256, const CBlockIndex*>;
-
-// select a block from the candidate blocks in vSortedByTimestamp, excluding
-// already selected blocks in vSelectedBlocks, and with timestamp up to
-// nSelectionIntervalStop.
-static bool SelectBlockFromCandidates(
-    vector<StakeModifierCandidate>& vSortedByTimestamp,
-    map<uint256, const CBlockIndex*>& mapSelectedBlocks,
-    int64_t nSelectionIntervalStop,
-    uint64_t nStakeModifierPrev,
-    const CBlockIndex** pindexSelected)
-{
-    bool fSelected = false;
-    arith_uint256 hashBest{0};
-    *pindexSelected = nullptr;
-
-    for (auto iter = vSortedByTimestamp.begin(); ; ++iter) {
-        if (iter == vSortedByTimestamp.end()) {
-            vSortedByTimestamp.clear();
-            break;
-        }
-
-        const CBlockIndex* pindex = get<2>(*iter);
-        if (!pindex) {
-            LogError("SelectBlockFromCandidates: missing candidate block index\n");
-            return false;
-        }
-        if (fSelected && pindex->GetBlockTime() > nSelectionIntervalStop) {
-            // No point to re-consider the blocks
-            vSortedByTimestamp.erase(vSortedByTimestamp.begin(), iter+1);
-            break;
-        }
-
-        if (mapSelectedBlocks.count(pindex->GetBlockHash()) > 0)
-            continue;
-
-        // compute the selection hash by hashing an input that is unique to that block
-        uint256 hashProof = pindex->GetBlockHash();
-
-        CDataStream ss(SER_GETHASH, 0);
-        ss << hashProof << nStakeModifierPrev;
-        arith_uint256 hashSelection = UintToArith256(Hash(ss));
-
-        // the selection hash is divided by 2**32 so that proof-of-stake block
-        // is always favored over proof-of-work block. this is to preserve
-        // the energy efficiency property
-        if (pindex->IsProofOfStake())
-            hashSelection >>= 32;
-
-        if (fSelected && hashSelection < hashBest) {
-            hashBest = hashSelection;
-            *pindexSelected = (const CBlockIndex*)pindex;
-        } else if (!fSelected) {
-            iter = vSortedByTimestamp.begin();
-            fSelected = true;
-            hashBest = hashSelection;
-            *pindexSelected = (const CBlockIndex*)pindex;
-        }
-    }
-
-    LogPrint(BCLog::STAKING, "%s: selection hash=%s\n", __func__, hashBest.ToString().c_str());
-
-    return fSelected;
-}
-
-// Stake Modifier (hash modifier of proof-of-stake):
-// The purpose of stake modifier is to prevent a txout (coin) owner from
-// computing future proof-of-stake generated by this txout at the time
-// of transaction confirmation. To meet kernel protocol, the txout
-// must hash with a future stake modifier to generate the proof.
-// Stake modifier consists of bits each of which is contributed from a
-// selected block of a given block group in the past.
-// The selection of a block is based on a hash of the block's proof-hash and
-// the previous stake modifier.
-// Stake modifier is recomputed at a fixed time interval instead of every
-// block. This is to make it difficult for an attacker to gain control of
-// additional bits in the stake modifier, even after generating a chain of
-// blocks.
-bool ComputeNextStakeModifier(const CBlockIndex* pindexPrev, uint32_t& nStakeModifier)
-{
-    nStakeModifier = 0;
-    if (!pindexPrev) {
-        return true; // genesis block's modifier is 0
-    }
-    if (pindexPrev->nHeight == 0) {
-        //Give a stake modifier to the first block
-        nStakeModifier = static_cast<uint32_t>(0x1234567887654321ULL);
-        return true;
-    }
-
-    // First find current stake modifier and its generation block time
-    // if it's not old enough, return the same stake modifier
-    int64_t nModifierTime = 0;
-    if (!GetLastStakeModifier(pindexPrev, nStakeModifier, nModifierTime)) {
-        LogError("ComputeNextStakeModifier: unable to get last modifier\n");
-        return false;
-    }
-
-    LogPrint(BCLog::STAKING, "%s: prev modifier=%08x time=%d\n",
-             __func__, nStakeModifier, nModifierTime);
-
-    LogPrint(BCLog::STAKING, "%s: block %d modifier time last vs prev %llx~%llx >= %llx~%llx\n",
-             __func__, pindexPrev->nHeight,
-             nModifierTime, (nModifierTime / MODIFIER_INTERVAL),
-             pindexPrev->GetBlockTime(), (pindexPrev->GetBlockTime() / MODIFIER_INTERVAL));
-
-    if (nModifierTime / MODIFIER_INTERVAL >= pindexPrev->GetBlockTime() / MODIFIER_INTERVAL) {
-        return true;
-    }
-
-    // Sort candidate blocks by timestamp
-    vector<StakeModifierCandidate> vSortedByTimestamp;
-    vSortedByTimestamp.reserve(MODIFIER_INTERVAL_SECTIONS_MAX);
-    int64_t nSelectionInterval = GetStakeModifierSelectionInterval();
-    int64_t nSelectionIntervalStart = (pindexPrev->GetBlockTime() / MODIFIER_INTERVAL) * MODIFIER_INTERVAL - nSelectionInterval;
-    const CBlockIndex* pindex = pindexPrev;
-
-    while (pindex && pindex->GetBlockTime() >= nSelectionIntervalStart) {
-        vSortedByTimestamp.push_back(make_tuple(pindex->GetBlockTime(), pindex->GetBlockHash(), pindex));
-        pindex = pindex->pprev;
-    }
-
-    int nHeightFirstCandidate = pindex ? (pindex->nHeight + 1) : 0;
-    reverse(vSortedByTimestamp.begin(), vSortedByTimestamp.end()); // it should improve sorting time
-    sort(vSortedByTimestamp.begin(), vSortedByTimestamp.end());
-
-    // Select 64 blocks from candidate blocks to generate stake modifier
-    uint64_t nStakeModifierNew = 0;
-    int64_t nSelectionIntervalStop = nSelectionIntervalStart;
-    map<uint256, const CBlockIndex*> mapSelectedBlocks;
-    for (int nRound = 0; nRound < MODIFIER_INTERVAL_SECTIONS_MAX; nRound++) {
-        // add an interval section to the current selection round
-        nSelectionIntervalStop += g_StakeModifierIntervalSelector.Get(nRound);
-
-        // select a block from the candidates of current round
-        if (SelectBlockFromCandidates(vSortedByTimestamp, mapSelectedBlocks, nSelectionIntervalStop, nStakeModifier, &pindex)) {
-            // write the entropy bit of the selected block
-            nStakeModifierNew |= (((uint64_t)pindex->GetStakeEntropyBit()) << nRound);
-        } else {
-            LogPrint(BCLog::STAKING, "WARN: unable to select candidate block for stake modifier at round %d - left zero\n", nRound);
-            break;
-        }
-
-        // add the selected block from candidates to selected list
-        mapSelectedBlocks.insert(make_pair(pindex->GetBlockHash(), pindex));
-        LogPrint(BCLog::STAKING, "%s: selected round %d stop=%s height=%d bit=%d\n",
-                 __func__, nRound, nSelectionIntervalStop,
-                 pindex->nHeight, pindex->GetStakeEntropyBit());
-    }
-
-    // Print selection map for visualization of the selected blocks
-    if (LogAcceptDebug(BCLog::STAKING)) {
-        string strSelectionMap = "";
-        // '-' indicates proof-of-work blocks not selected
-        strSelectionMap.insert(0, pindexPrev->nHeight - nHeightFirstCandidate + 1, '-');
-        pindex = pindexPrev;
-        while (pindex && pindex->nHeight >= nHeightFirstCandidate) {
-            // '=' indicates proof-of-stake blocks not selected
-            if (pindex->IsProofOfStake())
-                strSelectionMap.replace(pindex->nHeight - nHeightFirstCandidate, 1, "=");
-            pindex = pindex->pprev;
-        }
-        for (const auto &item : mapSelectedBlocks) {
-            // 'S' indicates selected proof-of-stake blocks
-            // 'W' indicates selected proof-of-work blocks
-            strSelectionMap.replace(item.second->nHeight - nHeightFirstCandidate, 1, item.second->IsProofOfStake() ? "S" : "W");
-        }
-        LogPrintf("%s: selection height [%d, %d] map %s\n", __func__, nHeightFirstCandidate, pindexPrev->nHeight, strSelectionMap.c_str());
-    }
-
-    LogPrint(BCLog::STAKING, "%s: new modifier=%08x prevblktime=%d\n",
-             __func__, nStakeModifierNew, pindexPrev->GetBlockTime());
-
-    nStakeModifier = nStakeModifierNew;
-    return true;
-}
-
 bool ComputeNextStakeModifierV2(const uint32_t blockTime, const CBlockIndex* pindexPrev, uint32_t& nStakeModifier)
 {
     nStakeModifier = 0;
@@ -816,22 +565,17 @@ bool CheckStakeKernelHash(
         return UintToArith256(hashProofOfStake) < bnTarget;
     }
 
+    // A kernel needs the stake input in the header: only the PoSv2 format has one.
+    if (!current.IsProofOfStakeV2()) {
+        LogError("CheckStakeKernelHash() : not a PoSv2 header\n");
+        return false;
+    }
+
     //grab stake modifier
     //-------------------
     uint32_t nRequiredStakeModifier = 0;
-
-    // This is a six month later fix of the problem stated in the note below.
-    if (current.IsProofOfStakeV2()) {
-        if (fCheck && !ComputeNextStakeModifierV2(nTimeTx, &blockPrev, nRequiredStakeModifier)) {
-            LogPrintf("CheckStakeKernelHash(): failed to get kernel stake modifier V2 \n");
-            return false;
-        }
-        // pass
-    } else // PoS v1
-
-    // NOTE: this must be calculated based on previous-to-tip, but not previous-to-stake block!
-    if (!ComputeNextStakeModifier(&blockFrom, nRequiredStakeModifier)) {
-        LogPrintf("CheckStakeKernelHash(): failed to get kernel stake modifier \n");
+    if (fCheck && !ComputeNextStakeModifierV2(nTimeTx, &blockPrev, nRequiredStakeModifier)) {
+        LogPrintf("CheckStakeKernelHash(): failed to get kernel stake modifier V2 \n");
         return false;
     }
 
@@ -869,11 +613,9 @@ bool CheckStakeKernelHash(
 
     for (auto try_time = min_time; try_time < max_time; ++try_time)
     {
-        if (current.IsProofOfStakeV2()) {
-            if (!CachedNextStakeModifierV2(try_time, &blockPrev, nStakeModifier)) {
-                LogPrintf("CheckStakeKernelHash(): failed to get kernel stake modifier V2 \n");
-                return false;
-            }
+        if (!CachedNextStakeModifierV2(try_time, &blockPrev, nStakeModifier)) {
+            LogPrintf("CheckStakeKernelHash(): failed to get kernel stake modifier V2 \n");
+            return false;
         }
         ss = CDataStream(SER_GETHASH, 0);
         ss << nStakeModifier;
