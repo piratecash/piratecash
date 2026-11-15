@@ -36,7 +36,8 @@ space := $(empty) $(empty)
 
 OSX_APP=PirateCash-Qt.app
 OSX_VOLNAME = $(subst $(space),-,$(PACKAGE_NAME))
-OSX_ZIP = $(OSX_VOLNAME).zip
+OSX_ARCH = $(patsubst aarch64,arm64,$(host_cpu))
+OSX_ZIP = $(PACKAGE_TARNAME)-$(PACKAGE_VERSION)-$(OSX_ARCH)-apple-darwin.zip
 OSX_DEPLOY_SCRIPT=$(top_srcdir)/contrib/macdeploy/macdeployqtplus
 OSX_INSTALLER_ICONS=$(top_srcdir)/src/qt/res/icons/piratecash.icns
 OSX_PLIST=$(top_builddir)/share/qt/Info.plist #not installed
@@ -122,7 +123,7 @@ OSX_APP_BUILT=$(OSX_APP)/Contents/PkgInfo $(OSX_APP)/Contents/Resources/empty.lp
 
 if BUILD_DARWIN
 $(OSX_ZIP): $(OSX_APP_BUILT) $(OSX_PACKAGING)
-	$(PYTHON) $(OSX_DEPLOY_SCRIPT) $(OSX_APP) $(OSX_VOLNAME) -translations-dir=$(QT_TRANSLATION_DIR) -zip
+	$(PYTHON) $(OSX_DEPLOY_SCRIPT) $(OSX_APP) $(OSX_VOLNAME) -translations-dir=$(QT_TRANSLATION_DIR) -zip "$@"
 
 deploydir: $(OSX_ZIP)
 else !BUILD_DARWIN

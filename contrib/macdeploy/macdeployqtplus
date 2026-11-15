@@ -394,7 +394,7 @@ ap.add_argument("-verbose", nargs="?", const=True, help="Output additional debug
 ap.add_argument("-no-plugins", dest="plugins", action="store_false", default=True, help="skip plugin deployment")
 ap.add_argument("-no-strip", dest="strip", action="store_false", default=True, help="don't run 'strip' on the binaries")
 ap.add_argument("-translations-dir", nargs=1, metavar="path", default=None, help="Path to Qt's translations. Base translations will automatically be added to the bundle's resources.")
-ap.add_argument("-zip", nargs="?", const="", metavar="zip", help="create a .zip containing the app bundle")
+ap.add_argument("-zip", nargs="?", const="", metavar="path", help="create a .zip at the given path (default: appname.zip)")
 
 config = ap.parse_args()
 
@@ -414,10 +414,6 @@ if not os.path.exists(app_bundle):
 if os.path.exists("dist"):
     print("+ Removing existing dist folder +")
     shutil.rmtree("dist")
-
-if os.path.exists(appname + ".zip"):
-    print("+ Removing existing .zip +")
-    os.unlink(appname + ".zip")
 
 # ------------------------------------------------
 
@@ -498,7 +494,8 @@ if platform.system() == "Darwin":
 # ------------------------------------------------
 
 if config.zip is not None:
-    shutil.make_archive('{}'.format(appname), format='zip', root_dir='dist', base_dir='PirateCash-Qt.app')
+    archive_base = os.path.splitext(config.zip)[0] if config.zip else appname
+    shutil.make_archive(archive_base, format='zip', root_dir='dist', base_dir='PirateCash-Qt.app')
 
 # ------------------------------------------------
 

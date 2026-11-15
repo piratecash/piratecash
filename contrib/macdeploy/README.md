@@ -6,7 +6,9 @@ The `macdeployqtplus` script should not be run manually. Instead, after building
 make deploy
 ```
 
-When complete, it will have produced `PirateCash-Core.zip`.
+The archive is named `piratecashcore-<version>-<arch>-apple-darwin.zip`,
+using the configured version and target architecture. For example, PirateCash
+v24.0.1 for Apple Silicon produces `piratecashcore-24.0.1-arm64-apple-darwin.zip`.
 
 ## SDK Extraction
 
