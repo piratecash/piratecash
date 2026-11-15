@@ -132,7 +132,7 @@ struct PoSTestingSetup : public TestChain100Setup {
     CBlockHeader MakePoSHeader(const uint256& hashPrev, uint32_t nTime,
                                 const uint256& stakeHash, uint32_t stakeN) {
         CBlockHeader header;
-        header.nVersion = CBlockHeader::POS_BIT | 1; // Mark as PoS
+        header.nVersion = CBlockHeader::POSV2_BITS | 1; // Mark as PoS
         header.hashPrevBlock = hashPrev;
         header.nTime = nTime;
         header.nBits = 0x207fffff; // regtest difficulty
@@ -252,6 +252,7 @@ BOOST_AUTO_TEST_CASE(pos_accept_stake_at_minimum)
     CBlockIndex blockPrev;
     blockPrev.nHeight = m_node.chainman->ActiveChain().Tip()->nHeight;
     blockPrev.nTime = m_node.chainman->ActiveChain().Tip()->nTime;
+    blockPrev.phashBlock = m_node.chainman->ActiveChain().Tip()->phashBlock; // the PoSv2 modifier hashes it
 
     uint32_t stakeTime = blockFrom.nTime + Params().MinStakeAge() + 100;
 
@@ -277,6 +278,7 @@ BOOST_AUTO_TEST_CASE(pos_accept_stake_at_minimum)
         CBlockHeader header = MakePoSHeader(
             m_node.chainman->ActiveChain().Tip()->GetBlockHash(),
             stakeTime, prevout.hash, prevout.n);
+        BOOST_REQUIRE(ComputeNextStakeModifierV2(header.nTime, &blockPrev, header.nStakeModifier()));
         uint256 hashProofOfStake;
         CheckStakeKernelHash(
             header, blockPrev, blockFrom, txExact, prevout,
@@ -420,6 +422,7 @@ BOOST_AUTO_TEST_CASE(pos_reject_stake_at_exact_boundary)
     CBlockIndex blockPrev;
     blockPrev.nHeight = m_node.chainman->ActiveChain().Tip()->nHeight;
     blockPrev.nTime = m_node.chainman->ActiveChain().Tip()->nTime;
+    blockPrev.phashBlock = m_node.chainman->ActiveChain().Tip()->phashBlock; // the PoSv2 modifier hashes it
 
     COutPoint prevout(txPrev.GetHash(), 0);
 
@@ -444,6 +447,7 @@ BOOST_AUTO_TEST_CASE(pos_reject_stake_at_exact_boundary)
         CBlockHeader header = MakePoSHeader(
             m_node.chainman->ActiveChain().Tip()->GetBlockHash(),
             exactBoundary, prevout.hash, prevout.n);
+        BOOST_REQUIRE(ComputeNextStakeModifierV2(header.nTime, &blockPrev, header.nStakeModifier()));
         uint256 hashProofOfStake;
         CheckStakeKernelHash(
             header, blockPrev, blockFrom, txPrev, prevout,
@@ -458,6 +462,7 @@ BOOST_AUTO_TEST_CASE(pos_reject_stake_at_exact_boundary)
         CBlockHeader header = MakePoSHeader(
             m_node.chainman->ActiveChain().Tip()->GetBlockHash(),
             afterBoundary, prevout.hash, prevout.n);
+        BOOST_REQUIRE(ComputeNextStakeModifierV2(header.nTime, &blockPrev, header.nStakeModifier()));
         uint256 hashProofOfStake;
         CheckStakeKernelHash(
             header, blockPrev, blockFrom, txPrev, prevout,
@@ -568,7 +573,7 @@ BOOST_AUTO_TEST_CASE(pos_block_reject_missing_signature)
     // A PoS block with empty signature must be rejected by CheckProofOfStake
 
     CBlockHeader header;
-    header.nVersion = CBlockHeader::POS_BIT | 1;
+    header.nVersion = CBlockHeader::POSV2_BITS | 1;
     header.posBlockSig.clear(); // Empty signature!
     header.posStakeHash = InsecureRand256();
     header.posStakeN = 0;
@@ -597,7 +602,7 @@ BOOST_AUTO_TEST_CASE(pos_block_reject_unknown_stake_input)
     stakeKey.MakeNewKey(true);
 
     CBlockHeader header;
-    header.nVersion = CBlockHeader::POS_BIT | 1;
+    header.nVersion = CBlockHeader::POSV2_BITS | 1;
     header.posStakeHash = InsecureRand256(); // Random hash — won't exist
     header.posStakeN = 0;
     header.hashPrevBlock = m_node.chainman->ActiveChain().Tip()->GetBlockHash();
@@ -878,6 +883,7 @@ BOOST_AUTO_TEST_CASE(pos_stake_modifier_mismatch_rejected)
     CBlockIndex blockPrev;
     blockPrev.nHeight = m_node.chainman->ActiveChain().Tip()->nHeight;
     blockPrev.nTime = m_node.chainman->ActiveChain().Tip()->nTime;
+    blockPrev.phashBlock = m_node.chainman->ActiveChain().Tip()->phashBlock; // the PoSv2 modifier hashes it
 
     COutPoint prevout(txPrev.GetHash(), 0);
     uint32_t stakeTime = blockFrom.nTime + Params().MinStakeAge() + 100;
@@ -1143,8 +1149,15 @@ BOOST_AUTO_TEST_CASE(pos_regtest_chain_params)
 
 BOOST_AUTO_TEST_CASE(pos_first_posv2_block)
 {
-    // Verify FirstPoSv2Block is configured for regtest
-    BOOST_CHECK_EQUAL(Params().FirstPoSv2Block(), 10000ULL);
+    // On regtest PoSv2 starts right after the last proof-of-work block
+    BOOST_CHECK_EQUAL(Params().FirstPoSv2Block(), uint32_t(Params().GetConsensus().nLastPowBlock + 1));
+}
+
+BOOST_AUTO_TEST_CASE(pos_first_posv2_block_is_the_fork_height_on_mainnet_and_testnet)
+{
+    // The old PirateCash chain below the fork height must keep validating as before.
+    BOOST_CHECK_EQUAL(CreateChainParams(*m_node.args, CBaseChainParams::MAIN)->FirstPoSv2Block(), 1265800U);
+    BOOST_CHECK_EQUAL(CreateChainParams(*m_node.args, CBaseChainParams::TESTNET)->FirstPoSv2Block(), 289000U);
 }
 
 // ============================================================================
@@ -1375,7 +1388,7 @@ BOOST_AUTO_TEST_CASE(pos_check_proof_of_stake_rejects_oob_index)
         const CBlockIndex* tip = m_node.chainman->ActiveChain().Tip();
 
         CBlockHeader header;
-        header.nVersion = CBlockHeader::POS_BIT | 1;
+        header.nVersion = CBlockHeader::POSV2_BITS | 1;
         header.posBlockSig = {0x01, 0x02, 0x03}; // non-empty: pass the sig-presence gate
         header.posStakeHash = realStakeHash;
         header.posStakeN = badN;
@@ -1749,7 +1762,7 @@ constexpr int POSV3_TEST_HEIGHT{200};
 
 //! PoS v3 from two blocks above the fixture's chain: the next block mined is the last pre-fork one.
 const std::string POSV3_HEADER_ARG{"-testactivationheight=posv3@" + ToString(COINBASE_MATURITY + 2)};
-const std::string POSV3_HEADER_POS_ARG{strprintf("-posparams=%d:%d:60", COINBASE_MATURITY + 1, COINBASE_MATURITY + 2)};
+const std::string POSV3_HEADER_POS_ARG{strprintf("-posparams=%d:60", COINBASE_MATURITY + 1)};
 struct PosV3HeaderSetup : public TestChain100Setup {
     PosV3HeaderSetup() : TestChain100Setup{CBaseChainParams::REGTEST, {POSV3_HEADER_ARG.c_str(), POSV3_HEADER_POS_ARG.c_str()}} {}
 };
@@ -1757,7 +1770,7 @@ struct PosV3HeaderSetup : public TestChain100Setup {
 //! PoS v3 from three blocks above the fixture's chain, so that the coinbase of block 1 can stake the first v3 block.
 const std::string POSV3_PROOF_ARG{"-testactivationheight=posv3@" + ToString(COINBASE_MATURITY + 3)};
 //! A minimum stake age of an hour lets a side branch an hour of blocks deep be judged (VerifiabilityWindow).
-const std::string POSV3_PROOF_POS_ARG{strprintf("-posparams=%d:%d:3600", COINBASE_MATURITY + 2, COINBASE_MATURITY + 3)};
+const std::string POSV3_PROOF_POS_ARG{strprintf("-posparams=%d:3600", COINBASE_MATURITY + 2)};
 struct PosV3ProofSetup : public TestChain100Setup {
     PosV3ProofSetup() : TestChain100Setup{CBaseChainParams::REGTEST, {POSV3_PROOF_ARG.c_str(), POSV3_PROOF_POS_ARG.c_str()}} {}
 };
@@ -1765,13 +1778,19 @@ struct PosV3ProofSetup : public TestChain100Setup {
 //! PoS v3 a day of regtest blocks (60 s apart) and two blocks above the fixture's chain.
 constexpr int POSV3_BLOCKS_PER_DAY{24 * 60 * 60 / 60};
 const std::string POSV3_DAY_ARG{"-testactivationheight=posv3@" + ToString(COINBASE_MATURITY + 2 + POSV3_BLOCKS_PER_DAY)};
-const std::string POSV3_DAY_POS_ARG{strprintf("-posparams=%d:%d:60", COINBASE_MATURITY + 1 + POSV3_BLOCKS_PER_DAY, COINBASE_MATURITY + 2 + POSV3_BLOCKS_PER_DAY)};
+const std::string POSV3_DAY_POS_ARG{strprintf("-posparams=%d:60", COINBASE_MATURITY + 1 + POSV3_BLOCKS_PER_DAY)};
 struct PosV3DaySetup : public TestChain100Setup {
     PosV3DaySetup() : TestChain100Setup{CBaseChainParams::REGTEST, {POSV3_DAY_ARG.c_str(), POSV3_DAY_POS_ARG.c_str()}} {}
 };
 
+//! The fixture's next block is the last proof-of-work one.
+const std::string POS_LAST_POW_ARG{strprintf("-posparams=%d:60", COINBASE_MATURITY + 1)};
+struct PosLastPowSetup : public TestChain100Setup {
+    PosLastPowSetup() : TestChain100Setup{CBaseChainParams::REGTEST, {POS_LAST_POW_ARG.c_str()}} {}
+};
+
 struct PosV3KernelSetup : public BasicTestingSetup {
-    PosV3KernelSetup() : BasicTestingSetup{CBaseChainParams::REGTEST, {"-testactivationheight=posv3@200", "-posparams=150:151:600"}} {}
+    PosV3KernelSetup() : BasicTestingSetup{CBaseChainParams::REGTEST, {"-testactivationheight=posv3@200", "-posparams=150:600"}} {}
 };
 
 //! A chain of block index entries without a block tree behind it.
@@ -1824,11 +1843,13 @@ std::map<int, uint256> ExpectedModifiers(const IndexChain& chain, int up_to)
     return modifiers;
 }
 
-BlockValidationState SubmitPoSHeader(ChainstateManager& chainman, uint32_t time, uint32_t nonce = 0)
+BlockValidationState SubmitPoSHeader(ChainstateManager& chainman, uint32_t time, uint32_t nonce = 0,
+                                     int32_t version = CBlockHeader::POSV2_BITS | 4, uint32_t flags = 0)
 {
     const CBlockIndex* tip{WITH_LOCK(::cs_main, return chainman.ActiveChain().Tip())};
     CBlockHeader header;
-    header.nVersion = CBlockHeader::POSV2_BITS | 4;
+    header.nVersion = version;
+    header.nFlags = flags;
     header.hashPrevBlock = tip->GetBlockHash();
     header.hashMerkleRoot = InsecureRand256();
     header.nTime = time;
@@ -1864,6 +1885,26 @@ BOOST_AUTO_TEST_CASE(posv3_time_rules_do_not_apply_before_the_fork)
     // The pre-fork lead of MAX_POS_BLOCK_AHEAD_TIME still applies.
     BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, parent->nTime + 1 + MAX_POS_BLOCK_AHEAD_TIME).GetRejectReason(), "bad-pos-sig");
     BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, parent->nTime + 2 + MAX_POS_BLOCK_AHEAD_TIME).GetRejectReason(), "time-too-new");
+}
+
+BOOST_FIXTURE_TEST_CASE(pos_only_v2_headers_after_the_last_pow_block, PosLastPowSetup)
+{
+    const CBlockIndex* tip{WITH_LOCK(::cs_main, return m_node.chainman->ActiveChain().Tip())};
+    BOOST_REQUIRE_EQUAL(tip->nHeight + 1, m_node.chainman->GetConsensus().nLastPowBlock);
+    SetMockTime(tip->GetBlockTime() + 60);
+
+    // Up to the last proof-of-work block a PoS header of the old PirateCash chain (flagged through
+    // nFlags, no PoSv2 bits) is still accepted the way it was: its proof is not checked.
+    BOOST_CHECK(SubmitPoSHeader(*m_node.chainman, tip->nTime + 1, 0, 4, CBlockIndex::BLOCK_PROOF_OF_STAKE).IsValid());
+
+    const CBlockIndex* parent{MineAt(*this, tip->GetBlockTime() + 60)};
+    BOOST_REQUIRE_EQUAL(parent->nHeight, m_node.chainman->GetConsensus().nLastPowBlock);
+    SetMockTime(parent->GetBlockTime() + 60);
+    // After it, a PoS header without the PoSv2 bits is refused, in the old format as in the PoS v1 one.
+    BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, parent->nTime + 1, 0, 4, CBlockIndex::BLOCK_PROOF_OF_STAKE).GetRejectReason(), "hard-fork-active");
+    BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, parent->nTime + 1, 0, CBlockHeader::POS_BIT | 4).GetRejectReason(), "hard-fork-active");
+    // A PoSv2 header gets past that check and fails on its missing stake signature.
+    BOOST_CHECK_EQUAL(SubmitPoSHeader(*m_node.chainman, parent->nTime + 1).GetRejectReason(), "bad-pos-sig");
 }
 
 BOOST_FIXTURE_TEST_CASE(posv3_header_time_rules, PosV3HeaderSetup)

@@ -385,7 +385,6 @@ public:
 
         fBIP9CheckMasternodesUpgraded = true;
         nStakeMinAge = 8 * 60 * 60;
-        nFirstPoSv2Block = consensus.nForkHeight;
         nMinCorsaProtocolVersion = 31;
 
         nCreditPoolPeriodBlocks = 576;
@@ -617,7 +616,6 @@ public:
 
         fBIP9CheckMasternodesUpgraded = true;
         nStakeMinAge = 8 * 60 * 60;
-        nFirstPoSv2Block = consensus.nForkHeight;
         nMinCorsaProtocolVersion = 31;
 
         nCreditPoolPeriodBlocks = 576;
@@ -724,7 +722,7 @@ public:
         consensus.fPowNoRetargeting = false;
         consensus.nPowKGWHeight = 30; // nPowKGWHeight >= nPowDGWHeight means "no KGW"
         consensus.nPowDGWHeight = 40;
-        consensus.PosV3Height = 78000; // together with PoSv2 (nFirstPoSv2Block): v3 needs the stake input in the header
+        consensus.PosV3Height = 78000; // at or after the first PoSv2 block: v3 needs the stake input in the header
         consensus.nPosV3SlotSeconds = 10;
         consensus.nPosV3TargetShift = 4;
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
@@ -843,7 +841,6 @@ public:
 
         fBIP9CheckMasternodesUpgraded = false;
         nStakeMinAge = 24 * 60 * 60; // 24 hours
-        nFirstPoSv2Block = 78000ULL;
         nMinCorsaProtocolVersion = 31;
 
         nCreditPoolPeriodBlocks = 576;
@@ -1075,7 +1072,6 @@ public:
 
         fBIP9CheckMasternodesUpgraded = false;
         nStakeMinAge = 24 * 60 * 60; // 24 hours
-        nFirstPoSv2Block = 10000ULL;
         nMinCorsaProtocolVersion = 31;
 
         nCreditPoolPeriodBlocks = 100;
@@ -1338,20 +1334,19 @@ void CRegTestParams::UpdatePosParametersFromArgs(const ArgsManager& args)
 {
     if (args.IsArgSet("-posparams")) {
         const std::vector<std::string> params{SplitString(args.GetArg("-posparams", ""), ':')};
-        int32_t last_pow_block, first_posv2_block, min_stake_age;
-        if (params.size() != 3 || !ParseInt32(params[0], &last_pow_block) || !ParseInt32(params[1], &first_posv2_block) ||
-            !ParseInt32(params[2], &min_stake_age) || last_pow_block < 1 || first_posv2_block <= last_pow_block || min_stake_age < 1) {
-            throw std::runtime_error("PoS parameters malformed, expecting <lastpowblock>:<posv2height>:<stakeminage>");
+        int32_t last_pow_block, min_stake_age;
+        if (params.size() != 2 || !ParseInt32(params[0], &last_pow_block) || !ParseInt32(params[1], &min_stake_age) ||
+            last_pow_block < 1 || min_stake_age < 1) {
+            throw std::runtime_error("PoS parameters malformed, expecting <lastpowblock>:<stakeminage>");
         }
-        LogPrintf("Setting PoS parameters to lastpowblock=%d, posv2height=%d, stakeminage=%d\n", last_pow_block, first_posv2_block, min_stake_age);
+        LogPrintf("Setting PoS parameters to lastpowblock=%d, stakeminage=%d\n", last_pow_block, min_stake_age);
         consensus.nLastPowBlock = last_pow_block;
-        nFirstPoSv2Block = first_posv2_block;
         nStakeMinAge = min_stake_age;
     }
     // A v3 block needs the stake input in its header, which only the PoSv2 format carries.
-    if (consensus.PosV3Height < static_cast<int64_t>(nFirstPoSv2Block)) {
+    if (consensus.PosV3Height < static_cast<int64_t>(FirstPoSv2Block())) {
         throw std::runtime_error(strprintf("Invalid height value (posv3@%d) for -testactivationheight=name@height: below the PoSv2 height %d.",
-                                           consensus.PosV3Height, nFirstPoSv2Block));
+                                           consensus.PosV3Height, FirstPoSv2Block()));
     }
 
     for (const std::string& checkpoint : args.GetArgs("-checkpoint")) {
@@ -1656,7 +1651,7 @@ void SetupChainParamsOptions(ArgsManager& argsman)
 
     argsman.AddArg("-budgetparams=<masternode>:<budget>:<superblock>", "Override masternode, budget and superblock start heights (regtest-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
     argsman.AddArg("-dip3params=<activation>:<enforcement>", "Override DIP3 activation and enforcement heights (regtest-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
-    argsman.AddArg("-posparams=<lastpowblock>:<posv2height>:<stakeminage>", "Override the last proof-of-work height, the first PoSv2 height and the minimum stake age in seconds (regtest-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
+    argsman.AddArg("-posparams=<lastpowblock>:<stakeminage>", "Override the last proof-of-work height (PoSv2 starts at the next block) and the minimum stake age in seconds (regtest-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
     argsman.AddArg("-checkpoint=<height>:<hash>", "Add a checkpoint. Can be specified multiple times (regtest-only)", ArgsManager::ALLOW_ANY | ArgsManager::DEBUG_ONLY, OptionsCategory::CHAINPARAMS);
     argsman.AddArg("-highsubsidyblocks=<n>", "The number of blocks with a higher than normal subsidy to mine at the start of a chain. Block after that height will have fixed subsidy base. (default: 0, devnet-only)", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);
     argsman.AddArg("-highsubsidyfactor=<n>", "The factor to multiply the normal block subsidy by while in the highsubsidyblocks window of a chain (default: 1, devnet-only)", ArgsManager::ALLOW_ANY, OptionsCategory::CHAINPARAMS);

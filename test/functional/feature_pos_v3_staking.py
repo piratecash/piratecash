@@ -32,7 +32,7 @@ class PosV3StakingTest(BitcoinTestFramework):
         self.setup_clean_chain = True
         self.num_nodes = 2
         common_args = [
-            f"-posparams={LAST_POW_BLOCK}:{LAST_POW_BLOCK + 1}:{STAKE_MIN_AGE}",
+            f"-posparams={LAST_POW_BLOCK}:{STAKE_MIN_AGE}",
             f"-testactivationheight=posv3@{POSV3_HEIGHT}",
             "-stakeautocombine=0",
         ]
@@ -110,7 +110,8 @@ class PosV3StakingTest(BitcoinTestFramework):
         for _ in range(POSV3_HEIGHT - LAST_POW_BLOCK):
             self.bump_mocktime(60)
             wallets[0].generatestake(1)
-        self.sync_blocks()
+            # A block still in flight over a few clock bumps times out, and the peers disconnect.
+            self.sync_blocks()
         assert_equal(self.nodes[1].getblockcount(), POSV3_HEIGHT)
 
         self.log.info("Start the staking threads on both nodes")

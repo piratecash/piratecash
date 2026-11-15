@@ -14,6 +14,7 @@
 #include <protocol.h>
 #include <util/hash_type.h>
 
+#include <algorithm>
 #include <memory>
 #include <optional>
 #include <string>
@@ -162,7 +163,9 @@ public:
     [[nodiscard]] std::optional<Consensus::LLMQParams> GetLLMQ(Consensus::LLMQType llmqType) const;
     bool BIP9CheckMasternodesUpgraded() const { return fBIP9CheckMasternodesUpgraded; }
     int64_t MinStakeAge() const { return nStakeMinAge; }
-    uint32_t FirstPoSv2Block() const { return nFirstPoSv2Block; }
+    /** PoS blocks after the last proof-of-work block are in the PoSv2 format; on mainnet and testnet
+     *  the old PirateCash chain below the fork height is exempt. */
+    uint32_t FirstPoSv2Block() const { return static_cast<uint32_t>(std::max<int64_t>(consensus.nForkHeight, consensus.nLastPowBlock + 1)); }
     bool HasLLMQ(Consensus::LLMQType llmqType) const;
     int MinCorsaProtocolVersion() const { return nMinCorsaProtocolVersion; }
 
@@ -207,7 +210,6 @@ protected:
     /// The number of blocks the credit pool tracks; 576 (one day) on mainnet, reduced on regtest
     int nCreditPoolPeriodBlocks;
     int64_t nStakeMinAge;
-    uint32_t nFirstPoSv2Block;
     int nMinCorsaProtocolVersion{0};
 
     void AddLLMQ(Consensus::LLMQType llmqType);

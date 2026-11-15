@@ -86,7 +86,7 @@ class PosHeaderSyncTest(BitcoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 8
-        self.common_args = [f"-posparams={LAST_POW_BLOCK}:{LAST_POW_BLOCK + 1}:{STAKE_MIN_AGE}", "-stakeautocombine=0", "-staking=0"]
+        self.common_args = [f"-posparams={LAST_POW_BLOCK}:{STAKE_MIN_AGE}", "-stakeautocombine=0", "-staking=0"]
         self.extra_args = [self.common_args] * self.num_nodes
 
     def add_options(self, parser):
@@ -245,7 +245,7 @@ class PosHeaderSyncTest(BitcoinTestFramework):
 
     def test_long_segment(self):
         self.log.info("Mine a chain that does not fit one headers message")
-        long_chain_args = [f"-posparams={LONG_CHAIN_LAST_POW_BLOCK}:{LONG_CHAIN_LAST_POW_BLOCK + 1}:{STAKE_MIN_AGE}", "-staking=0"]
+        long_chain_args = [f"-posparams={LONG_CHAIN_LAST_POW_BLOCK}:{STAKE_MIN_AGE}", "-staking=0"]
         miner = self.nodes[LONG_CHAIN_MINER]
         miner.mocktime = self.mocktime
         self.restart_node(LONG_CHAIN_MINER, extra_args=long_chain_args)

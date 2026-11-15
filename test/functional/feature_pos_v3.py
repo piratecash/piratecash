@@ -21,7 +21,7 @@ from test_framework.crypto import secp256k1
 from test_framework.key import ORDER
 from test_framework.messages import CBlock, CBlockHeader, from_hex
 from test_framework.test_framework import BitcoinTestFramework
-from test_framework.util import assert_equal, assert_greater_than, p2p_port
+from test_framework.util import assert_equal, assert_greater_than, assert_raises_rpc_error, p2p_port
 
 LAST_POW_BLOCK = 300
 STAKE_MIN_AGE = 600
@@ -56,7 +56,7 @@ class PosV3Test(BitcoinTestFramework):
         self.setup_clean_chain = True
         self.num_nodes = 2
         self.common_args = [
-            f"-posparams={LAST_POW_BLOCK}:{LAST_POW_BLOCK + 1}:{STAKE_MIN_AGE}",
+            f"-posparams={LAST_POW_BLOCK}:{STAKE_MIN_AGE}",
             f"-testactivationheight=posv3@{POSV3_HEIGHT}",
             "-stakeautocombine=0",
             "-staking=0",
@@ -109,7 +109,11 @@ class PosV3Test(BitcoinTestFramework):
         self.log.info("Stake across the activation height")
         node = self.nodes[STAKER]
         self.staker = node.get_wallet_rpc(self.default_wallet_name)
-        self.generatetoaddress(node, LAST_POW_BLOCK, self.staker.getnewaddress(), sync_fun=self.no_op)
+        self.generatetoaddress(node, LAST_POW_BLOCK - 1, self.staker.getnewaddress(), sync_fun=self.no_op)
+        self.log.info("No staking up to the last proof-of-work block")
+        assert_raises_rpc_error(-1, f"Cannot stake block {LAST_POW_BLOCK}: proof-of-stake starts at height {LAST_POW_BLOCK + 1}",
+                                self.staker.generatestake, 1)
+        self.generatetoaddress(node, 1, self.staker.getnewaddress(), sync_fun=self.no_op)
         self.bump_mocktime(STAKE_MIN_AGE * 2, nodes=self.running_nodes())
         self.stake(POSV3_HEIGHT - LAST_POW_BLOCK)
         assert_equal(node.getblockcount(), POSV3_HEIGHT)

@@ -465,7 +465,6 @@ public:
         m_original(m_consensus.nLastPowBlock)
     {
         assert(Params().NetworkIDString() == CBaseChainParams::REGTEST);
-        assert(last_pow_block < Params().FirstPoSv2Block());
         m_consensus.nLastPowBlock = last_pow_block;
     }
 

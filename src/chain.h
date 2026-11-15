@@ -211,6 +211,10 @@ public:
     enum
     {
         BLOCK_PROOF_OF_STAKE = (1 << 0), // is proof-of-stake block
+        // The two flags below are stored but not read. nFlags is not covered by the
+        // block hash and comes from the peer that sent the header.
+        // TODO: when the proof of old PoS blocks below nForkHeight is checked,
+        // recompute these values from the block instead of trusting nFlags.
         BLOCK_STAKE_ENTROPY  = (1 << 1), // entropy bit for stake modifier
         BLOCK_STAKE_MODIFIER = (1 << 2), // regenerated stake modifier
     };
@@ -230,24 +234,6 @@ public:
     void SetProofOfStake()
     {
         nFlags |= BLOCK_PROOF_OF_STAKE;
-    }
-
-    unsigned int GetStakeEntropyBit() const
-    {
-        return ((nFlags & BLOCK_STAKE_ENTROPY) >> 1);
-    }
-
-    bool SetStakeEntropyBit(unsigned int nEntropyBit)
-    {
-        if (nEntropyBit > 1)
-            return false;
-        nFlags |= (nEntropyBit? BLOCK_STAKE_ENTROPY : 0);
-        return true;
-    }
-
-    bool GeneratedStakeModifier() const
-    {
-        return (nFlags & BLOCK_STAKE_MODIFIER);
     }
 
     //! (memory only) Sequential id assigned to distinguish order in which blocks are received.
@@ -361,13 +347,6 @@ public:
 
     COutPoint StakeInput() const {
         return COutPoint(posStakeHash, posStakeN);
-    }
-
-    bool IsGeneratedStakeModifier() const
-    {
-        return (pprev && (
-                    !pprev->IsProofOfStake() ||
-                    (pprev->nStakeModifier() != nStakeModifier())));
     }
 
     std::string ToString() const;
