@@ -190,9 +190,9 @@ BOOST_FIXTURE_TEST_CASE(signals_unavailable_for_unconnected_block, TestChainV19S
 
 BOOST_AUTO_TEST_SUITE_END()
 
-struct BuriedMNHFTestSetup : TestChainSetup {
+struct BuriedMNHFTestSetup : RegTestingSetup {
     BuriedMNHFTestSetup() :
-        TestChainSetup{1, CBaseChainParams::REGTEST, {"-dip3params=1:1", "-testactivationheight=v20@2"}}
+        RegTestingSetup{{"-dip3params=1:1", "-testactivationheight=v20@2"}}
     {
     }
 };
@@ -203,7 +203,12 @@ BOOST_AUTO_TEST_CASE(buried_mn_rr_signal_is_not_staged)
 {
     auto& chain_helper = *Assert(m_node.chain_helper);
     auto& mnhfman = *Assert(chain_helper.ehf_manager);
-    const CBlockIndex* tip = WITH_LOCK(::cs_main, return Assert(m_node.chainman)->ActiveChain().Tip());
+    CBlockIndex index;
+    index.pprev = WITH_LOCK(::cs_main, return Assert(m_node.chainman)->ActiveChain().Tip());
+    index.nHeight = index.pprev->nHeight + 1;
+    const uint256 hash = GetRandHash();
+    index.phashBlock = &hash;
+    const CBlockIndex* tip = &index;
 
     // Unknown bits must remain staged so that signals mined before a software
     // update can activate a deployment introduced by that update.
