@@ -8,10 +8,10 @@ services:
         USER_ID: 1000   # set this to $(id -u) of the host
         GROUP_ID: 1000  # set this to $(id -g) of the host
     ports:
-      - "9998:9998"           # Mainnet Ports
-      - "9999:9999"
-      - "19998:19998"         # Testnet Ports
-      - "19999:19999"
+      - "19606:19606"         # Mainnet Ports
+      - "63636:63636"
+      - "19696:19696"         # Testnet Ports
+      - "50666:50666"
     security_opt:
       - seccomp:unconfined
     stdin_open: true  # Equivalent to -i
@@ -19,7 +19,7 @@ services:
     volumes:
       - type: bind
         source: ../../..
-        target: /src/dash
+        target: /src/piratecash
 
 # Sharing your ccache
 #
@@ -34,7 +34,7 @@ services:
 # NOTE: Only the first line is a continuation of the services.container.volumes
 #       definition
 
-#      - cache:/home/dash/.ccache
+#      - cache:/home/piratecash/.ccache
 #
 # volumes:
 #    cache:
