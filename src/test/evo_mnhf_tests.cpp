@@ -189,3 +189,31 @@ BOOST_FIXTURE_TEST_CASE(signals_unavailable_for_unconnected_block, TestChainV19S
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+struct BuriedMNHFTestSetup : TestChainSetup {
+    BuriedMNHFTestSetup() :
+        TestChainSetup{1, CBaseChainParams::REGTEST, {"-dip3params=1:1", "-testactivationheight=v20@2"}}
+    {
+    }
+};
+
+BOOST_FIXTURE_TEST_SUITE(evo_buried_mnhf_tests, BuriedMNHFTestSetup)
+
+BOOST_AUTO_TEST_CASE(buried_mn_rr_signal_is_not_staged)
+{
+    auto& chain_helper = *Assert(m_node.chain_helper);
+    auto& mnhfman = *Assert(chain_helper.ehf_manager);
+    const CBlockIndex* tip = WITH_LOCK(::cs_main, return Assert(m_node.chainman)->ActiveChain().Tip());
+
+    // Unknown bits must remain staged so that signals mined before a software
+    // update can activate a deployment introduced by that update.
+    mnhfman.AddSignal(tip, 27);
+    BOOST_CHECK(mnhfman.GetSignalsStage(tip).count(27));
+
+    // MN_RR used bit 10 before being buried. Its historical signals no longer
+    // participate in EHF state and must not make a later signal a duplicate.
+    mnhfman.AddSignal(tip, 10);
+    BOOST_CHECK(!mnhfman.GetSignalsStage(tip).count(10));
+}
+
+BOOST_AUTO_TEST_SUITE_END()
