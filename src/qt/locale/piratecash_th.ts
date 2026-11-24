@@ -70,7 +70,7 @@
         <translation>นี่คือที่อยู่ PirateCash ของคุณสำหรับการส่งการชำระเงิน โปรดตรวจสอบจำนวนเงินและที่อยู่ผู้รับก่อนที่จะส่งเหรียญ</translation>
     </message>
     <message>
-        <source>These are your Dash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
+        <source>These are your PirateCash addresses for receiving payments. Use the 'Create new receiving address' button in the receive tab to create new addresses.</source>
         <translation>นี่คือที่อยู่ PirateCash ของคุณสำหรับรับการชำระเงินใช้ปุ่ม 'สร้างที่อยู่รับใหม่' ในแท็บรับเพื่อสร้างที่อยู่ใหม่</translation>
     </message>
     <message>
@@ -1518,7 +1518,7 @@
         <translation>บันทึกไปที่ %1 แล้ว</translation>
     </message>
     <message>
-        <source>Dash shared masternode — standby dissolution</source>
+        <source>PirateCash shared masternode — standby dissolution</source>
         <translation>มาสเตอร์โหนดร่วมของ PirateCash — การยุบสำรอง</translation>
     </message>
     <message>
@@ -1710,7 +1710,7 @@
         <translation>ที่อยู่ภายในเครื่อง</translation>
     </message>
     <message>
-        <source>Network addresses that your Dash node is currently using to communicate with other nodes.</source>
+        <source>Network addresses that your PirateCash node is currently using to communicate with other nodes.</source>
         <translation>ที่อยู่เครือข่ายที่โหนด PirateCash ของคุณใช้สื่อสารกับโหนดอื่นในขณะนี้</translation>
     </message>
     <message>
@@ -2429,7 +2429,7 @@ The migration process will create a backup of the wallet before migrating. This 
         <translation>ไฟล์ไม่ใช่ไฟล์เซสชันมาสเตอร์โหนดร่วม</translation>
     </message>
     <message>
-        <source>The session file uses an unsupported format version. Update Dash Core to open it.</source>
+        <source>The session file uses an unsupported format version. Update PirateCash Core to open it.</source>
         <translation>ไฟล์เซสชันใช้รูปแบบเวอร์ชันที่ไม่รองรับ โปรดอัปเดต PirateCash Core เพื่อเปิดไฟล์</translation>
     </message>
     <message>
@@ -2453,7 +2453,7 @@ The migration process will create a backup of the wallet before migrating. This 
         <translation>ไฟล์เซสชันไม่มีขั้นตอน</translation>
     </message>
     <message>
-        <source>The session file is at the unknown stage "%1". It was probably created by a newer Dash Core.</source>
+        <source>The session file is at the unknown stage "%1". It was probably created by a newer PirateCash Core.</source>
         <translation>ไฟล์เซสชันอยู่ในขั้นตอนที่ไม่รู้จัก "%1" น่าจะสร้างโดย PirateCash Core เวอร์ชันที่ใหม่กว่า</translation>
     </message>
     <message>
@@ -3517,9 +3517,9 @@ The migration process will create a backup of the wallet before migrating. This 
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://explore.transifex.com/dash/dash/</source>
+https://www.transifex.com/projects/p/piratecash/</source>
         <translation>ภาษาหายไปหรือแปลไม่สมบูรณ์? ช่วยสนับสนุนการแปลที่นี่:
-https://explore.transifex.com/dash/dash/</translation>
+https://www.transifex.com/projects/p/piratecash/</translation>
     </message>
     <message>
         <source>Third-party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items.&lt;br/&gt;%s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</source>
@@ -5352,7 +5352,7 @@ Do you wish to continue?</source>
         <translation>เห็นด้วย %1, ไม่เห็นด้วย %2, งดออกเสียง %3 / ยังไม่ลงคะแนน %4</translation>
     </message>
     <message>
-        <source>Invalid Dash address: %1</source>
+        <source>Invalid PirateCash address: %1</source>
         <translation>ที่อยู่ PirateCash ไม่ถูกต้อง: %1</translation>
     </message>
     <message>
@@ -6150,7 +6150,7 @@ For more information on using this console, type %6.
         <translation>EvoNode — หลักประกัน %1</translation>
     </message>
     <message>
-        <source>Additionally hosts Dash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
+        <source>Additionally hosts PirateCash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
         <translation>โฮสต์ PirateCash Platform เพิ่มเติม มีน้ำหนักการลงคะแนนสี่เท่า และรับส่วนแบ่งรางวัลมากกว่า ต้องมีรหัสโหนด Platform และบริการเพิ่มเติม</translation>
     </message>
     <message>
@@ -6370,7 +6370,7 @@ For more information on using this console, type %6.
         <translation>บันทึกเดี๋ยวนี้ — ไม่สามารถเริ่มลงทะเบียนได้จนกว่าคุณจะยืนยัน</translation>
     </message>
     <message>
-        <source>Add this line to dash.conf on your masternode server:</source>
+        <source>Add this line to piratecash.conf on your masternode server:</source>
         <translation>เพิ่มบรรทัดนี้ลงใน piratecash.conf บนเซิร์ฟเวอร์มาสเตอร์โหนดของคุณ:</translation>
     </message>
     <message>
@@ -6754,8 +6754,8 @@ For more information on using this console, type %6.
         <translation>บันทึกไว้ในกระเป๋าสตางค์นี้และปรากฏในธุรกรรม หลักประกันยังอยู่ในกระเป๋าสตางค์แต่ถูกล็อกไว้ตราบที่มาสเตอร์โหนดยังลงทะเบียนอยู่</translation>
     </message>
     <message>
-        <source>Configure your masternode server with the operator secret key you saved, then restart dashd there.</source>
-        <translation>ตั้งค่าเซิร์ฟเวอร์มาสเตอร์โหนดของคุณด้วยคีย์ลับของผู้ดำเนินการที่คุณบันทึกไว้ แล้วรีสตาร์ท dashd ที่นั่น</translation>
+        <source>Configure your masternode server with the operator secret key you saved, then restart piratecashd there.</source>
+        <translation>ตั้งค่าเซิร์ฟเวอร์มาสเตอร์โหนดของคุณด้วยคีย์ลับของผู้ดำเนินการที่คุณบันทึกไว้ แล้วรีสตาร์ท piratecashd ที่นั่น</translation>
     </message>
     <message>
         <source>Configure your masternode server with the BLS secret key matching the operator public key you provided.</source>
@@ -6770,7 +6770,7 @@ For more information on using this console, type %6.
         <translation>ส่งธุรกรรมอัปเดตบริการเมื่อปลายทางบริการของโหนดพร้อมแล้ว โหนดจะไม่ทำงานจนกว่าจะถึงตอนนั้น</translation>
     </message>
     <message>
-        <source>Provision the Dash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
+        <source>Provision the PirateCash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
         <translation>จัดเตรียมบริการ PirateCash Platform (Tenderdash และ Drive) ด้วยคีย์โหนด Platform ที่ตรงกับรหัสโหนดที่คุณลงทะเบียน</translation>
     </message>
     <message>
@@ -7070,7 +7070,7 @@ For more information on using this console, type %6.
         <translation>ค่าธรรมเนียมการทำธุรกรรม:</translation>
     </message>
     <message>
-        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <translation>เมื่อมีปริมาณธุรกรรมน้อยกว่าพื้นที่ในบล็อก นักขุดและโหนดรีเลย์อาจบังคับใช้ค่าธรรมเนียมขั้นต่ำ การจ่ายเฉพาะค่าธรรมเนียมขั้นต่ำนี้ถือว่าใช้ได้ แต่โปรดทราบว่าสิ่งนี้อาจส่งผลให้ธุรกรรมไม่ได้รับการยืนยันเมื่อมีความต้องการธุรกรรม PirateCash มากกว่าที่เครือข่ายจะสามารถดำเนินการได้</translation>
     </message>
     <message>
@@ -7478,7 +7478,7 @@ For more information on using this console, type %6.
         <translation>จำนวนเงินในการส่งในหน่วยที่เลือก</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PIRATE than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>ค่าธรรมเนียมจะถูกหักออกจากจำนวนเงินที่ส่ง ผู้รับจะได้รับ PirateCash น้อยกว่าที่คุณป้อนในฟิลด์ หากมีการเลือกผู้รับหลายรายค่าธรรมเนียมจะแบ่งเท่า ๆ กัน</translation>
     </message>
     <message>
@@ -7832,7 +7832,7 @@ For more information on using this console, type %6.
         <translation>คัดลอก</translation>
     </message>
     <message>
-        <source>Add this line to dash.conf on the masternode server:</source>
+        <source>Add this line to piratecash.conf on the masternode server:</source>
         <translation>เพิ่มบรรทัดนี้ลงใน piratecash.conf บนเซิร์ฟเวอร์มาสเตอร์โหนด:</translation>
     </message>
     <message>
@@ -8244,8 +8244,8 @@ For more information on using this console, type %6.
         <translation>ผู้ที่รันโหนด</translation>
     </message>
     <message>
-        <source>Configure the masternode server with the operator secret key and restart dashd there.</source>
-        <translation>ตั้งค่าเซิร์ฟเวอร์มาสเตอร์โหนดด้วยคีย์ลับของผู้ดำเนินการ แล้วรีสตาร์ท dashd ที่นั่น</translation>
+        <source>Configure the masternode server with the operator secret key and restart piratecashd there.</source>
+        <translation>ตั้งค่าเซิร์ฟเวอร์มาสเตอร์โหนดด้วยคีย์ลับของผู้ดำเนินการ แล้วรีสตาร์ท piratecashd ที่นั่น</translation>
     </message>
     <message>
         <source>Send a service update once the node's addresses are ready; it stays inactive until then.</source>
@@ -9578,7 +9578,7 @@ For more information on using this console, type %6.
         <translation>อัปเดตการลงทะเบียนมาสเตอร์โหนดที่มีอยู่ จำนวนเงินคือการเปลี่ยนแปลงยอดคงเหลือสุทธิของกระเป๋าสตางค์นี้ ซึ่งโดยปกติเป็นเพียงค่าธรรมเนียมเครือข่าย</translation>
     </message>
     <message>
-        <source>Locks funds for use on Dash Platform. The amount is this wallet's net balance change, including the network fee.</source>
+        <source>Locks funds for use on PirateCash Platform. The amount is this wallet's net balance change, including the network fee.</source>
         <translation>ล็อกเงินเพื่อใช้บน PirateCash Platform จำนวนเงินคือการเปลี่ยนแปลงยอดคงเหลือสุทธิของกระเป๋าสตางค์นี้ รวมค่าธรรมเนียมเครือข่าย</translation>
     </message>
     <message>
@@ -10023,7 +10023,7 @@ For more information on using this console, type %6.
         <translation>ป้อนที่อยู่ที่จะรับรางวัล</translation>
     </message>
     <message>
-        <source>Enter a valid Dash address.</source>
+        <source>Enter a valid PirateCash address.</source>
         <translation>ป้อนที่อยู่ PirateCash ที่ถูกต้อง</translation>
     </message>
     <message>
@@ -10775,7 +10775,7 @@ Unable to restore backup of wallet.</source>
         <translation>ส่วน [%s] ไม่ได้รับการยอมรับ</translation>
     </message>
     <message>
-        <source>Sets a window title which is appended to "Dash Core - "</source>
+        <source>Sets a window title which is appended to "PirateCash Core - "</source>
         <translation>ตั้งชื่อหน้าต่างซึ่งจะต่อท้าย "PirateCash Core - "</translation>
     </message>
     <message>

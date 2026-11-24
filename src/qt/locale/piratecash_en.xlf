@@ -76,7 +76,7 @@
         <context-group purpose="location"><context context-type="linenumber">90</context></context-group>
       </trans-unit>
       <trans-unit id="_msg18">
-        <source xml:space="preserve">These are your Dash addresses for receiving payments. Use the &apos;Create new receiving address&apos; button in the receive tab to create new addresses.</source>
+        <source xml:space="preserve">These are your PirateCash addresses for receiving payments. Use the &apos;Create new receiving address&apos; button in the receive tab to create new addresses.</source>
         <context-group purpose="location"><context context-type="linenumber">95</context></context-group>
       </trans-unit>
       <trans-unit id="_msg19">
@@ -1787,7 +1787,7 @@ The migration process will create a backup of the wallet before migrating. This 
         <context-group purpose="location"><context context-type="linenumber">1692</context></context-group>
       </trans-unit>
       <trans-unit id="_msg408">
-        <source xml:space="preserve">Dash shared masternode — standby dissolution</source>
+        <source xml:space="preserve">PirateCash shared masternode — standby dissolution</source>
         <context-group purpose="location"><context context-type="linenumber">1708</context></context-group>
       </trans-unit>
       <trans-unit id="_msg409">
@@ -2224,7 +2224,7 @@ The migration process will create a backup of the wallet before migrating. This 
         <context-group purpose="location"><context context-type="linenumber">378</context></context-group>
       </trans-unit>
       <trans-unit id="_msg513">
-        <source xml:space="preserve">Enter a valid Dash address.</source>
+        <source xml:space="preserve">Enter a valid PirateCash address.</source>
         <context-group purpose="location"><context context-type="linenumber">381</context></context-group>
       </trans-unit>
       <trans-unit id="_msg514">
@@ -2489,7 +2489,7 @@ The migration process will create a backup of the wallet before migrating. This 
         <context-group purpose="location"><context context-type="linenumber">210</context></context-group>
       </trans-unit>
       <trans-unit id="_msg565">
-        <source xml:space="preserve">Network addresses that your Dash node is currently using to communicate with other nodes.</source>
+        <source xml:space="preserve">Network addresses that your PirateCash node is currently using to communicate with other nodes.</source>
         <context-group purpose="location"><context context-type="linenumber">238</context></context-group>
       </trans-unit>
       <trans-unit id="_msg566">
@@ -2653,7 +2653,7 @@ The migration process will create a backup of the wallet before migrating. This 
     </group>
     <group restype="x-trolltech-linguist-context" resname="QObject">
       <trans-unit id="_msg602">
-        <source xml:space="preserve">Invalid Dash address: %1</source>
+        <source xml:space="preserve">Invalid PirateCash address: %1</source>
         <context-group purpose="location"><context context-type="linenumber">75</context></context-group>
       </trans-unit>
     </group>
@@ -3476,7 +3476,7 @@ Network rejection: %1</source>
         <context-group purpose="location"><context context-type="linenumber">380</context></context-group>
       </trans-unit>
       <trans-unit id="_msg798">
-        <source xml:space="preserve">The session file uses an unsupported format version. Update Dash Core to open it.</source>
+        <source xml:space="preserve">The session file uses an unsupported format version. Update PirateCash Core to open it.</source>
         <context-group purpose="location"><context context-type="linenumber">385</context></context-group>
       </trans-unit>
       <trans-unit id="_msg799">
@@ -3500,7 +3500,7 @@ Network rejection: %1</source>
         <context-group purpose="location"><context context-type="linenumber">411</context></context-group>
       </trans-unit>
       <trans-unit id="_msg804">
-        <source xml:space="preserve">The session file is at the unknown stage &quot;%1&quot;. It was probably created by a newer Dash Core.</source>
+        <source xml:space="preserve">The session file is at the unknown stage &quot;%1&quot;. It was probably created by a newer PirateCash Core.</source>
         <context-group purpose="location"><context context-type="linenumber">416</context></context-group>
       </trans-unit>
       <trans-unit id="_msg805">
@@ -4265,7 +4265,7 @@ Network rejection: %1</source>
         <context-group purpose="location"><context context-type="linenumber">1008</context></context-group>
       </trans-unit>
       <trans-unit id="_msg984">
-        <source xml:space="preserve">Add this line to dash.conf on the masternode server:</source>
+        <source xml:space="preserve">Add this line to piratecash.conf on the masternode server:</source>
         <context-group purpose="location"><context context-type="linenumber">808</context></context-group>
       </trans-unit>
       <trans-unit id="_msg985">
@@ -4704,7 +4704,7 @@ Network rejection: %1</source>
         <context-group purpose="location"><context context-type="linenumber">1990</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1087">
-        <source xml:space="preserve">Configure the masternode server with the operator secret key and restart dashd there.</source>
+        <source xml:space="preserve">Configure the masternode server with the operator secret key and restart piratecashd there.</source>
         <context-group purpose="location"><context context-type="linenumber">1994</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1088">
@@ -5857,7 +5857,7 @@ Network rejection: %1</source>
       </trans-unit>
       <trans-unit id="_msg1349">
         <source xml:space="preserve">Language missing or translation incomplete? Help contributing translations here:
-https://explore.transifex.com/dash/dash/</source>
+https://www.transifex.com/projects/p/piratecash/</source>
         <context-group purpose="location"><context context-type="linenumber">1052</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1350">
@@ -8422,7 +8422,7 @@ For more information on using this console, type %6.
         <context-group purpose="location"><context context-type="linenumber">221</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1895">
-        <source xml:space="preserve">Additionally hosts Dash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
+        <source xml:space="preserve">Additionally hosts PirateCash Platform, has four times the voting weight and earns a larger share of rewards. Requires a Platform node ID and extra services.</source>
         <context-group purpose="location"><context context-type="linenumber">224</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1896">
@@ -8664,7 +8664,7 @@ For more information on using this console, type %6.
         <context-group purpose="location"><context context-type="linenumber">605</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1950">
-        <source xml:space="preserve">Add this line to dash.conf on your masternode server:</source>
+        <source xml:space="preserve">Add this line to piratecash.conf on your masternode server:</source>
         <context-group purpose="location"><context context-type="linenumber">612</context></context-group>
       </trans-unit>
       <trans-unit id="_msg1951">
@@ -9069,7 +9069,7 @@ For more information on using this console, type %6.
         <context-group purpose="location"><context context-type="linenumber">1641</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2046">
-        <source xml:space="preserve">Configure your masternode server with the operator secret key you saved, then restart dashd there.</source>
+        <source xml:space="preserve">Configure your masternode server with the operator secret key you saved, then restart piratecashd there.</source>
         <context-group purpose="location"><context context-type="linenumber">1648</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2047">
@@ -9085,7 +9085,7 @@ For more information on using this console, type %6.
         <context-group purpose="location"><context context-type="linenumber">1658</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2050">
-        <source xml:space="preserve">Provision the Dash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
+        <source xml:space="preserve">Provision the PirateCash Platform services (Tenderdash and Drive) with the Platform node key matching the node ID you registered.</source>
         <context-group purpose="location"><context context-type="linenumber">1662</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2051">
@@ -9166,7 +9166,7 @@ For more information on using this console, type %6.
         <context-group purpose="location"><context context-type="linenumber">641</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2069">
-        <source xml:space="preserve">When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for dash transactions than the network can process.</source>
+        <source xml:space="preserve">When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for PirateCash transactions than the network can process.</source>
         <context-group purpose="location"><context context-type="linenumber">805</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2070">
@@ -9557,7 +9557,7 @@ For more information on using this console, type %6.
         <context-group purpose="location"><context context-type="linenumber">154</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2159">
-        <source xml:space="preserve">The fee will be deducted from the amount being sent. The recipient will receive a lower amount of Dash than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source xml:space="preserve">The fee will be deducted from the amount being sent. The recipient will receive a lower amount of PIRATE than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <context-group purpose="location"><context context-type="linenumber">161</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2160">
@@ -10135,7 +10135,7 @@ For more information on using this console, type %6.
         <context-group purpose="location"><context context-type="linenumber">642</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2288">
-        <source xml:space="preserve">Locks funds for use on Dash Platform. The amount is this wallet&apos;s net balance change, including the network fee.</source>
+        <source xml:space="preserve">Locks funds for use on PirateCash Platform. The amount is this wallet&apos;s net balance change, including the network fee.</source>
         <context-group purpose="location"><context context-type="linenumber">646</context></context-group>
       </trans-unit>
       <trans-unit id="_msg2289">
